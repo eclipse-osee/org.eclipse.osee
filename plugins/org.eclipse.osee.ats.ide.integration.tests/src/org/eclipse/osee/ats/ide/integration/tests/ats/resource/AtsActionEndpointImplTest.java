@@ -96,30 +96,30 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testQueryPriority() {
 
       getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&Priority=1&Priority=3", DemoArtifactToken.SAW_Code.getIdString()), 3);
+         String.format("ats/action/query?Team=%s&Priority=1&Priority=3", DemoArtifactToken.SAW_Code.getIdString()), 4);
    }
 
    @Test
    public void testQueryWorking() {
       getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&StateType=Working", DemoArtifactToken.SAW_Code.getIdString()), 3);
+         String.format("ats/action/query?Team=%s&StateType=Working", DemoArtifactToken.SAW_Code.getIdString()), 4);
    }
 
    @Test
    public void testQueryAssignee() {
       getAndCountWorkItems(String.format("ats/action/query?Team=%s&Assignee=4444&Assignee=3333",
-         DemoArtifactToken.SAW_Code.getIdString()), 3);
+         DemoArtifactToken.SAW_Code.getIdString()), 4);
    }
 
    @Test
    public void testQueryOriginator() {
       getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&Originator=3333", DemoArtifactToken.SAW_Code.getIdString()), 3);
+         String.format("ats/action/query?Team=%s&Originator=3333", DemoArtifactToken.SAW_Code.getIdString()), 4);
    }
 
    @Test
    public void testQueryTeam() {
-      getFirstAndCount("ats/action/query?Team=30013695", 3);
+      getFirstAndCount("ats/action/query?Team=30013695", 4);
    }
 
    @Test

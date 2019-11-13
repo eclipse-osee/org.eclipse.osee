@@ -17,7 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsBranchServiceImplTest.class})
+@Suite.SuiteClasses({
+   AtsBranchServiceImplTest.class, //
+   DemoBranchRegressionTest.class})
+
 public class AtsTest_Branch_Suite {
    // do nothing
 }

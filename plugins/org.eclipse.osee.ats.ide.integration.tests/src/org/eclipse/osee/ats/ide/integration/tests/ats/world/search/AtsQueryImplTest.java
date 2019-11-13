@@ -58,25 +58,25 @@ public class AtsQueryImplTest {
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
 
-      assertEquals(25, query.getResults().size());
+      assertEquals(28, query.getResults().size());
       query = queryService.createQuery(WorkItemType.Task);
-      assertEquals(14, query.getResults().size());
+      assertEquals(48, query.getResults().size());
 
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserById("3333"));
-      assertEquals(7, query.getResults().size());
+      assertEquals(8, query.getResults().size());
 
       // team
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andTeam(Arrays.asList(30013695L));
-      assertEquals(3, query.getResults().size());
+      assertEquals(4, query.getResults().size());
 
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId ai = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
       query.andActionableItem(Arrays.asList(ai.getId()));
-      assertEquals(4, query.getResults().size());
+      assertEquals(5, query.getResults().size());
 
       // by ids (hijack two workflows from previous search)
       List<Long> ids = new LinkedList<>();
@@ -97,35 +97,35 @@ public class AtsQueryImplTest {
       // by state type
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(54, query.getResults().size());
+      assertEquals(90, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);
-      assertEquals(22, query.getResults().size());
+      assertEquals(24, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed);
-      assertEquals(3, query.getResults().size());
+      assertEquals(4, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed, StateType.Working);
-      assertEquals(25, query.getResults().size());
+      assertEquals(28, query.getResults().size());
 
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId version = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getId());
-      assertEquals(14, query.getResults().size());
+      assertEquals(17, query.getResults().size());
 
       // by assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(joeSmith);
-      assertEquals(7, query.getResults().size());
+      assertEquals(8, query.getResults().size());
 
       // by originator
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andOriginator(joeSmith);
-      assertEquals(25, query.getResults().size());
+      assertEquals(28, query.getResults().size());
 
       // by favorite
       query = queryService.createQuery(WorkItemType.TeamWorkflow);

@@ -64,6 +64,8 @@ public class ChangeReportTaskData {
    // Show detailed debug logging
    private boolean debug = false;
    private TransactionId transaction;
+   private Collection<ArtifactId> destTeamWfs = new HashSet<>();
+   private ArtifactId actionId;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -216,6 +218,22 @@ public class ChangeReportTaskData {
 
    public void setTransaction(TransactionId transaction) {
       this.transaction = transaction;
+   }
+
+   public Collection<ArtifactId> getDestTeamWfs() {
+      return destTeamWfs;
+   }
+
+   public void setDestTeamWfs(Collection<ArtifactId> destTeamWfs) {
+      this.destTeamWfs = destTeamWfs;
+   }
+
+   public ArtifactId getActionId() {
+      return actionId;
+   }
+
+   public void setActionId(ArtifactId actionId) {
+      this.actionId = actionId;
    }
 
 }

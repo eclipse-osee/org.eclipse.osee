@@ -21,11 +21,13 @@ import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.rest.internal.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -99,6 +101,12 @@ public class AtsTaskService extends AbstractAtsTaskService {
       NewTaskData tasks = atsApi.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
          relatedToState, taskWorkDef, attributes, changes.getComment());
       return createTasks(tasks, changes, new XResultData());
+   }
+
+   @Override
+   public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData) {
+      CreateChangeReportTasksOperation operation = new CreateChangeReportTasksOperation(changeReportTaskData, atsApi);
+      return operation.run();
    }
 
 }

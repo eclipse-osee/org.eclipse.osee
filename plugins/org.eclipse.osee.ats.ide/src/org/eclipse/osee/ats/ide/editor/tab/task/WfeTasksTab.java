@@ -678,7 +678,6 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
 
    private Collection<IAtsTask> getTasks() {
       Collection<IAtsTask> tasks = client.getTaskService().getTasks(teamWf);
-      System.err.println(getClass().getSimpleName() + ".getTasks() - " + tasks.size());
       return tasks;
    }
 

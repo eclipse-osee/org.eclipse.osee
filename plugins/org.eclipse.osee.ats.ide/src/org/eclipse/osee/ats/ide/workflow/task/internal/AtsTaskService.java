@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -195,6 +196,11 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData rd, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
       throw new UnsupportedOperationException("Not supported on ide client");
+   }
+
+   @Override
+   public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData) {
+      return AtsClientService.getTaskEp().create(changeReportTaskData);
    }
 
 }

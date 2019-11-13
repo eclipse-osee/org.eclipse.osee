@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.ui.views,
  org.eclipse.search,
  org.eclipse.core.jobs,
- org.eclipse.osee.ats.api
+ org.eclipse.osee.ats.api,
+ org.junit
 Export-Package: org.eclipse.osee.ats.ide,
  org.eclipse.osee.ats.ide.access,
  org.eclipse.osee.ats.ide.actions,

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -47,7 +49,6 @@ public class ChangeReportTasksUtil {
    public static String AUTO_GENERATED_STATIC_ID = "AutoGenTask";
    public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
    public static final String TASKS_MUST_BE_AUTOGEN_CODE_OR_TEST_TASKS = "Tasks must be Auto Generated Tasks";
-   private static WorkType workType;
 
    private ChangeReportTasksUtil() {
       // helper methods
@@ -102,7 +103,6 @@ public class ChangeReportTasksUtil {
    public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactReadable> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
       Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(destTeamWf);
-      System.out.println(String.format("%s tasks for %s", tasks.size(), destTeamWf.toStringWithId()));
       for (IAtsTask task : tasks) {
          ArtifactId refChgArtId = atsApi.getAttributeResolver().getSoleArtifactIdReference(task,
             AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
@@ -114,7 +114,6 @@ public class ChangeReportTasksUtil {
                // We found matching TaskMatch
                if (refChgArtId.getId().equals(taskMatch.getChgRptArt().getId()) && task.getName().equals(
                   taskMatch.getTaskName())) {
-                  System.err.println("Match\n");
                   taskMatch.setTaskName(task.getName());
                   taskMatch.setType(ChangeReportTaskMatchType.Match);
                   taskMatch.setTaskWf(task);
@@ -126,7 +125,6 @@ public class ChangeReportTasksUtil {
 
             // If not, add task match that will probably be marked for removal
             if (!found) {
-               System.err.println("No Match\n");
                ChangeReportTaskMatch newTaskMatch = new ChangeReportTaskMatch();
                newTaskMatch.setTaskName(task.getName());
                newTaskMatch.setTaskWf(task);
@@ -154,7 +152,6 @@ public class ChangeReportTasksUtil {
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
       for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
          if (referencedChgArt.getId().equals(taskRefArt.getId())) {
-            System.err.println("Match\n");
             taskMatch.setTaskName(task.getName());
             taskMatch.setType(ChangeReportTaskMatchType.Match);
             taskMatch.setTaskWf(task);
@@ -162,7 +159,6 @@ public class ChangeReportTasksUtil {
             return taskMatch;
          }
       }
-      System.err.println("No Match\n");
       return null;
    }
 
@@ -233,17 +229,23 @@ public class ChangeReportTasksUtil {
    public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType, AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
       // Try to find by Derive_To first
       ArtifactToken chgRptTeamWf = crttwd.getChgRptTeamWf();
-      for (ArtifactToken related : atsApi.getRelationResolver().getRelated(chgRptTeamWf, AtsRelationTypes.Derive_To)) {
-         if (related instanceof IAtsTeamWorkflow) {
-            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) related;
+
+      Collection<ArtifactToken> derivedTo =
+         atsApi.getRelationResolver().getRelated(chgRptTeamWf, AtsRelationTypes.Derive_To);
+      IAtsAction parentAction = sourceTeamWf.getParentAction();
+      Collection<IAtsTeamWorkflow> teamWorkflows = parentAction.getTeamWorkflows();
+
+      for (ArtifactToken related : derivedTo) {
+         if (atsApi.getStoreService().isOfType(related, AtsArtifactTypes.TeamWorkflow)) {
+            IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(related);
             if (teamWf.getTeamDefinition().equals(crttwd.getDestTeamDef())) {
                crttwd.setDestTeamWf(teamWf.getStoreObject());
                return teamWf;
             }
          }
       }
-      //       Else, look through siblings for matching team def
-      for (IAtsTeamWorkflow teamWf : sourceTeamWf.getParentAction().getTeamWorkflows()) {
+      // Else, look through siblings for matching team def
+      for (IAtsTeamWorkflow teamWf : teamWorkflows) {
          if (!teamWf.equals(sourceTeamWf) && teamWf.getTeamDefinition().equals(destTeamDef)) {
             crttwd.setDestTeamWf(teamWf.getArtifactToken());
             return teamWf;

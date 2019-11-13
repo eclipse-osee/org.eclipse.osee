@@ -220,4 +220,15 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       this.currentUser = currentUser;
    }
 
+   @Override
+   public AtsUser getAtsUser(IAtsUser user) {
+      AtsUser atsUser = new AtsUser();
+      atsUser.setName(user.getName());
+      atsUser.setUserId(user.getUserId());
+      atsUser.setEmail(user.getEmail());
+      atsUser.setActive(user.isActive());
+      atsUser.setId(user.getId());
+      return atsUser;
+   }
+
 }

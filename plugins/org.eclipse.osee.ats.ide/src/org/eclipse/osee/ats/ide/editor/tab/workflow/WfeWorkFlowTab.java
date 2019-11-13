@@ -642,7 +642,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
       if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
-         System.err.println("handleEvent " + topicEvent);
          if (this.isDisposed()) {
             AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
             return;

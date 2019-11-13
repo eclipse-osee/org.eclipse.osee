@@ -1131,6 +1131,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 
 oseeEnumType "enum.req.partition" {
 	id 3458764513820541309
+	entry "Aircraft Systems"
 	entry "Graphics Handler"
 	entry "Communication"
 	entry "Flight Control"

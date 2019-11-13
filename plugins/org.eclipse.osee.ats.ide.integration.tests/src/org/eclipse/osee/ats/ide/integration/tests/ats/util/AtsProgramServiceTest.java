@@ -153,7 +153,7 @@ public class AtsProgramServiceTest {
    @Test
    public void testGetWorkType() {
       Collection<IAtsTeamWorkflow> workflows = programService.getWorkflows(sawProgram, WorkType.Code);
-      assertEquals(3, workflows.size());
+      assertEquals(4, workflows.size());
       IAtsTeamWorkflow codeTeamWf = workflows.iterator().next();
 
       assertEquals(WorkType.Code, programService.getWorkType(codeTeamWf));

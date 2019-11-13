@@ -236,7 +236,6 @@ public class ValidateProcFuncCalls {
 
    private void log(String message, Object... data) {
       String errStr = String.format(message, data);
-      System.err.println(errStr);
       results.log(errStr);
    }
 

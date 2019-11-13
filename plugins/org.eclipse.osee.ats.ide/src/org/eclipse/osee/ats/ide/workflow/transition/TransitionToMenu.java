@@ -291,7 +291,8 @@ public class TransitionToMenu {
          @Override
          public Collection<ITransitionListener> getTransitionListeners() {
             try {
-               return AtsClientService.get().getWorkItemService().getTransitionListeners();
+               Set<ITransitionListener> listeners = new HashSet<>();
+               listeners.addAll(AtsClientService.get().getWorkItemService().getTransitionListeners());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

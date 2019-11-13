@@ -356,6 +356,10 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   for (ITransitionListener listener : helper.getTransitionListeners()) {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
                   }
+                  // Notify any state transition listeners
+                  for (ITransitionListener listener : toState.getTransitionListeners()) {
+                     listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
+                  }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
                      workItemService.clearImplementersCache(workItem);
                   }

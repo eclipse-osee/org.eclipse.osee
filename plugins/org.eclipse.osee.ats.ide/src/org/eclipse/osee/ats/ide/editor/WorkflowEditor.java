@@ -887,7 +887,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          Artifact loadedWf = ArtifactCache.getActive(guid, AtsClientService.get().getAtsBranch());
          if (loadedWf != null) {
             if (artHandlers.containsKey(loadedWf.getGuid())) {
-               for (IWfeEventHandle handler : artHandlers.getValues(loadedWf.getGuid())) {
+               Set<IWfeEventHandle> handlers = new HashSet<IWfeEventHandle>();
+               handlers.addAll(artHandlers.getValues(loadedWf.getGuid()));
+               for (IWfeEventHandle handler : handlers) {
                   handler.refresh();
                }
             }

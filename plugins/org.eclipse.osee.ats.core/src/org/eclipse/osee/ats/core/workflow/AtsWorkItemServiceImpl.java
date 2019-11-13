@@ -300,7 +300,10 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      IAtsTeamWorkflow team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
+      IAtsTeamWorkflow team = null;
+      if (atsApi.getStoreService().isIdeClient()) {
+         team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
+      }
       if (team == null) {
          if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
             team = new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);

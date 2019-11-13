@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -117,4 +118,8 @@ public interface IAtsStoreService {
    boolean isReadOnly(IAtsWorkItem workItem);
 
    boolean isAccessControlWrite(IAtsWorkItem workItem);
+
+   void reloadArts(Collection<ArtifactToken> artifacts);
+
+   boolean isIdeClient();
 }

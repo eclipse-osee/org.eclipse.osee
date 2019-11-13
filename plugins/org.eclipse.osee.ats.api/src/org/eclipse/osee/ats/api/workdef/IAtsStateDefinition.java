@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 
 /**
  * @author Donald G. Dunne
@@ -69,5 +70,9 @@ public interface IAtsStateDefinition extends IStateToken {
 
    @Override
    String toString();
+
+   void addTransitionListener(ITransitionListener listener);
+
+   List<ITransitionListener> getTransitionListeners();
 
 }

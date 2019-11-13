@@ -178,7 +178,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
 
       if (dialog.open() == 0) {
          Object obj = stateArray[dialog.getSelection()];
-         System.err.println("Selected " + obj);
          return (IAtsStateDefinition) obj;
       }
 
@@ -476,7 +475,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    public void handleEvent(AtsTopicEvent topicEvent, Collection<ArtifactId> workItems) {
       if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
-         System.err.println("handleEvent " + topicEvent);
          if (this.isDisposed()) {
             AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
             return;

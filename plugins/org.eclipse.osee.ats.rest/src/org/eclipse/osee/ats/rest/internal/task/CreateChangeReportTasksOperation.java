@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -38,7 +39,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.task.CreateTasksWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -106,6 +109,7 @@ public class CreateChangeReportTasksOperation {
          rd.logf("Using Change Report Team Wf %s\n", chgRptTeamWf.toStringWithId());
          crtd.getIdToTeamWf().put(chgRptTeamWf.getId(), chgRptTeamWf);
          crtd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
+         crtd.setActionId(chgRptTeamWf.getParentAction().getStoreObject());
 
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
          if (crtd.getResults().isErrors()) {
@@ -173,7 +177,7 @@ public class CreateChangeReportTasksOperation {
             if (Strings.isValid(workTypeStr)) {
                workType = WorkType.valueOfOrNone(workTypeStr);
             }
-            if (workType != WorkType.None) {
+            if (workType == WorkType.None) {
                if (teamDef.getName().contains("Code")) {
                   workType = WorkType.Code;
                } else if (teamDef.getName().contains("Test")) {
@@ -215,12 +219,17 @@ public class CreateChangeReportTasksOperation {
                   AtsCoreUsers.SYSTEM_USER, chgRptTeamWf, targetedVersion, crttwd.getWorkType(), null, null);
                workflowCreator.setActionableItem(ai);
                destTeamWf = workflowCreator.createMissingWorkflow();
+               if (changes != null) {
+                  changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
+               }
                rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
             }
             crttwd.setDestTeamWf(destTeamWf.getStoreObject());
             crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
+            crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(), destTeamWf.getName(),
+               BranchId.valueOf(atsApi.getAtsBranch().getId())));
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
             ChangeReportTasksUtil.determinExistingTaskMatchType(idToArtifact, crtd, crttwd, setDef, workType,

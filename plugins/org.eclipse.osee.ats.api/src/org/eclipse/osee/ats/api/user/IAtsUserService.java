@@ -69,4 +69,6 @@ public interface IAtsUserService {
 
    void setCurrentUser(IAtsUser user);
 
+   AtsUser getAtsUser(IAtsUser user);
+
 }

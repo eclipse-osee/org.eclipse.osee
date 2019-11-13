@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -272,5 +273,15 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isAccessControlWrite(IAtsWorkItem workItem) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void reloadArts(Collection<ArtifactToken> artifacts) {
+      // do needed on server, but don't exception
+   }
+
+   @Override
+   public boolean isIdeClient() {
+      return false;
    }
 }

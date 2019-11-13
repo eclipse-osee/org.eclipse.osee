@@ -289,4 +289,14 @@ public class AtsStoreService implements IAtsStoreService {
    public boolean isAccessControlWrite(IAtsWorkItem workItem) {
       return ((AbstractWorkflowArtifact) workItem.getStoreObject()).isAccessControlWrite();
    }
+
+   @Override
+   public void reloadArts(Collection<ArtifactToken> artifacts) {
+      ArtifactQuery.reloadArtifacts(artifacts);
+   }
+
+   @Override
+   public boolean isIdeClient() {
+      return true;
+   }
 }

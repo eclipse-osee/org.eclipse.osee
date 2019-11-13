@@ -34,7 +34,7 @@ public class VersionTargetedForTeamSearchItemTest {
       VersionTargetedForTeamSearchItem search =
          new VersionTargetedForTeamSearchItem(null, version, false, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 14, IAtsTeamWorkflow.class);
+      DemoTestUtil.assertTypes(results, 17, IAtsTeamWorkflow.class);
    }
 
 }

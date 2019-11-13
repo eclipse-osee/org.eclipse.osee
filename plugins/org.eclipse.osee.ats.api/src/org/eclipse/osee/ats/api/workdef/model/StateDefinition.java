@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -39,6 +40,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    private int stateWeight = 0;
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
+   private final List<ITransitionListener> transitionListeners = new ArrayList<>();
 
    public StateDefinition(String name) {
       super(Long.valueOf(name.hashCode()), name);
@@ -210,6 +212,16 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
 
    public void addPeerReview(PeerReviewDefinition reviewDefinition) {
       peerReviews.add(reviewDefinition);
+   }
+
+   @Override
+   public void addTransitionListener(ITransitionListener transitionListener) {
+      transitionListeners.add(transitionListener);
+   }
+
+   @Override
+   public List<ITransitionListener> getTransitionListeners() {
+      return transitionListeners;
    }
 
 }

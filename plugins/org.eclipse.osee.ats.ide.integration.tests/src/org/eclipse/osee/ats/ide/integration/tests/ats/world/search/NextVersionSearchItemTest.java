@@ -35,7 +35,7 @@ public class NextVersionSearchItemTest {
          AtsClientService.get().getQueryService()).iterator().next();
       NextVersionSearchItem search = new NextVersionSearchItem(teamDef, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 14, IAtsTeamWorkflow.class);
+      DemoTestUtil.assertTypes(results, 17, IAtsTeamWorkflow.class);
    }
 
 }
