@@ -54,6 +54,16 @@ public class ArtifactUrlClient extends AbstractArtifactUrl {
       return ClientSessionManager.getSessionId();
    }
 
+   @Override
+   public String getClientName() {
+      return ClientSessionManager.getClientName();
+   }
+
+   @Override
+   public String getClientPort() {
+      return ClientSessionManager.getClientPort();
+   }
+
    URL getOpenInOseeLink(final Artifact artifact, PresentationType presentationType) {
       return getOpenInOseeLink(artifact, "open.artifact", presentationType);
    }

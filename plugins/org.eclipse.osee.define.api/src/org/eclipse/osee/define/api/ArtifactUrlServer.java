@@ -38,6 +38,16 @@ public class ArtifactUrlServer extends AbstractArtifactUrl {
    }
 
    @Override
+   public String getClientName() {
+      return null;
+   }
+
+   @Override
+   public String getClientPort() {
+      return null;
+   }
+
+   @Override
    public Long getTransactionId(ArtifactToken artifact) {
       return ((ArtifactReadable) artifact).getTransaction().getId();
    }

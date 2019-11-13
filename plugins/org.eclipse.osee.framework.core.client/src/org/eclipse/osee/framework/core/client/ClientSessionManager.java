@@ -55,6 +55,14 @@ public class ClientSessionManager {
       return getSessionGrant().getSessionId();
    }
 
+   public static String getClientName() {
+      return getSession().getClientName();
+   }
+
+   public static String getClientPort() {
+      return getSession().getClientPort();
+   }
+
    public static String getDataStoreLoginName() {
       return getSessionGrant().getDbLogin();
    }

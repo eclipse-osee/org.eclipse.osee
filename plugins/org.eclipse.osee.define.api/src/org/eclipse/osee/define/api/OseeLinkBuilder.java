@@ -141,13 +141,13 @@ public class OseeLinkBuilder {
       return String.format(OSEE_LINK_MARKER, guid);
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, String permanentUrl) {
-      return getWordMlLink(destLinkType, artifact, txId, sessionId, PresentationType.DEFAULT_OPEN, permanentUrl);
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String permanentUrl) {
+      return getWordMlLink(destLinkType, artifact, txId, PresentationType.DEFAULT_OPEN, permanentUrl);
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, PresentationType presentationType, String permanentUrl) {
       String linkFormat = getLinkFormat(destLinkType);
-      String linkId = getLinkId(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+      String linkId = getLinkId(destLinkType, artifact, txId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
       return String.format(linkFormat, linkId, linkText);
    }
@@ -162,20 +162,18 @@ public class OseeLinkBuilder {
       return toReturn;
    }
 
-   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) {
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, PresentationType presentationType, String permanentUrl) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
-         toReturn = escapeXml(getOseeLink(artifact, presentationType, sessionId, permanentUrl));
+         toReturn = escapeXml(getOseeLink(artifact, presentationType, permanentUrl));
       } else {
          toReturn = artifact.getGuid();
       }
       return toReturn;
    }
 
-   private String getOseeLink(ArtifactReadable artifact, PresentationType presentationType, String sessionId, String permanentUrl) {
+   private String getOseeLink(ArtifactReadable artifact, PresentationType presentationType, String permanentUrl) {
       Map<String, String> parameters = new HashMap<>();
-      parameters.put("sessionId", sessionId);
-      parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchUuid", artifact.getBranch().getIdString());
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));

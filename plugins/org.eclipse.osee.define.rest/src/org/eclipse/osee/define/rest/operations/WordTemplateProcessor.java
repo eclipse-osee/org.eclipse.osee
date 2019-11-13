@@ -870,7 +870,6 @@ public class WordTemplateProcessor {
          wtcData.setLinkType(linkType != null ? linkType.toString() : null);
          wtcData.setTxId(txId);
          OseeSessionGrant session = new OseeSessionGrant();
-         wtcData.setSessionId(session.getSessionId());
          wtcData.setPresentationType(presentationType);
          ArtifactId view = publishingOptions.view;
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);

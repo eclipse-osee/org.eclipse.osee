@@ -28,8 +28,6 @@ public abstract class AbstractArtifactUrl {
 
    public URL getOpenInOseeLink(final ArtifactToken artifact, String cmd, PresentationType presentationType) {
       Map<String, String> parameters = new HashMap<>();
-      parameters.put("sessionId", getSessionId());
-      parameters.put("context", "osee/loopback");
       parameters.put("id", artifact.getIdString());
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchUuid", artifact.getBranch().getIdString());
@@ -39,11 +37,21 @@ public abstract class AbstractArtifactUrl {
          artifact) && presentationType != PresentationType.DIFF && presentationType != PresentationType.F5_DIFF) {
          parameters.put("transactionId", String.valueOf(getTransactionId(artifact)));
       }
-
+      String urlString = "";
       parameters.put("cmd", cmd);
-      String urlString = getPermanentLinkBaseUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
+      if (getClientName() != null && getClientPort() != null) {
+         String baseUrl = String.format("http://%s:%s/", getClientName(), getClientPort());
+         try {
+            urlString = HttpUrlBuilder.createURL(baseUrl, OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
+         } catch (UnsupportedEncodingException ex) {
+            throw OseeCoreException.wrap(ex);
+         }
+      } else {
+         urlString = getPermanentLinkBaseUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
+      }
       URL url = null;
       try {
+
          url = new URL(urlString);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -52,6 +60,10 @@ public abstract class AbstractArtifactUrl {
    }
 
    public abstract String getSessionId();
+
+   public abstract String getClientName();
+
+   public abstract String getClientPort();
 
    public abstract Long getTransactionId(ArtifactToken artifact);
 

@@ -98,7 +98,6 @@ public final class SessionManagerImpl implements ISessionManager {
       try {
          session = sessionCache.get(sessionId);
       } catch (Exception e) {
-         e.printStackTrace();
          session = null;
       }
       return session;

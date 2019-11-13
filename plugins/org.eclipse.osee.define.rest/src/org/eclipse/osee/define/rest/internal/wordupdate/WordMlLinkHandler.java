@@ -112,7 +112,7 @@ public class WordMlLinkHandler {
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(queryFactory, linkType, source, content, matchMap, true, TransactionId.SENTINEL,
-            null, null, null, null);
+            null, null, null);
       }
       return modified;
    }
@@ -123,7 +123,7 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) {
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -141,8 +141,8 @@ public class WordMlLinkHandler {
       OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, sessionId,
-            unknownGuids, presentationType, permanentUrl);
+         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, unknownGuids,
+            presentationType, permanentUrl);
       }
 
       if (linkType != LinkType.OSEE_SERVER_LINK) {
@@ -220,7 +220,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
@@ -271,8 +271,7 @@ public class WordMlLinkHandler {
                if (isUnlinking) {
                   replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
                } else {
-                  replaceWith =
-                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+                  replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
                }
                changeSet.replace(match.start(), match.end(), replaceWith);
             }
@@ -284,8 +283,7 @@ public class WordMlLinkHandler {
                if (isUnlinking) {
                   replaceWith = linkBuilder.getOseeLinkMarker(artifact.getIdString());
                } else {
-                  replaceWith =
-                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
+                  replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
                }
                changeSet.replace(match.start(), match.end(), replaceWith);
             }
