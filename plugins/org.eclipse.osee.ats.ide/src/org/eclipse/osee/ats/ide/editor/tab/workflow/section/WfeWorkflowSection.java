@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XCancelWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -198,7 +199,7 @@ public class WfeWorkflowSection extends SectionPart {
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          boolean useCancelledWidget = true;
          if (statePage.getStateType().isCancelledState()) {
-            XWidgetRendererItem layoutData = statePage.getLayoutData("XCancelWidget");
+            XWidgetRendererItem layoutData = statePage.getLayoutData(XCancelWidget.DISPLAY_LABEL);
             if (layoutData != null) {
                useCancelledWidget = false;
             }

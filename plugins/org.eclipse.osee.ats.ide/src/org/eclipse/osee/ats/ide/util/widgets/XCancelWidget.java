@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Control;
 public class XCancelWidget extends GenericXWidget implements IArtifactWidget {
 
    public static final String WIDGET_ID = XCancelWidget.class.getSimpleName();
+   public static final String DISPLAY_LABEL = "CancelBox";
    private final XComboDam cancelledReason;
    private final XTextDam cancelledDetails;
    private Composite composite;
