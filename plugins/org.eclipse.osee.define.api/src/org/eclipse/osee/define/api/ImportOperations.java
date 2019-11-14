@@ -21,6 +21,8 @@ public interface ImportOperations {
 
    public XResultData importWord(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
 
+   public XResultData verifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
+
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch);
 
 }

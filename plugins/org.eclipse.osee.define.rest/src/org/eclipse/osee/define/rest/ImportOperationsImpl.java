@@ -77,6 +77,19 @@ public class ImportOperationsImpl implements ImportOperations {
    }
 
    @Override
+   public XResultData verifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier) {
+      XResultData results = new XResultData();
+      Conditions.checkNotNull(branch, "branch query param");
+      Conditions.checkNotNull(wordURI, "selected_types query param");
+      Conditions.checkNotNull(parent, "parent Artifact");
+      ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
+      ArtifactValidationCheckOperation validator =
+         new ArtifactValidationCheckOperation(orcsApi, results, parentArtifact, true);
+      results = validator.validate(); // TODO combine results from SourceToRoughArtifactOperation
+      return results;
+   }
+
+   @Override
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
       return null;
    }

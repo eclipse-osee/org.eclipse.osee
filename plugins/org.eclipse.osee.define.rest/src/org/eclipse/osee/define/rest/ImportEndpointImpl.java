@@ -32,6 +32,11 @@ public class ImportEndpointImpl implements ImportEndpoint {
    }
 
    @Override
+   public XResultData verifyWordImport(BranchId branch, String wordURI, ArtifactId parentArtifactId, Integer tier) {
+      return defineApi.getImportOperations().verifyWordImport(branch, wordURI, parentArtifactId, tier);
+   }
+
+   @Override
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
       return defineApi.getImportOperations().importSetup(branch, baseDir, startBranch, handleRelations, singleBranch);
    }
