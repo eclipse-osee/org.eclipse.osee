@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Access
 Bundle-SymbolicName: org.eclipse.osee.framework.access;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -40,7 +41,6 @@ Import-Package: com.google.common.cache,
  org.osgi.framework,
  org.osgi.service.event,
  org.osgi.util.tracker
-Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.access.internal.data

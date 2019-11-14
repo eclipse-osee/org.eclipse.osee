@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS Libraries
-Bundle-SymbolicName: jms.libraries
+Bundle-SymbolicName: jms.libraries;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Eclipse-BuddyPolicy: global
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

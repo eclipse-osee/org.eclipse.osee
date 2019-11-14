@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Client Integration Tests (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.ide.integration.tests;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -154,5 +155,4 @@ Import-Package: com.fasterxml.jackson.core,
  org.osgi.framework,
  org.osgi.service.event
 Service-Component: OSGI-INF/*.xml
-Bundle-ActivationPolicy: lazy
 

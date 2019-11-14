@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Logger (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.logger
+Bundle-SymbolicName: org.eclipse.osee.logger;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Rest Client (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.orcs.rest.client
+Bundle-SymbolicName: org.eclipse.osee.orcs.rest.client;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -20,4 +21,3 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact
 Export-Package: org.eclipse.osee.orcs.rest.client
-Bundle-ActivationPolicy: lazy

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Logging Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.logging;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

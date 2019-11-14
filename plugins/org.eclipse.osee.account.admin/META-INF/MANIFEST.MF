@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Account Admin API (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.account.admin
+Bundle-SymbolicName: org.eclipse.osee.account.admin;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -15,4 +16,3 @@ Import-Package: org.eclipse.osee.account.rest.model,
  org.eclipse.osee.logger
 Export-Package: org.eclipse.osee.account.admin,
  org.eclipse.osee.account.admin.ds
-Bundle-ActivationPolicy: lazy

@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ats IDE Client Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.ide;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.ide.internal.Activator
@@ -19,7 +20,6 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.search,
  org.eclipse.core.jobs,
  org.eclipse.osee.ats.api
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats.ide,
  org.eclipse.osee.ats.ide.access,
  org.eclipse.osee.ats.ide.actions,

@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Database
-Bundle-SymbolicName: org.eclipse.osee.orcs.db
+Bundle-SymbolicName: org.eclipse.osee.orcs.db;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -47,4 +48,3 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.osgi.framework
-Bundle-ActivationPolicy: lazy

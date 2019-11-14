@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Object Revision Control System Core
-Bundle-SymbolicName: org.eclipse.osee.orcs.core
+Bundle-SymbolicName: org.eclipse.osee.orcs.core;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -56,4 +57,3 @@ Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.internal.applicability,
  org.eclipse.osee.orcs.core.internal.tuple,
  org.eclipse.osee.orcs.core.util
-Bundle-ActivationPolicy: lazy

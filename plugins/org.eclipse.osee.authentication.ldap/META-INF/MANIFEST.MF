@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE LDAP Authentication Provider (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.authentication.ldap
+Bundle-SymbolicName: org.eclipse.osee.authentication.ldap;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Server Ide Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.server.ide
-Bundle-Version: 0.26.0.qualifier
+Bundle-SymbolicName: org.eclipse.osee.framework.server.ide;singleton:=true
 Bundle-ActivationPolicy: lazy
+Bundle-Version: 0.26.0.qualifier
 Import-Package: javax.servlet,
  javax.servlet.http,
  javax.ws.rs,

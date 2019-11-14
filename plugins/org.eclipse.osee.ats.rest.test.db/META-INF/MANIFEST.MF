@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ats Rest Test Db (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.ats.rest.test.db
+Bundle-SymbolicName: org.eclipse.osee.ats.rest.test.db;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

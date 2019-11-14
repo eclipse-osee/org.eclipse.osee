@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Lifecycle
 Bundle-SymbolicName: org.eclipse.osee.framework.lifecycle;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -15,6 +16,5 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.lifecycle,
  org.osgi.framework
 Eclipse-ExtensibleAPI: true
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.lifecycle
 Service-Component: OSGI-INF/lifecycle.service.xml

@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Mail Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.mail.test;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.mail
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

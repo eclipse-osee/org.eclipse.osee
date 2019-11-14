@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Core Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.core;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -59,5 +60,4 @@ Export-Package: org.eclipse.osee.framework.core.applicability,
  org.eclipse.osee.framework.core.threading,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result
-Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml

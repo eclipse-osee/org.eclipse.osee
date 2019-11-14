@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JDK Core Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core
+Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.framework.jdk.core.persistence,

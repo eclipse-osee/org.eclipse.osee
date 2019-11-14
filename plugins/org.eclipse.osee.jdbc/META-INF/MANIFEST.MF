@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JDBC - (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.jdbc
+Bundle-SymbolicName: org.eclipse.osee.jdbc;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -29,5 +30,4 @@ Import-Package: org.apache.commons.dbcp,
 Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
 DynamicImport-Package: oracle.*
-Bundle-ActivationPolicy: lazy
 Require-Bundle: org.xerial.sqlite;resolution:=optional

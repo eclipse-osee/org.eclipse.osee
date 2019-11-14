@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Template Engine  (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.template.engine
+Bundle-SymbolicName: org.eclipse.osee.template.engine;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs,
@@ -16,4 +17,3 @@ Import-Package: javax.ws.rs,
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.template.engine
-Bundle-ActivationPolicy: lazy

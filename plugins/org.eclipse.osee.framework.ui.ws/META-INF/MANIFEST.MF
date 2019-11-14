@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Workspace
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.ws;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.ui.ws.internal.Activator
 Require-Bundle: org.eclipse.ui,
@@ -17,7 +18,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.ui.navigator
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.framework.ui.ws
 Bundle-Vendor: Eclipse Open System Engineering Environment

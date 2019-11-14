@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Server Define Rest (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.define.rest
+Bundle-SymbolicName: org.eclipse.osee.define.rest;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
@@ -63,7 +64,6 @@ Import-Package: com.fasterxml.jackson.core,
  org.jsoup.select,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.define.rest.importing.operations,
  org.eclipse.osee.define.rest.importing.parsers,
  org.eclipse.osee.define.rest.importing.resolvers,

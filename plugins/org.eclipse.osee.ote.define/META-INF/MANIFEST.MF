@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.define;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.ote.define.internal.Activator
 Require-Bundle: org.eclipse.ui,
@@ -13,7 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.skynet.core
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.define,
  org.eclipse.osee.ote.define.AUTOGEN,
  org.eclipse.osee.ote.define.artifacts,

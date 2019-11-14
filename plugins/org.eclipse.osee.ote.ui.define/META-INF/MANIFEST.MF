@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE UI Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui.define;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.define.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
@@ -17,7 +18,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.ote.define,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.framework.core.model
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui.define,
  org.eclipse.osee.ote.ui.define.dialogs,
  org.eclipse.osee.ote.ui.define.importer,

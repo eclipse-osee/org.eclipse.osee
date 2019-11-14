@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Client Test Framework (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.client.test.framework
+Bundle-SymbolicName: org.eclipse.osee.client.test.framework;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment

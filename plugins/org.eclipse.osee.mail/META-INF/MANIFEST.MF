@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Mail (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.mail
+Bundle-SymbolicName: org.eclipse.osee.mail;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -17,4 +18,3 @@ Import-Package: javax.activation,
  org.eclipse.osee.mail.api
 Service-Component: OSGI-INF/*.xml 
 Export-Package: org.eclipse.osee.mail
-Bundle-ActivationPolicy: lazy

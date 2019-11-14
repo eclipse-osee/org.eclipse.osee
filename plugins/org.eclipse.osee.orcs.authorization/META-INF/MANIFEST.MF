@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ORCS Authorization (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.orcs.authorization
+Bundle-SymbolicName: org.eclipse.osee.orcs.authorization;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -14,4 +15,3 @@ Import-Package: org.eclipse.osee.authorization.admin,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search
-Bundle-ActivationPolicy: lazy

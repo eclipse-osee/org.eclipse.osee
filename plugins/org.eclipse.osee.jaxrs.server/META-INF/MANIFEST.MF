@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JAX-RS Server (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.jaxrs.server
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.server;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
@@ -78,4 +79,3 @@ Import-Package: com.google.common.cache,
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.jaxrs.server.database,
  org.eclipse.osee.jaxrs.server.security
-Bundle-ActivationPolicy: lazy

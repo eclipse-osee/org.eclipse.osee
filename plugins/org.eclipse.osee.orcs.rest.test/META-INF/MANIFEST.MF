@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Rest Test
-Bundle-SymbolicName: org.eclipse.osee.orcs.rest.test
+Bundle-SymbolicName: org.eclipse.osee.orcs.rest.test;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Fragment-Host: org.eclipse.osee.orcs.rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

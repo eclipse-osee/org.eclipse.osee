@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Account Admin (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.orcs.account.admin
+Bundle-SymbolicName: org.eclipse.osee.orcs.account.admin;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -34,4 +35,3 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility,
  org.osgi.service.event
-Bundle-ActivationPolicy: lazy

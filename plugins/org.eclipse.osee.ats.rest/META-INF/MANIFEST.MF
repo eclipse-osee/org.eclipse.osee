@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Ats Rest (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.ats.rest
+Bundle-SymbolicName: org.eclipse.osee.ats.rest;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -65,4 +66,3 @@ Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.util
-Bundle-ActivationPolicy: lazy

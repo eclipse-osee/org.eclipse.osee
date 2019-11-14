@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Management Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.resource.management
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.management;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
@@ -17,4 +18,3 @@ Export-Package: org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy

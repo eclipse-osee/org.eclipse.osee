@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.define.ide;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.define.ide.internal.Activator
@@ -29,7 +30,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.nebula.widgets.xviewer
-Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.collect,
  javax.ws.rs.core,
  org.apache.commons.lang,

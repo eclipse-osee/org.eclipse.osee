@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Logger Slf4j (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.logger.slf4j
+Bundle-SymbolicName: org.eclipse.osee.logger.slf4j;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
@@ -12,4 +13,3 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-ActivationPolicy: lazy

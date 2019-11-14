@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cache Admin (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.cache.admin
+Bundle-SymbolicName: org.eclipse.osee.cache.admin;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -12,4 +13,3 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.framework.jdk.core.type
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.cache.admin
-Bundle-ActivationPolicy: lazy

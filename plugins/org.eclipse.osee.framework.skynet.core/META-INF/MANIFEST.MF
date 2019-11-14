@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Skynet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.skynet.core.internal.Activator
@@ -90,5 +91,4 @@ Import-Package: com.fasterxml.jackson.core.type,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.osgi.service.event
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml

@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Database Mock
-Bundle-SymbolicName: org.eclipse.osee.orcs.db.mock
+Bundle-SymbolicName: org.eclipse.osee.orcs.db.mock;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -22,4 +23,3 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.osgi.service.cm,
  org.osgi.service.event
 Export-Package: org.eclipse.osee.orcs.db.mock
-Bundle-ActivationPolicy: lazy

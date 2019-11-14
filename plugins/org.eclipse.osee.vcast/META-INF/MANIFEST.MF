@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE VectorCAST (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.vcast
+Bundle-SymbolicName: org.eclipse.osee.vcast;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.core.data,

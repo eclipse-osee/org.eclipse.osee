@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS DSL UI Integration - (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui.integration;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -59,7 +60,6 @@ Import-Package: javax.ws.rs.client,
  org.osgi.framework,
  org.osgi.util.tracker
 Eclipse-ExtensibleAPI: true
-Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,

@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS DSL Integration - (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.oseeDsl,

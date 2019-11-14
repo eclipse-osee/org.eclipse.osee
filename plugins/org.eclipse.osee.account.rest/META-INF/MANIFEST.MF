@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Accounts REST API (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.account.rest
+Bundle-SymbolicName: org.eclipse.osee.account.rest;singleton:=true
+Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -24,4 +25,3 @@ Import-Package: javax.annotation.security,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs.server.security,
  org.eclipse.osee.template.engine
-Bundle-ActivationPolicy: lazy
