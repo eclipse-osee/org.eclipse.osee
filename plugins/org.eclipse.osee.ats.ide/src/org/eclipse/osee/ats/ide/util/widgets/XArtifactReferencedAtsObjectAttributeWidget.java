@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactReferencedAttribute
 public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactReferencedAttributeWidget {
 
    public static final String WIDGET_ID = XArtifactReferencedAtsObjectAttributeWidget.class.getSimpleName();
+   public static final String SENTINEL = "-1";
 
    public XArtifactReferencedAtsObjectAttributeWidget(String displayLabel) {
       super(displayLabel);
@@ -46,6 +47,9 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
          if (getAttributeType().equals(AtsAttributeTypes.WorkflowDefinitionReference) || getAttributeType().equals(
             AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference) || getAttributeType().equals(
                AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference)) {
+            if (value.equals(SENTINEL)) {
+               return "";
+            }
             IAtsWorkDefinition workDef =
                AtsClientService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(value));
             isWorkDef = true;

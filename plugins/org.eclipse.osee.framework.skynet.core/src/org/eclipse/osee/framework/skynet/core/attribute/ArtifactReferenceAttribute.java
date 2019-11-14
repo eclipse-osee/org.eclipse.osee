@@ -11,11 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
+
+   public static final String SENTINEL = "-1";
 
    @Override
    public ArtifactId convertStringToValue(String value) {
@@ -23,7 +26,24 @@ public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
    }
 
    @Override
+   public Id getValue() {
+      return (Id) getAttributeDataProvider().getValue();
+   }
+
+   @Override
+   protected void setToDefaultValue() {
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (defaultValue == null) {
+         defaultValue = SENTINEL;
+      }
+      setFromStringNoDirty(defaultValue);
+   }
+
+   @Override
    public String toString() {
+      if (getValue() == null) {
+         return this.getAttributeType().toString();
+      }
       return getValue().getIdString();
    }
 
