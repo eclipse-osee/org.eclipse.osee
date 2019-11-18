@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.demo;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import static org.eclipse.osee.ats.api.demo.AtsDemoTypeTokenProvider.atsDemo;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
@@ -67,9 +69,53 @@ public interface AtsDemoOseeTypes {
    AttributeTypeString SpEffectivity = atsDemo.createStringNoTag(1152921504606847279L, "demo.code.SP Effectivity", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WpEffectivity = atsDemo.createStringNoTag(1152921504606847280L, "demo.code.WP Effectivity", MediaType.TEXT_PLAIN, "");
 
-   public static final ArtifactTypeToken DemoCodeTeamWorkflow = ArtifactTypeToken.valueOf(79, "Demo Code Team Workflow");
-   public static final ArtifactTypeToken DemoReqTeamWorkflow = ArtifactTypeToken.valueOf(80, "Demo Req Team Workflow");
-   public static final ArtifactTypeToken DemoTestTeamWorkflow = ArtifactTypeToken.valueOf(81, "Demo Test Team Workflow");
+   ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow)
+      .zeroOrOne(ChangeType, "")
+      .zeroOrOne(Action, "")
+      .zeroOrOne(Category, "", 3458764513820541328L)
+      .zeroOrOne(CloseDetection, "")
+      .zeroOrOne(CodeChangeReq, "")
+      .zeroOrOne(CSCI, "")
+      .zeroOrOne(DefectCode, "", 3458764513820541329L)
+      .zeroOrOne(Detection, "", 3458764513820541330L)
+      .zeroOrOne(IncludeBuild, "")
+      .zeroOrOne(LocAffected, "")
+      .zeroOrOne(OriginatingBuild, "")
+      .zeroOrOne(ReqDoc, "", 3458764513820541331L)
+      .zeroOrOne(Subsystem, "")
+      .zeroOrOne(TestBuild, "")
+      .zeroOrOne(TestMode, "")
+      .zeroOrOne(TestNotes, "")
+      .zeroOrOne(TestScript, "")
+      .zeroOrOne(Volume, "")
+      .zeroOrOne(VerifyDate, "")
+      .zeroOrOne(Verifyer, "")
+      .zeroOrOne(VerifyNote, "")
+      .zeroOrOne(VerifyDetection, "")
+      .zeroOrOne(HoldStart, "")
+      .zeroOrOne(HoldEnd, "")
+      .zeroOrOne(VerifyMode, "")
+      .zeroOrOne(VerifiedBuild, "")
+      .zeroOrOne(PeerReviewReqd, "")
+      .zeroOrOne(PeerReviewId, "")
+      .zeroOrOne(RefPcr, "")
+      .zeroOrOne(References, "")
+      .zeroOrOne(RequirementId, "")
+      .zeroOrOne(DupCpcrNo, "")
+      .zeroOrOne(DupCsci, "")
+      .zeroOrOne(DupCpcrType, "")
+      .zeroOrOne(DupOfCpcrNoSeq, "")
+      .zeroOrOne(Librarian, "")
+      .zeroOrOne(PromoteDate, "")
+      .zeroOrOne(AuthorizationNotes, "")
+      .zeroOrOne(ReworkLetter, "")
+      .zeroOrOne(ProblemNo, "")
+      .zeroOrOne(DpEffectivity, "")
+      .zeroOrOne(SpEffectivity, "")
+      .zeroOrOne(WpEffectivity, "")
+      .atLeastOne(Partition, " ", 3458764513820541309L));
+   ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
+   ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
    // @formatter:on
 
 }

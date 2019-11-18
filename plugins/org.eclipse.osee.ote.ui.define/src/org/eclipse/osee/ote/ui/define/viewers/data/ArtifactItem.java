@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
@@ -126,7 +126,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   if (name != "") {
                      try {
                         Artifact dispoArtifact = ArtifactQuery.getArtifactFromTypeAndName(
-                           CoreArtifactTypes.TestRunDisposition, name, artifact.getBranch());
+                           OteArtifactTypes.TestRunDisposition, name, artifact.getBranch());
                         if (dispoArtifact != null) {
                            return dispoArtifact.getSoleAttributeValueAsString(OteAttributeTypes.TestDisposition, "");
                         }

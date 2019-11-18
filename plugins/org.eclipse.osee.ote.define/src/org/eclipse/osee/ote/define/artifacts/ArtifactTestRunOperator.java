@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 
 /**
@@ -34,7 +35,7 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
  */
 public class ArtifactTestRunOperator implements TestRunOperator {
    private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER =
-      new OteArtifactFetcher<>(CoreArtifactTypes.TestRun);
+      new OteArtifactFetcher<>(OteArtifactTypes.TestRun);
 
    private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
       new OteArtifactFetcher<>(CoreArtifactTypes.TestCase);
@@ -54,9 +55,9 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    private void checkForType(Artifact artifact) {
-      if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
+      if (!artifact.isOfType(OteArtifactTypes.TestRun)) {
          throw new OseeArgumentException("Unable to operate on type [%s]. Only [%s] allowed.",
-            artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun);
+            artifact.getArtifactTypeName(), OteArtifactTypes.TestRun);
       }
    }
 

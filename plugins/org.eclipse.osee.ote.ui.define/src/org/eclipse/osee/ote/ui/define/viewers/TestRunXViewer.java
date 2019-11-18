@@ -26,7 +26,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.internal.Activator;
@@ -257,16 +257,16 @@ public class TestRunXViewer extends XViewer {
       boolean returnValue = false;
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<>();
       for (Artifact artifact : selectedArtifacts) {
-         if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
+         if (artifact.isOfType(OteArtifactTypes.TestRun)) {
             String name = artifact.getName();
             if (!name.equals(Artifact.UNNAMED)) {
                Artifact dispoArtifact = null;
                try {
-                  dispoArtifact = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
+                  dispoArtifact = ArtifactQuery.getArtifactFromTypeAndName(OteArtifactTypes.TestRunDisposition, name,
                      artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
                   dispoArtifact =
-                     ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestRunDisposition, artifact.getBranch());
+                     ArtifactTypeManager.addArtifact(OteArtifactTypes.TestRunDisposition, artifact.getBranch());
                   dispoArtifact.setName(name);
                }
                if (dispoArtifact != null) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ImageContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypeTokenProvider.oauth;
 import javax.ws.rs.core.MediaType;
@@ -24,10 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  * @author Roberto E. Escobar
  */
 public interface OAuthOseeTypes {
-
    // @formatter:off
-   public static final ArtifactTypeToken OAuthClient = ArtifactTypeToken.valueOf(756912961500447526L, "OAuth Client");
-
    AttributeTypeString OAuthClientAuthorizedAudience = oauth.createString(7160371155049131554L, "oauth.client.Authorized Audience", MediaType.TEXT_PLAIN, "");
    AttributeTypeEnum OAuthClientAuthorizedGrantType = oauth.createEnum(1935002343589638144L, "oauth.client.Authorized Grant Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OAuthClientAuthorizedRedirectUri = oauth.createString(5424134645937614632L, "oauth.client.Authorized Redirect URI", MediaType.TEXT_PLAIN, "");
@@ -37,7 +36,17 @@ public interface OAuthOseeTypes {
    AttributeTypeString OAuthClientProperties = oauth.createString(5633616462036881674L, "oauth.client.Properties", MediaType.APPLICATION_JSON, "");
    AttributeTypeString OAuthClientWebsiteUri = oauth.createString(7824657901879283800L, "oauth.client.Website URI", MediaType.TEXT_PLAIN, "");
 
-   public static final ArtifactToken OAUTH_TYPES = ArtifactToken.valueOf(7067755, "OAuthTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
+   ArtifactTypeToken OAuthClient = oauth.add(oauth.artifactType(756912961500447526L, "OAuth Client", false, Artifact)
+      .any(ImageContent, "")
+      .any(OAuthClientAuthorizedAudience, "")
+      .any(OAuthClientAuthorizedGrantType, "", 1473232209255605777L)
+      .any(OAuthClientAuthorizedRedirectUri, "")
+      .any(OAuthClientAuthorizedScope, "")
+      .exactlyOne(OAuthClientIsConfidential, "true")
+      .zeroOrOne(OAuthClientLogoUri, "")
+      .zeroOrOne(OAuthClientProperties, "")
+      .zeroOrOne(OAuthClientWebsiteUri, ""));
+   ArtifactToken OAUTH_TYPES = ArtifactToken.valueOf(7067755, "OAuthTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
    // @formatter:on
 
 }

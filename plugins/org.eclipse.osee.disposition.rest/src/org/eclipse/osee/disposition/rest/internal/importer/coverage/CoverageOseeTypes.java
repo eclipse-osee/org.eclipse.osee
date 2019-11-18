@@ -11,6 +11,8 @@
 package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 
 import static org.eclipse.osee.disposition.rest.DispoTypeTokenProvider.dispo;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
@@ -21,11 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 public interface CoverageOseeTypes {
 
    // @formatter:off
-   public static final ArtifactTypeToken CoveragePackage = ArtifactTypeToken.valueOf(75L, "Coverage Package");
-   public static final ArtifactTypeToken CoverageUnit = ArtifactTypeToken.valueOf(78L, "Coverage Unit");
-   public static final ArtifactTypeToken CoverageFolder = ArtifactTypeToken.valueOf(77L, "Coverage Folder");
-
-   // Attributes
+   // Attribute Types
    AttributeTypeString Assignees = dispo.createString(1152921504606847233L, "coverage.Assignees", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CoverageItem = dispo.createString(1152921504606847236L, "coverage.Coverage Item", MediaType.TEXT_XML, "");
    AttributeTypeString CoverageOptions = dispo.createString(1152921504606847229L, "coverage.Coverage Options", MediaType.TEXT_PLAIN, "");
@@ -37,6 +35,24 @@ public interface CoverageOseeTypes {
    AttributeTypeString UnitTestTable = dispo.createString(1152921504606847867L, "coverage.UnitTestTable", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkProductPcrGuid = dispo.createString(1152921504606847232L, "coverage.WorkProductPcrGuid", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkProductTaskGuid = dispo.createString(1152921504606847231L, "coverage.WorkProductTaskGuid", MediaType.TEXT_PLAIN, "");
+
+   //Artifact Types
+   ArtifactTypeToken AbstractCoverageUnit = dispo.add(dispo.artifactType(76L, "Abstract Coverage Unit", true, GeneralData)
+      .zeroOrOne(Assignees, "")
+      .any(CoverageItem, "")
+      .zeroOrOne(FileContents, "")
+      .zeroOrOne(Location, "")
+      .zeroOrOne(Namespace, "")
+      .zeroOrOne(Notes, "")
+      .zeroOrOne(Order, ""));
+   ArtifactTypeToken CoverageFolder = dispo.add(dispo.artifactType(77L, "Coverage Folder", false, AbstractCoverageUnit));
+   ArtifactTypeToken CoveragePackage = dispo.add(dispo.artifactType(75L, "Coverage Package", false, GeneralData)
+      .exactlyOne(Active, "true")
+      .zeroOrOne(CoverageOptions, "")
+      .zeroOrOne(UnitTestTable, "")
+      .any(WorkProductPcrGuid, ""));
+   ArtifactTypeToken CoverageUnit = dispo.add(dispo.artifactType(78L, "Coverage Unit", false, AbstractCoverageUnit)
+      .zeroOrOne(WorkProductTaskGuid, ""));
    //@formatter:on
 
 }

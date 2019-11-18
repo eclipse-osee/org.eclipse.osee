@@ -11,6 +11,8 @@
 package org.eclipse.osee.disposition.rest;
 
 import static org.eclipse.osee.disposition.rest.DispoTypeTokenProvider.dispo;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -28,9 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public interface DispoOseeTypes {
 
    // @formatter:off
-   public static final ArtifactTypeToken DispositionSet = ArtifactTypeToken.valueOf(807, "Disposition Set");
-   public static final ArtifactTypeToken DispositionableItem = ArtifactTypeToken.valueOf(808, "Dispositionable Item");
-
    AttributeTypeString DispoAnnotationsJson = dispo.createString(1152921504606847878L, "dispo.Annotations JSON", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoCiSet = dispo.createString(5225296359986133054L, "dispo.CI Set", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoConfig = dispo.createString(1152921504606847893L, "dispo.Config", MediaType.TEXT_PLAIN, "");
@@ -61,6 +60,43 @@ public interface DispoOseeTypes {
    AttributeTypeString DispoRerunList = dispo.createString(3587660131087940587L, "dispo.Rerun List", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoSummaryCount = dispo.createString(1152921504606847491L, "dispo.Summary Count", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate DispoTime = dispo.createDate(7240092025387115138L, "dispo.Time", AttributeTypeToken.TEXT_CALENDAR, "");
+
+   ArtifactTypeToken DispositionableItem = dispo.add(dispo.artifactType(808L, "dispo.Dispositionable Item", false, Artifact)
+      .exactlyOne(Active, "true")
+      .exactlyOne(DispoAnnotationsJson, "{}")
+      .zeroOrOne(DispoDateCreated, "")
+      .zeroOrOne(DispoDiscrepanciesJson, "[]")
+      .exactlyOne(DispoItemAborted, "false")
+      .zeroOrOne(DispoItemAssignee, "UnAssinged")
+      .zeroOrOne(DispoItemCategory, "")
+      .zeroOrOne(DispoItemElapsedTime, "0.0")
+      .zeroOrOne(DispoItemFileNumber, "0")
+      .zeroOrOne(DispoItemLastUpdated, "")
+      .zeroOrOne(DispoItemMachine, "n/a")
+      .zeroOrOne(DispoItemMethodNumber, "0")
+      .exactlyOne(DispoItemNeedsRerun, "false")
+      .exactlyOne(DispoItemNeedsReview, "false")
+      .zeroOrOne(DispoItemNotes, "")
+      .zeroOrOne(DispoItemPercentComplete, "0%")
+      .zeroOrOne(DispoItemStatus, "Unspecified", 3458764513820541337L)
+      .zeroOrOne(DispoItemTotalPoints, "0.0")
+      .zeroOrOne(DispoItemVersion, "0.0")
+      .exactlyOne(DispoItemTeam, "Unassigned"));
+   ArtifactTypeToken DispositionSet = dispo.add(dispo.artifactType(807L, "Disposition Set", false, Artifact)
+      .exactlyOne(Active, "true")
+      .zeroOrOne(DispoCiSet, "")
+      .zeroOrOne(DispoConfig, "")
+      .zeroOrOne(DispoDateCreated, "")
+      .zeroOrOne(DispoImportPath, "")
+      .zeroOrOne(DispoImportState, "No Import", 3458764513820541335L)
+      .zeroOrOne(DispoIsMultiEnv, "")
+      .zeroOrOne(DispoMultiEnvSettings, "")
+      .zeroOrOne(DispoNotesJson, "[]")
+      .zeroOrOne(DispoOperationSummary, "")
+      .zeroOrOne(DispoRerunList, "")
+      .zeroOrOne(DispoSummaryCount, "0/0")
+      .zeroOrOne(DispoTime, ""));
+
 
    ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
 

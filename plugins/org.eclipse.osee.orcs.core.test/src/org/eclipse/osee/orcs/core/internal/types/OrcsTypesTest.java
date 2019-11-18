@@ -88,13 +88,18 @@ public final class OrcsTypesTest {
    private static final AttributeTypeEnum Field1 = test.createEnumNoTag(1152921504606957093L, "Field 1", MediaType.TEXT_PLAIN, "");
    private static final AttributeTypeDate Field2 = test.createDate(1152921504606957094L, "Field 2", MediaType.TEXT_PLAIN, "");
 
-   private static final ArtifactTypeToken Artifact = ArtifactTypeToken.valueOf(1152921504606957083L, "Artifact");
-   private static final ArtifactTypeToken Requirement = ArtifactTypeToken.valueOf(1152921504606957084L, "Requirement");
-   private static final ArtifactTypeToken SoftwareRequirement = ArtifactTypeToken.valueOf(1152921504606957085L, "Software Requirement");
-   private static final ArtifactTypeToken SystemRequirement = ArtifactTypeToken.valueOf(1152921504606957086L, "System Requirement");
-   private static final ArtifactTypeToken SubsystemRequirement = ArtifactTypeToken.valueOf(1152921504606957087L, "SubSystem Requirement");
-   private static final ArtifactTypeToken OtherArtifact = ArtifactTypeToken.valueOf(1152921504606957088L, "Other Artifact");
-   private static final ArtifactTypeToken LastArtifact = ArtifactTypeToken.valueOf(1152921504606957089L, "Last Artifact");
+   public static final ArtifactTypeToken Artifact = test.add(test.artifactType(1152921504606957083L, "Artifact", false)
+      .atLeastOne(Name, "unnamed")
+      .any(Annotation, ""));
+   public static final ArtifactTypeToken OtherArtifact = test.add(test.artifactType(1152921504606957088L, "Other Artifact", false, Artifact));
+   public static final ArtifactTypeToken Requirement = test.add(test.artifactType(1152921504606957084L, "Requirement", false, Artifact)
+      .zeroOrOne(Annotation, "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"));
+   public static final ArtifactTypeToken SoftwareRequirement = test.add(test.artifactType(1152921504606957085L, "Software Requirement", false, Requirement));
+   public static final ArtifactTypeToken SystemRequirement = test.add(test.artifactType(1152921504606957086L, "System Requirement", false, Requirement));
+   public static final ArtifactTypeToken SubsystemRequirement = test.add(test.artifactType(1152921504606957087L, "SubSystem Requirement", false, Requirement, OtherArtifact)
+      .any(Field1, "this is a field", 3458764513820541304L));
+   public static final ArtifactTypeToken LastArtifact = test.add(test.artifactType(1152921504606957089L, "Last Artifact", false, SubsystemRequirement)
+      .exactlyOne(Field2, "field2"));
 
    private static final IRelationType RequirementRelation = RelationTypeToken.create(2305843009213695295L, "Requirement Relation");
    private static final IRelationType AnotherRelation = RelationTypeToken.create(2305843009213695296L, "Another Relation");

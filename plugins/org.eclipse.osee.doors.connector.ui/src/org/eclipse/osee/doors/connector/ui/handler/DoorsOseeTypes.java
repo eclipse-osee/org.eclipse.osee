@@ -6,6 +6,7 @@
 package org.eclipse.osee.doors.connector.ui.handler;
 
 import static org.eclipse.osee.doors.connector.ui.handler.DoorsTypeTokenProvider.doors;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
@@ -28,7 +29,15 @@ public interface DoorsOseeTypes {
    AttributeTypeString DoorReqName = doors.createString(5764607523034243075L, "Door Req Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DoorReqUrl = doors.createString(8198L, "Door Req URL", MediaType.TEXT_PLAIN, "");
 
-   public static final ArtifactTypeToken DoorsRequirement = ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
+
+
+   ArtifactTypeToken DoorsRequirement = doors.add(doors.artifactType(5764607523034243073L, "Doors Requirement", false, Requirement)
+      .zeroOrOne(DoorReqDatabaseName, "")
+      .zeroOrOne(DoorReqId, "")
+      .zeroOrOne(DoorReqModuleName, "")
+      .zeroOrOne(DoorReqName, "")
+      .zeroOrOne(DoorReqUrl, ""));
+
    // @formatter:on
 
 }

@@ -70,4 +70,5 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);
    }
+
 }

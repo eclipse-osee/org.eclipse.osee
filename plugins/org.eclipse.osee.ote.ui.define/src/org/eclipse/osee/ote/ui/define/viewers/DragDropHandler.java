@@ -28,12 +28,12 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
 import org.eclipse.osee.ote.ui.define.dialogs.BranchComboDialog;
@@ -173,7 +173,7 @@ public class DragDropHandler {
       Artifact[] artifactsDropped = artifactData.getArtifacts();
       Set<Artifact> artifactsToAdd = new HashSet<>();
       for (Artifact artifact : artifactsDropped) {
-         if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
+         if (artifact.isOfType(OteArtifactTypes.TestRun)) {
             artifactsToAdd.add(artifact);
          }
       }

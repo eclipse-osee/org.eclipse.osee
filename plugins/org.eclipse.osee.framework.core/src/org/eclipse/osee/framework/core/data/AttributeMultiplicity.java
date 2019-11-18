@@ -29,13 +29,18 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return this;
    }
 
+   public AttributeMultiplicity any(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ANY, defaultValue, enumTypeId));
+      return this;
+   }
+
    public AttributeMultiplicity exactlyOne(AttributeTypeGeneric<?> attributeType, String defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.EXACTLY_ONE, defaultValue));
       return this;
    }
 
    public AttributeMultiplicity exactlyOne(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ANY, defaultValue, enumTypeId));
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.EXACTLY_ONE, defaultValue, enumTypeId));
       return this;
    }
 

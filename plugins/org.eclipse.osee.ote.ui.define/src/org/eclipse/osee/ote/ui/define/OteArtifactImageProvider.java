@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.define;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +23,7 @@ public class OteArtifactImageProvider extends ArtifactImageProvider {
    @Override
    public void init() {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestProcedure, OteDefineImage.TEST_PROCEDURE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestRun, OteDefineImage.TEST_RUN, this);
+      ArtifactImageManager.registerBaseImage(OteArtifactTypes.TestRun, OteDefineImage.TEST_RUN, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestCase, OteDefineImage.TEST_CASE, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestSupport, OteDefineImage.TEST_SUPPORT, this);
    }
