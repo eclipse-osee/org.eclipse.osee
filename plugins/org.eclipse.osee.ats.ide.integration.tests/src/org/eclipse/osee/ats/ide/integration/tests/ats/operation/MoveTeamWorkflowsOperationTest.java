@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.operation;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.core.access.AtsArtifactChecks;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsOperation;
-import org.eclipse.osee.ats.ide.workflow.AtsArtifactChecks;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;

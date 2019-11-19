@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
@@ -32,6 +33,7 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.internal.access.AccessControlServiceImpl;
 import org.eclipse.osee.orcs.core.internal.access.UserGroupService;
 import org.eclipse.osee.orcs.core.internal.applicability.OrcsApplicabilityOps;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
@@ -92,6 +94,7 @@ public class OrcsApiImpl implements OrcsApi {
    private ScriptEngineManager manager;
    private OrcsApplicabilityOps applicability;
    private UserGroupService userGroupService;
+   private IAccessControlService accessControlService;
 
    ExternalArtifactManager proxyManager;
 
@@ -214,6 +217,7 @@ public class OrcsApiImpl implements OrcsApi {
       manager = ScriptEngines.newScriptEngineManager(compiler);
 
       applicability = new OrcsApplicabilityOps(this);
+      accessControlService = new AccessControlServiceImpl();
    }
 
    public void stop() {
@@ -320,6 +324,11 @@ public class OrcsApiImpl implements OrcsApi {
          userGroupService = new UserGroupService();
       }
       return userGroupService;
+   }
+
+   @Override
+   public IAccessControlService getAccessControlService() {
+      return accessControlService;
    }
 
 }

@@ -18,12 +18,14 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,10 +40,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  */
 public class AccessPolicyImpl implements AccessPolicy {
 
-   public IAccessControlService service;
+   public IAccessControlService accessControlService;
 
    public void setAccessControlService(IAccessControlService service) {
-      this.service = service;
+      this.accessControlService = service;
    }
 
    private User getCurrentUser() {
@@ -49,7 +51,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    private IAccessControlService getAccessService() {
-      return service;
+      return accessControlService;
    }
 
    private boolean printErrorMessage(User user, Collection<?> objects, PermissionStatus permissionStatus, Level level) {
@@ -230,5 +232,20 @@ public class AccessPolicyImpl implements AccessPolicy {
       }
 
       return permissionStatus;
+   }
+
+   @Override
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return accessControlService.isDeleteable(artifacts, results);
+   }
+
+   @Override
+   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return accessControlService.isRenamable(artifacts, results);
+   }
+
+   @Override
+   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+      return accessControlService.isDeleteableRelation(artifact, relationType, results);
    }
 }

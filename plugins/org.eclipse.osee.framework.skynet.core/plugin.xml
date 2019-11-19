@@ -245,12 +245,6 @@
            classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate">
      </ArtifactExtractorDelegate>
   </extension>
-  <extension
-        point="org.eclipse.osee.framework.skynet.core.ArtifactCheck">
-     <ArtifactCheck
-           classname="org.eclipse.osee.framework.skynet.core.artifact.checks.AssociatedArtifactCheck">
-     </ArtifactCheck>
-  </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.CommitActions">
       <commitActions

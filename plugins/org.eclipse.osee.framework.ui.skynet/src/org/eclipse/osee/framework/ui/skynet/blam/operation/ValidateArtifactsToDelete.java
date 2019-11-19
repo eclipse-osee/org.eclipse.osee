@@ -14,16 +14,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
-import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -55,17 +54,8 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       rd.log("Validation Artifacts: " + Collections.toString("; ", artifacts));
       // Confirm artifacts are fit to delete
       try {
-         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            try {
-               IStatus result = check.isDeleteable(artifacts);
-               if (!result.isOK()) {
-                  rd.error(result.getMessage());
-               }
-            } catch (Exception ex) {
-               log(ex);
-               rd.log("Exception occurred...see error log" + ex.getLocalizedMessage());
-            }
-         }
+         AccessPolicy policy = ServiceUtil.getAccessPolicy();
+         policy.isDeleteable(Collections.castAll(artifacts), rd);
          rd.log("\n");
          rd.log("Validation Complete - Any errors will be displayed.");
          XResultDataUI.report(rd, "Validate Artifacts to Delete");

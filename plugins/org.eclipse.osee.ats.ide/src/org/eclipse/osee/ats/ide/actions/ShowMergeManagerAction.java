@@ -29,7 +29,7 @@ public class ShowMergeManagerAction extends Action {
 
    private final TeamWorkFlowArtifact teamArt;
 
-   // Since this service is only going to be added for the Implement state, Location.AllState will
+   // Since this accessControlService is only going to be added for the Implement state, Location.AllState will
    // work
    public ShowMergeManagerAction(TeamWorkFlowArtifact teamArt) {
       super();

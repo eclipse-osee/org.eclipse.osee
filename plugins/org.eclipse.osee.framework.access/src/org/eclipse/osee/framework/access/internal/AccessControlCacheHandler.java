@@ -21,21 +21,21 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public class AccessControlCacheHandler {
 
-   public void updateAccessListForBranchObject(AccessControlService service, BranchId branch) {
+   public void updateAccessListForBranchObject(AccessControlServiceImpl service, BranchId branch) {
       BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
       if (branchAccessObject != null) {
          updateAccessList(service, branchAccessObject);
       }
    }
 
-   public void updateAccessList(AccessControlService service, AccessObject accessObject) {
+   public void updateAccessList(AccessControlServiceImpl service, AccessObject accessObject) {
       List<AccessControlData> acl = service.generateAccessControlList(accessObject);
       for (AccessControlData accessControlData : acl) {
          service.removeAccessControlDataIf(false, accessControlData);
       }
    }
 
-   public void reloadCache(AccessControlService service) {
+   public void reloadCache(AccessControlServiceImpl service) {
       service.reloadCache();
    }
 }

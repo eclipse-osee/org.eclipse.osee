@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.config.copy.AtsTest_Demo_Copy_Suite;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -34,5 +36,9 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 public class AtsTest_Config_Suite {
-   // do nothing
+
+   @BeforeClass
+   public static void setup() {
+      AtsUtil.setIsInText(true);
+   }
 }

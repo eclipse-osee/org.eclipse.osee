@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -41,7 +40,6 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
    // Team Workflow hosting this button (not necessarily one holding branch/commit
    private TeamWorkFlowArtifact hostTeamWf;
    private final AtsTaskDefToken taskDefToken;
-   private final XResultData rd;
 
    public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken taskDefToken) {
       super(name);
@@ -50,7 +48,6 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
       setImage(ImageManager.getImage(AtsImage.PLAY_GREEN));
       setToolTip(String.format("Click to Create/Update Change Report Tasks from [%s]", taskDefToken.getName()));
       addXModifiedListener(listener);
-      rd = new XResultData();
    }
 
    private final XModifiedListener listener = new XModifiedListener() {

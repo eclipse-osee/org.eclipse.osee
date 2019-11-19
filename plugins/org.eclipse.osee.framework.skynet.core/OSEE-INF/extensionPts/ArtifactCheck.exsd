@@ -50,7 +50,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.core.access.IArtifactCheck"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Roberto E. Escobar
  */
-public interface AccessPolicy {
+public interface AccessPolicy extends IArtifactCheck {
 
    boolean isReadOnly(Artifact artifact);
 

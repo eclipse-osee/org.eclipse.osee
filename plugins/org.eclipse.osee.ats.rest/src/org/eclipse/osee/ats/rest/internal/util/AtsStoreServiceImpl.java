@@ -284,4 +284,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean isIdeClient() {
       return false;
    }
+
+   @Override
+   public Collection<ArtifactToken> getDescendants(ArtifactToken art) {
+      throw new UnsupportedOperationException("unsupported on server");
+   }
 }

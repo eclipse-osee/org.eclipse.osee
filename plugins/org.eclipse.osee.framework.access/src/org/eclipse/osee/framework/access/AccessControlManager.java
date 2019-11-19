@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.access;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
-import org.eclipse.osee.framework.access.internal.AccessControlService;
+import org.eclipse.osee.framework.access.internal.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -37,8 +37,8 @@ public final class AccessControlManager {
    }
 
    @SuppressWarnings("deprecation")
-   public static AccessControlService getService() {
-      AccessControlService accessService = null;
+   public static AccessControlServiceImpl getService() {
+      AccessControlServiceImpl accessService = null;
       try {
          accessService = AccessControlHelper.getAccessControlService();
       } catch (OseeCoreException ex) {

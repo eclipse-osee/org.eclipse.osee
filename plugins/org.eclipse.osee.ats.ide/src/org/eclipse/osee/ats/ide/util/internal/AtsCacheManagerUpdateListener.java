@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
- * Updates ATS Cache based on Artifact Events. Registers for service via ats.cache.update.listener osgi registration.
+ * Updates ATS Cache based on Artifact Events. Registers for accessControlService via ats.cache.update.listener osgi registration.
  *
  * @author Donald G. Dunne
  */

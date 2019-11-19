@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -32,6 +33,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -253,5 +256,30 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).includeDeletedArtifacts(
             deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+      throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> attributeValues, BranchId branch) {
+      throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
+      throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
+      throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
+   @Override
+   public Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
+      throw new UnsupportedOperationException("Unsupported on the server");
    }
 }

@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.framework.skynet.core.AccessPolicy"/>
    </service>
-   <reference bind="setAccessControlService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IAccessControlService" name="IAccessControlService" policy="static"/>
+   <reference bind="setAccessControlService" cardinality="1..1" interface="org.eclipse.osee.framework.core.model.access.IAccessControlService" name="IAccessControlService" policy="static"/>
 </scr:component>

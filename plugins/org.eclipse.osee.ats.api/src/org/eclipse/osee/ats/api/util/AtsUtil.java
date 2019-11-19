@@ -32,6 +32,10 @@ public class AtsUtil {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
+   public static void setIsInText(boolean isInText) {
+      System.setProperty("osee.isInTest", String.valueOf(isInText));
+   }
+
    public static String doubleToI18nString(double d) {
       return doubleToI18nString(d, false);
    }

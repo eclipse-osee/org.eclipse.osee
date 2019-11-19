@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -391,6 +394,36 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsClient);
       query.isOfType(artifactType);
       return query;
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+      return Collections.castAll(
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch));
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> ids, BranchId branch) {
+      return Collections.castAll(
+         ArtifactQuery.getArtifactListFromAttributeValues(attributeType, Collections.castAll(ids), branch));
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeValues(attributeType, attributeValues,
+         branch, artifactCountEstimate));
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, attributeType,
+         Collections.castAll(ids), branch));
+   }
+
+   @Override
+   public Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromAttributeKeywords(branch, userId, isMatchWordOrder,
+         deletionFlag, caseSensitive, attrType));
    }
 
 }

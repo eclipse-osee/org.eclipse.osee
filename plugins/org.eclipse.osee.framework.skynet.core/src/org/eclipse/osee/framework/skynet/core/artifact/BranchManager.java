@@ -25,10 +25,10 @@ import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -267,9 +268,9 @@ public final class BranchManager {
       loadBranchToCache(branch);
    }
 
-   public static IStatus isDeleteable(Collection<Artifact> artifacts) {
+   public static XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
       List<ArtifactId> artIdsToCheck = new LinkedList<>();
-      for (Artifact art : artifacts) {
+      for (ArtifactToken art : artifacts) {
          if (art.isOnBranch(CoreBranches.COMMON)) {
             artIdsToCheck.add(art);
          }
@@ -279,14 +280,13 @@ public final class BranchManager {
          for (IOseeBranch branch : getCache().getAll()) {
             ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
             if (getState(branch) != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
-               return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                  String.format("Cannot delete artId [%s] because it is the associated artifact of branch [%s]",
-                     associatedArtifactId, branch.getName()));
+               results.errorf("Cannot delete artId [%s] because it is the associated artifact of branch [%s]",
+                  associatedArtifactId, branch.getName());
             }
          }
       }
 
-      return ArtifactCheck.OK_STATUS;
+      return results;
    }
 
    /**

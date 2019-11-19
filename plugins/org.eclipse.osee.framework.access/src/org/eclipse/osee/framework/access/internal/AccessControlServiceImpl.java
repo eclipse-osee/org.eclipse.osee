@@ -35,10 +35,12 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
+import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -46,13 +48,14 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -92,7 +95,7 @@ import org.osgi.framework.ServiceReference;
 /**
  * @author Jeff C. Phillips
  */
-public class AccessControlService implements IAccessControlService {
+public class AccessControlServiceImpl implements IAccessControlService {
    private static final String ACCESS_POINT_ID = "osee.access.point";
 
    private final String INSERT_INTO_ARTIFACT_ACL =
@@ -133,8 +136,17 @@ public class AccessControlService implements IAccessControlService {
    private IArtifactEventListener listener2;
 
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
+   private final static Collection<IArtifactCheck> artifactChecks = new LinkedList<IArtifactCheck>();
 
-   public AccessControlService(JdbcClient jdbcClient, IOseeCachingService cachingService, OseeEventService eventService) {
+   public void addArtifactCheck(IArtifactCheck artifactCheck) {
+      artifactChecks.add(artifactCheck);
+   }
+
+   public AccessControlServiceImpl() {
+      this(null, null, null);
+   }
+
+   public AccessControlServiceImpl(JdbcClient jdbcClient, IOseeCachingService cachingService, OseeEventService eventService) {
 
       super();
       this.jdbcClient = jdbcClient;
@@ -802,6 +814,30 @@ public class AccessControlService implements IAccessControlService {
             OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
          }
       }
+   }
+
+   @Override
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      for (IArtifactCheck check : artifactChecks) {
+         check.isDeleteable(artifacts, results);
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+      for (IArtifactCheck check : artifactChecks) {
+         check.isRenamable(artifacts, results);
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+      for (IArtifactCheck check : artifactChecks) {
+         check.isDeleteableRelation(artifact, relationType, results);
+      }
+      return results;
    }
 
 }

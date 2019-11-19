@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.checks;
 
 import java.util.Collection;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
+import org.eclipse.osee.framework.core.access.ArtifactCheck;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class AssociatedArtifactCheck extends ArtifactCheck {
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts) {
-      return BranchManager.isDeleteable(artifacts);
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return BranchManager.isDeleteable(artifacts, results);
    }
 }

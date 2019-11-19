@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 
 /**
  * @author Donald G. Dunne

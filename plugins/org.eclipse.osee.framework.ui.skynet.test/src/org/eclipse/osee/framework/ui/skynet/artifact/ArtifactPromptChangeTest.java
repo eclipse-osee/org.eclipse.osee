@@ -21,9 +21,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
@@ -88,6 +90,21 @@ public class ArtifactPromptChangeTest {
       @Override
       public void removePermissions(BranchId branch) {
          //
+      }
+
+      @Override
+      public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+         return new XResultData();
+      }
+
+      @Override
+      public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+         return new XResultData();
+      }
+
+      @Override
+      public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+         return new XResultData();
       }
 
    }

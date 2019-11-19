@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
- * Non-artifact base user service
+ * Non-artifact base user accessControlService
  *
  * @author Donald G Dunne
  */

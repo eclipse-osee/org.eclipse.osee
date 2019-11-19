@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.core.access;
 
 import java.util.Collection;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * User artifacts should not be deleted. User Purge User Blam instead.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UserArtifactCheck extends ArtifactCheck {
@@ -29,16 +29,15 @@ public class UserArtifactCheck extends ArtifactCheck {
    }
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts) {
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
       if (enabled) {
-         for (Artifact art : artifacts) {
-            if (art.isOfType(CoreArtifactTypes.User)) {
-               return new Status(IStatus.ERROR, org.eclipse.osee.framework.skynet.core.internal.Activator.PLUGIN_ID,
-                  "Deletion of User artifact is prohibited.  Use Purge User Blam instead.");
+         for (ArtifactToken art : artifacts) {
+            if (art.getArtifactType().equals(CoreArtifactTypes.User)) {
+               results.error("Deletion of User artifact is prohibited.  Use Purge User Blam instead.");
             }
          }
       }
-      return Status.OK_STATUS;
+      return new XResultData();
    }
 
 }

@@ -260,7 +260,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void validateActionAtStart(IAtsTeamWorkflow teamWf) {
       resultData.log("\nValidating Start...");
-      // Ensure event service is connected
+      // Ensure event accessControlService is connected
       if (!OseeEventManager.isEventManagerConnected()) {
          resultData.error("Remote Event Service is not connected");
          return;
@@ -277,7 +277,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void validateActionAtEnd(IAtsTeamWorkflow teamWf) {
       resultData.log("\nValidating End...");
-      // Ensure event service is connected
+      // Ensure event accessControlService is connected
       if (!OseeEventManager.isEventManagerConnected()) {
          resultData.error("Remote Event Service is not connected");
          return;

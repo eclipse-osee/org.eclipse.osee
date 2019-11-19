@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.search.internal;
+package org.eclipse.osee.ats.core.access;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
@@ -31,29 +29,30 @@ public class UserRelatedToAtsObjectSearch {
 
    private final boolean activeObjectsOnly;
    private final IAtsUser atsUser;
+   private final AtsApi atsApi;
 
-   public UserRelatedToAtsObjectSearch(IAtsUser user, boolean activeObjectsOnly) {
+   public UserRelatedToAtsObjectSearch(IAtsUser user, boolean activeObjectsOnly, AtsApi atsApi) {
       this.atsUser = user;
       this.activeObjectsOnly = activeObjectsOnly;
+      this.atsApi = atsApi;
    }
 
-   public Collection<Artifact> getResults() {
-      List<Artifact> arts = new ArrayList<>();
+   public Collection<ArtifactToken> getResults() {
+      List<ArtifactToken> arts = new ArrayList<>();
 
       if (activeObjectsOnly) {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         arts.addAll(atsApi.getQueryService().getArtifactListFromAttributeKeywords(atsApi.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         arts.addAll(atsApi.getQueryService().getArtifactListFromAttributeKeywords(atsApi.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }
 
-      User user = AtsClientService.get().getUserServiceClient().getOseeUser(atsUser);
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact));
+      arts.addAll(atsApi.getRelationResolver().getRelatedArtifacts(atsUser, AtsRelationTypes.TeamLead_Team));
+      arts.addAll(atsApi.getRelationResolver().getRelatedArtifacts(atsUser, AtsRelationTypes.TeamMember_Team));
+      arts.addAll(atsApi.getRelationResolver().getRelatedArtifacts(atsUser, AtsRelationTypes.FavoriteUser_Artifact));
+      arts.addAll(atsApi.getRelationResolver().getRelatedArtifacts(atsUser, AtsRelationTypes.SubscribedUser_Artifact));
 
       return arts;
    }

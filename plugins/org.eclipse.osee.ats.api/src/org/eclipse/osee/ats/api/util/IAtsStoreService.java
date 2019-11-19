@@ -122,4 +122,14 @@ public interface IAtsStoreService {
    void reloadArts(Collection<ArtifactToken> artifacts);
 
    boolean isIdeClient();
+
+   default String getArtifactTypeName(ArtifactToken art) {
+      ArtifactTypeToken artType = getArtifactType(art);
+      if (artType != null && artType.isValid()) {
+         return artType.getName();
+      }
+      return "";
+   }
+
+   Collection<ArtifactToken> getDescendants(ArtifactToken art);
 }

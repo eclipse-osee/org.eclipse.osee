@@ -33,10 +33,10 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  */
 public final class AccessEventListener implements IBranchEventListener, IArtifactEventListener {
 
-   private final AccessControlService service;
+   private final AccessControlServiceImpl service;
    private final AccessControlCacheHandler accessControlCacheHandler;
 
-   public AccessEventListener(AccessControlService service, AccessControlCacheHandler accessControlCacheHandler) {
+   public AccessEventListener(AccessControlServiceImpl service, AccessControlCacheHandler accessControlCacheHandler) {
       this.accessControlCacheHandler = accessControlCacheHandler;
       this.service = service;
    }

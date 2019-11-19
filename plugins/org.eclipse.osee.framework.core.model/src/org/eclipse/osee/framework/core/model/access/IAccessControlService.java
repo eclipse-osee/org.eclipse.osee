@@ -8,18 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.services;
+package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IAccessControlService {
+public interface IAccessControlService extends IArtifactCheck {
 
    /**
     * @param object Artifact, Branch or collection of either

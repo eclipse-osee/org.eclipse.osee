@@ -17,10 +17,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
@@ -38,18 +40,16 @@ import org.osgi.framework.ServiceReference;
  */
 public final class AccessControlServiceProxy implements IAccessControlService {
 
-   private final List<ServiceReference<IAccessProvider>> registered =
-      new CopyOnWriteArrayList<>();
+   private final List<ServiceReference<IAccessProvider>> registered = new CopyOnWriteArrayList<>();
 
-   private final List<ServiceReference<IAccessProvider>> pendingProviders =
-      new CopyOnWriteArrayList<>();
+   private final List<ServiceReference<IAccessProvider>> pendingProviders = new CopyOnWriteArrayList<>();
 
    private JdbcService jdbcService;
    private IOseeCachingService cachingService;
    private OseeEventService eventService;
    private ILifecycleService lifecycleService;
 
-   private AccessControlService accessService;
+   private AccessControlServiceImpl accessService;
    private AccessEventListener accessEventListener;
    private Thread thread;
 
@@ -120,7 +120,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       }
    }
 
-   public AccessControlService getProxiedObject() {
+   public AccessControlServiceImpl getProxiedObject() {
       ensureInitialized();
       return accessService;
    }
@@ -139,7 +139,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
 
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
-      accessService = new AccessControlService(jdbcClient, cachingService, eventService);
+      accessService = new AccessControlServiceImpl(jdbcClient, cachingService, eventService);
 
       accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
       if (eventService != null) {
@@ -192,5 +192,20 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) {
       checkInitialized();
       return getProxiedObject().getAccessData(userArtifact, itemsToCheck);
+   }
+
+   @Override
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return getProxiedObject().isDeleteable(artifacts, results);
+   }
+
+   @Override
+   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return getProxiedObject().isRenamable(artifacts, results);
+   }
+
+   @Override
+   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+      return getProxiedObject().isDeleteableRelation(artifact, relationType, results);
    }
 }

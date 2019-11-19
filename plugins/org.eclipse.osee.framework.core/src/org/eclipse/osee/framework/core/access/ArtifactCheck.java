@@ -8,32 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.core.access;
 
 import java.util.Collection;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactCheck implements IArtifactCheck {
-   public static final IStatus OK_STATUS = new Status(IStatus.OK, Activator.PLUGIN_ID, null);
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts) {
-      return OK_STATUS;
+   public XResultData isDeleteable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return new XResultData();
    }
 
    @Override
-   public IStatus isRenamable(Collection<Artifact> artifacts) {
-      return OK_STATUS;
+   public XResultData isRenamable(Collection<ArtifactToken> artifacts, XResultData results) {
+      return new XResultData();
    }
 
    @Override
-   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) {
-      return OK_STATUS;
+   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+      return new XResultData();
    }
 }

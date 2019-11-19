@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.access.internal.AccessControlServiceProxy">
    <implementation class="org.eclipse.osee.framework.access.internal.AccessControlServiceProxy"/>
    <service>
-      <provide interface="org.eclipse.osee.framework.core.services.IAccessControlService"/>
+      <provide interface="org.eclipse.osee.framework.core.model.access.IAccessControlService"/>
    </service>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
    <reference bind="setCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>

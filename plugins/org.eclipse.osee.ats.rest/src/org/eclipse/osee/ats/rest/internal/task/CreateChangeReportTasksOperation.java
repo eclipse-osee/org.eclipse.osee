@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -306,6 +307,7 @@ public class CreateChangeReportTasksOperation {
       task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
       task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
       task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
+      task.addAttribute(CoreAttributeTypes.StaticId, ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID);
       crttwd.getNewTaskData().getNewTasks().add(task);
    }
 

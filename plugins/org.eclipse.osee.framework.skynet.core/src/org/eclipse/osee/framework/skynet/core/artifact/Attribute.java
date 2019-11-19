@@ -14,9 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -25,16 +24,19 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
+import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -140,12 +142,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    private void checkIsRenameable(T value) {
       if (getAttributeType().equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
-         // Confirm artifact is fit to rename
-         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isRenamable(Arrays.asList(getArtifact()));
-            if (!result.isOK()) {
-               throw new OseeCoreException(result.getMessage());
-            }
+         AccessPolicy policy = ServiceUtil.getAccessPolicy();
+         XResultData results = policy.isRenamable(Collections.singleton(getArtifact()), new XResultData());
+         if (results.isErrors()) {
+            throw new OseeStateException(results.toString());
          }
       }
    }

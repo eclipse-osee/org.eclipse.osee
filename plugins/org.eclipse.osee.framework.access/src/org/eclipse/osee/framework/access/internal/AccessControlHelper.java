@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.internal;
 
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 
 /**
@@ -25,9 +25,9 @@ public final class AccessControlHelper {
    }
 
    @Deprecated
-   public static AccessControlService getAccessControlService() {
+   public static AccessControlServiceImpl getAccessControlService() {
       IAccessControlService service = OsgiUtil.getService(AccessControlHelper.class, IAccessControlService.class);
-      AccessControlService toReturn = null;
+      AccessControlServiceImpl toReturn = null;
       if (service instanceof AccessControlServiceProxy) {
          toReturn = ((AccessControlServiceProxy) service).getProxiedObject();
       }

@@ -299,4 +299,15 @@ public class AtsStoreService implements IAtsStoreService {
    public boolean isIdeClient() {
       return true;
    }
+
+   @Override
+   public Collection<ArtifactToken> getDescendants(ArtifactToken art) {
+      Set<ArtifactToken> arts = new HashSet<>();
+      Artifact artifact = (Artifact) atsApi.getQueryService().getArtifact(art);
+      arts.add(artifact);
+      for (Artifact child : artifact.getChildren()) {
+         arts.addAll(getDescendants(child));
+      }
+      return arts;
+   }
 }

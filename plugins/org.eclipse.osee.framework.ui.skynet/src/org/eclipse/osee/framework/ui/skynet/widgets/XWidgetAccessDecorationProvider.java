@@ -61,7 +61,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
 
-         // Get Info from AccessControlService and take in to account if widget was editable before;
+         // Get Info from AccessControlServiceImpl and take in to account if widget was editable before;
          boolean isWriteable = permissionStatus.matched();
          boolean isLocked = !isWriteable || artifact.isReadOnly();
          String reason = permissionStatus.getReason();
