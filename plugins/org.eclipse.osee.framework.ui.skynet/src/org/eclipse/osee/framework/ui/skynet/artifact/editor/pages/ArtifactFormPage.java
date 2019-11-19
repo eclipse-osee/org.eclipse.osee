@@ -215,7 +215,7 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
-      applPart = new ArtifactFormPageViewApplicability(getEditor().getArtifactFromEditorInput(), toolkit, form);
+      applPart = new ArtifactFormPageViewApplicability(getEditor(), toolkit, form);
       applPart.create();
 
       for (IArtifactEditorProvider widgetProvider : ArtifactEditorProviders.getXWidgetProviders()) {

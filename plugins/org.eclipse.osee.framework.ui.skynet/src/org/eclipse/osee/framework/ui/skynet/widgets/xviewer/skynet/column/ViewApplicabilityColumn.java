@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
@@ -121,7 +122,9 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
          AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
          return;
       }
-      ViewApplicabilityUtil.changeApplicability(artifacts);
+      if (ViewApplicabilityUtil.changeApplicability(artifacts)) {
+         ArtifactQuery.reloadArtifacts(artifacts);
+      }
    }
 
    @Override
@@ -133,7 +136,12 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
             AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
             return false;
          }
-         return ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact));
+         if (ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact))) {
+            ArtifactQuery.reloadArtifacts(Collections.singletonList(artifact));
+            return true;
+         } else {
+            return false;
+         }
       } else {
          AWorkbench.popup("No Artifact Selected");
          return false;

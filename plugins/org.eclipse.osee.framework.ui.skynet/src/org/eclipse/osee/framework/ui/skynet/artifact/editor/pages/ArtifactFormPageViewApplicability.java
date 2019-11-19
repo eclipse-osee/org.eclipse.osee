@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -46,11 +47,13 @@ public class ArtifactFormPageViewApplicability {
    private final FormToolkit toolkit;
    private final ScrolledForm form;
    private final Artifact artifact;
+   private final ArtifactEditor editor;
    private SelectionAdapter changeableAdapter;
    private SelectionAdapter nonChangeableAdapter;
 
-   public ArtifactFormPageViewApplicability(Artifact artifact, FormToolkit toolkit, ScrolledForm form) {
-      this.artifact = artifact;
+   public ArtifactFormPageViewApplicability(ArtifactEditor editor, FormToolkit toolkit, ScrolledForm form) {
+      this.editor = editor;
+      this.artifact = editor.getArtifactFromEditorInput();
       this.toolkit = toolkit;
       this.form = form;
    }
@@ -71,7 +74,12 @@ public class ArtifactFormPageViewApplicability {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact));
+               if (ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact))) {
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
+                  }
+                  refresh();
+               }
             }
          };
       }

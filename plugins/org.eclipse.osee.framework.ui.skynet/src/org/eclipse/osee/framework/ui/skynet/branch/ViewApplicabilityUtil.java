@@ -40,6 +40,7 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 public class ViewApplicabilityUtil {
 
    public static String CHANGE_APPLICABILITY_INVAILD = "User does not have permissions to change View Applicability";
+   public static String SAVE_OTHER_CHANGES = "Save all other changes before making View Applicability update";
    private static AccessPolicy policy;
 
    public static boolean changeApplicability(List<? extends ArtifactToken> artifacts) {
@@ -54,7 +55,6 @@ public class ViewApplicabilityUtil {
       int result = dialog.open();
       if (result == Window.OK) {
          applEndpoint.setApplicability(ApplicabilityId.valueOf(dialog.getSelection().getId()), artifacts);
-         ArtifactQuery.reloadArtifacts(artifacts);
          return true;
       }
       return false;
