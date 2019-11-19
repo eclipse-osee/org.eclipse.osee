@@ -35,6 +35,7 @@ public final class CoreAttributeTypes implements OrcsTypeTokenProvider {
    // @formatter:off
    public static final AttributeTypeString AFHA = tokens.add(AttributeTypeToken.createString(1152921504606847139L, NamespaceToken.OSEE, "AFHA", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeString AccessContextId = tokens.add(AttributeTypeToken.createString(1152921504606847102L, NamespaceToken.OSEE, "Access Context Id", MediaType.TEXT_PLAIN, ""));
+   public static final AttributeTypeString Acronym = tokens.add(AttributeTypeToken.createString(4723834159825897915L, NamespaceToken.OSEE, "Acronym", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeBoolean Active = tokens.add(AttributeTypeToken.createBoolean(1152921504606847065L, NamespaceToken.OSEE, "Active", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeString Annotation = tokens.add(AttributeTypeToken.createString(1152921504606847094L, NamespaceToken.OSEE, "Annotation", MediaType.TEXT_PLAIN, ""));
    public static final AttributeTypeArtifactId ArtifactReference = tokens.add(AttributeTypeToken.createArtifactId(1153126013769613560L, NamespaceToken.OSEE, "Artifact Reference", AttributeTypeToken.MODEL_OSEE, "Light-weight artifact reference"));

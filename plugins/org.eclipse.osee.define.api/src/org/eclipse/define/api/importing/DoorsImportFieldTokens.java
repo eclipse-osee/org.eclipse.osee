@@ -52,6 +52,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrExtLink =     BlockFieldToken.valueOf(14, "ExternalLink", EXT_LINK_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.ContentUrl);
    public static final BlockFieldToken blockAttrPlainText =   BlockFieldToken.valueOf(15, "Plain Text", PLAIN_TEXT_REGEX, OBJECT_TEXT_REGEX, BlockField::new); // TODO write a plain text converter - see BlockFieldText. Use that constructor here
    public static final BlockFieldToken blockAttrDescription = BlockFieldToken.valueOf(16, "Description", DESCRIPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Description);
-   public static final BlockFieldToken blockAttrDefinition =  BlockFieldToken.valueOf(17, "Definition", DEFINITION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Description);
+   public static final BlockFieldToken blockAttrAcronym =  BlockFieldToken.valueOf(17, "Definition", DEFINITION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Acronym);
    // @formatter:on
 }

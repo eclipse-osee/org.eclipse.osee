@@ -798,6 +798,16 @@ attributeType "Subject Matter Expert" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "Acronym" extends StringAttribute {
+	id 4723834159825897915
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Acronym of the acronym artifact"
+	mediaType "text/plain"
+}
+
 oseeEnumType "enum.data.rights.classification" {
 	id 3458764513820541445
 	entry "Restricted Rights"
@@ -863,6 +873,7 @@ artifactType "Integration Test Procedure - MS Word" extends "MS Word Whole Docum
 
 artifactType "Acronym Plain Text" extends "Plain Text" {
 	id 5034328852220100337
+	attribute "Acronym"
 }
 
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
