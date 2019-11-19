@@ -17,7 +17,7 @@ Import-Package: org.apache.commons.dbcp,
  org.eclipse.osee.framework.jdk.core.util.network,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.logger;resolution:=optional,
+ org.eclipse.osee.logger,
  org.flywaydb.core,
  org.flywaydb.core.api,
  org.flywaydb.core.api.resolver,
@@ -26,8 +26,9 @@ Import-Package: org.apache.commons.dbcp,
  org.hsqldb.persist;resolution:=optional,
  org.hsqldb.server;resolution:=optional,
  org.json;resolution:=optional,
- org.osgi.service.component;resolution:=optional
+ org.osgi.service.component;resolution:=optional,
+ org.postgresql;resolution:=optional,
+ org.sqlite;resolution:=optional
 Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
-DynamicImport-Package: oracle.*, org.postgresql*
-Require-Bundle: org.xerial.sqlite;resolution:=optional
+DynamicImport-Package: oracle.*
