@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Jeff C. Phillips
@@ -245,6 +246,25 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
+   public boolean setToSource(SkynetTransaction transaction) {
+      if (!getStatus().isOverwriteAllowed() || getDestObject() == null) {
+         if (DEBUG) {
+            System.out.println(String.format(
+               "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %s", getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(
+            String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
+      }
+      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
+      transaction.addArtifact(getArtifact());
+      markStatusToReflectEdit();
+      return true;
+   }
+
+   @Override
    public boolean setToSource() {
       if (!getStatus().isOverwriteAllowed() || getSourceObject() == null) {
          if (DEBUG) {
@@ -259,6 +279,25 @@ public class AttributeConflict extends Conflict {
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
       getArtifact().persist(getClass().getSimpleName());
+      markStatusToReflectEdit();
+      return true;
+   }
+
+   @Override
+   public boolean setToDest(SkynetTransaction transaction) {
+      if (!getStatus().isOverwriteAllowed() || getDestObject() == null) {
+         if (DEBUG) {
+            System.out.println(String.format(
+               "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %s", getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(
+            String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
+      }
+      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
+      transaction.addArtifact(getArtifact());
       markStatusToReflectEdit();
       return true;
    }

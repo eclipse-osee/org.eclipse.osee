@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Theron Virgin
@@ -102,8 +103,18 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
+   public boolean setToDest(SkynetTransaction transaction) {
+      return setToDest();
+   }
+
+   @Override
    public boolean setToDest() {
       return false;
+   }
+
+   @Override
+   public boolean setToSource(SkynetTransaction transaction) {
+      return setToSource();
    }
 
    @Override

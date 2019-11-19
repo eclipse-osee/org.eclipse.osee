@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -44,7 +46,11 @@ public final class ConflictHandlingOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) {
       Conditions.checkNotNullOrEmpty(conflicts, "conflicts");
+      SkynetTransaction transaction = null;
       for (Conflict conflict : conflicts) {
+         if (transaction == null) {
+            transaction = TransactionManager.createTransaction(conflict.getMergeBranch(), "Merge Transaction");
+         }
          ConflictStatus status = conflict.getStatus();
          if (status.isResolvable()) {
             switch (operation) {
@@ -57,13 +63,13 @@ public final class ConflictHandlingOperation extends AbstractOperation {
                   break;
                case SET_DST_AND_RESOLVE:
                   if (!status.isResolved()) {
-                     MergeUtility.setToDest(conflict, null, false);
+                     MergeUtility.setToDest(conflict, null, false, transaction);
                      conflict.setStatus(ConflictStatus.RESOLVED);
                   }
                   break;
                case SET_SRC_AND_RESOLVE:
                   if (!status.isResolved()) {
-                     MergeUtility.setToSource(conflict, null, false);
+                     MergeUtility.setToSource(conflict, null, false, transaction);
                      conflict.setStatus(ConflictStatus.RESOLVED);
                   }
                   break;
@@ -81,6 +87,9 @@ public final class ConflictHandlingOperation extends AbstractOperation {
                   throw new OseeArgumentException("Invalid operation [%s]", operation);
             }
          }
+      }
+      if (transaction != null) {
+         transaction.execute();
       }
    }
 }

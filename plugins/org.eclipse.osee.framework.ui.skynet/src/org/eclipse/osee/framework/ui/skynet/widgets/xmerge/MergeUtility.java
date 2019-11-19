@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -65,12 +66,30 @@ public class MergeUtility {
       }
    }
 
+   public static void setToDest(Conflict conflict, Shell shell, boolean prompt, SkynetTransaction transaction) {
+      if (conflict == null) {
+         return;
+      }
+      if (okToOverwriteEditedValue(conflict, shell, prompt)) {
+         conflict.setToDest(transaction);
+      }
+   }
+
    public static void setToDest(Conflict conflict, Shell shell, boolean prompt) {
       if (conflict == null) {
          return;
       }
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.setToDest();
+      }
+   }
+
+   public static void setToSource(Conflict conflict, Shell shell, boolean prompt, SkynetTransaction transaction) {
+      if (conflict == null) {
+         return;
+      }
+      if (okToOverwriteEditedValue(conflict, shell, prompt)) {
+         conflict.setToSource(transaction);
       }
    }
 
@@ -174,4 +193,5 @@ public class MergeUtility {
       }
       return toReturn;
    }
+
 }

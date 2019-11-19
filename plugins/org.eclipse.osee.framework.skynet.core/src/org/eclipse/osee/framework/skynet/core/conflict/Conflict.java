@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -215,7 +216,11 @@ public abstract class Conflict implements Adaptable {
 
    public abstract boolean sourceEqualsDestination();
 
+   public abstract boolean setToSource(SkynetTransaction transaction);
+
    public abstract boolean setToSource();
+
+   public abstract boolean setToDest(SkynetTransaction transaction);
 
    public abstract boolean setToDest();
 
