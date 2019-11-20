@@ -486,7 +486,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
       // Add any AgileTeam to AI relations
       for (ArtifactId aiArt : atsApi.getRelationResolver().getRelated(aTeam,
-         AtsRelationTypes.AgileTeamToAtsAtsAis_AtsAis)) {
+         AtsRelationTypes.AgileTeamToAtsAis_AtsAis)) {
          ais.add(atsApi.getActionableItemService().getActionableItemById(aiArt));
       }
       Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));

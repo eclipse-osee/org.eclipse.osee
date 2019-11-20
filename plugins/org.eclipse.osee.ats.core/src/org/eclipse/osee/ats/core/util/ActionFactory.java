@@ -474,7 +474,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Relate Action to WorkFlow
-      changes.relate(action, AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, teamWf);
+      changes.relate(action, AtsRelationTypes.ActionToWorkflow_TeamWorkflow, teamWf);
 
       // Auto-add actions to configured goals
       addActionToConfiguredGoal(teamDef, teamWf, actionableItems, null, changes);
@@ -641,7 +641,7 @@ public class ActionFactory implements IAtsActionFactory {
       List<IAtsTeamWorkflow> teams = new LinkedList<>();
       IAtsAction action = getAction(teamWf);
       for (IAtsTeamWorkflow teamChild : atsApi.getRelationResolver().getRelated(action,
-         AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, IAtsTeamWorkflow.class)) {
+         AtsRelationTypes.ActionToWorkflow_TeamWorkflow, IAtsTeamWorkflow.class)) {
          if (teamChild.notEqual(teamWf)) {
             teams.add(teamChild);
          }

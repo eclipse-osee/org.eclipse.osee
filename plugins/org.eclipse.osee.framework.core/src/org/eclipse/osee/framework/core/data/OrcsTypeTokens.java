@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 
 /**
@@ -25,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    private final ChainingArrayList<@NonNull AttributeTypeToken> attributeTypes = new ChainingArrayList<>();
-   private final List<RelationTypeToken> relationTypes = new ArrayList<>();
+   private final ChainingArrayList<@NonNull RelationTypeToken> relationTypes = new ChainingArrayList<>();
    private final NamespaceToken namespace;
 
    public OrcsTypeTokens() {
@@ -55,9 +57,9 @@ public class OrcsTypeTokens {
       return attributeType;
    }
 
-   public RelationTypeToken add(RelationTypeToken relationType) {
-      relationTypes.add(relationType);
-      return relationType;
+   public RelationTypeToken add(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+      return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
+         artifactTypeA, sideAName, artifactTypeB, sideBName));
    }
 
    public void registerTypes(OrcsTokenService tokenService) {

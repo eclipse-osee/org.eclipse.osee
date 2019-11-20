@@ -903,7 +903,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.Action) && artifact.getRelatedArtifactsCount(
-               AtsRelationTypes.ActionToWorkflow_TeamWorkFlow) == 0) {
+               AtsRelationTypes.ActionToWorkflow_TeamWorkflow) == 0) {
                results.log(artifact, "testAtsActionsHaveTeamWorkflow",
                   "Error: Action " + XResultDataUI.getHyperlink(artifact) + " has no Team Workflows\n");
             }

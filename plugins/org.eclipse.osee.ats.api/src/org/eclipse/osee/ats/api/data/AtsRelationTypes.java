@@ -10,143 +10,210 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.data;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AbstractReview;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AbstractWorkflowArtifact;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileStory;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsArtifact;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsConfigArtifact;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AtsTeamDefinitionOrAi;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Country;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.InsertionActivity;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Program;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_ONE;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_ONE;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Donald G. Dunne
  */
-public final class AtsRelationTypes {
+public interface AtsRelationTypes {
 
    //@formatter:off
 
    // tuple relations
-   public static final Tuple2Type<TupleFamilyId, TupleTypeId> WorkItem_To_WorkDefinition =  Tuple2Type.valueOf(CoreTupleFamilyTypes.AttribueFamily, 1457L);
+   Tuple2Type<TupleFamilyId, TupleTypeId> WorkItem_To_WorkDefinition =  Tuple2Type.valueOf(CoreTupleFamilyTypes.AttribueFamily, 1457L);
 
    // relation links
+   RelationTypeToken ActionToWorkflow = ats.add(2305843009213694317L, "ActionToWorkflow", ONE_TO_MANY, UNORDERED, Action, "Action", TeamWorkflow, "Team Workflow");
+   RelationTypeSide ActionToWorkflow_Action = RelationTypeSide.create(ActionToWorkflow, SIDE_A);
+   RelationTypeSide ActionToWorkflow_TeamWorkflow = RelationTypeSide.create(ActionToWorkflow, SIDE_B);
 
-   public static final RelationTypeSide ProgramToInsertion_Program = RelationTypeSide.create(RelationSide.SIDE_A, 8921796037933812267L, "Program To Insertion");
-   public static final RelationTypeSide ProgramToInsertion_Insertion = ProgramToInsertion_Program.getOpposite();
+   RelationTypeToken ActionableItemLead = ats.add(2305843009213694329L, "ActionableItemLead", MANY_TO_MANY, UNORDERED, ActionableItem, "Actionable Item", User, "User");
+   RelationTypeSide ActionableItemLead_AI = RelationTypeSide.create(ActionableItemLead, SIDE_A);
+   RelationTypeSide ActionableItemLead_Lead = RelationTypeSide.create(ActionableItemLead, SIDE_B);
 
-   public static final RelationTypeSide InsertionToInsertionActivity_Insertion = RelationTypeSide.create(RelationSide.SIDE_A, 1336895299757203121L, "Insertion To Insertion Activity");
-   public static final RelationTypeSide InsertionToInsertionActivity_InsertionActivity = InsertionToInsertionActivity_Insertion.getOpposite();
+   RelationTypeToken AgileFeatureToItem = ats.add(6017077976601091441L, "AgileFeatureToItem", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AgileFeatureGroup, "Agile Feature Group", AbstractWorkflowArtifact, "ATS Item");
+   RelationTypeSide AgileFeatureToItem_AgileFeatureGroup = RelationTypeSide.create(AgileFeatureToItem, SIDE_A);
+   RelationTypeSide AgileFeatureToItem_AtsItem = RelationTypeSide.create(AgileFeatureToItem, SIDE_B);
 
-   public static final RelationTypeSide InsertionActivityToWorkPackage_InsertionActivity = RelationTypeSide.create(RelationSide.SIDE_A, 8892387571282380815L, "Insertion Activity To Work Package");
-   public static final RelationTypeSide InsertionActivityToWorkPackage_WorkPackage = InsertionActivityToWorkPackage_InsertionActivity.getOpposite();
+   RelationTypeToken AgileSprintToItem = ats.add(988214123009313457L, "AgileSprintToItem", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, AgileSprint, "Agile Sprint", AtsArtifact, "ATS Item");
+   RelationTypeSide AgileSprintToItem_AgileSprint = RelationTypeSide.create(AgileSprintToItem, SIDE_A);
+   RelationTypeSide AgileSprintToItem_AtsItem = RelationTypeSide.create(AgileSprintToItem, SIDE_B);
 
-   public static final RelationTypeSide ActionToWorkflow_Action = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694317L, "ActionToWorkflow");
-   public static final RelationTypeSide ActionToWorkflow_TeamWorkFlow = ActionToWorkflow_Action.getOpposite();
+   RelationTypeToken AgileStoryToAgileTeam = ats.add(7984323968228307345L, "AgileStoryToAgileTeam", MANY_TO_ONE, LEXICOGRAPHICAL_ASC, AgileStory, "Agile Story", AgileTeam, "Agile Team");
+   RelationTypeSide AgileStoryToAgileTeam_AgileStory = RelationTypeSide.create(AgileStoryToAgileTeam, SIDE_A);
+   RelationTypeSide AgileStoryToAgileTeam_AgileTeam = RelationTypeSide.create(AgileStoryToAgileTeam, SIDE_B);
 
-   public static final RelationTypeSide AgileTeamToFeatureGroup_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 1067226929733341458L, "AgileTeamToFeatureGroup");
-   public static final RelationTypeSide AgileTeamToFeatureGroup_AgileFeatureGroup = AgileTeamToFeatureGroup_AgileTeam.getOpposite();
+   RelationTypeToken AgileStoryToItem = ats.add(98821417946551335L, "AgileStoryToItem", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, AgileStory, "Agile Story", TeamWorkflow, "Team Workflow");
+   RelationTypeSide AgileStoryToItem_AgileStory = RelationTypeSide.create(AgileStoryToItem, SIDE_A);
+   RelationTypeSide AgileStoryToItem_TeamWorkflow = RelationTypeSide.create(AgileStoryToItem, SIDE_B);
 
-   public static final RelationTypeSide AgileTeamToAtsTeam_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 9001858956696556140L, "AgileTeamToAtsTeam");
-   public static final RelationTypeSide AgileTeamToAtsTeam_AtsTeam = AgileTeamToAtsTeam_AgileTeam.getOpposite();
+   RelationTypeToken AgileStoryToSprint = ats.add(2639165674435679873L, "AgileStoryToSprint", MANY_TO_ONE, LEXICOGRAPHICAL_ASC, AgileStory, "Agile Story", AgileSprint, "Agile Sprint");
+   RelationTypeSide AgileStoryToSprint_AgileStory = RelationTypeSide.create(AgileStoryToSprint, SIDE_A);
+   RelationTypeSide AgileStoryToSprint_AgileSprint = RelationTypeSide.create(AgileStoryToSprint, SIDE_B);
 
-   public static final RelationTypeSide AgileTeamToAtsAtsAis_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 5336467317030669830L, "AgileTeamToAtsAtsAis");
-   public static final RelationTypeSide AgileTeamToAtsAtsAis_AtsAis = AgileTeamToAtsAtsAis_AgileTeam.getOpposite();
+   RelationTypeToken AgileTeamToAtsAis = ats.add(5336467317030669830L, "AgileTeamToAtsAis", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AgileTeam, "Agile Team", ActionableItem, "ATS AIs");
+   RelationTypeSide AgileTeamToAtsAis_AgileTeam = RelationTypeSide.create(AgileTeamToAtsAis, SIDE_A);
+   RelationTypeSide AgileTeamToAtsAis_AtsAis = RelationTypeSide.create(AgileTeamToAtsAis, SIDE_B);
 
-   public static final RelationTypeSide AgileTeamToBacklog_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 8816366550731954418L, "AgileTeamToBacklog");
-   public static final RelationTypeSide AgileTeamToBacklog_Backlog = AgileTeamToBacklog_AgileTeam.getOpposite();
+   RelationTypeToken AgileTeamToAtsTeam = ats.add(9001858956696556140L, "AgileTeamToAtsTeam", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, AgileTeam, "Agile Team", TeamDefinition, "ATS Team");
+   RelationTypeSide AgileTeamToAtsTeam_AgileTeam = RelationTypeSide.create(AgileTeamToAtsTeam, SIDE_A);
+   RelationTypeSide AgileTeamToAtsTeam_AtsTeam = RelationTypeSide.create(AgileTeamToAtsTeam, SIDE_B);
 
-   public static final RelationTypeSide AgileTeamToSprint_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 7043708594778812661L, "AgileTeamToSprint");
-   public static final RelationTypeSide AgileTeamToSprint_Sprint = AgileTeamToSprint_AgileTeam.getOpposite();
+   RelationTypeToken AgileTeamToBacklog = ats.add(8816366550731954418L, "AgileTeamToBacklog", ONE_TO_ONE, LEXICOGRAPHICAL_ASC, AgileTeam, "Agile Team", AtsArtifactTypes.Goal, "Backlog");
+   RelationTypeSide AgileTeamToBacklog_AgileTeam = RelationTypeSide.create(AgileTeamToBacklog, SIDE_A);
+   RelationTypeSide AgileTeamToBacklog_Backlog = RelationTypeSide.create(AgileTeamToBacklog, SIDE_B);
 
-   public static final RelationTypeSide AgileSprintToItem_AgileSprint= RelationTypeSide.create(RelationSide.SIDE_A, 988214123009313457L, "AgileSprintToItem");
-   public static final RelationTypeSide AgileSprintToItem_AtsItem = AgileSprintToItem_AgileSprint.getOpposite();
+   RelationTypeToken AgileTeamToFeatureGroup = ats.add(1067226929733341458L, "AgileTeamToFeatureGroup", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, AgileTeam, "Agile Team", AgileFeatureGroup, "Agile Feature Group");
+   RelationTypeSide AgileTeamToFeatureGroup_AgileTeam = RelationTypeSide.create(AgileTeamToFeatureGroup, SIDE_A);
+   RelationTypeSide AgileTeamToFeatureGroup_AgileFeatureGroup = RelationTypeSide.create(AgileTeamToFeatureGroup, SIDE_B);
 
-   public static final RelationTypeSide AgileStoryToAgileTeam_AgileStory= RelationTypeSide.create(RelationSide.SIDE_A, 7984323968228307345L, "AgileStoryToAgileTeam");
-   public static final RelationTypeSide AgileStoryToAgileTeam_AgileTeam = AgileStoryToAgileTeam_AgileStory.getOpposite();
+   RelationTypeToken AgileTeamToSprint = ats.add(7043708594778812661L, "AgileTeamToSprint", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, AgileTeam, "Agile Team", AgileSprint, "Sprint");
+   RelationTypeSide AgileTeamToSprint_AgileTeam = RelationTypeSide.create(AgileTeamToSprint, SIDE_A);
+   RelationTypeSide AgileTeamToSprint_Sprint = RelationTypeSide.create(AgileTeamToSprint, SIDE_B);
 
-   public static final RelationTypeSide AgileStoryToSprint_AgileStory= RelationTypeSide.create(RelationSide.SIDE_A, 2639165674435679873L, "AgileStoryToSprint");
-   public static final RelationTypeSide AgileStoryToSprint_AgileSprint = AgileStoryToSprint_AgileStory.getOpposite();
+   RelationTypeToken AutoAddActionToGoal = ats.add(2305843009213694333L, "AutoAddActionToGoal", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AtsArtifactTypes.Goal, "Goal", AtsConfigArtifact, "Ats Config Object");
+   RelationTypeSide AutoAddActionToGoal_Goal = RelationTypeSide.create(AutoAddActionToGoal, SIDE_A);
+   RelationTypeSide AutoAddActionToGoal_AtsConfigObject = RelationTypeSide.create(AutoAddActionToGoal, SIDE_B);
 
-   public static final RelationTypeSide AgileStoryToItem_AgileStory= RelationTypeSide.create(RelationSide.SIDE_A, 98821417946551335L, "AgileStoryToItems");
-   public static final RelationTypeSide AgileStoryToItem_TeamWorkflow = AgileStoryToItem_AgileStory.getOpposite();
+   RelationTypeToken CountryToProgram = ats.add(2305846526791909737L, "Country To Program", ONE_TO_MANY, UNORDERED, Country, "Country", Program, "Program");
+   RelationTypeSide CountryToProgram_Country = RelationTypeSide.create(CountryToProgram, SIDE_A);
+   RelationTypeSide CountryToProgram_Program = RelationTypeSide.create(CountryToProgram, SIDE_B);
 
-   public static final RelationTypeSide AgileFeatureToItem_AgileFeatureGroup = RelationTypeSide.create(RelationSide.SIDE_A, 6017077976601091441L, "AgileFeatureToItem");
-   public static final RelationTypeSide AgileFeatureToItem_AtsItem = AgileFeatureToItem_AgileFeatureGroup.getOpposite();
+   RelationTypeToken Derive = ats.add(2305843009213694331L, "Derive", ONE_TO_MANY, UNORDERED, TeamWorkflow, "From", TeamWorkflow, "To");
+   RelationTypeSide Derive_From = RelationTypeSide.create(Derive, SIDE_A);
+   RelationTypeSide Derive_To = RelationTypeSide.create(Derive, SIDE_B);
 
-   public static final RelationTypeSide Port_From = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694330L, "Port");
-   public static final RelationTypeSide Port_To = Port_From.getOpposite();
+   RelationTypeToken FavoriteUser = ats.add(2305843009213694323L, "FavoriteUser", MANY_TO_MANY, UNORDERED, Artifact, "Artifact", User, "User");
+   RelationTypeSide FavoriteUser_Artifact = RelationTypeSide.create(FavoriteUser, SIDE_A);
+   RelationTypeSide FavoriteUser_User = RelationTypeSide.create(FavoriteUser, SIDE_B);
 
-   public static final RelationTypeSide Derive_From = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694331L, "Derive");
-   public static final RelationTypeSide Derive_To = Derive_From.getOpposite();
-
-   public static final RelationTypeSide FavoriteUser_Artifact = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694323L, "FavoriteUser");
-   public static final RelationTypeSide FavoriteUser_User = FavoriteUser_Artifact.getOpposite();
-
-   public static final RelationTypeSide Goal_Goal = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694325L, "Goal");
-   public static final RelationTypeSide Goal_Member = Goal_Goal.getOpposite();
+   RelationTypeToken Goal = ats.add(2305843009213694325L, "Goal", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AtsArtifactTypes.Goal, "Goal", AtsArtifact, "Member");
+   RelationTypeSide Goal_Goal = RelationTypeSide.create(Goal, SIDE_A);
+   RelationTypeSide Goal_Member = RelationTypeSide.create(Goal, SIDE_B);
 
    // Backlogs use same relation as Goal; This is here for readability and to document this in code
-   public static final RelationTypeSide AgileBacklog_AgileBacklog = Goal_Goal;
-   public static final RelationTypeSide AgileBacklog_Item = AgileBacklog_AgileBacklog.getOpposite();
+    RelationTypeSide AgileBacklog_AgileBacklog = Goal_Goal;
+    RelationTypeSide AgileBacklog_Item = AgileBacklog_AgileBacklog.getOpposite();
 
-   public static final RelationTypeSide ParallelVersion_Parent = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694324L, "ParallelVersion");
-   public static final RelationTypeSide ParallelVersion_Child = ParallelVersion_Parent.getOpposite();
+   RelationTypeToken InsertionActivityToWorkPackage = ats.add(8892387571282380815L, "Insertion Activity To Work Package", ONE_TO_MANY, UNORDERED, InsertionActivity, "Insertion Activity", AtsArtifactTypes.WorkPackage, "Work Package");
+   RelationTypeSide InsertionActivityToWorkPackage_InsertionActivity = RelationTypeSide.create(InsertionActivityToWorkPackage, SIDE_A);
+   RelationTypeSide InsertionActivityToWorkPackage_WorkPackage = RelationTypeSide.create(InsertionActivityToWorkPackage, SIDE_B);
 
-   public static final RelationTypeSide TeamWfToTask_TeamWorkflow = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694318L, "TeamWfToTask");
-   public static final RelationTypeSide TeamWfToTask_Task = TeamWfToTask_TeamWorkflow.getOpposite();
+   RelationTypeToken InsertionToInsertionActivity = ats.add(1336895299757203121L, "Insertion To Insertion Activity", ONE_TO_MANY, UNORDERED, Insertion, "Insertion", InsertionActivity, "Insertion Activity");
+   RelationTypeSide InsertionToInsertionActivity_Insertion = RelationTypeSide.create(InsertionToInsertionActivity, SIDE_A);
+   RelationTypeSide InsertionToInsertionActivity_InsertionActivity = RelationTypeSide.create(InsertionToInsertionActivity, SIDE_B);
 
-   public static final RelationTypeSide SubscribedUser_Artifact = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694322L, "SubscribedUser");
-   public static final RelationTypeSide SubscribedUser_User = SubscribedUser_Artifact.getOpposite();
+   RelationTypeToken Owner = ats.add(2305843009213694328L, "Owner", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, ActionableItem, "Actionable Item", User, "Owner");
+   RelationTypeSide Owner_ActionableItem = RelationTypeSide.create(Owner, SIDE_A);
+   RelationTypeSide Owner_Owner = RelationTypeSide.create(Owner, SIDE_B);
 
-   public static final RelationTypeSide TeamActionableItem_TeamDefinition = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694316L, "TeamActionableItem");
-   public static final RelationTypeSide TeamActionableItem_ActionableItem = TeamActionableItem_TeamDefinition.getOpposite();
+    // Use same relation as Owner; This is here for readability and to document this in code
+    RelationTypeSide ActionableItem_Artifact = Owner_ActionableItem;
+    RelationTypeSide ActionableItem_User = ActionableItem_Artifact.getOpposite();
 
-   public static final RelationTypeSide TeamDefinitionToVersion_TeamDefinition = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694320L, "TeamDefinitionToVersion");
-   public static final RelationTypeSide TeamDefinitionToVersion_Version = TeamDefinitionToVersion_TeamDefinition.getOpposite();
+   RelationTypeToken ParallelVersion = ats.add(2305843009213694324L, "ParallelVersion", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, Version, "Parent", Version, "Child");
+   RelationTypeSide ParallelVersion_Parent = RelationTypeSide.create(ParallelVersion, SIDE_A);
+   RelationTypeSide ParallelVersion_Child = RelationTypeSide.create(ParallelVersion, SIDE_B);
 
-   // Use same relation as TeamDefinitionToVersion; This is here for readability and to document this in code
-   public static final RelationTypeSide TeamDefinitionToAtsConfigObject_TeamDefinition = TeamDefinitionToVersion_TeamDefinition;
-   public static final RelationTypeSide TeamDefinitionToAtsConfigObject_AtsConfigObject = TeamDefinitionToVersion_TeamDefinition.getOpposite();
+   RelationTypeToken Port = ats.add(2305843009213694330L, "Port", MANY_TO_MANY, UNORDERED, TeamWorkflow, "From", TeamWorkflow, "To");
+   RelationTypeSide Port_From = RelationTypeSide.create(Port, SIDE_A);
+   RelationTypeSide Port_To = RelationTypeSide.create(Port, SIDE_B);
 
-   public static final RelationTypeSide CountryToProgram_Country = RelationTypeSide.create(RelationSide.SIDE_A, 2305846526791909737L, "CountryToProgram");
-   public static final RelationTypeSide CountryToProgram_Program = CountryToProgram_Country.getOpposite();
+   RelationTypeToken PrivilegedMember = ats.add(2305843009213694315L, "PrivilegedMember", MANY_TO_MANY, UNORDERED, TeamDefinition, "Team Definition", User, "User");
+   RelationTypeSide PrivilegedMember_Team = RelationTypeSide.create(PrivilegedMember, SIDE_A);
+   RelationTypeSide PrivilegedMember_User = RelationTypeSide.create(PrivilegedMember, SIDE_B);
 
-   public static final RelationTypeSide TeamLead_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694313L, "TeamLead");
-   public static final RelationTypeSide TeamLead_Lead = TeamLead_Team.getOpposite();
+   RelationTypeToken ProgramToInsertion = ats.add(8921796037933812267L, "Program To Insertion", ONE_TO_MANY, UNORDERED, Program, "Program", Insertion, "Insertion");
+   RelationTypeSide ProgramToInsertion_Program = RelationTypeSide.create(ProgramToInsertion, SIDE_A);
+   RelationTypeSide ProgramToInsertion_Insertion = RelationTypeSide.create(ProgramToInsertion, SIDE_B);
 
-   public static final RelationTypeSide TeamMember_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694314L, "TeamMember");
-   public static final RelationTypeSide TeamMember_Member = TeamMember_Team.getOpposite();
+   RelationTypeToken ResponsibleTeam = ats.add(7316843349212764388L, "ResponsibleTeam", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", AtsArtifactTypes.ResponsibleTeam, "Responsible Team");
+   RelationTypeSide ResponsibleTeam_TeamWorkflow = RelationTypeSide.create(ResponsibleTeam, SIDE_A);
+   RelationTypeSide ResponsibleTeam_ResponsibleTeam = RelationTypeSide.create(ResponsibleTeam, SIDE_B);
 
-   public static final RelationTypeSide ResponsibleTeam_TeamWorkflow = RelationTypeSide.create(RelationSide.SIDE_A, 7316843349212764388L, "ResponsibleTeam");
-   public static final RelationTypeSide ResponsibleTeam_ResponsibleTeam = ResponsibleTeam_TeamWorkflow.getOpposite();
+   RelationTypeToken SubscribedUser = ats.add(2305843009213694322L, "SubscribedUser", MANY_TO_MANY, UNORDERED, Artifact, "Artifact", User, "User");
+   RelationTypeSide SubscribedUser_Artifact = RelationTypeSide.create(SubscribedUser, SIDE_A);
+   RelationTypeSide SubscribedUser_User = RelationTypeSide.create(SubscribedUser, SIDE_B);
 
-   public static final RelationTypeSide TeamWorkflowTargetedForVersion_TeamWorkflow = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694319L, "TeamWorkflowTargetedForVersion");
-   public static final RelationTypeSide TeamWorkflowTargetedForVersion_Version = TeamWorkflowTargetedForVersion_TeamWorkflow.getOpposite();
+   RelationTypeToken TeamActionableItem = ats.add(2305843009213694316L, "TeamActionableItem", ONE_TO_MANY, UNORDERED, TeamDefinition, "Team Definition", ActionableItem, "Actionable Item");
+   RelationTypeSide TeamActionableItem_TeamDefinition = RelationTypeSide.create(TeamActionableItem, SIDE_A);
+   RelationTypeSide TeamActionableItem_ActionableItem = RelationTypeSide.create(TeamActionableItem, SIDE_B);
 
-   public static final RelationTypeSide TeamWorkflowToFoundInVersion_TeamWorkflow = RelationTypeSide.create(RelationSide.SIDE_A, 8432547963397826929L, "TeamWorkflowToFoundVersion");
-   public static final RelationTypeSide TeamWorkflowToFoundInVersion_Version = TeamWorkflowToFoundInVersion_TeamWorkflow.getOpposite();
+   RelationTypeToken TeamDefinitionToVersion = ats.add(2305843009213694320L, "TeamDefinitionToVersion", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, TeamDefinition, "Team Definition", Version, "Version");
+   RelationTypeSide TeamDefinitionToVersion_TeamDefinition = RelationTypeSide.create(TeamDefinitionToVersion, SIDE_A);
+   RelationTypeSide TeamDefinitionToVersion_Version = RelationTypeSide.create(TeamDefinitionToVersion, SIDE_B);
 
-   public static final RelationTypeSide TeamWorkflowToReview_TeamWorkflow = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694321L, "TeamWorkflowToReview");
-   public static final RelationTypeSide TeamWorkflowToReview_Review = TeamWorkflowToReview_TeamWorkflow.getOpposite();
+    // Use same relation as TeamDefinitionToVersion; This is here for readability and to document this in code
+    RelationTypeSide TeamDefinitionToAtsConfigObject_TeamDefinition = TeamDefinitionToVersion_TeamDefinition;
+    RelationTypeSide TeamDefinitionToAtsConfigObject_AtsConfigObject = TeamDefinitionToVersion_TeamDefinition.getOpposite();
 
-   public static final RelationTypeSide ActionableItemLead_AI = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694329L, "ActionableItemLead");
-   public static final RelationTypeSide ActionableItemLead_Lead = ActionableItemLead_AI.getOpposite();
+   RelationTypeToken TeamLead = ats.add(2305843009213694313L, "TeamLead", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.ResponsibleTeam, "Team Definition", User, "User");
+   RelationTypeSide TeamLead_Team = RelationTypeSide.create(TeamLead, SIDE_A);
+   RelationTypeSide TeamLead_Lead = RelationTypeSide.create(TeamLead, SIDE_B);
 
-   public static final RelationTypeSide Owner_ActionableItem = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694328L, "ActionableItem Owner");
-   public static final RelationTypeSide Owner_Owner = Owner_ActionableItem.getOpposite();
+   RelationTypeToken TeamMember = ats.add(2305843009213694314L, "TeamMember", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.ResponsibleTeam, "Team Definition", User, "User");
+   RelationTypeSide TeamMember_Team = RelationTypeSide.create(TeamMember, SIDE_A);
+   RelationTypeSide TeamMember_Member = RelationTypeSide.create(TeamMember, SIDE_B);
 
-   // Use same relation as Owner; This is here for readability and to document this in code
-   public static final RelationTypeSide ActionableItem_Artifact = Owner_ActionableItem;
-   public static final RelationTypeSide ActionableItem_User = ActionableItem_Artifact.getOpposite();
+   RelationTypeToken TeamWfToTask = ats.add(2305843009213694318L, "TeamWfToTask", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, TeamWorkflow, "Team Workflow", Task, "Task");
+   RelationTypeSide TeamWfToTask_TeamWorkflow = RelationTypeSide.create(TeamWfToTask, SIDE_A);
+   RelationTypeSide TeamWfToTask_Task = RelationTypeSide.create(TeamWfToTask, SIDE_B);
 
-   public static final RelationTypeSide AutoAddActionToGoal_Goal = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694333L, "AutoAddActionToGoal");
-   public static final RelationTypeSide AutoAddActionToGoal_AtsConfigObject = AutoAddActionToGoal_Goal.getOpposite();
+   RelationTypeToken TeamWorkflowTargetedForVersion = ats.add(2305843009213694319L, "TeamWorkflowTargetedForVersion", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", Version, "Version");
+   RelationTypeSide TeamWorkflowTargetedForVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowTargetedForVersion, SIDE_A);
+   RelationTypeSide TeamWorkflowTargetedForVersion_Version = RelationTypeSide.create(TeamWorkflowTargetedForVersion, SIDE_B);
 
-   public static final RelationTypeSide WorkPackage_WorkPackage = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694334L, "Work Package");
-   public static final RelationTypeSide WorkPackage_AtsTeamDefOrAi = WorkPackage_WorkPackage.getOpposite();
+   RelationTypeToken TeamWorkflowToFoundInVersion = ats.add(8432547963397826929L, "TeamWorkflowToFoundInVersion", MANY_TO_ONE, UNORDERED, TeamWorkflow, "Team Workflow", Version, "Version");
+   RelationTypeSide TeamWorkflowToFoundInVersion_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_A);
+   RelationTypeSide TeamWorkflowToFoundInVersion_Version = RelationTypeSide.create(TeamWorkflowToFoundInVersion, SIDE_B);
+
+   RelationTypeToken TeamWorkflowToReview = ats.add(2305843009213694321L, "TeamWorkflowToReview", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team Workflow", AbstractReview, "Review");
+   RelationTypeSide TeamWorkflowToReview_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);
+   RelationTypeSide TeamWorkflowToReview_Review = RelationTypeSide.create(TeamWorkflowToReview, SIDE_B);
+
+   RelationTypeToken WorkPackage = ats.add(2305843009213694334L, "Work Package", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.WorkPackage, "Work Package", AtsTeamDefinitionOrAi, "ATS Team Def or AI");
+   RelationTypeSide WorkPackage_WorkPackage = RelationTypeSide.create(WorkPackage, SIDE_A);
+   RelationTypeSide WorkPackage_AtsTeamDefOrAi = RelationTypeSide.create(WorkPackage, SIDE_B);
 
    // Program uses supporting info to relate to team.  Use different name for readability and understandability
-   public static final RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
-   public static final RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
+   RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
+   RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
 
    //@formatter:on
 }

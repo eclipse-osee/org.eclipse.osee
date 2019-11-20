@@ -10,14 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestRun;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
+import static org.eclipse.osee.ote.define.AUTOGEN.OteTypeTokenProvider.ote;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
-public final class OteRelationTypes {
+public interface OteRelationTypes {
 
    // @formatter:off
-   public static final RelationTypeSide TestCaseToRunRelation_TestCase = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694326L, "Test Case to Run Relation");
-   public static final RelationTypeSide TestCaseToRunRelation_TestRun = TestCaseToRunRelation_TestCase.getOpposite();
-   // @formatter:off
-
+   RelationTypeToken TestCaseToRunRelation = ote.add(2305843009213694326L, "Test Case to Run Relation", ONE_TO_MANY, UNORDERED, TestCase, "Test Case", TestRun, "Test Run");
+   RelationTypeSide TestCaseToRunRelation_TestCase = RelationTypeSide.create(TestCaseToRunRelation, SIDE_A);
+   RelationTypeSide TestCaseToRunRelation_TestRun = RelationTypeSide.create(TestCaseToRunRelation, SIDE_B);
+   // @formatter:on
 }

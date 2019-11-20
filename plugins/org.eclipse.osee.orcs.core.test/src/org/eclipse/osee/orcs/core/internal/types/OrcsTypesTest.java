@@ -44,10 +44,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -101,8 +103,14 @@ public final class OrcsTypesTest {
    public static final ArtifactTypeToken LastArtifact = test.add(test.artifactType(1152921504606957089L, "Last Artifact", false, SubsystemRequirement)
       .exactlyOne(Field2, "field2"));
 
-   private static final IRelationType RequirementRelation = RelationTypeToken.create(2305843009213695295L, "Requirement Relation");
-   private static final IRelationType AnotherRelation = RelationTypeToken.create(2305843009213695296L, "Another Relation");
+   public static final RelationTypeToken RequirementRelation = test.add(2305843009213695295L, "Requirement Relation", RelationTypeMultiplicity.ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, Requirement, "Requirement", SubsystemRequirement, "SubSystem Requirement");
+   public static final RelationTypeSide RequirementRelation_RequirementSideA = RelationTypeSide.create(RequirementRelation, RelationSide.SIDE_A);
+   public static final RelationTypeSide RequirementRelation_SubsystemSideB = RelationTypeSide.create(RequirementRelation, RelationSide.SIDE_B);
+
+   public static final RelationTypeToken AnotherRelation = test.add(2305843009213695296L, "Another Relation", RelationTypeMultiplicity.MANY_TO_MANY, RelationSorter.UNORDERED, OtherArtifact, "Other Artifact", LastArtifact, "Last Artifact");
+   public static final RelationTypeSide AnotherRelation_OtherSideA = RelationTypeSide.create(AnotherRelation, RelationSide.SIDE_A);
+   public static final RelationTypeSide AnotherRelation_LastSideB = RelationTypeSide.create(AnotherRelation, RelationSide.SIDE_B);
+
 
    private static final BranchId BRANCH_A = IOseeBranch.create(3458234234L, "Branch A");
    private static final BranchId BRANCH_B = IOseeBranch.create(9993245332L, "Branch B");

@@ -73,11 +73,11 @@ public class AtsBulkLoad {
       }
       if (!teams.isEmpty()) {
          arts.addAll(RelationManager.getRelatedArtifacts(teams, 4, AtsRelationTypes.TeamWfToTask_Task,
-            AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review));
+            AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsRelationTypes.TeamWorkflowToReview_Review));
       }
       if (!tasks.isEmpty()) {
          arts.addAll(RelationManager.getRelatedArtifacts(tasks, 2, AtsRelationTypes.TeamWfToTask_TeamWorkflow,
-            AtsRelationTypes.ActionToWorkflow_TeamWorkFlow));
+            AtsRelationTypes.ActionToWorkflow_TeamWorkflow));
       }
       arts.addAll(artifacts);
       return arts;

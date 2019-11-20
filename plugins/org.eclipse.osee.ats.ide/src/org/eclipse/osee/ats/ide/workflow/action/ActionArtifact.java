@@ -52,11 +52,11 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    public Collection<TeamWorkFlowArtifact> getTeams() {
-      return getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_TeamWorkFlow, TeamWorkFlowArtifact.class);
+      return getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_TeamWorkflow, TeamWorkFlowArtifact.class);
    }
 
    public TeamWorkFlowArtifact getFirstTeam() {
-      if (getRelatedArtifactsCount(AtsRelationTypes.ActionToWorkflow_TeamWorkFlow) > 0) {
+      if (getRelatedArtifactsCount(AtsRelationTypes.ActionToWorkflow_TeamWorkflow) > 0) {
          return getTeams().iterator().next();
       }
       return null;
