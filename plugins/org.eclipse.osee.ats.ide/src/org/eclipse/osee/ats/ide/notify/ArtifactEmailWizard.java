@@ -41,7 +41,9 @@ public class ArtifactEmailWizard extends EmailWizard {
       if (workItem.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<>();
          for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
-            emails.add(user.getEmail());
+            if (user.isActive()) {
+               emails.add(user.getEmail());
+            }
          }
          groupNames.add(new EmailGroup("Assignees", emails));
       }

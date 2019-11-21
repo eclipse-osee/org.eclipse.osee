@@ -65,21 +65,21 @@ public class EmailTeamsItem extends XNavigateItemAction {
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
             for (IAtsUser user : teamDef.getMembers()) {
-               if (Strings.isValid(user.getEmail())) {
+               if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
             for (IAtsUser user : teamDef.getLeads()) {
-               if (Strings.isValid(user.getEmail())) {
+               if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
             }
          }
       }
       if (emails.isEmpty()) {
-         AWorkbench.popup("Error", "No emails configured.");
+         AWorkbench.popup("Error", "No emails or active users configured.");
          return;
       }
       Program.launch("mailto:" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", emails));

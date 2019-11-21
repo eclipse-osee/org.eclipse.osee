@@ -116,7 +116,7 @@ public class EmailActionsBlam extends AbstractBlam {
    private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem, AtsNotificationCollector notifications) {
       Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), workItem);
       Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
-      if (recipients.isEmpty()) {
+      if (activeEmailUsers.isEmpty()) {
          logf("No active " + data.getEmailRecipient() + " for workflow [%s].", workItem.toStringWithId());
          return;
       }
