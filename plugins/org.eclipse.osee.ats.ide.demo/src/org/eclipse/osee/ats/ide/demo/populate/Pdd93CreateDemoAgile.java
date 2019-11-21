@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -290,8 +290,8 @@ public class Pdd93CreateDemoAgile {
       // Add items to backlog
       Collection<IAtsWorkItem> items =
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).isOfType(
-            DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoReqTeamWorkflow,
-            DemoArtifactTypes.DemoTestTeamWorkflow).getItems();
+            AtsDemoOseeTypes.DemoCodeTeamWorkflow, AtsDemoOseeTypes.DemoReqTeamWorkflow,
+            AtsDemoOseeTypes.DemoTestTeamWorkflow).getItems();
       Assert.isTrue(items.size() > 0);
 
       JaxAgileItem item = new JaxAgileItem();

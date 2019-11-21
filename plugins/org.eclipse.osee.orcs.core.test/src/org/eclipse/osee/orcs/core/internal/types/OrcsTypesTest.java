@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.orcs.core.internal.types.OrcsTestTypeTokenProvider.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -44,8 +45,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.NamespaceToken;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -77,13 +76,17 @@ import org.mockito.stubbing.Answer;
  * @author Roberto E. Escobar
  */
 public final class OrcsTypesTest {
-   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
-   //@formatter:off
-   public static final NamespaceToken TEST = NamespaceToken.valueOf(8, "test", "Namespace for orcsTypesTest system and content management types");
 
+   //@formatter:off
    private static final String SESSION_ID = "Test Session";
 
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
+
+   private static final AttributeTypeString Name = test.createString(1152921504606957090L, "Name", MediaType.TEXT_PLAIN, "");
+   private static final AttributeTypeInputStream Annotation = test.createInputStream(1152921504606957091L, "Annotation", MediaType.TEXT_PLAIN, "");
+   private static final AttributeTypeId Wordml = test.createString(1152921504606957092L, "WordML", MediaType.APPLICATION_XML, "");
+   private static final AttributeTypeEnum Field1 = test.createEnumNoTag(1152921504606957093L, "Field 1", MediaType.TEXT_PLAIN, "");
+   private static final AttributeTypeDate Field2 = test.createDate(1152921504606957094L, "Field 2", MediaType.TEXT_PLAIN, "");
 
    private static final ArtifactTypeToken Artifact = ArtifactTypeToken.valueOf(1152921504606957083L, "Artifact");
    private static final ArtifactTypeToken Requirement = ArtifactTypeToken.valueOf(1152921504606957084L, "Requirement");
@@ -92,12 +95,6 @@ public final class OrcsTypesTest {
    private static final ArtifactTypeToken SubsystemRequirement = ArtifactTypeToken.valueOf(1152921504606957087L, "SubSystem Requirement");
    private static final ArtifactTypeToken OtherArtifact = ArtifactTypeToken.valueOf(1152921504606957088L, "Other Artifact");
    private static final ArtifactTypeToken LastArtifact = ArtifactTypeToken.valueOf(1152921504606957089L, "Last Artifact");
-
-   private static final AttributeTypeString Name = tokens.add(AttributeTypeToken.createString(1152921504606957090L, TEST, "Name", MediaType.TEXT_PLAIN, ""));
-   private static final AttributeTypeInputStream Annotation = tokens.add(AttributeTypeToken.createInputStream(1152921504606957091L, TEST, "Annotation", MediaType.TEXT_PLAIN, ""));
-   private static final AttributeTypeId Wordml = tokens.add(AttributeTypeToken.createString(1152921504606957092L, TEST, "WordML", MediaType.APPLICATION_XML, ""));
-   private static final AttributeTypeEnum Field1 = tokens.add(AttributeTypeToken.createEnumNoTag(1152921504606957093L, TEST, "Field 1", MediaType.TEXT_PLAIN, ""));
-   private static final AttributeTypeDate Field2 = tokens.add(AttributeTypeToken.createDate(1152921504606957094L, TEST, "Field 2", MediaType.TEXT_PLAIN, ""));
 
    private static final IRelationType RequirementRelation = RelationTypeToken.create(2305843009213695295L, "Requirement Relation");
    private static final IRelationType AnotherRelation = RelationTypeToken.create(2305843009213695296L, "Another Relation");

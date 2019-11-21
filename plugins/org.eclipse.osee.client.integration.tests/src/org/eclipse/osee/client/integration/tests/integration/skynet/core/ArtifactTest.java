@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
-import org.eclipse.osee.client.demo.DemoTypes;
+import org.eclipse.osee.client.demo.DemoOseeTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -53,7 +53,7 @@ public final class ArtifactTest {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
+      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoOseeTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
       breakerArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, COMMON);
       breakerArt.setName(BREAKER_NAME);
       breakerArt.persist("ArtifactTest");

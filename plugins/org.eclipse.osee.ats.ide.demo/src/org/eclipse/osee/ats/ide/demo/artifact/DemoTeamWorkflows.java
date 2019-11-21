@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.demo.artifact;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
@@ -30,8 +30,8 @@ public class DemoTeamWorkflows implements ITeamWorkflowProvider {
       try {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem.getParentTeamWorkflow();
          if (teamWf != null) {
-            return teamWf.isTypeEqual(DemoArtifactTypes.DemoCodeTeamWorkflow) || teamWf.isTypeEqual(
-               DemoArtifactTypes.DemoReqTeamWorkflow) || teamWf.isTypeEqual(DemoArtifactTypes.DemoTestTeamWorkflow);
+            return teamWf.isTypeEqual(AtsDemoOseeTypes.DemoCodeTeamWorkflow) || teamWf.isTypeEqual(
+               AtsDemoOseeTypes.DemoReqTeamWorkflow) || teamWf.isTypeEqual(AtsDemoOseeTypes.DemoTestTeamWorkflow);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

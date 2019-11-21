@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -28,7 +28,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
     * Register core types first to prevent their ids from being registered by mistaken or malicious code
     */
    public OrcsTokenServiceImpl() {
-      new CoreAttributeTypes().registerTypes(this);
+      new CoreTypeTokenProvider().registerTypes(this);
    }
 
    public void addTypeTokenProvider(OrcsTypeTokenProvider typeProvider) {

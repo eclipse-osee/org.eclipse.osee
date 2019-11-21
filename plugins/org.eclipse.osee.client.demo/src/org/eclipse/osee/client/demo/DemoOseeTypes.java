@@ -10,32 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo;
 
+import static org.eclipse.osee.client.demo.ClientDemoTypeTokenProvider.clientDemo;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.NamespaceToken;
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class DemoTypes implements OrcsTypeTokenProvider {
-   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
+public interface DemoOseeTypes {
 
    // @formatter:off
-   public static final NamespaceToken DEMO = NamespaceToken.valueOf(9, "demo", "Namespace for demo system and content management types");
+   AttributeTypeString DemoDslAttribute = clientDemo.createStringNoTag(1153126013769613777L, "Demo DSL Attribute", MediaType.TEXT_PLAIN, "");
 
    public static final ArtifactTypeToken DemoArtifactWithSelectivePartition = ArtifactTypeToken.valueOf(86, "Demo Artifact With Selective Partition");
-
    public static final ArtifactTypeToken DemoDslArtifact = ArtifactTypeToken.valueOf(204526342635554L, "Demo DSL Artifact");
-   public static final AttributeTypeString DemoDslAttribute = tokens.add(AttributeTypeToken.createStringNoTag(1153126013769613777L, DEMO, "Demo DSL Attribute", MediaType.TEXT_PLAIN, ""));
    // @formatter:on
 
-   @Override
-   public void registerTypes(OrcsTokenService tokenService) {
-      tokens.registerTypes(tokenService);
-   }
 }

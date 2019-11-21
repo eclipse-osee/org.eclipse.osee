@@ -5,39 +5,30 @@
  */
 package org.eclipse.osee.doors.connector.ui.handler;
 
+import static org.eclipse.osee.doors.connector.ui.handler.DoorsTypeTokenProvider.doors;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.NamespaceToken;
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 
 /**
- * Class to create Doors Artifact type
+ * Class to create Doors types
  *
  * @author Chandan Bandemutt
  */
-public final class DoorsOseeTypes implements OrcsTypeTokenProvider {
-   private static final OrcsTypeTokens tokens = new OrcsTypeTokens();
+public interface DoorsOseeTypes {
 
    /**
-    * Doors Artifact type
+    * Doors types
     */
 
    // @formatter:off
-   public static final NamespaceToken DOORS = NamespaceToken.valueOf(7, "doors", "Namespace for doors system and content management types");
+   AttributeTypeString DoorReqDatabaseName = doors.createString(8197L, "Door Req Id", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString DoorReqId = doors.createString(5764607523034243074L, "Door Req Id", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString DoorReqModuleName = doors.createString(5764607523034243076L, "Door Req Module Name", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString DoorReqName = doors.createString(5764607523034243075L, "Door Req Name", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString DoorReqUrl = doors.createString(8198L, "Door Req URL", MediaType.TEXT_PLAIN, "");
 
    public static final ArtifactTypeToken DoorsRequirement = ArtifactTypeToken.valueOf(5764607523034243073L, "Doors Requirement");
-
-   public static final AttributeTypeString DoorReqName = tokens.add(AttributeTypeToken.createString(5764607523034243075L, DOORS, "Door Req Name", MediaType.TEXT_PLAIN, ""));
-   public static final AttributeTypeString DoorReqUrl = tokens.add(AttributeTypeToken.createString(8198L, DOORS, "Door Req URL", MediaType.TEXT_PLAIN, ""));
    // @formatter:on
-
-   @Override
-   public void registerTypes(OrcsTokenService tokenService) {
-      tokens.registerTypes(tokenService);
-   }
 
 }

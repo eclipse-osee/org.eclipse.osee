@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.client.demo.DemoTypes;
+import org.eclipse.osee.client.demo.DemoOseeTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -120,7 +120,7 @@ public class DoorsArtifactExtractorTest {
    public void setUp() throws UnsupportedEncodingException {
       extractor = new DoorsArtifactExtractor();
       collector = new RoughArtifactCollector(null);
-      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
+      theArtifact = ArtifactTypeManager.addArtifact(DemoOseeTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
       String image = new String("String to represent binary image data");
       imageList.add(Lib.stringToInputStream(image));
       theArtifact.setAttributeFromValues(CoreAttributeTypes.ImageContent, imageList);
