@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 
 /**
  * OSEE type token providers should instantiate a static instance of this class and call the add methods for each type
@@ -22,13 +24,9 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
-   private final List<AttributeTypeToken> attributeTypes = new ArrayList<>();
+   private final ChainingArrayList<@NonNull AttributeTypeToken> attributeTypes = new ChainingArrayList<>();
    private final List<RelationTypeToken> relationTypes = new ArrayList<>();
    private final NamespaceToken namespace;
-
-   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
-      return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
-   }
 
    public OrcsTypeTokens() {
       this.namespace = NamespaceToken.OSEE;
@@ -36,6 +34,10 @@ public class OrcsTypeTokens {
 
    public OrcsTypeTokens(NamespaceToken namespace) {
       this.namespace = namespace;
+   }
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
    }
 
    public List<AttributeTypeToken> getAttributeTypes() {
@@ -62,5 +64,148 @@ public class OrcsTypeTokens {
       artifactTypes.forEach(tokenService::registerArtifactType);
       attributeTypes.forEach(tokenService::registerAttributeType);
       relationTypes.forEach(tokenService::registerRelationType);
+   }
+
+   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description) {
+      return createArtifactId(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeArtifactId createArtifactIdNoTag(Long id, String name, String mediaType, String description) {
+      return createArtifactId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description) {
+      return createBoolean(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, String name, String mediaType, String description) {
+      return createBoolean(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description) {
+      return createBranchId(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, String name, String mediaType, String description) {
+      return createBranchId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeDate(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description) {
+      return createDate(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeDate createDateNoTag(Long id, String name, String mediaType, String description) {
+      return createDate(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description) {
+      return createDouble(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeDouble createDoubleNoTag(Long id, String name, String mediaType, String description) {
+      return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description) {
+      return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeEnum createEnumNoTag(Long id, String name, String mediaType, String description) {
+      return createEnum(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description) {
+      return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType, String description) {
+      return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description) {
+      return createInteger(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeInteger createIntegerNoTag(Long id, String name, String mediaType, String description) {
+      return createInteger(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description) {
+      return createLong(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeLong createLongNoTag(Long id, String name, String mediaType, String description) {
+      return createLong(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description) {
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description) {
+      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
+   /**
+    * return the default tagger for the given mediaType
+    */
+   static TaggerTypeToken determineTaggerType(String mediaType) {
+      switch (mediaType) {
+         case "application/msword":
+         case MediaType.TEXT_HTML:
+            return TaggerTypeToken.XmlTagger;
+         default:
+            return TaggerTypeToken.PlainTextTagger;
+      }
    }
 }

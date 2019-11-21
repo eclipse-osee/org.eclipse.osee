@@ -12,14 +12,15 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.ArrayList;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Ryan D. Brooks
  */
-public final class ChainingArrayList<T> extends ArrayList<T> {
+public final class ChainingArrayList<@NonNull T> extends ArrayList<T> {
    private static final long serialVersionUID = 1L;
 
-   public T addAndReturn(T element) {
+   public <@NonNull S extends T> S addAndReturn(S element) {
       add(element);
       return element;
    }
