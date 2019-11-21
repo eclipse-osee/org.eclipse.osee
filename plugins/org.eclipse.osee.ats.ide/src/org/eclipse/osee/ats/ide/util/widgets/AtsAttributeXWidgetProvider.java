@@ -51,6 +51,8 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          AtsArtifactTypes.TeamDefinition);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference,
          AtsArtifactTypes.TeamDefinition);
+      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TaskToChangedArtifactReference,
+         AtsArtifactTypes.TeamDefinition);
       artRefAttributeTypes = artRefAttrTypeToValidArtType.keySet();
    }
 
