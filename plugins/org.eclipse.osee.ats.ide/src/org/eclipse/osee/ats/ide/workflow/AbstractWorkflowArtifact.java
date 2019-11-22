@@ -430,6 +430,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() {
       List<IAtsStateDefinition> allPages = new ArrayList<>();
       IAtsStateDefinition currState = getStateDefinition();
+      if (currState == null) {
+         return allPages;
+      }
       allPages.addAll(currState.getToStates());
       if (currState.getStateType().isCompletedState()) {
          IAtsStateDefinition completedFromState = getWorkDefinition().getStateByName(getCompletedFromState());

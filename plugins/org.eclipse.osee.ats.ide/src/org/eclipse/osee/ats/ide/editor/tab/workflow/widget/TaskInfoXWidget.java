@@ -136,6 +136,9 @@ public class TaskInfoXWidget extends XLabelValueBase {
       HashMap<String, Integer> colorMap = new HashMap<String, Integer>();
       int numStates = 0;
       for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(currWf)) {
+         if (task.getStateDefinition() == null) {
+            continue;
+         }
          String currTaskName = task.getStateDefinition().getName();
          if (countingMap.containsKey(currTaskName)) {
             countingMap.put(currTaskName, countingMap.get(currTaskName) + 1);
