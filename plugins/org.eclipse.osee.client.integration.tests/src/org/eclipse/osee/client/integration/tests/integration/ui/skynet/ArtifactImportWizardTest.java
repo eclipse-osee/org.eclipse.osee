@@ -90,14 +90,14 @@ public final class ArtifactImportWizardTest {
 
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1).addChild(myRootArtifact);
 
-      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A");
+      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "A");
       myRootArtifact.addChild(artifactA);
 
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "C"));
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "C"));
 
       artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D"));
 
-      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "B"));
+      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "B"));
 
       myRootArtifact.persist("ArtifactImportWizardTest");
    }

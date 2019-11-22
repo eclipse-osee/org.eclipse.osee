@@ -61,7 +61,7 @@ public class MergeManagerTest {
    private IOseeBranch workingBranch;
    private static Artifact newArt;
    public static ArtifactToken NewArtifactToken =
-      ArtifactToken.valueOf(3534859, "ART_NAME", CoreArtifactTypes.SoftwareRequirement);
+      ArtifactToken.valueOf(3534859, "ART_NAME", CoreArtifactTypes.SoftwareRequirementMsWord);
 
    private static final int DELETE_MERGE = 2;
 

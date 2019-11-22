@@ -32,7 +32,7 @@ import org.junit.Test;
 public class SkynetTransactionTest {
 
    public static final ArtifactToken token =
-      ArtifactToken.valueOf(77, "JonasTestBot", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement);
+      ArtifactToken.valueOf(77, "JonasTestBot", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
 
    public static long bIDval = 786;
    public static final BranchId bID = BranchId.valueOf(bIDval);

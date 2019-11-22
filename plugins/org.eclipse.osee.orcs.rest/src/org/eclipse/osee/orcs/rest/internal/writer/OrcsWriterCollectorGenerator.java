@@ -123,7 +123,7 @@ public class OrcsWriterCollectorGenerator {
    private void createSoftwareRequirement(ArtifactToken folderToken, String number) {
       Long reqId = Lib.generateArtifactIdAsInt();
       String name = "Software Requirement " + number;
-      OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqId);
+      OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, name, reqId);
       OwApplicability owApp = OwFactory.createApplicability("Base");
       softwareReq.setAppId(owApp);
       OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);

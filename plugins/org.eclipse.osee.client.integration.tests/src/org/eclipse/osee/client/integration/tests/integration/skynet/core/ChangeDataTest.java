@@ -64,7 +64,7 @@ public class ChangeDataTest {
       workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName());
       ArrayList<Change> theChanges = new ArrayList<>();
 
-      Artifact artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
+      Artifact artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
       Artifact artifactEnd = artifactStart.duplicate(workingBranch);
       artifactStart.setName("test artifact 1");
       artifactEnd.setName("test artifact 1");
@@ -81,7 +81,7 @@ public class ChangeDataTest {
          "1.2", null, "", null, AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
-      artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
+      artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
       artifactEnd = artifactStart.duplicate(workingBranch);
       artifactStart.setName("test artifact 2");
       artifactEnd.setName("test artifact 2A");
@@ -103,7 +103,7 @@ public class ChangeDataTest {
          artifactStart, artDelta);
       theChanges.add(change);
 
-      artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
+      artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
       artifactEnd.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.2");
       artDelta = new ArtifactDelta(null, null, artifactStart);
       change = new ArtifactChange(null, GammaId.valueOf(1L), artifactStart, null, ModificationType.NEW, "", "", false,

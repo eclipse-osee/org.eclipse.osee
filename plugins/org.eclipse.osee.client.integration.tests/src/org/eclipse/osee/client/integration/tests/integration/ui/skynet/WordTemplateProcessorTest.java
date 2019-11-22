@@ -12,7 +12,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RendererTemplate;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RendererTemplateWholeWord;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.File;
@@ -92,13 +92,13 @@ public class WordTemplateProcessorTest {
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 
       recurseTemplate =
-         ArtifactQuery.getArtifactFromTypeAndName(RendererTemplate, DefaultDbInitTasks.PREVIEW_ALL_RECURSE, COMMON);
+         ArtifactQuery.getArtifactFromTypeAndName(RendererTemplateWholeWord, DefaultDbInitTasks.PREVIEW_ALL_RECURSE, COMMON);
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "WordTemplateProcessorTest_Root");
 
-      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "A");
+      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, "A");
       Artifact artifactB = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "B");
-      Artifact artifactC = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "C");
+      Artifact artifactC = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, "C");
       Artifact artifactD = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "D");
       Artifact artifactE = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "E");
       Artifact artifactF = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, branch, "F");

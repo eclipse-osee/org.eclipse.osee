@@ -15,16 +15,17 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTe
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DesignMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Feature;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetails;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunction;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SystemFunction;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestPlanElement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SystemFunctionMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheetMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestPlanElementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedure;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UniversalGroup;
@@ -51,7 +52,7 @@ public interface CoreRelationTypes {
    RelationTypeSide Allocation_Requirement = RelationTypeSide.create(Allocation, SIDE_A);
    RelationTypeSide Allocation_Component = RelationTypeSide.create(Allocation, SIDE_B);
 
-   RelationTypeToken Assessment = osee.add(2305843009213694336L, "Assessment", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, SafetyAssessment, "Assessments", SystemFunction, "System Functions");
+   RelationTypeToken Assessment = osee.add(2305843009213694336L, "Assessment", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, SafetyAssessment, "Assessments", SystemFunctionMsWord, "System Functions");
    RelationTypeSide Assessment_SafetyAssessment = RelationTypeSide.create(Assessment, SIDE_A);
    RelationTypeSide Assessment_SystemFunctions = RelationTypeSide.create(Assessment, SIDE_B);
 
@@ -76,7 +77,7 @@ public interface CoreRelationTypes {
    RelationTypeSide Dependency_Artifact = RelationTypeSide.create(Dependency, SIDE_A);
    RelationTypeSide Dependency_Dependency = RelationTypeSide.create(Dependency, SIDE_B);
 
-   RelationTypeToken Design = osee.add(2305843009213694298L, "Design", MANY_TO_MANY, RelationSorter.UNORDERED, Requirement, "requirement", CoreArtifactTypes.Design, "design");
+   RelationTypeToken Design = osee.add(2305843009213694298L, "Design", MANY_TO_MANY, UNORDERED, Requirement, "requirement", DesignMsWord, "design");
    RelationTypeSide Design_Requirement = RelationTypeSide.create(Design, SIDE_A);
    RelationTypeSide Design_Design = RelationTypeSide.create(Design, SIDE_B);
 
@@ -84,7 +85,7 @@ public interface CoreRelationTypes {
    RelationTypeSide DevelopmentalVerification_Requirement = RelationTypeSide.create(DevelopmentalVerification, SIDE_A);
    RelationTypeSide DevelopmentalVerification_DevelopmentalVerifier = RelationTypeSide.create(DevelopmentalVerification, SIDE_B);
 
-   RelationTypeToken Executes = osee.add(2305843009213694302L, "Executes", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, TestPlanElement, "test plan element", TestProcedure, "test procedure");
+   RelationTypeToken Executes = osee.add(2305843009213694302L, "Executes", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, TestPlanElementMsWord, "test plan element", TestProcedure, "test procedure");
    RelationTypeSide Executes_TestPlanElement = RelationTypeSide.create(Executes, SIDE_A);
    RelationTypeSide Executes_TestProcedure = RelationTypeSide.create(Executes, SIDE_B);
 
@@ -96,7 +97,7 @@ public interface CoreRelationTypes {
    RelationTypeSide GitRepositoryCommit_GitRepository = RelationTypeSide.create(GitRepositoryCommit, SIDE_A);
    RelationTypeSide GitRepositoryCommit_GitCommit = RelationTypeSide.create(GitRepositoryCommit, SIDE_B);
 
-   RelationTypeToken ImplementationInfo = osee.add(3094530921867614694L, "Implementation Info", MANY_TO_MANY, UNORDERED, AbstractSoftwareRequirement, "software requirement", ImplementationDetails, "implementation details");
+   RelationTypeToken ImplementationInfo = osee.add(3094530921867614694L, "Implementation Info", MANY_TO_MANY, UNORDERED, AbstractSoftwareRequirement, "software requirement", ImplementationDetailsMsWord, "implementation details");
    RelationTypeSide ImplementationInfo_SoftwareRequirement = RelationTypeSide.create(ImplementationInfo, SIDE_A);
    RelationTypeSide ImplementationInfo_ImplementationDetails = RelationTypeSide.create(ImplementationInfo, SIDE_B);
 
@@ -112,7 +113,7 @@ public interface CoreRelationTypes {
    RelationTypeSide ResultsData_TestUnit = RelationTypeSide.create(ResultsData, SIDE_A);
    RelationTypeSide ResultsData_TestResult = RelationTypeSide.create(ResultsData, SIDE_B);
 
-   RelationTypeToken Specifying = osee.add(2305843009213694305L, "Specifying", MANY_TO_ONE, UNORDERED, SubsystemFunction, "function", Requirement, "requirement");
+   RelationTypeToken Specifying = osee.add(2305843009213694305L, "Specifying", MANY_TO_ONE, UNORDERED, SubsystemFunctionMsWord, "function", Requirement, "requirement");
    RelationTypeSide Specifying_Function = RelationTypeSide.create(Specifying, SIDE_A);
    RelationTypeSide Specifying_Requirement = RelationTypeSide.create(Specifying, SIDE_B);
 
@@ -152,11 +153,11 @@ public interface CoreRelationTypes {
    RelationTypeSide Verification_Requirement = RelationTypeSide.create(Verification, SIDE_A);
    RelationTypeSide Verification_Verifier = RelationTypeSide.create(Verification, SIDE_B);
 
-   RelationTypeToken VerificationPlan = osee.add(2305843009213694300L, "Verification Plan", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, Requirement, "requirement", TestPlanElement, "test plan element");
+   RelationTypeToken VerificationPlan = osee.add(2305843009213694300L, "Verification Plan", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, Requirement, "requirement", TestPlanElementMsWord, "test plan element");
    RelationTypeSide VerificationPlan_Requirement = RelationTypeSide.create(VerificationPlan, SIDE_A);
    RelationTypeSide VerificationPlan_TestPlanElement = RelationTypeSide.create(VerificationPlan, SIDE_B);
 
-   RelationTypeToken VerificationProcedure = osee.add(2305843009213694301L, "Verification Procedure", MANY_TO_MANY, UNORDERED, TestInformationSheet, "test information sheet", TestProcedure, "test procedure");
+   RelationTypeToken VerificationProcedure = osee.add(2305843009213694301L, "Verification Procedure", MANY_TO_MANY, UNORDERED, TestInformationSheetMsWord, "test information sheet", TestProcedure, "test procedure");
    RelationTypeSide VerificationProcedure_TestInformationSheet = RelationTypeSide.create(VerificationProcedure, SIDE_A);
    RelationTypeSide VerificationProcedure_TestProcedure = RelationTypeSide.create(VerificationProcedure, SIDE_B);
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Component;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.CodeRequirement_CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
@@ -99,10 +99,10 @@ public class GraphDataImplTest {
 
       graph = new GraphDataImpl(null, branch, TRANSACTION_ID);
 
-      artifact1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirement, artifactId20.getId(), "artifact1");
-      artifact2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirement, artifactId21.getId(), "artifact2");
-      container1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirement, artifactId30.getId(), "container1");
-      container2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirement, artifactId31.getId(), "container2");
+      artifact1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId20.getId(), "artifact1");
+      artifact2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId21.getId(), "artifact2");
+      container1 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId30.getId(), "container1");
+      container2 = OrcsMockUtility.createTestArtifact(branch, SoftwareRequirementMsWord, artifactId31.getId(), "container2");
 
       artifactData1 = artifact1.getOrcsData();
       artifactData2 = artifact2.getOrcsData();

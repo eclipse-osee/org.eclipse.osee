@@ -83,9 +83,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirement);
+         getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirementMsWord);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
@@ -106,9 +106,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirement);
+         getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirementMsWord);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -133,9 +133,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
@@ -157,9 +157,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -184,9 +184,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -228,9 +228,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(
@@ -281,9 +281,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.AbstractSoftwareRequirement.getId(),
@@ -318,9 +318,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setPredicate(predicate);
 
       RelationType testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
+         getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
-      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
+      ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(

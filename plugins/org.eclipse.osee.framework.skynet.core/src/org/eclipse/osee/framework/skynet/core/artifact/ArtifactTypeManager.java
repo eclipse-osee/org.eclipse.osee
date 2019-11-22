@@ -195,7 +195,7 @@ public class ArtifactTypeManager {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();
          for (BranchId branch : BranchManager.getBranches(new BranchFilter())) {
-            artifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
+            artifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
                DeletionFlag.INCLUDE_DELETED));
          }
          if (artifacts.size() > 0) {

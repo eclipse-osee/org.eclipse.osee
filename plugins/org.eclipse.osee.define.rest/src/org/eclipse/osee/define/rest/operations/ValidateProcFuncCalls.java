@@ -50,13 +50,13 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class ValidateProcFuncCalls {
 
-   private static final List<ArtifactTypeToken> SR_METHOD_TYPES =
-      Arrays.asList(CoreArtifactTypes.SoftwareRequirementProcedure, CoreArtifactTypes.SoftwareRequirementFunction,
-         CoreArtifactTypes.SoftwareRequirementDataDefinition);
+   private static final List<ArtifactTypeToken> SR_METHOD_TYPES = Arrays.asList(
+      CoreArtifactTypes.SoftwareRequirementProcedureMsWord, CoreArtifactTypes.SoftwareRequirementFunctionMsWord,
+      CoreArtifactTypes.SoftwareRequirementDataDefinitionMsWord);
 
-   private static final List<ArtifactTypeToken> ID_METHOD_TYPES =
-      Arrays.asList(CoreArtifactTypes.ImplementationDetailsProcedure, CoreArtifactTypes.ImplementationDetailsFunction,
-         CoreArtifactTypes.ImplementationDetailsDataDefinition);
+   private static final List<ArtifactTypeToken> ID_METHOD_TYPES = Arrays.asList(
+      CoreArtifactTypes.ImplementationDetailsProcedureMsWord, CoreArtifactTypes.ImplementationDetailsFunctionMsWord,
+      CoreArtifactTypes.ImplementationDetailsDataDefinitionMsWord);
 
    private static final List<ArtifactTypeToken> ALL_METHOD_TYPES = new LinkedList<>();
    Map<String, ArtifactToken> artNameToArtifact = new HashMap<>(3000);
@@ -167,7 +167,7 @@ public class ValidateProcFuncCalls {
 
       List<ArtifactTypeToken> TYPES = new LinkedList<>();
       TYPES.addAll(ALL_METHOD_TYPES);
-      TYPES.add(CoreArtifactTypes.SoftwareRequirement);
+      TYPES.add(CoreArtifactTypes.SoftwareRequirementMsWord);
 
       for (ArtifactTypeToken type : TYPES) {
          if (swArt.getArtifactType().equals(type)) {
@@ -231,8 +231,8 @@ public class ValidateProcFuncCalls {
    private List<Long> getSoftwareReqIds(BranchId branch) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-         CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.SoftwareRequirementFunction,
-         CoreArtifactTypes.SoftwareRequirementProcedure).asArtifactIds()) {
+         CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.SoftwareRequirementFunctionMsWord,
+         CoreArtifactTypes.SoftwareRequirementProcedureMsWord).asArtifactIds()) {
          resultIds.add(art.getId());
       }
       return resultIds;
@@ -283,7 +283,7 @@ public class ValidateProcFuncCalls {
       log("");
       log("Errors: -------------------------------------------");
       List<String> softReqWordContentLinkUiNames =
-         artTypeToWordContentLinkUiName.getValues(CoreArtifactTypes.SoftwareRequirement);
+         artTypeToWordContentLinkUiName.getValues(CoreArtifactTypes.SoftwareRequirementMsWord);
       for (ArtifactTypeToken methodType : ID_METHOD_TYPES) {
          List<String> artUiNames = artTypeToArtUiName.getValues(methodType);
          for (String artUiName : artUiNames) {

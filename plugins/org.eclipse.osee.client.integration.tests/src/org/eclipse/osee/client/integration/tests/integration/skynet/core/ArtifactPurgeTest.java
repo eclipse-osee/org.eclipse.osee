@@ -79,7 +79,7 @@ public class ArtifactPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,
          method.getQualifiedTestName(), workingBranch);
       TransactionManager.persistInTransaction(method.getQualifiedTestName(), softArts);
 

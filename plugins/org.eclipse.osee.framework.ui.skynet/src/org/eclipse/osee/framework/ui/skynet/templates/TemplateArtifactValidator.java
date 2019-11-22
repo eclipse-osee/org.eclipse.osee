@@ -35,7 +35,7 @@ public class TemplateArtifactValidator implements IOseeValidator {
 
    @Override
    public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
-      return artifact.isOfType(CoreArtifactTypes.RendererTemplate) && attributeType.equals(
+      return artifact.isOfType(CoreArtifactTypes.RendererTemplateWholeWord) && attributeType.equals(
          CoreAttributeTypes.TemplateMatchCriteria);
    }
 
@@ -45,7 +45,7 @@ public class TemplateArtifactValidator implements IOseeValidator {
          String toVerify = (String) proposedObject;
          if (Strings.isValid(toVerify)) {
             Collection<Artifact> templates =
-               ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.RendererTemplate,
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.RendererTemplateWholeWord,
                   CoreAttributeTypes.TemplateMatchCriteria, toVerify, artifact.getBranch());
 
             if (templates.isEmpty()) {

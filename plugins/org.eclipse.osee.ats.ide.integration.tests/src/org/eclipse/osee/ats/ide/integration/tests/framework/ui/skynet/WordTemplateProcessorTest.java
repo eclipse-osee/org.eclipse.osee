@@ -41,7 +41,7 @@ public class WordTemplateProcessorTest {
    public void setUpProcessor() {
       processor = new WordTemplateProcessor(null);
       excludeTokens = new ArrayList<>();
-      excludeTokens.add(CoreArtifactTypes.ImplementationDetails);
+      excludeTokens.add(CoreArtifactTypes.ImplementationDetailsMsWord);
       processor.setExcludedArtifactTypeForTest(excludeTokens);
 
       softReqFolder =
@@ -67,7 +67,7 @@ public class WordTemplateProcessorTest {
       Artifact virtualFixDetailHeader =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.HeadingMsWord, "VirtualFixDetailHeader", SAW_Bld_1);
       Artifact virtualFixDetailRequirements = ArtifactQuery.getArtifactFromTypeAndName(
-         CoreArtifactTypes.SoftwareRequirement, "Virtual Fix Detail Requirements", SAW_Bld_1);
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual Fix Detail Requirements", SAW_Bld_1);
 
       Assert.assertFalse(results.contains(virtualFixDetailHeader));
       Assert.assertFalse(results.contains(virtualFixDetailRequirements));
@@ -77,10 +77,10 @@ public class WordTemplateProcessorTest {
    @Test
    public void getEmptyHeadersTest_case3() {
 
-      Artifact eventImplementation = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
+      Artifact eventImplementation = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
          "Event Implementation", SAW_Bld_1);
       Artifact methodName =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Method name", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Method name", SAW_Bld_1);
 
       Assert.assertFalse(results.contains(eventImplementation));
       Assert.assertFalse(results.contains(methodName));

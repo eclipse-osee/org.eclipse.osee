@@ -429,7 +429,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) {
       Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification_Verifier);
       if (scripts.isEmpty()) {
-         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirementMsWord) || requirement.isOfType(
             CoreArtifactTypes.AbstractImplementationDetails)) {
             statusLine[Index.TEST_SCRIPT.ordinal()] = requirement.getArtifactTypeName();
             sumFormula.insert(0, "=sum(0");
@@ -498,7 +498,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       processRpcrStatuses(requirement, statusLine);
 
       statusLine[Index.Category.ordinal()] = requirement.getSoleAttributeValue(CoreAttributeTypes.Category, "");
-      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirementMsWord) || requirement.isOfType(
          CoreArtifactTypes.AbstractImplementationDetails)) {
          statusLine[Index.Category.ordinal()] = "I";
       }
@@ -527,7 +527,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       HashCollectionSet<String, Artifact> requirementNameToTestProcedures = new HashCollectionSet<>(HashSet::new);
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       List<Artifact> tpReqs =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirementMsWord, testProcedureBranch);
       double increment = 100.0 / tpReqs.size();
       double progress = 0;
 

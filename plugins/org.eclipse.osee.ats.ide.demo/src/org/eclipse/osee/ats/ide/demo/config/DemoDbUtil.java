@@ -34,7 +34,7 @@ public class DemoDbUtil {
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
 
    public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, BranchId branch) {
-      return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
+      return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirementMsWord, str.name(), branch);
    }
 
    public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
@@ -64,7 +64,7 @@ public class DemoDbUtil {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
-      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, INTERFACE_INITIALIZATION,
          branch);
    }
 

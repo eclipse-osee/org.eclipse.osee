@@ -71,7 +71,7 @@ public class ConflictIntroduceTest {
       // set up destination branch
       BranchManager.createWorkingBranch(SAW_Bld_1, destinationBranch);
       artifactToDelete =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Read-only Robots", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Read-only Robots", SAW_Bld_1);
 
       // Delete artifact and commit to destination branch
       BranchManager.createWorkingBranch(destinationBranch, updateBranch);

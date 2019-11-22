@@ -88,7 +88,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    private boolean isImplementationDetailsChild(ArtifactId childArtifact, ArtifactId parentArtifact) {
-      return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirement) && //
+      return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirementMsWord) && //
          atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
          atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact);
    }

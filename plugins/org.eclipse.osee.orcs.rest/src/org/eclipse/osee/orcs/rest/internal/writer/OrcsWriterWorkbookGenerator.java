@@ -125,7 +125,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.endRow();
 
       // row 4 - New Software Requirement 1 under folder
-      writer.writeCell(OwFactory.createArtifactType(CoreArtifactTypes.SoftwareRequirement).getData());
+      writer.writeCell(OwFactory.createArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord).getData());
       writer.writeCell(null);
       writer.writeCell("Software Requirement 1");
       writer.writeCell("static id field 1");
@@ -135,7 +135,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.endRow();
 
       // row 5 - New Software Requirement 2 under folder
-      writer.writeCell(OwFactory.createArtifactType(CoreArtifactTypes.SoftwareRequirement).getData());
+      writer.writeCell(OwFactory.createArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord).getData());
       writer.writeCell(null);
       writer.writeCell("Software Requirement 2");
       writer.writeCell("static id field 2");

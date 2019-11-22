@@ -118,7 +118,7 @@ public class CreateSystemBranches {
 
    private void createWordTemplates(TransactionBuilder tx, ArtifactId documentTemplateFolder) {
       ArtifactId templateArtWe =
-         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "WordEditTemplate");
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "WordEditTemplate");
 
       tx.setSoleAttributeValue(templateArtWe, CoreAttributeTypes.RendererOptions, EDIT_RENDERER_OPTIONS);
       tx.setSoleAttributeValue(templateArtWe, CoreAttributeTypes.WholeWordContent,
@@ -133,7 +133,7 @@ public class CreateSystemBranches {
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer MERGE_EDIT");
 
       ArtifactId templateArtPrev =
-         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PreviewAll");
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "PreviewAll");
       tx.setSoleAttributeValue(templateArtPrev, CoreAttributeTypes.WholeWordContent,
          OseeInf.getResourceContents("templates/PREVIEW_ALL.xml", getClass()));
       tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
@@ -144,7 +144,7 @@ public class CreateSystemBranches {
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF");
 
       ArtifactId templateArtPrevNoAttr =
-         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PREVIEW_ALL_NO_ATTRIBUTES");
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "PREVIEW_ALL_NO_ATTRIBUTES");
       tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.RendererOptions,
          PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS);
       tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.WholeWordContent,
@@ -156,14 +156,14 @@ public class CreateSystemBranches {
 
       // must match name used in client integration tests
       ArtifactId templateArtPar =
-         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate, "PREVIEW_ALL_RECURSE");
+         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "PREVIEW_ALL_RECURSE");
       tx.setSoleAttributeValue(templateArtPar, CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
       tx.setSoleAttributeValue(templateArtPar, CoreAttributeTypes.WholeWordContent,
          OseeInf.getResourceContents("templates/PREVIEW_ALL_RECURSE.xml", getClass()));
       tx.createAttribute(templateArtPar, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE");
 
-      ArtifactId templateArtParna = tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplate,
+      ArtifactId templateArtParna = tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord,
          "PREVIEW_ALL_RECURSE_NO_ATTRIBUTES");
       tx.setSoleAttributeValue(templateArtParna, CoreAttributeTypes.RendererOptions,
          RECURSIVE_NO_ATTR_RENDERER_OPTIONS);

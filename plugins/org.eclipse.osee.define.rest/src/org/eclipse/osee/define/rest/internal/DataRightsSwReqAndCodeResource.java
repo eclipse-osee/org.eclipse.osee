@@ -146,7 +146,7 @@ public final class DataRightsSwReqAndCodeResource {
    @POST
    @Produces(MediaType.TEXT_HTML)
    public String copySSDDataRights(@PathParam("sourceBranch") BranchId sourceBranch, @PathParam("destinationBranch") BranchId destinationBranch) {
-      return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesign);
+      return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesignMsWord);
    }
 
    private String copyDataRights(BranchId sourceBranch, BranchId destinationBranch, ArtifactTypeToken artifactType) {

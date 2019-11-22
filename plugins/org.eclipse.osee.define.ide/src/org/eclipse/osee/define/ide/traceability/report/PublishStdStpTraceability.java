@@ -61,7 +61,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
    private static final String requirementsBranch =
       "<XWidget xwidgetType=\"XBranchSelectWidget\" " + "displayName=\"Program Branch\" defaultValue=\"\" />";
    private static final String artifactTypeChooser =
-      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirement.getName() + "\"/>";
+      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirementMsWord.getName() + "\"/>";
    private static final String searchInheritedTypes =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
    private static final String useGitCodeStructure =

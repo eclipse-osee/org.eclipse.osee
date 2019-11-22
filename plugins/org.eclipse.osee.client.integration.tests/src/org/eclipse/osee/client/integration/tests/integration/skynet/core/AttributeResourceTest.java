@@ -60,7 +60,7 @@ public class AttributeResourceTest {
 
    @Test
    public void testGetArtifactFromGUIDDeleted() {
-      Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
       newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
          String.format(
             "<w:p wsp:rsidR=\"006A3C0C\" wsp:rsidRDefault=\"006A3C0C\" wsp:rsidP=\"00E54E52\"><w:r><w:t>%s</w:t></w:r></w:p>",

@@ -85,7 +85,7 @@ public class OrcsPortingTest {
       ResultSet<ArtifactReadable> artifacts =
          query.fromBranch(finalTx.getBranch()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
       for (ArtifactReadable art : artifacts) {
-         if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
+         if (art.isOfType(CoreArtifactTypes.SoftwareRequirementMsWord)) {
             assertEquals(2, art.getAttributes().size());
 
             assertEquals(nextReq, art);
@@ -129,11 +129,11 @@ public class OrcsPortingTest {
       // baseline branch - set up artifacts on the main branch, and on the child branch
       // first, add some transaction on the main branch, then create the child branch
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add base requirement");
-      ArtifactId baseReq = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "BaseRequirement");
+      ArtifactId baseReq = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "BaseRequirement");
       tx.setSoleAttributeFromString(baseReq, CoreAttributeTypes.Subsystem, "Test");
 
       TransactionBuilder tx2 = txFactory.createTransaction(branch, author, "add another requirement");
-      nextReq = tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement");
+      nextReq = tx2.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "SecondRequirement");
       tx2.setSoleAttributeFromString(nextReq, CoreAttributeTypes.Subsystem, "Test2");
 
       return tx2.commit();

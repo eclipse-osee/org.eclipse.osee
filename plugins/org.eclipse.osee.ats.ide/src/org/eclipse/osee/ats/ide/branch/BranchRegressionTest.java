@@ -252,7 +252,7 @@ public abstract class BranchRegressionTest {
 
       AccessControlManager.setPermission(UserManager.getUser(), getProgramBranch(), PermissionEnum.FULLACCESS);
 
-      createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, PRE_BRANCH_ARTIFACT_NAME,
+      createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt, PRE_BRANCH_ARTIFACT_NAME,
          getPreBranchCscis(), getProgramBranch());
       Assert.assertNotNull("Can't get new software requirement artifact", softReqArt);
 
@@ -423,19 +423,19 @@ public abstract class BranchRegressionTest {
    }
 
    private void createReqArtToDelete() throws Exception {
-      createAndDeleteArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt,
+      createAndDeleteArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt,
          IN_BRANCH_ARTIFACT_NAME, getInBranchArtifactCscis(), workingBranch);
       Assert.assertNotNull(createAndDeleteArt);
    }
 
    private void createThirdFourthFifthReqArt() throws Exception {
-      thirdArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedure, softReqArt, THIRD_ARTIFACT,
-         getThirdArtifactCscis(), workingBranch);
+      thirdArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedureMsWord, softReqArt,
+         THIRD_ARTIFACT, getThirdArtifactCscis(), workingBranch);
       Assert.assertNotNull(thirdArt);
-      fourthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FOURTH_ARTIFACT,
-         null, workingBranch);
+      fourthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunctionMsWord, softReqArt,
+         FOURTH_ARTIFACT, null, workingBranch);
       Assert.assertNotNull(fourthArt);
-      fifthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FIFTH_ARTIFACT,
+      fifthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunctionMsWord, softReqArt, FIFTH_ARTIFACT,
          new String[] {AttributeId.UNSPECIFIED}, workingBranch);
       Assert.assertNotNull(fifthArt);
    }
@@ -443,10 +443,10 @@ public abstract class BranchRegressionTest {
    private void createFirstAndSecondReqArt() throws Exception {
       softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS,
          workingBranch);
-      Artifact firstArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, FIRST_ARTIFACT,
-         getFirstArtifactCscis(), workingBranch);
+      Artifact firstArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt,
+         FIRST_ARTIFACT, getFirstArtifactCscis(), workingBranch);
       Assert.assertNotNull(firstArt);
-      secondArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, SECOND_ARTIFACT,
+      secondArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt, SECOND_ARTIFACT,
          getSecondArtifactCscis(), workingBranch);
       Assert.assertNotNull(secondArt);
    }

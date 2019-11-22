@@ -44,8 +44,8 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
             .andFromSiblingTeam(DemoArtifactToken.SAW_Requirements) //
             .andToSiblingTeamAi(DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_Test_AI) //
             .andToSiblingTeamAi(DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Code_AI) //
-            .andArtifactType(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.PlainText) //
-            .andNotArtifactType(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.PlainText) //
+            .andArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.PlainText) //
+            .andNotArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.PlainText) //
             .andAttribute(CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.Name) //
             .andNotAttribute(CoreAttributeTypes.ParagraphNumber, CoreAttributeTypes.RelationOrder) //
             .andTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //

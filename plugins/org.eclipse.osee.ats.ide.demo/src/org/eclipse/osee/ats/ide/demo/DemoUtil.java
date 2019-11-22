@@ -50,7 +50,7 @@ public class DemoUtil {
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Collection<Artifact> robotArtifacts = ArtifactQuery.getArtifactListFromTypeAndName(
-         CoreArtifactTypes.SoftwareRequirement, "Robot", SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
       if (robotArtifacts.size() < 6) {
          return new Result(String.format(
             "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",

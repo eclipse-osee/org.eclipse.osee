@@ -24,7 +24,7 @@ public class WordEditTest extends AbstractEditTest {
    private static final String TEST_WORD_EDIT_FILE_NAME = "support/WordEditTest.xml";
 
    public WordEditTest() {
-      super(SAW_Bld_1, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirement, new WordTemplateRenderer());
+      super(SAW_Bld_1, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirementMsWord, new WordTemplateRenderer());
    }
 
    @Override

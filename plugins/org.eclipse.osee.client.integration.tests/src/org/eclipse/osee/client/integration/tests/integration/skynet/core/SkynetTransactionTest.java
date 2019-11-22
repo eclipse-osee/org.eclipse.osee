@@ -135,7 +135,7 @@ public final class SkynetTransactionTest {
 
    @Test(expected = OseeStateException.class)
    public void testAttributeMultiplicity() {
-      Artifact swReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1);
+      Artifact swReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1);
       swReq.addAttribute(CoreAttributeTypes.ParagraphNumber, "1.1");
       swReq.addAttribute(CoreAttributeTypes.ParagraphNumber, "2.2");
       try {
@@ -147,9 +147,9 @@ public final class SkynetTransactionTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testRelationMultiplicity() {
-      Artifact parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "parent1");
-      Artifact parent2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "parent2");
-      Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "child");
+      Artifact parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent1");
+      Artifact parent2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "parent2");
+      Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "child");
       try {
          parent1.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child);
          parent2.addRelation(CoreRelationTypes.DefaultHierarchical_Child, child);

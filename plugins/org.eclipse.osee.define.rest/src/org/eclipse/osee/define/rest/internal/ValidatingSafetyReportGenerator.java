@@ -65,7 +65,7 @@ public class ValidatingSafetyReportGenerator {
       "Subsystem Requirement IDAL",
       "Subsystem Requirement IDAL Rationale",
       "Subsystem Requirement Level Check",
-      CoreArtifactTypes.SoftwareRequirement.getName(),
+      CoreArtifactTypes.SoftwareRequirementMsWord.getName(),
       "IDAL",
       "IDAL Rationale",
       "Software Control Category",
@@ -115,7 +115,7 @@ public class ValidatingSafetyReportGenerator {
       String[] currentRowValues = new String[columnHeadings.length];
 
       for (ArtifactReadable systemFunction : functionsFolder.getDescendants()) {
-         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunction)) {
+         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunctionMsWord)) {
             clearRowValues(currentRowValues);
             writeCell(systemFunction.getName(), currentRowValues, 0);
             accumulator.reset(systemFunction);

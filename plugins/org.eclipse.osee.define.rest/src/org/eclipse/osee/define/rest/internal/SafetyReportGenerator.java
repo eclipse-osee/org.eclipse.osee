@@ -61,7 +61,7 @@ public class SafetyReportGenerator {
       "Subsystem Requirement Name",
       "Subsystem Requirement IDAL",
       "Subsystem Requirement IDAL Rationale",
-      CoreArtifactTypes.SoftwareRequirement.getName(),
+      CoreArtifactTypes.SoftwareRequirementMsWord.getName(),
       "IDAL",
       "IDAL Rationale",
       "Boeing Equivalent SW Qual Level",
@@ -107,7 +107,7 @@ public class SafetyReportGenerator {
       writer.writeRow((Object[]) columnHeadings);
 
       for (ArtifactReadable systemFunction : functionsFolder.getDescendants()) {
-         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunction)) {
+         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunctionMsWord)) {
             writer.writeCell(systemFunction.getName());
             accumulator.reset(systemFunction);
             accumulator.buildSubsystemsRequirementsMap(systemFunction);

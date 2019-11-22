@@ -24,6 +24,6 @@ public class ArtifactTypeManagerTest {
    public void test() {
       Assert.assertFalse(ArtifactTypeManager.isUserCreationAllowed(CoreArtifactTypes.User));
 
-      Assert.assertTrue(ArtifactTypeManager.isUserCreationAllowed(CoreArtifactTypes.SoftwareRequirement));
+      Assert.assertTrue(ArtifactTypeManager.isUserCreationAllowed(CoreArtifactTypes.SoftwareRequirementMsWord));
    }
 }

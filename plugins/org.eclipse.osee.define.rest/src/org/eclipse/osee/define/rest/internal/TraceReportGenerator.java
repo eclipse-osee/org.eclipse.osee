@@ -54,7 +54,7 @@ public class TraceReportGenerator {
       "Paragraph #",
       "System Requirement Name",
       "Qualification Information",
-      CoreArtifactTypes.SoftwareRequirement.getName(),
+      CoreArtifactTypes.SoftwareRequirementMsWord.getName(),
       "ArtifactId",
       "Equivalent SW Qual Level",
       "Traced Component Name",
@@ -70,7 +70,7 @@ public class TraceReportGenerator {
       {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.Component.getName(), "ArtifactId"};
 
    private final String[] columnHeadingsTest =
-      {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.TestPlanElement.getName(), "ArtifactId"};
+      {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.TestPlanElementMsWord.getName(), "ArtifactId"};
 
    private void init(OrcsApi orcsApi, ISheetWriter writer) {
       accumulator = new TraceInformationAccumulator(this, writer);

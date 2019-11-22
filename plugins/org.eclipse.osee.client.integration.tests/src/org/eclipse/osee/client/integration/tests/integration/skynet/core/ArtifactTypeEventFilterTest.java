@@ -38,13 +38,13 @@ public class ArtifactTypeEventFilterTest {
       Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatchArtifacts(guidArts));
 
       // inherited type
-      guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirement);
+      guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirementMsWord);
 
       Assert.assertTrue("Should match cause SoftwareRequirement is subclass of Requirement",
          typeFilter.isMatchArtifacts(guidArts));
 
       // not inherited type
-      typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.SoftwareRequirement);
+      typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.SoftwareRequirementMsWord);
       guidArt.setArtTypeGuid(CoreArtifactTypes.Requirement);
 
       Assert.assertFalse("Should NOT match cause Requirement is NOT subclass of Software Requirement",
@@ -58,7 +58,7 @@ public class ArtifactTypeEventFilterTest {
       EventBasicGuidArtifact guidArtA =
          new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.SoftwareRequirement);
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.SoftwareRequirementMsWord);
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,

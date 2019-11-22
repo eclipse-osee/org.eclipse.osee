@@ -110,7 +110,7 @@ public class FixAttributeOperationTest {
             "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
 
          Artifact testRobotAPI =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branchWorking);
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot API", branchWorking);
 
          List<String> values = testRobotAPI.getAttributesToStringList(CoreAttributeTypes.Partition);
          Collections.sort(values);
@@ -127,7 +127,7 @@ public class FixAttributeOperationTest {
          "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
 
       Artifact testRobotAPI =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branchWorking);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot API", branchWorking);
 
       List<String> values = testRobotAPI.getAttributesToStringList(CoreAttributeTypes.Partition);
       Collections.sort(values);
@@ -164,7 +164,7 @@ public class FixAttributeOperationTest {
       BranchId branch = BranchManager.createWorkingBranch(parentBranch, branchName);
 
       Artifact robotAPI =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branch);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot API", branch);
       robotAPI.addAttribute(CoreAttributeTypes.Partition, "Navigation");
 
       itemId = robotAPI.getIdString();

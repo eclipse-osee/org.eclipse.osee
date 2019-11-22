@@ -227,13 +227,13 @@ public class InterArtifactDropTest {
       BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranch);
 
       // Add artifacts to source
-      sourceArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
+      sourceArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceArtifact1.persist(method.getQualifiedTestName());
-      sourceChildArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
+      sourceChildArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceChildArtifact1.persist(method.getQualifiedTestName());
       // sourceArtifact2 has an additional attribute and a child artifact
       // associated to it
-      sourceArtifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
+      sourceArtifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceArtifact2.addAttribute(CoreAttributeTypes.StaticId);
       sourceArtifact2.addChild(sourceChildArtifact1);
       sourceArtifact2.persist(method.getQualifiedTestName());
@@ -242,9 +242,9 @@ public class InterArtifactDropTest {
       // sourceDeleteArtifact
       BranchManager.createWorkingBranch(sourceBranch, updateTestBranch1);
 
-      sourceArtifact3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
+      sourceArtifact3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceArtifact3.persist(method.getQualifiedTestName());
-      sourceDeleteArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
+      sourceDeleteArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceDeleteArtifact1.persist(method.getQualifiedTestName());
 
       // updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1,

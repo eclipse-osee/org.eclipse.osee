@@ -172,7 +172,7 @@ public final class ArtifactTest {
       art.persist("test");
 
       DefaultBasicGuidArtifact equalGuid =
-         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesign, art);
+         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesignMsWord, art);
       Assert.assertNotSame(art, equalGuid);
 
       DefaultBasicGuidArtifact equalGuidArtType = new DefaultBasicGuidArtifact(SYSTEM_ROOT, GeneralData, art);

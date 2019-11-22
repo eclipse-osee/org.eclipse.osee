@@ -60,7 +60,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
-   private final ArtifactTypeToken[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
+   private final ArtifactTypeToken[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetailsMsWord};
    private final String overrideDataRightsClassification;
    boolean debug = false;
 

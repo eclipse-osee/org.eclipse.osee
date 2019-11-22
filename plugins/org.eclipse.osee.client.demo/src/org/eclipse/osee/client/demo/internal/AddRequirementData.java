@@ -63,7 +63,7 @@ public class AddRequirementData implements IDbInitializationTask {
          BranchId branch = SAW_Bld_1;
 
          //@formatter:off
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirementMsWord, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
          importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
          importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
@@ -134,8 +134,8 @@ public class AddRequirementData implements IDbInitializationTask {
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMsWord, "Interface", branch));
 
       Collection<Artifact> softArts =
-         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
-      softArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Interface", branch));
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", branch);
+      softArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirementMsWord, "Interface", branch));
 
       // Relate System to SubSystem to Software Requirements
       for (Artifact systemArt : systemArts) {

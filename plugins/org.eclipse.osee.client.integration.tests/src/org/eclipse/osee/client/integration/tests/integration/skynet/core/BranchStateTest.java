@@ -87,7 +87,7 @@ public class BranchStateTest {
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
-         Artifact change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+         Artifact change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
             "Test Object on Working Branch");
          change.persist(getClass().getSimpleName());
 
@@ -160,7 +160,7 @@ public class BranchStateTest {
          assertTrue(BranchManager.isEditable(workingBranch));
 
          change =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch, "A commit change");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch, "A commit change");
          change.persist(getClass().getSimpleName());
 
          Artifact workingBranchRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
@@ -227,7 +227,7 @@ public class BranchStateTest {
       Artifact change = null;
       try {
          baseArtifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
@@ -238,7 +238,7 @@ public class BranchStateTest {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Add a new artifact on the working branch
-         change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+         change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
             "Test Object on Working Branch");
          change.persist(getClass().getSimpleName());
 
@@ -290,7 +290,7 @@ public class BranchStateTest {
       Artifact sameArtifact = null;
       try {
          baseArtifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 

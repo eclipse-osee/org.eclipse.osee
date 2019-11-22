@@ -128,7 +128,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    private static Artifact createArtifact(BranchId branch, String artifactName) {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
-      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, artifactName);
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, artifactName);
       Assert.assertNotNull(artifact);
       return artifact;
    }

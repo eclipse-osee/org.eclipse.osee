@@ -65,7 +65,7 @@ public class WordUpdateEndpointImplTest {
    @Before
    public void setup() {
       branch = getWorkingBranch();
-      artReqt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
+      artReqt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
          "Claw Interface Init 15", branch);
    }
 

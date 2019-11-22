@@ -102,7 +102,7 @@ public class RequirementTraceabilityData {
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<>();
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirementMsWord, testProcedureBranch);
       if (artifacts != null) {
          ViewIdUtility.removeExcludedArtifacts(artifacts.iterator(), excludedArtifactIdMap);
 

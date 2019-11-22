@@ -406,7 +406,7 @@ artifactType "Universal Group" extends "Group Artifact" {
 	id 8
 }
 
-artifactType "Renderer Template" extends "MS Word Whole Document" {
+artifactType "Renderer Template - Whole Word" extends "MS Word Whole Document" {
 	id 9
 	attribute "Template Match Criteria"
 	attribute "Renderer Options"
@@ -457,7 +457,7 @@ artifactType "General Data" extends "Artifact" {
 	attribute "PublishInline"
 }
 
-artifactType "Support Document" extends "MS Word Template" {
+artifactType "Support Document - MS Word" extends "MS Word Template" {
 	id 13
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
@@ -830,7 +830,7 @@ abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Req
 	attribute "Category"
 }
 
-artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
+artifactType "Software Requirement - MS Word" extends "MS Word Template" , "Direct Software Requirement" {
 	id 24
 	attribute "IDAL"
 	attribute "IDAL Rationale"
@@ -859,13 +859,19 @@ artifactType "Software Test Procedure Plain Text" extends "Plain Text", "Test Un
 	attribute "Doors Hierarchy"
 }
 
-artifactType "Software Test Procedure - MS Word" extends "MS Word Whole Document", "Test Unit"  {
+artifactType "Software Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+	id 554486323432951757
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
+}
+
+artifactType "Software Test Procedure - Whole Word" extends "MS Word Whole Document", "Test Unit"  {
 	id 554486323432951758
 	attribute "Doors ID"
 	attribute "Doors Hierarchy"
 }
 
-artifactType "Integration Test Procedure - MS Word" extends "MS Word Whole Document", "Test Unit"  {
+artifactType "Integration Test Procedure - Whole Word" extends "MS Word Whole Document", "Test Unit"  {
 	id 443398723457743216
 	attribute "Doors ID"
 	attribute "Doors Hierarchy"
@@ -882,7 +888,7 @@ artifactType "Reference Document" extends "General Document" {
 	attribute "Doors ID"
 }
 
-artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
+artifactType "Indirect Software Requirement - MS Word" extends "Abstract Software Requirement" , "MS Word Template" {
 	id 25
 }
 
@@ -896,7 +902,7 @@ abstract artifactType "Abstract Implementation Details" extends "Artifact" {
 	attribute "Potential Security Impact"
 }
 
-artifactType "Implementation Details" extends "Abstract Implementation Details", "MS Word Template" {
+artifactType "Implementation Details - MS Word" extends "Abstract Implementation Details", "MS Word Template" {
 	id 26				
 }
 
@@ -904,35 +910,35 @@ artifactType "Implementation Details Plain Text" extends "Abstract Implementatio
 	id 638269899
 }
 
-artifactType "Implementation Details Procedure" extends "Implementation Details" {
+artifactType "Implementation Details Procedure - MS Word" extends "Implementation Details - MS Word" {
 	id 69914
 }
 
-artifactType "Implementation Details Function" extends "Implementation Details" {
+artifactType "Implementation Details Function - MS Word" extends "Implementation Details - MS Word" {
 	id 139802
 }
 
-artifactType "Implementation Details Drawing" extends "Implementation Details" {
+artifactType "Implementation Details Drawing - MS Word" extends "Implementation Details - MS Word" {
 	id 209690
 }
 
-artifactType "Implementation Details Data Definition" extends "Implementation Details" {
+artifactType "Implementation Details Data Definition - MS Word" extends "Implementation Details - MS Word" {
 	id 279578
 }
 
-artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
+artifactType "Software Requirement Procedure - MS Word" extends "Indirect Software Requirement - MS Word" {
 	id 27
 }
 
-artifactType "Software Requirement Function" extends "Indirect Software Requirement" {
+artifactType "Software Requirement Function - MS Word" extends "Indirect Software Requirement - MS Word" {
 	id 28
 }
 
-artifactType "Software Requirement Drawing" extends "Indirect Software Requirement" {
+artifactType "Software Requirement Drawing - MS Word" extends "Indirect Software Requirement - MS Word" {
 	id 29
 }
 
-artifactType "Software Requirement Data Definition" extends "Indirect Software Requirement" {
+artifactType "Software Requirement Data Definition - MS Word" extends "Indirect Software Requirement - MS Word" {
 	id 793
 }
 
@@ -976,16 +982,16 @@ artifactType "Subsystem Requirement - HTML" extends "Abstract Subsystem Requirem
 	id 795
 }
 
-artifactType "Interface Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
+artifactType "Interface Requirement - MS Word" extends "Abstract Spec Requirement" , "MS Word Template" {
 	id 32
 	attribute "Component"
 }
 
-artifactType "Hardware Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
+artifactType "Hardware Requirement - MS Word" extends "Abstract Spec Requirement" , "MS Word Template" {
 	id 33
 }
 
-abstract artifactType "Function" extends "MS Word Template" {
+abstract artifactType "Function - MS Word" extends "MS Word Template" {
 	id 34
 	attribute "Severity Category"
 	attribute "Software Safety Impact"
@@ -993,7 +999,7 @@ abstract artifactType "Function" extends "MS Word Template" {
 	attribute "FDAL Rationale"
 }
 
-artifactType "System Function" extends "Function" , "System Design" {
+artifactType "System Function - MS Word" extends "Function - MS Word" , "System Design - MS Word" {
 	id 35
 	attribute "Functional Category"
 }
@@ -1007,11 +1013,11 @@ attributeType "Functional Category" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
+artifactType "Subsystem Function - MS Word" extends "Function - MS Word" , "Subsystem Design - MS Word" {
 	id 36
 }
 
-artifactType "Test Plan Element" extends "MS Word Template" {
+artifactType "Test Plan Element - MS Word" extends "MS Word Template" {
 	id 37
 }
 
@@ -1023,18 +1029,18 @@ artifactType "Test Result Native" extends "Abstract Test Result" , "Native Artif
 	id 39
 }
 
-artifactType "Test Result WML" extends "Abstract Test Result" , "MS Word Whole Document" {
+artifactType "Test Result - Whole Word" extends "Abstract Test Result" , "MS Word Whole Document" {
 	id 40
 }
 
-artifactType "Test Information Sheet" extends "MS Word Template" , "Test Unit" {
+artifactType "Test Information Sheet - MS Word" extends "MS Word Template" , "Test Unit" {
 	id 41
 	attribute "TIS Test Number"
 	attribute "TIS Test Type"
 	attribute "TIS Test Category"
 }
 
-artifactType "Design" extends "MS Word Template" {
+artifactType "Design - MS Word" extends "MS Word Template" {
 	id 346
 	attribute "Legacy DAL"
 	attribute "Severity Category"
@@ -1048,16 +1054,16 @@ artifactType "Design" extends "MS Word Template" {
 	attribute "Doors Hierarchy"
 }
 
-artifactType "Subsystem Design" extends "Design" {
+artifactType "Subsystem Design - MS Word" extends "Design - MS Word" {
 	id 43
 	attribute "Subsystem"
 }
 
-artifactType "System Design" extends "Design" {
+artifactType "System Design - MS Word" extends "Design - MS Word" {
 	id 44
 }
 
-artifactType "Software Design" extends "Design" {
+artifactType "Software Design - MS Word" extends "Design - MS Word" {
 	id 45
 }
 
@@ -1067,8 +1073,12 @@ artifactType "Test Procedure" extends "Test Unit" {
 	attribute "Test Procedure Status"
 }
 
-artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document" {
+artifactType "Test Procedure - Whole Word" extends "Test Procedure" , "MS Word Whole Document" {
 	id 47
+}
+
+artifactType "Test Procedure - MS Word" extends "Test Procedure" , "MS Word Template" {
+   id 2349
 }
 
 artifactType "Test Procedure Native" extends "Test Procedure" , "Native Artifact" {
@@ -1515,7 +1525,7 @@ relationType "Design" {
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "design"
-	sideBArtifactType "Design"
+	sideBArtifactType "Design - MS Word"
 	defaultOrderType Unordered
 	multiplicity MANY_TO_MANY
 }
@@ -1545,7 +1555,7 @@ relationType "Verification Plan" {
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "test plan element"
-	sideBArtifactType "Test Plan Element"
+	sideBArtifactType "Test Plan Element - MS Word"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity MANY_TO_MANY
 }
@@ -1553,7 +1563,7 @@ relationType "Verification Plan" {
 relationType "Verification Procedure" {
 	id 2305843009213694301
 	sideAName "test information sheet"
-	sideAArtifactType "Test Information Sheet"
+	sideAArtifactType "Test Information Sheet - MS Word"
 	sideBName "test procedure"
 	sideBArtifactType "Test Procedure"
 	defaultOrderType Unordered
@@ -1563,7 +1573,7 @@ relationType "Verification Procedure" {
 relationType "Executes" {
 	id 2305843009213694302
 	sideAName "test plan element"
-	sideAArtifactType "Test Plan Element"
+	sideAArtifactType "Test Plan Element - MS Word"
 	sideBName "test procedure"
 	sideBArtifactType "Test Procedure"
 	defaultOrderType Lexicographical_Ascending
@@ -1593,7 +1603,7 @@ relationType "Validation" {
 relationType "Specifying" {
 	id 2305843009213694305
 	sideAName "function"
-	sideAArtifactType "Subsystem Function"
+	sideAArtifactType "Subsystem Function - MS Word"
 	sideBName "requirement"
 	sideBArtifactType "Requirement"
 	defaultOrderType Unordered
@@ -1761,7 +1771,7 @@ relationType "Implementation Info" {
 	sideAName "software requirement"
 	sideAArtifactType "Abstract Software Requirement"
 	sideBName "implementation details"
-	sideBArtifactType "Implementation Details"
+	sideBArtifactType "Implementation Details - MS Word"
 	defaultOrderType Unordered
 	multiplicity MANY_TO_MANY
 }
@@ -1857,7 +1867,7 @@ relationType "Assessment" {
 	sideAName "Safety Assessment"
 	sideAArtifactType "Safety Assessment"
 	sideBName "System Functions"
-	sideBArtifactType "System Function"
+	sideBArtifactType "System Function - MS Word"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity MANY_TO_MANY
 }

@@ -184,7 +184,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
-      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
          BRANCH_VIA_VERSIONS.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());
@@ -286,7 +286,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
-      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
          BRANCH_VIA_TEAM_DEFINITION.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());

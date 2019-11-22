@@ -89,7 +89,7 @@ public class JsonArtifactTransferTest {
       List<JsonArtRep> outputItems = new ArrayList<>();
       for (int i = 0; i < 5; i++) {
          JsonArtRep rep = new JsonArtRep();
-         rep.setArtType(CoreArtifactTypes.SoftwareDesign);
+         rep.setArtType(CoreArtifactTypes.SoftwareDesignMsWord);
          List<JsonAttrRep> attrs = new ArrayList<>();
          for (int j = 0; j < 5; j++) {
             JsonAttrRep attr = new JsonAttrRep();

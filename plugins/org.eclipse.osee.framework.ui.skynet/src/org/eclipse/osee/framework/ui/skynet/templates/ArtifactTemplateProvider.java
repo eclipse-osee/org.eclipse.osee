@@ -43,7 +43,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private synchronized void ensureTemplateCachePopulated() {
       if (templateMap == null) {
          templateMap = new HashMap<>();
-         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
+         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplateWholeWord, COMMON);
          for (Artifact art : templates) {
             @SuppressWarnings("deprecation")
             Collection<Attribute<String>> attrs = art.getAttributes(CoreAttributeTypes.TemplateMatchCriteria);
@@ -140,7 +140,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    @Override
    public List<Artifact> getAllTemplates() {
       if (templates == null) {
-         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
+         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplateWholeWord, COMMON);
       }
       return templates;
    }

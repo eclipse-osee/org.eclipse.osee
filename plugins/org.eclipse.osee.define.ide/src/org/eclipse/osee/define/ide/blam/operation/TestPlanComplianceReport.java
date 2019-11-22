@@ -205,12 +205,12 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private boolean isTestPlan(Artifact src) {
-      return src.isOfType(CoreArtifactTypes.TestPlanElement);
+      return src.isOfType(CoreArtifactTypes.TestPlanElementMsWord);
    }
 
    private List<String> getRequirementsCellOutput(Artifact art, RelationTypeSide rts) {
       List<String> result = null;
-      if (art.isOfType(CoreArtifactTypes.TestPlanElement)) {
+      if (art.isOfType(CoreArtifactTypes.TestPlanElementMsWord)) {
          result = getRequirementsAsString(art, rts);
       }
       return result;

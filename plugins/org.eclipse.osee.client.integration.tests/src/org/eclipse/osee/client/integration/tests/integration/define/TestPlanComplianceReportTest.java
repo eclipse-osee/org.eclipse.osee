@@ -119,7 +119,7 @@ public final class TestPlanComplianceReportTest {
 
    private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) {
       Artifact testPlan =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, SAW_Bld_1, "Sample_Test_Plan");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElementMsWord, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());
 
       dummyArtifactList = new ArrayList<>();
@@ -136,7 +136,7 @@ public final class TestPlanComplianceReportTest {
 
          for (int j = 0; j < testResultsAmount; j++) {
             Artifact testResult =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWml, SAW_Bld_1, "Sample_Test_Result_" + j);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestResultWholeWord, SAW_Bld_1, "Sample_Test_Result_" + j);
             testProcedure.addRelation(CoreRelationTypes.ResultsData_TestResult, testResult);
             testProcedure.persist(getClass().getSimpleName());
          }

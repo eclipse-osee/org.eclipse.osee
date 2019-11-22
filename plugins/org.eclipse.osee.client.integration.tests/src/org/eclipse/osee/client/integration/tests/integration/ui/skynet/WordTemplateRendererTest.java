@@ -637,37 +637,37 @@ public class WordTemplateRendererTest {
 
    // Create the folder to store the templates
    private void setupTemplates(Artifact folder, BranchId branch) {
-      recurseTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Recurse Template");
+      recurseTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Recurse Template");
       recurseTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, RECURSE_TEMPLATE_STRING);
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
-      singleTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Single Template");
+      singleTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single Template");
       singleTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, SINGLE_TEMPLATE_STRING);
       singleTemplate.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_RENDERER_OPTIONS);
       singleTemplateAttrib =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Single With Attributes");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single With Attributes");
       singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent,
          SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING);
       singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_ATTRIBUTE_RENDERER_OPTIONS);
       masterTemplate =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsMaster Template");
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, MASTER_TEMPLATE_STRING);
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_RENDERER_OPTIONS);
       masterTemplate_idOnly =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID only");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsMaster Template ID only");
       masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDONLY);
       masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
       masterTemplate_idAndName =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID and name");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsMaster Template ID and name");
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDANDNAME);
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
          MASTER_ID_RENDERER_OPTIONS);
-      slaveTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsSlave Template");
+      slaveTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsSlave Template");
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, SLAVE_RENDERER_OPTIONS);
 
@@ -696,15 +696,15 @@ public class WordTemplateRendererTest {
    private void setUpSWReq(Artifact swReqFolder, BranchId branch) {
       Artifact crewReq =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Crew Station Requirements");
-      Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
+      Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
          "Communication Subsystem Crew Interface");
-      Artifact navReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
+      Artifact navReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
          "Navigation Subsystem Crew Interface");
       Artifact airReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch,
          "Aircraft Systems Management Subsystem Crew Interface");
       Artifact airDrawReq =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Aircraft Drawing");
-      Artifact ventReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "Ventilation");
+      Artifact ventReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, "Ventilation");
 
       swReqFolder.addChild(crewReq);
       crewReq.addChild(USER_DEFINED, commReq);
@@ -744,15 +744,15 @@ public class WordTemplateRendererTest {
    //@formatter:on
    private void setUpDocFolder(Artifact docFolder, BranchId branch) {
       Artifact intro = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Introduction");
-      Artifact background = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Background");
-      Artifact scope = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Scope");
-      Artifact subSystem = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Subsystem");
+      Artifact background = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Background");
+      Artifact scope = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Scope");
+      Artifact subSystem = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Subsystem");
       Artifact hardware = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Hardware");
       Artifact hardwareFunc =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HardwareRequirement, branch, "Hardware Functions");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HardwareRequirementMsWord, branch, "Hardware Functions");
       Artifact software = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Software");
       Artifact softwareFunc =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareDesign, branch, "Software Functions");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareDesignMsWord, branch, "Software Functions");
       Artifact notes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Notes");
       Artifact morenotes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "More Notes");
 

@@ -152,7 +152,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       writer.startSheet("report", 18);
       writer.writeRow(CoreArtifactTypes.SystemRequirementMsWord.getName(), null, null,
          CoreArtifactTypes.SubsystemRequirementMsWord.getName(), null, null, null, null, null,
-         CoreArtifactTypes.SoftwareRequirement.getName());
+         CoreArtifactTypes.SoftwareRequirementMsWord.getName());
       writer.writeRow("Paragraph #", "Requirement Name", "Requirement Text", "Paragraph #", "Requirement Name",
          "Requirement Text", "Subsystem", CoreAttributeTypes.QualificationMethod.getName(), "Test Procedure",
          "Paragraph #", "Requirement Name", "Partitions", CoreAttributeTypes.QualificationMethod.getName(),

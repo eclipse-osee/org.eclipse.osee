@@ -55,7 +55,7 @@ public class AttributePurgeTest {
    @SuppressWarnings("deprecation")
    @Test
    public void testPurge() throws Exception {
-      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirementMsWord, 10,
          getClass().getSimpleName(), SAW_Bld_2);
       TransactionManager.persistInTransaction("Test purge artifacts", softArts);
 

@@ -43,9 +43,9 @@ import org.eclipse.swt.graphics.Image;
 public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    private static List<ArtifactTypeToken> laserArtifactTypes =
-      Arrays.asList(CoreArtifactTypes.SystemDesign, CoreArtifactTypes.SupportingContent,
-         CoreArtifactTypes.IndirectSoftwareRequirement, CoreArtifactTypes.TestProcedureWml,
-         CoreArtifactTypes.InterfaceRequirement, CoreArtifactTypes.SystemFunction, CoreArtifactTypes.SubsystemFunction);
+      Arrays.asList(CoreArtifactTypes.SystemDesignMsWord, CoreArtifactTypes.SupportingContent,
+         CoreArtifactTypes.IndirectSoftwareRequirementMsWord, CoreArtifactTypes.TestProcedureWholeWord,
+         CoreArtifactTypes.InterfaceRequirementMsWord, CoreArtifactTypes.SystemFunctionMsWord, CoreArtifactTypes.SubsystemFunctionMsWord);
 
    @Override
    public void init() {
@@ -60,30 +60,30 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.BranchView, FrameworkImage.BRANCH_VIEW, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.FeatureDefinition, FrameworkImage.FEATURE, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Feature, FrameworkImage.FEATURE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetails,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsProcedure,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsProcedureMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS_PROCEDURE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsFunction,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsFunctionMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS_FUNCTION, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDrawing,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDrawingMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS_DRAWING, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDataDefinition,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDataDefinitionMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS_DATA_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HardwareRequirement, FrameworkImage.hardware_requirement,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HardwareRequirementMsWord, FrameworkImage.hardware_requirement,
          this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareDesign, FrameworkImage.software_design, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDataDefinition,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareDesignMsWord, FrameworkImage.software_design, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDataDefinitionMsWord,
          FrameworkImage.SOFTWARE_REQUIREMENT_DATA_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDrawing,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDrawingMsWord,
          FrameworkImage.SOFTWARE_REQUIERMENT_DRAWING, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementFunction,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementFunctionMsWord,
          FrameworkImage.SOFTWARE_REQUIERMENT_FUNCTION, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementProcedure,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementProcedureMsWord,
          FrameworkImage.SOFTWARE_REQUIERMENT_PROCEDURE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirement, FrameworkImage.software_requirement,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementMsWord, FrameworkImage.software_requirement,
          this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesign, FrameworkImage.subsystem_design, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesignMsWord, FrameworkImage.subsystem_design, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemRequirementMsWord,
          FrameworkImage.subsystem_requirement, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMsWord,

@@ -96,7 +96,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
             req -> req.getName()).collect(Collectors.toList());
 
       ResultSet<ArtifactReadable> impds =
-         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.ImplementationDetails).getResults();
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.ImplementationDetailsMsWord).getResults();
 
       Map<String, String[]> impdMap = new HashMap<>();
       for (ArtifactReadable impd : impds) {

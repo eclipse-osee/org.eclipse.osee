@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class BranchUuidEventFilterTest {
 
       EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
       EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirement);
+         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirementMsWord);
       List<DefaultBasicGuidArtifact> arts = new ArrayList<>();
       arts.add(guidArtB);
       arts.add(guidArtA);
@@ -69,7 +69,7 @@ public class BranchUuidEventFilterTest {
 
       EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
       EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirement);
+         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirementMsWord);
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
@@ -80,7 +80,7 @@ public class BranchUuidEventFilterTest {
       Assert.assertFalse(branchFilter.isMatchRelationArtifacts(relations));
 
       guidArtA = new EventBasicGuidArtifact(EventModType.Added, COMMON, Requirement);
-      guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON, SoftwareRequirement);
+      guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON, SoftwareRequirementMsWord);
 
       relations.clear();
       relation = new EventBasicGuidRelation(RelationEventType.Added, COMMON,

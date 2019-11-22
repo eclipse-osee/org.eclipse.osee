@@ -99,7 +99,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       }
       AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
 
-      Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirement,
+      Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
          DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Interface.name());
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
@@ -108,7 +108,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       branchArtifact.addRelation(CoreRelationTypes.Allocation_Component, comArt);
       branchArtifact.persist(getClass().getSimpleName());
 
-      Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirement,
+      Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
          DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,

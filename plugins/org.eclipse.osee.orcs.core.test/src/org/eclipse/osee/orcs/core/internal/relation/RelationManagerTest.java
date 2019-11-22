@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
@@ -121,12 +121,12 @@ public class RelationManagerTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 11L, "z");
-      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 22L, "y");
-      node3 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 33L, "x");
-      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 44L, "w");
-      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
-      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
+      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 11L, "z");
+      node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 22L, "y");
+      node3 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 33L, "x");
+      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 44L, "w");
+      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 55L, "v");
+      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 66L, "u");
 
       manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider);
 
@@ -297,7 +297,7 @@ public class RelationManagerTest {
    @Test
    public void testIntroduce() {
       when(types.isArtifactTypeAllowed(CoreRelationTypes.DefaultHierarchical_Parent, RelationSide.SIDE_A,
-         CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
+         CoreArtifactTypes.SoftwareRequirementMsWord)).thenReturn(true);
       when(types.getMultiplicity(CoreRelationTypes.DefaultHierarchical_Parent)).thenReturn(
          RelationTypeMultiplicity.ONE_TO_MANY);
       when(relationFactory.introduce(COMMON, data1)).thenReturn(relation1);

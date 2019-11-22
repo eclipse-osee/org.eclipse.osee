@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AccessContextId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
@@ -100,7 +100,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactTypes() {
       final int EXPECTED_RESULTS = 24;
       SearchResult results = oseeClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(GeneralData, GeneralDocument,
-         SoftwareRequirement).getSearchResult(RequestType.IDS);
+         SoftwareRequirementMsWord).getSearchResult(RequestType.IDS);
       assertGreaterOrEqual(EXPECTED_RESULTS, results.getTotal());
    }
 

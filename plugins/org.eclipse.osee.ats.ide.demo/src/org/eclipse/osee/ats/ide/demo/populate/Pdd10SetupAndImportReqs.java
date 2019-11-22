@@ -125,7 +125,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
          ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetailReqImplementation, SAW_Bld_1);
 
       Artifact robotInterface =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot Interfaces", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot Interfaces", SAW_Bld_1);
       robotInterface.addChild(robotInterfaceHeader);
       transaction.addArtifact(robotInterfaceHeader);
 
@@ -144,13 +144,13 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       robotUI.addChild(robotUIImpl);
       transaction.addArtifact(robotUIImpl);
 
-      Artifact robotCollab = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
+      Artifact robotCollab = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
          "Robot collaboration", SAW_Bld_1);
       robotCollab.addChild(robotCollabDetails);
       transaction.addArtifact(robotCollabDetails);
 
       Artifact events =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Events", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Events", SAW_Bld_1);
       events.addChild(eventDetailsHeader);
       transaction.addArtifact(eventDetailsHeader);
 
@@ -158,7 +158,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       transaction.addArtifact(eventDetail);
 
       Artifact virtualFix =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Virtual fixtures", SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", SAW_Bld_1);
       virtualFix.addChild(virtualFixDetailHeader);
       transaction.addArtifact(virtualFixDetailHeader);
 
@@ -222,9 +222,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
             "Interface", branch));
 
          Collection<Artifact> softArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
+            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", branch);
          softArts.addAll(
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirement, "Interface", branch));
+            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Interface", branch));
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
@@ -343,7 +343,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
          "ApplicabilityEmbeddedTagsCase",
          "ApplicabilityTable",
          "ApplicabilityLists"}) {
-         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, str);
+         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, str);
          newArt.addAttribute(CoreAttributeTypes.WordTemplateContent, wordMlValue[i]);
          applicabilityFolder.addRelation(CoreRelationTypes.DefaultHierarchical_Child, newArt);
          newArt.persist(transaction);
@@ -354,7 +354,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void demoDbImportReqsTx() {
       try {
          //@formatter:off
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
          importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
          importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on

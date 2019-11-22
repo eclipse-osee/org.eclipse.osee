@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
@@ -152,12 +152,12 @@ public class RelationManagerImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 11L, "z");
+      node1 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 11L, "z");
       node2 = OrcsMockUtility.createTestArtifact(graph, COMMON, Folder, 22L, "y");
-      node3 = OrcsMockUtility.createTestArtifact(graph, SYSTEM_ROOT, SoftwareRequirement, 33L, "x");
-      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 44L, "w");
-      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 55L, "v");
-      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirement, 66L, "u");
+      node3 = OrcsMockUtility.createTestArtifact(graph, SYSTEM_ROOT, SoftwareRequirementMsWord, 33L, "x");
+      node4 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 44L, "w");
+      node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 55L, "v");
+      node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 66L, "u");
 
       artifactType1 = node1.getArtifactType();
       artifactType2 = node2.getArtifactType();

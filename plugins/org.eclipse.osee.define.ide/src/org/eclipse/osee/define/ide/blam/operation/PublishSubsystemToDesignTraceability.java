@@ -81,7 +81,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       ViewIdUtility.removeExcludedArtifacts(subsystems.iterator(), findExcludedArtifactsByView);
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemDesign, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemDesignMsWord, branch);
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
@@ -125,7 +125,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
                   subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design_Design);
                ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
                for (Artifact subsystemDesign : relatedArtifacts) {
-                  if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
+                  if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesignMsWord)) {
                      loopNeverRan = false;
                      excelWriter.writeCell(
                         subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), 2);

@@ -1048,7 +1048,7 @@ public class OrcsTransactionTest {
    @Test(expected = OseeStateException.class)
    public void testAttributeMultiplicity() {
       TransactionBuilder tx = createTx();
-      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SwReq");
+      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "SwReq");
       tx.createAttribute(art1, CoreAttributeTypes.ParagraphNumber, "1.1");
       tx.createAttribute(art1, CoreAttributeTypes.ParagraphNumber, "2.2");
    }
@@ -1056,9 +1056,9 @@ public class OrcsTransactionTest {
    @Test(expected = OseeStateException.class)
    public void testRelationMultiplicity() {
       TransactionBuilder tx = createTx();
-      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Child");
-      ArtifactId parent1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent1");
-      ArtifactId parent2 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent2");
+      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "Child");
+      ArtifactId parent1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "Parent1");
+      ArtifactId parent2 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "Parent2");
       tx.relate(parent1, DefaultHierarchical_Parent, child);
       tx.relate(parent2, DefaultHierarchical_Parent, child);
    }

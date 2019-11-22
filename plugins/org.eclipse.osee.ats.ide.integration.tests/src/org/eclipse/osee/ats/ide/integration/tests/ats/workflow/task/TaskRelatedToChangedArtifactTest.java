@@ -72,7 +72,7 @@ public class TaskRelatedToChangedArtifactTest {
          AtsCoreUsers.SYSTEM_USER);
       changes.relate(reqWf, AtsRelationTypes.Derive_To, codeWf);
 
-      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API",
+      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot API",
          DemoBranches.SAW_Bld_2);
 
       changes.setSoleAttributeValue(codeTask, AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);

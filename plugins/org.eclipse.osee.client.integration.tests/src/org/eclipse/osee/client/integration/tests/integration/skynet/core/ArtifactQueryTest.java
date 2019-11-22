@@ -120,7 +120,7 @@ public class ArtifactQueryTest {
       // Should exist
       Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
       for (BranchId branch : BranchManager.getBranches(new BranchFilter(BranchType.BASELINE))) {
-         List<Artifact> results = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
+         List<Artifact> results = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
             DeletionFlag.INCLUDE_DELETED);
          searchedArtifacts.addAll(results);
       }

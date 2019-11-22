@@ -169,7 +169,7 @@ public class OrcsQueryTest {
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(24, artifacts.size());
 
-      checkContainsTypes(artifacts, CoreArtifactTypes.SoftwareRequirement);
+      checkContainsTypes(artifacts, CoreArtifactTypes.SoftwareRequirementMsWord);
    }
 
    @Test
@@ -454,7 +454,7 @@ public class OrcsQueryTest {
    public void testFollowRelationTypeHistorical() throws Exception {
       QueryBuilder query = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement)//
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirementMsWord)//
          .follow(CoreRelationTypes.DefaultHierarchical_Child)//
          .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
@@ -468,7 +468,7 @@ public class OrcsQueryTest {
       // Add a child
       ArtifactReadable parent = results.iterator().next().getParent();
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, author, "FollowTest");
-      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
+      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, "Dummy Robot");
       tx.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, child);
       TransactionId commitTx = tx.commit();
       TransactionId headTx = commitTx;
@@ -495,7 +495,7 @@ public class OrcsQueryTest {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirementMsWord).getResults().getExactlyOne();
 
       // create a tx on branch
       TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx");
@@ -515,7 +515,7 @@ public class OrcsQueryTest {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
          .andNameEquals("Robot API") //
-         .andTypeEquals(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andTypeEquals(CoreArtifactTypes.SoftwareRequirementMsWord).getResults().getExactlyOne();
 
       // create a tx on branch
       TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx1");

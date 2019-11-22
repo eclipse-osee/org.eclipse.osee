@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Design;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DesignMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
@@ -69,7 +69,7 @@ public class DataFactoryImplTest {
    private static final Long ART_ID = 987L;
    private static final Long SHARED_ID = 555L;
    private static final ArtifactId artifactId555 = ArtifactId.valueOf(SHARED_ID);
-   private static final ArtifactTypeToken artifactType = CoreArtifactTypes.SoftwareRequirement;
+   private static final ArtifactTypeToken artifactType = CoreArtifactTypes.SoftwareRequirementMsWord;
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -171,10 +171,10 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactData() {
-      when(artifactCache.isAbstract(Design)).thenReturn(false);
+      when(artifactCache.isAbstract(DesignMsWord)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
-      ArtifactData actual = dataFactory.create(COMMON, Design, guid);
+      ArtifactData actual = dataFactory.create(COMMON, DesignMsWord, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -189,9 +189,9 @@ public class DataFactoryImplTest {
 
       assertEquals(ART_ID, actual.getId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(Design, actual.getType());
+      assertEquals(DesignMsWord, actual.getType());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(Design, actual.getBaseType());
+      assertEquals(DesignMsWord, actual.getBaseType());
       assertEquals(guid, actual.getGuid());
    }
 

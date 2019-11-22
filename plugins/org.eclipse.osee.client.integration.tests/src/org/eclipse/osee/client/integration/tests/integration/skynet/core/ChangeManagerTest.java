@@ -64,14 +64,14 @@ public class ChangeManagerTest {
    public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, CoreBranches.SYSTEM_ROOT);
+      modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, CoreBranches.SYSTEM_ROOT);
       modArtifact.persist(getClass().getSimpleName());
 
       String branchName = "Change Manager Test Branch" + GUID.create();
 
       branch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName);
 
-      newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);
+      newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch);
       newArtifact.persist(getClass().getSimpleName());
       BranchManager.refreshBranches();
    }

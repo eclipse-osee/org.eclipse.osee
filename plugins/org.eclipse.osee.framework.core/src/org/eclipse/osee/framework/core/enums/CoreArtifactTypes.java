@@ -108,7 +108,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(PublishInline, "")
       .zeroOrOne(WordOleData, "")
       .zeroOrOne(WordTemplateContent, "<w:p xmlns:w= \"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"));
-   ArtifactTypeToken Design = osee.add(osee.artifactType(346L, "Design", false, MsWordTemplate)
+   ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified", 3458764513820541445L)
       .zeroOrOne(DoorsHierarchy, "")
@@ -121,7 +121,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(SubjectMatterExpert, ""));
    ArtifactTypeToken DesignDescriptionMsWord = osee.add(osee.artifactType(810L, "Design Description - MS Word", false, MsWordTemplate, AbstractHeading));
    ArtifactTypeToken DocumentDescriptionMsWord = osee.add(osee.artifactType(806L, "Document Description - MS Word", false, MsWordTemplate, AbstractHeading));
-   ArtifactTypeToken Function = osee.add(osee.artifactType(34L, "Function", true, MsWordTemplate)
+   ArtifactTypeToken FunctionMsWord = osee.add(osee.artifactType(34L, "Function - MS Word", true, MsWordTemplate)
       .exactlyOne(FDAL, "Unspecified", 3458764513820541316L)
       .zeroOrOne(FdalRationale, "")
       .exactlyOne(SeverityCategory, "Unspecified",3458764513820541312L)
@@ -129,11 +129,11 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, MsWordTemplate, AbstractHeading)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified", 3458764513820541445L));
-   ArtifactTypeToken ImplementationDetails = osee.add(osee.artifactType(26L, "Implementation Details", false, MsWordTemplate, AbstractImplementationDetails));
-   ArtifactTypeToken ImplementationDetailsDataDefinition = osee.add(osee.artifactType(279578L, "Implementation Details Data Definition", false, ImplementationDetails));
-   ArtifactTypeToken ImplementationDetailsDrawing = osee.add(osee.artifactType(209690L, "Implementation Details Drawing", false, ImplementationDetails));
-   ArtifactTypeToken ImplementationDetailsFunction = osee.add(osee.artifactType(139802L, "Implementation Details Function", false, ImplementationDetails));
-   ArtifactTypeToken ImplementationDetailsProcedure = osee.add(osee.artifactType(69914L, "Implementation Details Procedure", false, ImplementationDetails));
+   ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, MsWordTemplate, AbstractImplementationDetails));
+   ArtifactTypeToken ImplementationDetailsDataDefinitionMsWord = osee.add(osee.artifactType(279578L, "Implementation Details Data Definition - MS Word", false, ImplementationDetailsMsWord));
+   ArtifactTypeToken ImplementationDetailsDrawingMsWord = osee.add(osee.artifactType(209690L, "Implementation Details Drawing - MS Word", false, ImplementationDetailsMsWord));
+   ArtifactTypeToken ImplementationDetailsFunctionMsWord = osee.add(osee.artifactType(139802L, "Implementation Details Function - MS Word", false, ImplementationDetailsMsWord));
+   ArtifactTypeToken ImplementationDetailsProcedureMsWord = osee.add(osee.artifactType(69914L, "Implementation Details Procedure - MS Word", false, ImplementationDetailsMsWord));
    ArtifactTypeToken MsWordWholeDocument = osee.add(osee.artifactType(18L, "MS Word Whole Document", false, MsWord)
       .zeroOrOne(WholeWordContent, "<?xml version= '1.0' encoding= 'UTF-8' standalone= 'yes'?><?mso-application progid= 'Word.Document'?><w:wordDocument xmlns:w= 'http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v= 'urn:schemas-microsoft-com:vml' xmlns:w10= 'urn:schemas-microsoft-com:office:word' xmlns:sl= 'http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml= 'http://schemas.microsoft.com/aml/2001/core' xmlns:wx= 'http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o= 'urn:schemas-microsoft-com:office:office' xmlns:dt= 'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp= 'http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0= 'http://www.w3.org/2001/XMLSchema' xmlns:ns1= 'http://eclipse.org/artifact.xsd' xmlns:st1= 'urn:schemas-microsoft-com:office:smarttags' w:macrosPresent= 'no' w:embeddedObjPresent= 'no' w:ocxPresent= 'no' xml:space= 'preserve'><w:body></w:body></w:wordDocument>"));
    ArtifactTypeToken MsWordStyles = osee.add(osee.artifactType(2578L, "MS Word Styles", false, MsWordWholeDocument));
@@ -154,7 +154,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken ImplementationDetailsPlainText = osee.add(osee.artifactType(638269899L, "Implementation Details Plain Text", false, PlainText, AbstractImplementationDetails));
    ArtifactTypeToken ReferenceDocument = osee.add(osee.artifactType(2084059074565751746L, "Reference Document", false, GeneralDocument)
       .any(DoorsId, ""));
-   ArtifactTypeToken RendererTemplate = osee.add(osee.artifactType(9L, "Renderer Template", false, MsWordWholeDocument)
+   ArtifactTypeToken RendererTemplateWholeWord = osee.add(osee.artifactType(9L, "Renderer Template - Whole Word", false, MsWordWholeDocument)
       .exactlyOne(RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}")
       .any(TemplateMatchCriteria, ""));
    ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, Artifact)
@@ -195,64 +195,65 @@ public interface CoreArtifactTypes {
       .zeroOrOne(VerificationLevel, "Unspecified", 3458764513820541313L));
    ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
-   ArtifactTypeToken HardwareRequirement = osee.add(osee.artifactType(33L, "Hardware Requirement", false, MsWordTemplate, AbstractSpecRequirement));
-   ArtifactTypeToken IndirectSoftwareRequirement = osee.add(osee.artifactType(25L, "Indirect Software Requirement", false, MsWordTemplate, AbstractSoftwareRequirement));
-   ArtifactTypeToken InterfaceRequirement = osee.add(osee.artifactType(32L, "Interface Requirement", false, MsWordTemplate, AbstractSpecRequirement)
+   ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
+   ArtifactTypeToken IndirectSoftwareRequirementMsWord = osee.add(osee.artifactType(25L, "Indirect Software Requirement - MS Word", false, MsWordTemplate, AbstractSoftwareRequirement));
+   ArtifactTypeToken InterfaceRequirementMsWord = osee.add(osee.artifactType(32L, "Interface Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement)
       .exactlyOne(CoreAttributeTypes.Component, "Unspecified", 3458764513820541318L));
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));
    ArtifactTypeToken SafetyAssessment = osee.add(osee.artifactType(59L, "Safety Assessment", false, Artifact)
       .zeroOrOne(ParagraphNumber, "")
       .zeroOrOne(SFHA, ""));
-   ArtifactTypeToken SoftwareDesign = osee.add(osee.artifactType(45L, "Software Design", false, Design));
-   ArtifactTypeToken SoftwareRequirement = osee.add(osee.artifactType(24L, "Software Requirement", false, MsWordTemplate, DirectSoftwareRequirement)
+   ArtifactTypeToken SoftwareDesignMsWord = osee.add(osee.artifactType(45L, "Software Design - MS Word", false, DesignMsWord));
+   ArtifactTypeToken SoftwareRequirementMsWord = osee.add(osee.artifactType(24L, "Software Requirement - MS Word", false, MsWordTemplate, DirectSoftwareRequirement)
       .exactlyOne(IDAL, "Unspecified", 3458764513820541316L)
       .zeroOrOne(IaPlan, "false")
       .zeroOrOne(IdalRationale, "")
       .zeroOrOne(SoftwareControlCategory, "Unspecified", 3766269001007852409L)
       .zeroOrOne(SoftwareControlCategoryRationale, ""));
-   ArtifactTypeToken SoftwareRequirementDataDefinition = osee.add(osee.artifactType(793L, "Software Requirement Data Definition", false, IndirectSoftwareRequirement));
-   ArtifactTypeToken SoftwareRequirementDrawing = osee.add(osee.artifactType(29L, "Software Requirement Drawing", false, IndirectSoftwareRequirement));
-   ArtifactTypeToken SoftwareRequirementFunction = osee.add(osee.artifactType(28L, "Software Requirement Function", false, IndirectSoftwareRequirement));
+   ArtifactTypeToken SoftwareRequirementDataDefinitionMsWord = osee.add(osee.artifactType(793L, "Software Requirement Data Definition - MS Word", false, IndirectSoftwareRequirementMsWord));
+   ArtifactTypeToken SoftwareRequirementDrawingMsWord = osee.add(osee.artifactType(29L, "Software Requirement Drawing - MS Word", false, IndirectSoftwareRequirementMsWord));
+   ArtifactTypeToken SoftwareRequirementFunctionMsWord = osee.add(osee.artifactType(28L, "Software Requirement Function - MS Word", false, IndirectSoftwareRequirementMsWord));
    ArtifactTypeToken SoftwareRequirementHtml = osee.add(osee.artifactType(42L, "Software Requirement - HTML", false, AbstractSoftwareRequirement, HtmlArtifact));
    ArtifactTypeToken SoftwareRequirementPlainText = osee.add(osee.artifactType(792L, "Software Requirement Plain Text", false, PlainText, DirectSoftwareRequirement));
-   ArtifactTypeToken SoftwareRequirementProcedure = osee.add(osee.artifactType(27L, "Software Requirement Procedure", false, IndirectSoftwareRequirement));
-   ArtifactTypeToken SubsystemDesign = osee.add(osee.artifactType(43L, "Subsystem Design", false, Design)
+   ArtifactTypeToken SoftwareRequirementProcedureMsWord = osee.add(osee.artifactType(27L, "Software Requirement Procedure - MS Word", false, IndirectSoftwareRequirementMsWord));
+   ArtifactTypeToken SubsystemDesignMsWord = osee.add(osee.artifactType(43L, "Subsystem Design - MS Word", false, DesignMsWord)
       .exactlyOne(Subsystem, "Unspecified", 3458764513820541310L));
-   ArtifactTypeToken SubsystemFunction = osee.add(osee.artifactType(36L, "Subsystem Function", false, Function, SubsystemDesign));
+   ArtifactTypeToken SubsystemFunctionMsWord = osee.add(osee.artifactType(36L, "Subsystem Function - MS Word", false, FunctionMsWord, SubsystemDesignMsWord));
    ArtifactTypeToken SubsystemRequirementHtml = osee.add(osee.artifactType(795L, "Subsystem Requirement - HTML", false, AbstractSubsystemRequirement, HtmlArtifact));
    ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, MsWordTemplate, AbstractSubsystemRequirement));
-   ArtifactTypeToken SupportDocument = osee.add(osee.artifactType(13L, "Support Document", false, MsWordTemplate)
+   ArtifactTypeToken SupportDocumentMsWord = osee.add(osee.artifactType(13L, "Support Document - MS Word", false, MsWordTemplate)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified", 3458764513820541445L));
-   ArtifactTypeToken SystemDesign = osee.add(osee.artifactType(44L, "System Design", false, Design));
-   ArtifactTypeToken SystemFunction = osee.add(osee.artifactType(35L, "System Function", false, Function, SystemDesign).zeroOrOne(FunctionalCategory, ""));
+   ArtifactTypeToken SystemDesignMsWord = osee.add(osee.artifactType(44L, "System Design - MS Word", false, DesignMsWord));
+   ArtifactTypeToken SystemFunctionMsWord = osee.add(osee.artifactType(35L, "System Function - MS Word", false, FunctionMsWord, SystemDesignMsWord).zeroOrOne(FunctionalCategory, ""));
    ArtifactTypeToken SystemRequirementHtml = osee.add(osee.artifactType(794L, "System Requirement - HTML", false, AbstractSystemRequirement, HtmlArtifact));
    ArtifactTypeToken SystemRequirementMsWord = osee.add(osee.artifactType(30L, "System Requirement - MS Word", false, MsWordTemplate, AbstractSystemRequirement));
-   ArtifactTypeToken TestPlanElement = osee.add(osee.artifactType(37L, "Test Plan Element", false, MsWordTemplate));
+   ArtifactTypeToken TestPlanElementMsWord = osee.add(osee.artifactType(37L, "Test Plan Element - MS Word", false, MsWordTemplate));
    ArtifactTypeToken TestResultNative = osee.add(osee.artifactType(39L, "Test Result Native", false, NativeArtifact, AbstractTestResult));
-   ArtifactTypeToken TestResultWml = osee.add(osee.artifactType(40L, "Test Result WML", false, MsWordWholeDocument, AbstractTestResult));
+   ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
    ArtifactTypeToken TestRun = osee.add(osee.artifactType(85L, "Test Run", false, AbstractTestResult)
       .zeroOrOne(Extension, "")
       .zeroOrOne(TestScriptGuid, "")
       .zeroOrOne(UserId, ""));
    ArtifactTypeToken TestRunDisposition = osee.add(osee.artifactType(84L, "Test Run Disposition", false, Artifact));
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Artifact));
-   ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - MS Word", false, MsWordWholeDocument, TestUnit)
+   ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")
       .any(DoorsId, ""));
    ArtifactTypeToken SoftwareTestProcedurePlainText = osee.add(osee.artifactType(564397212436322878L, "Software Test Procedure Plain Text", false, PlainText, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")
       .any(DoorsId, ""));
    ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, TestUnit));
-   ArtifactTypeToken TestInformationSheet = osee.add(osee.artifactType(41L, "Test Information Sheet", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken TestInformationSheetMsWord = osee.add(osee.artifactType(41L, "Test Information Sheet - MS Word", false, MsWordTemplate, TestUnit)
       .exactlyOne(TisTestCategory, "DEV", 3458764513820541315L)
       .zeroOrOne(TisTestNumber, "")
       .atLeastOne(TisTestType, "Stationary Vehicle", 3458764513820541314L));
    ArtifactTypeToken TestProcedure = osee.add(osee.artifactType(46L, "Test Procedure", false, TestUnit)
       .exactlyOne(Subsystem, "Unspecified", 3458764513820541310L)
       .zeroOrOne(TestProcedureStatus, "", 3458764513820541304L));
+   ArtifactTypeToken TestProcedureMsWord = osee.add(osee.artifactType(2349L, "Test Procedure - MS Word", false, MsWordTemplate, TestProcedure));
    ArtifactTypeToken TestProcedureNative = osee.add(osee.artifactType(48L, "Test Procedure Native", false, NativeArtifact, TestProcedure));
-   ArtifactTypeToken TestProcedureWml = osee.add(osee.artifactType(47L, "Test Procedure WML", false, MsWordWholeDocument, TestProcedure));
+   ArtifactTypeToken TestProcedureWholeWord = osee.add(osee.artifactType(47L, "Test Procedure - Whole Word", false, MsWordWholeDocument, TestProcedure));
    ArtifactTypeToken TestSupport = osee.add(osee.artifactType(83L, "Test Support", false, TestUnit));
    ArtifactTypeToken UniversalGroup = osee.add(osee.artifactType(8L, "Universal Group", false, GroupArtifact));
    ArtifactTypeToken Url = osee.add(osee.artifactType(15L, "Url", false, Artifact));
@@ -281,7 +282,10 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Zip, ""));
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup, "false"));
-   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+      .any(DoorsId, "")
+      .zeroOrOne(DoorsHierarchy, ""));
+   ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .any(DoorsId, "")
       .zeroOrOne(DoorsHierarchy, ""));
    ArtifactTypeToken SubscriptionGroup = osee.add(osee.artifactType(6753071794573299176L, "Subscription Group", false, UserGroup));

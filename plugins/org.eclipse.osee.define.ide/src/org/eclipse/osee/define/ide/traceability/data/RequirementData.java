@@ -82,7 +82,7 @@ public class RequirementData extends BaseTraceDataCache {
       populateTraceMap(monitor, allSwRequirements, allRequirementsMap);
 
       for (Artifact requirement : getAllRequirements()) {
-         if (!requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
+         if (!requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirementMsWord)) {
             directRequirements.add(requirement);
          }
       }

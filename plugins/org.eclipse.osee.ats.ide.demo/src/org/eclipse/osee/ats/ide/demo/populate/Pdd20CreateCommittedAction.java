@@ -156,7 +156,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       for (int x = 1; x < 4; x++) {
          String name = "Robot Interface Init " + x;
          Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          newArt.persist(getClass().getSimpleName());
          parentArt.addChild(newArt);

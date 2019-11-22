@@ -60,9 +60,9 @@ public class TemplateArtifactValidatorTest {
 
    @Test
    public void testIsApplicable() {
-      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
+      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
-      Artifact newNonTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Design, testBranch);
+      Artifact newNonTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.DesignMsWord, testBranch);
       newNonTemplate.persist(testInfo.getQualifiedTestName());
 
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
@@ -78,7 +78,7 @@ public class TemplateArtifactValidatorTest {
 
    @Test
    public void testValidateOkStatus() {
-      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
+      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
@@ -87,7 +87,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
 
-      newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
+      newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       templateId = GUID.create();
       status = validator.validate(newTemplate, CoreAttributeTypes.TemplateMatchCriteria, templateId);
@@ -97,7 +97,7 @@ public class TemplateArtifactValidatorTest {
 
    @Test
    public void testDuplicateCriteriaOnSeparateBranches() {
-      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
+      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
@@ -108,7 +108,7 @@ public class TemplateArtifactValidatorTest {
 
       IOseeBranch testBranch2 =
          BranchManager.createWorkingBranch(CoreBranches.COMMON, testInfo.getQualifiedTestName() + "2");
-      Artifact newTemplate2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch2);
+      Artifact newTemplate2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch2);
       newTemplate2.persist(testInfo.getQualifiedTestName());
       status = validator.validate(newTemplate2, CoreAttributeTypes.TemplateMatchCriteria, templateId);
       Assert.assertTrue(status.isOK());
@@ -122,7 +122,7 @@ public class TemplateArtifactValidatorTest {
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
 
-      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
+      Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, testBranch);
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
 

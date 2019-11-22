@@ -173,7 +173,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       for (int x = 15; x < 17; x++) {
          String name = "Claw Interface Init " + x;
          Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
          parentArt.addChild(newArt);
 

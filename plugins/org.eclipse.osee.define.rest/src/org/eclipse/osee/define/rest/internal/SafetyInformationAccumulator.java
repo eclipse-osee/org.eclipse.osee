@@ -47,7 +47,7 @@ public final class SafetyInformationAccumulator {
       public boolean apply(ArtifactReadable input) {
          boolean toReturn = true;
          try {
-            toReturn = !input.isOfType(CoreArtifactTypes.SoftwareRequirement);
+            toReturn = !input.isOfType(CoreArtifactTypes.SoftwareRequirementMsWord);
          } catch (OseeCoreException ex) {
             // if there is an exception on the type, then we will treat it like it is not
             // an abstract software requirement (i.e. leave toReturn true and skip)
