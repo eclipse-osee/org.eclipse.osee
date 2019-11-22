@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -47,35 +46,20 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
 public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
 
    private IOseeTreeReportProvider reportProvider;
-   private static List<XViewerColumn> attrColumns;
+   private final List<XViewerColumn> attrColumns = new ArrayList<>();
+   private IXViewerCustomizations xViewerCustomizations;
 
    public SkynetXViewerFactory(String namespace, IOseeTreeReportProvider reportProvider) {
       super(namespace);
       this.reportProvider = reportProvider;
-   }
-
-   private IXViewerCustomizations xViewerCustomizations;
-
-   @Override
-   public IXViewerCustomizations getXViewerCustomizations() {
-      try {
-         if (DbConnectionUtility.areOSEEServicesAvailable().isTrue()) {
-            if (xViewerCustomizations == null) {
-               xViewerCustomizations = new SkynetCustomizations(this);
-            }
-            return xViewerCustomizations;
-         }
-      } catch (Throwable ex) {
-         OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE,
-            "Failed to retrieve XViewer customizations from the persistence layer.", ex);
+      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+         attrColumns.add(getAttributeColumn(attributeType));
       }
-      return new XViewerCustomizations();
    }
 
    public void registerAllAttributeColumns() {
       try {
-         registerColumns(
-            getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
+         registerColumns(attrColumns.toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -97,20 +81,34 @@ public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
       }
    }
 
-   static {
-      attrColumns = new LinkedList<>();
-      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-         attrColumns.add(getAttributeColumn(attributeType));
-      }
-   }
-
-   public static synchronized List<XViewerColumn> getAllAttributeColumns() {
-      return attrColumns;
-   }
-
    public static XViewerColumn getAttributeColumn(AttributeTypeToken attributeType) {
       return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType, 75,
          XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+   }
+
+   @Override
+   public Collection<IUserGroupArtifactToken> getUserGroups() {
+      List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
+      for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         userGrps.add(new UserGroupImpl(userGrp));
+      }
+      return userGrps;
+   }
+
+   @Override
+   public IXViewerCustomizations getXViewerCustomizations() {
+      try {
+         if (DbConnectionUtility.areOSEEServicesAvailable().isTrue()) {
+            if (xViewerCustomizations == null) {
+               xViewerCustomizations = new SkynetCustomizations(this);
+            }
+            return xViewerCustomizations;
+         }
+      } catch (Throwable ex) {
+         OseeLog.log(SkynetXViewerFactory.class, Level.SEVERE,
+            "Failed to retrieve XViewer customizations from the persistence layer.", ex);
+      }
+      return new XViewerCustomizations();
    }
 
    /**
@@ -167,12 +165,4 @@ public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
       this.reportProvider = reportProvider;
    }
 
-   @Override
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
-      for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-         userGrps.add(new UserGroupImpl(userGrp));
-      }
-      return userGrps;
-   }
 }
