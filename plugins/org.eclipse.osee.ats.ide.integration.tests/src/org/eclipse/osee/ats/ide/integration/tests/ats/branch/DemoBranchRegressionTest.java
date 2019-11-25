@@ -1,8 +1,13 @@
-/*
- * Created on Nov 13, 2019
+/*******************************************************************************
+ * Copyright (c) 2019 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.branch;
 
 import java.util.Arrays;
@@ -11,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -36,6 +41,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    private final List<String> BranchNames = Arrays.asList(DemoBranches.SAW_Bld_1.getName(),
@@ -193,12 +201,14 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       if (taskNames == null) {
          taskNames = Arrays.asList("Handle Add/Mod change to [Fifth Artifact - Unspecified CSCI]",
             "Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Fourth Artifact - No CSCI]",
-            "Handle Add/Mod change to [Parent Artifact]", "Handle Add/Mod change to [Pre-Branch Artifact to Delete]",
+            "Handle Add/Mod change to [Parent Artifact]",
+            "Handle Add/Mod change to [Pre-Branch Artifact to Delete] (Deleted)",
             "Handle Add/Mod change to [Second Artifact]",
             "Handle Add/Mod change to [Subsystem Artifact (no partition)]", "Handle Add/Mod change to [Third Artifact]",
             "Handle Relation change to [Fifth Artifact - Unspecified CSCI]",
             "Handle Relation change to [First Artifact]", "Handle Relation change to [Fourth Artifact - No CSCI]",
-            "Handle Relation change to [Parent Artifact]", "Handle Relation change to [Pre-Branch Artifact to Delete]",
+            "Handle Relation change to [Parent Artifact]",
+            "Handle Relation change to [Pre-Branch Artifact to Delete] (Deleted)",
             "Handle Relation change to [Second Artifact]", "Handle Relation change to [Software Requirements]",
             "Handle Relation change to [Subsystem Artifact (no partition)]",
             "Handle Relation change to [Third Artifact]");
