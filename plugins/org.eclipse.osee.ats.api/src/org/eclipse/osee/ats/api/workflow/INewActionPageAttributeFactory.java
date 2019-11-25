@@ -33,4 +33,6 @@ public interface INewActionPageAttributeFactory {
 
    public AttributeTypeEnum getPrioirtyAttrToken();
 
+   public ChangeType[] getChangeTypeValues();
+
 }

@@ -16,6 +16,9 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
+import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -39,13 +42,26 @@ public class ChangeTypeDialog extends ListDialog {
       super(parent);
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new ChangeLabelProvider());
-      setInput(ChangeType.values());
+      setInput(getValues());
       setShellStyle(getShellStyle() | SWT.RESIZE);
       setTitle("Select Change Type");
    }
 
    public ChangeType getSelection() {
       return (ChangeType) getResult()[0];
+   }
+
+   public static ChangeType[] getValues() {
+      for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
+         for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
+            if (factory.useFactory()) {
+               if (factory.getChangeTypeValues() != null) {
+                  return factory.getChangeTypeValues();
+               }
+            }
+         }
+      }
+      return ChangeType.values();
    }
 
    @Override
