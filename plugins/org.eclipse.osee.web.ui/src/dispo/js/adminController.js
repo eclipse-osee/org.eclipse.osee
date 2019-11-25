@@ -378,7 +378,7 @@ app.controller('adminController', [
             copySetOp.categoryParam = inputs.categoryParam;
             copySetOp.assigneeParam = inputs.assigneeParam;
             copySetOp.noteParam = inputs.noteParam;
-            copySetOp.sourceProgram = inputs.sourceProgram;		        	
+            copySetOp.allowOnlyValidResolutionTypes = inputs.allowOnlyValidResolutionTypes;		        	
             
             copySetOp.$save({
                 programId: $scope.programSelection,
@@ -564,7 +564,6 @@ app.controller('adminController', [
             }, function(data) {
                 var reportUrl = data.operationStatus;
                 window.open(reportUrl);
-                console.log(data);
             });
         }
 
@@ -703,6 +702,7 @@ app.controller('adminController', [
             $scope.categoryParam = 0;
             $scope.assigneeParam = 0;
             $scope.noteParam = 0;
+            $scope.allowOnlyValidResolutionTypes = false;
 
             $scope.ok = function() {
                 var inputs = {};
@@ -713,6 +713,7 @@ app.controller('adminController', [
                 inputs.categoryParam = this.categoryParam;
                 inputs.noteParam = this.noteParam;
                 inputs.assigneeParam = this.assigneeParam;
+                inputs.allowOnlyValidResolutionTypes = this.allowOnlyValidResolutionTypes;
                 
                 $modalInstance.close(inputs);
             };

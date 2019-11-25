@@ -731,6 +731,13 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params, String userName) {
+      DispoConfig dispoConfig = getDispoConfig(branch);
+      // If the the validResolutions is empty the copyAllDispositions will
+      Set<String> validResolutions = new HashSet<>();
+      dispoConfig.getValidResolutions().forEach(res -> {
+         validResolutions.add(res.getValue());
+      });
+
       List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSetId);
       Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(branch, destSetId)) {
@@ -753,7 +760,8 @@ public class DispoApiImpl implements DispoApi {
 
       DispoSetCopier copier = new DispoSetCopier(dispoConnector);
       if (!params.getAnnotationParam().isNone()) {
-         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns, report);
+         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns,
+            params.getAllowOnlyValidResolutionTypes(), validResolutions, report);
          for (DispoItem item : copyResults) {
             namesToToEditItems.put(item.getName(), item);
          }

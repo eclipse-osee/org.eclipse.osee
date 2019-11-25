@@ -92,7 +92,7 @@
         <div class="modal-header">
             <h3 class="modal-title">Copy Annotations</h3>
         </div>
-        <div class="modal-body" overflow: auto;">
+        <div class="modal-body" overflow: auto;>
             <div class="form-group">
 					 Select Destination Set
                 <select class="form-control" ng-model="destinationSet" ng-options="obj.guid as obj.name for obj in setsLocal">
@@ -116,6 +116,12 @@
                 <select class="form-control" ng-model="assigneeParam" ng-options="obj.value as obj.text for obj in assigneeOptions"></select>
 				    <h5>Copy Item Notes</h5>
                 <select class="form-control" ng-model="noteParam" ng-options="obj.value as obj.text for obj in noteOptions"></select>
+                <div id="allowOnlyValidResolutionTypesDiv">
+                    <h5 id="checkboxHeader">Allow Only Valid Resolution Types?</h5>
+                    <div class="double">
+                        <input id="allowOnlyValidResolutionTypesCheckbox" type="checkbox" ng-model="allowOnlyValidResolutionTypes" value="">
+                    </div>
+                </div>
 			</div>
 
         </div>
@@ -130,7 +136,7 @@
         <div class="modal-header">
             <h3 class="modal-title">Copy From Coverage</h3>
         </div>
-        <div class="modal-body" overflow: auto;">
+        <div class="modal-body" overflow: auto;>
             <div class="form-group">
 					 Select Destination Set
                 <select class="form-control" ng-model="destinationSet" ng-options="obj.guid as obj.name for obj in setsLocal">
@@ -138,11 +144,11 @@
             </div>
             <div class="form-group">
 					 Enter Source Branch
-                <input class="form-control" ng-model="sourceBranch" placeholder="Enter Branch Uuid"></input>
+                <input class="form-control" ng-model="sourceBranch" placeholder="Enter Branch Uuid">
             </div>
             <div class="form-group">
 					 Enter Coverage Package id
-                <input class="form-control" ng-model="sourcePackage" placeholder="Enter Coverage Package Uuid"></input>
+                <input class="form-control" ng-model="sourcePackage" placeholder="Enter Coverage Package Uuid">
             </div>            
         </div>
         <div class="modal-footer">
@@ -156,7 +162,7 @@
         <div class="modal-header">
             <h3 class="modal-title">Mass Assign a Team</h3>
         </div>
-        <div class="modal-body" overflow: auto;">
+        <div class="modal-body" overflow: auto;>
             <div class="form-group">
 					 Select a Set
                 <select class="form-control" ng-model="setId" ng-options="obj.guid as obj.name for obj in setsLocal">
@@ -164,7 +170,7 @@
             </div>
             <div class="form-group">
     				Team:
-					<input class="form-control" ng-model="team"></input>
+					<input class="form-control" ng-model="team">
 					<br>
 					Items (comma seperated name list):
 					<br>
@@ -190,10 +196,10 @@
         <div class="modal-header">
             <h3 class="modal-title">Confirm Delete of Set {{ set.name }}</h3>
         </div>
-        <div class="modal-body" overflow: auto;">
+        <div class="modal-body" overflow: auto;>
             <div class="form-group">
 					To Delete Set {{ set.name }} Type "DELETE":
-					<input class="form-group" ng-model="text" placeholder="!"></input> 
+					<input class="form-group" ng-model="text" placeholder="!">
             </div>
         </div>
         <div class="modal-footer">
@@ -207,7 +213,7 @@
         <div class="modal-header">
             <h3 class="modal-title">Add CI Set</h3>
         </div>
-        <div class="modal-body" overflow: auto;">
+        <div class="modal-body" overflow: auto;>
             <div class="form-group">
 					 Select Disposition Set
                 <select class="form-control" ng-model="dispositionSet" ng-options="obj.guid as obj.name for obj in setsLocal">
@@ -215,7 +221,7 @@
             </div>
             <div class="form-group">
     				CI Set:
-					<input class="form-control" ng-model="ciSet"></input>
+					<input class="form-control" ng-model="ciSet">
 				</div>             
         </div>
         <div class="modal-footer">

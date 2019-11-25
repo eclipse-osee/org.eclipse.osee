@@ -22,6 +22,7 @@ public class CopySetParams {
    private CopySetParamOption categoryParam;
    private CopySetParamOption noteParam;
    private CopySetParamOption assigneeParam;
+   private boolean allowOnlyValidResolutionTypes;
 
    public CopySetParamOption getAnnotationParam() {
       return annotationParam;
@@ -39,6 +40,10 @@ public class CopySetParams {
       return assigneeParam;
    }
 
+   public boolean getAllowOnlyValidResolutionTypes() {
+      return allowOnlyValidResolutionTypes;
+   }
+
    public void setAnnotationParam(CopySetParamOption annotationParam) {
       this.annotationParam = annotationParam;
    }
@@ -53,6 +58,10 @@ public class CopySetParams {
 
    public void setAssigneeParam(CopySetParamOption assigneeParam) {
       this.assigneeParam = assigneeParam;
+   }
+
+   public void setAllowOnlyValidResolutionTypes(boolean allowOnlyValidResolutionTypes) {
+      this.allowOnlyValidResolutionTypes = allowOnlyValidResolutionTypes;
    }
 
 }

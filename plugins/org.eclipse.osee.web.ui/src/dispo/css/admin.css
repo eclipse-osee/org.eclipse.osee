@@ -71,3 +71,24 @@ button#mergetAnnotationsBtn {
 .ngHeaderScroller {
     max-width: 0px;
 }
+
+input#allowOnlyValidResolutionTypesCheckbox {
+	line-height: 100%;	
+	margin-top: -25px;
+	zoom: 2;
+	transform: scale(2);
+	-ms-transform: scale(2);
+	-webkit-transform: scale(2);
+	-o-transform: scale(2);
+	-moz-transform: scale(2);
+	transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+	-webkit-transform-origin: 0 0;
+	-o-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	-webkit-transform-origin: 0 0;
+  }
+
+div#allowOnlyValidResolutionTypesDiv {
+    margin-top: 20px;
+}

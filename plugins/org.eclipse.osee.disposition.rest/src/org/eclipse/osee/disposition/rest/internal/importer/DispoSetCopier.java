@@ -15,6 +15,7 @@ import static org.eclipse.osee.disposition.model.DispoSummarySeverity.UPDATE;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +49,11 @@ public class DispoSetCopier {
    }
 
    public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report) {
+      return copyAllDispositions(nameToDestItems, sourceItems, isCoverageCopy, reruns, false, Collections.emptySet(),
+         report);
+   }
+
+   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionsTypes, OperationReport report) {
       List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
@@ -57,8 +63,8 @@ public class DispoSetCopier {
          if (destItem != null) {
             // Only try to copy over annotations if matching dest item is NOT PASS
             if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
-               DispoItemData newItem =
-                  createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns, report);
+               DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
+                  report, allowOnlyValidResolutionTypes, validResolutionsTypes);
                if (newItem != null) {
                   modifiedItems.add(newItem);
 
@@ -106,7 +112,7 @@ public class DispoSetCopier {
       return destItem;
    }
 
-   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report) {
+   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
       DispoItemData toReturn = null;
       boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
       if (!isSameDiscrepancies) {
@@ -115,11 +121,12 @@ public class DispoSetCopier {
             WARNING);
 
       }
-      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, reruns, report, isSameDiscrepancies);
+      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, reruns, report, isSameDiscrepancies,
+         allowOnlyValidResolutionTypes, validResolutionTypes);
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies) {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
       boolean isChangesMade = false;
       DispoItemData newItem = initNewItem(destItem, sourceItem);
       List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
@@ -166,6 +173,12 @@ public class DispoSetCopier {
                   sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid()),
                IGNORE);
 
+         } else if (allowOnlyValidResolutionTypes && !validResolutionTypes.contains(sourceAnnotation.getResolutionType())) {
+            report.addEntry(destItem.getName(),
+               String.format(
+                  "Did not copy annotations for location(s) [%s] because the resolution [%s] does not exist in the destination program",
+                  sourceAnnotation.getLocationRefs(), sourceAnnotation.getResolutionType()),
+               IGNORE);
          } else {
             // Try to copy but check if Discrepancy is the same and present in the destination set
             if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem,
