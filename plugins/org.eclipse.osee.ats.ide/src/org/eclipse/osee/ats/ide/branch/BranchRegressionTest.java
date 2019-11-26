@@ -147,7 +147,7 @@ public abstract class BranchRegressionTest {
       testXWorkingBranchAfterBranchCommit();
       testChangesMadeWereCommitted();
       testRequirementsWorkflowCompletion();
-      testCodeTaskCreation();
+      testCodeTaskCreationAfterReqCompletion();
       testShowRelatedTasksAction();
       testShowRelatedRequirementAction();
       testShowRequirementDiffsAction();
@@ -369,6 +369,8 @@ public abstract class BranchRegressionTest {
          getSecondArtifactCscis(), branch);
       Assert.assertNotNull(newArt);
 
+      testCodeTaskCreationAfterFirstAndSecond();
+
       newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedure, softReqArt, THIRD_ARTIFACT,
          getThirdArtifactCscis(), branch);
       // Task should be created for all CSCIs if no csci is specified
@@ -379,16 +381,25 @@ public abstract class BranchRegressionTest {
          new String[] {AttributeId.UNSPECIFIED}, branch);
       Assert.assertNotNull(newArt);
 
+      testCodeTaskCreationAfterThirdFourthFifth();
+
       // Create artifact, make change and delete; this requirement shouldn't show in change report
       newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, IN_BRANCH_ARTIFACT_NAME,
          getInBranchArtifactCscis(), branch);
       Assert.assertNotNull(newArt);
 
+      testCodeTaskCreationAfterInBranchCreation();
+
       // Make attribute change
       newArt.setName(IN_BRANCH_ARTIFACT_NAME + " Changed");
       newArt.persist(getClass().getSimpleName());
+
+      textCodeTestCreatinoAfterInBranchCreationModified();
+
       // Delete this one; Since created and deleted in same branch,
       newArt.deleteAndPersist();
+
+      textCodeTestCreatinoAfterInBranchCreationDeleted();
 
       // Create a Subsystem artifact that has no partition
       newArt = createSubsystemArtifact(softReqArt, SUBSYSTEM_ARTIFACT);
@@ -561,9 +572,74 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testCodeTaskCreation() throws Exception {
+   public void testCodeTaskCreationAfterInBranchCreation() throws Exception {
       // Validate Code/Test tasks
-      Result result = verifyCodeTestTasks();
+      Result result = verifyCodeTaskCreationAfterInBranchCreation();
+      if (result.isFalse()) {
+         if (!result.getText().equals("")) {
+            Assert.fail(result.getText());
+         }
+      }
+
+      // Give time for events to propagate through system
+      Thread.sleep(8000);
+   }
+
+   public void textCodeTestCreatinoAfterInBranchCreationModified() throws Exception {
+      // Validate Code/Test tasks
+      Result result = verifyCodeTestCreatinoAfterInBranchCreationModified();
+      if (result.isFalse()) {
+         if (!result.getText().equals("")) {
+            Assert.fail(result.getText());
+         }
+      }
+
+      // Give time for events to propagate through system
+      Thread.sleep(8000);
+   }
+
+   public void textCodeTestCreatinoAfterInBranchCreationDeleted() throws Exception {
+      // Validate Code/Test tasks
+      Result result = verifyCodeTestCreatinoAfterInBranchCreationDeleted();
+      if (result.isFalse()) {
+         if (!result.getText().equals("")) {
+            Assert.fail(result.getText());
+         }
+      }
+
+      // Give time for events to propagate through system
+      Thread.sleep(8000);
+   }
+
+   public void testCodeTaskCreationAfterThirdFourthFifth() throws Exception {
+      // Validate Code/Test tasks
+      Result result = verifyCodeTestTasksAfterThirdFourthFifth();
+      if (result.isFalse()) {
+         if (!result.getText().equals("")) {
+            Assert.fail(result.getText());
+         }
+      }
+
+      // Give time for events to propagate through system
+      Thread.sleep(8000);
+   }
+
+   public void testCodeTaskCreationAfterFirstAndSecond() throws Exception {
+      // Validate Code/Test tasks
+      Result result = verifyCodeTestTasksAfterFirstAndSecond();
+      if (result.isFalse()) {
+         if (!result.getText().equals("")) {
+            Assert.fail(result.getText());
+         }
+      }
+
+      // Give time for events to propagate through system
+      Thread.sleep(8000);
+   }
+
+   public void testCodeTaskCreationAfterReqCompletion() throws Exception {
+      // Validate Code/Test tasks
+      Result result = verifyCodeTestTasksAfterReqCompletion();
       if (result.isFalse()) {
          if (!result.getText().equals("")) {
             Assert.fail(result.getText());
@@ -667,7 +743,27 @@ public abstract class BranchRegressionTest {
 
    public abstract BranchId getProgramBranch();
 
-   public abstract Result verifyCodeTestTasks() throws Exception;
+   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
+      return Result.TrueResult;
+   }
+
+   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
+      return Result.TrueResult;
+   }
+
+   public Result verifyCodeTaskCreationAfterInBranchCreation() throws Exception {
+      return Result.TrueResult;
+   }
+
+   public Result verifyCodeTestCreatinoAfterInBranchCreationModified() throws Exception {
+      return Result.TrueResult;
+   }
+
+   public Result verifyCodeTestCreatinoAfterInBranchCreationDeleted() throws Exception {
+      return Result.TrueResult;
+   }
+
+   public abstract Result verifyCodeTestTasksAfterReqCompletion() throws Exception;
 
    public abstract ArtifactTypeToken getCodeTeamWfArtType();
 

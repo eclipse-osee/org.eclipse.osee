@@ -119,7 +119,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public Result verifyCodeTestTasks() throws Exception {
+   public Result verifyCodeTestTasksAfterReqCompletion() throws Exception {
       System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
       return Result.TrueResult;
    }
