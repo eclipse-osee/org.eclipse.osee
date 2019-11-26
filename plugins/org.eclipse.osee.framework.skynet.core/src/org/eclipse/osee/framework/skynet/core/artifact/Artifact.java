@@ -45,7 +45,9 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EditState;
@@ -102,7 +104,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 
 public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed {
-   public static final Artifact SENTINEL = new Artifact(Id.SENTINEL, BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
+   public static final Artifact SENTINEL = new Artifact(Id.SENTINEL, CoreBranches.COMMON, CoreArtifactTypes.Artifact);
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";

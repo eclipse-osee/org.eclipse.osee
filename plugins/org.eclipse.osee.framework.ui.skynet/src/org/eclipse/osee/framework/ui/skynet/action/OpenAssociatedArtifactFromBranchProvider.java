@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -56,13 +55,10 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
          public void done(IJobChangeEvent event) {
             try {
                Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
-               if (assocArt == null) {
+               if (assocArt.isInvalid()) {
                   AWorkbench.popup("ERROR", "Cannot access associated artifact.");
-               } else if (assocArt instanceof User) {
-                  AWorkbench.popup(String.format("Associated with user [%s]", assocArt.getName()));
                } else {
-                  RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch()),
-                     PresentationType.SPECIALIZED_EDIT);
+                  RendererManager.openInJob(assocArt, PresentationType.SPECIALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);
@@ -72,20 +68,19 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
    }
 
    public void updateEnablement() {
-      Artifact associatedArtifact = null;
-      boolean isEnabled;
+      boolean isEnabled = false;
+      ImageDescriptor descriptor = null;
       try {
-         associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
+         Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
+         if (associatedArtifact.isValid()) {
+            descriptor = ArtifactImageManager.getImageDescriptor(associatedArtifact);
+            isEnabled = true;
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      ImageDescriptor descriptor;
-      if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
-         descriptor = ArtifactImageManager.getImageDescriptor(associatedArtifact);
-         isEnabled = true;
-      } else {
+      if (!isEnabled) {
          descriptor = ImageManager.getImageDescriptor(FrameworkImage.EDIT);
-         isEnabled = false;
       }
       setImageDescriptor(descriptor);
       setEnabled(isEnabled);

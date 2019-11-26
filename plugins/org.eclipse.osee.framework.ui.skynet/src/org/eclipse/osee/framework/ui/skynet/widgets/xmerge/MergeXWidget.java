@@ -415,7 +415,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private void refreshAssociatedArtifactItem(BranchId sourceBranch) {
       try {
          Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-         if (branchAssociatedArtifact != null) {
+         if (branchAssociatedArtifact.isValid()) {
             openAssociatedArtifactAction.setImageDescriptor(
                ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
@@ -537,10 +537,10 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                   IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
                   Operations.executeAsJob(operation, true);
                } else if (BranchManager.hasMergeBranches(sourceBranch) && !rebase) {
-                  Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   IOseeCmService cm = ServiceUtil.getOseeCmService();
 
                   if (cm.isWorkFlowBranch(sourceBranch)) {
+                     Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                      boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
                      cm.commitBranch(art, destBranch, isArchiveSourceBranch);
                   } else {
@@ -596,7 +596,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             IOseeCmService cmService = ServiceUtil.getOseeCmService();
             if (cmService.isPcrArtifact(associatedArtifact)) {
                cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
-            } else if (associatedArtifact.notEqual(Artifact.SENTINEL)) {
+            } else if (associatedArtifact.isValid()) {
                RendererManager.open(associatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");

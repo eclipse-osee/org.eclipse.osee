@@ -137,7 +137,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            return BranchManager.getAssociatedArtifact(branch).getName();
+            Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branch);
+            return associatedArtifact.isValid() ? associatedArtifact.getName() : "";
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
@@ -234,7 +235,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (element instanceof BranchId) {
             try {
                Artifact associatedArtifact = BranchManager.getAssociatedArtifact((BranchId) element);
-               if (associatedArtifact.notEqual(Artifact.SENTINEL)) {
+               if (associatedArtifact.isValid()) {
                   return ArtifactImageManager.getImage(associatedArtifact);
                }
             } catch (OseeCoreException ex) {

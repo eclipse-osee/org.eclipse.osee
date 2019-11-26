@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -136,7 +135,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (branches != null) {
                for (BranchId branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
-                  if (assocArt != null && assocArt.notEqual(AtsCoreUsers.SYSTEM_USER)) {
+                  if (assocArt.isValid()) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                         assocArt.getArtifactTypeName(),
                         "Working",
