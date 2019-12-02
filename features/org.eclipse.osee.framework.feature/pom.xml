@@ -29,6 +29,7 @@
 						<configuration>
 							<excludes>
 							   <plugin id="org.eclipse.osee.framework.templates" />
+							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.hamcrest" />
 							   <plugin id="org.eclipse.egit" />
 							   <feature id="org.eclipse.sdk" />

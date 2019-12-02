@@ -27,6 +27,8 @@
 				</property>
 			</activation>
 			<modules>
+							<module>../../plugins/org.postgresql.driver</module>		
+			
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
 
@@ -103,6 +105,8 @@
 				</property>
 			</activation>
 			<modules>
+							<module>../../plugins/org.postgresql.driver</module>		
+			
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
 
