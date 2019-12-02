@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AtsBranchUtil {
 
    public static final String PARENT_BRANCH_CAN_NOT_BE_DETERMINED =
-      "Parent Branch can not be determined.\n\nPlease specify parent branch through Targeted Version or Team Definition.\n\n Contact your team lead to configure this.";
+      "Parent Branch cannot be determined.\n\nPlease specify parent branch through Targeted Version or Team Definition.\n\nContact your team lead to configure this.";
 
    /**
     * @return true if one or more reviews were created
@@ -101,10 +101,18 @@ public class AtsBranchUtil {
             return new Result(
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
+         if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
+            return new Result("Cannot create another branch while the current branch is in work.");
+         }
          BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
          if (parentBranch == null || parentBranch.isInvalid()) {
             return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
          }
+
+         if (AtsClientService.get().getBranchService().getBranch(parentBranch) == null) {
+            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
+         }
+
          Result result = AtsClientService.get().getBranchService().isCreateBranchAllowed(teamWf);
          if (result.isFalse()) {
             return result;
