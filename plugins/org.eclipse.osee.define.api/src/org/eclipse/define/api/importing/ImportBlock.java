@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class ImportBlock implements Named {
    protected ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
    private Boolean complete = false;
+   protected String baseDir;
    protected final LinkedList<BlockField> attrs = new LinkedList<>();
    protected final XResultData results;
 
@@ -160,5 +161,9 @@ public abstract class ImportBlock implements Named {
       } else {
          addAttr.setData(text);
       }
+   }
+
+   public void setBaseDir(String baseDir) {
+      this.baseDir = baseDir;
    }
 }
