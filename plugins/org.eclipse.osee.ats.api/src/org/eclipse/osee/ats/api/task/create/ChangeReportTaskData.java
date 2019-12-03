@@ -40,6 +40,7 @@ public class ChangeReportTaskData {
     * error handling
     */
    public XResultData results = new XResultData();
+   // True if just want results of what would be done
    boolean reportOnly = false;
    IAtsVersion targetedVersion;
    AtsUser asUser;

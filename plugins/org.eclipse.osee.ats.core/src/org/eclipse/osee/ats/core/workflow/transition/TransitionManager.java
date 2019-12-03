@@ -346,7 +346,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                         workItem.getWorkDefinition().getCreateTasksDefs(), helper.getServices());
                      XResultData result = taskRunner.run();
                      if (result.isErrors()) {
-                        results.addResult(new TransitionResult(results.getResultString()));
+                        results.addResult(new TransitionResult(result.toString()));
                      } else if (!result.getIds().isEmpty()) {
                         // reload team wfs?
                      }

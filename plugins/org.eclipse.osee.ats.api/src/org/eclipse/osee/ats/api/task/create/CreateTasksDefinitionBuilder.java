@@ -58,6 +58,8 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
    }
 
    public CreateTasksDefinitionBuilder andTask(String title, String desc, StateToken relatedToState, AtsWorkDefinitionToken workDef, Long... assigneeAccountId) {
+      System.err.println(
+         "Should all addTask be renamed to addStaticTask; ensure this isn't used by change report tasks");
       Conditions.assertNotNullOrEmpty(title, "title can not be empty");
       CreateTaskDefinition taskDef = new CreateTaskDefinition();
       taskDef.setTitle(title);
@@ -71,7 +73,7 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
          taskDef.getAssigneeAccountIds().add(assigneAccountId);
       }
       taskDef.setWorkDefTok(workDef);
-      createTasksDef.getTasksDef().add(taskDef);
+      createTasksDef.getStaticTaskDefs().add(taskDef);
       return this;
    }
 

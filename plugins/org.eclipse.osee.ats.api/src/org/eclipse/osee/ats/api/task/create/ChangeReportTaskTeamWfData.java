@@ -34,6 +34,10 @@ public class ChangeReportTaskTeamWfData {
    ArtifactToken destTeamDef;
    XResultData rd;
    boolean reportOnly;
+   /**
+    * Collection of task objects that are created for all tasks needed to be created and then later used to match any
+    * tasks already created
+    */
    Collection<ChangeReportTaskMatch> taskMatches = new ArrayList<ChangeReportTaskMatch>();
    NewTaskData newTaskData = new NewTaskData();
 

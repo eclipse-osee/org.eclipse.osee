@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
+import org.eclipse.osee.ats.api.task.create.CreateTaskDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -100,7 +101,7 @@ public class ChangeReportTasksUtil {
    }
 
    /**
-    * Compare already TaskComputedAsNeeded task matches with existing tasks and determine fate.
+    * Compare already ChangedReportTaskComputedAsNeeded task matches with existing tasks and determine fate.
     */
    public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactReadable> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
@@ -190,10 +191,25 @@ public class ChangeReportTasksUtil {
       getDeletedArifactNames(crtd, crttwd, atsApi);
       getRelArtifactNames(crtd, crttwd, atsApi);
       getExtensionArtifactNames(crtd, crttwd, atsApi);
+      getApiAndTaskNames(crtd, crttwd, atsApi);
+   }
+
+   /**
+    * Add tasks defined in CreateTaskDefinition through java api. These will be added regardless of change report
+    * contents.
+    */
+   private static void getApiAndTaskNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
+      for (CreateTaskDefinition taskDef : crtd.getSetDef().getStaticTaskDefs()) {
+         ChangeReportTaskMatch match = new ChangeReportTaskMatch();
+         match.setTaskName(taskDef.getTitle());
+         match.setCreateTaskDef(taskDef);
+         match.setType(ChangeReportTaskMatchType.StaticTaskComputedAsNeeded);
+         crttwd.getTaskMatches().add(match);
+      }
    }
 
    private static void getExtensionArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      // TBD - Allow extensions to add tasks
+      System.err.println("TBD - Allow extensions to add tasks");
    }
 
    private static void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
@@ -224,7 +240,7 @@ public class ChangeReportTasksUtil {
       ChangeReportTaskMatch match = new ChangeReportTaskMatch();
       match.setChgRptArt(chgRptArt);
       match.setTaskName(safeName);
-      match.setType(ChangeReportTaskMatchType.TaskComputedAsNeeded);
+      match.setType(ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded);
       crttwd.getTaskMatches().add(match);
    }
 

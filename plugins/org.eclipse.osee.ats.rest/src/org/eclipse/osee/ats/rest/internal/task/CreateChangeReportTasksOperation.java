@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -28,10 +30,12 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
+import org.eclipse.osee.ats.api.task.create.CreateTaskDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -248,10 +252,19 @@ public class CreateChangeReportTasksOperation {
                }
 
                // Create if no task was found
-               else if (matchType == ChangeReportTaskMatchType.TaskComputedAsNeeded) {
+               else if (matchType == ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf("Create new task [%s]\n", taskMatch.getTaskName());
-                     addToNewTaskData(crttwd, taskMatch, createdDate);
+                     crtd.getResults().warningf("Create new chg rpt task [%s]\n", taskMatch.getTaskName());
+                     addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
+                     addModTaskNames.add(taskMatch.getTaskName());
+                  }
+               }
+
+               // Create if no task was found
+               else if (matchType == ChangeReportTaskMatchType.StaticTaskComputedAsNeeded) {
+                  if (!addModTaskNames.contains(taskMatch.getTaskName())) {
+                     crtd.getResults().warningf("Create new static task [%s]\n", taskMatch.getTaskName());
+                     addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
                      addModTaskNames.add(taskMatch.getTaskName());
                   }
                }
@@ -300,18 +313,41 @@ public class CreateChangeReportTasksOperation {
       return crtd;
    }
 
-   private void addToNewTaskData(ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {
+   private void addToNewTaskData(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {
       JaxAtsTask task = new JaxAtsTask();
       task.setName(taskMatch.getTaskName());
+      if (taskMatch.getMatchType() == ChangeReportTaskMatchType.StaticTaskComputedAsNeeded) {
+         CreateTaskDefinition createTaskDef = taskMatch.getCreateTaskDef();
+         List<ArtifactId> assigneeeAccountIds = new LinkedList<>();
+         for (Long id : createTaskDef.getAssigneeAccountIds()) {
+            assigneeeAccountIds.add(ArtifactId.valueOf(id));
+         }
+         task.setAssigneeAccountIds(assigneeeAccountIds);
+         if (Strings.isValid(createTaskDef.getDescription())) {
+            task.setDescription(createTaskDef.getDescription());
+         }
+         if (Strings.isValid(createTaskDef.getRelatedToState())) {
+            task.setRelatedToState(createTaskDef.getRelatedToState());
+         }
+      } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded) {
+         task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
+         task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
+      } else {
+         crtd.getResults().errorf("Un-handled MatchType [%s]", taskMatch.getMatchType().name());
+         return;
+      }
       task.setCreatedDate(createdDate);
-      task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
-      task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
-      task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
+      if (crtd.getAsUser() != null) {
+         AtsUser asUser = crtd.getAsUser();
+         task.setCreatedByUserId(asUser.getUserId());
+      } else {
+         task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
+      }
       task.addAttribute(CoreAttributeTypes.StaticId, ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID);
       crttwd.getNewTaskData().getNewTasks().add(task);
    }
 
-   // TBD - needed anymore?  We're just deleting un-referenced
+   // TBD - Need this, don't delete de-referenced tasks
    private void dereferenceTask(ChangeReportTaskTeamWfData crd, IAtsTask task) {
       crd.getRd().logf("No matching artifact for Task %s; De-referenced task can be deleted.", task.toStringWithId());
       if (crd.isPersist()) {

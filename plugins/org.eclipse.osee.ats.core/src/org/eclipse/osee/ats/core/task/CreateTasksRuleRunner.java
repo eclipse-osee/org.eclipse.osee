@@ -49,8 +49,8 @@ public class CreateTasksRuleRunner {
    public XResultData run() {
       results = new XResultData();
       for (CreateTasksDefinition tasksDef : createTasksDefs) {
-         if (tasksDef.getTasksDef().isEmpty()) {
-            results.error("TaskDefs can not be empty");
+         if (tasksDef.getStaticTaskDefs().isEmpty()) {
+            results.error("StaticTaskDefs can not be empty");
             return results;
          }
          if (Strings.isInValid(tasksDef.getComment())) {
@@ -96,7 +96,7 @@ public class CreateTasksRuleRunner {
 
    private List<CreateTaskDefinition> getMissingTasks(CreateTasksDefinition tasksDef, List<String> existingTaskNames) {
       List<CreateTaskDefinition> missingTasks = new ArrayList<>();
-      for (CreateTaskDefinition createTaskDef : tasksDef.getTasksDef()) {
+      for (CreateTaskDefinition createTaskDef : tasksDef.getStaticTaskDefs()) {
          if (!existingTaskNames.contains(createTaskDef.getTitle())) {
             missingTasks.add(createTaskDef);
          }

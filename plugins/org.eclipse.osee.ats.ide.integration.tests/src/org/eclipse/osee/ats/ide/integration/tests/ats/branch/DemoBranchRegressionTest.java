@@ -12,12 +12,15 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.branch;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -28,9 +31,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
 import org.eclipse.osee.ats.ide.branch.BranchRegressionTest;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -49,6 +54,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    private final List<String> BranchNames = Arrays.asList(DemoBranches.SAW_Bld_1.getName(),
       DemoBranches.SAW_Bld_2.getName(), DemoBranches.SAW_Bld_3.getName());
    private List<String> taskNames;
+   private ActionResult actionResult;
 
    @Override
    public void testCreateAction() {
@@ -61,9 +67,9 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
-         getClass().getSimpleName(), "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias,
-         createdDate, createdBy, Arrays.asList(new PcrNumberActionListener()), changes);
+      actionResult = AtsClientService.get().getActionFactory().createAction(null, getClass().getSimpleName(),
+         "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         Arrays.asList(new PcrNumberActionListener()), changes);
 
       if (actionResult.getResults().isErrors()) {
          throw new OseeStateException(actionResult.getResults().toString());
@@ -76,6 +82,18 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
       Assert.assertEquals(3, teamWfs.size());
       testTeamWorkflows(teamWfs);
+   }
+
+   private IAtsTeamWorkflow getCodeTeamWf() {
+      IAtsTeamWorkflow codeWf = null;
+      for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
+         if (teamWf.isOfType(getCodeTeamWfArtType())) {
+            codeWf = teamWf;
+            break;
+         }
+      }
+      Assert.assertNotNull(codeWf);
+      return codeWf;
    }
 
    @Override
@@ -116,6 +134,35 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    @Override
    public BranchId getProgramBranch() {
       return DemoBranches.SAW_Bld_2;
+   }
+
+   @Override
+   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
+
+      IAtsTeamWorkflow codeWf = getCodeTeamWf();
+      IAtsClient atsApi = AtsClientService.get();
+      ChangeReportTaskData data = atsApi.getTaskService().createTasks(codeWf.getArtifactToken(),
+         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges,
+         atsApi.getUserService().getCurrentUser().getArtifactToken());
+      Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());
+
+      List<IAtsWorkItem> wfs = atsApi.getStoreService().reload(Collections.singleton(codeWf));
+      codeWf = (IAtsTeamWorkflow) wfs.iterator().next();
+
+      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(codeWf);
+      Assert.assertEquals(6, tasks.size());
+
+      List<String> expected =
+         Arrays.asList("Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Second Artifact]",
+            "Handle Relation change to [First Artifact]", "Handle Relation change to [Second Artifact]",
+            "Handle Relation change to [Software Requirements]", "My Manual Task");
+
+      for (IAtsTask task : tasks) {
+         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), tasks),
+            expected.contains(task.getName()));
+      }
+
+      return Result.TrueResult;
    }
 
    @Override

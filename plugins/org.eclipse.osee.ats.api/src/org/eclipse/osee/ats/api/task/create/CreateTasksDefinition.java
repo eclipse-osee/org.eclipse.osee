@@ -27,7 +27,9 @@ public class CreateTasksDefinition extends NamedIdBase {
    protected String comment;
    protected RuleEventType ruleEvent;
    private String toState;
-   protected List<CreateTaskDefinition> tasksDef = new ArrayList<CreateTaskDefinition>();
+   // Hard coded tasks to create regardless of change report contents.
+   protected List<CreateTaskDefinition> staticTaskDefs = new ArrayList<CreateTaskDefinition>();
+   // Additional options to specify change report items to use or ignore
    private ChangeReportOptions chgRptOptions;
 
    public CreateTasksDefinition() {
@@ -84,12 +86,12 @@ public class CreateTasksDefinition extends NamedIdBase {
       this.chgRptOptions = chgRptOptions;
    }
 
-   public List<CreateTaskDefinition> getTasksDef() {
-      return tasksDef;
+   public List<CreateTaskDefinition> getStaticTaskDefs() {
+      return staticTaskDefs;
    }
 
-   public void setTasksDef(List<CreateTaskDefinition> tasksDef) {
-      this.tasksDef = tasksDef;
+   public void setStaticTaskDefs(List<CreateTaskDefinition> staticTaskDefs) {
+      this.staticTaskDefs = staticTaskDefs;
    }
 
 }

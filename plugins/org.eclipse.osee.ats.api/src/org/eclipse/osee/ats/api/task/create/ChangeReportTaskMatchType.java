@@ -15,10 +15,11 @@ package org.eclipse.osee.ats.api.task.create;
  */
 public enum ChangeReportTaskMatchType {
 
-   Manual("Manually added task.- No Change Needed."),
+   Manual("User Manually added task.- No Change Needed."),
    Match("Computed task needed matches existing task. - No Change Needed."),
    //
-   TaskComputedAsNeeded("Computed that task was needed. - Awaiting determination task exist or Create Task"),
+   ChangedReportTaskComputedAsNeeded("Change Report task computed as needed. - Awaiting determination if task exists or Create Task"),
+   StaticTaskComputedAsNeeded("Statically defined task from CreateTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
    //
    TaskRefAttrMissing("Task Referenced Attr was not found. - Delete Task."),
    TaskRefAttrValidButRefChgArtMissing("Task Referenced Attr found but no matching changed art. - Delete Task");

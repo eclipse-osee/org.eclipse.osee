@@ -27,6 +27,7 @@ public class ChangeReportTaskMatch {
    ArtifactToken taskTok;
    @JsonIgnore
    IAtsTask taskWf;
+   CreateTaskDefinition createTaskDef;
    private ChangeReportTaskMatchType matchType;
 
    public ArtifactId getChgRptArt() {
@@ -77,5 +78,13 @@ public class ChangeReportTaskMatch {
 
    public void setMatchType(ChangeReportTaskMatchType matchType) {
       this.matchType = matchType;
+   }
+
+   public CreateTaskDefinition getCreateTaskDef() {
+      return createTaskDef;
+   }
+
+   public void setCreateTaskDef(CreateTaskDefinition createTaskDef) {
+      this.createTaskDef = createTaskDef;
    }
 }

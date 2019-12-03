@@ -31,6 +31,7 @@ public class CreateTaskDefinition {
 
    public CreateTaskDefinition() {
       // for jax-rs
+      System.err.println("Rename class to StaticCreateTaskDefinition ?");
    }
 
    public CreateTaskDefinition andRelatedToState(StateToken state) {

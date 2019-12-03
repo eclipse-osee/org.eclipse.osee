@@ -122,7 +122,13 @@ public abstract class BranchRegressionTest {
       OseeProperties.setIsInTest(false);
    }
 
+   // Extend with additional checks
    protected void testAfterCreateBranchSectionTime() {
+      // do nothing
+   }
+
+   // Extend with additional checks
+   public void testWorkingBranchCommitCheck() {
       // do nothing
    }
 
@@ -394,12 +400,12 @@ public abstract class BranchRegressionTest {
       newArt.setName(IN_BRANCH_ARTIFACT_NAME + " Changed");
       newArt.persist(getClass().getSimpleName());
 
-      textCodeTestCreatinoAfterInBranchCreationModified();
+      testCodeTestCreationAfterInBranchCreationModified();
 
       // Delete this one; Since created and deleted in same branch,
       newArt.deleteAndPersist();
 
-      textCodeTestCreatinoAfterInBranchCreationDeleted();
+      testCodeTestCreationAfterInBranchCreationDeleted();
 
       // Create a Subsystem artifact that has no partition
       newArt = createSubsystemArtifact(softReqArt, SUBSYSTEM_ARTIFACT);
@@ -414,13 +420,6 @@ public abstract class BranchRegressionTest {
       newArt.persist(getClass().getSimpleName());
       // Delete
       preBranchArt.deleteAndPersist();
-   }
-
-   /**
-    * Extend with checks for commit check
-    */
-   public void testWorkingBranchCommitCheck() {
-      // do nothing
    }
 
    public void testCreateParentArtsOnWorkingBranch() throws Exception {
@@ -572,7 +571,12 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testCodeTaskCreationAfterInBranchCreation() throws Exception {
+   // Override to provide additional checks
+   public Result verifyCodeTaskCreationAfterInBranchCreation() throws Exception {
+      return Result.TrueResult;
+   }
+
+   private void testCodeTaskCreationAfterInBranchCreation() throws Exception {
       // Validate Code/Test tasks
       Result result = verifyCodeTaskCreationAfterInBranchCreation();
       if (result.isFalse()) {
@@ -585,9 +589,14 @@ public abstract class BranchRegressionTest {
       Thread.sleep(8000);
    }
 
-   public void textCodeTestCreatinoAfterInBranchCreationModified() throws Exception {
+   // Override to provide additional checks
+   public Result verifyCodeTestCreationAfterInBranchCreationModified() throws Exception {
+      return Result.TrueResult;
+   }
+
+   private void testCodeTestCreationAfterInBranchCreationModified() throws Exception {
       // Validate Code/Test tasks
-      Result result = verifyCodeTestCreatinoAfterInBranchCreationModified();
+      Result result = verifyCodeTestCreationAfterInBranchCreationModified();
       if (result.isFalse()) {
          if (!result.getText().equals("")) {
             Assert.fail(result.getText());
@@ -598,9 +607,14 @@ public abstract class BranchRegressionTest {
       Thread.sleep(8000);
    }
 
-   public void textCodeTestCreatinoAfterInBranchCreationDeleted() throws Exception {
+   // Override to provide additional checks
+   public Result verifyCodeTestCreationAfterInBranchCreationDeleted() throws Exception {
+      return Result.TrueResult;
+   }
+
+   private void testCodeTestCreationAfterInBranchCreationDeleted() throws Exception {
       // Validate Code/Test tasks
-      Result result = verifyCodeTestCreatinoAfterInBranchCreationDeleted();
+      Result result = verifyCodeTestCreationAfterInBranchCreationDeleted();
       if (result.isFalse()) {
          if (!result.getText().equals("")) {
             Assert.fail(result.getText());
@@ -609,6 +623,11 @@ public abstract class BranchRegressionTest {
 
       // Give time for events to propagate through system
       Thread.sleep(8000);
+   }
+
+   // Override to provide additional checks
+   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
+      return Result.TrueResult;
    }
 
    public void testCodeTaskCreationAfterThirdFourthFifth() throws Exception {
@@ -624,6 +643,11 @@ public abstract class BranchRegressionTest {
       Thread.sleep(8000);
    }
 
+   // Override to provide additional checks
+   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
+      return Result.TrueResult;
+   }
+
    public void testCodeTaskCreationAfterFirstAndSecond() throws Exception {
       // Validate Code/Test tasks
       Result result = verifyCodeTestTasksAfterFirstAndSecond();
@@ -635,6 +659,11 @@ public abstract class BranchRegressionTest {
 
       // Give time for events to propagate through system
       Thread.sleep(8000);
+   }
+
+   // Override to provide additional checks
+   public Result verifyCodeTestTasksAfterReqCompletion() throws Exception {
+      return Result.TrueResult;
    }
 
    public void testCodeTaskCreationAfterReqCompletion() throws Exception {
@@ -742,28 +771,6 @@ public abstract class BranchRegressionTest {
    public abstract AttributeTypeId getCsciAttribute();
 
    public abstract BranchId getProgramBranch();
-
-   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public Result verifyCodeTaskCreationAfterInBranchCreation() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public Result verifyCodeTestCreatinoAfterInBranchCreationModified() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public Result verifyCodeTestCreatinoAfterInBranchCreationDeleted() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public abstract Result verifyCodeTestTasksAfterReqCompletion() throws Exception;
 
    public abstract ArtifactTypeToken getCodeTeamWfArtType();
 
