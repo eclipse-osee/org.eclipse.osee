@@ -152,6 +152,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(PlainTextContent, ""));
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText));
    ArtifactTypeToken ImplementationDetailsPlainText = osee.add(osee.artifactType(638269899L, "Implementation Details Plain Text", false, PlainText, AbstractImplementationDetails));
+   ArtifactTypeToken ReferenceDocument = osee.add(osee.artifactType(2084059074565751746L, "Reference Document", false, GeneralDocument)
+      .any(DoorsId, ""));
    ArtifactTypeToken RendererTemplate = osee.add(osee.artifactType(9L, "Renderer Template", false, MsWordWholeDocument)
       .exactlyOne(RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}")
       .any(TemplateMatchCriteria, ""));

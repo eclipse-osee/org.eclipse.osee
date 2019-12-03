@@ -874,6 +874,12 @@ artifactType "Integration Test Procedure - MS Word" extends "MS Word Whole Docum
 artifactType "Acronym Plain Text" extends "Plain Text" {
 	id 5034328852220100337
 	attribute "Acronym"
+	attribute "Doors ID"
+}
+
+artifactType "Reference Document" extends "General Document" {
+	id 2084059074565751746
+	attribute "Doors ID"
 }
 
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
