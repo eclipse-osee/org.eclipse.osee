@@ -21,7 +21,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-XX:MaxPermSize=256m&#13;&#10;-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.support.config}/launchConfig/osee.postgresql.json&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m&#13;&#10;-Declipse.ignoreApp=true &#13;&#10;-Dosgi.noShutdown=true&#13;&#10;-Dorg.osgi.service.http.port=8089&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Dcm.config.uri=&quot;${project_loc:org.eclipse.osee.support.config}/launchConfig/osee.postgresql.json&quot;"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <setAttribute key="selected_features">
 <setEntry value="org.eclipse.osee.disposition.feature:default"/>

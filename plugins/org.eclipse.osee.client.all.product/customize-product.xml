@@ -164,8 +164,6 @@
 
 			<echo file="${outputIni}" append="false">
 @{eclipseArgs}
---launcher.XXMaxPermSize
-512m
 -vmargs
 @{extraVmArgs}
 @{additionalVmArgs}

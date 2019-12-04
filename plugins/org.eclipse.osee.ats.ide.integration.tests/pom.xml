@@ -28,7 +28,7 @@
 					<showEclipseLog>true</showEclipseLog>
 					<product>org.eclipse.osee.framework.ui.product.osee</product>
 					<application>org.eclipse.ui.ide.workbench</application>
-					<argLine>-Xmx1024M -XX:MaxPermSize=256m</argLine>
+					<argLine>-Xmx1024M</argLine>
 					<appArgLine>-consoleLog</appArgLine>
 					<systemProperties combine.children="append">
 						<osee.log.default>WARNING</osee.log.default>
