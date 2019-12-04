@@ -137,35 +137,6 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
-
-      IAtsTeamWorkflow codeWf = getCodeTeamWf();
-      IAtsClient atsApi = AtsClientService.get();
-      ChangeReportTaskData data = atsApi.getTaskService().createTasks(codeWf.getArtifactToken(),
-         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges,
-         atsApi.getUserService().getCurrentUser().getArtifactToken());
-      Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());
-
-      List<IAtsWorkItem> wfs = atsApi.getStoreService().reload(Collections.singleton(codeWf));
-      codeWf = (IAtsTeamWorkflow) wfs.iterator().next();
-
-      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(codeWf);
-      Assert.assertEquals(6, tasks.size());
-
-      List<String> expected =
-         Arrays.asList("Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Second Artifact]",
-            "Handle Relation change to [First Artifact]", "Handle Relation change to [Second Artifact]",
-            "Handle Relation change to [Software Requirements]", "My Manual Task");
-
-      for (IAtsTask task : tasks) {
-         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), tasks),
-            expected.contains(task.getName()));
-      }
-
-      return Result.TrueResult;
-   }
-
-   @Override
    public Result verifyCodeTestTasksAfterReqCompletion() throws Exception {
       System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
       return Result.TrueResult;
@@ -262,4 +233,39 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       }
       return taskNames;
    }
+
+   @Override
+   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
+
+      IAtsTeamWorkflow codeWf = getCodeTeamWf();
+      IAtsClient atsApi = AtsClientService.get();
+      ChangeReportTaskData data = atsApi.getTaskService().createTasks(codeWf.getArtifactToken(),
+         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges,
+         atsApi.getUserService().getCurrentUser().getArtifactToken());
+      Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());
+
+      List<IAtsWorkItem> wfs = atsApi.getStoreService().reload(Collections.singleton(codeWf));
+      codeWf = (IAtsTeamWorkflow) wfs.iterator().next();
+
+      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(codeWf);
+      Assert.assertEquals(6, tasks.size());
+
+      List<String> expected =
+         Arrays.asList("Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Second Artifact]",
+            "Handle Relation change to [First Artifact]", "Handle Relation change to [Second Artifact]",
+            "Handle Relation change to [Software Requirements]", "My Manual Task");
+
+      for (IAtsTask task : tasks) {
+         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), tasks),
+            expected.contains(task.getName()));
+      }
+
+      return Result.TrueResult;
+   }
+
+   @Override
+   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
+      return super.verifyCodeTestTasksAfterThirdFourthFifth();
+   }
+
 }

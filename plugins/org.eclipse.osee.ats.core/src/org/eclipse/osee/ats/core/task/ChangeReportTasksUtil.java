@@ -83,8 +83,9 @@ public class ChangeReportTasksUtil {
    @SuppressWarnings("unchecked")
    public static void processChangeData(ChangeReportTaskData crtd) {
       for (ChangeItem item : crtd.getChangeData()) {
-         System.err.println(String.format("ChangeReportTasksUtil - chgType [%s] deleted [%s] artAId [%s]",
-            item.getChangeType(), item.isDeleted(), item.getArtId()));
+         // TBD Keep until finished - used to debug
+         //         System.err.println(String.format("ChangeReportTasksUtil - chgType [%s] deleted [%s] artAId [%s]",
+         //            item.getChangeType(), item.isDeleted(), item.getArtId()));
          if (item.getChangeType() == ChangeType.ARTIFACT_CHANGE && item.isDeleted()) {
             crtd.getDeletedArts().add(item.getArtId());
          } else {

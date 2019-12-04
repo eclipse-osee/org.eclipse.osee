@@ -99,10 +99,20 @@ public abstract class BranchRegressionTest {
    protected final List<String> NonRelArtifactModifedNames = new ArrayList<>();
 
    private static SevereLoggingMonitor monitorLog;
+   private Artifact softReqArt;
+   private Artifact secondArt;
+   private Artifact thirdArt;
+   private Artifact fourthArt;
+   private Artifact fifthArt;
+   private Artifact createAndDeleteArt;
+   private Artifact subsystemArt;
+   private Artifact preBranchArt;
+   private BranchId workingBranch;
 
    /**
-    * Test creation of Action (rpcrNum), creation of branch, modification of some artifacts, commit of branch, and
-    * verification that artifacts are now on main branch, and creation of code/test tasks. DB must be wiped.
+    * Test creation of Action (rpcrNum), creation of workingBranch, modification of some artifacts, commit of
+    * workingBranch, and verification that artifacts are now on main workingBranch, and creation of code/test tasks. DB
+    * must be wiped.
     */
    public BranchRegressionTest() {
       ArtifactModifiedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
@@ -145,8 +155,30 @@ public abstract class BranchRegressionTest {
       testCreateBranchSecondTime();
       testXWorkingBranchAfterSecondCreateBranch();
       testBranchesListedInXCommitManager();
-      testAfterCreateBranchSectionTime();
-      testCreateNewArtifactsOnWorkingBranch();
+
+      // Make and test branch changes - Begin
+      testAfterCreateBranchSectionTime(); // Extend with additional checks
+
+      createFirstAndSecondReqArt();
+      testCodeTaskCreationAfterFirstAndSecond(); // Extend with additional checks
+
+      createThirdFourthFifthReqArt();
+      testCodeTaskCreationAfterThirdFourthFifth(); // Extend with additional checks
+
+      createReqArtToDelete();
+      testCodeTaskCreationAfterInBranchCreation(); // Extend with additional checks
+
+      makeChangeToReqArtToDelete();
+
+      testCodeTestCreationAfterInBranchCreationModified(); // Extend with additional checks
+
+      deleteReqArtToDelete();
+      testCodeTestCreationAfterInBranchCreationDeleted(); // Extend with additional checks
+
+      createSubsystemArt();
+      deletePreBranchArt();
+      // Make and test branch changes - End
+
       testWorkingBranchCommitCheck();
       testCreateParentArtsOnWorkingBranch();
       testWorkingBranchCommit();
@@ -179,7 +211,7 @@ public abstract class BranchRegressionTest {
                Collections.castAll(AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
          }
       }
-      // Purge pre-branch artifact
+      // Purge pre-workingBranch artifact
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
 
       for (Artifact art : ArtifactQuery.getArtifactListFromName(PRE_BRANCH_ARTIFACT_NAME, getProgramBranch())) {
@@ -212,7 +244,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testMakePreBranchChanges() throws Exception {
-      Assert.assertNotNull("Can't get program branch", getProgramBranch());
+      Assert.assertNotNull("Can't get program workingBranch", getProgramBranch());
 
       Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
          Requirements.SOFTWARE_REQUIREMENTS, getProgramBranch());
@@ -274,7 +306,8 @@ public abstract class BranchRegressionTest {
 
    public void testCreateBranchFirstTime() throws Exception {
       AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
-      Assert.assertNotNull("branch returned null", reqTeam.getWorkingBranchForceCacheUpdate());
+      workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
+      Assert.assertNotNull("workingBranch returned null", workingBranch);
 
       XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
       Assert.assertEquals(BranchStatus.Changes_InProgress, enablement.getStatus());
@@ -286,7 +319,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testDeleteBranch() throws Exception {
-      // verify deletion of the branch
+      // verify deletion of the workingBranch
       AtsBranchManager.deleteWorkingBranch(reqTeam, false, true);
       Assert.assertTrue(reqTeam.getWorkingBranch().isInvalid());
 
@@ -311,9 +344,9 @@ public abstract class BranchRegressionTest {
    }
 
    public void testCreateBranchSecondTime() throws Exception {
-      // create again
       AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
-      Assert.assertNotNull("branch returned null", reqTeam.getWorkingBranchForceCacheUpdate());
+      workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
+      Assert.assertNotNull("workingBranch returned null", workingBranch);
    }
 
    public void testXWorkingBranchAfterSecondCreateBranch() throws Exception {
@@ -332,11 +365,11 @@ public abstract class BranchRegressionTest {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
       Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Verify the Parallel Branches listed in the XCommitManager
-      Assert.assertTrue("parallel branch check failed => " + configArtSet.size(),
+      Assert.assertTrue("parallel workingBranch check failed => " + configArtSet.size(),
          configArtSet.size() == getBranchNames().size());
       for (ICommitConfigItem configArt : configArtSet) {
          BranchId branch = branchService.getBranch(configArt);
-         Assert.assertTrue("Missing parallel branch => " + branchService.getBranchName(branch),
+         Assert.assertTrue("Missing parallel workingBranch => " + branchService.getBranchName(branch),
             getBranchNames().contains(branchService.getBranchName(branch)));
       }
    }
@@ -362,77 +395,73 @@ public abstract class BranchRegressionTest {
       artifact.setAttributeValues(attributeType, Arrays.asList(values));
    }
 
-   public void testCreateNewArtifactsOnWorkingBranch() throws Exception {
-      BranchId branch = reqTeam.getWorkingBranch();
-
-      // Create set of software requirement changes
-      Artifact softReqArt =
-         ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS, branch);
-      Artifact newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, FIRST_ARTIFACT,
-         getFirstArtifactCscis(), branch);
-      Assert.assertNotNull(newArt);
-      newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, SECOND_ARTIFACT,
-         getSecondArtifactCscis(), branch);
-      Assert.assertNotNull(newArt);
-
-      testCodeTaskCreationAfterFirstAndSecond();
-
-      newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedure, softReqArt, THIRD_ARTIFACT,
-         getThirdArtifactCscis(), branch);
-      // Task should be created for all CSCIs if no csci is specified
-      newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FOURTH_ARTIFACT, null,
-         branch);
-      // Task should be created for all CSCIs if unspecified csci exists
-      newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FIFTH_ARTIFACT,
-         new String[] {AttributeId.UNSPECIFIED}, branch);
-      Assert.assertNotNull(newArt);
-
-      testCodeTaskCreationAfterThirdFourthFifth();
-
-      // Create artifact, make change and delete; this requirement shouldn't show in change report
-      newArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, IN_BRANCH_ARTIFACT_NAME,
-         getInBranchArtifactCscis(), branch);
-      Assert.assertNotNull(newArt);
-
-      testCodeTaskCreationAfterInBranchCreation();
-
-      // Make attribute change
-      newArt.setName(IN_BRANCH_ARTIFACT_NAME + " Changed");
-      newArt.persist(getClass().getSimpleName());
-
-      testCodeTestCreationAfterInBranchCreationModified();
-
-      // Delete this one; Since created and deleted in same branch,
-      newArt.deleteAndPersist();
-
-      testCodeTestCreationAfterInBranchCreationDeleted();
-
-      // Create a Subsystem artifact that has no partition
-      newArt = createSubsystemArtifact(softReqArt, SUBSYSTEM_ARTIFACT);
-      Assert.assertNotNull(newArt);
-
-      // Get artifact created before branch, make change and delete artifact.  Should only show as deleted in change report
-      Artifact preBranchArt = softReqArt.getChild(PRE_BRANCH_ARTIFACT_NAME);
-      Assert.assertNotNull("Couldn't retrieve pre-branch artifact", preBranchArt);
-
-      // Make attribute change
-      newArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "Test");
-      newArt.persist(getClass().getSimpleName());
+   private void deletePreBranchArt() {
       // Delete
+      preBranchArt = softReqArt.getChild(PRE_BRANCH_ARTIFACT_NAME);
+      Assert.assertNotNull("Couldn't retrieve pre-workingBranch artifact", preBranchArt);
       preBranchArt.deleteAndPersist();
    }
 
-   public void testCreateParentArtsOnWorkingBranch() throws Exception {
-      BranchId branch = reqTeam.getWorkingBranch();
+   private void createSubsystemArt() {
+      subsystemArt = createSubsystemArtifact(softReqArt, SUBSYSTEM_ARTIFACT);
+      Assert.assertNotNull(subsystemArt);
 
+      // Make attribute change
+      subsystemArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "Test");
+      subsystemArt.persist(getClass().getSimpleName());
+   }
+
+   private void deleteReqArtToDelete() {
+      // Delete this one; Since created and deleted in same workingBranch,
+      createAndDeleteArt.deleteAndPersist();
+   }
+
+   private void makeChangeToReqArtToDelete() {
+      // Make attribute change
+      createAndDeleteArt.setName(IN_BRANCH_ARTIFACT_NAME + " Changed");
+      createAndDeleteArt.persist(getClass().getSimpleName());
+   }
+
+   private void createReqArtToDelete() throws Exception {
+      createAndDeleteArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt,
+         IN_BRANCH_ARTIFACT_NAME, getInBranchArtifactCscis(), workingBranch);
+      Assert.assertNotNull(createAndDeleteArt);
+   }
+
+   private void createThirdFourthFifthReqArt() throws Exception {
+      thirdArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedure, softReqArt, THIRD_ARTIFACT,
+         getThirdArtifactCscis(), workingBranch);
+      Assert.assertNotNull(thirdArt);
+      fourthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FOURTH_ARTIFACT,
+         null, workingBranch);
+      Assert.assertNotNull(fourthArt);
+      fifthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunction, softReqArt, FIFTH_ARTIFACT,
+         new String[] {AttributeId.UNSPECIFIED}, workingBranch);
+      Assert.assertNotNull(fifthArt);
+   }
+
+   private void createFirstAndSecondReqArt() throws Exception {
+      softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS,
+         workingBranch);
+      Artifact firstArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, FIRST_ARTIFACT,
+         getFirstArtifactCscis(), workingBranch);
+      Assert.assertNotNull(firstArt);
+      secondArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirement, softReqArt, SECOND_ARTIFACT,
+         getSecondArtifactCscis(), workingBranch);
+      Assert.assertNotNull(secondArt);
+   }
+
+   public void testCreateParentArtsOnWorkingBranch() throws Exception {
       // Create set of software requirement changes
-      Artifact softReqArt =
-         ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS, branch);
+      Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
+         Requirements.SOFTWARE_REQUIREMENTS, workingBranch);
       Artifact parentArt = createSoftwareArtifact(CoreArtifactTypes.SystemRequirementMsWord, softReqArt,
-         PARENT_ARTIFACT, getFirstArtifactCscis(), branch);
+         PARENT_ARTIFACT, getFirstArtifactCscis(), workingBranch);
       Assert.assertNotNull(parentArt);
-      Artifact firstArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FIRST_ARTIFACT, branch);
-      Artifact secondArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SECOND_ARTIFACT, branch);
+      Artifact firstArt =
+         ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FIRST_ARTIFACT, workingBranch);
+      Artifact secondArt =
+         ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SECOND_ARTIFACT, workingBranch);
       parentArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, firstArt);
       parentArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, secondArt);
       parentArt.persist("Parent for Arts");
@@ -441,15 +470,13 @@ public abstract class BranchRegressionTest {
    public void testWorkingBranchCommit() throws Exception {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
       Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
-      // Since commit branch is a separate job, a callback will resume this thread
+      // Since commit workingBranch is a separate job, a callback will resume this thread
       // commit all of the branches
       Assert.assertTrue(
          "Epected " + getExpectedBranchConfigArts() + " artifacts configured to commit to;  Actual " + configArtSet.size(),
          configArtSet.size() == getExpectedBranchConfigArts());
 
-      IOseeBranch workingBranch = reqTeam.getWorkingBranch();
-
-      // Commit parent branch first
+      // Commit parent workingBranch first
       boolean committed = false;
       for (ICommitConfigItem configArt : configArtSet) {
          if (branchService.isBranchValid(configArt) && BranchManager.getParentBranch(workingBranch).equals(
@@ -462,7 +489,7 @@ public abstract class BranchRegressionTest {
             committed = true;
          }
       }
-      Assert.assertTrue("Did not find parent branch to commit.", committed);
+      Assert.assertTrue("Did not find parent workingBranch to commit.", committed);
 
       // Then commit rest
       int commitCount = 0;
@@ -505,7 +532,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testChangesMadeWereCommitted() throws Exception {
-      // Verify that the changes made on the branch were committed to the main branch
+      // Verify that the changes made on the workingBranch were committed to the main workingBranch
       // TODO This needs to be updated do handle multiple config artifacts when test gets updated to test for multiples
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(reqTeam);
 
@@ -543,8 +570,8 @@ public abstract class BranchRegressionTest {
             found);
       }
 
-      // Check that the single pre-branch artifact that was deleted in this branch comes back
-      // AND that the in-branch artifact that was created and deleted in the branch DOES NOT come
+      // Check that the single pre-workingBranch artifact that was deleted in this workingBranch comes back
+      // AND that the in-workingBranch artifact that was created and deleted in the workingBranch DOES NOT come
       // back
       Collection<Artifact> deleted = changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED);
       if (deleted.size() != 1) {
@@ -735,8 +762,7 @@ public abstract class BranchRegressionTest {
       Artifact art1 = null;
 
       try {
-         art1 =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemRequirementMsWord, reqTeam.getWorkingBranch());
+         art1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemRequirementMsWord, workingBranch);
       } catch (IllegalArgumentException ex) {
          Assert.fail("Can't find descriptor for " + CoreArtifactTypes.SubsystemRequirementMsWord);
          return null;
