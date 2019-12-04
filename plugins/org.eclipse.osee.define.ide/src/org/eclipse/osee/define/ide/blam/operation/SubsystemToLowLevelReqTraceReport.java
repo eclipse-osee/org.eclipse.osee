@@ -128,13 +128,13 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void generateLowLevelToSubsystemTrace() throws IOException {
-      excelWriter.startSheet("5.2", 11);
+      excelWriter.startSheet("5-2", 11);
 
-      excelWriter.writeRow("5.2  Lower Level Requirements Traceability to Subsystem Requirements");
+      excelWriter.writeRow("5-2  Requirements Traceability to Subsystem PIDS Requirements");
       excelWriter.writeRow("Lower Level Requirements", null, null, null, "Traceable Subsystem Requirement");
-      excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "Higher Level Folder",
-         "Paragraph #", "Paragraph Title", CoreAttributeTypes.Subsystem.getName(), "Lower Level Req Artifact Type",
-         "Partition", "IDAL", "Lower Level Req Artifact ID");
+      excelWriter.writeRow("SRS Paragraph #", "SRS Paragraph Title", "Qualification Method", "SRS File",
+         "PIDS Paragraph #", "PIDS Paragraph Title", CoreAttributeTypes.Subsystem.getName(),
+         "Software Requirement Type", "Partition", "IDAL", "Artifact ID");
 
       String[] row = new String[11];
 
@@ -144,9 +144,10 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          boolean isRelated = false;
 
          row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+         row[3] = lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "Unspecified");
          row[7] = lowLevelReq.getArtifactType().getName();
          row[8] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.Partition);
-         row[9] = lowLevelReq.getSoleAttributeValue(safetyAttribute, "");
+         row[9] = lowLevelReq.getSoleAttributeValue(safetyAttribute, "Not Applicable");
          row[10] = lowLevelReq.getIdString();
 
          List<Artifact> relatedArtifacts =
@@ -156,7 +157,6 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
             isRelated = true;
          }
          for (Artifact subSysReq : relatedArtifacts) {
-            row[3] = getAssociatedSubSystem(subSysReq);
             row[4] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, null);
             row[5] = subSysReq.getName();
             row[6] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
@@ -164,7 +164,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          }
 
          if (row[0] != null && !isRelated) { // if this requirement is not traced to any lower level req (i.e. the for loop didn't run)
-            row[3] = row[4] = row[5] = row[6] = null;
+            row[4] = row[5] = row[6] = null;
             excelWriter.writeRow((Object[]) row);
          }
       }
@@ -181,12 +181,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void generateSubsystemToLowLevelReqTrace() throws IOException {
-      excelWriter.startSheet("5.3", 7);
+      excelWriter.startSheet("5-3", 7);
 
-      excelWriter.writeRow("5.3 Subsystem Requirements Allocation Traceability to Lower Level Requirements");
+      excelWriter.writeRow("5-3 Traceability of SRS Requirements to Allocated Subsystem PIDS Requirements");
       excelWriter.writeRow(null, "Subsystem Requirement", null, "Traceable Lower Level Requirements", null);
-      excelWriter.writeRow("Subsystem", "Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title", "Component",
-         "Artifact Type");
+      excelWriter.writeRow("Subsystem", "PIDS Paragraph #", "PIDS Paragraph Title", "SRS Paragraph #",
+         "SRS Paragraph Title", "Component", "Software Requirement Type");
 
       for (Entry<String, List<Artifact>> entry : subsysToSubsysReqsMap.entrySet()) {
          List<Artifact> subsysReqs = entry.getValue();
