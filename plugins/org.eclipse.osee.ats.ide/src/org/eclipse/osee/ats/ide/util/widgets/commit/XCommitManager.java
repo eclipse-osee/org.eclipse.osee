@@ -35,7 +35,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -63,7 +65,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends GenericXWidget implements IArtifactWidget, IBranchEventListener {
+public class XCommitManager extends GenericXWidget implements IArtifactWidget, IBranchEventListener, IArtifactEventListener {
 
    private CommitXManager xCommitManager;
    public final static String normalColor = "#EEEEEE";
@@ -376,7 +378,18 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             redrawComposite();
          }
       });
+   }
 
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      if (artifactEvent.isModified(getTeamArt())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               loadTable();
+            }
+         });
+      }
    }
 
    @Override
