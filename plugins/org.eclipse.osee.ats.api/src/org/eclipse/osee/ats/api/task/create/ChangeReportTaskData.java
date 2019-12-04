@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -48,7 +49,7 @@ public class ChangeReportTaskData {
    ArtifactToken hostTeamWf;
    // Workflow that owns change report or empty (will be determined from create task definition team def)
    ArtifactToken chgRptTeamWf = ArtifactToken.SENTINEL;
-   // Token of the CreateTaskDefinition to run against change report
+   // Token of the StaticTaskDefinition to run against change report
    AtsTaskDefToken taskDefToken;
    private BranchId workOrParentBranch;
    // ChangeItems from executed change report
@@ -57,6 +58,7 @@ public class ChangeReportTaskData {
    private Set<ArtifactId> addedModifiedArts = new HashSet<>();
    private Set<ArtifactId> deletedArts = new HashSet<>();
    private Set<ArtifactId> relArts = new HashSet<>();
+   private Set<ArtifactId> deletedRelArts = new HashSet<>();
    private Set<ArtifactId> allArtifacts = new HashSet<>();
    // Definition loaded from the taskDefToken that defines how tasks are created
    private CreateTasksDefinition setDef;
@@ -67,6 +69,7 @@ public class ChangeReportTaskData {
    private TransactionId transaction;
    private Collection<ArtifactId> destTeamWfs = new HashSet<>();
    private ArtifactId actionId;
+   private IAtsChangeSet changes;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -235,6 +238,22 @@ public class ChangeReportTaskData {
 
    public void setActionId(ArtifactId actionId) {
       this.actionId = actionId;
+   }
+
+   public Set<ArtifactId> getDeletedRelArts() {
+      return deletedRelArts;
+   }
+
+   public void setDeletedRelArts(Set<ArtifactId> deletedRelArts) {
+      this.deletedRelArts = deletedRelArts;
+   }
+
+   public IAtsChangeSet getChanges() {
+      return changes;
+   }
+
+   public void setChanges(IAtsChangeSet changes) {
+      this.changes = changes;
    }
 
 }

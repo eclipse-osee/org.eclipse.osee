@@ -19,9 +19,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -172,12 +174,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public List<ChangeItem> getChangeData(BranchId branch) {
-      throw new UnsupportedOperationException("Not supported on client");
+      return AtsClientService.getActionEndpoint().getBranchChangeData(branch);
    }
 
    @Override
-   public List<ChangeItem> getChangeData(TransactionToken transaction) {
-      throw new UnsupportedOperationException("Not supported on client");
+   public List<ChangeItem> getChangeData(TransactionId transaction) {
+      return AtsClientService.getActionEndpoint().getTransactionChangeData(transaction);
    }
 
    @Override

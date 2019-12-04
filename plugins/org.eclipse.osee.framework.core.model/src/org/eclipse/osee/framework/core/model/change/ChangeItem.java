@@ -272,6 +272,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    public boolean isDeleted() {
       return getNetChange().getModType().equals(ModificationType.DELETED) || getNetChange().getModType().equals(
-         ModificationType.ARTIFACT_DELETED);
+         ModificationType.ARTIFACT_DELETED) || getCurrentVersion().getModType().equals(
+            ModificationType.DELETED) || getCurrentVersion().getModType().equals(ModificationType.ARTIFACT_DELETED);
    }
 }

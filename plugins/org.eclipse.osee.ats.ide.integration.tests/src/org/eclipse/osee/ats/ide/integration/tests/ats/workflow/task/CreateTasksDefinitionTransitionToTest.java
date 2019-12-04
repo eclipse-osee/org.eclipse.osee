@@ -86,9 +86,9 @@ public class CreateTasksDefinitionTransitionToTest {
       CreateTasksDefinitionBuilder implementTaskSet =
          AtsClientService.get().getTaskService().createTasksSetDefinitionBuilder(ImplementTaskSetToken) //
             .andTransitionTo(StateToken.Analyze) //
-            .andTask("First Task", "desc", null) //
-            .andTask("Second Task", "desc2", StateToken.Implement) //
-            .andTask("Third Task", "desc2", StateToken.Implement, DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign); //
+            .andStaticTask("First Task", "desc", null) //
+            .andStaticTask("Second Task", "desc2", StateToken.Implement) //
+            .andStaticTask("Third Task", "desc2", StateToken.Implement, DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign); //
 
       IAtsWorkDefinition swDesignWorkDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
          DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.branch;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -31,18 +34,19 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionListener;
 import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.BranchRegressionTest;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 
@@ -55,6 +59,11 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       DemoBranches.SAW_Bld_2.getName(), DemoBranches.SAW_Bld_3.getName());
    private List<String> taskNames;
    private ActionResult actionResult;
+   private List<String> firstSecondExpected;
+   private List<String> thirdFourthFifthExpected;
+   private List<String> createReqArtToDelExpected;
+   private Set<String> deleteReqArtToDelExpected;
+   private List<String> changeNameToReqArtToDelExpected;
 
    @Override
    public void testCreateAction() {
@@ -82,6 +91,11 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
       Assert.assertEquals(3, teamWfs.size());
       testTeamWorkflows(teamWfs);
+
+      changes.reset(getClass().getSimpleName() + " - transition req wf");
+      TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeam, AtsClientService.get());
+      mgr.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      changes.execute();
    }
 
    private IAtsTeamWorkflow getCodeTeamWf() {
@@ -137,27 +151,19 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public Result verifyCodeTestTasksAfterReqCompletion() throws Exception {
+   public void testShowRelatedTasksAction() {
+      super.testShowRelatedTasksAction();
       System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-      return Result.TrueResult;
    }
 
    @Override
-   public Result verifyShowRelatedTasksAction() {
+   public void testShowRelatedRequirementAction() {
       System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-      return Result.TrueResult;
    }
 
    @Override
-   public Result verifyShowRelatedRequirementAction() {
+   public void testShowRequirementDiffsAction() {
       System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-      return Result.TrueResult;
-   }
-
-   @Override
-   public Result verifyShowRequirementDiffsAction() {
-      System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-      return Result.TrueResult;
    }
 
    @Override
@@ -193,79 +199,176 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   protected XResultData verifyShowRelatedTasksAction(Collection<IAtsTask> tasks) {
-      XResultData results = new XResultData();
-      for (IAtsTask task : tasks) {
-         if (!getTaskNames().contains(task.getName())) {
-            results.errorf("Task named [%s]; not found for task %s", task.getName(), task.toStringWithId());
-         }
-      }
-      for (String taskName : getTaskNames()) {
-         boolean found = false;
-         for (IAtsTask task : tasks) {
-            if (task.getName().equals(taskName)) {
-               found = true;
-               break;
-            }
-         }
-         if (!found) {
-            results.errorf("Expected Task named [%s] not found", taskName);
-         }
-      }
-      return results;
-   }
-
-   private List<String> getTaskNames() {
+   protected Collection<String> getFinalTaskNames() {
       if (taskNames == null) {
-         taskNames = Arrays.asList("Handle Add/Mod change to [Fifth Artifact - Unspecified CSCI]",
-            "Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Fourth Artifact - No CSCI]",
-            "Handle Add/Mod change to [Parent Artifact]",
-            "Handle Add/Mod change to [Pre-Branch Artifact to Delete] (Deleted)",
-            "Handle Add/Mod change to [Second Artifact]",
-            "Handle Add/Mod change to [Subsystem Artifact (no partition)]", "Handle Add/Mod change to [Third Artifact]",
-            "Handle Relation change to [Fifth Artifact - Unspecified CSCI]",
-            "Handle Relation change to [First Artifact]", "Handle Relation change to [Fourth Artifact - No CSCI]",
-            "Handle Relation change to [Parent Artifact]",
-            "Handle Relation change to [Pre-Branch Artifact to Delete] (Deleted)",
-            "Handle Relation change to [Second Artifact]", "Handle Relation change to [Software Requirements]",
-            "Handle Relation change to [Subsystem Artifact (no partition)]",
-            "Handle Relation change to [Third Artifact]");
+         taskNames = Arrays.asList( //
+            "Handle Add/Mod change to [Fifth Artifact - Unspecified CSCI]", //
+            "Handle Add/Mod change to [First Artifact]", //
+            "Handle Add/Mod change to [Fourth Artifact - No CSCI]", //
+            "Handle Add/Mod change to [In-Branch Artifact to Delete Changed]", //
+            "Handle Add/Mod change to [In-Branch Artifact to Delete]", //
+            "Handle Add/Mod change to [Parent Artifact]", //
+            "Handle Add/Mod change to [Second Artifact]", //
+            "Handle Add/Mod change to [Subsystem Artifact (no partition)]", //
+            "Handle Add/Mod change to [Third Artifact]", //
+            "Handle Deleted change to [Pre-Branch Artifact to Delete] (Deleted)", //
+            "Handle Relation change to [Fifth Artifact - Unspecified CSCI]", //
+            "Handle Relation change to [First Artifact]", //
+            "Handle Relation change to [Fourth Artifact - No CSCI]", //
+            "Handle Relation change to [In-Branch Artifact to Delete Changed]", //
+            "Handle Relation change to [In-Branch Artifact to Delete]", //
+            "Handle Relation change to [Parent Artifact]", //
+            "Handle Relation change to [Second Artifact]", //
+            "Handle Relation change to [Software Requirements]", //
+            "Handle Relation change to [Subsystem Artifact (no partition)]", //
+            "Handle Relation change to [Third Artifact]", //
+            "My Manual Task" //
+         );
       }
       return taskNames;
    }
 
-   @Override
-   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
-
+   private IAtsTeamWorkflow runCreateCodeTestTasks() {
       IAtsTeamWorkflow codeWf = getCodeTeamWf();
-      IAtsClient atsApi = AtsClientService.get();
-      ChangeReportTaskData data = atsApi.getTaskService().createTasks(codeWf.getArtifactToken(),
-         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges,
-         atsApi.getUserService().getCurrentUser().getArtifactToken());
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      ChangeReportTaskData data = CreateChangeReportTaskTransitionListener.runChangeReportTaskOperation(codeWf,
+         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges, changes);
+      changes.executeIfNeeded();
+
       Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());
+      return codeWf;
+   }
 
-      List<IAtsWorkItem> wfs = atsApi.getStoreService().reload(Collections.singleton(codeWf));
-      codeWf = (IAtsTeamWorkflow) wfs.iterator().next();
+   private void testTasksAgainstExpected(Collection<String> expected) {
+      IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
 
-      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(codeWf);
-      Assert.assertEquals(6, tasks.size());
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
 
-      List<String> expected =
-         Arrays.asList("Handle Add/Mod change to [First Artifact]", "Handle Add/Mod change to [Second Artifact]",
-            "Handle Relation change to [First Artifact]", "Handle Relation change to [Second Artifact]",
-            "Handle Relation change to [Software Requirements]", "My Manual Task");
+      Assert.assertEquals(expected.size(), tasks.size());
 
       for (IAtsTask task : tasks) {
-         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), tasks),
-            expected.contains(task.getName()));
-      }
+         boolean contains = expected.contains(task.getName());
+         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
-      return Result.TrueResult;
+         String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task,
+            AtsAttributeTypes.WorkflowNotes, "");
+         boolean deReferenced = note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE);
+
+         if (deReferenced) {
+            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
+               CoreAttributeTypes.StaticId);
+            Assert.assertTrue(staticIds.isEmpty());
+         } else {
+            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
+               CoreAttributeTypes.StaticId);
+            Assert.assertEquals(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID, staticIds.iterator().next());
+         }
+      }
    }
 
    @Override
-   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
-      return super.verifyCodeTestTasksAfterThirdFourthFifth();
+   public void testCodeTaskCreationAfterFirstAndSecond() {
+      firstSecondExpected = new ArrayList<String>();
+      firstSecondExpected.addAll(Arrays.asList( //
+         "Handle Add/Mod change to [First Artifact]", //
+         "Handle Add/Mod change to [Second Artifact]", //
+         "Handle Relation change to [First Artifact]", //
+         "Handle Relation change to [Second Artifact]", //
+         "Handle Relation change to [Software Requirements]", //
+         "My Manual Task"));
+
+      testTasksAgainstExpected(firstSecondExpected);
+   }
+
+   @Override
+   public void testCodeTaskCreationAfterThirdFourthFifth() {
+      thirdFourthFifthExpected = new ArrayList<>();
+      thirdFourthFifthExpected.addAll(Arrays.asList( //
+         "Handle Add/Mod change to [Third Artifact]", //
+         "Handle Relation change to [Third Artifact]", //
+         "Handle Add/Mod change to [Fifth Artifact - Unspecified CSCI]",
+         "Handle Relation change to [Fifth Artifact - Unspecified CSCI]",
+         "Handle Add/Mod change to [Fourth Artifact - No CSCI]",
+         "Handle Relation change to [Fourth Artifact - No CSCI]"));
+      thirdFourthFifthExpected.addAll(firstSecondExpected);
+
+      testTasksAgainstExpected(thirdFourthFifthExpected);
+   }
+
+   @Override
+   public void testCodeTaskCreationAfterCreateReqArtToDelete() {
+      createReqArtToDelExpected = new ArrayList<>();
+      createReqArtToDelExpected.addAll(Arrays.asList( //
+         "Handle Add/Mod change to [In-Branch Artifact to Delete]",
+         "Handle Relation change to [In-Branch Artifact to Delete]"));
+      createReqArtToDelExpected.addAll(thirdFourthFifthExpected);
+
+      testTasksAgainstExpected(createReqArtToDelExpected);
+   }
+
+   @Override
+   public void testCodeTestCreationAfterChangeToReqArtifactToDelete() {
+      changeNameToReqArtToDelExpected = new ArrayList<>();
+      /**
+       * If task generated and artifact name changes, old task will be marked as de-referenced and new task with new
+       * name generated.
+       */
+      changeNameToReqArtToDelExpected.addAll(Arrays.asList( //
+         "Handle Add/Mod change to [In-Branch Artifact to Delete Changed]",
+         "Handle Relation change to [In-Branch Artifact to Delete Changed]"));
+      changeNameToReqArtToDelExpected.addAll(createReqArtToDelExpected);
+      testTasksAgainstExpected(changeNameToReqArtToDelExpected);
+
+      IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
+      int count = 0;
+      for (IAtsTask task : tasks) {
+         if (task.getName().contains("[In-Branch Artifact to Delete]")) {
+            count++;
+            testTaskIsDeReferenced(task);
+         }
+      }
+      Assert.assertEquals(2, count);
+   }
+
+   @Override
+   public void testCodeTestCreationAfterDeleteReqArtifactToDelete() {
+      deleteReqArtToDelExpected = new HashSet<>();
+      deleteReqArtToDelExpected.addAll(createReqArtToDelExpected);
+      deleteReqArtToDelExpected.addAll(Arrays.asList( //
+         "Handle Add/Mod change to [In-Branch Artifact to Delete]",
+         "Handle Relation change to [In-Branch Artifact to Delete]",
+         "Handle Add/Mod change to [In-Branch Artifact to Delete Changed]",
+         "Handle Relation change to [In-Branch Artifact to Delete Changed]"));
+
+      IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
+      int count = 0;
+      for (IAtsTask task : tasks) {
+         if (task.getName().contains("[In-Branch Artifact to Delete]") || task.getName().contains(
+            "[In-Branch Artifact to Delete Changed]")) {
+            count++;
+            testTaskIsDeReferenced(task);
+         }
+      }
+      Assert.assertEquals(4, count);
+   }
+
+   private void testTaskIsDeReferenced(IAtsTask task) {
+      List<IAtsWorkItem> reload = AtsClientService.get().getStoreService().reload(Collections.singleton(task));
+
+      task = (IAtsTask) reload.iterator().next();
+
+      // Test that task has de-referenced note
+      String note =
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, "");
+      Assert.assertEquals(ChangeReportTasksUtil.DE_REFERRENCED_NOTE, note);
+
+      // Test that task has AutoGenTask static id removed
+      List<String> staticIds =
+         AtsClientService.get().getAttributeResolver().getAttributesToStringList(task, CoreAttributeTypes.StaticId);
+      Assert.assertTrue(staticIds.isEmpty());
    }
 
 }

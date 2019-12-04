@@ -25,17 +25,17 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
       List<CreateTasksDefinitionBuilder> taskSets = new LinkedList<>();
       taskSets.add(new CreateTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawSwDesignTestingChecklist) //
          .andEventType(RuleEventType.Manual) //
-         .andTask("1. Run unit tests", "desc", null) //
-         .andTask("2. Run integration testsk", "desc2", StateToken.Implement) //
-         .andTask("3. Run manual tests", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
-         .andTask("4. Complete testing action")); //
+         .andStaticTask("1. Run unit tests", "desc", null) //
+         .andStaticTask("2. Run integration testsk", "desc2", StateToken.Implement) //
+         .andStaticTask("3. Run manual tests", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
+         .andStaticTask("4. Complete testing action")); //
 
       taskSets.add(new CreateTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawSwDesignProcessChecklist) //
          .andEventType(RuleEventType.Manual) //
-         .andTask("1. Review processes", "desc", null) //
-         .andTask("2. Review work instruction", "desc2", StateToken.Implement) //
-         .andTask("3. Consult Mentor", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
-         .andTask("4. Complete process action")); //
+         .andStaticTask("1. Review processes", "desc", null) //
+         .andStaticTask("2. Review work instruction", "desc2", StateToken.Implement) //
+         .andStaticTask("3. Consult Mentor", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
+         .andStaticTask("4. Complete process action")); //
 
       taskSets.add(
          new CreateChangeReportTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges) //
@@ -48,7 +48,7 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
             .andNotArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.PlainText) //
             .andAttribute(CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.Name) //
             .andNotAttribute(CoreAttributeTypes.ParagraphNumber, CoreAttributeTypes.RelationOrder) //
-            .andTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //
+            .andStaticTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //
       );
 
       return taskSets;

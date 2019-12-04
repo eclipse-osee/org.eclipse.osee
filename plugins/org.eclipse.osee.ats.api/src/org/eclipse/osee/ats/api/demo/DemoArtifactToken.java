@@ -32,6 +32,12 @@ public final class DemoArtifactToken {
    // @formatter:off
 
    //////////////////////////////////
+   // DemoBranchRegressionTest
+   //////////////////////////////////
+   public static final ArtifactToken InBranchArtifactToDelete = ArtifactToken.valueOf(56565656, "In-Branch Artifact to Delete", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
+   public static final ArtifactToken ParentArtifact = ArtifactToken.valueOf(45454545, "Parent Artifact", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord);
+
+   //////////////////////////////////
    // Impl Details Configuration
    //////////////////////////////////
    public static final ArtifactToken RobotInterfaceHeading = ArtifactToken.valueOf(659132, "Robot Interface Heading", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);

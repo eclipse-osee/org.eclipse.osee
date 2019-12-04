@@ -19,22 +19,21 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 /**
  * @author Donald G. Dunne
  */
-public class CreateTaskDefinition {
+public class StaticTaskDefinition {
 
    private String relatedToState;
-   private String title;
+   private String name;
    public List<Long> assigneeAccountIds = new ArrayList<>();
    private String description;
    private ArtifactId sourceTeamWfAi = ArtifactId.SENTINEL;
    private ArtifactId destTeamWfAi = ArtifactId.SENTINEL;
    private AtsWorkDefinitionToken workDefTok = AtsWorkDefinitionToken.SENTINEL;
 
-   public CreateTaskDefinition() {
+   public StaticTaskDefinition() {
       // for jax-rs
-      System.err.println("Rename class to StaticCreateTaskDefinition ?");
    }
 
-   public CreateTaskDefinition andRelatedToState(StateToken state) {
+   public StaticTaskDefinition andRelatedToState(StateToken state) {
       setRelatedToState(state.getName());
       return this;
    }
@@ -45,14 +44,6 @@ public class CreateTaskDefinition {
 
    public void setRelatedToState(String relatedToState) {
       this.relatedToState = relatedToState;
-   }
-
-   public String getTitle() {
-      return title;
-   }
-
-   public void setTitle(String title) {
-      this.title = title;
    }
 
    public String getDescription() {
@@ -93,6 +84,14 @@ public class CreateTaskDefinition {
 
    public void setWorkDefTok(AtsWorkDefinitionToken workDefTok) {
       this.workDefTok = workDefTok;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
    }
 
 }

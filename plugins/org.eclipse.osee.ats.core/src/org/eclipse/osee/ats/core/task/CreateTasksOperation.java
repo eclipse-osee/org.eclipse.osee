@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem;
+package org.eclipse.osee.ats.core.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -58,21 +57,19 @@ public class CreateTasksOperation {
 
    private final NewTaskDatas newTaskDatas;
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
    private IAtsUser asUser;
    private XResultData results;
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
 
-   public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, OrcsApi orcsApi, XResultData results) {
-      this(new NewTaskDatas(newTaskData), atsApi, orcsApi, results);
+   public CreateTasksOperation(NewTaskData newTaskData, AtsApi atsApi, XResultData results) {
+      this(new NewTaskDatas(newTaskData), atsApi, results);
    }
 
-   public CreateTasksOperation(NewTaskDatas newTaskDatas, AtsApi atsApi, OrcsApi orcsApi, XResultData results) {
+   public CreateTasksOperation(NewTaskDatas newTaskDatas, AtsApi atsApi, XResultData results) {
       this.newTaskDatas = newTaskDatas;
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
       this.results = results;
    }
 
@@ -112,7 +109,7 @@ public class CreateTasksOperation {
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
             Long taskId = task.getId();
             if (taskId != null && taskId > 0L) {
-               ArtifactReadable taskArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(taskId);
+               ArtifactToken taskArt = atsApi.getQueryService().getArtifact(taskId);
                if (taskArt != null) {
                   results.errorf("Task with id %d already exists for %s\n", taskId, task);
                }
@@ -214,7 +211,7 @@ public class CreateTasksOperation {
    }
 
    private RelationTypeToken getRelationType(AtsApi atsApi, String relationTypeName) {
-      for (RelationTypeToken relation : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
+      for (RelationTypeToken relation : atsApi.getStoreService().getRelationTypes()) {
          if (relation.getName().equals(relationTypeName)) {
             return relation;
          }
@@ -308,8 +305,7 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
-               AttributeTypeToken attrType =
-                  orcsApi.getOrcsTypes().getAttributeTypes().getByName(attribute.getAttrTypeName());
+               AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 

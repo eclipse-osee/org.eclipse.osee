@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionListener;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**

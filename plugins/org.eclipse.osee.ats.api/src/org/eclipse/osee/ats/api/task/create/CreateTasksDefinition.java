@@ -28,7 +28,7 @@ public class CreateTasksDefinition extends NamedIdBase {
    protected RuleEventType ruleEvent;
    private String toState;
    // Hard coded tasks to create regardless of change report contents.
-   protected List<CreateTaskDefinition> staticTaskDefs = new ArrayList<CreateTaskDefinition>();
+   protected List<StaticTaskDefinition> staticTaskDefs = new ArrayList<StaticTaskDefinition>();
    // Additional options to specify change report items to use or ignore
    private ChangeReportOptions chgRptOptions;
 
@@ -86,11 +86,11 @@ public class CreateTasksDefinition extends NamedIdBase {
       this.chgRptOptions = chgRptOptions;
    }
 
-   public List<CreateTaskDefinition> getStaticTaskDefs() {
+   public List<StaticTaskDefinition> getStaticTaskDefs() {
       return staticTaskDefs;
    }
 
-   public void setStaticTaskDefs(List<CreateTaskDefinition> staticTaskDefs) {
+   public void setStaticTaskDefs(List<StaticTaskDefinition> staticTaskDefs) {
       this.staticTaskDefs = staticTaskDefs;
    }
 

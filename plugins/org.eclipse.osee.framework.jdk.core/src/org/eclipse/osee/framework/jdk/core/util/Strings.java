@@ -41,6 +41,15 @@ public class Strings {
    }
 
    /**
+    * Write to sys.out a formatted string
+    */
+   public static String error(String format, Object... data) {
+      String str = String.format(format, data);
+      System.err.println(str);
+      return str;
+   }
+
+   /**
     * OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */
    public static boolean isValid(String value) {

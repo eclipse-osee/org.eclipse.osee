@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -710,6 +711,16 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             IAtsTeamWorkflow.class);
       results.addAll(items);
       return results;
+   }
+
+   @Override
+   public List<ChangeItem> getBranchChangeData(BranchId branch) {
+      return atsApi.getBranchService().getChangeData(branch);
+   }
+
+   @Override
+   public List<ChangeItem> getTransactionChangeData(TransactionId transactionId) {
+      return atsApi.getBranchService().getChangeData(transactionId);
    }
 
 }

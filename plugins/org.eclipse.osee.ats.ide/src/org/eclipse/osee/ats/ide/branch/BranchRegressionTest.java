@@ -16,6 +16,8 @@ import org.eclipse.osee.ats.api.branch.BranchStatus;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -35,6 +37,7 @@ import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranchEnablement;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -54,7 +57,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -82,7 +84,6 @@ public abstract class BranchRegressionTest {
 
    private static final String PRE_BRANCH_CHANGES = "testMakePreBranchChanges_";
    public static String PRE_BRANCH_ARTIFACT_NAME = "Pre-Branch Artifact to Delete";
-   private static String IN_BRANCH_ARTIFACT_NAME = "In-Branch Artifact to Delete";
    protected static Artifact actionArt;
    protected static TeamWorkFlowArtifact reqTeam;
    protected static TeamWorkFlowArtifact codeTeam;
@@ -94,7 +95,6 @@ public abstract class BranchRegressionTest {
    public static String FOURTH_ARTIFACT = "Fourth Artifact - No CSCI";
    public static String FIFTH_ARTIFACT = "Fifth Artifact - Unspecified CSCI";
    public static String SUBSYSTEM_ARTIFACT = "Subsystem Artifact (no partition)";
-   public static String PARENT_ARTIFACT = "Parent Artifact";
    protected final List<String> ArtifactModifiedNames = new ArrayList<>();
    protected final List<String> NonRelArtifactModifedNames = new ArrayList<>();
 
@@ -115,10 +115,11 @@ public abstract class BranchRegressionTest {
     * must be wiped.
     */
    public BranchRegressionTest() {
-      ArtifactModifiedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
-         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, PARENT_ARTIFACT, Requirements.SOFTWARE_REQUIREMENTS));
+      ArtifactModifiedNames.addAll(
+         Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT, FIFTH_ARTIFACT,
+            SUBSYSTEM_ARTIFACT, DemoArtifactToken.ParentArtifact.getName(), Requirements.SOFTWARE_REQUIREMENTS));
       NonRelArtifactModifedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
-         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, PARENT_ARTIFACT));
+         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, DemoArtifactToken.ParentArtifact.getName()));
    }
 
    @BeforeClass
@@ -166,29 +167,36 @@ public abstract class BranchRegressionTest {
       testCodeTaskCreationAfterThirdFourthFifth(); // Extend with additional checks
 
       createReqArtToDelete();
-      testCodeTaskCreationAfterInBranchCreation(); // Extend with additional checks
+      testCodeTaskCreationAfterCreateReqArtToDelete(); // Extend with additional checks
 
-      makeChangeToReqArtToDelete();
-
-      testCodeTestCreationAfterInBranchCreationModified(); // Extend with additional checks
+      makeNameChangeToReqArtToDelete();
+      testCodeTestCreationAfterChangeToReqArtifactToDelete(); // Extend with additional checks
 
       deleteReqArtToDelete();
-      testCodeTestCreationAfterInBranchCreationDeleted(); // Extend with additional checks
+      testCodeTestCreationAfterDeleteReqArtifactToDelete(); // Extend with additional checks
 
       createSubsystemArt();
       deletePreBranchArt();
       // Make and test branch changes - End
 
       testWorkingBranchCommitCheck();
+
+      // Add trace so commit will go through
       testCreateParentArtsOnWorkingBranch();
+
       testWorkingBranchCommit();
+
       testXWorkingBranchAfterBranchCommit();
+
       testChangesMadeWereCommitted();
+
       testRequirementsWorkflowCompletion();
       testCodeTaskCreationAfterReqCompletion();
-      testShowRelatedTasksAction();
-      testShowRelatedRequirementAction();
-      testShowRequirementDiffsAction();
+
+      testShowRelatedTasksAction(); // Extend with additional checks
+      testShowRelatedRequirementAction(); // Extend with additional checks
+      testShowRequirementDiffsAction(); // Extend with additional checks
+
       testSevereLoggingMonitorResults();
       testCleanupFinal();
    }
@@ -239,6 +247,7 @@ public abstract class BranchRegressionTest {
 
    public void testSetupInitialConditions() {
       AtsUtilClient.setEmailEnabled(false);
+      AtsUtil.setIsInText(true);
       monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
    }
@@ -416,15 +425,14 @@ public abstract class BranchRegressionTest {
       createAndDeleteArt.deleteAndPersist();
    }
 
-   private void makeChangeToReqArtToDelete() {
-      // Make attribute change
-      createAndDeleteArt.setName(IN_BRANCH_ARTIFACT_NAME + " Changed");
+   private void makeNameChangeToReqArtToDelete() {
+      createAndDeleteArt.setName(DemoArtifactToken.InBranchArtifactToDelete.getName() + " Changed");
       createAndDeleteArt.persist(getClass().getSimpleName());
    }
 
    private void createReqArtToDelete() throws Exception {
-      createAndDeleteArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt,
-         IN_BRANCH_ARTIFACT_NAME, getInBranchArtifactCscis(), workingBranch);
+      createAndDeleteArt = createSoftwareArtifact(DemoArtifactToken.InBranchArtifactToDelete, softReqArt,
+         getInBranchArtifactCscis(), workingBranch);
       Assert.assertNotNull(createAndDeleteArt);
    }
 
@@ -455,8 +463,8 @@ public abstract class BranchRegressionTest {
       // Create set of software requirement changes
       Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
          Requirements.SOFTWARE_REQUIREMENTS, workingBranch);
-      Artifact parentArt = createSoftwareArtifact(CoreArtifactTypes.SystemRequirementMsWord, softReqArt,
-         PARENT_ARTIFACT, getFirstArtifactCscis(), workingBranch);
+      Artifact parentArt =
+         createSoftwareArtifact(DemoArtifactToken.ParentArtifact, softReqArt, getFirstArtifactCscis(), workingBranch);
       Assert.assertNotNull(parentArt);
       Artifact firstArt =
          ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FIRST_ARTIFACT, workingBranch);
@@ -570,9 +578,10 @@ public abstract class BranchRegressionTest {
             found);
       }
 
-      // Check that the single pre-workingBranch artifact that was deleted in this workingBranch comes back
-      // AND that the in-workingBranch artifact that was created and deleted in the workingBranch DOES NOT come
-      // back
+      /**
+       * Check that the single pre-workingBranch artifact that was deleted in this workingBranch comes back AND that the
+       * in-workingBranch artifact that was created and deleted in the workingBranch DOES NOT come back
+       */
       Collection<Artifact> deleted = changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED);
       if (deleted.size() != 1) {
          Assert.fail("Deleted Artifacts should be 1; Actual is " + deleted.size());
@@ -581,7 +590,7 @@ public abstract class BranchRegressionTest {
          Assert.assertTrue("Pre-Branch Artifact should have been returned as deleted",
             art.getName().equals(PRE_BRANCH_ARTIFACT_NAME));
          Assert.assertFalse("In-Branch Artifact should NOT have been returned as deleted, and was",
-            art.getName().equals(IN_BRANCH_ARTIFACT_NAME));
+            art.getName().equals(DemoArtifactToken.InBranchArtifactToDelete.getName()));
       }
    }
 
@@ -599,138 +608,99 @@ public abstract class BranchRegressionTest {
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTaskCreationAfterInBranchCreation() throws Exception {
-      return Result.TrueResult;
-   }
-
-   private void testCodeTaskCreationAfterInBranchCreation() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTaskCreationAfterInBranchCreation();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
+   protected void testCodeTaskCreationAfterCreateReqArtToDelete() {
+      // do nothing
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTestCreationAfterInBranchCreationModified() throws Exception {
-      return Result.TrueResult;
-   }
-
-   private void testCodeTestCreationAfterInBranchCreationModified() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTestCreationAfterInBranchCreationModified();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
+   protected void testCodeTestCreationAfterChangeToReqArtifactToDelete() {
+      // do nothing
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTestCreationAfterInBranchCreationDeleted() throws Exception {
-      return Result.TrueResult;
-   }
-
-   private void testCodeTestCreationAfterInBranchCreationDeleted() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTestCreationAfterInBranchCreationDeleted();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
+   protected void testCodeTestCreationAfterDeleteReqArtifactToDelete() {
+      // do nothing
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTestTasksAfterThirdFourthFifth() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public void testCodeTaskCreationAfterThirdFourthFifth() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTestTasksAfterThirdFourthFifth();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
+   protected void testCodeTaskCreationAfterThirdFourthFifth() {
+      // do nothing
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTestTasksAfterFirstAndSecond() throws Exception {
-      return Result.TrueResult;
+   protected void testCodeTaskCreationAfterFirstAndSecond() {
+      // do nothing
    }
 
-   public void testCodeTaskCreationAfterFirstAndSecond() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTestTasksAfterFirstAndSecond();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
+   /**
+    * Used to test tasks that exist after requirements completion
+    */
+   protected Collection<String> getFinalTaskNames() {
+      return java.util.Collections.emptyList();
+   }
 
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
+   /**
+    * Uses getFinalTaskNames() to test final tasks after req transition
+    */
+   protected void testCodeTaskCreationAfterReqCompletion() {
+
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+         if (team.getTeamDefinition().toString().contains("Req")) {
+            continue;
+         }
+         IAtsTeamWorkflow testWf = null, codeWf = null;
+         if (AtsClientService.get().getStoreService().isOfType(team, getTestTeamWfArtType())) {
+            testWf = team;
+         } else if (AtsClientService.get().getStoreService().isOfType(team, getCodeTeamWfArtType())) {
+            codeWf = team;
+         }
+         Assert.assertTrue(testWf != null || codeWf != null);
+
+         int loopCount = 0;
+         int count = 0;
+         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(team);
+         System.err.println(team.toStringWithId());
+         while (getFinalTaskNames().size() != count && loopCount < 10) {
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+               // do nothing
+            }
+            AtsClientService.get().getStoreService().reload(Arrays.asList(team));
+
+            tasks = AtsClientService.get().getTaskService().getTasks(team);
+            count = tasks.size();
+
+            loopCount++;
+         }
+         Assert.assertEquals(getFinalTaskNames().size(), count);
+
+         XResultData results = new XResultData();
+         for (IAtsTask task : tasks) {
+            if (!getFinalTaskNames().contains(task.getName())) {
+               results.errorf("Task named [%s]; not found for task %s", task.getName(), task.toStringWithId());
+            }
+         }
+         for (String taskName : getFinalTaskNames()) {
+            boolean found = false;
+            for (IAtsTask task : tasks) {
+               if (task.getName().equals(taskName)) {
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               results.errorf("Expected Task named [%s] not found", taskName);
+            }
+         }
+         Assert.assertTrue(results.toString(), results.isSuccess());
+
+      }
    }
 
    // Override to provide additional checks
-   public Result verifyCodeTestTasksAfterReqCompletion() throws Exception {
-      return Result.TrueResult;
-   }
-
-   public void testCodeTaskCreationAfterReqCompletion() throws Exception {
-      // Validate Code/Test tasks
-      Result result = verifyCodeTestTasksAfterReqCompletion();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-
-      // Give time for events to propagate through system
-      Thread.sleep(8000);
-   }
-
-   public void testShowRelatedTasksAction() throws Exception {
-      Result result = verifyShowRelatedTasksAction();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-   }
-
-   public void testShowRelatedRequirementAction() throws Exception {
-      Result result = verifyShowRelatedRequirementAction();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
-   }
-
-   public void testShowRequirementDiffsAction() throws Exception {
-      Result result = verifyShowRequirementDiffsAction();
-      if (result.isFalse()) {
-         if (!result.getText().equals("")) {
-            Assert.fail(result.getText());
-         }
-      }
+   protected void testShowRequirementDiffsAction() {
+      // do nothing
    }
 
    public void testSevereLoggingMonitorResults() throws Exception {
@@ -747,8 +717,12 @@ public abstract class BranchRegressionTest {
       OseeEventManager.removeAllListeners();
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) throws Exception, MultipleAttributesExist {
-      Artifact art1 = ArtifactTypeManager.addArtifact(artifactType, branch, title);
+   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchId branch) throws Exception, MultipleAttributesExist {
+      Artifact art1 = ArtifactTypeManager.addArtifact(artifactToken, branch);
+      return setParent(parent, partitions, art1);
+   }
+
+   private Artifact setParent(Artifact parent, String[] partitions, Artifact art1) {
       if (partitions != null) {
          art1.setAttributeValues(getCsciAttribute(), Arrays.asList(partitions));
       }
@@ -756,6 +730,11 @@ public abstract class BranchRegressionTest {
       parent.addChild(art1);
       parent.persist(getClass().getSimpleName());
       return art1;
+   }
+
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) throws Exception, MultipleAttributesExist {
+      Artifact art1 = ArtifactTypeManager.addArtifact(artifactType, branch, title);
+      return setParent(parent, partitions, art1);
    }
 
    private Artifact createSubsystemArtifact(Artifact parent, String title) {
@@ -802,56 +781,27 @@ public abstract class BranchRegressionTest {
 
    public abstract ArtifactTypeToken getTestTeamWfArtType();
 
-   public Result verifyShowRelatedTasksAction() {
-
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
-         if (team.getTeamDefinition().toString().contains("Req")) {
-            continue;
-         }
-         IAtsTeamWorkflow testWf = null, codeWf = null;
-         if (AtsClientService.get().getStoreService().isOfType(team, getTestTeamWfArtType())) {
-            testWf = team;
-         } else if (AtsClientService.get().getStoreService().isOfType(team, getCodeTeamWfArtType())) {
-            codeWf = team;
-         }
-         Assert.assertTrue(testWf != null || codeWf != null);
-
-         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(team);
-         int count = 0;
-         /**
-          * only count task belonging to these testWf/codeWf cause this count will go up as this test is run multiple
-          * times.
-          */
-         for (IAtsTask task : tasks) {
-            if ((testWf != null && task.getParentTeamWorkflow().equals(
-               testWf)) || (codeWf != null && task.getParentTeamWorkflow().equals(codeWf))) {
-               count++;
-            }
-         }
-         Assert.assertEquals(18, count);
-
-         XResultData result = verifyShowRelatedTasksAction(tasks);
-         if (result.isErrors()) {
-            return new Result(false, result.toString());
-         }
-      }
-      return Result.TrueResult;
+   // Override to provide additional checks
+   protected void testShowRelatedTasksAction() {
+      // do nothing
    }
 
-   /**
-    * Available for override to provide further checks on tasks created
-    */
-   protected XResultData verifyShowRelatedTasksAction(Collection<IAtsTask> tasks) {
-      return new XResultData();
+   // Override to provide additional checks
+   protected void testTransitionCreatedTasks(Collection<IAtsTask> tasks) {
+      // do nothing
    }
 
-   public abstract Result verifyShowRelatedRequirementAction();
+   // Override to provide additional checks
+   protected int getExpectedBranchConfigArts() {
+      return 1;
+   }
 
-   public abstract Result verifyShowRequirementDiffsAction();
+   // Override to provide additional checks
+   protected void testShowRelatedRequirementAction() {
+      // do nothing
+   }
 
    public abstract List<String> getBranchNames() throws Exception;
-
-   public abstract int getExpectedBranchConfigArts();
 
    protected void testTaskWorkDefinition(StringBuffer sb, IAtsTask taskArt) {
       String taskWorkDefName = taskArt.getWorkDefinition().getName();

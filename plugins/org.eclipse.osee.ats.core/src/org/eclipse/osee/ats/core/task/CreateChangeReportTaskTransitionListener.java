@@ -8,21 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workdef.builder;
+package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -38,28 +37,42 @@ public class CreateChangeReportTaskTransitionListener extends TransitionAdapter 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
 
+      System.err.println("CreateChangeReportTaskTransitionListener.transitioned");
+
       Thread thread = new Thread("Create/Update Tasks") {
          @Override
          public void run() {
             super.run();
-            ChangeReportTaskData data = new ChangeReportTaskData();
-            data.setTaskDefToken(taskDefToken);
-            data.setHostTeamWf(workItem.getStoreObject());
-            AtsUser atsUser =
-               AtsApiService.get().getUserService().getAtsUser(AtsApiService.get().getUserService().getCurrentUser());
-            data.setAsUser(atsUser);
-            ChangeReportTaskData createTasks = AtsApiService.get().getTaskService().createTasks(data);
-
-            // Reload art to get new children
-            ArtifactToken actionArt = AtsApiService.get().getQueryService().getArtifact(createTasks.getActionId());
-            AtsApiService.get().getStoreService().reloadArts(Collections.singleton(actionArt));
-            IAtsAction action = AtsApiService.get().getWorkItemService().getAction(actionArt);
-            // Reload children team Wfs
-            AtsApiService.get().getStoreService().reload(
-               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(action.getTeamWorkflows()));
+            ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, changes);
+            if (data.getResults().isErrors()) {
+               throw new OseeArgumentException(data.getResults().toString());
+            }
          }
+
       };
-      thread.start();
+      if (AtsUtil.isInTest()) {
+         thread.run();
+      } else {
+         thread.start();
+      }
+   }
+
+   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken, IAtsChangeSet changes) {
+      ChangeReportTaskData data = new ChangeReportTaskData();
+      data.setTaskDefToken(taskDefToken);
+      data.setHostTeamWf(workItem.getStoreObject());
+      AtsUser atsUser =
+         AtsApiService.get().getUserService().getAtsUser(AtsApiService.get().getUserService().getCurrentUser());
+      data.setAsUser(atsUser);
+
+      /**
+       * Until all transitions are done on server, need to directly call this operation so it's part of the full
+       * IAtsChangeSet. Otherwise transitioning will reload teamWfs and tasks after task creation.
+       */
+      CreateChangeReportTasksOperation operation =
+         new CreateChangeReportTasksOperation(data, AtsApiService.get(), changes);
+      operation.run();
+      return data;
    }
 
 }

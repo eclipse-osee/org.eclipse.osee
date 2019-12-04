@@ -22,12 +22,12 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class ChangeReportTaskMatch {
 
-   ArtifactId chgRptArt;
+   ArtifactId chgRptArt = ArtifactId.SENTINEL;
    String taskName;
    ArtifactToken taskTok;
    @JsonIgnore
    IAtsTask taskWf;
-   CreateTaskDefinition createTaskDef;
+   StaticTaskDefinition createTaskDef;
    private ChangeReportTaskMatchType matchType;
 
    public ArtifactId getChgRptArt() {
@@ -80,11 +80,11 @@ public class ChangeReportTaskMatch {
       this.matchType = matchType;
    }
 
-   public CreateTaskDefinition getCreateTaskDef() {
+   public StaticTaskDefinition getCreateTaskDef() {
       return createTaskDef;
    }
 
-   public void setCreateTaskDef(CreateTaskDefinition createTaskDef) {
+   public void setCreateTaskDef(StaticTaskDefinition createTaskDef) {
       this.createTaskDef = createTaskDef;
    }
 }

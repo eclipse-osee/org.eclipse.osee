@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.workflow.WorkItemJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -35,6 +36,7 @@ public class AtsClientService {
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static TupleEndpoint atsBranchTupleEndpoint;
    private static AtsNotifyEndpointApi notifyEp;
+   private static AtsActionEndpointApi actionEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -99,4 +101,12 @@ public class AtsClientService {
       atsBranchTupleEndpoint = jaxRsClient.target(commonTupleUrl).newProxy(TupleEndpoint.class);
       return atsBranchTupleEndpoint;
    }
+
+   public static AtsActionEndpointApi getActionEndpoint() {
+      if (actionEp == null) {
+         actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
+      }
+      return actionEp;
+   }
+
 }

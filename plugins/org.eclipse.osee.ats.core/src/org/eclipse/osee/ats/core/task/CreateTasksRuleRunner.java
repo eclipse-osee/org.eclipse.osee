@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.task.create.CreateTaskDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
+import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -58,21 +58,21 @@ public class CreateTasksRuleRunner {
             return results;
          }
          List<String> existingTaskNames = getExistingTaskNames();
-         List<CreateTaskDefinition> missingTasks = getMissingTasks(tasksDef, existingTaskNames);
+         List<StaticTaskDefinition> missingTasks = getMissingTasks(tasksDef, existingTaskNames);
          createMissingTasks(tasksDef, missingTasks, results);
       }
       return results;
    }
 
-   private void createMissingTasks(CreateTasksDefinition tasksDef, List<CreateTaskDefinition> missingTasks, XResultData results) {
+   private void createMissingTasks(CreateTasksDefinition tasksDef, List<StaticTaskDefinition> missingTasks, XResultData results) {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setTeamWfId(teamWf.getId());
       newTaskData.setAsUserId(atsApi.getUserService().getCurrentUserId());
       newTaskData.setCommitComment(tasksDef.getComment());
       Date createdDate = new Date();
-      for (CreateTaskDefinition createTaskDef : missingTasks) {
+      for (StaticTaskDefinition createTaskDef : missingTasks) {
          JaxAtsTask jTask = new JaxAtsTask();
-         jTask.setName(createTaskDef.getTitle());
+         jTask.setName(createTaskDef.getName());
          jTask.setCreatedByUserId(atsApi.getUserService().getCurrentUserId());
          jTask.setDescription(createTaskDef.getDescription());
          jTask.setRelatedToState(createTaskDef.getRelatedToState());
@@ -94,10 +94,10 @@ public class CreateTasksRuleRunner {
       }
    }
 
-   private List<CreateTaskDefinition> getMissingTasks(CreateTasksDefinition tasksDef, List<String> existingTaskNames) {
-      List<CreateTaskDefinition> missingTasks = new ArrayList<>();
-      for (CreateTaskDefinition createTaskDef : tasksDef.getStaticTaskDefs()) {
-         if (!existingTaskNames.contains(createTaskDef.getTitle())) {
+   private List<StaticTaskDefinition> getMissingTasks(CreateTasksDefinition tasksDef, List<String> existingTaskNames) {
+      List<StaticTaskDefinition> missingTasks = new ArrayList<>();
+      for (StaticTaskDefinition createTaskDef : tasksDef.getStaticTaskDefs()) {
+         if (!existingTaskNames.contains(createTaskDef.getName())) {
             missingTasks.add(createTaskDef);
          }
       }

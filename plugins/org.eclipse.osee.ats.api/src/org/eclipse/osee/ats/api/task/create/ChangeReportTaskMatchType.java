@@ -19,7 +19,7 @@ public enum ChangeReportTaskMatchType {
    Match("Computed task needed matches existing task. - No Change Needed."),
    //
    ChangedReportTaskComputedAsNeeded("Change Report task computed as needed. - Awaiting determination if task exists or Create Task"),
-   StaticTaskComputedAsNeeded("Statically defined task from CreateTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
+   StaticTaskComputedAsNeeded("Statically defined task from StaticTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
    //
    TaskRefAttrMissing("Task Referenced Attr was not found. - Delete Task."),
    TaskRefAttrValidButRefChgArtMissing("Task Referenced Attr found but no matching changed art. - Delete Task");

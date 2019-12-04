@@ -34,6 +34,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -71,6 +72,7 @@ import org.eclipse.osee.ats.ide.world.WorldCompletedFilter;
 import org.eclipse.osee.ats.ide.world.WorldComposite;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -78,6 +80,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -86,6 +89,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
@@ -389,15 +393,23 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
    }
 
    public void refresh() {
-      Displays.ensureInDisplayThread(new Runnable() {
+      Thread reload = new Thread("Reload Tasks") {
 
          @Override
          public void run() {
-            if (Widgets.isAccessible(taskComposite)) {
-               taskComposite.getXViewer().setInput(getTaskArts());
-            }
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  if (Widgets.isAccessible(taskComposite)) {
+                     taskComposite.getXViewer().setInput(getTaskArts());
+                  }
+               }
+            });
          }
-      });
+      };
+      reload.start();
+
    }
 
    private void refreshToolbar() {
@@ -426,7 +438,26 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       toolBarMgr.add(new OpenNewAtsTaskEditorSelected(taskComposite));
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(taskComposite));
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new RefreshAction(taskComposite));
+      /**
+       * Use separate refresh action cause this one reloads which causes the WfeTAsksTab.refresh to be called. Using the
+       * WfeTasksTab.refresh to reload will cause an infinite loop.
+       */
+      toolBarMgr.add(new RefreshAction(new IRefreshActionHandler() {
+
+         @Override
+         public void refreshActionHandler() {
+            Thread reload = new Thread() {
+               @Override
+               public void run() {
+                  Set<ArtifactToken> arts = new HashSet<>();
+                  arts.add(teamArt);
+                  arts.addAll(teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task));
+                  ArtifactQuery.reloadArtifacts(arts);
+               }
+            };
+            reload.start();
+         }
+      }));
       toolBarMgr.add(new NewAction());
       toolBarMgr.add(new Separator());
       createDropDownMenuActions();

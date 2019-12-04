@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -288,5 +289,15 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public Collection<ArtifactToken> getDescendants(ArtifactToken art) {
       throw new UnsupportedOperationException("unsupported on server");
+   }
+
+   @Override
+   public Collection<RelationTypeToken> getRelationTypes() {
+      return orcsApi.getOrcsTypes().getRelationTypes().getAll();
+   }
+
+   @Override
+   public String getSafeName(ArtifactId art) {
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(art)).getSafeName();
    }
 }

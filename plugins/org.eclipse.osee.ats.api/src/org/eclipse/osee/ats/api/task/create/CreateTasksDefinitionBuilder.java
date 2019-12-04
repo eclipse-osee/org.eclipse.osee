@@ -53,16 +53,15 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       return this;
    }
 
-   public CreateTasksDefinitionBuilder andTask(String title, String desc, StateToken relatedToState, Long... assigneeAccountId) {
-      return andTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDef_Team_Default, assigneeAccountId);
+   public CreateTasksDefinitionBuilder andStaticTask(String title, String desc, StateToken relatedToState, Long... assigneeAccountId) {
+      return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDef_Team_Default,
+         assigneeAccountId);
    }
 
-   public CreateTasksDefinitionBuilder andTask(String title, String desc, StateToken relatedToState, AtsWorkDefinitionToken workDef, Long... assigneeAccountId) {
-      System.err.println(
-         "Should all addTask be renamed to addStaticTask; ensure this isn't used by change report tasks");
-      Conditions.assertNotNullOrEmpty(title, "title can not be empty");
-      CreateTaskDefinition taskDef = new CreateTaskDefinition();
-      taskDef.setTitle(title);
+   public CreateTasksDefinitionBuilder andStaticTask(String name, String desc, StateToken relatedToState, AtsWorkDefinitionToken workDef, Long... assigneeAccountId) {
+      Conditions.assertNotNullOrEmpty(name, "title can not be empty");
+      StaticTaskDefinition taskDef = new StaticTaskDefinition();
+      taskDef.setName(name);
       if (Strings.isValid(desc)) {
          taskDef.setDescription(desc);
       }
@@ -77,12 +76,12 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       return this;
    }
 
-   public CreateTasksDefinitionBuilder andTask(String title) {
-      return andTask(title, null, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
+   public CreateTasksDefinitionBuilder andStaticTask(String name) {
+      return andStaticTask(name, null, null, AtsWorkDefinitionTokens.WorkDef_Task_Default);
    }
 
-   public CreateTasksDefinitionBuilder andTask(String title, AtsWorkDefinitionToken taskWorkDef) {
-      return andTask(title, null, null, taskWorkDef);
+   public CreateTasksDefinitionBuilder andStaticTask(String title, AtsWorkDefinitionToken taskWorkDef) {
+      return andStaticTask(title, null, null, taskWorkDef);
    }
 
    public CreateChangeReportTasksDefinitionBuilder andChgRptBuilder() {

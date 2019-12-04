@@ -57,10 +57,10 @@ public class AtsQueryImplTest {
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
-
       assertEquals(28, query.getResults().size());
+
       query = queryService.createQuery(WorkItemType.Task);
-      assertEquals(50, query.getResults().size());
+      assertEquals(56, query.getResults().size());
 
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -97,7 +97,7 @@ public class AtsQueryImplTest {
       // by state type
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(92, query.getResults().size());
+      assertEquals(98, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);

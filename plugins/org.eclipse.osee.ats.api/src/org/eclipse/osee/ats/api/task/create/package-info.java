@@ -6,13 +6,13 @@
  * specified in XCreateCodeTestTasksButton for use in WorkDef or through ATsTaskService to call programatically. <br/>
  * <br/>
  * <br/>
- * @link CreateTaskDefinition - Definition of static task to be created. This is only used by AtsTaskService.addTask and
+ * @link StaticTaskDefinition - Definition of static task to be created. This is only used by AtsTaskService.addTask and
  * not by tasks to be created by change report changes. TBD: May want to rename this to StaticCreateTaskDefinition?
  * <br/>
  * <br/>
  * @link CreateTasksDefinition - definition that determines what to do when tasks are to be generated. This is created
  * used the task builder in java code and provided to ATS framework through osgi as IAtsTaskSetDefinitionProvider.
- * See @link AtsTaskSetDefinitionProvider for examples. It also contains a list of CreateTaskDefinition for static tasks
+ * See @link AtsTaskSetDefinitionProvider for examples. It also contains a list of StaticTaskDefinition for static tasks
  * to be defined to create regardless of the change report.<br/>
  * <br/>
  * <br/>

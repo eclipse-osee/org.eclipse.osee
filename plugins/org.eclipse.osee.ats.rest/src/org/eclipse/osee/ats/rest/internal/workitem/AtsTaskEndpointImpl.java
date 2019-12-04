@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -58,7 +59,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public JaxAtsTasks create(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, orcsApi, new XResultData());
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {

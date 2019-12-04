@@ -29,7 +29,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.rest.internal.task.CreateChangeReportTasksOperation;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTasksOperation;
+import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -66,7 +67,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes, XResultData results, Map<Long, IAtsTeamWorkflow> idToTeamWf) {
       List<IAtsTask> tasks = new LinkedList<>();
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, orcsApi, results);
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsApi, results);
       operation.setIdToTeamWf(idToTeamWf);
       operation.validate();
       if (results.isSuccess()) {
@@ -82,7 +83,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, orcsApi, new XResultData());
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsApi, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
@@ -108,7 +109,8 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    @Override
    public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData) {
-      CreateChangeReportTasksOperation operation = new CreateChangeReportTasksOperation(changeReportTaskData, atsApi);
+      CreateChangeReportTasksOperation operation =
+         new CreateChangeReportTasksOperation(changeReportTaskData, atsApi, null);
       return operation.run();
    }
 

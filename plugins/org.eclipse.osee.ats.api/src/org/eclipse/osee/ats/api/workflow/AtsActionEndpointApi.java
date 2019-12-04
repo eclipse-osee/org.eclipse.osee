@@ -30,6 +30,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Donald G. Dunne
@@ -196,4 +199,14 @@ public interface AtsActionEndpointApi {
    @Path("{id}/assocArt/{attrTypeId}")
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeId relatedReqs, @QueryParam("versionType") AttributeTypeId versionType);
+
+   @Path("branch/changes/{branchId}")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeItem> getBranchChangeData(@PathParam("branchId") BranchId branchId);
+
+   @Path("transaction/changes/{transactionId}")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ChangeItem> getTransactionChangeData(@PathParam("transactionId") TransactionId transactionId);
 }

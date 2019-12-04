@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -148,7 +149,7 @@ public interface IAtsBranchService {
 
    List<ChangeItem> getChangeData(BranchId branch);
 
-   List<ChangeItem> getChangeData(TransactionToken transaction);
+   List<ChangeItem> getChangeData(TransactionId transaction);
 
    void setAssociatedArtId(BranchId branch, ArtifactId artifact);
 

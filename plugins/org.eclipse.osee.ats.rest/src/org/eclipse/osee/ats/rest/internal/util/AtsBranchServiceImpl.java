@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -187,10 +188,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public List<ChangeItem> getChangeData(TransactionToken transaction) {
+   public List<ChangeItem> getChangeData(TransactionId transaction) {
       TransactionQuery transQuery = orcsApi.getQueryFactory().transactionQuery();
+      TransactionToken transTok = transQuery.andTxId(transaction).getTokens().iterator().next();
       TransactionReadable startTx =
-         transQuery.andIsPriorTx(transaction).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL);
+         transQuery.andIsPriorTx(transTok).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL);
       List<ChangeItem> results = orcsApi.getTransactionFactory().compareTxs(startTx, transaction);
       return results;
    }
