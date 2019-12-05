@@ -48,6 +48,7 @@ public class WordMLProducer {
    private final Appendable strB;
    private final int[] outlineNumber;
    private int outlineLevel;
+   private int maxOutlineLevel = 9;
    private int flattenedLevelCount;
    private final Map<String, Integer> alphabetMap;
 
@@ -81,7 +82,8 @@ public class WordMLProducer {
       } else {
          flattenedLevelCount++;
          endOutlineSubSection(true);
-         OseeLog.log(this.getClass(), Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
+         OseeLog.log(this.getClass(), Level.WARNING,
+            "Outline level flattened, max outline level is currently set to " + maxOutlineLevel + ", ms word only goes 9 levels deep");
          return startOutlineSubSection(font, headingText, outlineType);
       }
    }
@@ -126,7 +128,7 @@ public class WordMLProducer {
       append("</wx:sub-section>");
    }
 
-   public void setPageBreak(boolean chapterNumbering) {
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle) {
       append("<w:p>");
       append("<w:pPr>");
       append("<w:sectPr>");
@@ -135,10 +137,15 @@ public class WordMLProducer {
          append(
             "<w:pgMar w:top=\"1440\" w:right=\"1296\" w:bottom=\"1440\" w:left=\"1296\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/>");
       }
-      append("<w:pgNumType w:start=\"1\" w:chap-style=\"1\"/>");
+      append("<w:pgNumType w:start=\"1\" w:chap-style=\"" + chapterStyle + "\"/>");
       append("</w:sectPr>");
       append("</w:pPr>");
       append("</w:p>");
+   }
+
+   public void setPageBreak(boolean chapterNumbering) {
+      //Defaults to Heading1
+      setPageBreak(chapterNumbering, 1);
    }
 
    private void writeParagraphStyle(CharSequence style) {
@@ -376,7 +383,7 @@ public class WordMLProducer {
    }
 
    public boolean okToStartSubsection() {
-      return outlineLevel < 9;
+      return outlineLevel < maxOutlineLevel;
    }
 
    public void setNextParagraphNumberTo(String nextOutlineNumber) {
@@ -412,5 +419,9 @@ public class WordMLProducer {
          append("</w:pPr>");
          append("</w:p>");
       }
+   }
+
+   public void setMaxOutlineLevel(int maxOutlineLevel) {
+      this.maxOutlineLevel = maxOutlineLevel;
    }
 }
