@@ -258,7 +258,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(
             String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
+      getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
       transaction.addArtifact(getArtifact());
       markStatusToReflectEdit();
       return true;
