@@ -10,6 +10,7 @@
 *******************************************************************************/
 package org.eclipse.osee.ats.api.data;
 
+import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
@@ -22,7 +23,13 @@ public final class AtsTypeTokenProvider extends OrcsTypeTokenProviderBase {
       NamespaceToken.valueOf(2, "ats", "Namespace for ats system and content management types");
    public static final OrcsTypeTokens ats = new OrcsTypeTokens(ATS);
 
+   private static final NamespaceToken ATSDEMO =
+      NamespaceToken.valueOf(10, "ats demo", "Namespace for ats demo system and content management types");
+   public static final OrcsTypeTokens atsDemo = new OrcsTypeTokens(ATSDEMO);
+
    public AtsTypeTokenProvider() {
-      super(ats);
+      super(ats, atsDemo);
+      loadClasses(AtsArtifactTypes.AtsArtifact, AtsAttributeTypes.Actionable, AtsRelationTypes.Derive_To,
+         AtsDemoOseeTypes.Action);
    }
 }

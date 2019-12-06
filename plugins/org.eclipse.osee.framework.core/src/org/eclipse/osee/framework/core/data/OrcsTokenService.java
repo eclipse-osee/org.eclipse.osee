@@ -23,7 +23,7 @@ public interface OrcsTokenService {
    /**
     * @return full attribute type token with the given id or throw OseeTypeDoesNotExist if not found
     */
-   AttributeTypeToken getAttributeType(Long id);
+   AttributeTypeGeneric<?> getAttributeType(Long id);
 
    /**
     * @return full relation type token with the given id or throw OseeTypeDoesNotExist if not found

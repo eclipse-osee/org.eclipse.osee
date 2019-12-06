@@ -22,5 +22,6 @@ public final class CoreTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public CoreTypeTokenProvider() {
       super(osee);
+      loadClasses(CoreArtifactTypes.Artifact, CoreAttributeTypes.Name, CoreRelationTypes.Allocation);
    }
 }

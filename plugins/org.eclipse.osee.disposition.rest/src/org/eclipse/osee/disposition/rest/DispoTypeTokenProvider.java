@@ -10,6 +10,7 @@
 *******************************************************************************/
 package org.eclipse.osee.disposition.rest;
 
+import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageOseeTypes;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
@@ -25,5 +26,6 @@ public final class DispoTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public DispoTypeTokenProvider() {
       super(dispo);
+      loadClasses(DispoOseeTypes.DISPO_ARTIFACT, CoverageOseeTypes.Assignees);
    }
 }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.demo;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
-import static org.eclipse.osee.ats.api.demo.AtsDemoTypeTokenProvider.atsDemo;
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.atsDemo;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeCategoryAttributeType;

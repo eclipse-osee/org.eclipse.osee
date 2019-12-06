@@ -45,8 +45,8 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
-   public AttributeTypeToken getAttributeType(Long id) {
-      AttributeTypeToken attributeType = attributeTypes.get(id);
+   public AttributeTypeGeneric<?> getAttributeType(Long id) {
+      AttributeTypeGeneric<?> attributeType = attributeTypes.get(id);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute type [%s] is not available.", id);
       }
@@ -91,25 +91,30 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
 
    @Override
    public void registerArtifactType(ArtifactTypeToken artifactType) {
-      if (artifactTypes.putIfAbsent(artifactType.getId(), artifactType) != null) {
-         throw new OseeArgumentException("An artifact type with the id %s has already been registered.", artifactType);
+      ArtifactTypeToken existingType = artifactTypes.putIfAbsent(artifactType.getId(), artifactType);
+      if (existingType != null) {
+         throw new OseeArgumentException("An artifact type %s with the same id as %s has already been registered.",
+            existingType, artifactType);
       }
       artifactTypes.put(artifactType.getId(), artifactType);
    }
 
    @Override
    public void registerAttributeType(AttributeTypeGeneric<?> attributeType) {
-      if (attributeTypes.putIfAbsent(attributeType.getId(), attributeType) != null) {
-         throw new OseeArgumentException("An attribute type with the id %s has already been registered.",
-            attributeType);
+      AttributeTypeGeneric<?> existingType = attributeTypes.putIfAbsent(attributeType.getId(), attributeType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
+            existingType, attributeType);
       }
       attributeTypes.put(attributeType.getId(), attributeType);
    }
 
    @Override
    public void registerRelationType(RelationTypeToken relationType) {
-      if (relationTypes.putIfAbsent(relationType.getId(), relationType) != null) {
-         throw new OseeArgumentException("A relation type with the id %s has already been registered.", relationType);
+      RelationTypeToken existingType = relationTypes.putIfAbsent(relationType.getId(), relationType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The relation type %s with the same id as %s has already been registered.",
+            existingType, relationType);
       }
       relationTypes.put(relationType.getId(), relationType);
    }

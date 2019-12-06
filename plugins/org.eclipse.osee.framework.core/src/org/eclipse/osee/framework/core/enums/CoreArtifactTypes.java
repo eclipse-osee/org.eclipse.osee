@@ -237,11 +237,6 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestPlanElementMsWord = osee.add(osee.artifactType(37L, "Test Plan Element - MS Word", false, MsWordTemplate));
    ArtifactTypeToken TestResultNative = osee.add(osee.artifactType(39L, "Test Result Native", false, NativeArtifact, AbstractTestResult));
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
-   ArtifactTypeToken TestRun = osee.add(osee.artifactType(85L, "Test Run", false, AbstractTestResult)
-      .zeroOrOne(Extension, "")
-      .zeroOrOne(TestScriptGuid, "")
-      .zeroOrOne(UserId, ""));
-   ArtifactTypeToken TestRunDisposition = osee.add(osee.artifactType(84L, "Test Run Disposition", false, Artifact));
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Artifact));
    ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")

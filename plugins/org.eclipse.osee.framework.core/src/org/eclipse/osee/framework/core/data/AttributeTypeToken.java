@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
  */
 
 public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDescription, NamedId {
-   static final AttributeTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
+   static final AttributeTypeGeneric<?> SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
    static final String APPLICATION_ZIP = "application/zip";
    static final String TEXT_CALENDAR = "text/calendar";
    static final String TEXT_URI_LIST = "text/uri-list";
@@ -50,12 +50,12 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return valueOf(Long.valueOf(id), name, "");
    }
 
-   static AttributeTypeToken valueOf(Long id, String name) {
+   static AttributeTypeGeneric<?> valueOf(Long id, String name) {
       return valueOf(id, name, "");
    }
 
-   static @NonNull AttributeTypeToken valueOf(Long id, String name, String description) {
-      return new AttributeTypeObject(id, NamespaceToken.SENTINEL, name, "mediaType", description,
+   static @NonNull AttributeTypeGeneric<?> valueOf(Long id, String name, String description) {
+      return new AttributeTypeObject(id, NamespaceToken.SENTINEL, name, MediaType.TEXT_PLAIN, description,
          TaggerTypeToken.SENTINEL);
    }
 

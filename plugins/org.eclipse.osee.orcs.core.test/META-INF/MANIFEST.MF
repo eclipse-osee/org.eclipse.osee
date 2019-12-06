@@ -7,6 +7,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.orcs.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.mockito;visibility:=reexport,
  org.hamcrest.core
 Import-Package: com.google.common.util.concurrent,

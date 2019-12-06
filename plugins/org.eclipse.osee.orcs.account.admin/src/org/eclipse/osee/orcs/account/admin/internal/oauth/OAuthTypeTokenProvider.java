@@ -25,5 +25,6 @@ public final class OAuthTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public OAuthTypeTokenProvider() {
       super(oauth);
+      loadClasses(OAuthOseeTypes.OAuthClient);
    }
 }

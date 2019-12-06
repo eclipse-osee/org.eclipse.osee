@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.ote.define.OteArtifactTypes;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -187,7 +188,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private void loadTestRunArtifacts(BranchId scriptsBranch, IProgressMonitor monitor) {
       monitor.subTask("Loading Test Run Artifacts");
       Collection<Artifact> testRuns =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromType(OteArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
 
       double increment = 100.0 / testRuns.size();
       double progress = 0;

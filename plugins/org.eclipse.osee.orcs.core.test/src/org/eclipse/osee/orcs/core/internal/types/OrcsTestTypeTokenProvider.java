@@ -25,5 +25,6 @@ public final class OrcsTestTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public OrcsTestTypeTokenProvider() {
       super(test);
+      loadClasses(OrcsTypesTest.Artifact);
    }
 }

@@ -24,5 +24,6 @@ public final class OteTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public OteTypeTokenProvider() {
       super(ote);
+      loadClasses(OteArtifactTypes.TestRun, OteAttributeTypes.BuildId, OteRelationTypes.TestCaseToRunRelation);
    }
 }

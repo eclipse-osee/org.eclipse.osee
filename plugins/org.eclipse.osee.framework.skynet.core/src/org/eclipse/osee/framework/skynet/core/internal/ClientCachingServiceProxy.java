@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -47,7 +48,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    private JdbcService jdbcService;
    private OseeClient oseeClient;
-
+   private OrcsTokenService tokenService;
    private BranchCache branchCache;
 
    private OseeEnumTypeCache enumTypeCache;
@@ -63,6 +64,10 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    public void setOseeClient(OseeClient oseeClient) {
       this.oseeClient = oseeClient;
+   }
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
    }
 
    public void start() {
@@ -122,6 +127,10 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public Collection<?> getCaches() {
       return caches;
+   }
+
+   public OrcsTokenService getTokenService() {
+      return tokenService;
    }
 
    @Override

@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ote.define;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.ote.define.internal.Activator
+Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

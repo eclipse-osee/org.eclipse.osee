@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -37,7 +38,7 @@ public interface RelationTypeToken extends IRelationType, NamedId {
       return new RelationTypeTokenImpl(id, name);
    }
 
-   public static RelationTypeToken create(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+   public static @NonNull RelationTypeToken create(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
       final class RelationTypeTokenImpl extends NamedIdBase implements RelationTypeToken {
          private final RelationTypeMultiplicity relationTypeMultiplicity;
          private final RelationSorter order;

@@ -6,6 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.access,
  org.eclipse.osee.ats.api.agile,
@@ -79,3 +80,4 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.logger,
  org.osgi.framework,
  org.osgi.service.event
+Bundle-ActivationPolicy: lazy

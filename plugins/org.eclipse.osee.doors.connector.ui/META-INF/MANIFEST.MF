@@ -6,6 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Bosch GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
 Import-Package: com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  javax.ws.rs.core,

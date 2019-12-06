@@ -33,10 +33,9 @@ public class OrcsTypeTokens {
    private final ChainingArrayList<@NonNull RelationTypeToken> relationTypes = new ChainingArrayList<>();
    private final NamespaceToken namespace;
 
-   public OrcsTypeTokens() {
-      this.namespace = NamespaceToken.OSEE;
-   }
-
+   /**
+    * @param namespace all type token registered with this object will be for this namespace
+    */
    public OrcsTypeTokens(NamespaceToken namespace) {
       this.namespace = namespace;
    }
@@ -236,5 +235,14 @@ public class OrcsTypeTokens {
          default:
             return TaggerTypeToken.PlainTextTagger;
       }
+   }
+
+   public int size() {
+      return artifactTypes.size() + attributeTypes.size() + relationTypes.size();
+   }
+
+   @Override
+   public String toString() {
+      return namespace + ": " + size();
    }
 }

@@ -5,9 +5,9 @@
  */
 package org.eclipse.osee.doors.connector.ui.handler;
 
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static org.eclipse.osee.doors.connector.ui.handler.DoorsTypeTokenProvider.doors;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 
@@ -23,11 +23,11 @@ public interface DoorsOseeTypes {
     */
 
    // @formatter:off
-   AttributeTypeString DoorReqDatabaseName = doors.createString(8197L, "Door Req Id", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DoorReqId = doors.createString(5764607523034243074L, "Door Req Id", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DoorReqModuleName = doors.createString(5764607523034243076L, "Door Req Module Name", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DoorReqName = doors.createString(5764607523034243075L, "Door Req Name", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DoorReqUrl = doors.createString(8198L, "Door Req URL", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString DoorReqDatabaseName = doors.createString(8197L, "Door Req Id", TEXT_PLAIN, "");
+   AttributeTypeString DoorReqId = doors.createString(5764607523034243074L, "Door Req Id", TEXT_PLAIN, "");
+   AttributeTypeString DoorReqModuleName = doors.createString(5764607523034243076L, "Door Req Module Name", TEXT_PLAIN, "");
+   AttributeTypeString DoorReqName = doors.createString(5764607523034243075L, "Door Req Name", TEXT_PLAIN, "");
+   AttributeTypeString DoorReqUrl = doors.createString(8198L, "Door Req URL", TEXT_PLAIN, "");
 
 
 
