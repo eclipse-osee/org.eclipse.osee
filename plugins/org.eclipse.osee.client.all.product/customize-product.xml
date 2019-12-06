@@ -15,12 +15,8 @@
 		<property name="defaultWorkspaceName" value="workspace" />
 		<property name="additionalExecIniArgs" value=" " />
 
-		<updateProduct os="win32" ws="win32" arch="x86" jreVersion="1.6.0_31" />
 		<updateProduct os="win32" ws="win32" arch="x86_64" jreVersion="1.6.0_31" />
-		<updateProduct os="linux" ws="gtk" arch="x86" jreVersion="1.6.0_26" />
 		<updateProduct os="linux" ws="gtk" arch="x86_64" jreVersion="1.6.0_30" />
-		<!--<updateProduct os="solaris" ws="gtk" arch="sparc" jreVersion="1.6.0_24" /> -->
-		<updateProduct os="macosx" ws="cocoa" arch="x86_64" jreVersion="_" />
 	</target>
 
 	<!-- *************************************************************** -->
@@ -65,7 +61,7 @@
 					<!-- NO DEBUG EXEC for MACOSX -->
 				</then>
 				<else>
-					<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx1G${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=&lt;BROKER_ADDRESS&gt;${line.separator}-Dosee.application.server=http://localhost:8089${line.separator}-Dosee.authentication.protocol=demo${line.separator}${additionalExecIniArgs}" />
+					<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx2G${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=&lt;BROKER_ADDRESS&gt;${line.separator}-Dosee.application.server=http://localhost:8089${line.separator}-Dosee.authentication.protocol=demo${line.separator}${additionalExecIniArgs}" />
 				</else>
 			</if>
 
@@ -158,9 +154,6 @@
 
 			<copy file="@{productDir}/osee${execExtension}" tofile="@{productDir}/@{execName}${execExtension}" overwrite="true" />
 			<copy file="@{productDir}/osee.ini" tofile="${outputIni}" overwrite="true" />
-
-			<!-- <replaceregexp file="@{outputIni}" match="-showsplash.*" replace="" 
-				flags="s" /> -->
 
 			<echo file="${outputIni}" append="false">
 @{eclipseArgs}
