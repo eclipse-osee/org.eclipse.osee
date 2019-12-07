@@ -8,41 +8,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define.AUTOGEN;
+package org.eclipse.osee.ote.define;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Extension;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.TestScriptGuid;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.BuildId;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.Checksum;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.ElapsedDate;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.EndDate;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.Failed;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.IsBatchModeAllowed;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.LastAuthor;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.LastDateUploaded;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.LastModifiedDate;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.ModifiedFlag;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OsArchitecture;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OsName;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OsVersion;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OseeServerJarVersion;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OseeServerTitle;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OseeVersion;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.OutfileUrl;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.Passed;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.ProcessorId;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.QualificationLevel;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.RanInBatchMode;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.Revision;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.ScriptAborted;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.StartDate;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.TestDisposition;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.TestScriptUrl;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.TotalTestPoints;
-import static org.eclipse.osee.ote.define.AUTOGEN.OteTypeTokenProvider.ote;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.BuildId;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.Checksum;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.ElapsedDate;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.EndDate;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.Failed;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.IsBatchModeAllowed;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.LastAuthor;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.LastDateUploaded;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.LastModifiedDate;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.ModifiedFlag;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OsArchitecture;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OsName;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OsVersion;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OseeServerJarVersion;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OseeServerTitle;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OseeVersion;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.OutfileUrl;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.Passed;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.ProcessorId;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.QualificationLevel;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.RanInBatchMode;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.Revision;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.ScriptAborted;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.StartDate;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.TestDisposition;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.TestScriptUrl;
+import static org.eclipse.osee.ote.define.OteAttributeTypes.TotalTestPoints;
+import static org.eclipse.osee.ote.define.OteTypeTokenProvider.ote;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 public interface OteArtifactTypes {

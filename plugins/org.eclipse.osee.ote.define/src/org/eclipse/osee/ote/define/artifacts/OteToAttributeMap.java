@@ -16,8 +16,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.ote.define.OteAttributeTypes;
 import org.eclipse.osee.ote.define.TestRunField;
-import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 
 /**
  * @author Roberto E. Escobar

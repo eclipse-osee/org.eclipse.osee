@@ -15,7 +15,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.skynet.core
 Export-Package: org.eclipse.osee.ote.define,
- org.eclipse.osee.ote.define.AUTOGEN,
  org.eclipse.osee.ote.define.artifacts,
  org.eclipse.osee.ote.define.jobs,
  org.eclipse.osee.ote.define.operations,

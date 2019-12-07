@@ -8,7 +8,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 *******************************************************************************/
-package org.eclipse.osee.ote.define.AUTOGEN;
+package org.eclipse.osee.ote.define;
 
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
+import org.eclipse.osee.ote.define.OteArtifactTypes;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
 import org.eclipse.osee.ote.ui.define.dialogs.BranchComboDialog;

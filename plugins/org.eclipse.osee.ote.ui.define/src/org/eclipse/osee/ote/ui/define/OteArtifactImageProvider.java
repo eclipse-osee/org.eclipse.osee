@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.ui.define;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
+import org.eclipse.osee.ote.define.OteArtifactTypes;
 
 /**
  * @author Donald G. Dunne
