@@ -49,12 +49,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
 
       try {
          if (AttributeTypeManager.getMaxOccurrences(attributeType) != 1) {
-            for (Artifact art : artifacts) {
-               if (art.getAttributeCount(attributeType) > 1) {
-                  this.isSingletonAttribute = false;
-                  break;
-               }
-            }
+            this.isSingletonAttribute = false;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
