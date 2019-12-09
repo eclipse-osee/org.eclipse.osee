@@ -24,7 +24,8 @@ public class ReportConstants {
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
    public static final String ENTIRE_FTR_EXTRA_PARA =
       "<w:p[^>]*><w:pPr><w:spacing w:after=\"[\\d]*\"[^>]*>(</w:spacing>)*<w:sectPr[^>]*>(<w:r><w:t>)?<w:ftr[^>]*>[\\s\\S]+</w:ftr>[\\s\\S]+</w:sectPr></w:pPr></w:p>";
-   public static final String ENTIRE_FTR = "<w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
+   public static final String ENTIRE_FTR =
+      "<w:p[^>]*><w:pPr><w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr></w:pPr></w:p>";
    public static final String FULL_PARA_END = "</w:pPr></w:p>";
    public static final String NO_DATA_RIGHTS =
       "<w:p>[\\s||\\S]+?<w:r><w:t>NO DATA RIGHTS ARTIFACT FOUND</w:t></w:r>[\\s\\S]+?</w:p>";
