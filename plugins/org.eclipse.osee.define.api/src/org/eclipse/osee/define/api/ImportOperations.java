@@ -23,6 +23,8 @@ public interface ImportOperations {
 
    public XResultData verifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier);
 
+   public XResultData rectifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier, String doorsIds);
+
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch);
 
 }

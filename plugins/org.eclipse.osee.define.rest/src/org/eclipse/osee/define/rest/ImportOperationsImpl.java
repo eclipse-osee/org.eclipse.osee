@@ -85,7 +85,20 @@ public class ImportOperationsImpl implements ImportOperations {
       ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
       ArtifactValidationCheckOperation validator =
          new ArtifactValidationCheckOperation(orcsApi, results, parentArtifact, true);
-      results = validator.validate(); // TODO combine results from SourceToRoughArtifactOperation
+      results = validator.validate();
+      return results;
+   }
+
+   @Override
+   public XResultData rectifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier, String doorsIds) {
+      XResultData results = new XResultData();
+      Conditions.checkNotNull(branch, "branch query param");
+      Conditions.checkNotNull(wordURI, "selected_types query param");
+      Conditions.checkNotNull(parent, "parent Artifact");
+      ArtifactReadable parentArtifact = orcsApi.getQueryFactory().fromBranch(branch).andId(parent).getArtifact();
+      ArtifactValidationCheckOperation validator =
+         new ArtifactValidationCheckOperation(orcsApi, results, parentArtifact, true);
+      results = validator.validate();
       return results;
    }
 
