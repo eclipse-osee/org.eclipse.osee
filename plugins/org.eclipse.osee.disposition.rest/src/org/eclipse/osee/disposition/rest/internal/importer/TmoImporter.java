@@ -41,6 +41,7 @@ public class TmoImporter implements DispoImporterApi {
 
    private final DispoDataFactory dataFactory;
    private final ExecutorAdmin executor;
+
    TmoImporter(DispoDataFactory dataFactory, ExecutorAdmin executor, Log logger) {
       this.dataFactory = dataFactory;
       this.executor = executor;
@@ -52,6 +53,7 @@ public class TmoImporter implements DispoImporterApi {
       if (tmoDirectory.isDirectory()) {
 
          List<File> listOfFiles = Lib.recursivelyListFiles(tmoDirectory, Pattern.compile(".*\\.tmo"));
+
          int numThreads = 8;
          int partitionSize = listOfFiles.size() / numThreads;
 

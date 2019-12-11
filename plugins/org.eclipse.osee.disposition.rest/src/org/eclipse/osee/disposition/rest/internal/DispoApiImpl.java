@@ -573,8 +573,18 @@ public class DispoApiImpl implements DispoApi {
                importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
             }
 
-            List<DispoItem> itemsFromParse =
-               importer.importDirectory(nameToItemMap, new File(setToEdit.getImportPath()), report);
+            File importFile = new File(setToEdit.getImportPath());
+            boolean pathExists = checkIfPathExists(importFile, report);
+
+            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importFile, report);
+
+            if (pathExists && itemsFromParse.isEmpty()) {
+               report.addEntry(setToEdit.getImportPath(), "No file(s) found", DispoSummarySeverity.IGNORE);
+            } else {
+               report.addEntry("INFO", "CI Set: " + setToEdit.getCiSet(), DispoSummarySeverity.IGNORE);
+               report.addEntry("INFO", "Dispo Type: " + setToEdit.getDispoType(), DispoSummarySeverity.IGNORE);
+               report.addEntry("INFO", "Import State: " + setToEdit.getImportState(), DispoSummarySeverity.IGNORE);
+            }
 
             List<DispoItem> itemsToCreate = new ArrayList<>();
             List<DispoItem> itemsToEdit = new ArrayList<>();
@@ -622,6 +632,42 @@ public class DispoApiImpl implements DispoApi {
 
       //Update Disposition Set
       getWriter().updateDispoSet(author, branch, setToEdit.getGuid(), newSet);
+   }
+
+   private boolean checkIfPathExists(File file, OperationReport report) {
+      boolean ret = true;
+
+      if (!file.canRead()) {
+         report.addEntry(file.getAbsolutePath(), "No Read Access", DispoSummarySeverity.IGNORE);
+      }
+      if (!file.canWrite()) {
+         report.addEntry(file.getAbsolutePath(), "No Write Access", DispoSummarySeverity.IGNORE);
+      }
+
+      if (!file.exists() && !file.isDirectory()) {
+         ret = false;
+         boolean isRealPath = false;
+         String filePath = file.getAbsolutePath();
+
+         while (!isRealPath && filePath.contains(File.separator)) {
+            int end = filePath.lastIndexOf(File.separator);
+            StringBuilder pathName = new StringBuilder();
+            pathName.append(filePath.substring(0, end));
+            filePath = pathName.toString();
+            if (new File(filePath).isDirectory()) {
+               isRealPath = true;
+            }
+         }
+         if (isRealPath) {
+            report.addEntry(file.getAbsolutePath(),
+               "No file or directory was found. Closest path found at: " + filePath, DispoSummarySeverity.IGNORE);
+         } else {
+            report.addEntry(file.getAbsolutePath(), "No file or directory was found.", DispoSummarySeverity.IGNORE);
+         }
+      } else {
+         report.addEntry(file.getAbsolutePath(), "The Import Path/File Does Exist", DispoSummarySeverity.IGNORE);
+      }
+      return ret;
    }
 
    private List<DispoItem> massDisposition(BranchId branch, String setId, List<String> itemIds, String resolutionType, String resolution) {
