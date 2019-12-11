@@ -80,6 +80,8 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid);
 
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId);
+
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid);
 
    /**
