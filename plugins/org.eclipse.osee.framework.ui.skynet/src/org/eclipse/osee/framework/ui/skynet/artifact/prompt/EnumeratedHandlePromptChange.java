@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeMultiplicitySelectionOption;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog;
-import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSingletonSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -120,15 +120,15 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
                   "Change enumerated attribute");
             for (Artifact artifact : artifacts) {
                List<String> current = artifact.getAttributesToStringList(attributeType);
-               if (dialog.getSelected() == Selection.AddSelection) {
+               if (dialog.getSelected() == AttributeMultiplicitySelectionOption.AddSelection) {
                   current.addAll(selected);
                   artifact.setAttributeValues(attributeType, current);
-               } else if (dialog.getSelected() == Selection.DeleteSelected) {
+               } else if (dialog.getSelected() == AttributeMultiplicitySelectionOption.DeleteSelected) {
                   current.removeAll(selected);
                   artifact.setAttributeValues(attributeType, current);
-               } else if (dialog.getSelected() == Selection.ReplaceAll) {
+               } else if (dialog.getSelected() == AttributeMultiplicitySelectionOption.ReplaceAll) {
                   artifact.setAttributeValues(attributeType, selected);
-               } else if (dialog.getSelected() == Selection.RemoveAll) {
+               } else if (dialog.getSelected() == AttributeMultiplicitySelectionOption.RemoveAll) {
                   artifact.deleteAttributes(attributeType);
                } else {
                   AWorkbench.popup("ERROR", "Unhandled selection type => " + dialog.getSelected().name());

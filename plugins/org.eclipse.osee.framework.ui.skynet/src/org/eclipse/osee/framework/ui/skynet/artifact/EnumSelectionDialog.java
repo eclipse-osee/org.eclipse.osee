@@ -16,6 +16,8 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttribtueMultiplicityResolver;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeMultiplicitySelectionOption;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -41,14 +43,10 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
       new XRadioButton("Remove selected item(s) if already chosen.");
    private final XRadioButton removeAll = new XRadioButton("Remove all items.");
    private boolean isSingletonAttribute = false;
-   private boolean isRemoveAllAllowed = true;
-   public static enum Selection {
-      AddSelection,
-      ReplaceAll,
-      DeleteSelected,
-      RemoveAll
-   };
-   private Selection selected = Selection.AddSelection;
+   private AttribtueMultiplicityResolver attrMultResolver;
+   private Set<AttributeMultiplicitySelectionOption> selectionOptions;
+
+   private AttributeMultiplicitySelectionOption selected = AttributeMultiplicitySelectionOption.AddSelection;
 
    public EnumSelectionDialog(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
       super("Select Options" + (isSingletonAttribute(attributeType) ? " - (Singleton)" : ""),
@@ -57,10 +55,11 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
       Set<String> options;
       try {
          options = AttributeTypeManager.getEnumerationValues(attributeType);
-         isSingletonAttribute =
-            isRemoveAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
+         attrMultResolver = new AttribtueMultiplicityResolver(attributeType, artifacts);
+         isSingletonAttribute = attrMultResolver.isSingeltonAttribute();
+         selectionOptions = attrMultResolver.getSelectionOptions();
          if (isSingletonAttribute) {
-            selected = Selection.ReplaceAll;
+            selected = AttributeMultiplicitySelectionOption.ReplaceAll;
          }
       } catch (OseeCoreException ex) {
          options = new HashSet<>();
@@ -81,51 +80,55 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
       Composite comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
 
-      if (!isSingletonAttribute) {
+      if (selectionOptions.contains(AttributeMultiplicitySelectionOption.AddSelection)) {
          addSelectedRadioButton.createWidgets(comp, 2);
-         addSelectedRadioButton.setSelected(selected == Selection.AddSelection);
+         addSelectedRadioButton.setSelected(selected == AttributeMultiplicitySelectionOption.AddSelection);
          addSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                if (addSelectedRadioButton.isSelected()) {
-                  selected = Selection.AddSelection;
+                  selected = AttributeMultiplicitySelectionOption.AddSelection;
                }
             }
          });
       }
 
-      replaceAllRadioButton.createWidgets(comp, 2);
-      replaceAllRadioButton.setSelected(selected == Selection.ReplaceAll);
-      replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            if (replaceAllRadioButton.isSelected()) {
-               selected = Selection.ReplaceAll;
+      if (selectionOptions.contains(AttributeMultiplicitySelectionOption.ReplaceAll)) {
+         replaceAllRadioButton.createWidgets(comp, 2);
+         replaceAllRadioButton.setSelected(selected == AttributeMultiplicitySelectionOption.ReplaceAll);
+         replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (replaceAllRadioButton.isSelected()) {
+                  selected = AttributeMultiplicitySelectionOption.ReplaceAll;
+               }
             }
-         }
-      });
+         });
+      }
 
-      if (!isSingletonAttribute) {
+      if (selectionOptions.contains(AttributeMultiplicitySelectionOption.DeleteSelected)) {
          deleteSelectedRadioButton.createWidgets(comp, 2);
          deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                if (deleteSelectedRadioButton.isSelected()) {
-                  selected = Selection.DeleteSelected;
+                  selected = AttributeMultiplicitySelectionOption.DeleteSelected;
                }
             }
          });
-      } else if (isRemoveAllAllowed) {
+      }
+
+      if (selectionOptions.contains(AttributeMultiplicitySelectionOption.RemoveAll)) {
          removeAll.createWidgets(comp, 2);
          removeAll.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                if (removeAll.isSelected()) {
-                  selected = Selection.RemoveAll;
+                  selected = AttributeMultiplicitySelectionOption.RemoveAll;
                }
             }
          });
@@ -134,7 +137,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
       return c;
    }
 
-   public Selection getSelected() {
+   public AttributeMultiplicitySelectionOption getSelected() {
       return selected;
    }
 

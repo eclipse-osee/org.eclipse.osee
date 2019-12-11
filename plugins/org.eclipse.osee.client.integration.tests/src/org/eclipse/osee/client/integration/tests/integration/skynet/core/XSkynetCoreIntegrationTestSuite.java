@@ -64,7 +64,8 @@ import org.junit.runners.Suite;
    UserManagerTest.class,
    WordMlLinkHandlerTest.class,
    WordOutlineTest.class,
-   ChangeDataTest.class})
+   ChangeDataTest.class,
+   EnumAttribtueMultiplicityTest.class})
 /**
  * @author Roberto E. Escobar
  */
