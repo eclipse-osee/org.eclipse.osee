@@ -28,7 +28,14 @@
    <includes
          id="org.eclipse.jgit"
          version="5.0.0"/>
-            
+           
+   <plugin
+         id="org.postgresql.driver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.objectweb.asm"
          download-size="0"

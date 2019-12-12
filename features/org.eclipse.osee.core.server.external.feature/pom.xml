@@ -27,6 +27,7 @@
 							<excludes>
 							   <plugin id="ch.qos.logback.slf4j" />
 							   <plugin id="javaewah" />
+							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.eclipse.egit" />
 							   <plugin id="com.google.guava" />
 							   <plugin id="javax.servlet" />
