@@ -246,9 +246,20 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             }
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
                "Apply " + applicability + " applicability");
-
-            for (String existingValue : existingValues) {
-               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
+            String valueType = "single";
+            if (existingValues.size() > 0) {
+               List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData();
+               for (FeatureDefinition feat : featureDefinitionData) {
+                  if (feat.getName().toUpperCase().equals(featureName)) {
+                     valueType = feat.getValueType();
+                     break;
+                  }
+               }
+            }
+            if (valueType.equals("single")) {
+               for (String existingValue : existingValues) {
+                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
+               }
             }
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
