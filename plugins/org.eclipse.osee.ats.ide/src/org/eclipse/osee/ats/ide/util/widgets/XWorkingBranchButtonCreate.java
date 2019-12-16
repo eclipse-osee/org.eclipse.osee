@@ -47,7 +47,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             refreshEnablement(button);
             // Create working branch
             Result result = AtsBranchUtil.createWorkingBranch_Validate(getTeamArt());
-            boolean appropriate = selectTargetedVersionOrConfigureParentBranchIfAppropriate(result, button);
+            boolean appropriate = selectTargetedVersionIfAppropriate(result, button);
             if (appropriate) {
                return;
             }
@@ -88,7 +88,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
       });
    }
 
-   private boolean selectTargetedVersionOrConfigureParentBranchIfAppropriate(Result result, Button button) {
+   private boolean selectTargetedVersionIfAppropriate(Result result, Button button) {
       boolean returnVal = false;
       if (result.getText().equals(AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
          returnVal = true;
@@ -98,13 +98,12 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
                new String[] {"Select Targeted Version", "Cancel"}, 0);
             if (dialog.open() == 0) {
-               WfeTargetedVersionHeader.chooseVersion(getTeamArt());
+               if (!(WfeTargetedVersionHeader.chooseVersion(getTeamArt()))) {
+                  refreshEnablement(button);
+               }
+            } else {
+               refreshEnablement(button);
             }
-         } else {
-            MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
-               AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR, new String[] {"Ok", "Cancel"},
-               0);
-            dialog.open();
          }
       }
       return returnVal;
@@ -112,11 +111,10 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
 
    @Override
    protected void refreshEnablement(Button button) {
-      boolean enabled;
-      enabled = !disableAll || (!isWorkingBranchCreationInProgress() && //
+      boolean enabled = !disableAll && !isWorkingBranchCreationInProgress() && //
          !isWorkingBranchCommitInProgress() && //
          !isWorkingBranchInWork() && //
-         !isCommittedBranchExists());
+         !isCommittedBranchExists();
       button.setText("");
       button.getParent().layout();
       button.setEnabled(enabled);
