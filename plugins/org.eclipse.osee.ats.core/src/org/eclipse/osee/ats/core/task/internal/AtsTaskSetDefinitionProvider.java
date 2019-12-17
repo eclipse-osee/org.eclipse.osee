@@ -11,7 +11,7 @@ import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProvider;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
-import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
+import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
@@ -23,14 +23,14 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
    @Override
    public Collection<CreateTasksDefinitionBuilder> getTaskSetDefinitions() {
       List<CreateTasksDefinitionBuilder> taskSets = new LinkedList<>();
-      taskSets.add(new CreateTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawSwDesignTestingChecklist) //
+      taskSets.add(new CreateTasksDefinitionBuilder(TaskSetDefinitionTokensDemo.SawSwDesignTestingChecklist) //
          .andEventType(RuleEventType.Manual) //
          .andStaticTask("1. Run unit tests", "desc", null) //
          .andStaticTask("2. Run integration testsk", "desc2", StateToken.Implement) //
          .andStaticTask("3. Run manual tests", DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign) //
          .andStaticTask("4. Complete testing action")); //
 
-      taskSets.add(new CreateTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawSwDesignProcessChecklist) //
+      taskSets.add(new CreateTasksDefinitionBuilder(TaskSetDefinitionTokensDemo.SawSwDesignProcessChecklist) //
          .andEventType(RuleEventType.Manual) //
          .andStaticTask("1. Review processes", "desc", null) //
          .andStaticTask("2. Review work instruction", "desc2", StateToken.Implement) //
@@ -38,14 +38,14 @@ public class AtsTaskSetDefinitionProvider implements IAtsTaskSetDefinitionProvid
          .andStaticTask("4. Complete process action")); //
 
       taskSets.add(
-         new CreateChangeReportTasksDefinitionBuilder(DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges) //
+         new CreateChangeReportTasksDefinitionBuilder(TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges) //
             .andEventType(RuleEventType.ChangeReportTasks) //
             .andChgRptBuilder() //
             .andFromSiblingTeam(DemoArtifactToken.SAW_Requirements) //
             .andToSiblingTeamAi(DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_Test_AI) //
             .andToSiblingTeamAi(DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Code_AI) //
-            .andArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.PlainText) //
-            .andNotArtifactType(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.PlainText) //
+            .andArtifactType(CoreArtifactTypes.AbstractSoftwareRequirement) //
+            .andNotArtifactType(CoreArtifactTypes.PlainText) //
             .andAttribute(CoreAttributeTypes.WordTemplateContent, CoreAttributeTypes.Name) //
             .andNotAttribute(CoreAttributeTypes.ParagraphNumber, CoreAttributeTypes.RelationOrder) //
             .andStaticTask("My Manual Task", "desc", null, AtsCoreUsers.UNASSIGNED_USER.getId()) //

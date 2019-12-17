@@ -30,4 +30,5 @@ public class AtsTaskDefToken extends NamedIdBase {
    public static AtsTaskDefToken valueOf(Long id, String name) {
       return new AtsTaskDefToken(id, name);
    }
+
 }

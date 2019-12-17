@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -52,6 +54,27 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
    @Override
    public ArtifactToken getParent(ArtifactId artifact) {
       return getRelatedOrNull(artifact, CoreRelationTypes.DefaultHierarchical_Parent);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getAncestors(ArtifactToken artifact) {
+      List<ArtifactToken> ancestors = new ArrayList<>();
+      ArtifactToken parent = getParent(artifact);
+      while (parent != null) {
+         ancestors.add(parent);
+         parent = getParent(artifact);
+      }
+      return ancestors;
+   }
+
+   @Override
+   public boolean areNotRelated(ArtifactId artifact1, RelationTypeSide relationType, ArtifactId artifact2) {
+      return !areRelated(artifact1, relationType, artifact2);
+   }
+
+   @Override
+   public boolean areNotRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2) {
+      return !areRelated(atsObject1, relationType, atsObject2);
    }
 
 }

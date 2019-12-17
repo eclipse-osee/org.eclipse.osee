@@ -11,11 +11,9 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -34,15 +32,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.ChangeType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
@@ -53,9 +47,20 @@ public class ChangeReportTasksUtil {
    public static String DE_REFERRENCED_NOTE = "No Matching Artifact; Task can be deleted.";
    public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
    public static final String TASKS_MUST_BE_AUTOGEN_CODE_OR_TEST_TASKS = "Tasks must be Auto Generated Tasks";
+   public static String DISABLE_CODE_TEST_TASK_GENERATION = "disableTaskCreation";
 
    private ChangeReportTasksUtil() {
       // helper methods
+   }
+
+   public static boolean isTaskCreationEnabled(AtsApi atsApi, IAtsTeamWorkflow teamWf) {
+      for (String staticId : atsApi.getAttributeResolver().getAttributesToStringList(teamWf,
+         CoreAttributeTypes.StaticId)) {
+         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
+            return false;
+         }
+      }
+      return true;
    }
 
    public static void getBranchOrCommitChangeData(ChangeReportTaskData crtd, CreateTasksDefinition setDef) {
@@ -80,47 +85,7 @@ public class ChangeReportTasksUtil {
             atsApi.getBranchService().getBranch(tx.getBranch()).toStringWithId());
       }
       crtd.setWorkOrParentBranch(workOrParentBranch);
-      crtd.setChangeData(changeData);
-   }
-
-   @SuppressWarnings("unchecked")
-   public static void processChangeData(ChangeReportTaskData crtd) {
-      Set<ArtifactId> createdDeletedInBranch = new HashSet<>();
-      for (ChangeItem item : crtd.getChangeData()) {
-         if (item.getChangeType() == ChangeType.ARTIFACT_CHANGE && item.isDeleted() && !item.getDestinationVersion().isValid()) {
-            createdDeletedInBranch.add(item.getArtId());
-         }
-      }
-
-      for (ChangeItem item : crtd.getChangeData()) {
-         // TBD Keep till finished
-         //         Strings.error("%s - %s - %s - %s - Deleted %s", ChangeReportTasksUtil.class.getSimpleName(), item.getArtId(),
-         //            item.getArtIdB(), item.getChangeType(), item.isDeleted());
-         if (item.getChangeType() == ChangeType.ARTIFACT_CHANGE && item.isDeleted()) {
-            boolean artifactCreatedAndDeletedInBranch = createdDeletedInBranch.contains(item.getArtId());
-            if (!artifactCreatedAndDeletedInBranch) {
-               crtd.getDeletedArts().add(item.getArtId());
-            }
-         } else {
-            if ((item.getChangeType() == ChangeType.ATTRIBUTE_CHANGE && !item.isDeleted()) || (item.getChangeType() == ChangeType.ARTIFACT_CHANGE && !item.isDeleted())) {
-               crtd.getAddedModifiedArts().add(item.getArtId());
-            } else if (item.getChangeType() == ChangeType.RELATION_CHANGE) {
-               boolean relationCreatedAndDeletedInBranch =
-                  createdDeletedInBranch.contains(item.getArtId()) || createdDeletedInBranch.contains(item.getArtIdB());
-               if (!relationCreatedAndDeletedInBranch) {
-                  if (item.isDeleted()) {
-                     crtd.getDeletedRelArts().add(item.getArtId());
-                     crtd.getDeletedRelArts().add(item.getArtIdB());
-                  } else {
-                     crtd.getRelArts().add(item.getArtId());
-                     crtd.getRelArts().add(item.getArtIdB());
-                  }
-               }
-            }
-         }
-      }
-      crtd.getAllArtifacts().addAll(org.eclipse.osee.framework.jdk.core.util.Collections.setUnion(
-         crtd.getAddedModifiedArts(), crtd.getDeletedArts(), crtd.getRelArts()));
+      crtd.setChangeItems(changeData);
    }
 
    /**
@@ -217,85 +182,6 @@ public class ChangeReportTasksUtil {
       return null;
    }
 
-   // TBD - Need to add this check back in if appropriate
-   private static boolean isAttributeTypeTaskable(Id itemTypeId, CreateTasksDefinition setDef) {
-      AttributeTypeId attrType = AttributeTypeId.valueOf(itemTypeId.getId());
-      if (setDef.getChgRptOptions().getAttributeTypes().contains(
-         attrType) || !setDef.getChgRptOptions().getNotAttributeTypes().contains(attrType)) {
-         return true;
-      }
-      return false;
-   }
-
-   // TBD - Need to add this check back in if appropriate
-   private static boolean isArtifactTypeTaskable(ArtifactId artifact, ChangeReportTaskTeamWfData crd, CreateTasksDefinition setDef) {
-      AtsApi atsApi = AtsApiService.get();
-      ArtifactTypeToken artType = atsApi.getStoreService().getArtifactType(artifact);
-      if (setDef.getChgRptOptions().getArtifactTypes().contains(
-         artType) || !setDef.getChgRptOptions().getNotArtifactTypes().contains(artType)) {
-         return true;
-      }
-      return false;
-   }
-
-   public static void getTasksComputedAsNeeded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      getModifiedArifactNames(crtd, crttwd, atsApi);
-      getDeletedArifactNames(crtd, crttwd, atsApi);
-      getRelArtifactNames(crtd, crttwd, atsApi);
-      getExtensionArtifactNames(crtd, crttwd, atsApi);
-      getApiAndTaskNames(crtd, crttwd, atsApi);
-   }
-
-   /**
-    * Add tasks defined in StaticTaskDefinition through java api. These will be added regardless of change report
-    * contents.
-    */
-   private static void getApiAndTaskNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      for (StaticTaskDefinition taskDef : crtd.getSetDef().getStaticTaskDefs()) {
-         ChangeReportTaskMatch match = new ChangeReportTaskMatch();
-         match.setTaskName(taskDef.getName());
-         match.setCreateTaskDef(taskDef);
-         match.setType(ChangeReportTaskMatchType.StaticTaskComputedAsNeeded);
-         crttwd.getTaskMatches().add(match);
-      }
-   }
-
-   private static void getExtensionArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      System.err.println("TBD - Allow extensions to add tasks");
-   }
-
-   private static void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      for (ArtifactId chgRptArt : crtd.getRelArts()) {
-         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Relation");
-      }
-   }
-
-   private static void getModifiedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      for (ArtifactId chgRptArt : crtd.getAddedModifiedArts()) {
-         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Add/Mod");
-      }
-   }
-
-   private static void getDeletedArifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi) {
-      for (ArtifactId chgRptArt : crtd.getDeletedArts()) {
-         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, "Deleted");
-      }
-   }
-
-   private static void logAndAddTaskName(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, AtsApi atsApi, ArtifactId chgRptArt, String chgType) {
-      ArtifactToken art =
-         atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-      String safeName = String.format("Handle %s change to [%s]", chgType, atsApi.getStoreService().getSafeName(art));
-      if ("Deleted".equals(chgType)) {
-         safeName += " (Deleted)";
-      }
-      ChangeReportTaskMatch match = new ChangeReportTaskMatch();
-      match.setChgRptArt(chgRptArt);
-      match.setTaskName(safeName);
-      match.setType(ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded);
-      crttwd.getTaskMatches().add(match);
-   }
-
    public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType, AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
       // Try to find by Derive_To first
       ArtifactToken chgRptTeamWf = crttwd.getChgRptTeamWf();
@@ -322,6 +208,29 @@ public class ChangeReportTasksUtil {
          }
       }
       return null;
+   }
+
+   public static boolean isAutoGenCodeTestTaskArtifact(IAtsTask task) {
+      for (String staticId : AtsApiService.get().getAttributeResolver().getAttributesToStringList(task,
+         CoreAttributeTypes.StaticId)) {
+         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public static boolean isAutoGenCodeTestTaskArtifacts(Collection<? extends IAtsTask> tasks) {
+      for (IAtsTask task : tasks) {
+         if (!isAutoGenCodeTestTaskArtifact(task)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public static IAtsTeamWorkflow getSourceTeamWf(IAtsTask task) {
+      return AtsApiService.get().getTaskRelatedService().getDefivedFromTeamWf(task);
    }
 
 }

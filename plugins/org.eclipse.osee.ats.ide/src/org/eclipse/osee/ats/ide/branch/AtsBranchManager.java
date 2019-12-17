@@ -285,7 +285,7 @@ public final class AtsBranchManager {
    }
 
    /**
-    * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
+    * Return ChangeItemData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
     *
     * @param commitConfigArt that configures commit or null
     */

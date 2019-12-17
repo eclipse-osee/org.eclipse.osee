@@ -221,10 +221,12 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
          @Override
          public void setStateMgr(IAtsStateManager stateMgr) {
+            // do nothing
          }
 
          @Override
          public void clearCaches() {
+            // do nothing
          }
 
       }

@@ -282,4 +282,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchId branch, DeletionFlag deletionFlag) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(branch).andIds(artifactIds).includeDeletedArtifacts(
+            deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
+   }
+
 }

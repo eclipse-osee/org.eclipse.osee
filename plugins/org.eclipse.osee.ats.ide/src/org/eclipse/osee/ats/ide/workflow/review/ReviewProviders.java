@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.ide.workflow.review;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
  */
 public final class ReviewProviders {
 
-   private static List<IReviewProvider> reviewProvider;
+   private static List<IAtsReviewHook> reviewProvider;
 
    private ReviewProviders() {
       // private constructor
@@ -28,10 +29,10 @@ public final class ReviewProviders {
    /*
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
-   public synchronized static List<IReviewProvider> getAtsReviewProviders() {
+   public synchronized static List<IAtsReviewHook> getAtsReviewProviders() {
       if (reviewProvider == null) {
 
-         ExtensionDefinedObjects<IReviewProvider> objects = new ExtensionDefinedObjects<>(
+         ExtensionDefinedObjects<IAtsReviewHook> objects = new ExtensionDefinedObjects<>(
             Activator.PLUGIN_ID + ".AtsReviewProvider", "AtsReviewProvider", "classname", true);
          reviewProvider = objects.getObjects();
 

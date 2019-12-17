@@ -30,14 +30,13 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -298,9 +297,9 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          }
 
          @Override
-         public Collection<ITransitionListener> getTransitionListeners() {
+         public Collection<IAtsTransitionHook> getTransitionListeners() {
             try {
-               return AtsClientService.get().getWorkItemService().getTransitionListeners();
+               return AtsClientService.get().getWorkItemService().getTransitionHooks();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -372,7 +371,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    public void updateTransitionToAssignees() {
       Collection<IAtsUser> assignees = null;
       // Determine if the is an override set of assignees
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+      for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
          String decisionValueIfApplicable = "";
          if (awa.isOfType(
             AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
@@ -402,8 +401,8 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       }
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         transitionStateOverride = item.getOverrideTransitionToStateName(editor);
+      for (IAtsTransitionHook item : AtsClientService.get().getWorkItemService().getTransitionHooks()) {
+         transitionStateOverride = item.getOverrideTransitionToStateName(editor.getWorkItem());
          if (transitionStateOverride != null) {
             break;
          }

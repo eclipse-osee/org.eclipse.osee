@@ -15,9 +15,8 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -25,7 +24,6 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.ide.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,7 +39,7 @@ public class TransitionListenersTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__ExtensionPointCheck() {
+   public void testHandleTransitionValidation__TransitionHookCheck() {
 
       AtsTestUtil.cleanupAndReset("TransitionListenersTest-7");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
@@ -61,53 +59,73 @@ public class TransitionListenersTest {
       final String reason1 = "Don't want you to transition";
       final String reason2 = "Don't transition yet";
       final String exceptionStr = "This is the exception message";
-      ITransitionListener listener1 = new TransitionAdapter() {
+      IAtsTransitionHook listener1 = new IAtsTransitionHook() {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
             results.addResult(new TransitionResult(reason1));
          }
 
+         @Override
+         public String getDescription() {
+            return null;
+         }
+
       };
-      ITransitionListener listener2 = new TransitionAdapter() {
+      IAtsTransitionHook listener2 = new IAtsTransitionHook() {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
+         @Override
+         public String getDescription() {
+            return null;
+         }
+
       };
-      ITransitionListener listener3 = new TransitionAdapter() {
+      IAtsTransitionHook listener3 = new IAtsTransitionHook() {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
             // do nothing
          }
 
+         @Override
+         public String getDescription() {
+            return null;
+         }
+
       };
-      ITransitionListener listener4 = new TransitionAdapter() {
+      IAtsTransitionHook listener4 = new IAtsTransitionHook() {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
             throw new OseeCoreException(exceptionStr);
          }
 
+         @Override
+         public String getDescription() {
+            return null;
+         }
+
       };
       try {
-         TransitionListeners.addListener(listener1);
-         TransitionListeners.addListener(listener2);
-         TransitionListeners.addListener(listener3);
-         TransitionListeners.addListener(listener4);
+         AtsClientService.get().getWorkItemService().addTransitionHook(listener1);
+         AtsClientService.get().getWorkItemService().addTransitionHook(listener2);
+         AtsClientService.get().getWorkItemService().addTransitionHook(listener3);
+         AtsClientService.get().getWorkItemService().addTransitionHook(listener4);
 
          transMgr.handleTransitionValidation(results);
          Assert.assertTrue(results.contains(reason1));
          Assert.assertTrue(results.contains(reason2));
          Assert.assertTrue(results.contains(exceptionStr));
       } finally {
-         TransitionListeners.removeListener(listener1);
-         TransitionListeners.removeListener(listener2);
-         TransitionListeners.removeListener(listener3);
-         TransitionListeners.removeListener(listener4);
+         AtsClientService.get().getWorkItemService().removeListener(listener1);
+         AtsClientService.get().getWorkItemService().removeListener(listener2);
+         AtsClientService.get().getWorkItemService().removeListener(listener3);
+         AtsClientService.get().getWorkItemService().removeListener(listener4);
       }
    }
 

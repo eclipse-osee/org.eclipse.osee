@@ -426,4 +426,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          deletionFlag, caseSensitive, attrType));
    }
 
+   @Override
+   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchId branch, DeletionFlag deletionFlag) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFrom(artifactIds, branch, deletionFlag));
+   }
+
 }

@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
@@ -312,10 +312,10 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<ITransitionListener> getTransitionListeners() {
+         public Collection<IAtsTransitionHook> getTransitionListeners() {
             try {
-               Set<ITransitionListener> listeners = new HashSet<>();
-               listeners.addAll(AtsClientService.get().getWorkItemService().getTransitionListeners());
+               Set<IAtsTransitionHook> listeners = new HashSet<>();
+               listeners.addAll(AtsClientService.get().getWorkItemService().getTransitionHooks());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

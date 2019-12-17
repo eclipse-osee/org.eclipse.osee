@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
@@ -59,6 +58,8 @@ import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.util.IAtsClientUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.AtsWorkItemServiceClientImpl;
+import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
@@ -66,7 +67,6 @@ import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
-import org.eclipse.osee.ats.ide.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -91,6 +91,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private IAgileService agileService;
    private IAtsClientUtil clientUtils;
    private AtsQueryServiceClient queryServiceClient;
+   private IAtsWorkItemServiceClient workItemServiceClient;
 
    public AtsClientImpl() {
       super();
@@ -300,11 +301,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public Collection<ITransitionListener> getTransitionListeners() {
-      return TransitionListeners.getListeners();
-   }
-
-   @Override
    public void clearImplementersCache(IAtsWorkItem workItem) {
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) getQueryService().getArtifact(workItem);
       if (awa != null) {
@@ -385,6 +381,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsTaskServiceClient getTaskServiceClient() {
       return (IAtsTaskServiceClient) taskService;
+   }
+
+   @Override
+   public IAtsWorkItemServiceClient getWorkItemServiceClient() {
+      if (workItemServiceClient == null) {
+         workItemServiceClient = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
+      }
+      return workItemServiceClient;
    }
 
 }

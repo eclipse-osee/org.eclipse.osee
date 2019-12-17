@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -132,7 +133,16 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       if (artifact instanceof ArtifactReadable) {
          return ((ArtifactReadable) artifact).getArtifactType();
       }
-      return getQuery().andId(artifact).asArtifactToken().getArtifactType();
+      return getQuery().andId(artifact).includeDeletedArtifacts().asArtifactToken().getArtifactType();
+   }
+
+   @Override
+   public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchId branch) {
+      if (artifact instanceof ArtifactReadable) {
+         return ((ArtifactReadable) artifact).getArtifactType();
+      }
+      return orcsApi.getQueryFactory().fromBranch(branch).andId(
+         artifact).includeDeletedArtifacts().asArtifactToken().getArtifactType();
    }
 
    @Override

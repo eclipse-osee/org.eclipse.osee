@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.review;
+package org.eclipse.osee.ats.core.review;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -22,53 +23,55 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
- * Create DecisionReview from transition if defined by StateDefinition.
+ * Create DecisionReview from transition if defined by StateDefinition.</br>
+ * </br>
+ * Contributed via AtsWorkItemServiceImpl
  *
  * @author Donald G. Dunne
  */
-public class DecisionReviewDefinitionManager extends TransitionAdapter {
+public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
 
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) {
-      if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getReviewTitle())) {
+   public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, IAtsUser createdBy) {
+      if (Lib.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
       }
       // Add current user if no valid users specified
       List<IAtsUser> users = new LinkedList<>();
-      users.addAll(AtsClientService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
+      users.addAll(AtsApiService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
-         users.add(AtsClientService.get().getUserService().getCurrentUser());
+         users.add(AtsApiService.get().getUserService().getCurrentUser());
       }
       if (!Strings.isValid(revDef.getReviewTitle())) {
          throw new OseeStateException("ReviewDefinition must specify title for Team Workflow [%s] WorkDefinition [%s]",
-            teamArt.toStringWithId(), teamArt.getWorkDefinition());
+            teamWf.toStringWithId(), teamWf.getWorkDefinition());
       }
-      DecisionReviewArtifact decArt = null;
+      IAtsDecisionReview decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
          decArt =
-            (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReviewAndTransitionToDecision(
-               teamArt, revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(),
+            (IAtsDecisionReview) AtsApiService.get().getReviewService().createNewDecisionReviewAndTransitionToDecision(
+               teamWf, revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(),
                revDef.getBlockingType(), revDef.getOptions(), users, createdDate, createdBy, changes).getStoreObject();
       } else {
-         decArt = (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamArt,
-            revDef.getBlockingType(), revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(),
-            revDef.getOptions(), users, createdDate, createdBy, changes);
+         decArt = AtsApiService.get().getReviewService().createNewDecisionReview(teamWf, revDef.getBlockingType(),
+            revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users,
+            createdDate, createdBy, changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
-         AtsClientService.get().getUserService().getCurrentUser().getUserId());
-      for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
+         AtsApiService.get().getUserService().getCurrentUser().getUserId());
+      for (IAtsReviewHook provider : AtsApiService.get().getReviewService().getReviewHooks()) {
          provider.reviewCreated(decArt);
       }
       changes.add(decArt);
@@ -83,18 +86,23 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem.getStoreObject();
+      IAtsTeamWorkflow teamArt = (IAtsTeamWorkflow) workItem;
 
       for (IAtsDecisionReviewDefinition decRevDef : workItem.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
-            DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,
+            IAtsDecisionReview decArt = DecisionReviewOnTransitionToHook.createNewDecisionReview(decRevDef, changes,
                teamArt, createdDate, createdBy);
             if (decArt != null) {
                changes.add(decArt);
             }
          }
       }
+   }
+
+   @Override
+   public String getDescription() {
+      return "Create DecisionReview from transition if defined by StateDefinition";
    }
 
 }

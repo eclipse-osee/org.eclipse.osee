@@ -25,8 +25,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -48,7 +49,7 @@ public interface IAtsWorkItemService {
 
    Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef);
 
-   Collection<ITransitionListener> getTransitionListeners();
+   Collection<IAtsTransitionHook> getTransitionHooks();
 
    String getTargetedVersionStr(IAtsTeamWorkflow teamWf);
 
@@ -109,5 +110,15 @@ public interface IAtsWorkItemService {
     * @return the siblings that are fromTeamDef; this can include the given teamWf
     */
    Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf, IAtsTeamDefinitionArtifactToken fromTeamDef);
+
+   void addTransitionHook(IAtsTransitionHook hook);
+
+   void addWorkflowHook(IAtsWorkflowHook hook);
+
+   void removeListener(IAtsTransitionHook listener1);
+
+   Collection<IAtsWorkflowHook> getWorkflowHooks();
+
+   IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name);
 
 }

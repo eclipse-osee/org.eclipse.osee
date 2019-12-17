@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -668,6 +669,11 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public boolean isWorkingBranchCommitInProgress(IAtsTeamWorkflow teamWf) {
       Boolean inProgress = workingBranchCommitInProgress.get(teamWf.getArtifactId());
       return inProgress == null ? false : inProgress;
+   }
+
+   @Override
+   public Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf) {
+      throw new UnsupportedOperationException();
    }
 
 }

@@ -65,7 +65,12 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
    }
 
    public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai) {
-      createTasksDef.getChgRptOptions().andToSiblingTeamAi(teamDef, ai);
+      createTasksDef.getChgRptOptions().andToSiblingTeam(teamDef, ai);
+      return this;
+   }
+
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai, ChangeReportTaskNameProviderToken nameProviderId) {
+      createTasksDef.getChgRptOptions().andToSiblingTeam(teamDef, ai, nameProviderId);
       return this;
    }
 

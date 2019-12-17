@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.Assert;
@@ -44,7 +44,7 @@ public class TransitionHelperTest {
    @Mock IAtsTeamWorkflow teamWf;
    @Mock IAtsUser Joe, Kay;
    @Mock IAtsChangeSet changes;
-   @Mock ITransitionListener transListener1, transListener2;
+   @Mock IAtsTransitionHook transListener1, transListener2;
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsUserService userService;
    @Mock IAtsBranchService branchService;
@@ -172,7 +172,7 @@ public class TransitionHelperTest {
 
    @Test
    public void testGetTransitionListeners() {
-      when(workItemService.getTransitionListeners()).thenReturn(Arrays.asList(transListener1));
+      when(workItemService.getTransitionHooks()).thenReturn(Arrays.asList(transListener1));
 
       Assert.assertEquals(transListener1, helper.getTransitionListeners().iterator().next());
    }

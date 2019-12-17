@@ -22,8 +22,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionListener;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -39,7 +38,6 @@ public class StateDefBuilder {
    private final List<DecisionReviewDefinitionBuilder> decRevBldrs = new LinkedList<>();
    private final List<PeerReviewDefinitionBuilder> peerRevBldrs = new LinkedList<>();
    private StateToken getLayoutFromState;
-   private final List<ITransitionListener> transitionListeners = new ArrayList<>();
 
    public StateDefBuilder(int ordinal, String name, StateType type, WorkDefinition workDef) {
       this.workDef = workDef;
@@ -191,8 +189,9 @@ public class StateDefBuilder {
       return state.getName();
    }
 
-   public void andTransitionListener(AtsTaskDefToken taskDefToken) {
-      state.addTransitionListener(new CreateChangeReportTaskTransitionListener(taskDefToken));
+   public StateDefBuilder andTransitionListener(AtsTaskDefToken taskDefToken) {
+      state.addTransitionListener(new CreateChangeReportTaskTransitionHook(taskDefToken));
+      return this;
    }
 
 }

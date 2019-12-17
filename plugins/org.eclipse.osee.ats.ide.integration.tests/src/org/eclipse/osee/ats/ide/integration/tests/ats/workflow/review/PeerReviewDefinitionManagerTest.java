@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
-import org.eclipse.osee.ats.ide.workflow.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -33,11 +33,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Test unit for {@link PeerReviewDefinitionManager}
+ * Test unit for {@link PeerReviewOnTransitionToHook}
  *
  * @author Donald G. Dunne
  */
-public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
+public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHook {
 
    public static AtsWorkDefinitionToken PeerWorkDefId =
       AtsWorkDefinitionToken.valueOf(162205335L, "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition");

@@ -22,8 +22,6 @@ import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StatePercentCompleteXWidget;
@@ -34,6 +32,7 @@ import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XCancelWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -183,8 +182,8 @@ public class WfeWorkflowSection extends SectionPart {
          createMetricsHeader(workComp);
       }
 
-      // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+      // Add any dynamic XWidgets declared for page by IAtsWorkflowHook extensions
+      for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -212,8 +211,8 @@ public class WfeWorkflowSection extends SectionPart {
       // Create dynamic XWidgets
       createSectionBody(statePage, workComp);
 
-      // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+      // Add any dynamic XWidgets declared for page by IAtsWorkflowHook extensions
+      for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -447,7 +446,7 @@ public class WfeWorkflowSection extends SectionPart {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+            for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,

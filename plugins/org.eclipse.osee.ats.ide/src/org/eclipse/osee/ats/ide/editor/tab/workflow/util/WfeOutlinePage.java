@@ -34,10 +34,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsStateItemManager;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.IAtsStateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
@@ -162,7 +161,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
          } else if (element instanceof IAtsStateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
-         } else if (element instanceof IAtsStateItem || element instanceof WrappedStateItems) {
+         } else if (element instanceof IAtsWorkflowHook || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
          } else if (element instanceof IAtsWorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
@@ -210,7 +209,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             add(items, ((WorkDefinitionViewer) element).getWorkDef());
          } else if (element instanceof WorkflowEditor) {
             add(items, ((WorkflowEditor) element).getWorkItem());
-            items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
+            items.add(new WrappedStateItems(AtsClientService.get().getWorkItemService().getWorkflowHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
@@ -227,9 +226,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedStateItems) {
             items.addAll(((WrappedStateItems) element).getStateItems());
-         } else if (element instanceof IAtsStateItem) {
-            items.add("Description: " + ((IAtsStateItem) element).getDescription());
-            items.add("Full Name: " + ((IAtsStateItem) element).getFullName());
+         } else if (element instanceof IAtsWorkflowHook) {
+            items.add("Description: " + ((IAtsWorkflowHook) element).getDescription());
+            items.add("Full Name: " + ((IAtsWorkflowHook) element).getFullName());
          } else if (element instanceof WrappedTransitions) {
             items.addAll(((WrappedTransitions) element).getTransitions());
          } else if (element instanceof IAtsDecisionReviewDefinition) {
@@ -290,7 +289,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof IAtsCompositeLayoutItem) {
             return true;
-         } else if (element instanceof IAtsStateItem) {
+         } else if (element instanceof IAtsWorkflowHook) {
             return true;
          } else if (element instanceof IAtsWidgetDefinition) {
             return true;
@@ -317,7 +316,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedPeerReviews) {
             return !((WrappedPeerReviews) element).decReviews.isEmpty();
          } else if (element instanceof WrappedStateItems) {
-            return !((WrappedStateItems) element).stateItems.isEmpty();
+            return !((WrappedStateItems) element).workflowHooks.isEmpty();
          } else if (element instanceof WrappedStates) {
             return !((WrappedStates) element).states.isEmpty();
          } else if (element instanceof RuleAndLocation) {
@@ -605,19 +604,19 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    }
    private class WrappedStateItems {
-      private final List<IAtsStateItem> stateItems;
+      private final Collection<IAtsWorkflowHook> workflowHooks;
 
-      public WrappedStateItems(List<IAtsStateItem> stateItems) {
-         this.stateItems = stateItems;
+      public WrappedStateItems(Collection<IAtsWorkflowHook> stateItems) {
+         this.workflowHooks = stateItems;
       }
 
       @Override
       public String toString() {
-         return "State Items" + (stateItems.isEmpty() ? " (Empty)" : "");
+         return "Workflow Hooks" + (workflowHooks.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<IAtsStateItem> getStateItems() {
-         return stateItems;
+      public Collection<IAtsWorkflowHook> getStateItems() {
+         return workflowHooks;
       }
 
    }

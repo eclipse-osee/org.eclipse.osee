@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +27,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
@@ -235,11 +233,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public IAgileService getAgileService() {
       return agileService;
-   }
-
-   @Override
-   public Collection<ITransitionListener> getTransitionListeners() {
-      return Collections.emptyList();
    }
 
    @Override

@@ -25,9 +25,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class ChangeReportTaskTeamWfData {
 
-   Collection<ArtifactId> addedModifiedArts = new HashSet<>();
-   Collection<ArtifactId> deletedArts = new HashSet<>();
-   Collection<ArtifactId> relArts = new HashSet<>();
    WorkType workType;
    ArtifactToken chgRptTeamWf;
    ArtifactToken destTeamWf;
@@ -43,22 +40,6 @@ public class ChangeReportTaskTeamWfData {
 
    public ChangeReportTaskTeamWfData() {
       // for jax-rs
-   }
-
-   public Collection<ArtifactId> getAddedModifiedArts() {
-      return addedModifiedArts;
-   }
-
-   public void setAddedModifiedArts(Collection<ArtifactId> addedModifiedArts) {
-      this.addedModifiedArts = addedModifiedArts;
-   }
-
-   public Collection<ArtifactId> getDeletedArts() {
-      return deletedArts;
-   }
-
-   public void setDeletedArts(Collection<ArtifactId> deletedArts) {
-      this.deletedArts = deletedArts;
    }
 
    public WorkType getWorkType() {
@@ -113,14 +94,6 @@ public class ChangeReportTaskTeamWfData {
       this.destTeamWf = destTeamWf;
    }
 
-   public Collection<ArtifactId> getRelArts() {
-      return relArts;
-   }
-
-   public void setRelArts(Collection<ArtifactId> relArts) {
-      this.relArts = relArts;
-   }
-
    public Collection<ChangeReportTaskMatch> getTaskMatches() {
       return taskMatches;
    }
@@ -152,13 +125,13 @@ public class ChangeReportTaskTeamWfData {
       return null;
    }
 
-   public void addTaskMatch(ArtifactId art, String format, Object... data) {
+   public void addTaskMatch(ArtifactId art, ChangeReportTaskMatchType changeReportTaskMatchType, String format, Object... data) {
       ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
       taskMatch.setTaskName(String.format(format, data));
       if (art != null) {
          taskMatch.setChgRptArt(art);
       }
-      taskMatch.setType(ChangeReportTaskMatchType.Manual);
+      taskMatch.setType(changeReportTaskMatchType);
       taskMatches.add(taskMatch);
    }
 

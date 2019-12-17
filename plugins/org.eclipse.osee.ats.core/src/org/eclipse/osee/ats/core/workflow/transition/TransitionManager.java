@@ -42,11 +42,11 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
@@ -231,7 +231,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
    @Override
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       // Check extension points for valid transition
-      for (ITransitionListener listener : helper.getTransitionListeners()) {
+      for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
          try {
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef));
             if (results.isCancelled() || !results.isEmpty()) {
@@ -247,7 +247,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
 
       // Check again in case first check made changes that would now keep transition from happening
       if (results.isEmpty()) {
-         for (ITransitionListener listener : helper.getTransitionListeners()) {
+         for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
             try {
                listener.transitioning(results, workItem, fromStateDef, toStateDef,
                   getToAssignees(workItem, toStateDef));
@@ -353,11 +353,11 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   }
 
                   // Notify extension points of transition
-                  for (ITransitionListener listener : helper.getTransitionListeners()) {
+                  for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
                   }
                   // Notify any state transition listeners
-                  for (ITransitionListener listener : toState.getTransitionListeners()) {
+                  for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
                   }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
@@ -627,7 +627,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
    @Override
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
-      for (ITransitionListener listener : helper.getTransitionListeners()) {
+      for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
          listener.transitionPersisted(helper.getWorkItems(), workItemFromStateMap, helper.getToStateName());
       }
    }

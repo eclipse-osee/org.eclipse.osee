@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -61,6 +62,16 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    private final AtsApi atsApi;
    private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
+   private static Set<IAtsReviewHook> reviewHooks = new HashSet<>();
+
+   public void addReviewHook(IAtsReviewHook hook) {
+      reviewHooks.add(hook);
+   }
+
+   public AtsReviewServiceImpl() {
+      this(null);
+      // for osgi
+   }
 
    public AtsReviewServiceImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -356,6 +367,11 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       changes.add(peerRev);
       return peerRev;
+   }
+
+   @Override
+   public Set<IAtsReviewHook> getReviewHooks() {
+      return reviewHooks;
    }
 
 }

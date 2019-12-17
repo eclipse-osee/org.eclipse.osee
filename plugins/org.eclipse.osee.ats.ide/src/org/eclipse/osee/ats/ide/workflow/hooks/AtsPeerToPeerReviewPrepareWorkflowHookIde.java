@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem;
+package org.eclipse.osee.ats.ide.workflow.hooks;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -27,10 +27,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
+public class AtsPeerToPeerReviewPrepareWorkflowHookIde implements IAtsWorkflowHookIde {
 
-   public AtsPeerToPeerReviewPrepareStateItem() {
-      super(AtsPeerToPeerReviewPrepareStateItem.class.getSimpleName());
+   public String getName() {
+      return AtsPeerToPeerReviewPrepareWorkflowHookIde.class.getSimpleName();
    }
 
    @Override

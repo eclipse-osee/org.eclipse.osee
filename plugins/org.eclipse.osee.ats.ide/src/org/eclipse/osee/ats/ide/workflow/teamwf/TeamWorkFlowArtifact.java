@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<>();
+   private IAtsTeamDefinition teamDef;
 
    public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
@@ -117,13 +118,15 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
-      ArtifactId artId = AtsClientService.get().getAttributeResolver().getSoleArtifactIdReference((IAtsObject) this,
-         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-      if (artId.isInvalid()) {
-         throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
+      if (teamDef == null) {
+         ArtifactId artId = AtsClientService.get().getAttributeResolver().getSoleArtifactIdReference((IAtsObject) this,
+            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+         if (artId.isInvalid()) {
+            throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
+         }
+         teamDef = AtsClientService.get().getQueryService().getConfigItem(artId);
+         Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       }
-      IAtsTeamDefinition teamDef = AtsClientService.get().getQueryService().getConfigItem(artId);
-      Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       return teamDef;
    }
 

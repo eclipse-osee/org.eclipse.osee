@@ -27,6 +27,7 @@ public class AtsUtil {
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl_26_0";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
+   private static boolean emailEnabled;
 
    public static boolean isInTest() {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
@@ -78,5 +79,13 @@ public class AtsUtil {
          return html.replaceFirst("\\/ajax", basePath + "/ajax");
       }
       return html;
+   }
+
+   public static void setEmailEnabled(boolean enabled) {
+      AtsUtil.emailEnabled = enabled;
+   }
+
+   public static boolean isEmailEnabled() {
+      return emailEnabled;
    }
 }

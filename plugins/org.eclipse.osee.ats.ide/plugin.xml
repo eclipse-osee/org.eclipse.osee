@@ -2,17 +2,14 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="OSEE-INF/extensionPts/AtsNavigateItem.exsd"/>
-   <extension-point id="AtsStateItem" name="AtsStateItem" schema="OSEE-INF/extensionPts/AtsStateItem.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="OSEE-INF/extensionPts/AtsWizardItem.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="OSEE-INF/extensionPts/AtsWorldEditorItem.exsd"/>
    <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="OSEE-INF/extensionPts/AtsHealthCheck.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>
-   <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="OSEE-INF/extensionPts/AtsTransitionListener.exsd"/>
    <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="OSEE-INF/extensionPts/AtsXWidgetValidator.exsd"/>
    <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="OSEE-INF/extensionPts/AtsProgramManager.exsd"/>
    <extension-point id="AtsReviewProvider" name="AtsReviewProvider" schema="OSEE-INF/extensionPts/AtsReviewProvider.exsd"/>
-   <extension-point id="AtsStateItemCore" name="AtsStateItemCore" schema="OSEE-INF/extensionPts/AtsStateItemCore.exsd"/>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.ide.workflow.AtsArtifactFactory"/>
    </extension>
@@ -138,20 +135,6 @@
    	<DatabaseInitializationTask
             classname="org.eclipse.osee.ats.ide.config.AtsDatabaseConfigClient">
    	</DatabaseInitializationTask>
-   </extension>
-   <extension
-         point="org.eclipse.osee.ats.ide.AtsStateItem">
-      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewPrepareStateItem"/>
-      <AtsStateItem classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewDecisionStateItem"/>
-      <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewPrepareStateItem">
-      </AtsStateItem>
-      <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewReviewStateItem">
-      </AtsStateItem>
-      <AtsStateItem
-            classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsForceAssigneesToTeamLeadsStateItem">
-      </AtsStateItem>
    </extension>
    <extension
          id="OseeTypes_ATS"
@@ -354,25 +337,6 @@
       </menuContribution>
       
    </extension>
-   
-   
-      <extension
-            id="AtsTransitionListener"
-            name="AtsTransitionListener"
-            point="org.eclipse.osee.ats.ide.AtsTransitionListener">
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsDecisionReviewPrepareStateItem">
-         </AtsTransitionListener>
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsForceAssigneesToTeamLeadsStateItem">
-         </AtsTransitionListener>
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.notify.AtsNotificationTransitionListener">
-         </AtsTransitionListener>
-         <AtsTransitionListener
-               classname="org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsPeerToPeerReviewReviewStateItem">
-         </AtsTransitionListener>
-      </extension>
       <extension
             id="AtsUserNavigateItems"
             name="AtsUserNavigateItems"

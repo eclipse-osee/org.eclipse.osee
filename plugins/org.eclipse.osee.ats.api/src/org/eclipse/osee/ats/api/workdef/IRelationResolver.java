@@ -37,6 +37,10 @@ public interface IRelationResolver {
 
    boolean areRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2);
 
+   boolean areNotRelated(ArtifactId artifact1, RelationTypeSide relationType, ArtifactId artifact2);
+
+   boolean areNotRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2);
+
    ArtifactToken getRelatedOrNull(ArtifactId artifact, RelationTypeSide relationType);
 
    ArtifactToken getRelatedOrSentinel(ArtifactId artifact, RelationTypeSide relationType);
@@ -74,5 +78,7 @@ public interface IRelationResolver {
       }
       return null;
    }
+
+   Collection<ArtifactToken> getAncestors(ArtifactToken artifact);
 
 }

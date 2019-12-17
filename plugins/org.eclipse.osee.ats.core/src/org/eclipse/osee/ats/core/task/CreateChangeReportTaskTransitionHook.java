@@ -19,26 +19,25 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
+ * Contributed through StateDefBuilder
+ *
  * @author Donald G. Dunne
  */
-public class CreateChangeReportTaskTransitionListener extends TransitionAdapter {
+public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook {
 
    private final AtsTaskDefToken taskDefToken;
 
-   public CreateChangeReportTaskTransitionListener(AtsTaskDefToken taskDefToken) {
+   public CreateChangeReportTaskTransitionHook(AtsTaskDefToken taskDefToken) {
       this.taskDefToken = taskDefToken;
    }
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
-
-      System.err.println("CreateChangeReportTaskTransitionListener.transitioned");
-
       Thread thread = new Thread("Create/Update Tasks") {
          @Override
          public void run() {
@@ -73,6 +72,11 @@ public class CreateChangeReportTaskTransitionListener extends TransitionAdapter 
          new CreateChangeReportTasksOperation(data, AtsApiService.get(), changes);
       operation.run();
       return data;
+   }
+
+   @Override
+   public String getDescription() {
+      return "Checks for and runs Change Report Task Set Definitions during tranisition";
    }
 
 }

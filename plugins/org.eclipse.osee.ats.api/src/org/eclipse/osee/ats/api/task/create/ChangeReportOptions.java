@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.api.task.create;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /***
  * @author Donald G. Dunne
@@ -25,11 +25,13 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class ChangeReportOptions {
 
    ArtifactToken fromSiblingTeamDef;
-   Map<String, String> toSiblingTeamAi = new HashMap<String, String>();
+   List<ChangeReportOptionsToTeam> toSiblingTeamDatas = new ArrayList<>();
    Collection<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    Collection<ArtifactTypeToken> notArtifactTypes = new ArrayList<>();
    Collection<AttributeTypeToken> attributeTypes = new ArrayList<>();
    Collection<AttributeTypeToken> notAttributeTypes = new ArrayList<>();
+   Collection<RelationTypeToken> relationTypes = new ArrayList<>();
+   Collection<RelationTypeToken> notRelationTypes = new ArrayList<>();
    Collection<CreateTasksOption> createOptions = new ArrayList<>();
 
    public ChangeReportOptions() {
@@ -84,28 +86,12 @@ public class ChangeReportOptions {
       this.notAttributeTypes.add(attrType);
    }
 
-   public Map<String, String> getToSiblingTeamAiMap() {
-      return toSiblingTeamAi;
-   }
-
-   public void andToSiblingTeamAi(ArtifactToken toSiblingTeam, ArtifactToken toAi) {
-      this.toSiblingTeamAi.put(toSiblingTeam.getIdString(), toAi.getIdString());
-   }
-
    public Collection<CreateTasksOption> getCreateOptions() {
       return createOptions;
    }
 
    public void setCreateOptions(Collection<CreateTasksOption> createOptions) {
       this.createOptions = createOptions;
-   }
-
-   public Map<String, String> getToSiblingTeamAi() {
-      return toSiblingTeamAi;
-   }
-
-   public void setToSiblingTeamAi(Map<String, String> toSiblingTeamAi) {
-      this.toSiblingTeamAi = toSiblingTeamAi;
    }
 
    public ArtifactToken getFromSiblingTeamDef() {
@@ -116,4 +102,47 @@ public class ChangeReportOptions {
       this.fromSiblingTeamDef = fromSiblingTeamDef;
    }
 
+   public List<ChangeReportOptionsToTeam> getToSiblingTeamDatas() {
+      return toSiblingTeamDatas;
+   }
+
+   public void setToSiblingTeamDatas(List<ChangeReportOptionsToTeam> toSiblingTeamDatas) {
+      this.toSiblingTeamDatas = toSiblingTeamDatas;
+   }
+
+   /**
+    * Add toSiblingTeam using default ChangeReportOptionsToTeam
+    */
+   public ChangeReportOptionsToTeam andToSiblingTeam(ArtifactToken toSiblingTeam, ArtifactToken toAi) {
+      ChangeReportOptionsToTeam toTeamData = new ChangeReportOptionsToTeam();
+      toTeamData.setTeamId(toSiblingTeam.getIdString());
+      toTeamData.setAiId(toAi.getIdString());
+      this.toSiblingTeamDatas.add(toTeamData);
+      return toTeamData;
+   }
+
+   /**
+    * Add toSiblingTeam using overridden ChangeReportOptionsToTeam
+    */
+   public ChangeReportOptionsToTeam andToSiblingTeam(ArtifactToken toSiblingTeam, ArtifactToken toAi, ChangeReportTaskNameProviderToken nameProviderId) {
+      ChangeReportOptionsToTeam toTeamData = andToSiblingTeam(toSiblingTeam, toAi);
+      toTeamData.setNameProviderId(nameProviderId);
+      return toTeamData;
+   }
+
+   public Collection<RelationTypeToken> getRelationTypes() {
+      return relationTypes;
+   }
+
+   public void setRelationTypes(Collection<RelationTypeToken> relationTypes) {
+      this.relationTypes = relationTypes;
+   }
+
+   public Collection<RelationTypeToken> getNotRelationTypes() {
+      return notRelationTypes;
+   }
+
+   public void setNotRelationTypes(Collection<RelationTypeToken> notRelationTypes) {
+      this.notRelationTypes = notRelationTypes;
+   }
 }

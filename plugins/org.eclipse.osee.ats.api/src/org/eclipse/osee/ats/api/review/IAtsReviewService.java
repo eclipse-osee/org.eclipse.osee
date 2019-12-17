@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 
 /**
  * @author Donald G. Dunne
@@ -70,5 +71,7 @@ public interface IAtsReviewService {
    String getDefaultPeerReviewTitle(IAtsTeamWorkflow teamWf);
 
    ReviewBlockType getReviewBlockType(IAtsAbstractReview review);
+
+   Collection<IAtsReviewHook> getReviewHooks();
 
 }

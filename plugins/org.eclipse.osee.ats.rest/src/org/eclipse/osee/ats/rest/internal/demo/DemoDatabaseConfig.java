@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
-import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
+import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -323,8 +323,8 @@ public class DemoDatabaseConfig {
          .andRelatedPeerWorkflowDefinition(DemoWorkDefinitions.WorkDef_Review_Demo_Peer_SwDesign) //
          .andRelatedTaskWorkflowDefinition(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign,
             AtsWorkDefinitionTokens.WorkDef_Task_Default) //
-         .andTaskSet(DemoTaskSetDefinitionTokens.SawSwDesignTestingChecklist,
-            DemoTaskSetDefinitionTokens.SawSwDesignProcessChecklist);
+         .andTaskSet(TaskSetDefinitionTokensDemo.SawSwDesignTestingChecklist,
+            TaskSetDefinitionTokensDemo.SawSwDesignProcessChecklist);
 
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Requirements) //
          .and(CoreAttributeTypes.StaticId, "saw.reqirements") //

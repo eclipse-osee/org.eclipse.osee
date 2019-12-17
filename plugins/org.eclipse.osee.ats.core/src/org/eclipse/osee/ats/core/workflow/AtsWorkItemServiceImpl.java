@@ -14,6 +14,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -44,15 +45,22 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.review.DecisionReview;
+import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
+import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerToPeerReview;
+import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkflowHook;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkflowHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkflowHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
@@ -76,10 +84,34 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       .expireAfterWrite(1, TimeUnit.MINUTES);
    private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
+   private static Set<IAtsWorkflowHook> workflowHooks = new HashSet<>();
+   private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
+
+   @Override
+   public void addTransitionHook(IAtsTransitionHook hook) {
+      transitionHooks.add(hook);
+   }
+
+   @Override
+   public void addWorkflowHook(IAtsWorkflowHook hook) {
+      workflowHooks.add(hook);
+   }
+
+   public AtsWorkItemServiceImpl() {
+      this(null, null);
+      // for osgi
+   }
 
    public AtsWorkItemServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
+
+      transitionHooks.add(new DecisionReviewOnTransitionToHook());
+      transitionHooks.add(new PeerReviewOnTransitionToHook());
+      transitionHooks.add(new AtsNotificationTransitionHook());
+      transitionHooks.add(new AtsDecisionReviewPrepareWorkflowHook());
+      transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkflowHook());
+      transitionHooks.add(new AtsPeerToPeerReviewReviewWorkflowHook());
    }
 
    @Override
@@ -143,8 +175,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<ITransitionListener> getTransitionListeners() {
-      return atsApi.getTransitionListeners();
+   public Collection<IAtsTransitionHook> getTransitionHooks() {
+      return transitionHooks;
    }
 
    @Override
@@ -429,6 +461,26 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public String getChangeTypeStr(IAtsWorkItem workItem) {
       return ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
+   }
+
+   @Override
+   public Collection<IAtsWorkflowHook> getWorkflowHooks() {
+      return workflowHooks;
+   }
+
+   @Override
+   public void removeListener(IAtsTransitionHook hook) {
+      transitionHooks.remove(hook);
+   }
+
+   @Override
+   public IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name) {
+      for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
+         if (stateDef.getName().equals(name)) {
+            return stateDef;
+         }
+      }
+      return null;
    }
 
 }

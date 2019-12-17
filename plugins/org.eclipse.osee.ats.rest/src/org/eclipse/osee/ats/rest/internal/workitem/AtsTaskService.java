@@ -23,12 +23,15 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
+import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -115,6 +118,13 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
+   public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData, IAtsChangeSet changes) {
+      CreateChangeReportTasksOperation operation =
+         new CreateChangeReportTasksOperation(changeReportTaskData, atsApi, changes);
+      return operation.run();
+   }
+
+   @Override
    public ChangeReportTaskData createTasks(ArtifactToken hostTeamWf, AtsTaskDefToken taskDefToken, ArtifactToken asUser) {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
@@ -122,6 +132,11 @@ public class AtsTaskService extends AbstractAtsTaskService {
       AtsUser atsUser = (AtsUser) atsApi.getUserService().getUserByAccountId(asUser.getId());
       data.setAsUser(atsUser);
       return createTasks(data);
+   }
+
+   @Override
+   public IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token) {
+      return ChangeReportTaskNameProviderService.getChangeReportOptionNameProvider(token);
    }
 
 }

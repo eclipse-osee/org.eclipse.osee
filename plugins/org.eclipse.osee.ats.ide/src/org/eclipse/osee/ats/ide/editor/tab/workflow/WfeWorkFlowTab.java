@@ -546,8 +546,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          // Create state if not exist
          if (!found) {
             Pair<StateXWidgetPage, Composite> pageAndComp = stateNameToPageAndComposite.get(stateName);
-            StateXWidgetPage statePage = pageAndComp.getFirst();
-            createStateSection(pageAndComp.getSecond(), statePage);
+            if (pageAndComp != null) {
+               StateXWidgetPage statePage = pageAndComp.getFirst();
+               createStateSection(pageAndComp.getSecond(), statePage);
+            }
          }
          for (WfeWorkflowSection section : sections) {
             section.refresh();

@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem;
+package org.eclipse.osee.ats.ide.workflow.hooks;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewOption;
@@ -21,9 +22,9 @@ import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.framework.core.util.Result;
@@ -34,12 +35,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
+ * Contributed through OSGI-INF as both workflow and transition hooks
+ * 
  * @author Donald G. Dunne
  */
-public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
+public class AtsDecisionReviewDecisionWorkflowHookIde implements IAtsWorkflowHookIde, IAtsTransitionHook {
 
-   public AtsDecisionReviewDecisionStateItem() {
-      super(AtsDecisionReviewDecisionStateItem.class.getSimpleName());
+   public String getName() {
+      return AtsDecisionReviewDecisionWorkflowHookIde.class.getSimpleName();
    }
 
    @Override
@@ -69,23 +72,26 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getOverrideTransitionToStateName(WorkflowEditor editor) {
-      if (isApplicable(editor)) {
-         if (editor.getWorkFlowTab().getHeader().getWfeTransitionComposite().isSelected()) {
-            return null;
+   public String getOverrideTransitionToStateName(IAtsWorkItem workItem) {
+      if (isApplicable(workItem)) {
+         WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
+         if (editor != null) {
+            if (editor.getWorkFlowTab().getHeader().getWfeTransitionComposite().isSelected()) {
+               return null;
+            }
+            XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
+               AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
+            XComboDam decisionComboDam = (XComboDam) xWidget;
+            DecisionReviewArtifact decArt = (DecisionReviewArtifact) workItem;
+            return getOverrideTransitionToStateName(decArt, decisionComboDam);
          }
-         XWidget xWidget = editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
-            AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
-         XComboDam decisionComboDam = (XComboDam) xWidget;
-         DecisionReviewArtifact decArt = (DecisionReviewArtifact) editor.getWorkItem();
-         return getOverrideTransitionToStateName(decArt, decisionComboDam);
       }
       return null;
    }
 
-   private boolean isApplicable(WorkflowEditor editor) {
-      return editor.getWorkItem().isTypeEqual(
-         AtsArtifactTypes.DecisionReview) && editor.getWorkItem().getCurrentStateName().equals(
+   private boolean isApplicable(IAtsWorkItem workItem) {
+      return workItem.isTypeEqual(
+         AtsArtifactTypes.DecisionReview) && workItem.getStateMgr().getCurrentStateName().equals(
             DecisionReviewState.Decision.getName());
    }
 
@@ -103,9 +109,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) {
-      if (isApplicable(awa)) {
-         DecisionReviewArtifact decArt = (DecisionReviewArtifact) awa;
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(IAtsWorkItem workItem, String decision) {
+      if (isApplicable(workItem)) {
+         DecisionReviewArtifact decArt = (DecisionReviewArtifact) workItem;
          return getOverrideTransitionToAssignees(decArt, decision);
       }
       return null;
@@ -119,11 +125,6 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       List<IAtsUser> assignees = new LinkedList<>();
       assignees.addAll(AtsClientService.get().getUserService().getUsersByUserIds(decisionOption.getAssignees()));
       return assignees;
-   }
-
-   private boolean isApplicable(AbstractWorkflowArtifact awa) {
-      return awa.isTypeEqual(AtsArtifactTypes.DecisionReview) && awa.getCurrentStateName().equals(
-         DecisionReviewState.Decision.getName());
    }
 
    private DecisionReviewOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) {

@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProvider;
-import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProvider;
+import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 
 /**
  * Service to retrieve all task set definitions that have been registered. Should not be used by applications, only by
@@ -28,13 +28,13 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 public class AtsTaskSetDefinitionProviderService implements IAtsTaskSetDefinitionProviderService {
 
    private static Map<Long, CreateTasksDefinitionBuilder> idToTaskSetDef = new HashMap<>();
-   private final Collection<IAtsTaskSetDefinitionProvider> taskSetDefProviders = new ArrayList<>();
-   private final Collection<IAtsTaskSetDefinitionProvider> taskSetDefProviderProcessed = new ArrayList<>();
-   private AtsTaskSetDefinitionProvider atsTaskSetDefProv;
+   private static final Collection<IAtsTaskSetDefinitionProvider> taskSetDefProviders = new ArrayList<>();
+   private static final Collection<IAtsTaskSetDefinitionProvider> taskSetDefProviderProcessed = new ArrayList<>();
+   private static AtsTaskSetDefinitionProvider atsTaskSetDefProv;
 
    @Override
-   public void addTaskSetDefinitionProvider(IAtsTaskSetDefinitionProvider workDefProvider) {
-      this.taskSetDefProviders.add(workDefProvider);
+   public void addTaskSetDefinitionProvider(IAtsTaskSetDefinitionProvider taskSetDefProvider) {
+      AtsTaskSetDefinitionProviderService.taskSetDefProviders.add(taskSetDefProvider);
    }
 
    public void ensureLoaded() {

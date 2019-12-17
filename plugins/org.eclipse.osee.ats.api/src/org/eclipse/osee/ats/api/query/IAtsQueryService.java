@@ -185,4 +185,8 @@ public interface IAtsQueryService {
 
    Collection<? extends ArtifactToken> getArtifactListFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType);
 
+   Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts);
+
+   Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> modified, BranchId branch, DeletionFlag deletionFlag);
+
 }

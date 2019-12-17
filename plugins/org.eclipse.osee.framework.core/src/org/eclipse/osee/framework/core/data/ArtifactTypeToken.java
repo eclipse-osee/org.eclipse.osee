@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -45,6 +46,15 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             if (superType.inheritsFrom(otherType)) {
                return true;
             }
+         }
+      }
+      return false;
+   }
+
+   default boolean inheritsFromAny(Collection<ArtifactTypeToken> artTypes) {
+      for (ArtifactTypeToken inheritType : artTypes) {
+         if (this.inheritsFrom(inheritType)) {
+            return true;
          }
       }
       return false;

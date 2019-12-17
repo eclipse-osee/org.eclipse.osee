@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.Result;
@@ -127,4 +128,6 @@ public interface IAtsStoreService {
    Collection<RelationTypeToken> getRelationTypes();
 
    String getSafeName(ArtifactId art);
+
+   ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
 }

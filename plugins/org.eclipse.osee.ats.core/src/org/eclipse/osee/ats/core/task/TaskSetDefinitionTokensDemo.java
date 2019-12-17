@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 /**
  * @author Donald G. Dunne
  */
-public class DemoTaskSetDefinitionTokens {
+public class TaskSetDefinitionTokensDemo {
 
    public static AtsTaskDefToken SawSwDesignTestingChecklist =
       AtsTaskDefToken.valueOf(23492840234L, "Testing Checklist");

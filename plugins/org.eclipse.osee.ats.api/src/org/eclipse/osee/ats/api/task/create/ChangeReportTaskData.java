@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -53,13 +52,7 @@ public class ChangeReportTaskData {
    AtsTaskDefToken taskDefToken;
    private BranchId workOrParentBranch;
    // ChangeItems from executed change report
-   private List<ChangeItem> changeData;
-   // Artifact lists for the different types of changes in change report
-   private Set<ArtifactId> addedModifiedArts = new HashSet<>();
-   private Set<ArtifactId> deletedArts = new HashSet<>();
-   private Set<ArtifactId> relArts = new HashSet<>();
-   private Set<ArtifactId> deletedRelArts = new HashSet<>();
-   private Set<ArtifactId> allArtifacts = new HashSet<>();
+   private List<ChangeItem> changeItems;
    // Definition loaded from the taskDefToken that defines how tasks are created
    private CreateTasksDefinition setDef;
    @JsonIgnore
@@ -70,6 +63,7 @@ public class ChangeReportTaskData {
    private Collection<ArtifactId> destTeamWfs = new HashSet<>();
    private ArtifactId actionId;
    private IAtsChangeSet changes;
+   // ArtifactId to full Artifact
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -147,8 +141,8 @@ public class ChangeReportTaskData {
       this.workOrParentBranch = workOrParentBranch;
    }
 
-   public void setChangeData(List<ChangeItem> changeData) {
-      this.changeData = changeData;
+   public void setChangeItems(List<ChangeItem> changeItems) {
+      this.changeItems = changeItems;
    }
 
    public BranchId getWorkOrParentBranch() {
@@ -156,40 +150,8 @@ public class ChangeReportTaskData {
    }
 
    @JsonIgnore
-   public List<ChangeItem> getChangeData() {
-      return changeData;
-   }
-
-   public Collection<ArtifactId> getAddedModifiedArts() {
-      return addedModifiedArts;
-   }
-
-   public void setAddedModifiedArts(Set<ArtifactId> addedModifiedArts) {
-      this.addedModifiedArts = addedModifiedArts;
-   }
-
-   public Collection<ArtifactId> getDeletedArts() {
-      return deletedArts;
-   }
-
-   public void setDeletedArts(Set<ArtifactId> deletedArts) {
-      this.deletedArts = deletedArts;
-   }
-
-   public Collection<ArtifactId> getRelArts() {
-      return relArts;
-   }
-
-   public void setRelArts(Set<ArtifactId> relArts) {
-      this.relArts = relArts;
-   }
-
-   public Collection<ArtifactId> getAllArtifacts() {
-      return allArtifacts;
-   }
-
-   public void setAllArtifacts(Set<ArtifactId> allArtifacts) {
-      this.allArtifacts = allArtifacts;
+   public List<ChangeItem> getChangeItems() {
+      return changeItems;
    }
 
    public void setSetDef(CreateTasksDefinition setDef) {
@@ -238,14 +200,6 @@ public class ChangeReportTaskData {
 
    public void setActionId(ArtifactId actionId) {
       this.actionId = actionId;
-   }
-
-   public Set<ArtifactId> getDeletedRelArts() {
-      return deletedRelArts;
-   }
-
-   public void setDeletedRelArts(Set<ArtifactId> deletedRelArts) {
-      this.deletedRelArts = deletedRelArts;
    }
 
    public IAtsChangeSet getChanges() {

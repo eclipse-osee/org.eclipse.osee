@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -23,14 +25,11 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
+import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewDefinitionManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerReviewDefinitionManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.stateitem.IAtsStateItemCore;
-import org.eclipse.osee.ats.ide.workflow.stateitem.internal.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -68,21 +67,21 @@ public class AtsBranchUtil {
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (IAtsDecisionReviewDefinition decRevDef : teamWf.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
-            DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,
+            IAtsDecisionReview decRev = DecisionReviewOnTransitionToHook.createNewDecisionReview(decRevDef, changes,
                teamWfArt, createdDate, createdBy);
-            if (decArt != null) {
+            if (decRev != null) {
                created = true;
-               changes.add(decArt);
+               changes.add(decRev);
             }
          }
       }
       for (IAtsPeerReviewDefinition peerRevDef : teamWf.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
-            PeerToPeerReviewArtifact peerArt = PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef,
-               changes, teamWfArt, createdDate, createdBy);
-            if (peerArt != null) {
+            IAtsPeerToPeerReview peerRev = PeerReviewOnTransitionToHook.createNewPeerToPeerReview(peerRevDef, changes,
+               teamWfArt, createdDate, createdBy);
+            if (peerRev != null) {
                created = true;
-               changes.add(peerArt);
+               changes.add(peerRev);
             }
          }
       }
@@ -196,7 +195,7 @@ public class AtsBranchUtil {
       }
 
       // Notify extensions of branch creation
-      for (IAtsStateItemCore item : AtsStateItemCoreManager.getStateItems()) {
+      for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
          item.workingBranchCreated(teamWf);
       }
    }

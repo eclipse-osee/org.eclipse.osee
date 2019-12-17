@@ -40,6 +40,10 @@ public class Strings {
       // Utility class
    }
 
+   public static void error(Class<?> clazz, String format, Object... data) {
+      error(clazz.getSimpleName() + ": " + format, data);
+   }
+
    /**
     * Write to sys.out a formatted string
     */
@@ -298,4 +302,5 @@ public class Strings {
    public static boolean isNotNumeric(String idStr) {
       return !isNumeric(idStr);
    }
+
 }

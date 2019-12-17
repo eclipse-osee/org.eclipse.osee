@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem;
+package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -18,18 +18,18 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
+ * Contributed via AtsWorkItemServiceImpl
+ *
  * @author Donald G. Dunne
  */
-public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implements ITransitionListener {
+public class AtsForceAssigneesToTeamLeadsWorkflowHook implements IAtsTransitionHook {
 
-   public AtsForceAssigneesToTeamLeadsStateItem() {
-      super(AtsForceAssigneesToTeamLeadsStateItem.class.getSimpleName());
+   public String getName() {
+      return AtsForceAssigneesToTeamLeadsWorkflowHook.class.getSimpleName();
    }
 
    @Override
@@ -40,8 +40,8 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
-         AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
-         Collection<IAtsUser> teamLeads = ((TeamWorkFlowArtifact) workItem).getTeamDefinition().getLeads();
+         AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
+         Collection<IAtsUser> teamLeads = ((IAtsTeamWorkflow) workItem).getTeamDefinition().getLeads();
          if (!teamLeads.isEmpty()) {
             workItem.getStateMgr().setAssignees(teamLeads);
             changes.add(workItem);
@@ -51,11 +51,6 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
 
    private boolean isForceAssigneesToTeamLeads(IAtsStateDefinition stateDefinition) {
       return stateDefinition.hasRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
-   }
-
-   @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
-      // do nothing
    }
 
 }

@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -64,7 +65,7 @@ public interface ITransitionHelper {
 
    public boolean isExecuteChanges();
 
-   public Collection<ITransitionListener> getTransitionListeners();
+   public Collection<IAtsTransitionHook> getTransitionListeners();
 
    public IAtsUser getTransitionUser();
 

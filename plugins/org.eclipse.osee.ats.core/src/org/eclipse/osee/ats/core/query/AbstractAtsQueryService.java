@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.core.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -314,6 +316,15 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          changes.addChild(parent, artifact);
       }
       return artifact;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifacts) {
+      Set<Long> ids = new HashSet<>();
+      for (ArtifactId art : artifacts) {
+         ids.add(art.getId());
+      }
+      return getArtifacts(ids);
    }
 
 }

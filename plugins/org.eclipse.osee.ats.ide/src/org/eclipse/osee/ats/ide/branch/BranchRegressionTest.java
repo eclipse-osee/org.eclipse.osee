@@ -1,9 +1,13 @@
-/*
- * Created on Aug 29, 2005
+/*******************************************************************************
+ * Copyright (c) 2019 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.ide.branch;
 
 import java.util.ArrayList;
@@ -98,16 +102,16 @@ public abstract class BranchRegressionTest {
    protected final List<String> ArtifactModifiedNames = new ArrayList<>();
    protected final List<String> NonRelArtifactModifedNames = new ArrayList<>();
 
-   private static SevereLoggingMonitor monitorLog;
-   private Artifact softReqArt;
-   private Artifact secondArt;
-   private Artifact thirdArt;
-   private Artifact fourthArt;
-   private Artifact fifthArt;
-   private Artifact createAndDeleteArt;
-   private Artifact subsystemArt;
-   private Artifact preBranchArt;
-   private BranchId workingBranch;
+   protected static SevereLoggingMonitor monitorLog;
+   protected Artifact softReqArt;
+   protected Artifact secondArt;
+   protected Artifact thirdArt;
+   protected Artifact fourthArt;
+   protected Artifact fifthArt;
+   protected Artifact createAndDeleteArt;
+   protected Artifact subsystemArt;
+   protected Artifact preBranchArt;
+   protected BranchId workingBranch;
 
    /**
     * Test creation of Action (rpcrNum), creation of workingBranch, modification of some artifacts, commit of
@@ -230,7 +234,7 @@ public abstract class BranchRegressionTest {
       purgeWorkingBranches(Arrays.asList(getRpcrNumber(), PRE_BRANCH_CHANGES));
    }
 
-   private static void purgeWorkingBranches(Collection<String> branchNamesContain) throws Exception {
+   protected static void purgeWorkingBranches(Collection<String> branchNamesContain) throws Exception {
       try {
          // Delete working branches
          for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
@@ -436,7 +440,7 @@ public abstract class BranchRegressionTest {
       Assert.assertNotNull(createAndDeleteArt);
    }
 
-   private void createThirdFourthFifthReqArt() throws Exception {
+   protected void createThirdFourthFifthReqArt() throws Exception {
       thirdArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedureMsWord, softReqArt,
          THIRD_ARTIFACT, getThirdArtifactCscis(), workingBranch);
       Assert.assertNotNull(thirdArt);
@@ -446,6 +450,7 @@ public abstract class BranchRegressionTest {
       fifthArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementFunctionMsWord, softReqArt, FIFTH_ARTIFACT,
          new String[] {AttributeId.UNSPECIFIED}, workingBranch);
       Assert.assertNotNull(fifthArt);
+
    }
 
    private void createFirstAndSecondReqArt() throws Exception {
@@ -659,7 +664,6 @@ public abstract class BranchRegressionTest {
          int loopCount = 0;
          int count = 0;
          Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(team);
-         System.err.println(team.toStringWithId());
          while (getFinalTaskNames().size() != count && loopCount < 10) {
             try {
                Thread.sleep(1000);

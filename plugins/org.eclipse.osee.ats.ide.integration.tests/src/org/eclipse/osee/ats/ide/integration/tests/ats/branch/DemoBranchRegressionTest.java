@@ -35,8 +35,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
-import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionListener;
-import org.eclipse.osee.ats.core.task.DemoTaskSetDefinitionTokens;
+import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
+import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.BranchRegressionTest;
@@ -48,6 +48,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 
 /**
@@ -64,6 +66,14 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    private List<String> createReqArtToDelExpected;
    private Set<String> deleteReqArtToDelExpected;
    private List<String> changeNameToReqArtToDelExpected;
+
+   public DemoBranchRegressionTest() {
+      super();
+      ArtifactModifiedNames.addAll(
+         Arrays.asList(DemoArtifactToken.EventsSwReq.getName(), DemoArtifactToken.MsWordHeadingNoTask.getName()));
+      NonRelArtifactModifedNames.addAll(
+         Arrays.asList(DemoArtifactToken.MsWordHeadingNoTask.getName(), DemoArtifactToken.EventsSwReq.getName()));
+   }
 
    @Override
    public void testCreateAction() {
@@ -96,6 +106,23 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeam, AtsClientService.get());
       mgr.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
+   }
+
+   @Override
+   protected void createThirdFourthFifthReqArt() throws Exception {
+      super.createThirdFourthFifthReqArt();
+
+      // add ms word heading which should be ignored; no task should be created
+      Artifact headingArt = createSoftwareArtifact(DemoArtifactToken.MsWordHeadingNoTask, softReqArt,
+         getThirdArtifactCscis(), workingBranch);
+      Assert.assertNotNull(headingArt);
+
+      // add sw req with paragraph only change; no task should be created
+      Artifact existingEventsSwReq = ArtifactQuery.getArtifactFromId(DemoArtifactToken.EventsSwReq, workingBranch);
+      Assert.assertNotNull(existingEventsSwReq);
+      existingEventsSwReq.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.2.2");
+      existingEventsSwReq.persist(getClass().getSimpleName());
+
    }
 
    private IAtsTeamWorkflow getCodeTeamWf() {
@@ -207,9 +234,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
             "Handle Add/Mod change to [Fourth Artifact - No CSCI]", //
             "Handle Add/Mod change to [In-Branch Artifact to Delete Changed]", //
             "Handle Add/Mod change to [In-Branch Artifact to Delete]", //
-            "Handle Add/Mod change to [Parent Artifact]", //
             "Handle Add/Mod change to [Second Artifact]", //
-            "Handle Add/Mod change to [Subsystem Artifact (no partition)]", //
             "Handle Add/Mod change to [Third Artifact]", //
             "Handle Deleted change to [Pre-Branch Artifact to Delete] (Deleted)", //
             "Handle Relation change to [Fifth Artifact - Unspecified CSCI]", //
@@ -218,9 +243,9 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
             "Handle Relation change to [In-Branch Artifact to Delete Changed]", //
             "Handle Relation change to [In-Branch Artifact to Delete]", //
             "Handle Relation change to [Parent Artifact]", //
+            "Handle Relation change to [Pre-Branch Artifact to Delete]", //
             "Handle Relation change to [Second Artifact]", //
             "Handle Relation change to [Software Requirements]", //
-            "Handle Relation change to [Subsystem Artifact (no partition)]", //
             "Handle Relation change to [Third Artifact]", //
             "My Manual Task" //
          );
@@ -232,8 +257,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       IAtsTeamWorkflow codeWf = getCodeTeamWf();
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      ChangeReportTaskData data = CreateChangeReportTaskTransitionListener.runChangeReportTaskOperation(codeWf,
-         DemoTaskSetDefinitionTokens.SawCreateTasksFromReqChanges, changes);
+      ChangeReportTaskData data = CreateChangeReportTaskTransitionHook.runChangeReportTaskOperation(codeWf,
+         TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, changes);
       changes.executeIfNeeded();
 
       Assert.assertFalse(data.getResults().toString(), data.getResults().isErrors());

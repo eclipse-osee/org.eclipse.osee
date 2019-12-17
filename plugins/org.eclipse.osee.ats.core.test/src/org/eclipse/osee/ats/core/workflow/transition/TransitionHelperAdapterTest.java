@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.Assert;
 import org.junit.Before;
@@ -132,7 +132,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Collection<ITransitionListener> getTransitionListeners() {
+      public Collection<IAtsTransitionHook> getTransitionListeners() {
          return null;
       }
 

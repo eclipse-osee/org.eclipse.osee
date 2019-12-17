@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+   <implementation class="org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkflowHookIde"/>
+   <service>
+      <provide interface="org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook"/>
+   </service>
+</scr:component>

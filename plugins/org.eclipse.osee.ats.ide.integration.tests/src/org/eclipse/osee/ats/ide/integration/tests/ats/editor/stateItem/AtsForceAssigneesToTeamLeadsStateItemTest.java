@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkflowHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -30,7 +30,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test Case for {@link AtsForceAssigneesToTeamLeadsStateItem}
+ * Test Case for {@link AtsForceAssigneesToTeamLeadsWorkflowHook}
  *
  * @author Donald G. Dunne
  */
@@ -89,7 +89,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       authStateDef.getRules().add(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
 
       // make call to state item that should set options based on artifact's attribute value
-      AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
+      AtsForceAssigneesToTeamLeadsWorkflowHook stateItem = new AtsForceAssigneesToTeamLeadsWorkflowHook();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes);

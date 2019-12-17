@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem;
+package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,20 +19,20 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 
 /**
+ * Contributed via AtsWorkItemServiceImpl
+ *
  * @author Donald G. Dunne
  */
-public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements ITransitionListener {
+public class AtsPeerToPeerReviewReviewWorkflowHook implements IAtsTransitionHook {
 
-   public AtsPeerToPeerReviewReviewStateItem() {
-      super(AtsPeerToPeerReviewReviewStateItem.class.getSimpleName());
+   public String getName() {
+      return AtsPeerToPeerReviewReviewWorkflowHook.class.getSimpleName();
    }
 
    @Override
@@ -46,10 +46,10 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
          PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users
          Set<IAtsUser> assignees = new HashSet<>();
-         PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) workItem;
-         for (UserRole uRole : peerArt.getRoleManager().getUserRoles()) {
+         IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) workItem;
+         for (UserRole uRole : peerRev.getRoleManager().getUserRoles()) {
             if (!uRole.isCompleted()) {
-               assignees.add(UserRoleManager.getUser(uRole, AtsClientService.get()));
+               assignees.add(UserRoleManager.getUser(uRole, AtsApiService.get()));
             }
          }
          assignees.addAll(workItem.getStateMgr().getAssignees());
@@ -57,11 +57,6 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
          workItem.getStateMgr().setAssignees(assignees);
          changes.add(workItem);
       }
-   }
-
-   @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
-      // do nothing
    }
 
 }

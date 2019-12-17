@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -27,7 +28,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisio
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -37,11 +37,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Test unit for {@link DecisionReviewDefinitionManager}
+ * Test unit for {@link DecisionReviewOnTransitionToHook}
  *
  * @author Donald G. Dunne
  */
-public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitionManager {
+public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransitionToHook {
 
    @BeforeClass
    @AfterClass

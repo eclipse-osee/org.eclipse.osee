@@ -8,12 +8,10 @@ package org.eclipse.osee.ats.core.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -23,15 +21,19 @@ import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptions;
+import org.eclipse.osee.ats.api.task.create.ChangeReportOptionsToTeam;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -45,7 +47,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -87,13 +88,10 @@ public class CreateChangeReportTasksOperation {
       if (changes != null) {
          this.crtd.setChanges(changes);
       }
-
    }
 
    public ChangeReportTaskData run() {
       XResultData rd = crtd.getResults();
-
-      System.err.println("CreateChangeReportTasksOperation.run");
 
       try {
          if (crtd.getHostTeamWf() == null || crtd.getHostTeamWf().isInvalid()) {
@@ -119,7 +117,16 @@ public class CreateChangeReportTasksOperation {
 
          crtd.setSetDef(setDef);
 
-         // TBD Add configuration to allow task to be created on host workflow?
+         // Skip if the program team defs doesn't contain host wf team def
+         IAtsProgram program = atsApi.getProgramService().getProgram(hostTeamWf);
+         IAtsTeamDefinition fromSiblingTeamDef =
+            atsApi.getTeamDefinitionService().getTeamDefinitionById(setDef.getChgRptOptions().getFromSiblingTeamDef());
+         if (!atsApi.getProgramService().getTeamDefs(program).contains(fromSiblingTeamDef)) {
+            rd.logf("Host Team Wf Team Definition %s does not belong to Program %s Team Definitions; skipping",
+               hostTeamWf.getTeamDefinition().toStringWithId(), program.toStringWithId());
+            return crtd;
+         }
+
          // Team Wf owning change report
          IAtsTeamWorkflow chgRptTeamWf = null;
          if (crtd.getChgRptTeamWf().isValid()) {
@@ -146,37 +153,12 @@ public class CreateChangeReportTasksOperation {
             return crtd;
          }
 
-         Map<String, String> toSiblingTeamAis = setDef.getChgRptOptions().getToSiblingTeamAiMap();
-         if (toSiblingTeamAis.isEmpty()) {
+         List<ChangeReportOptionsToTeam> toSiblingTeamDatas = setDef.getChgRptOptions().getToSiblingTeamDatas();
+         if (toSiblingTeamDatas.isEmpty()) {
             rd.errorf("No sibling team defs found for id %s\n", taskDefToken.toStringWithId());
             return crtd;
          }
-         rd.logf("For Sibling Team AIs [%s]\n", Collections.toString(", ", toSiblingTeamAis.values()));
-
-         // Calculate all change items that would need a task created
-         ChangeReportTasksUtil.processChangeData(crtd);
-         if (crtd.getAllArtifacts().isEmpty()) {
-            rd.log("No matching artifacts to create tasks\n");
-            return crtd;
-         }
-
-         // Verify that name is set for all loaded artifacts
-         boolean fail = false;
-         Map<ArtifactId, ArtifactToken> idToArtifact = new HashMap<ArtifactId, ArtifactToken>();
-         for (ArtifactId art : crtd.getAllArtifacts()) {
-            try {
-               ArtifactToken artifact =
-                  atsApi.getQueryService().getArtifact(art, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
-               artifact.getName();
-               idToArtifact.put(artifact, artifact);
-            } catch (Exception ex) {
-               rd.errorf("Exception accessing name of %s - %s\n", art.getId(), ex.getLocalizedMessage());
-               fail = true;
-            }
-         }
-         if (fail) {
-            return crtd;
-         }
+         rd.logf("For Sibling Team AIs [%s]\n", Collections.toString(", ", toSiblingTeamDatas));
 
          boolean reportOnly =
             getTaskDefinition().getChgRptOptions().getCreateOptions().contains(CreateTasksOption.ReportOnly);
@@ -187,9 +169,9 @@ public class CreateChangeReportTasksOperation {
          if (!reportOnly) {
             changes = atsApi.createChangeSet(setDef.getName());
          }
-         for (Entry<String, String> teamDefAi : toSiblingTeamAis.entrySet()) {
-            IAtsTeamDefinition teamDef =
-               atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(teamDefAi.getKey()));
+         for (ChangeReportOptionsToTeam toSiblingTeamDef : toSiblingTeamDatas) {
+            IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(
+               ArtifactId.valueOf(toSiblingTeamDef.getTeamId()));
             rd.logf("\n\nHandling Team %s\n", teamDef.toStringWithId());
 
             ChangeReportTaskTeamWfData crttwd = new ChangeReportTaskTeamWfData();
@@ -197,9 +179,6 @@ public class CreateChangeReportTasksOperation {
             crttwd.setReportOnly(reportOnly);
             crttwd.setRd(rd);
             crttwd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
-            crttwd.getAddedModifiedArts().addAll(crtd.getAddedModifiedArts());
-            crttwd.getDeletedArts().addAll(crtd.getDeletedArts());
-            crttwd.getRelArts().addAll(crtd.getRelArts());
             crttwd.setDestTeamDef(teamDef.getStoreObject());
 
             WorkType workType = WorkType.None;
@@ -222,9 +201,10 @@ public class CreateChangeReportTasksOperation {
             crttwd.setWorkType(workType);
 
             IAtsVersion targetedVersion = atsApi.getVersionService().getTargetedVersion(chgRptTeamWf);
-            IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(teamDefAi.getValue());
+            IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(toSiblingTeamDef.getAiId());
             if (ai == null || ai.isInvalid()) {
-               rd.errorf("Actionable Item  %s is invalid for team %s\n", teamDefAi.getValue(), teamDefAi.getKey());
+               rd.errorf("Actionable Item  %s is invalid for team %s\n", toSiblingTeamDef.getAiId(),
+                  toSiblingTeamDef.getTeamId());
                return crtd;
             }
 
@@ -233,8 +213,20 @@ public class CreateChangeReportTasksOperation {
             // Later, all ChangeReportTaskMatch that have no task, create new task
             //        all ChangeReportTaskMatch that have found == false, mark to dereference task
 
-            // Compute what tasks are needed from changes; add task matches to crd
-            ChangeReportTasksUtil.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
+            // Compute what tasks are needed from artifact changes; add task matches to crd
+            ChangeReportTaskNameProviderToken nameProviderId = toSiblingTeamDef.getNameProviderId();
+            if (nameProviderId == null) {
+               nameProviderId = ChangeReportTaskNameProviderToken.DefaultChangeReportOptionsNameProvider;
+            }
+            IAtsChangeReportTaskNameProvider nameProvider =
+               atsApi.getTaskService().getChangeReportOptionNameProvider(nameProviderId);
+            if (nameProvider == null) {
+               crtd.getResults().errorf("Can't find IAtsChangeReportTaskNameProvider for id %s",
+                  nameProviderId.toStringWithId());
+               return crtd;
+            }
+
+            Map<ArtifactId, ArtifactToken> idToArtifact = nameProvider.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
                if (crtd.isDebug()) {
                   crtd.getResults().logf("Task Computed as Needed [%s]\n", taskMatch.toString());
@@ -250,12 +242,13 @@ public class CreateChangeReportTasksOperation {
                   AtsCoreUsers.SYSTEM_USER, chgRptTeamWf, targetedVersion, crttwd.getWorkType(), null, null);
                workflowCreator.setActionableItem(ai);
                destTeamWf = workflowCreator.createMissingWorkflow();
-               if (changes != null) {
-                  changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
-               }
                rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
+            }
+            if (changes != null && atsApi.getRelationResolver().areNotRelated(chgRptTeamWf, AtsRelationTypes.Derive_To,
+               destTeamWf)) {
+               changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
             }
             crttwd.setDestTeamWf(destTeamWf.getStoreObject());
             crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);

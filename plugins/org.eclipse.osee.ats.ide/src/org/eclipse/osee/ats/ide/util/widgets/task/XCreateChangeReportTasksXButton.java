@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.ats.ide.util.widgets.task;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -39,14 +41,16 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
    public static final Object WIDGET_ID = XCreateChangeReportTasksXButton.class.getSimpleName();
    // Team Workflow hosting this button (not necessarily one holding branch/commit
    private TeamWorkFlowArtifact hostTeamWf;
-   private final AtsTaskDefToken taskDefToken;
+   private final List<AtsTaskDefToken> taskDefTokens = new ArrayList<>();
 
-   public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken taskDefToken) {
+   public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken... taskDefTokens) {
       super(name);
-      Conditions.assertNotNull(taskDefToken, "taskDefToken must not be null");
-      this.taskDefToken = taskDefToken;
+      for (AtsTaskDefToken taskDefToken : taskDefTokens) {
+         this.taskDefTokens.add(taskDefToken);
+      }
+      Conditions.assertNotNullOrEmpty(this.taskDefTokens, "taskDefToken must not be null");
       setImage(ImageManager.getImage(AtsImage.PLAY_GREEN));
-      setToolTip(String.format("Click to Create/Update Change Report Tasks from [%s]", taskDefToken.getName()));
+      setToolTip(String.format("Click to Create/Update Change Report Tasks from [%s]", name));
       addXModifiedListener(listener);
    }
 
@@ -71,26 +75,28 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
          @Override
          protected IStatus run(IProgressMonitor monitor) {
 
-            ChangeReportTaskData data = new ChangeReportTaskData();
-            data.setTaskDefToken(taskDefToken);
-            data.setHostTeamWf(hostTeamWf);
-            data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
-            data = AtsClientService.getTaskEp().create(data);
-            XResultDataUI.report(data.getResults(), getName());
+            for (AtsTaskDefToken taskDefToken : taskDefTokens) {
+               ChangeReportTaskData data = new ChangeReportTaskData();
+               data.setTaskDefToken(taskDefToken);
+               data.setHostTeamWf(hostTeamWf);
+               data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
+               data = AtsClientService.getTaskEp().create(data);
+               XResultDataUI.report(data.getResults(), getName());
 
-            // Reload team wfs if tasks created
-            if (data.getTransaction() != null && data.getTransaction().isValid()) {
-               final ChangeReportTaskData fData = data;
-               Thread reload = new Thread(new Runnable() {
-                  @Override
-                  public void run() {
-                     for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
-                        ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
-                           AtsClientService.get().getAtsBranch());
+               // Reload team wfs if tasks created
+               if (data.getTransaction() != null && data.getTransaction().isValid()) {
+                  final ChangeReportTaskData fData = data;
+                  Thread reload = new Thread(new Runnable() {
+                     @Override
+                     public void run() {
+                        for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
+                           ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
+                              AtsClientService.get().getAtsBranch());
+                        }
                      }
-                  }
-               });
-               reload.start();
+                  });
+                  reload.start();
+               }
             }
             return Status.OK_STATUS;
          }

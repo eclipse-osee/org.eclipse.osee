@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.review;
+package org.eclipse.osee.ats.api.workflow.hooks;
+
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IReviewProvider {
+public interface IAtsReviewHook {
 
    /**
     * Notification that a review was created. This allows the extension to do necessary initial tasks after the review
     * workflow artifact is created. All changes made to review will be persisted after this call.
     */
-   public void reviewCreated(AbstractReviewArtifact reviewArt);
+   public void reviewCreated(IAtsAbstractReview reviewWf);
 
 }

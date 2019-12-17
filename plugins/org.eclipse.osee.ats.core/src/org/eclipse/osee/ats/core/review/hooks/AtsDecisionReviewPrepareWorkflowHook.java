@@ -8,27 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.editor.tab.workflow.stateitem;
+package org.eclipse.osee.ats.core.review.hooks;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.review.DecisionReviewState;
 
 /**
+ * Contributed via AtsWorkItemServiceImpl
+ *
  * @author Donald G. Dunne
  */
-public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements ITransitionListener {
+public class AtsDecisionReviewPrepareWorkflowHook implements IAtsTransitionHook {
 
-   public AtsDecisionReviewPrepareStateItem() {
-      super(AtsDecisionReviewPrepareStateItem.class.getSimpleName());
+   public String getName() {
+      return AtsDecisionReviewPrepareWorkflowHook.class.getSimpleName();
    }
 
    @Override
@@ -40,14 +41,10 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
       if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
          DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
-         DecisionReviewOptions decOptions = new DecisionReviewOptions((IAtsDecisionReview) workItem, AtsClientService.get());
+         DecisionReviewOptions decOptions =
+            new DecisionReviewOptions((IAtsDecisionReview) workItem, AtsApiService.get());
          decOptions.validateDecisionOptions(results);
       }
-   }
-
-   @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
-      // do nothing
    }
 
 }

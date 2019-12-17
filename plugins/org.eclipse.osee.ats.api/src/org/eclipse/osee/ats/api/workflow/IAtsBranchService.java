@@ -167,4 +167,6 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranch(BranchId branch);
 
+   Collection<ChangeItem> getChangeData(IAtsTeamWorkflow teamWf);
+
 }
