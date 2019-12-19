@@ -69,7 +69,7 @@ public class WordTemplateContentRendererHandler {
          Set<String> unknownGuids = new HashSet<>();
 
          String data =
-            artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.INCLUDE_DELETED, null);
+            artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.EXCLUDE_DELETED, null);
 
          if (data == null && wtcData.getIsEdit()) {
             data = orcsApi.getOrcsTypes().getAttributeTypes().getDefaultValue(CoreAttributeTypes.WordTemplateContent);
