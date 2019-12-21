@@ -5,16 +5,3 @@ artifactType "Demo Artifact With Selective Partition" extends "Artifact" {
 	id 86
 	attribute "Partition" branchUuid 3
 }
-
-artifactType "Demo DSL Artifact" extends "Artifact" {
-	id 204526342635554
-	attribute "Demo DSL Attribute"
-}
-
-attributeType "Demo DSL Attribute" extends StringAttribute {
-	id 1153126013769613777
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
-	mediaType "application/osee+dsl"
-}
