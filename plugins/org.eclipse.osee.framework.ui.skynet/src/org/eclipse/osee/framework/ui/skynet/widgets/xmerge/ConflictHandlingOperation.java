@@ -62,16 +62,28 @@ public final class ConflictHandlingOperation extends AbstractOperation {
                   }
                   break;
                case SET_DST_AND_RESOLVE:
-                  if (!status.isResolved()) {
-                     MergeUtility.setToDest(conflict, null, false, transaction);
-                     conflict.setStatus(ConflictStatus.RESOLVED);
+                  if (status.isResolved()) {
+                     conflict.computeEqualsValues();
+                     if (conflict.mergeEqualsDestination()) {
+                        return;
+                     } else {
+                        conflict.setStatus(ConflictStatus.EDITED);
+                     }
                   }
+                  MergeUtility.setToDest(conflict, null, false, transaction);
+                  conflict.setStatus(ConflictStatus.RESOLVED);
                   break;
                case SET_SRC_AND_RESOLVE:
-                  if (!status.isResolved()) {
-                     MergeUtility.setToSource(conflict, null, false, transaction);
-                     conflict.setStatus(ConflictStatus.RESOLVED);
+                  if (status.isResolved()) {
+                     conflict.computeEqualsValues();
+                     if (conflict.mergeEqualsSource()) {
+                        return;
+                     } else {
+                        conflict.setStatus(ConflictStatus.EDITED);
+                     }
                   }
+                  MergeUtility.setToSource(conflict, null, false, transaction);
+                  conflict.setStatus(ConflictStatus.RESOLVED);
                   break;
                case MARK_RESOLVED:
                   if (!status.isUntouched()) {
