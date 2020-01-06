@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -102,6 +103,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public int getMax(AttributeTypeToken attributeType);
 
+   public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType);
+
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
@@ -171,6 +174,11 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
                return attributeTypes.getMaximum(attributeType);
             }
             return -1;
+         }
+
+         @Override
+         public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType) {
+            return attributeTypes.getValidEnumValues(attributeType);
          }
 
          @Override

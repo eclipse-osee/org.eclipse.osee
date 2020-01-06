@@ -13,42 +13,40 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class AttributeTypeToXWidgetName {
 
-   public static String getXWidgetName(AttributeTypeToken attributeType) {
-      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
-      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
+   public static <T extends EnumToken> String getXWidgetName(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+      int minOccurrence = artType.getMin(attributeType);
+      int maxOccurrence = artType.getMax(attributeType);
       String xWidgetName = "";
       if (attributeType.equals(CoreAttributeTypes.AccessContextId)) {
          xWidgetName = "XTextFlatDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
+      } else if (attributeType.isEnumerated()) {
+         AttributeTypeEnum<T> enumeratedType =
+            (AttributeTypeEnum<T>) ServiceUtil.getOrcsTokenService().getAttributeType(attributeType.getId());
+
+         artType = ServiceUtil.getOrcsTokenService().getArtifactType(artType.getId());
+
          if (maxOccurrence == 1) {
-            xWidgetName =
-               "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+            xWidgetName = "XComboDam(" + Collections.toString(",", artType.getValidEnumValues(enumeratedType)) + ")";
          } else {
             xWidgetName = "XSelectFromMultiChoiceDam(" + Collections.toString(",",
-               AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+               artType.getValidEnumValues(enumeratedType)) + ")";
          }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+      } else if (attributeType.isBoolean()) {
          if (minOccurrence == 1) {
             xWidgetName = "XCheckBoxDam";
          } else {
@@ -57,23 +55,23 @@ public class AttributeTypeToXWidgetName {
       } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class,
          attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          xWidgetName = "XStackedDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+      } else if (attributeType.isDate()) {
          xWidgetName = "XDateDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+      } else if (attributeType.isInteger()) {
          xWidgetName = "XIntegerDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+      } else if (attributeType.isLong()) {
          xWidgetName = "XLongDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+      } else if (attributeType.isDouble()) {
          xWidgetName = "XFloatDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {
+      } else if (attributeType.isInputStream()) {
          xWidgetName = "XLabelDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BranchReferenceAttribute.class, attributeType)) {
+      } else if (attributeType.isBranchId()) {
          xWidgetName = "XBranchSelectWidget";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+      } else if (attributeType.isArtifactId()) {
          xWidgetName = "XListDropViewWithSave";
       } else if (attributeType.equals(CoreAttributeTypes.IdValue)) {
          xWidgetName = "XTextFlatDam";
-      } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+      } else if (attributeType.isString()) {
          if (maxOccurrence == 1) {
             xWidgetName = "XTextDam";
          } else {

@@ -237,8 +237,10 @@ public class AttributeFormPart extends AbstractFormPart {
       internalComposite.setLayoutData(gridData);
 
       try {
-         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-         List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+         IAttributeXWidgetProvider xWidgetProvider =
+            AttributeXWidgetManager.getAttributeXWidgetProvider(artifact.getArtifactType(), attributeType);
+         List<XWidgetRendererItem> concreteWidgets =
+            xWidgetProvider.getDynamicXWidgetLayoutData(artifact.getArtifactType(), attributeType);
          if (isExpandable) {
             for (XWidgetRendererItem data : concreteWidgets) {
                data.getXOptionHandler().add(XOption.NO_LABEL);

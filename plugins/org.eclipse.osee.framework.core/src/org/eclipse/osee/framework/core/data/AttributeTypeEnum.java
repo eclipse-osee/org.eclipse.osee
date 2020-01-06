@@ -48,6 +48,15 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       return false;
    }
 
+   public boolean isValidEnum(ArtifactTypeToken artTypeToken, String enumName) {
+      for (EnumToken enumToken : artTypeToken.getValidEnumValues(this)) {
+         if (enumToken.getName().equals(enumName)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    @Override
    public T valueFromStorageString(String storedValue) {
       for (T enumToken : enumTokens) {

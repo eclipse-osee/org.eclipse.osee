@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 
 /**
  * @author Ryan D. Brooks
@@ -56,6 +57,29 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return this;
    }
 
+   public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue, enumeratedValues));
+      return this;
+   }
+
+   public <T extends EnumToken> AttributeMultiplicity exactlyOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+      put(attributeType,
+         new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue, enumeratedValues));
+      return this;
+   }
+
+   public <T extends EnumToken> AttributeMultiplicity zeroOrOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+      put(attributeType,
+         new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue, enumeratedValues));
+      return this;
+   }
+
+   public <T extends EnumToken> AttributeMultiplicity atLeastOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+      put(attributeType,
+         new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue, enumeratedValues));
+      return this;
+   }
+
    public Integer getMinimum(AttributeTypeToken attributeType) {
       return get(attributeType).getMultiplicity().matches(Multiplicity.ANY, Multiplicity.ZERO_OR_ONE) ? 0 : 1;
    }
@@ -71,6 +95,21 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
 
    public ArtifactTypeToken get() {
       return artifactType;
+   }
+
+   public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType) {
+      List<T> validEnumTokens = new ArrayList<T>();
+      for (T enumToken : attributeType.getEnumValues()) {
+         for (String enumeratedValue : get(attributeType).getValidEnumValues()) {
+            if (enumToken.getName().equals(enumeratedValue)) {
+               validEnumTokens.add(enumToken);
+            }
+         }
+      }
+      if (validEnumTokens.isEmpty()) {
+         validEnumTokens.addAll(attributeType.getEnumValues());
+      }
+      return validEnumTokens;
    }
 
    public List<AttributeTypeToken> getValidAttributeTypes() {

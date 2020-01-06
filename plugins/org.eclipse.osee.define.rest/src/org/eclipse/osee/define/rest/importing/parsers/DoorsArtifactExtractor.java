@@ -29,6 +29,7 @@ import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.rest.internal.importing.NormalizeHtml;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -752,7 +753,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {
          singleItem += theTokens.nextToken();
-         for (String item : valuesAsOrderedStringSet(type)) {
+         for (String item : valuesAsOrderedStringSet(roughArtifact.getType(), type)) {
             if (item.equals(singleItem)) {
                roughArtifact.addAttribute(type, singleItem);
                singleItem = "";
@@ -768,9 +769,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private Set<String> valuesAsOrderedStringSet(AttributeTypeEnum<?> type) {
+   private Set<String> valuesAsOrderedStringSet(ArtifactTypeToken artTypeToken, AttributeTypeEnum<?> type) {
       Set<String> values = new LinkedHashSet<>();
-      for (EnumToken oseeEnumEntry : type.getEnumValues()) {
+      for (EnumToken oseeEnumEntry : artTypeToken.getValidEnumValues(type)) {
          values.add(oseeEnumEntry.getName());
       }
       return values;

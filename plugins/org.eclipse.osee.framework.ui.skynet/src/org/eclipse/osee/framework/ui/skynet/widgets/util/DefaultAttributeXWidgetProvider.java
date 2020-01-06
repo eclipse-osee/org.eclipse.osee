@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -62,7 +63,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(AttributeTypeToken attributeType) {
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
 
       XWidgetRendererItem defaultData =
@@ -71,7 +72,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
       String xWidgetName;
       try {
-         xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
+         xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(artType, attributeType);
          if (attributeType.getName().equals("Relation Order")) {
             defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             xWidgetName = XTextDam.WIDGET_ID;

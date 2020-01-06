@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,9 +34,9 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
@@ -109,10 +110,12 @@ public final class FrameworkXWidgetProvider {
       return reference;
    }
 
-   private String getXWidgetNameBasedOnAttribute(AttributeTypeToken attributeType) {
-      if (attributeType != null) {
-         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-         List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+   private String getXWidgetNameBasedOnAttribute(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+      if (attributeType != AttributeTypeToken.SENTINEL) {
+         IAttributeXWidgetProvider xWidgetProvider =
+            AttributeXWidgetManager.getAttributeXWidgetProvider(artType, attributeType);
+         List<XWidgetRendererItem> concreteWidgets =
+            xWidgetProvider.getDynamicXWidgetLayoutData(artType, attributeType);
          return concreteWidgets.iterator().next().getXWidgetName();
       }
       return null;
@@ -124,17 +127,21 @@ public final class FrameworkXWidgetProvider {
       XWidget xWidget = null;
       try {
 
+         OrcsTokenService tokenService = ServiceUtil.getTokenService();
          // Set xWidgetName from attribute type if not already set
-         if (!Strings.isValid(xWidgetName)) {
-            AttributeTypeToken attributeType = null;
+         Artifact artifact = xWidgetLayoutData.getArtifact();
+         if (!Strings.isValid(xWidgetName) && artifact != null) {
+            AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+            ArtifactTypeToken artType = ArtifactTypeToken.SENTINEL;
             if (!Strings.isValid(xWidgetName) && xWidgetLayoutData.getStoreId() > 0) {
-               attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+               tokenService.getAttributeTypeOrSentinel(xWidgetLayoutData.getStoreId());
+               tokenService.getArtifactType(xWidgetLayoutData.getArtifactType().getId());
             }
-            if (attributeType == null && !Strings.isValid(xWidgetName) && Strings.isValid(
+            if (attributeType == AttributeTypeToken.SENTINEL && !Strings.isValid(xWidgetName) && Strings.isValid(
                xWidgetLayoutData.getStoreName())) {
-               attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+               attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
             }
-            xWidgetName = getXWidgetNameBasedOnAttribute(attributeType);
+            xWidgetName = getXWidgetNameBasedOnAttribute(artType, attributeType);
          }
 
          // Look for widget provider to create widget
@@ -476,16 +483,15 @@ public final class FrameworkXWidgetProvider {
          if (xWidget != null && xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_LABEL)) {
             xWidget.setDisplayLabel(false);
          }
-         Artifact artifact = xWidgetLayoutData.getArtifact();
          if (artifact != null) {
-            AttributeTypeToken attributeType = null;
+            AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
             if (xWidget instanceof IAttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
-               attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+               attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
             }
-            if (attributeType == null && Strings.isValid(xWidgetLayoutData.getStoreName())) {
-               attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            if (attributeType == AttributeTypeToken.SENTINEL && Strings.isValid(xWidgetLayoutData.getStoreName())) {
+               attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
             }
-            if (attributeType != null && xWidget instanceof IAttributeWidget) {
+            if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof IAttributeWidget) {
                ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
             }
             if (xWidget instanceof IArtifactWidget) {

@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
@@ -223,6 +225,11 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
 
    public void setAbstract(boolean isAbstract) {
       setFieldLogException(ARTIFACT_IS_ABSTRACT_FIELD_KEY, isAbstract);
+   }
+
+   @Override
+   public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType) {
+      return null;
    }
 
    @Override

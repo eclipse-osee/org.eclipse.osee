@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -60,30 +61,30 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(AttributeTypeToken attributeType) {
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> layouts = new ArrayList<>();
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
-         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XBranchSelectWidgetDam.WIDGET_ID);
       } else if (xFlatAttributeTypes.contains(attributeType)) {
-         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
       } else if (attributeType.matches(AtsAttributeTypes.TestRunToSourceLocator)) {
-         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
       } else if (attributeType.equals(AtsAttributeTypes.ProgramId)) {
-         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XProgramSelectionWidget.WIDGET_ID);
       } else if (artRefAttributeTypes.contains(attributeType)) {
-         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         ArtifactTypeId artType = artRefAttrTypeToValidArtType.get(attributeType);
-         if (artType.isValid()) {
-            layoutData.setArtifactType(artType);
+         ArtifactTypeId newArtType = artRefAttrTypeToValidArtType.get(attributeType);
+         if (newArtType.isValid()) {
+            layoutData.setArtifactType(newArtType);
          }
          layoutData.setXWidgetName(XArtifactReferencedAtsObjectAttributeWidget.WIDGET_ID);
       }
