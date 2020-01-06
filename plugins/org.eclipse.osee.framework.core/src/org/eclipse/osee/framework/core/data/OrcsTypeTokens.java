@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
+import org.eclipse.osee.framework.jdk.core.type.TriFunction;
 
 /**
  * OSEE type token providers should instantiate a static instance of this class and call the add methods for each type
@@ -36,6 +38,10 @@ public class OrcsTypeTokens {
 
    public OrcsTypeTokens(NamespaceToken namespace) {
       this.namespace = namespace;
+   }
+
+   public NamespaceToken getNamespace() {
+      return namespace;
    }
 
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
@@ -133,19 +139,6 @@ public class OrcsTypeTokens {
       return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return attributeTypes.addAndReturn(
-         new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType));
-   }
-
-   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description) {
-      return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
-   }
-
-   public @NonNull AttributeTypeEnum createEnumNoTag(Long id, String name, String mediaType, String description) {
-      return createEnum(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
-   }
-
    public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType));
@@ -185,6 +178,29 @@ public class OrcsTypeTokens {
       return createLong(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
+      return attributeTypes.addAndReturn(
+         attributeEnumConstructor.apply(OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
+   }
+
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
+      return attributeTypes.addAndReturn(
+         attributeEnumConstructor.apply(TaggerTypeToken.SENTINEL, mediaType, namespace));
+   }
+
+   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return attributeTypes.addAndReturn(
+         new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType));
+   }
+
+   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description) {
+      return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
+   }
+
+   public @NonNull AttributeTypeEnum createEnumNoTag(Long id, String name, String mediaType, String description) {
+      return createEnum(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+   }
+
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeString(id, namespace, name, mediaType, description, taggerType));
@@ -201,7 +217,7 @@ public class OrcsTypeTokens {
    /**
     * return the default tagger for the given mediaType
     */
-   static TaggerTypeToken determineTaggerType(String mediaType) {
+   public static TaggerTypeToken determineTaggerType(String mediaType) {
       switch (mediaType) {
          case "application/msword":
          case MediaType.TEXT_HTML:

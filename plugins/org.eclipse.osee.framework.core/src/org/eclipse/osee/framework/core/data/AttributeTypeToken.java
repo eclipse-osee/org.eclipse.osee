@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -118,15 +119,15 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return createDouble(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   static @NonNull AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType);
+   static @NonNull <T extends EnumToken> AttributeTypeEnum<T> createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+      return new AttributeTypeEnum<T>(id, namespace, name, mediaType, description, taggerType);
    }
 
-   static @NonNull AttributeTypeEnum createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull <T extends EnumToken> AttributeTypeEnum<T> createEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createEnum(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   static @NonNull AttributeTypeEnum createEnumNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
+   static @NonNull <T extends EnumToken> AttributeTypeEnum<T> createEnumNoTag(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
       return createEnum(id, namespace, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 

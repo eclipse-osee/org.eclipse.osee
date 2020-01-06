@@ -22,6 +22,11 @@ public class NamedIdBase extends BaseId implements NamedId {
       this.name = name;
    }
 
+   public NamedIdBase(int id, String name) {
+      super(Long.valueOf(id));
+      this.name = name;
+   }
+
    public NamedIdBase() {
       super(Id.SENTINEL);
       this.name = Named.SENTINEL;

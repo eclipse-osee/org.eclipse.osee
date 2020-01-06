@@ -8,22 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
- * @author Ryan D. Brooks
+ * @author Stephen J. Molaro
  */
-public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
+public class EnumToken extends NamedIdBase {
 
-   public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      super(id, namespace, name, mediaType, description, taggerType);
-   }
-
-   @Override
-   public T valueFromStorageString(String storedValue) {
-      return null;
+   public EnumToken(int id, String name) {
+      super(id, name);
    }
 
 }
