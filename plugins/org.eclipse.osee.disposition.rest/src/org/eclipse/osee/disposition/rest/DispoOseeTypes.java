@@ -15,11 +15,12 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.disposition.rest.enums.token.DispoImportStateAttributeType;
+import org.eclipse.osee.disposition.rest.enums.token.DispoItemStatusAttributeType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
-import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -36,7 +37,7 @@ public interface DispoOseeTypes {
    AttributeTypeDate DispoDateCreated = dispo.createDate(1152921504606847889L, "dispo.Date Created", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString DispoDiscrepanciesJson = dispo.createString(1152921504606847879L, "dispo.Discrepancies JSON", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoImportPath = dispo.createString(1152921504606847881L, "dispo.Import Path", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum DispoImportState = dispo.createEnum(3458764513820541334L, "dispo.Import State", MediaType.TEXT_PLAIN, "");
+   DispoImportStateAttributeType DispoImportState = dispo.createEnum(DispoImportStateAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeBoolean DispoIsMultiEnv = dispo.createBoolean(3587620131443940337L, "dispo.Is Multi-Env", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean DispoItemAborted = dispo.createBoolean(3458764513820541448L, "dispo.item.Aborted", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemAssignee = dispo.createString(3458764513820541441L, "dispo.item.Assignee", MediaType.TEXT_PLAIN, "");
@@ -50,7 +51,7 @@ public interface DispoOseeTypes {
    AttributeTypeBoolean DispoItemNeedsReview = dispo.createBoolean(2903020690286924090L, "dispo.item.Needs Review", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemNotes = dispo.createString(3458764513820541456L, "dispo.item.Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemPercentComplete = dispo.createString(3458764513820541449L, "dispo.item.Percent Complete", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum DispoItemStatus = dispo.createEnum(3458764513820541336L, "dispo.item.Status", MediaType.TEXT_PLAIN, "");
+   DispoItemStatusAttributeType DispoItemStatus = dispo.createEnum(DispoItemStatusAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString DispoItemTeam = dispo.createString(3160880792426011047L, "dispo.Team", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemTotalPoints = dispo.createString(3458764513820541443L, "dispo.item.Total Points", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemVersion = dispo.createString(3458764513820541440L, "dispo.item.Version", MediaType.TEXT_PLAIN, "");
@@ -78,7 +79,7 @@ public interface DispoOseeTypes {
       .exactlyOne(DispoItemNeedsReview, "false")
       .zeroOrOne(DispoItemNotes, "")
       .zeroOrOne(DispoItemPercentComplete, "0%")
-      .zeroOrOne(DispoItemStatus, "Unspecified", 3458764513820541337L)
+      .zeroOrOne(DispoItemStatus, "Unspecified")
       .zeroOrOne(DispoItemTotalPoints, "0.0")
       .zeroOrOne(DispoItemVersion, "0.0")
       .exactlyOne(DispoItemTeam, "Unassigned"));
@@ -88,7 +89,7 @@ public interface DispoOseeTypes {
       .zeroOrOne(DispoConfig, "")
       .zeroOrOne(DispoDateCreated, "")
       .zeroOrOne(DispoImportPath, "")
-      .zeroOrOne(DispoImportState, "No Import", 3458764513820541335L)
+      .zeroOrOne(DispoImportState, "No Import")
       .zeroOrOne(DispoIsMultiEnv, "")
       .zeroOrOne(DispoMultiEnvSettings, "")
       .zeroOrOne(DispoNotesJson, "[]")

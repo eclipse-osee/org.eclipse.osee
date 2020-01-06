@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Ryan D. Brooks
  */
-public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeTypeToken, ArtifactTypeAttributeTypeMetaData> {
+public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeTypeToken, ArtifactTypeAttributeTypeMetaData<?>> {
    private static final long serialVersionUID = 1L;
    private final ArtifactTypeToken artifactType;
 
@@ -33,43 +33,23 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this.artifactType = artifactType;
    }
 
-   public AttributeMultiplicity any(AttributeTypeGeneric<?> attributeType, String defaultValue) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ANY, defaultValue));
+   public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue));
       return this;
    }
 
-   public AttributeMultiplicity any(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ANY, defaultValue, enumTypeId));
+   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue));
       return this;
    }
 
-   public AttributeMultiplicity exactlyOne(AttributeTypeGeneric<?> attributeType, String defaultValue) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.EXACTLY_ONE, defaultValue));
+   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue));
       return this;
    }
 
-   public AttributeMultiplicity exactlyOne(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.EXACTLY_ONE, defaultValue, enumTypeId));
-      return this;
-   }
-
-   public AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<?> attributeType, String defaultValue) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ZERO_OR_ONE, defaultValue));
-      return this;
-   }
-
-   public AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.ZERO_OR_ONE, defaultValue, enumTypeId));
-      return this;
-   }
-
-   public AttributeMultiplicity atLeastOne(AttributeTypeGeneric<?> attributeType, String defaultValue, Long enumTypeId) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.AT_LEAST_ONE, defaultValue, enumTypeId));
-      return this;
-   }
-
-   public AttributeMultiplicity atLeastOne(AttributeTypeGeneric<?> attributeType, String defaultValue) {
-      put(attributeType, new ArtifactTypeAttributeTypeMetaData(Multiplicity.AT_LEAST_ONE, defaultValue));
+   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+      put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue));
       return this;
    }
 

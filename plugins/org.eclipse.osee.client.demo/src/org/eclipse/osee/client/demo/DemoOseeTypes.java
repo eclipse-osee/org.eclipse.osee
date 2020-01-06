@@ -19,7 +19,9 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
  * @author Roberto E. Escobar
  */
 public interface DemoOseeTypes {
+
    ArtifactTypeToken DemoArtifactWithSelectivePartition =
       clientDemo.add(clientDemo.artifactType(86L, "Demo Artifact With Selective Partition", false, Artifact).atLeastOne(
-         Partition, " ", 3458764513820541309L));
+         Partition, " "));
+
 }

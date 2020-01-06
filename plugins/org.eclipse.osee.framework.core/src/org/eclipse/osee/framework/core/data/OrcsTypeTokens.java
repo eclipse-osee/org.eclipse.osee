@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
+import org.eclipse.osee.framework.jdk.core.type.QuinFunction;
 import org.eclipse.osee.framework.jdk.core.type.TriFunction;
 
 /**
@@ -186,6 +187,16 @@ public class OrcsTypeTokens {
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
       return attributeTypes.addAndReturn(
          attributeEnumConstructor.apply(TaggerTypeToken.SENTINEL, mediaType, namespace));
+   }
+
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(QuinFunction<Long, String, TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, Long id, String name, String mediaType) {
+      return attributeTypes.addAndReturn(
+         attributeEnumConstructor.apply(id, name, OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
+   }
+
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(QuinFunction<Long, String, TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, Long id, String name, String mediaType) {
+      return attributeTypes.addAndReturn(
+         attributeEnumConstructor.apply(id, name, OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
    }
 
    public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {

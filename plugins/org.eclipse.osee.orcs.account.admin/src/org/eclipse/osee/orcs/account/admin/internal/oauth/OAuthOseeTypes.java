@@ -18,9 +18,9 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
-import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token.OAuthClientGrantAttributeType;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public interface OAuthOseeTypes {
    // @formatter:off
    AttributeTypeString OAuthClientAuthorizedAudience = oauth.createString(7160371155049131554L, "oauth.client.Authorized Audience", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum OAuthClientAuthorizedGrantType = oauth.createEnum(1935002343589638144L, "oauth.client.Authorized Grant Type", MediaType.TEXT_PLAIN, "");
+   OAuthClientGrantAttributeType OAuthClientAuthorizedGrantType = oauth.createEnum(OAuthClientGrantAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString OAuthClientAuthorizedRedirectUri = oauth.createString(5424134645937614632L, "oauth.client.Authorized Redirect URI", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OAuthClientAuthorizedScope = oauth.createString(3555983643778551674L, "oauth.client.Authorized Scope", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean OAuthClientIsConfidential = oauth.createBoolean(537327028164749105L, "oauth.client.Is Confidential", MediaType.TEXT_PLAIN, "");
@@ -39,7 +39,7 @@ public interface OAuthOseeTypes {
    ArtifactTypeToken OAuthClient = oauth.add(oauth.artifactType(756912961500447526L, "OAuth Client", false, Artifact)
       .any(ImageContent, "")
       .any(OAuthClientAuthorizedAudience, "")
-      .any(OAuthClientAuthorizedGrantType, "", 1473232209255605777L)
+      .any(OAuthClientAuthorizedGrantType, "")
       .any(OAuthClientAuthorizedRedirectUri, "")
       .any(OAuthClientAuthorizedScope, "")
       .exactlyOne(OAuthClientIsConfidential, "true")

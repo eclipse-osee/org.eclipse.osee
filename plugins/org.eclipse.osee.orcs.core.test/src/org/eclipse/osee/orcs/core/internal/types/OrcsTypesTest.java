@@ -38,7 +38,6 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
-import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeInputStream;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
@@ -88,7 +87,7 @@ public final class OrcsTypesTest {
    private static final AttributeTypeString Name = test.createString(1152921504606957090L, "Name", MediaType.TEXT_PLAIN, "");
    private static final AttributeTypeInputStream Annotation = test.createInputStream(1152921504606957091L, "Annotation", MediaType.TEXT_PLAIN, "");
    private static final AttributeTypeId Wordml = test.createString(1152921504606957092L, "WordML", MediaType.APPLICATION_XML, "");
-   private static final AttributeTypeEnum Field1 = test.createEnumNoTag(1152921504606957093L, "Field 1", MediaType.TEXT_PLAIN, "");
+   private static final TestProcedureStatusAttributeType Field1 = test.createEnumNoTag(TestProcedureStatusAttributeType::new, MediaType.TEXT_PLAIN);
    private static final AttributeTypeDate Field2 = test.createDate(1152921504606957094L, "Field 2", MediaType.TEXT_PLAIN, "");
 
    public static final ArtifactTypeToken Artifact = test.add(test.artifactType(1152921504606957083L, "Artifact", false)
@@ -100,7 +99,7 @@ public final class OrcsTypesTest {
    public static final ArtifactTypeToken SoftwareRequirement = test.add(test.artifactType(1152921504606957085L, "Software Requirement", false, Requirement));
    public static final ArtifactTypeToken SystemRequirement = test.add(test.artifactType(1152921504606957086L, "System Requirement", false, Requirement));
    public static final ArtifactTypeToken SubsystemRequirement = test.add(test.artifactType(1152921504606957087L, "SubSystem Requirement", false, Requirement, OtherArtifact)
-      .any(Field1, "this is a field", 3458764513820541304L));
+      .any(Field1, "this is a field"));
    public static final ArtifactTypeToken LastArtifact = test.add(test.artifactType(1152921504606957089L, "Last Artifact", false, SubsystemRequirement)
       .exactlyOne(Field2, "field2"));
 

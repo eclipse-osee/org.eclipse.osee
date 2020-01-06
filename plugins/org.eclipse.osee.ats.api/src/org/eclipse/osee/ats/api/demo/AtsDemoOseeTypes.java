@@ -14,8 +14,11 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import static org.eclipse.osee.ats.api.demo.AtsDemoTypeTokenProvider.atsDemo;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.demo.enums.token.CodeCategoryAttributeType;
+import org.eclipse.osee.ats.api.demo.enums.token.CodeDefectCodeAttributeType;
+import org.eclipse.osee.ats.api.demo.enums.token.CodeDetectionAttributeType;
+import org.eclipse.osee.ats.api.demo.enums.token.CodeReqDocAttributeType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 
@@ -27,16 +30,16 @@ public interface AtsDemoOseeTypes {
    // @formatter:off
    AttributeTypeString ChangeType = atsDemo.createString(1152921504606847253L, "demo.code.Change Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Action = atsDemo.createString(1152921504606847254L, "demo.code.Action", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum Category = atsDemo.createEnumNoTag(1152921504606847238L, "demo.code.Category", MediaType.TEXT_PLAIN, "");
+   CodeCategoryAttributeType Category = atsDemo.createEnumNoTag(CodeCategoryAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString CloseDetection = atsDemo.createString(1152921504606847239L, "demo.code.Close Detection", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CodeChangeReq = atsDemo.createString(1152921504606847240L, "demo.code.Code Change Req", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = atsDemo.createString(1152921504606847241L, "demo.code.CSCI", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum DefectCode = atsDemo.createEnumNoTag(1152921504606847242L, "demo.code.Defect Code", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum Detection = atsDemo.createEnumNoTag(1152921504606847243L, "demo.code.Detection", MediaType.TEXT_PLAIN, "");
+   CodeDefectCodeAttributeType DefectCode = atsDemo.createEnumNoTag(CodeDefectCodeAttributeType::new, MediaType.TEXT_PLAIN);
+   CodeDetectionAttributeType Detection = atsDemo.createEnumNoTag(CodeDetectionAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString IncludeBuild = atsDemo.createString(6624602983846643901L, "demo.code.Include Build", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger LocAffected = atsDemo.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OriginatingBuild = atsDemo.createString(6539429238794418072L, "demo.code.Originating Build", MediaType.TEXT_PLAIN, "");
-   AttributeTypeEnum ReqDoc = atsDemo.createEnumNoTag(1740569308658341L, "demo.code.Req Doc", MediaType.TEXT_PLAIN, "");
+   CodeReqDocAttributeType ReqDoc = atsDemo.createEnumNoTag(CodeReqDocAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString Subsystem = atsDemo.createString(1152921504606847248L, "demo.code.Subsystem", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TestBuild = atsDemo.createString(1152921504606847249L, "demo.code.Test Build", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TestMode = atsDemo.createString(1152921504606847250L, "demo.code.Test Mode", MediaType.TEXT_PLAIN, "");
@@ -72,16 +75,16 @@ public interface AtsDemoOseeTypes {
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow)
       .zeroOrOne(ChangeType, "")
       .zeroOrOne(Action, "")
-      .zeroOrOne(Category, "", 3458764513820541328L)
+      .zeroOrOne(Category, "")
       .zeroOrOne(CloseDetection, "")
       .zeroOrOne(CodeChangeReq, "")
       .zeroOrOne(CSCI, "")
-      .zeroOrOne(DefectCode, "", 3458764513820541329L)
-      .zeroOrOne(Detection, "", 3458764513820541330L)
+      .zeroOrOne(DefectCode, "")
+      .zeroOrOne(Detection, "")
       .zeroOrOne(IncludeBuild, "")
       .zeroOrOne(LocAffected, "")
       .zeroOrOne(OriginatingBuild, "")
-      .zeroOrOne(ReqDoc, "", 3458764513820541331L)
+      .zeroOrOne(ReqDoc, "")
       .zeroOrOne(Subsystem, "")
       .zeroOrOne(TestBuild, "")
       .zeroOrOne(TestMode, "")
@@ -113,7 +116,7 @@ public interface AtsDemoOseeTypes {
       .zeroOrOne(DpEffectivity, "")
       .zeroOrOne(SpEffectivity, "")
       .zeroOrOne(WpEffectivity, "")
-      .atLeastOne(Partition, " ", 3458764513820541309L));
+      .atLeastOne(Partition, " "));
    ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
    // @formatter:on

@@ -13,27 +13,17 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public final class ArtifactTypeAttributeTypeMetaData {
+public final class ArtifactTypeAttributeTypeMetaData<T> {
    private final Multiplicity multiplicity;
-   private final Long enumTypeId;
    private final String defaultValue;
 
    public ArtifactTypeAttributeTypeMetaData(Multiplicity multiplicity, String defaultValue) {
-      this(multiplicity, defaultValue, null);
-   }
-
-   public ArtifactTypeAttributeTypeMetaData(Multiplicity multiplicity, String defaultValue, Long enumTypeId) {
       this.multiplicity = multiplicity;
       this.defaultValue = defaultValue;
-      this.enumTypeId = enumTypeId;
    }
 
    public String getDefaultValue() {
       return defaultValue;
-   }
-
-   public Long getEnumTypeId() {
-      return enumTypeId;
    }
 
    public Multiplicity getMultiplicity() {
