@@ -46,9 +46,9 @@ public class DataModuleFactory {
    private final BranchModule branchModule;
    private final KeyValueModule keyValueModule;
    private final TxModule txModule;
-   private final AdminModule adminModule;
+   private final DataStoreAdmin dataStoreAdmin;
 
-   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, AdminModule adminModule) {
+   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, DataStoreAdmin dataStoreAdmin) {
       super();
       this.logger = logger;
       this.loaderModule = loaderModule;
@@ -56,7 +56,7 @@ public class DataModuleFactory {
       this.branchModule = branchModule;
       this.keyValueModule = keyValueModule;
       this.txModule = txModule;
-      this.adminModule = adminModule;
+      this.dataStoreAdmin = dataStoreAdmin;
    }
 
    public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
@@ -78,7 +78,6 @@ public class DataModuleFactory {
          queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService, sqlObjectLoader, keyValueStore);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
-      final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin();
       return new DataModule() {
          @Override
          public DataFactory getDataFactory() {
@@ -114,7 +113,6 @@ public class DataModuleFactory {
          public DataStoreAdmin getDataStoreAdmin() {
             return dataStoreAdmin;
          }
-
       };
    }
 }
