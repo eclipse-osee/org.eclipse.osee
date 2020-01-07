@@ -193,8 +193,8 @@ public class WordTemplateRenderer extends WordRenderer {
          wtcData.setPresentationType(presentationType);
          ArtifactId view = (ArtifactId) getRendererOptionValue(RendererOption.VIEW);
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
-         wtcData.setPermanentLinkUrl(String.format("http://%s:%s/", ClientSessionManager.getClientName(),
-            ClientSessionManager.getClientPort()));
+         wtcData.setPermanentLinkUrl(
+            String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort()));
 
          Pair<String, Set<String>> content = null;
          try {
@@ -205,6 +205,7 @@ public class WordTemplateRenderer extends WordRenderer {
 
          if (content != null) {
             data = content.getFirst();
+            data = data.replaceAll("(\\r|\\n|\\r\\n)<w:p", "<w:p"); //Removing special character sequence that prevents Word from opening the document
             WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
          }
 
