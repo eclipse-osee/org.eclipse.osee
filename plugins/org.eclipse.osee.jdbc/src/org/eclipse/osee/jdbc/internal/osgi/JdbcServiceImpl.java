@@ -221,8 +221,9 @@ public class JdbcServiceImpl implements JdbcService {
             }
          }
          if (client == null) {
-            throw new OseeStateException(
-               "JDBC client not available.  If using an embedded database, it may have hung.");
+            String msg = "JDBC client not available.  If using an embedded database, it may have hung.";
+            System.err.println(msg);
+            throw new OseeStateException(msg);
          }
 
          try {
