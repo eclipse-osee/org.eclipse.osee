@@ -83,10 +83,10 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
    @Override
    public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) {
       TransactionDelta txDelta = changeUiData.getTxDelta();
-      sb.append("<b>Working Branch Last Modified</b>:<br/>");
+      sb.append("<b>Working Branch Last Modified</b>:" + ChangeReportInfoPresenter.lineEndStr);
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());
       sb.append("<br/><br/>");
-      sb.append("<b>Parent Branch Last Modified: </b><br/>");
+      sb.append("<b>Parent Branch Last Modified: </b>" + ChangeReportInfoPresenter.lineEndStr);
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getEndTx());
    }
 }

@@ -87,7 +87,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
       //      sb.append("<b>Branch 1 Last Modified</b>:<br/>");
       //      ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());
       //      sb.append("<br/><br/>");
-      sb.append("<b>Committed: </b><br/>");
+      sb.append("<b>Committed: </b>" + ChangeReportInfoPresenter.lineEndStr);
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getEndTx());
    }
 }

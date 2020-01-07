@@ -33,6 +33,8 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
 
    private static final String LOADING = "<form><p vspace='false'><b>Loading ...</b></p></form>";
    private static final String NO_CHANGES_FOUND = "<b>No changes were found</b><br/>";
+   public static final String lineEndStr = " - ";
+   // private String lineEndStr = "<br/>";
 
    public static interface Display {
       void setImage(KeyedImage image);
@@ -120,7 +122,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       } else {
          message = "Unkown";
       }
-      sb.append(String.format("<b>Associated With: </b> %s<br/>", message));
+      sb.append(String.format("<b>Associated With: </b> %s%s", message, lineEndStr));
    }
 
    public static void addTransactionInfo(StringBuilder sb, TransactionId tx) {
@@ -134,8 +136,10 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
          author = "Unknown";
       }
       DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-      sb.append(String.format("               <b>On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));
-      sb.append(String.format("               <b>By: </b> %s<br/>", AXml.textToXml(author)));
+      sb.append(String.format("               <b>On: </b> %s%s", dateFormat.format(transaction.getTimeStamp()),
+         ChangeReportInfoPresenter.lineEndStr));
+      sb.append(String.format("               <b>By: </b> %s%s", AXml.textToXml(author),
+         ChangeReportInfoPresenter.lineEndStr));
       sb.append(String.format("               <b>Comment: </b> %s", AXml.textToXml(transaction.getComment())));
    }
 
