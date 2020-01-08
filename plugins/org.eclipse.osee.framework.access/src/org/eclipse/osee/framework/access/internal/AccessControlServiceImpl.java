@@ -334,10 +334,10 @@ public class AccessControlServiceImpl implements IAccessControlService {
       List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
          if (o instanceof BranchId) {
-            key.add(String.valueOf(((BranchId) o).getIdString()));
+            key.add(((BranchId) o).getIdString());
          } else if (o instanceof Artifact) {
             key.add(((Artifact) o).getGuid());
-            key.add(String.valueOf(((Artifact) o).getBranch().getIdString()));
+            key.add(((Artifact) o).getBranch().getIdString());
          } else {
             key.add(Lib.generateArtifactIdAsInt().toString());
          }

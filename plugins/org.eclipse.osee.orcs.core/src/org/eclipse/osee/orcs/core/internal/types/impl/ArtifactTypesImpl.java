@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -43,11 +42,6 @@ public class ArtifactTypesImpl implements ArtifactTypes {
       return provider.getArtifactTypeIndex();
    }
 
-   private XArtifactType getType(ArtifactTypeId artType) {
-      Conditions.checkNotNull(artType, "artifactType");
-      return getArtifactTypesIndex().getDslTypeByToken(artType);
-   }
-
    @Override
    public Collection<ArtifactTypeToken> getAll() {
       return getArtifactTypesIndex().getAllTokens();
@@ -61,12 +55,6 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    @Override
    public ArtifactTypeToken get(Long id) {
       return getArtifactTypesIndex().get(id);
-   }
-
-   @Override
-   public boolean isAbstract(ArtifactTypeId artType) {
-      XArtifactType type = getType(artType);
-      return type.isAbstract();
    }
 
    @Override

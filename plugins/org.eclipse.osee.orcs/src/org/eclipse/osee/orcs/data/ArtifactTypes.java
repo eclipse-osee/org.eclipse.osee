@@ -33,8 +33,6 @@ public interface ArtifactTypes extends IdCollection<ArtifactTypeToken> {
 
    Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch);
 
-   boolean isAbstract(ArtifactTypeId artType);
-
    boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes);
 
    Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(ArtifactTypeId artType);

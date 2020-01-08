@@ -76,31 +76,15 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, long artifactId) {
-      Conditions.checkNotNull(branchId, "branch");
-
-      Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
-         "Cannot create an instance of abstract type [%s]", token);
-
-      String guidToSet = idFactory.getUniqueGuid(guid);
-
-      Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
-         "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
-
-      VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranch(branchId);
-
-      ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      ArtifactData artifactData =
-         objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet, ApplicabilityId.BASE);
-      return artifactData;
+      return create(branchId, token, guid, artifactId, ApplicabilityId.BASE);
    }
 
    @Override
    public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, long artifactId, ApplicabilityId appId) {
       Conditions.checkNotNull(branchId, "branch");
 
-      Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
-         "Cannot create an instance of abstract type [%s]", token);
+      Conditions.checkExpressionFailOnTrue(token.isAbstract(), "Cannot create an instance of abstract type [%s]",
+         token);
 
       String guidToSet = idFactory.getUniqueGuid(guid);
 

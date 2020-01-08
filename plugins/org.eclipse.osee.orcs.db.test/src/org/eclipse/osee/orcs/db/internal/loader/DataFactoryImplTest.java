@@ -23,9 +23,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -69,7 +69,6 @@ public class DataFactoryImplTest {
    private static final Long ART_ID = 987L;
    private static final Long SHARED_ID = 555L;
    private static final ArtifactId artifactId555 = ArtifactId.valueOf(SHARED_ID);
-   private static final ArtifactTypeToken artifactType = CoreArtifactTypes.SoftwareRequirementMsWord;
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -104,6 +103,7 @@ public class DataFactoryImplTest {
       OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactCache);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
       when(idFactory.getNextArtifactId()).thenReturn(ART_ID.intValue());
+      when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
       // VERSION
       when(verData.getBranch()).thenReturn(BRANCH);
@@ -150,19 +150,18 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactDataUsingAbstratArtifactType() {
-      when(artifactCache.get(artifactType)).thenReturn(artifactType);
-      when(artifactCache.isAbstract(artifactType)).thenReturn(true);
-
+   public void testCreateArtifactDataUsingAbstractArtifactType() {
+      ArtifactTypeToken artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Cannot create an instance of abstract type [%s]", artifactType));
+
       dataFactory.create(COMMON, artifactType, guid);
    }
 
    @Test
    public void testCreateArtifactDataInvalidGuid() {
+      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
       when(idFactory.getUniqueGuid(guid)).thenReturn("123");
-
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Invalid guid [123] during artifact creation [type: %s]", artifactType));
 
@@ -171,7 +170,6 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactData() {
-      when(artifactCache.isAbstract(DesignMsWord)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
 
       ArtifactData actual = dataFactory.create(COMMON, DesignMsWord, guid);
