@@ -74,8 +74,7 @@ public final class RenderingUtil {
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(txDelta);
       String name = associatedArtifact == null ? "" : associatedArtifact.getName();
       //remove quotes in title so to avoid conflict in vbs
-      name = name.replaceAll("[\"|']", "");
-      return name.substring(0, Math.min(name.length(), 15));
+      return makeNameSafer(name.substring(0, Math.min(name.length(), 15)));
    }
 
    public static boolean ensureFilenameLimit(IFile file) {
@@ -201,8 +200,12 @@ public final class RenderingUtil {
    }
 
    public static String toFileName(IOseeBranch branch) {
+      return makeNameSafer(branch.getShortName());
+   }
+
+   private static String makeNameSafer(String name) {
       // replace invalid filename characters \/:"*?<>| and . and ' with _
-      String shortName = Strings.saferReplace(branch.getShortName(), "[\\.\\/:\"*?<>|'\\\\]+", "_");
+      String shortName = Strings.saferReplace(name, "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
    }
 

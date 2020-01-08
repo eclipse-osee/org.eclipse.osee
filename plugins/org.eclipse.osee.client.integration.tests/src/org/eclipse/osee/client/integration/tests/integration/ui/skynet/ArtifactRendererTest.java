@@ -48,7 +48,7 @@ public class ArtifactRendererTest {
 
    private static final String NAME1 = "Name with \"quote\"";
    private static final String NAME2 = "Name with 'quote'";
-   private static final String EXPECTED_NAME = "Name with quote";
+   private static final String EXPECTED_NAME = "Name+with+_quot";
    private static Artifact artifact1;
    private static Artifact artifact2;
    private static TransactionToken startTx;
