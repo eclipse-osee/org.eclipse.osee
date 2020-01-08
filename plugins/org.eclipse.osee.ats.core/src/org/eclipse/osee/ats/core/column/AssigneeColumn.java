@@ -44,6 +44,10 @@ public class AssigneeColumn extends AbstractServicesColumn {
    }
 
    public String getAssigneeStr(IAtsObject atsObject) {
+      return getAssigneeStrr(atsObject);
+   }
+
+   public static String getAssigneeStrr(IAtsObject atsObject) {
       if (atsObject instanceof Action) {
          // ensure consistent order by using lists
          List<IAtsUser> pocs = new ArrayList<>();
@@ -88,7 +92,7 @@ public class AssigneeColumn extends AbstractServicesColumn {
       return "";
    }
 
-   private IAtsImplementerService getImplementersStringProvider() {
+   private static IAtsImplementerService getImplementersStringProvider() {
       if (implementStrProvider == null) {
          implementStrProvider = new AtsImplementersService();
       }
