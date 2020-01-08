@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
@@ -64,11 +63,9 @@ import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -81,8 +78,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummary
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
@@ -387,7 +382,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
-         disableDuplicateWidgets();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -474,53 +468,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       return Result.FalseResult;
    }
 
-   /**
-    * XWidget set does not support having multiple widgets tied to an attribute with editing. Upon editing one, that
-    * widget will think it's dirty and a save may or may not hit the one that needs to be saved with edited value. Thus,
-    * disable editing of duplicate widgets in states other than current state. Also disable widgets in current state if
-    * widget exists in header. Info tag will show informing user why they can't edit.
-    */
-   public Result disableDuplicateWidgets() {
-      HashCollection<AttributeTypeToken, XWidget> attrToXWidget = new HashCollection<>();
-
-      // Header widgets trump others
-      for (XWidget xWidget : headerComp.getXWidgets(new ArrayList<XWidget>())) {
-         if (xWidget instanceof IAttributeWidget) {
-            AttributeTypeToken attrType = ((IAttributeWidget) xWidget).getAttributeType();
-            attrToXWidget.put(attrType, xWidget);
-         }
-      }
-
-      // Current state comes second
-      WfeWorkflowSection currentStateSection = getCurrentStateSection();
-      disableDuplicateWidgets(attrToXWidget, currentStateSection);
-
-      // Disable any other duplicate attr widgets with info decorator
-      for (WfeWorkflowSection section : sections) {
-         if (section != currentStateSection) {
-            disableDuplicateWidgets(attrToXWidget, section);
-         }
-      }
-      return Result.TrueResult;
-   }
-
-   private void disableDuplicateWidgets(HashCollection<AttributeTypeToken, XWidget> attrToXWidget, WfeWorkflowSection currentStateSection) {
-      for (XWidget xWidget : currentStateSection.getXWidgets()) {
-         if (xWidget instanceof IAttributeWidget) {
-            AttributeTypeToken attrType = ((IAttributeWidget) xWidget).getAttributeType();
-            if (attrToXWidget.containsKey(attrType)) {
-               xWidget.setEditable(false);
-               getManagedForm().getMessageManager().addMessage(attrType.getName(),
-                  "Duplicate field, use Header or Current State to edit.", null, IMessageProvider.INFORMATION,
-                  xWidget.getControl());
-            } else {
-               xWidget.setEditable(true);
-            }
-            attrToXWidget.put(attrType, xWidget);
-         }
-      }
-   }
-
    public Result isXWidgetSavable() {
       Result result = null;
       if (Widgets.isAccessible(headerComp)) {
@@ -605,7 +552,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          for (WfeWorkflowSection section : sections) {
             section.refresh();
          }
-         disableDuplicateWidgets();
       }
    }
 
@@ -636,6 +582,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public WfeHeaderComposite getHeader() {
       return headerComp;
+   }
+
+   public List<StateXWidgetPage> getStatePages() {
+      return statePages;
    }
 
    @Override

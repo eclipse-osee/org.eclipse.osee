@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -26,6 +28,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
    private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
+   private final Map<String, ArrayList<String>> attrNameToWidgetMap = new HashMap<String, ArrayList<String>>();
 
    public WorkDefinition(Long id, String name) {
       super(id, name);
@@ -107,6 +110,10 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    @Override
    public List<CreateTasksDefinition> getCreateTasksDefs() {
       return createTasksDefs;
+   }
+
+   public Map<String, ArrayList<String>> getDuplicatesMap() {
+      return attrNameToWidgetMap;
    }
 
 }

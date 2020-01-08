@@ -141,6 +141,10 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }
 
+   public SwtXWidgetRenderer getDynamicXWidgetLayout() {
+      return dynamicXWidgetLayout;
+   }
+
    protected void processXmlLayoutDatas(String xWidgetXml) {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }

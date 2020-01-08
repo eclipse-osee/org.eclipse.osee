@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.core.workdef.builder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -79,7 +84,61 @@ public class WorkDefBuilder {
          }
       }
 
+      // Construct duplicates attrs map
+      Map<String, ArrayList<String>> dupMap = workDef.getDuplicatesMap();
+      Set<String> headerLayoutItemNames = new HashSet<String>();
+      allLayoutItemsToStringSet(headerLayoutItemNames, workDef.getHeaderDef().getLayoutItems());
+
+      // Loop through headers
+      for (String label : headerLayoutItemNames) {
+         ArrayList<String> values = dupMap.get(label);
+         if (values == null) {
+            values = new ArrayList<String>();
+            dupMap.put(label, values);
+         }
+         values.add(workDef.getHeaderDef().toString());
+      }
+
+      // Loop through states
+      Set<String> currStateLayoutItemNames;
+      for (IAtsStateDefinition currState : workDef.getStates()) {
+         currStateLayoutItemNames = new HashSet<String>();
+         allLayoutItemsToStringSet(currStateLayoutItemNames, currState.getLayoutItems());
+         for (String label : currStateLayoutItemNames) {
+            ArrayList<String> values = dupMap.get(label);
+            if (values == null) {
+               values = new ArrayList<String>();
+               dupMap.put(label, values);
+            }
+            values.add(workDef.getHeaderDef().toString());
+         }
+      }
+
+      // Clear all keys with a single entry in value
+      Set<String> toDel = new HashSet<String>();
+      for (String key : dupMap.keySet()) {
+         if (dupMap.get(key).size() < 2) {
+            toDel.add(key);
+         }
+      }
+
+      for (String key : toDel) {
+         dupMap.remove(key);
+      }
+
       return workDef;
+   }
+
+   private void allLayoutItemsToStringSet(Set<String> ret, List<IAtsLayoutItem> inputList) {
+      for (IAtsLayoutItem layItem : inputList) {
+         if (layItem instanceof CompositeLayoutItem) {
+            for (IAtsLayoutItem compItem : ((CompositeLayoutItem) layItem).getaLayoutItems()) {
+               ret.add(compItem.getName());
+            }
+         } else {
+            ret.add(layItem.getName());
+         }
+      }
    }
 
    private IAtsStateDefinition getStateDefinition(String name) {

@@ -22,15 +22,13 @@ public class XRequestedHoursApprovalWidget extends XAbstractSignDateAndByButton 
    public static String ID = XRequestedHoursApprovalWidget.class.getSimpleName();
 
    public XRequestedHoursApprovalWidget() {
-      super("Approve Requested Hours", "Manager approving the requesting hours.",
-         AtsAttributeTypes.ApproveRequestedHoursDate, AtsAttributeTypes.ApproveRequestedHoursBy,
-         AtsImage.CHECK_CLIPBOARD);
+      super("Approve Requested Hours", "Sign or clear requesting hours.", AtsAttributeTypes.ApproveRequestedHoursDate,
+         AtsAttributeTypes.ApproveRequestedHoursBy, AtsImage.CHECK_CLIPBOARD);
    }
 
    public XRequestedHoursApprovalWidget(boolean isRequired) {
-      super("Approve Requested Hours", "Manager approving the requesting hours.",
-         AtsAttributeTypes.ApproveRequestedHoursDate, AtsAttributeTypes.ApproveRequestedHoursBy,
-         AtsImage.CHECK_CLIPBOARD, isRequired);
+      super("Approve Requested Hours", "Sign or clear requesting hours.", AtsAttributeTypes.ApproveRequestedHoursDate,
+         AtsAttributeTypes.ApproveRequestedHoursBy, AtsImage.CHECK_CLIPBOARD, isRequired);
 
    }
 

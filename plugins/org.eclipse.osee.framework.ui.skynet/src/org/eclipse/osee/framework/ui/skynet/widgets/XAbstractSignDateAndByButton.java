@@ -38,9 +38,11 @@ import org.eclipse.swt.SWT;
  */
 public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
+   public static final String NOT_YET_SIGNED = "Not Yet Signed";
    private final AttributeTypeId signDateAttrType;
    private final AttributeTypeId signByAttrType;
    private boolean isRequiredButton = false;
+   private boolean doSign = false;
 
    public XAbstractSignDateAndByButton(String label, String toolTip, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrUser, KeyedImage keyedImage) {
       super(label, toolTip, ImageManager.getImage(keyedImage));
@@ -59,7 +61,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
    }
 
    @Override
-   protected String getResultsText() {
+   public String getResultsText() {
       Date date = getArtifact().getSoleAttributeValue(signDateAttrType, null);
       if (date != null) {
          User user = UserManager.getUserByArtId(
@@ -72,7 +74,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       } else {
          resultsLabelWidget.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       }
-      return "Not Yet Signed";
+      return NOT_YET_SIGNED;
    }
 
    private final XModifiedListener listener = new XModifiedListener() {
@@ -84,14 +86,24 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    protected void handleSelection() {
       try {
-         if (!MessageDialog.openConfirm(Displays.getActiveShell(), getLabel(), getSignMessage())) {
+         // Ok --> 0, Cancel --> 1, Clear --> 2
+         int res = MessageDialog.open(3, Displays.getActiveShell(), getLabel(), getSignMessage(), SWT.NONE,
+            new String[] {"Ok", "Cancel", "Clear"});
+         if (res == 1) {
+            doSign = false;
             return;
+         } else {
+            doSign = true;
          }
          Job signJob = new Job(getSignMessage()) {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               setSigned();
+               if (res == 2) {
+                  setUnsigned();
+               } else {
+                  setSigned();
+               }
                return Status.OK_STATUS;
             }
          };
@@ -106,7 +118,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
    }
 
    @Override
-   protected void refreshLabel() {
+   public void refreshLabel() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -117,7 +129,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       });
    }
 
-   protected void setSigned() {
+   public void setSigned() {
       SkynetTransaction tx =
          TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
       Artifact storeArt = getArtifact();
@@ -128,9 +140,28 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       refreshLabel();
    }
 
+   public void setUnsigned() {
+      SkynetTransaction tx =
+         TransactionManager.createTransaction(getArtifact().getBranch(), "Set unsigned for " + getLabel());
+      Artifact storeArt = getArtifact();
+      storeArt.deleteSoleAttribute(signByAttrType);
+      storeArt.deleteSoleAttribute(signDateAttrType);
+      tx.addArtifact(storeArt);
+      tx.execute();
+      refreshLabel();
+   }
+
    @Override
    public boolean isEditable() {
       return true;
+   }
+
+   public boolean doSign() {
+      return doSign;
+   }
+
+   public AttributeTypeId getSignDateAttrType() {
+      return signDateAttrType;
    }
 
 }

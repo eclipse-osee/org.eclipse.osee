@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
@@ -194,6 +195,8 @@ public class WfeCustomHeader extends Composite {
             if (wfArt.isDeleted()) {
                return;
             }
+            // Update duplicate widgets
+            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(managedForm, wfArt, xWidget, true);
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
