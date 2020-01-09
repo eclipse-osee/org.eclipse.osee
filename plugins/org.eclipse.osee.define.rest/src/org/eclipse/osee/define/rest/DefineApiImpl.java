@@ -19,7 +19,6 @@ import org.eclipse.osee.define.api.MSWordOperations;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.SystemPreferences;
 import org.osgi.service.event.EventAdmin;
 
 /**
@@ -37,7 +36,6 @@ public class DefineApiImpl implements DefineApi {
    private TraceabilityOperations traceabilityOperations;
    private ImportOperations importOperations;
    private GitOperations gitOperations;
-   private SystemPreferences systemPrefs;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -55,14 +53,10 @@ public class DefineApiImpl implements DefineApi {
       this.eventAdmin = eventAdmin;
    }
 
-   public void setSystemPreferences(SystemPreferences systemPrefs) {
-      this.systemPrefs = systemPrefs;
-   }
-
    public void start() {
       wordOperations = new MSWordOperationsImpl(orcsApi, logger, eventAdmin);
       dataRightsOperations = new DataRightsOperationsImpl(orcsApi);
-      gitOperations = new GitOperationsImpl(orcsApi, systemPrefs);
+      gitOperations = new GitOperationsImpl(orcsApi, orcsApi.getSystemProperties());
       traceabilityOperations = new TraceabilityOperationsImpl(orcsApi, gitOperations);
       importOperations = new ImportOperationsImpl(orcsApi, activityLog);
    }

@@ -12,12 +12,12 @@ package org.eclipse.osee.orcs.db.mocks;
 
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockSystemPreferences implements SystemPreferences {
+public class MockSystemPreferences implements SystemProperties {
 
    @Override
    public String getSystemUuid() {

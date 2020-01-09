@@ -32,7 +32,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -75,11 +75,11 @@ public class BranchModule {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final IdentityManager idManager;
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
    private final ExecutorAdmin executorAdmin;
    private final IResourceManager resourceManager;
 
-   public BranchModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
+   public BranchModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, SystemProperties preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;

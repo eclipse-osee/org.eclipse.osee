@@ -15,14 +15,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SystemPreferencesImpl implements SystemPreferences {
+public class SystemPropertiesImpl implements SystemProperties {
 
    private static Map<String, Pair<Long, String>> cache;
    private KeyValueDataAccessor accessor;

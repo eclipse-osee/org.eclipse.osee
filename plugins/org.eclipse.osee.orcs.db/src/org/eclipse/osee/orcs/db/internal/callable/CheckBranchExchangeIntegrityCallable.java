@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -42,10 +42,10 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCallable<URI> {
 
    private final URI fileToCheck;
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
    private final IResourceManager resourceManager;
 
-   public CheckBranchExchangeIntegrityCallable(Log logger, OrcsSession session, JdbcClient service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
+   public CheckBranchExchangeIntegrityCallable(Log logger, OrcsSession session, JdbcClient service, SystemProperties preferences, IResourceManager resourceManager, URI fileToCheck) {
       super(logger, session, service);
       this.fileToCheck = fileToCheck;
       this.preferences = preferences;

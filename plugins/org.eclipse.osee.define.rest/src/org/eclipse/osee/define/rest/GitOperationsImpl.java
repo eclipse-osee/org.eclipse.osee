@@ -79,7 +79,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -90,13 +90,13 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public final class GitOperationsImpl implements GitOperations {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
-   private final SystemPreferences systemPrefs;
+   private final SystemProperties systemPrefs;
    private final Map<String, ArtifactId> pathToCodeunitMap = new HashMap<>(10000);
 
    private static final Pattern changeIdPattern = Pattern.compile("\\s+Change-Id: (I\\w{40})");
    private final Matcher changeIdMatcher = changeIdPattern.matcher("");
 
-   public GitOperationsImpl(OrcsApi orcsApi, SystemPreferences systemPrefs) {
+   public GitOperationsImpl(OrcsApi orcsApi, SystemProperties systemPrefs) {
       this.orcsApi = orcsApi;
       this.queryFactory = orcsApi.getQueryFactory();
       this.systemPrefs = systemPrefs;

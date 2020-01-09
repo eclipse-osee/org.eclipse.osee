@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +37,7 @@ public class AttributeProvider implements IResourceProvider {
 
    private String binaryDataPath;
    private String attributeDataPath;
-   private SystemPreferences preferences;
+   private SystemProperties preferences;
    private boolean isInitialized;
 
    public AttributeProvider() {
@@ -45,7 +45,7 @@ public class AttributeProvider implements IResourceProvider {
       isInitialized = false;
    }
 
-   public void setSystemPreferences(SystemPreferences preferences) {
+   public void setSystemProperties(SystemProperties preferences) {
       this.preferences = preferences;
    }
 

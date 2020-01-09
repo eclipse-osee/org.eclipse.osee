@@ -22,7 +22,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
@@ -66,12 +66,12 @@ public class ExportItemFactory {
       "SELECT bac.* FROM osee_join_id, osee_branch_acl bac WHERE query_id=? AND id=bac.branch_id ORDER BY bac.branch_id";
 
    private final Log logger;
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
    private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
    private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, SystemPreferences preferences, JdbcClient jdbcClient, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, SystemProperties preferences, JdbcClient jdbcClient, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.preferences = preferences;
       this.jdbcClient = jdbcClient;

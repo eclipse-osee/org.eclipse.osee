@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
@@ -43,28 +43,23 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private static final String BRANCH_EXPORT_EXECUTOR_ID = "branch.export.worker";
 
    private final ExportItemFactory factory;
-
    private final SqlJoinFactory joinFactory;
-   private final SystemPreferences preferences;
+   private final SystemProperties properties;
    private final ExecutorAdmin executorAdmin;
    private final List<? extends BranchId> branches;
    private final PropertyStore options;
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SqlJoinFactory joinFactory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<? extends BranchId> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SqlJoinFactory joinFactory, SystemProperties properties, ExecutorAdmin executorAdmin, List<? extends BranchId> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), session, factory.getDbService());
       this.joinFactory = joinFactory;
       this.factory = factory;
-      this.preferences = preferences;
+      this.properties = properties;
       this.executorAdmin = executorAdmin;
       this.branches = branches;
       this.options = options;
       this.exportName = exportName;
-   }
-
-   private SystemPreferences getSystemPreferences() {
-      return preferences;
    }
 
    private ExecutorAdmin getExecutorAdmin() {
@@ -98,7 +93,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private File createTempFolder() {
-      String exchangeBasePath = ResourceConstants.getExchangeDataPath(getSystemPreferences());
+      String exchangeBasePath = ResourceConstants.getExchangeDataPath(properties);
       File rootDirectory = ExchangeUtil.createTempFolder(exchangeBasePath);
       if (!Strings.isValid(getExchangeFileName())) {
          setExchangeFileName(rootDirectory.getName());
@@ -185,5 +180,4 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          throw exception;
       }
    }
-
 }

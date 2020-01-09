@@ -4,5 +4,5 @@
 	<service>
 		<provide interface="org.eclipse.osee.framework.resource.management.IResourceProvider"/>
 	</service>
- <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemPreferences" name="SystemPreferences" policy="static"/>	
+ <reference bind="setSystemProperties" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemProperties" name="SystemProperties" policy="static"/>	
 </scr:component>

@@ -17,7 +17,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
@@ -40,7 +40,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
    private Log logger;
    private JdbcService jdbcService;
-   private SystemPreferences preferences;
+   private SystemProperties properties;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
 
@@ -66,8 +66,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.resourceManager = resourceManager;
    }
 
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
+   public void setSystemProperties(SystemProperties properties) {
+      this.properties = properties;
    }
 
    public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
@@ -88,11 +88,11 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
-         new BranchModule(logger, jdbcClient, joinFactory, idManager, preferences, executorAdmin, resourceManager);
+         new BranchModule(logger, jdbcClient, joinFactory, idManager, properties, executorAdmin, resourceManager);
 
       TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager);
 
-      DataStoreAdmin adminModule = new DataStoreAdminImpl(logger, jdbcClient, idManager, preferences, typesDataStore);
+      DataStoreAdmin adminModule = new DataStoreAdminImpl(logger, jdbcClient, idManager, properties, typesDataStore);
 
       KeyValueModule keyValueModule = new KeyValueModule(jdbcClient);
 

@@ -17,7 +17,7 @@ import org.eclipse.osee.jdbc.JdbcMigrationOptions;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 
 /**
@@ -25,11 +25,11 @@ import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
  */
 public class MigrateDatastoreCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
    private final Supplier<Iterable<JdbcMigrationResource>> schemaProvider;
    private final JdbcMigrationOptions options;
 
-   public MigrateDatastoreCallable(OrcsSession session, Log logger, JdbcClient jdbcClient, SystemPreferences preferences, Supplier<Iterable<JdbcMigrationResource>> schemaProvider, JdbcMigrationOptions options) {
+   public MigrateDatastoreCallable(OrcsSession session, Log logger, JdbcClient jdbcClient, SystemProperties preferences, Supplier<Iterable<JdbcMigrationResource>> schemaProvider, JdbcMigrationOptions options) {
       super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.schemaProvider = schemaProvider;

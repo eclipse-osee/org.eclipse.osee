@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.mocks.MockResource;
 import org.eclipse.osee.orcs.db.mocks.MockSystemPreferences;
 import org.eclipse.osee.orcs.db.mocks.Utility;
@@ -77,7 +77,7 @@ public class AttributeProviderTest {
 
    @Test(expected = OseeCoreException.class)
    public void testInitializationException3() throws Exception {
-      MockSystemPreferences preferences = new MockSystemPreferences() {
+      MockSystemPreferences properties = new MockSystemPreferences() {
          @Override
          public String getValue(String key) {
             Assert.assertEquals(OseeClient.OSEE_APPLICATION_SERVER_DATA, key);
@@ -85,7 +85,7 @@ public class AttributeProviderTest {
          }
       };
       AttributeProvider provider = new AttributeProvider();
-      provider.setSystemPreferences(preferences);
+      provider.setSystemProperties(properties);
       provider.start();
       provider.getAttributeDataPath();
    }
@@ -95,7 +95,7 @@ public class AttributeProviderTest {
       String rawData = Utility.generateData(4001);
       byte[] zippedData = Utility.asZipped(rawData, "testData.txt");
 
-      SystemPreferences preferences = new MockSystemPreferences() {
+      SystemProperties properties = new MockSystemPreferences() {
          @Override
          public String getValue(String key) {
             Assert.assertEquals(OseeClient.OSEE_APPLICATION_SERVER_DATA, key);
@@ -104,7 +104,7 @@ public class AttributeProviderTest {
       };
 
       AttributeProvider provider = new AttributeProvider();
-      provider.setSystemPreferences(preferences);
+      provider.setSystemProperties(properties);
       provider.start();
 
       IResource resource = new MockResource("testData.txt", new URI("file://path"), zippedData, true);

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
@@ -26,11 +26,11 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
  */
 public class ManifestExportItem extends AbstractXmlExportItem {
 
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
    private final List<AbstractExportItem> exportItems;
    private final PropertyStore options;
 
-   public ManifestExportItem(Log logger, SystemPreferences preferences, List<AbstractExportItem> exportItems, PropertyStore options) {
+   public ManifestExportItem(Log logger, SystemProperties preferences, List<AbstractExportItem> exportItems, PropertyStore options) {
       super(logger, ExportItem.EXPORT_MANIFEST);
       this.preferences = preferences;
       this.exportItems = exportItems;

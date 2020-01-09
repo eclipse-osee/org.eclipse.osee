@@ -26,7 +26,7 @@ import org.eclipse.osee.jdbc.JdbcMigrationOptions;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
@@ -44,14 +44,14 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final IdentityManager identityService;
-   private final SystemPreferences preferences;
+   private final SystemProperties properties;
    private final OrcsTypesDataStore typesDataStore;
 
-   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemPreferences preferences, OrcsTypesDataStore typesDataStore) {
+   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemProperties properties, OrcsTypesDataStore typesDataStore) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.identityService = identityService;
-      this.preferences = preferences;
+      this.properties = properties;
       this.typesDataStore = typesDataStore;
    }
 
@@ -65,11 +65,11 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
       jdbcClient.migrate(options, schemaProvider.get());
 
-      String attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
+      String attributeDataPath = ResourceConstants.getAttributeDataPath(properties);
       logger.info("Deleting application server binary data [%s]...", attributeDataPath);
       Lib.deleteDir(new File(attributeDataPath));
 
-      preferences.putValue(DataStoreConstants.DATASTORE_ID_KEY, GUID.create());
+      properties.putValue(DataStoreConstants.DATASTORE_ID_KEY, GUID.create());
 
       addDefaultPermissions();
 
@@ -89,13 +89,13 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
       JdbcMigrationOptions options = new JdbcMigrationOptions(false, false);
 
-      return new MigrateDatastoreCallable(session, logger, jdbcClient, preferences, schemaProvider, options);
+      return new MigrateDatastoreCallable(session, logger, jdbcClient, properties, schemaProvider, options);
    }
 
    @Override
    public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
       Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
-      return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, preferences);
+      return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, properties);
    }
 
    @Override
@@ -103,7 +103,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       try {
          boolean initialized = typesDataStore.isTypesResourcesValid();
          if (initialized) {
-            String systemUuid = preferences.getSystemUuid();
+            String systemUuid = properties.getSystemUuid();
             if (Strings.isValid(systemUuid)) {
                IResource resource = typesDataStore.getOrcsTypesLoader(null);
                if (resource != null) {
@@ -122,5 +122,4 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    public JdbcClient getJdbcClient() {
       return jdbcClient;
    }
-
 }

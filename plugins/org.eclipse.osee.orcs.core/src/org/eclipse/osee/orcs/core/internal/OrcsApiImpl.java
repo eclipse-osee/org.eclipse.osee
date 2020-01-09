@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.access.AccessControlServiceImpl;
@@ -79,7 +79,7 @@ public class OrcsApiImpl implements OrcsApi {
    private Log logger;
    private OrcsDataStore dataStore;
    private ExecutorAdmin executorAdmin;
-   private SystemPreferences preferences;
+   private SystemProperties properties;
    private EventAdmin eventAdmin;
    private OrcsTokenService tokenService;
 
@@ -110,8 +110,8 @@ public class OrcsApiImpl implements OrcsApi {
       this.executorAdmin = executorAdmin;
    }
 
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
+   public void setSystemProperties(SystemProperties properties) {
+      this.properties = properties;
    }
 
    public void setEventAdmin(EventAdmin eventAdmin) {
@@ -210,7 +210,7 @@ public class OrcsApiImpl implements OrcsApi {
       queryModule =
          new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider, orcsTypes, proxyManager);
 
-      indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
+      indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
 
       OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes, queryModule);
@@ -309,8 +309,8 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public SystemPreferences getSystemPreferences() {
-      return preferences;
+   public SystemProperties getSystemProperties() {
+      return properties;
    }
 
    @Override
@@ -330,5 +330,4 @@ public class OrcsApiImpl implements OrcsApi {
    public IAccessControlService getAccessControlService() {
       return accessControlService;
    }
-
 }

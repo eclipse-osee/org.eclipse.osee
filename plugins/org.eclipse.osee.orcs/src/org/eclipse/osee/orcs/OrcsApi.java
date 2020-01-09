@@ -41,7 +41,7 @@ public interface OrcsApi {
 
    ScriptEngine getScriptEngine();
 
-   SystemPreferences getSystemPreferences();
+   SystemProperties getSystemProperties();
 
    OrcsApplicability getApplicabilityOps();
 

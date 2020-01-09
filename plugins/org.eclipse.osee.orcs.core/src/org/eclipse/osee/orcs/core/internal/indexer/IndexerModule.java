@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
@@ -34,15 +34,15 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    private final IndexerStatisticsImpl statistics = new IndexerStatisticsImpl();
 
    private final Log logger;
-   private final SystemPreferences preferences;
+   private final SystemProperties properties;
    private final ExecutorAdmin executorAdmin;
    private final QueryEngineIndexer queryIndexer;
    private final IndexerCollector systemCollector;
    private Future<Integer> task;
 
-   public IndexerModule(Log logger, SystemPreferences preferences, ExecutorAdmin executorAdmin, QueryEngineIndexer queryIndexer) {
+   public IndexerModule(Log logger, SystemProperties properties, ExecutorAdmin executorAdmin, QueryEngineIndexer queryIndexer) {
       this.logger = logger;
-      this.preferences = preferences;
+      this.properties = properties;
       this.executorAdmin = executorAdmin;
       this.queryIndexer = queryIndexer;
       this.systemCollector = new IndexerStatisticsCollectorImpl(statistics);
@@ -51,9 +51,9 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    public void start(OrcsSession systemSession, AttributeTypes attributeTypes) {
       queryIndexer.addCollector(systemCollector);
       try {
-         if (preferences.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
-            task = executorAdmin.submit("Attribute Indexer",
-               queryIndexer.indexAllFromQueue(systemSession, attributeTypes));
+         if (properties.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
+            task =
+               executorAdmin.submit("Attribute Indexer", queryIndexer.indexAllFromQueue(systemSession, attributeTypes));
          } else {
             logger.info("Indexer was not executed on Server Startup.");
          }

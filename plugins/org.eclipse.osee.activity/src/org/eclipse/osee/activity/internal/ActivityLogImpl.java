@@ -61,7 +61,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 
 /**
  * @author Ryan D. Brooks
@@ -106,7 +106,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    private Log logger;
    private ExecutorAdmin executorAdmin;
    private ActivityStorage storage;
-   private SystemPreferences preferences;
+   private SystemProperties properties;
 
    private ActivityMonitor activityMonitor;
    private volatile long freshnessMillis;
@@ -135,8 +135,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       this.executorAdmin = executorAdmin;
    }
 
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
+   public void setSystemProperties(SystemProperties properties) {
+      this.properties = properties;
    }
 
    public void start(Map<String, Object> properties) throws Exception {
@@ -162,7 +162,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
       int sampleWindowSecs;
       String sampleWindowSecStr =
-         preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, "100");
+         properties.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, "100");
       if (Strings.isValid(sampleWindowSecStr)) {
          sampleWindowSecs = Integer.parseInt(sampleWindowSecStr);
       } else {

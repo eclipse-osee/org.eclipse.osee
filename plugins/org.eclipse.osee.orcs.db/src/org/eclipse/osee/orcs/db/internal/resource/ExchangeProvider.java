@@ -30,30 +30,28 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExchangeProvider implements IResourceProvider {
-
    private String binaryDataPath;
    private String exchangeDataPath;
-   private SystemPreferences preferences;
+   private SystemProperties properties;
    private boolean isInitialized;
 
    public ExchangeProvider() {
-      super();
       isInitialized = false;
    }
 
-   public void setSystemPreferences(SystemPreferences preferences) {
-      this.preferences = preferences;
+   public void setSystemProperties(SystemProperties properties) {
+      this.properties = properties;
    }
 
    public void start() {
-      binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
-      exchangeDataPath = ResourceConstants.getExchangeDataPath(preferences);
+      binaryDataPath = ResourceConstants.getBinaryDataPath(properties);
+      exchangeDataPath = ResourceConstants.getExchangeDataPath(properties);
       isInitialized = true;
    }
 

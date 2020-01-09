@@ -37,7 +37,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.SystemPreferences;
+import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -63,7 +63,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
  */
 public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI> {
 
-   private final SystemPreferences preferences;
+   private final SystemProperties preferences;
 
    private final IResourceManager resourceManager;
    private final IdentityLocator identityService;
@@ -82,7 +82,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private IOseeExchangeDataProvider exportDataProvider;
    private ExchangeDataProcessor exchangeDataProcessor;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.resourceManager = resourceManager;

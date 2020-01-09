@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * @author Roberto E. Escobar
  */
-public interface SystemPreferences {
+public interface SystemProperties {
 
    public static String OSEE_PERMANENT_URL = "osee.permanent.base.url";
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.api;
 
 import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
-import static org.eclipse.osee.orcs.SystemPreferences.OSEE_PERMANENT_URL;
+import static org.eclipse.osee.orcs.SystemProperties.OSEE_PERMANENT_URL;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.AbstractArtifactUrl;
@@ -69,7 +69,7 @@ public class ArtifactUrlServer extends AbstractArtifactUrl {
 
    @Override
    protected String getPermanentBaseUrl() {
-      String address = orcsApi.getSystemPreferences().getValue(OSEE_PERMANENT_URL);
+      String address = orcsApi.getSystemProperties().getValue(OSEE_PERMANENT_URL);
       return normalize(address);
    }
 
@@ -82,7 +82,7 @@ public class ArtifactUrlServer extends AbstractArtifactUrl {
          OseeLog.log(ArtifactUrlServer.class, Level.WARNING, ex);
       }
       if (!Strings.isValid(address)) {
-         address = orcsApi.getSystemPreferences().getValue(OSEE_APPLICATION_SERVER);
+         address = orcsApi.getSystemProperties().getValue(OSEE_APPLICATION_SERVER);
       }
 
       if (Strings.isInValid(address)) {
