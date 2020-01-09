@@ -186,7 +186,7 @@ public class WordTemplateRenderer extends WordRenderer {
          WordTemplateContentData wtcData = new WordTemplateContentData();
          wtcData.setArtId(artifact.getUuid());
          wtcData.setBranch(artifact.getBranch());
-         wtcData.setFooter(footer);
+         wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
          wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
          wtcData.setLinkType(linkType != null ? linkType.toString() : null);
          wtcData.setTxId(txId);
