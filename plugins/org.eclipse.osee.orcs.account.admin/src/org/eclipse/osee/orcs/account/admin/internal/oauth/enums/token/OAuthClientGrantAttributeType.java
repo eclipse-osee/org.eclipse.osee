@@ -29,7 +29,7 @@ public class OAuthClientGrantAttributeType extends AttributeTypeEnum<OAuthClient
 	// @formatter:on
 
    public OAuthClientGrantAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1935002343589638144L, namespace, "OAuth Client Authorized Grant Type", mediaType, "", taggerType);
+      super(1935002343589638144L, namespace, "oauth.client.Authorized Grant Type", mediaType, "", taggerType);
    }
 
    public class OAuthClientGrantEnum extends EnumToken {

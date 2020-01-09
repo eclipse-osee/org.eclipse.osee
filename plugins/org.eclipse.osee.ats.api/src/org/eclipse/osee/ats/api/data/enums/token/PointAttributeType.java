@@ -37,7 +37,7 @@ public class PointAttributeType extends AttributeTypeEnum<PointEnum> {
 	// @formatter:on
 
    public PointAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847178L, namespace, "Points", mediaType, "", taggerType);
+      super(1152921504606847178L, namespace, "ats.Points", mediaType, "", taggerType);
    }
 
    public class PointEnum extends EnumToken {

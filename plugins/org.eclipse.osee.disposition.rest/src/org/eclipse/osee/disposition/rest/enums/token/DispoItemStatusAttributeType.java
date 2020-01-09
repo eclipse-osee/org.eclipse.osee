@@ -30,7 +30,7 @@ public class DispoItemStatusAttributeType extends AttributeTypeEnum<DispoItemSta
 	// @formatter:on
 
    public DispoItemStatusAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(3458764513820541336L, namespace, "Dispo Item Status", mediaType, "", taggerType);
+      super(3458764513820541336L, namespace, "dispo.item.Status", mediaType, "", taggerType);
    }
 
    public class DispoItemStatusEnum extends EnumToken {

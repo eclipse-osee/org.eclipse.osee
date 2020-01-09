@@ -30,7 +30,7 @@ public class CodeReqDocAttributeType extends AttributeTypeEnum<CodeReqDocEnum> {
 	// @formatter:on
 
    public CodeReqDocAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1740569308658341L, namespace, "Code Req Doc", mediaType, "", taggerType);
+      super(1740569308658341L, namespace, "demo.code.Req Doc", mediaType, "", taggerType);
    }
 
    public class CodeReqDocEnum extends EnumToken {

@@ -27,7 +27,7 @@ public class ApplicableToProgramAttributeType extends AttributeTypeEnum<Applicab
 	// @formatter:on
 
    public ApplicableToProgramAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921949227188394L, namespace, "Applicable to Program", mediaType, "", taggerType);
+      super(1152921949227188394L, namespace, "ats.Applicable to Program", mediaType, "", taggerType);
    }
 
    public class ApplicableToProgramEnum extends EnumToken {

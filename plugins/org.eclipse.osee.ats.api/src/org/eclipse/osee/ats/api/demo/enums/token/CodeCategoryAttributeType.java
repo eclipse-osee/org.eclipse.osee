@@ -30,7 +30,7 @@ public class CodeCategoryAttributeType extends AttributeTypeEnum<CodeCategoryEnu
 	// @formatter:on
 
    public CodeCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847238L, namespace, "Code Category", mediaType, "", taggerType);
+      super(1152921504606847238L, namespace, "demo.code.Category", mediaType, "", taggerType);
    }
 
    public class CodeCategoryEnum extends EnumToken {

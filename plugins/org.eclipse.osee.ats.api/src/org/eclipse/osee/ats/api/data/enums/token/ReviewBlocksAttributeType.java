@@ -28,7 +28,7 @@ public class ReviewBlocksAttributeType extends AttributeTypeEnum<ReviewBlocksEnu
 	// @formatter:on
 
    public ReviewBlocksAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847176L, namespace, "Review Blocks", mediaType, "", taggerType);
+      super(1152921504606847176L, namespace, "ats.Review Blocks", mediaType, "", taggerType);
    }
 
    public class ReviewBlocksEnum extends EnumToken {

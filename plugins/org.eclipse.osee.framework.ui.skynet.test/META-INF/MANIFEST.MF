@@ -10,6 +10,7 @@ Export-Package: org.eclipse.osee.framework.ui.skynet
 Import-Package: org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.jdk.core.util.windows,
  org.junit,
  org.junit.rules,

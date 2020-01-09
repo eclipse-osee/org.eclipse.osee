@@ -19,6 +19,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.jdt.annotation,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util

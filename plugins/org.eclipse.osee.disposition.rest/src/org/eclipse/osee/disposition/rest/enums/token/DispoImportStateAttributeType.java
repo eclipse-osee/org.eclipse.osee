@@ -32,7 +32,7 @@ public class DispoImportStateAttributeType extends AttributeTypeEnum<DispoImport
 	// @formatter:on
 
    public DispoImportStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(3458764513820541334L, namespace, "Dispo Import State", mediaType, "", taggerType);
+      super(3458764513820541334L, namespace, "dispo.Import State", mediaType, "", taggerType);
    }
 
    public class DispoImportStateEnum extends EnumToken {

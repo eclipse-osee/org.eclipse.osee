@@ -45,7 +45,7 @@ public class CodeDefectCodeAttributeType extends AttributeTypeEnum<CodeDefectCod
 	// @formatter:on
 
    public CodeDefectCodeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847242L, namespace, "Code Defect Code", mediaType, "", taggerType);
+      super(1152921504606847242L, namespace, "demo.code.Defect Code", mediaType, "", taggerType);
    }
 
    public class CodeDefectCodeEnum extends EnumToken {

@@ -30,7 +30,7 @@ public class PriorityAttributeType extends AttributeTypeEnum<PriorityEnum> {
 	// @formatter:on
 
    public PriorityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847179L, namespace, "Priority", mediaType, "", taggerType);
+      super(1152921504606847179L, namespace, "ats.Priority", mediaType, "", taggerType);
    }
 
    public class PriorityEnum extends EnumToken {

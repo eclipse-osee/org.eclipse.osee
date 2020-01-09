@@ -11,6 +11,7 @@ Export-Package: org.eclipse.osee.orcs.authorization
 Import-Package: org.eclipse.osee.authorization.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,

@@ -11,6 +11,7 @@ Import-Package: org.eclipse.osee.account.rest.model,
  org.eclipse.osee.authentication.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger

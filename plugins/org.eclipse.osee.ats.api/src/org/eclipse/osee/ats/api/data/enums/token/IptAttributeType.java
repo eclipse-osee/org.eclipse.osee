@@ -34,7 +34,7 @@ public class IptAttributeType extends AttributeTypeEnum<IptEnum> {
 	// @formatter:on
 
    public IptAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(6025996821081174931L, namespace, "IPT", mediaType, "", taggerType);
+      super(6025996821081174931L, namespace, "ats.IPT", mediaType, "", taggerType);
    }
 
    public class IptEnum extends EnumToken {

@@ -36,7 +36,7 @@ public class IptTeamAttributeType extends AttributeTypeEnum<IptTeamEnum> {
 	// @formatter:on
 
    public IptTeamAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1364016887343371647L, namespace, "IPT Team", mediaType, "", taggerType);
+      super(1364016887343371647L, namespace, "ats.IPT Team", mediaType, "", taggerType);
    }
 
    public class IptTeamEnum extends EnumToken {

@@ -32,7 +32,7 @@ public class CodeDetectionAttributeType extends AttributeTypeEnum<CodeDetectionE
 	// @formatter:on
 
    public CodeDetectionAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847243L, namespace, "Code Detection", mediaType, "", taggerType);
+      super(1152921504606847243L, namespace, "demo.code.Detection", mediaType, "", taggerType);
    }
 
    public class CodeDetectionEnum extends EnumToken {

@@ -27,7 +27,7 @@ public class ReviewFormalTypeAttributeType extends AttributeTypeEnum<ReviewForma
 	// @formatter:on
 
    public ReviewFormalTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847177L, namespace, "Review Formal Type", mediaType, "", taggerType);
+      super(1152921504606847177L, namespace, "ats.Review Formal Type", mediaType, "", taggerType);
    }
 
    public class ReviewFormalTypeEnum extends EnumToken {

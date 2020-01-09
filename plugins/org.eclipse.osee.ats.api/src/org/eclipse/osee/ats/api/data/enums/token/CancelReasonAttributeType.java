@@ -29,7 +29,7 @@ public class CancelReasonAttributeType extends AttributeTypeEnum<CancelReasonEnu
 	// @formatter:on
 
    public CancelReasonAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(5718762723487704057L, namespace, "Cancel Reason", mediaType, "", taggerType);
+      super(5718762723487704057L, namespace, "ats.Cancel Reason", mediaType, "", taggerType);
    }
 
    public class CancelReasonEnum extends EnumToken {

@@ -36,7 +36,7 @@ public class ColorTeamAttributeType extends AttributeTypeEnum<ColorTeamEnum> {
 	// @formatter:on
 
    public ColorTeamAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1364016837443371647L, namespace, "Color Team", mediaType, "", taggerType);
+      super(1364016837443371647L, namespace, "ats.Color Team", mediaType, "", taggerType);
    }
 
    public class ColorTeamEnum extends EnumToken {

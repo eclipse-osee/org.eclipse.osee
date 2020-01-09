@@ -32,7 +32,7 @@ public class WorkPackageTypeAttributeType extends AttributeTypeEnum<WorkPackageT
 	// @formatter:on
 
    public WorkPackageTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(72057594037928065L, namespace, "Work Package Type", mediaType, "", taggerType);
+      super(72057594037928065L, namespace, "ats.Work Package Type", mediaType, "", taggerType);
    }
 
    public class WorkPackageTypeEnum extends EnumToken {

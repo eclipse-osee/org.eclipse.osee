@@ -29,7 +29,7 @@ public class ChangeTypeAttributeType extends AttributeTypeEnum<ChangeTypeEnum> {
 	// @formatter:on
 
    public ChangeTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847180L, namespace, "Change Type", mediaType, "", taggerType);
+      super(1152921504606847180L, namespace, "ats.Change Type", mediaType, "", taggerType);
    }
 
    public class ChangeTypeEnum extends EnumToken {

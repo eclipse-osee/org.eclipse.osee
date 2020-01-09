@@ -29,7 +29,7 @@ public class ClosureStateAttributeType extends AttributeTypeEnum<ClosureStateEnu
 	// @formatter:on
 
    public ClosureStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847452L, namespace, "Closure Closure State", mediaType, "", taggerType);
+      super(1152921504606847452L, namespace, "ats.closure.Closure State", mediaType, "", taggerType);
    }
 
    public class ClosureStateEnum extends EnumToken {
