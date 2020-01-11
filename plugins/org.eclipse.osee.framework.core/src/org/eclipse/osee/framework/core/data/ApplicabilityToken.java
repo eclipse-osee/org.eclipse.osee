@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
 
@@ -30,7 +31,7 @@ public class ApplicabilityToken extends NamedIdBase implements ApplicabilityId {
       super(applId, name);
    }
 
-   public static ApplicabilityToken valueOf(@JsonProperty("id") long id, @JsonProperty("name") String name) {
+   public static @NonNull ApplicabilityToken valueOf(@JsonProperty("id") long id, @JsonProperty("name") String name) {
       return new ApplicabilityToken(id, name);
    }
 }

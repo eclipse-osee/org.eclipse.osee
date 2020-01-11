@@ -18,11 +18,12 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Stephen J. Molaro
  */
-public class UserTokenDeserializer extends StdDeserializer<UserToken> {
+public class UserTokenDeserializer extends StdDeserializer<@NonNull UserToken> {
 
    private static final long serialVersionUID = 1L;
 

@@ -16,11 +16,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Donald G. Dunne
  */
-public class TransactionTokenDeserializer extends StdDeserializer<TransactionToken> {
+public class TransactionTokenDeserializer extends StdDeserializer<@NonNull TransactionToken> {
 
    public TransactionTokenDeserializer() {
       this(TransactionToken.class);

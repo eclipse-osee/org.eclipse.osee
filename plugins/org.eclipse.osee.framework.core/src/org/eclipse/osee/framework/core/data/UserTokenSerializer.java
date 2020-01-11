@@ -18,11 +18,12 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Stephen J. Molaro
  */
-public class UserTokenSerializer extends StdSerializer<UserToken> {
+public class UserTokenSerializer extends StdSerializer<@NonNull UserToken> {
 
    private static final long serialVersionUID = 1L;
 

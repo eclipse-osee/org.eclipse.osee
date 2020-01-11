@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
@@ -31,7 +32,7 @@ public interface TransactionId extends Id {
       return valueOf(Long.valueOf(id));
    }
 
-   public static TransactionId valueOf(Long id) {
+   public static @NonNull TransactionId valueOf(Long id) {
       final class TransactionToken extends BaseId implements TransactionId {
          public TransactionToken(Long txId) {
             super(txId);

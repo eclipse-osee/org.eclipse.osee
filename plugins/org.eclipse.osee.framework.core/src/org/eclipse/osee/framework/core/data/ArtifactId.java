@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
@@ -45,7 +46,7 @@ public interface ArtifactId extends Id {
       return valueOf(Long.valueOf(id));
    }
 
-   public static ArtifactId valueOf(Long id) {
+   public static @NonNull ArtifactId valueOf(Long id) {
       final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
          private final Long id;
 

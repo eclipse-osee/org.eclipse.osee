@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -164,17 +165,18 @@ public class JsonUtil {
       SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
 
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
-      module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
-      module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
+      module.addDeserializer(ArtifactToken.class,
+         new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
+      module.addDeserializer(ArtifactId.class, new IdDeserializer<@NonNull ArtifactId>(ArtifactId::valueOf));
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
-      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       module.addDeserializer(UserToken.class, new UserTokenDeserializer());
+      module.addDeserializer(TransactionId.class, new IdDeserializer<@NonNull TransactionId>(TransactionId::valueOf));
+      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       module.addSerializer(UserToken.class, new UserTokenSerializer());
-      JsonSerializer<Id> idSerializer = new IdSerializer();
+      JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();
       module.addSerializer(TransactionId.class, idSerializer);
       module.addSerializer(BranchType.class, idSerializer);
       module.addSerializer(BranchState.class, idSerializer);
-      module.addDeserializer(TransactionId.class, new IdDeserializer<TransactionId>(TransactionId::valueOf));
 
       objectMapper.registerModule(module);
       return objectMapper;

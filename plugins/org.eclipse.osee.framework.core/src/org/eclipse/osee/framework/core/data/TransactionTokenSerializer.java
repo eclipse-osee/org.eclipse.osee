@@ -18,11 +18,12 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author Donald G. Dunne
  */
-public class TransactionTokenSerializer extends StdSerializer<TransactionToken> {
+public class TransactionTokenSerializer extends StdSerializer<@NonNull TransactionToken> {
 
    public TransactionTokenSerializer() {
       super(TransactionToken.class);

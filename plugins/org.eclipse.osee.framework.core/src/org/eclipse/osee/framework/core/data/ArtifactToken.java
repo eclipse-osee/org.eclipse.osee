@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -70,7 +71,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       return valueOf(id, GUID.create(), name, branch, ArtifactTypeToken.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(long id, String name) {
+   public static @NonNull ArtifactToken valueOf(long id, String name) {
       return valueOf(id, GUID.create(), name, BranchId.SENTINEL, ArtifactTypeToken.SENTINEL);
    }
 
@@ -82,7 +83,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
+   public static @NonNull ArtifactToken valueOf(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
    }
 

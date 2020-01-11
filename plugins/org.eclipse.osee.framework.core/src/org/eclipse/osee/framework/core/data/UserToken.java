@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -40,7 +41,7 @@ public interface UserToken extends ArtifactToken, UserId {
       return new UserTokenImpl(id, name, userId, active, email, java.util.Collections.singleton(userId), roles);
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
+   public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, Collection<String> loginIds, IUserGroupArtifactToken... roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles);
    }
 
