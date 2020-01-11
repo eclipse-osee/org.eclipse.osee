@@ -57,13 +57,6 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean inheritsFrom(ArtifactTypeToken thisType, ArtifactTypeId... otherTypes) {
-      Conditions.checkNotNull(thisType, "thisArtifactType");
-      Conditions.checkNotNull(otherTypes, "otherArtifactTypes");
-      return getArtifactTypesIndex().inheritsFrom(thisType, otherTypes);
-   }
-
-   @Override
    public Collection<? extends ArtifactTypeToken> getAllDescendantTypes(ArtifactTypeId artType) {
       Conditions.checkNotNull(artType, "artifactType");
       LinkedHashSet<ArtifactTypeToken> descendants = Sets.newLinkedHashSet();

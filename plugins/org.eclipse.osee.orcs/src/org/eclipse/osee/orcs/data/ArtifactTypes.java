@@ -27,6 +27,4 @@ public interface ArtifactTypes extends IdCollection<ArtifactTypeToken> {
    boolean isValidAttributeType(ArtifactTypeToken artType, BranchId branch, AttributeTypeId attributeType);
 
    Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artType, BranchId branch);
-
-   boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeId... otherTypes);
 }

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -156,38 +155,5 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
 
    public void setAbstract(boolean isAbstract) {
       setFieldLogException(ARTIFACT_IS_ABSTRACT_FIELD_KEY, isAbstract);
-   }
-
-   /**
-    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
-    * <code>otherType</code> parameter.
-    *
-    * @param otherType artifact types to check against
-    * @return whether this artifact type inherits from otherType
-    */
-   public boolean inheritsFrom(ArtifactTypeId... otherTypes) {
-      boolean result = false;
-      for (ArtifactTypeId otherArtifactType : otherTypes) {
-         if (inheritsFromSingle(otherArtifactType)) {
-            result = true;
-            break;
-         }
-      }
-      return result;
-   }
-
-   private boolean inheritsFromSingle(ArtifactTypeId otherType) {
-      boolean result = false;
-      if (this.equals(otherType)) {
-         result = true;
-      } else {
-         for (ArtifactType superType : getSuperArtifactTypes()) {
-            if (superType.inheritsFrom(otherType)) {
-               result = true;
-               break;
-            }
-         }
-      }
-      return result;
    }
 }

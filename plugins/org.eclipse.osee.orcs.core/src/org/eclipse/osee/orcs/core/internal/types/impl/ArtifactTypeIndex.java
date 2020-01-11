@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 
@@ -69,32 +69,6 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
    public Collection<ArtifactTypeToken> getDescendantTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getDescendantTypes() : Collections.emptyList();
-   }
-
-   public boolean inheritsFrom(ArtifactTypeToken thisType, ArtifactTypeId... otherTypes) {
-      boolean result = false;
-      for (ArtifactTypeId otherType : otherTypes) {
-         if (inheritsFromSingle(thisType, otherType)) {
-            result = true;
-            break;
-         }
-      }
-      return result;
-   }
-
-   private boolean inheritsFromSingle(ArtifactTypeToken thisType, ArtifactTypeId otherType) {
-      boolean result = false;
-      if (thisType.equals(otherType)) {
-         result = true;
-      } else {
-         for (ArtifactTypeToken superType : thisType.getSuperTypes()) {
-            if (inheritsFromSingle(superType, otherType)) {
-               result = true;
-               break;
-            }
-         }
-      }
-      return result;
    }
 
    public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artType, BranchId branch) {

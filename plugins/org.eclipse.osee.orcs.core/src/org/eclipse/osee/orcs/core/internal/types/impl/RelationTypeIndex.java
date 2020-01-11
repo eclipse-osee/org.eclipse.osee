@@ -39,6 +39,6 @@ public class RelationTypeIndex extends TokenTypeIndex<RelationTypeToken, XRelati
 
    public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeToken artifactType) {
       ArtifactTypeId allowedType = getArtifactType(relation, relationSide);
-      return artifactTypeIndex.inheritsFrom(artifactType, allowedType);
+      return artifactType.inheritsFrom(allowedType);
    }
 }
