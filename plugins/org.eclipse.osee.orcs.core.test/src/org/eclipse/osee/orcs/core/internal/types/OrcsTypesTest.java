@@ -218,44 +218,6 @@ public final class OrcsTypesTest {
    }
 
    @Test
-   public void testInheritsFrom() {
-      ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, Requirement));
-      assertEquals(true, artTypes.inheritsFrom(Requirement, Artifact));
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, OtherArtifact));
-      assertEquals(false, artTypes.inheritsFrom(OtherArtifact, Requirement));
-      assertEquals(true, artTypes.inheritsFrom(OtherArtifact, Artifact));
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, SoftwareRequirement));
-      assertEquals(false, artTypes.inheritsFrom(Requirement, SoftwareRequirement));
-      assertEquals(true, artTypes.inheritsFrom(SoftwareRequirement, Artifact));
-      assertEquals(true, artTypes.inheritsFrom(SoftwareRequirement, Requirement));
-      assertEquals(false, artTypes.inheritsFrom(SoftwareRequirement, OtherArtifact));
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, SystemRequirement));
-      assertEquals(false, artTypes.inheritsFrom(Requirement, SystemRequirement));
-      assertEquals(true, artTypes.inheritsFrom(SystemRequirement, Artifact));
-      assertEquals(true, artTypes.inheritsFrom(SystemRequirement, Requirement));
-      assertEquals(false, artTypes.inheritsFrom(SystemRequirement, OtherArtifact));
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, SubsystemRequirement));
-      assertEquals(false, artTypes.inheritsFrom(Requirement, SubsystemRequirement));
-      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, Artifact));
-      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, Requirement));
-      assertEquals(true, artTypes.inheritsFrom(SubsystemRequirement, OtherArtifact));
-
-      assertEquals(false, artTypes.inheritsFrom(Artifact, LastArtifact));
-      assertEquals(false, artTypes.inheritsFrom(Requirement, LastArtifact));
-      assertEquals(false, artTypes.inheritsFrom(SubsystemRequirement, LastArtifact));
-      assertEquals(true, artTypes.inheritsFrom(LastArtifact, Artifact));
-      assertEquals(true, artTypes.inheritsFrom(LastArtifact, Requirement));
-      assertEquals(true, artTypes.inheritsFrom(LastArtifact, OtherArtifact));
-      assertEquals(true, artTypes.inheritsFrom(LastArtifact, SubsystemRequirement));
-   }
-
-   @Test
    public void testGetAllDescendants() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 

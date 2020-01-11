@@ -290,11 +290,14 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * a relatively expensive operation, only use this method when you need either the multiple artifact types or to have
     * sub-types included; otherwise us the less expensive isTypeEqual()
     */
+   @Override
    public final boolean isOfType(ArtifactTypeId... artifactTypes) {
-      if (artifactType.isInvalid()) {
-         return false;
+      for (ArtifactTypeId otherType : artifactTypes) {
+         if (getArtifactType().inheritsFrom(otherType)) {
+            return true;
+         }
       }
-      return getArtifactTypeFull().inheritsFrom(artifactTypes);
+      return false;
    }
 
    @Override

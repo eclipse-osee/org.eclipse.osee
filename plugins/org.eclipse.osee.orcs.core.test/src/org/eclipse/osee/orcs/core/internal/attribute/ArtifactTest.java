@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DE
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -212,9 +213,7 @@ public class ArtifactTest {
 
    @Test
    public void testIsOfType() {
-      artifact.isOfType(CoreArtifactTypes.CodeUnit);
-
-      verify(types).inheritsFrom(CoreArtifactTypes.GeneralData, CoreArtifactTypes.CodeUnit);
+      assertFalse(artifact.isOfType(CoreArtifactTypes.CodeUnit));
    }
 
    @Test

@@ -38,8 +38,8 @@ public final class RelationSetRule extends AbstractValidationRule {
          ignoreArtifactTypes.length == 0 ? new ArrayList<>() : Arrays.asList(ignoreArtifactTypes);
    }
 
-   public boolean hasArtifactType(ArtifactTypeToken artType) {
-      return atsApi.getStoreService().inheritsFrom(artType, artifactType);
+   public boolean hasArtifactType(ArtifactTypeToken artifactType) {
+      return artifactType.inheritsFrom(artifactType);
    }
 
    @Override

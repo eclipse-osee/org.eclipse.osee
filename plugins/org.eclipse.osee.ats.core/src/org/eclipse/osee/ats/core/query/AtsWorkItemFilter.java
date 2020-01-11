@@ -46,7 +46,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          for (ArtifactTypeToken matchType : artifactType) {
-            if (atsApi.getArtifactResolver().isOfType(item, matchType)) {
+            if (item.isOfType(matchType)) {
                found = true;
                break;
             }

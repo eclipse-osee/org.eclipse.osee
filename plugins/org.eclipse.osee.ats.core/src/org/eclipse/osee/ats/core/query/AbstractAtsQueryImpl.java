@@ -219,7 +219,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getTasksFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
+         if (artType.inheritsFrom(AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
       }
@@ -261,7 +261,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getSprintsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AgileSprint)) {
+         if (artType.inheritsFrom(AtsArtifactTypes.AgileSprint)) {
             artTypes.add(artType);
          }
       }
@@ -275,8 +275,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getGoalsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artType,
-            AtsArtifactTypes.Goal) || workItemTypes.contains(WorkItemType.AgileBacklog)) {
+         if (artType.inheritsFrom(AtsArtifactTypes.Goal) || workItemTypes.contains(WorkItemType.AgileBacklog)) {
             artTypes.add(artType);
          }
       }
@@ -302,7 +301,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private boolean typeIsSpecified(ArtifactTypeToken parentArtType, Set<ArtifactTypeToken> allArtTypes) {
       for (ArtifactTypeToken artifactType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artifactType, parentArtType)) {
+         if (artifactType.inheritsFrom(parentArtType)) {
             return true;
          }
       }
@@ -320,14 +319,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          workItemTypes.contains(WorkItemType.DecisionReview) || typeIsSpecified(AtsArtifactTypes.DecisionReview,
             allArtTypes);
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (isReviewSpecified && atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AbstractReview)) {
+         if (isReviewSpecified && artType.inheritsFrom(AtsArtifactTypes.AbstractReview)) {
             artTypes.add(artType);
-         } else if (isPeerSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
-            AtsArtifactTypes.PeerToPeerReview)) {
+         } else if (isPeerSpecified && artType.inheritsFrom(AtsArtifactTypes.PeerToPeerReview)) {
             artTypes.add(artType);
-
-         } else if (isDecisionSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
-            AtsArtifactTypes.DecisionReview)) {
+         } else if (isDecisionSpecified && artType.inheritsFrom(AtsArtifactTypes.DecisionReview)) {
             artTypes.add(artType);
          }
       }
@@ -337,7 +333,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
+         if (artType.inheritsFrom(AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
       }
@@ -449,7 +445,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<ArtifactTypeToken> getTeamWorkflowArtTypes(Set<ArtifactTypeToken> allArtTypes) {
       List<ArtifactTypeToken> teamWorkflowArtTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
-         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
+         if (artType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
             teamWorkflowArtTypes.add(artType);
          }
       }

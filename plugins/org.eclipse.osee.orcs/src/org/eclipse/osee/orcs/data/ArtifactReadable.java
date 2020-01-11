@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -42,8 +42,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       ApplicabilityId.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null, null);
 
    TransactionId getLastModifiedTransaction();
-
-   boolean isOfType(ArtifactTypeId... otherTypes);
 
    int getAttributeCount(AttributeTypeToken type);
 
@@ -96,7 +94,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    default ArtifactReadable getParent() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(
-         getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeId.SENTINEL));
+         getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL));
    }
 
    List<ArtifactReadable> getDescendants();
@@ -121,7 +119,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide);
 
-   default List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+   default List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       List<ArtifactReadable> artifacts = new ArrayList<>();
       for (ArtifactReadable artifact : getRelated(relationTypeSide)) {
          if (artifact.isOfType(artifactType)) {
@@ -131,13 +129,13 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       return artifacts;
    }
 
-   default List<ArtifactToken> getRelatedIds(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+   default List<ArtifactToken> getRelatedIds(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       return Collections.cast(getRelated(relationTypeSide, artifactType));
    }
 
    List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);
 
-   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag);
+   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag);
 
    boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact);
 

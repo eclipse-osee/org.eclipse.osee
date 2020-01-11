@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
@@ -159,7 +159,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return java.util.Collections.emptyList();
    }
 
-   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeId relationType, ArtifactTypeId artifactType) {
+   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeId relationType, ArtifactTypeToken artifactType) {
       Collection<Artifact> reordered = new HashSet<>(relationReorderRecords.size());
       for (DefaultBasicUuidRelationReorder reorder : relationReorderRecords) {
          if (relationType == null || relationType.equals(reorder.getRelTypeGuid())) {

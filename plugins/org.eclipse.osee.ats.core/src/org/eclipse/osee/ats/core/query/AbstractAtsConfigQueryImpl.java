@@ -131,7 +131,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          return true;
       }
       for (ArtifactTypeToken artType : artTypes) {
-         if (atsApi.getArtifactResolver().isOfType(artifact, artType)) {
+         if (artifact.isOfType(artType)) {
             return true;
          }
       }

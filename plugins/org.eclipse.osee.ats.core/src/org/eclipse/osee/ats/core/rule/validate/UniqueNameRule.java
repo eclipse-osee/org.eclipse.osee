@@ -41,7 +41,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    public boolean hasArtifactType(ArtifactTypeToken artType) {
-      return atsApi.getStoreService().inheritsFrom(artType, artifactType);
+      return artType.inheritsFrom(artifactType);
    }
 
    @Override

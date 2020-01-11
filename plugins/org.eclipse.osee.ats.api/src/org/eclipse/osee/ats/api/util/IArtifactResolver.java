@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -30,11 +29,5 @@ public interface IArtifactResolver {
    <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
 
    ArtifactTypeToken getArtifactType(IAtsWorkItem workItem);
-
-   boolean isOfType(ArtifactToken artifact, ArtifactTypeToken artifactType);
-
-   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType);
-
-   boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken parentArtType);
 
 }

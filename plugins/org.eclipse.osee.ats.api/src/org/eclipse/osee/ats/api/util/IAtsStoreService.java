@@ -75,8 +75,6 @@ public interface IAtsStoreService {
 
    AttributeTypeToken getAttributeType(Long attrTypeId);
 
-   boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType);
-
    Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf);
 
    boolean isDeleted(ArtifactId artifact);
@@ -105,7 +103,6 @@ public interface IAtsStoreService {
       return artIdToType;
    }
 
-   boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType);
 
    boolean isHistorical(ArtifactId artifact);
 

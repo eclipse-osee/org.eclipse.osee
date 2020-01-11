@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -102,11 +101,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public TransactionId getLastModifiedTransaction() {
       return TransactionId.SENTINEL;
-   }
-
-   @Override
-   public boolean isOfType(ArtifactTypeId... otherTypes) {
-      return artifactTypes.inheritsFrom(artifactType, otherTypes);
    }
 
    @Override
@@ -274,21 +268,21 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getChildren() {
-      return getRelated(CoreRelationTypes.DefaultHierarchical_Child, ArtifactTypeId.SENTINEL);
+      return getRelated(CoreRelationTypes.DefaultHierarchical_Child, ArtifactTypeToken.SENTINEL);
    }
 
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) {
-      return new ResultSetList<>(getRelated(relationTypeSide, ArtifactTypeId.SENTINEL));
+      return new ResultSetList<>(getRelated(relationTypeSide, ArtifactTypeToken.SENTINEL));
    }
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       return getRelated(relationTypeSide, artifactType, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeId artifactType, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
 
       List<ArtifactReadable> related =
          (relationTypeSide.getSide().isSideA() ? relationsSideA : relationsSideB).getValues(
@@ -298,8 +292,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       }
 
       Predicate<ArtifactReadable> filter = artifact -> {
-         return modType.isIncluded(deletionFlag) && (artifactType.isInvalid() || artifactTypes.inheritsFrom(
-            artifact.getArtifactType(), artifactType));
+         return modType.isIncluded(
+            deletionFlag) && (artifactType.isInvalid() || artifact.getArtifactType().inheritsFrom(artifactType));
       };
 
       if (artifactType.isValid() || deletionFlag.equals(DeletionFlag.EXCLUDE_DELETED)) {
@@ -310,17 +304,17 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) {
-      return getRelated(relationTypeSide, ArtifactTypeId.SENTINEL, deletionFlag);
+      return getRelated(relationTypeSide, ArtifactTypeToken.SENTINEL, deletionFlag);
    }
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
-      return getRelated(typeAndSide, ArtifactTypeId.SENTINEL).contains(artifact);
+      return getRelated(typeAndSide, ArtifactTypeToken.SENTINEL).contains(artifact);
    }
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
-      return getRelated(typeAndSide, ArtifactTypeId.SENTINEL).size();
+      return getRelated(typeAndSide, ArtifactTypeToken.SENTINEL).size();
    }
 
    @Override

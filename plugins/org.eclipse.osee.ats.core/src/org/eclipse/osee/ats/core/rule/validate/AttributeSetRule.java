@@ -36,7 +36,7 @@ public final class AttributeSetRule extends AbstractValidationRule {
    }
 
    public boolean hasArtifactType(ArtifactTypeToken artifactType) {
-      return atsApi.getStoreService().inheritsFrom(artifactType, baseArtifactType);
+      return artifactType.inheritsFrom(baseArtifactType);
    }
 
    @Override

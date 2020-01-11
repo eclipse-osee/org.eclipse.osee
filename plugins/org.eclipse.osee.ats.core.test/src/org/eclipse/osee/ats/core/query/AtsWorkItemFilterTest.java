@@ -78,12 +78,12 @@ public class AtsWorkItemFilterTest {
    @Test
    public void testIsOfType() {
       when(atsApi.getArtifactResolver()).thenReturn(artifactResolver);
-      when(artifactResolver.isOfType(teamWf1, AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
-      when(artifactResolver.isOfType(teamWf1, AtsArtifactTypes.Task)).thenReturn(false);
-      when(artifactResolver.isOfType(teamWf2, AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
-      when(artifactResolver.isOfType(teamWf2, AtsArtifactTypes.Task)).thenReturn(false);
-      when(artifactResolver.isOfType(task1, AtsArtifactTypes.Task)).thenReturn(true);
-      when(artifactResolver.isOfType(task1, AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(teamWf1.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
+      when(teamWf1.isOfType(AtsArtifactTypes.Task)).thenReturn(false);
+      when(teamWf2.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
+      when(teamWf2.isOfType(AtsArtifactTypes.Task)).thenReturn(false);
+      when(task1.isOfType(AtsArtifactTypes.Task)).thenReturn(true);
+      when(task1.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
 
       AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
 

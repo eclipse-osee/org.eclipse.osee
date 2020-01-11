@@ -183,11 +183,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
-   }
-
-   @Override
    public AttributeTypeToken getAttributeType(Long attrTypeId) {
       return orcsApi.getOrcsTypes().getAttributeTypes().get(attrTypeId);
    }
@@ -243,11 +238,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isHistorical(ArtifactId artifact) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isHistorical();
-   }
-
-   @Override
-   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, artifactType);
    }
 
    @Override

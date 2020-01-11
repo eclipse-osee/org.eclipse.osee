@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -31,8 +30,6 @@ public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisi
    void setArtifactType(ArtifactTypeToken artifactType);
 
    void setName(String name);
-
-   boolean isOfType(ArtifactTypeId... otherTypes);
 
    void setNotDirty();
 

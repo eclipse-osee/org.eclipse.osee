@@ -184,11 +184,6 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isArtifactTypeInheritsFrom(ArtifactTypeToken artifactType, ArtifactTypeToken baseArtifactType) {
-      return ArtifactTypeManager.inheritsFrom(artifactType, baseArtifactType);
-   }
-
-   @Override
    public AttributeTypeToken getAttributeType(Long attrTypeId) {
       return AttributeTypeManager.getTypeById(attrTypeId);
    }
@@ -253,11 +248,6 @@ public class AtsStoreService implements IAtsStoreService {
    public void clearCaches(IAtsWorkItem workItem) {
       ((WorkItem) workItem).clearCaches();
       ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
-   }
-
-   @Override
-   public boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType) {
-      return ArtifactTypeManager.inheritsFrom(artType, artifactType);
    }
 
    @Override
