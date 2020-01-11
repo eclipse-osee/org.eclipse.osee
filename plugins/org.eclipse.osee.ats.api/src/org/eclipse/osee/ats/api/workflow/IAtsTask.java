@@ -121,11 +121,6 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public boolean isOfType(ArtifactTypeId... artifactType) {
-            return false;
-         }
-
-         @Override
          public void setStateMgr(IAtsStateManager stateMgr) {
          }
 

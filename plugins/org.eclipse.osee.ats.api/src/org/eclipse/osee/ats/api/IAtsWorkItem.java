@@ -70,7 +70,9 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
       return isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 
-   boolean isOfType(ArtifactTypeId... artifactType);
+   default boolean isOfType(ArtifactTypeId... artifactType) {
+      return getStoreObject().isOfType(artifactType);
+   }
 
    default boolean isDecisionReview() {
       return isOfType(AtsArtifactTypes.DecisionReview);
@@ -219,11 +221,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          @Override
          public IAtsAction getParentAction() {
             return null;
-         }
-
-         @Override
-         public boolean isOfType(ArtifactTypeId... artifactType) {
-            return false;
          }
 
          @Override

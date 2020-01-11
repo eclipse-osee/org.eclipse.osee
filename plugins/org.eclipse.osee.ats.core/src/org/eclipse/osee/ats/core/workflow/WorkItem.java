@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -272,11 +271,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public void setStateMgr(IAtsStateManager stateMgr) {
       atsApi.getStateFactory().setStateMgr(this, stateMgr);
-   }
-
-   @Override
-   public boolean isOfType(ArtifactTypeId... artifactType) {
-      return getStoreObject().isOfType(artifactType);
    }
 
    @Override
