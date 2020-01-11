@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -83,8 +82,7 @@ public class ChangeData {
    }
 
    private boolean isImplDetails(Change change) {
-      return ArtifactTypeManager.inheritsFrom(change.getArtifactType(),
-         CoreArtifactTypes.AbstractImplementationDetails);
+      return change.getArtifactType().inheritsFrom(CoreArtifactTypes.AbstractImplementationDetails);
    }
 
    private boolean isDeleted(Change change) {

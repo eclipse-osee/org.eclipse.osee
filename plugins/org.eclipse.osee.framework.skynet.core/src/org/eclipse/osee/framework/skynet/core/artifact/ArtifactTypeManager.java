@@ -126,10 +126,6 @@ public class ArtifactTypeManager {
       return getType(artifactType.getId());
    }
 
-   public static boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes) {
-      return getType(artifactType).inheritsFrom(parentTypes);
-   }
-
    public static Artifact addArtifact(ArtifactToken artifactToken) {
       Conditions.assertTrue(artifactToken.getBranch().isValid(), "Branch must be specified.");
       return addArtifact(artifactToken, artifactToken.getBranch());
@@ -231,7 +227,7 @@ public class ArtifactTypeManager {
       return new OseeTypesExportOperation(typesEndpoint, outputStream);
    }
 
-   public static boolean isUserCreationAllowed(ArtifactTypeId artifactType) {
+   public static boolean isUserCreationAllowed(ArtifactTypeToken artifactType) {
       boolean userCreationoAllowed = false;
       ArtifactFactory factory = factoryManager.getFactory(artifactType);
       if (factory != null && factory.isUserCreationEnabled(artifactType)) {

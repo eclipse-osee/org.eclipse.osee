@@ -45,7 +45,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
          for (DefaultBasicGuidArtifact guidArt : guidArts) {
             ArtifactTypeId artType = guidArt.getArtifactType();
             for (ArtifactTypeId artifactType : artifactTypes) {
-               if (ArtifactTypeManager.inheritsFrom(artType, artifactType)) {
+               if (ArtifactTypeManager.getType(artType).inheritsFrom(artifactType)) {
                   return true;
                }
                for (ArtifactTypeId matchArtType : artifactTypes) {

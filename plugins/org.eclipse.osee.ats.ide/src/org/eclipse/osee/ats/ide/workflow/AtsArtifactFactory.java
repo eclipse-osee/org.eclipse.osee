@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -84,7 +83,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       Artifact toReturn;
       if (artifactType.equals(Task)) {
          toReturn = new TaskArtifact(id, guid, branch, artifactType);
-      } else if (ArtifactTypeManager.inheritsFrom(artifactType, TeamWorkflow)) {
+      } else if (artifactType.inheritsFrom(TeamWorkflow)) {
          toReturn = new TeamWorkFlowArtifact(id, guid, branch, artifactType);
       } else if (artifactType.equals(DecisionReview)) {
          toReturn = new DecisionReviewArtifact(id, guid, branch, artifactType);
@@ -108,13 +107,13 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public boolean isUserCreationEnabled(ArtifactTypeId artifactType) {
+   public boolean isUserCreationEnabled(ArtifactTypeToken artifactType) {
       if (disabledUserCreationTypes.isEmpty()) {
          setupDisabledUserCreationArtifactTypes();
       }
       if (disabledUserCreationTypes.contains(artifactType)) {
          return false;
-      } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
+      } else if (artifactType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
          return false;
       }
       return true;

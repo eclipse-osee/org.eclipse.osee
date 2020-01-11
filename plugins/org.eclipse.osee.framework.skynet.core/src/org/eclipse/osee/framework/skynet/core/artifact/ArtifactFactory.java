@@ -17,9 +17,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -127,5 +127,5 @@ public abstract class ArtifactFactory {
       return Collections.emptyList();
    }
 
-   public abstract boolean isUserCreationEnabled(ArtifactTypeId artifactType);
+   public abstract boolean isUserCreationEnabled(ArtifactTypeToken artifactType);
 }

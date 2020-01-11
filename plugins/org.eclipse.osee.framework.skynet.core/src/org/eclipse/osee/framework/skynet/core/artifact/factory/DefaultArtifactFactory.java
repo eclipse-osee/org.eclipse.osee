@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -31,7 +30,7 @@ public final class DefaultArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public boolean isUserCreationEnabled(ArtifactTypeId artifactType) {
+   public boolean isUserCreationEnabled(ArtifactTypeToken artifactType) {
       return artifactType.notEqual(CoreArtifactTypes.RootArtifact);
    }
 }
