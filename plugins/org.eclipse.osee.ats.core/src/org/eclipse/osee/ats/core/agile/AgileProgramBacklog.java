@@ -37,8 +37,8 @@ public class AgileProgramBacklog extends AtsConfigObject implements IAgileProgra
    @Override
    public List<Long> getBacklogItemIds() {
       List<Long> ids = new ArrayList<>();
-      for (ArtifactId child : atsApi.getRelationResolver().getChildren(artifact)) {
-         if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileProgramBacklogItem)) {
+      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(artifact)) {
+         if (child.isOfType(AtsArtifactTypes.AgileProgramBacklogItem)) {
             ids.add(new Long(child.getId()));
          }
       }

@@ -114,7 +114,7 @@ public class AtsObjects {
       for (Object object : objects) {
          if (object instanceof ArtifactToken) {
             ArtifactToken artId = (ArtifactToken) object;
-            if (atsApi.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
+            if (artId.isOfType(AtsArtifactTypes.Action)) {
                artifacts.addAll(AtsObjects.getArtifacts(
                   atsApi.getWorkItemService().getTeams(atsApi.getWorkItemService().getAction(artId))));
             }
@@ -159,25 +159,25 @@ public class AtsObjects {
 
    public static IAtsConfigObject getConfigObject(ArtifactToken artifact, AtsApi atsApi) {
       IAtsConfigObject configObject;
-      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Version)) {
+      if (artifact.isOfType(AtsArtifactTypes.Version)) {
          configObject = atsApi.getVersionService().getVersion(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamDefinition)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
          configObject = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
          configObject = atsApi.getActionableItemService().getActionableItemById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Program)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Program)) {
          configObject = atsApi.getProgramService().getProgramById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileTeam)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileTeam)) {
          configObject = atsApi.getAgileService().getAgileTeam(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileFeatureGroup)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          configObject = atsApi.getAgileService().getAgileFeatureGroup(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Insertion)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Insertion)) {
          configObject = atsApi.getProgramService().getInsertionById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.InsertionActivity)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.InsertionActivity)) {
          configObject = atsApi.getProgramService().getInsertionActivityById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Country)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Country)) {
          configObject = atsApi.getProgramService().getCountryById(artifact);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.WorkPackage)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
          configObject = atsApi.getEarnedValueService().getWorkPackage(artifact);
       } else {
          throw new OseeArgumentException("Unexpected artifact type [%s]", artifact.getArtifactType());
@@ -186,16 +186,16 @@ public class AtsObjects {
    }
 
    public static boolean isAtsConfigArtifact(ArtifactToken artifact, AtsApi atsApi) {
-      return atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigArtifact);
+      return artifact.isOfType(AtsArtifactTypes.AtsConfigArtifact);
    }
 
    public static IAtsObject getAtsObject(ArtifactToken artifact, AtsApi atsApi) {
       IAtsObject result = null;
-      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          result = atsApi.getWorkItemService().getWorkItem(artifact);
       } else if (AtsObjects.isAtsConfigArtifact(artifact, atsApi)) {
          result = AtsObjects.getConfigObject(artifact, atsApi);
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
          result = atsApi.getWorkItemService().getAction(artifact);
       }
       return result;

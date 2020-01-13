@@ -59,7 +59,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai = (IAtsActionableItem) aiId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(aiId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.ActionableItem)) {
+         if (art.isOfType( AtsArtifactTypes.ActionableItem)) {
             ai = new ActionableItem(atsApi.getLogger(), atsApi, art);
          }
       }

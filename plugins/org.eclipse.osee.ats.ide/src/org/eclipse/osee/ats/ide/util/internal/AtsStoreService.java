@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -150,17 +149,6 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactTypes) {
-      Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
-      if (art != null && art.isValid() && !art.isDeleted()) {
-         for (ArtifactTypeId artType : artifactTypes) {
-            return art.isOfType(artType);
-         }
-      }
-      return false;
-   }
-
-   @Override
    public void executeChangeSet(String comment, IAtsObject atsObject) {
       executeChangeSet(comment, Collections.singleton(atsObject));
    }
@@ -193,11 +181,6 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
       return getArtifactType(AtsClientService.get().getQueryService().getArtifact(atsObject));
-   }
-
-   @Override
-   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
-      return isOfType(AtsClientService.get().getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override
@@ -270,11 +253,6 @@ public class AtsStoreService implements IAtsStoreService {
    public void clearCaches(IAtsWorkItem workItem) {
       ((WorkItem) workItem).clearCaches();
       ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
-   }
-
-   @Override
-   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isOfType(artifactType);
    }
 
    @Override

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import java.util.Set;
-
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -28,14 +27,13 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItemService {
-	
+
    String getChangeTypeStr(IAtsWorkItem workItem);
 
    IStateToken getCurrentState(IAtsWorkItem workItem);
@@ -75,8 +73,6 @@ public interface IAtsWorkItemService {
 
    void setAssignees(IAtsWorkItem workItem, Set<IAtsUser> assignees, IAtsChangeSet changes);
 
-   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
-
    IAtsWorkItem getWorkItem(ArtifactToken artifact);
 
    IAtsTask getTask(ArtifactToken artifact);
@@ -97,9 +93,9 @@ public interface IAtsWorkItemService {
 
    Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactToken> artifacts);
 
-   IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact);
+   IAtsTeamWorkflow getTeamWfNoCache(ArtifactToken artifact);
 
-   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
+   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
 
    String getCancelUrl(IAtsWorkItem workItem, AtsApi atsApi);
 

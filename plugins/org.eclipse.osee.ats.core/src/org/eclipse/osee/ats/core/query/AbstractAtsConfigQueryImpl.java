@@ -88,7 +88,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return ResultSets.newResultSet(getConfigObjects());
    }
 
-   public abstract Collection<ArtifactId> runQuery();
+   public abstract Collection<ArtifactToken> runQuery();
 
    @SuppressWarnings("unchecked")
    @Override
@@ -111,8 +111,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       }
       // filter on original artifact types
       else {
-         Collection<ArtifactId> artifacts = runQuery();
-         for (ArtifactId artifact : artifacts) {
+         Collection<ArtifactToken> artifacts = runQuery();
+         for (ArtifactToken artifact : artifacts) {
             if (artifactTypes != null || isArtifactTypeMatch(artifact, artifactTypes)) {
                results.add((T) artifact);
             }
@@ -126,7 +126,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return ResultSets.newResultSet(getArtifacts());
    }
 
-   private boolean isArtifactTypeMatch(ArtifactId artifact, List<ArtifactTypeToken> artTypes) {
+   private boolean isArtifactTypeMatch(ArtifactToken artifact, List<ArtifactTypeToken> artTypes) {
       if (artTypes == null || artTypes.isEmpty()) {
          return true;
       }

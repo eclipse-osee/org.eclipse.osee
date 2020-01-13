@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -158,9 +158,9 @@ public final class Artifacts {
       return branchMap;
    }
 
-   public static boolean isOfType(Object object, ArtifactTypeId artifactType) {
-      if (object instanceof Artifact) {
-         return ((Artifact) object).isOfType(artifactType);
+   public static boolean isOfType(Object object, ArtifactTypeToken artifactType) {
+      if (object instanceof ArtifactToken) {
+         return ((ArtifactToken) object).isOfType(artifactType);
       }
       return false;
    }

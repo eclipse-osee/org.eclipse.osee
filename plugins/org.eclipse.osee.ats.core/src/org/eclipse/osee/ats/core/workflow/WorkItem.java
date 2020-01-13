@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -86,14 +85,15 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          return (IAtsTeamWorkflow) this;
       }
       if (parentTeamWf == null) {
-         ArtifactId teamArt = ArtifactReadable.SENTINEL;
+         ArtifactToken teamArt = ArtifactReadable.SENTINEL;
          if (isTeamWorkflow()) {
             teamArt = artifact;
          } else if (isReview()) {
-            teamArt =
-               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
+            teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(artifact,
+               AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
          } else if (isTask()) {
-            teamArt = atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWfToTask_TeamWorkflow);
+            teamArt =
+               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamWfToTask_TeamWorkflow);
          }
          if (teamArt.isValid()) {
             parentTeamWf = atsApi.getWorkItemService().getTeamWf(teamArt);
@@ -276,7 +276,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isOfType(ArtifactTypeId... artifactType) {
-      return atsApi.getStoreService().isOfType(getStoreObject(), artifactType);
+      return getStoreObject().isOfType(artifactType);
    }
 
    @Override
@@ -286,5 +286,4 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       atsLog = null;
       atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
    }
-
 }

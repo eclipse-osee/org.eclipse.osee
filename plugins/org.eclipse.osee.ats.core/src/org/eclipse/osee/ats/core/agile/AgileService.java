@@ -94,7 +94,7 @@ public class AgileService implements IAgileService {
          program = (AgileTeam) agileTeamId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(agileTeamId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AgileTeam)) {
+         if (art.isOfType(AtsArtifactTypes.AgileTeam)) {
             program = new AgileTeam(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -108,7 +108,7 @@ public class AgileService implements IAgileService {
          agileFeatureGroup = (AgileFeatureGroup) agileFeatureGroupId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(agileFeatureGroupId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AgileFeatureGroup)) {
+         if (art.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
             agileFeatureGroup = new AgileFeatureGroup(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -166,7 +166,7 @@ public class AgileService implements IAgileService {
       ArtifactId programArt = atsApi.getQueryService().getArtifact(program.getId());
       if (programArt != null) {
          for (ArtifactToken child : atsApi.getRelationResolver().getChildren(programArt)) {
-            if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileProgramBacklog)) {
+            if (child.isOfType(AtsArtifactTypes.AgileProgramBacklog)) {
                programBacklogArt = child;
                break;
             }
@@ -229,7 +229,7 @@ public class AgileService implements IAgileService {
    @Override
    public void deleteAgileTeam(long id) {
       ArtifactToken team = atsApi.getQueryService().getArtifact(id);
-      if (!atsApi.getStoreService().isOfType(team, AtsArtifactTypes.AgileTeam)) {
+      if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
          throw new OseeArgumentException("ID %d is not a valid Agile Team", id);
       }
       IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Team");
@@ -351,8 +351,8 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteAgileFeatureGroup(long id) {
-      ArtifactId featureGroup = atsApi.getQueryService().getArtifact(id);
-      if (!atsApi.getStoreService().isOfType(featureGroup, AtsArtifactTypes.AgileFeatureGroup)) {
+      ArtifactToken featureGroup = atsApi.getQueryService().getArtifact(id);
+      if (!featureGroup.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          throw new OseeArgumentException("ID %d is not a valid Agile Feature Group", id);
       }
       IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Feature Group");
@@ -500,7 +500,7 @@ public class AgileService implements IAgileService {
       List<IAgileItem> items = new LinkedList<>();
       ArtifactId backlogArt = backlogOrSprint.getStoreObject();
       for (ArtifactToken art : atsApi.getRelationResolver().getRelated(backlogArt, relationType)) {
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             items.add(atsApi.getWorkItemService().getAgileItem(art));
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
@@ -607,8 +607,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public boolean isSprint(ArtifactId artifact) {
-      return atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint);
+   public boolean isSprint(ArtifactToken artifact) {
+      return artifact.isOfType(AtsArtifactTypes.AgileSprint);
    }
 
    @Override

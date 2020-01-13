@@ -62,7 +62,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          version = (IAtsVersion) versionId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(versionId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Version)) {
+         if (art.isOfType( AtsArtifactTypes.Version)) {
             version = new Version(atsApi.getLogger(), atsApi, art);
          }
       }

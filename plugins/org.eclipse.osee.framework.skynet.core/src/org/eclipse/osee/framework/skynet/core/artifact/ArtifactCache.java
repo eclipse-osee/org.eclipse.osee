@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -96,7 +96,7 @@ public final class ArtifactCache {
       ID_CACHE.updateReferenceType(artifact);
    }
 
-   public static List<Artifact> getArtifactsByType(ArtifactTypeId artifactType) {
+   public static List<Artifact> getArtifactsByType(ArtifactTypeToken artifactType) {
       List<Artifact> artifacts = new LinkedList<>();
       for (Artifact artifact : ID_CACHE.getAll()) {
          if (artifact.isOfType(artifactType)) {

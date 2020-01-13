@@ -35,8 +35,8 @@ public class AgileProgramFeature extends AtsConfigObject implements IAgileProgra
       List<Long> ids = new ArrayList<>();
       for (Iterator<ArtifactToken> iterator =
          atsApi.getRelationResolver().getChildren(artifact).iterator(); iterator.hasNext();) {
-         ArtifactId child = iterator.next();
-         if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileStory)) {
+         ArtifactToken child = iterator.next();
+         if (child.isOfType(AtsArtifactTypes.AgileStory)) {
             ids.add(new Long(child.getId()));
          }
       }

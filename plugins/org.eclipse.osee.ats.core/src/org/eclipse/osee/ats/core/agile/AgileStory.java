@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileStory;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 
@@ -32,8 +31,8 @@ public class AgileStory extends AtsConfigObject implements IAgileStory {
    @Override
    public List<Long> getTaskIds() {
       List<Long> ids = new ArrayList<>();
-      for (ArtifactId child : atsApi.getRelationResolver().getChildren(artifact)) {
-         if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileStory)) {
+      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(artifact)) {
+         if (child.isOfType(AtsArtifactTypes.AgileStory)) {
             ids.add(new Long(child.getId()));
          }
       }

@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -142,16 +141,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType) {
-      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isOfType(artifactType);
-   }
-
-   @Override
-   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType) {
-      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isOfType(artifactType);
-   }
-
-   @Override
    public void executeChangeSet(String comment, IAtsObject atsObject) {
       executeChangeSet(comment, Collections.singleton(atsObject));
    }
@@ -186,11 +175,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
       return getArtifactType(atsApi.getQueryService().getArtifact(atsObject.getStoreObject()));
-   }
-
-   @Override
-   public boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType) {
-      return isOfType(atsObject.getStoreObject(), artifactType);
    }
 
    @Override

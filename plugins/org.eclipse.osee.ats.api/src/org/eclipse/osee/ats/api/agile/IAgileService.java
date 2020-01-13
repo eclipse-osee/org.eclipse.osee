@@ -100,7 +100,7 @@ public interface IAgileService {
 
    boolean isBacklog(Object object);
 
-   boolean isSprint(ArtifactId artifact);
+   boolean isSprint(ArtifactToken artifact);
 
    Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact);
 

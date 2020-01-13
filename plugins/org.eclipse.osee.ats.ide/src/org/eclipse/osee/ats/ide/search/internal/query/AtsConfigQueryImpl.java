@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.query.AbstractAtsConfigQueryImpl;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -39,8 +40,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public Collection<ArtifactId> runQuery() {
-      List<ArtifactId> results = new ArrayList<>();
+   public Collection<ArtifactToken> runQuery() {
+      List<ArtifactToken> results = new ArrayList<>();
       Iterator<Artifact> iterator = query.getResults().iterator();
       while (iterator.hasNext()) {
          results.add(iterator.next());

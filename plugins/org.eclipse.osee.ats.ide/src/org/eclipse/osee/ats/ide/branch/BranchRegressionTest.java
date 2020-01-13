@@ -649,9 +649,9 @@ public abstract class BranchRegressionTest {
             continue;
          }
          IAtsTeamWorkflow testWf = null, codeWf = null;
-         if (AtsClientService.get().getStoreService().isOfType(team, getTestTeamWfArtType())) {
+         if (team.isOfType(getTestTeamWfArtType())) {
             testWf = team;
-         } else if (AtsClientService.get().getStoreService().isOfType(team, getCodeTeamWfArtType())) {
+         } else if (team.isOfType(getCodeTeamWfArtType())) {
             codeWf = team;
          }
          Assert.assertTrue(testWf != null || codeWf != null);

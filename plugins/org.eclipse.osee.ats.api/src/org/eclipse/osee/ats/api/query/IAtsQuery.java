@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -61,7 +62,7 @@ public interface IAtsQuery {
 
    IAtsQuery andAssignee(IAtsUser... assignees);
 
-   <T extends ArtifactId> ResultSet<T> getResultArtifacts();
+   <T extends ArtifactToken> ResultSet<T> getResultArtifacts();
 
    IAtsQuery isOfType(Collection<WorkItemType> workItemTypes);
 

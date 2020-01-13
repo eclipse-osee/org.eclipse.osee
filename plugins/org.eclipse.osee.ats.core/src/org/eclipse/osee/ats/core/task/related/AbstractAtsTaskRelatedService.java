@@ -77,7 +77,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
          }
          throw new OseeStateException("No derived artifact for generated task %s", task.toStringWithId());
       } else {
-         Conditions.assertTrue(atsApi.getStoreService().isOfType(derivedFromArt, AtsArtifactTypes.TeamWorkflow),
+         Conditions.assertTrue(derivedFromArt.isOfType(AtsArtifactTypes.TeamWorkflow),
             "derivedFromArt not Team Workflow");
          return atsApi.getWorkItemService().getTeamWf(derivedFromArt);
       }

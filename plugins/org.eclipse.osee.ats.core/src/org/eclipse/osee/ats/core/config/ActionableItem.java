@@ -72,7 +72,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
          }
       } else {
          for (ArtifactToken artifact : atsApi.getRelationResolver().getChildren(artifact)) {
-            if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+            if (artifact.isOfType( AtsArtifactTypes.ActionableItem)) {
                children.add(new ActionableItem(logger, atsApi, artifact));
             }
          }

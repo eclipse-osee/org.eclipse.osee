@@ -67,7 +67,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       } else {
          for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-            if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+            if (artifact.isOfType( AtsArtifactTypes.ActionableItem)) {
                children.add(new ActionableItem(logger, atsApi, artifact));
             }
          }

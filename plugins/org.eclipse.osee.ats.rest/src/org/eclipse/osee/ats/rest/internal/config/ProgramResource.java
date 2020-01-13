@@ -87,7 +87,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
       }
-      if (!atsApi.getStoreService().isOfType(programArt, AtsArtifactTypes.Program)) {
+      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given id not program type");
       }
       // get the insertions related to the given program
@@ -113,7 +113,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
       }
-      if (!atsApi.getStoreService().isOfType(programArt, AtsArtifactTypes.Program)) {
+      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given id not program type");
       }
       ArtifactToken artifact = atsApi.getQueryService().getArtifact(newInsertion.getId());
@@ -140,7 +140,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertionArt == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!atsApi.getStoreService().isOfType(insertionArt, AtsArtifactTypes.Insertion)) {
+      if (!insertionArt.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given insertion id not insertion type");
       }
       Response response = null;
@@ -180,7 +180,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!atsApi.getStoreService().isOfType(insertion, AtsArtifactTypes.Insertion)) {
+      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given id not insertion type");
       }
       // get the insertions related to the given program
@@ -205,7 +205,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!atsApi.getStoreService().isOfType(insertion, AtsArtifactTypes.Insertion)) {
+      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given id not insertion type");
       }
       ArtifactToken artifact = atsApi.getQueryService().getArtifact(newActivity.getId());
@@ -225,7 +225,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity id not found");
       }
-      if (!atsApi.getStoreService().isOfType(insertionActivityArt, AtsArtifactTypes.InsertionActivity)) {
+      if (!insertionActivityArt.isOfType(AtsArtifactTypes.InsertionActivity)) {
          throw new OseeCoreException("Given insertion activity id not insertion activity type");
       }
       Response response = null;

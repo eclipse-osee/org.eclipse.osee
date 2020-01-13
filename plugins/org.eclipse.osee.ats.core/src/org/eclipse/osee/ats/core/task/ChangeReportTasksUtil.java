@@ -306,7 +306,7 @@ public class ChangeReportTasksUtil {
       Collection<IAtsTeamWorkflow> teamWorkflows = parentAction.getTeamWorkflows();
 
       for (ArtifactToken related : derivedTo) {
-         if (atsApi.getStoreService().isOfType(related, AtsArtifactTypes.TeamWorkflow)) {
+         if (related.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(related);
             if (teamWf.getTeamDefinition().equals(crttwd.getDestTeamDef())) {
                crttwd.setDestTeamWf(teamWf.getStoreObject());

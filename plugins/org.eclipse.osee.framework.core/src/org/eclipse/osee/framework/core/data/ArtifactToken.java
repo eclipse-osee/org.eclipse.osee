@@ -38,6 +38,20 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
       return artifactType.equals(getArtifactType());
    }
 
+   /**
+    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. This is
+    * a more expensive operation than isTypeEqual(), so only use this method when you need either the multiple artifact
+    * types or to have sub-types included
+    */
+   default boolean isOfType(ArtifactTypeId... otherTypes) {
+      for (ArtifactTypeId otherType : otherTypes) {
+         if (getArtifactType().inheritsFrom(otherType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static ArtifactToken valueOf(Id id, BranchId branch) {
       return valueOf(id.getId(), GUID.create(), null, branch, ArtifactTypeToken.SENTINEL);
    }

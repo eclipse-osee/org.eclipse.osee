@@ -257,8 +257,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAtsWorkItem getWorkItem(Long id) {
       ArtifactToken art = atsApi.getQueryService().getArtifact(id);
-      if (art == null || art.isInvalid() || !atsApi.getStoreService().isOfType(art,
-         AtsArtifactTypes.AbstractWorkflowArtifact)) {
+      if (art == null || art.isInvalid() || !art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return null;
       }
       return getWorkItem(art);
@@ -268,20 +267,19 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
       IAtsWorkItem workItem = null;
       try {
-         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             workItem = getTeamWf(artifact);
-         } else if (atsApi.getStoreService().isOfType(artifact,
-            AtsArtifactTypes.PeerToPeerReview) || atsApi.getStoreService().isOfType(artifact,
-               AtsArtifactTypes.DecisionReview)) {
+         } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview) || artifact.isOfType(
+            AtsArtifactTypes.DecisionReview)) {
             workItem = getReview(artifact);
-         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+         } else if (artifact.isOfType(AtsArtifactTypes.Task)) {
             workItem = getTask(artifact);
-         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileBacklog)) {
             // note, an agile backlog is also a goal type, so this has to be before the goal
             workItem = getAgileBacklog(artifact);
-         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+         } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
-         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
             workItem = getAgileSprint(artifact);
          }
       } catch (OseeCoreException ex) {
@@ -291,26 +289,22 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact) {
-      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-         return new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
+   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactToken artifact) {
+      if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         return new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
       }
       return null;
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      IAtsTeamWorkflow team = null;
-      if (atsApi.getStoreService().isIdeClient()) {
-         team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
+   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
+      IAtsTeamWorkflow teamWf = null;
+      if (artifact instanceof IAtsTeamWorkflow) {
+         teamWf = (IAtsTeamWorkflow) artifact;
+      } else if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
       }
-      if (team == null) {
-         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-            team = new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
-            workItemCache.put(artifact, team);
-         }
-      }
-      return team;
+      return teamWf;
    }
 
    @Override
@@ -347,9 +341,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public IAgileItem getAgileItem(ArtifactToken artifact) {
       IAgileItem item = null;
-      ArtifactId art = atsApi.getQueryService().getArtifact(artifact);
-      if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, (ArtifactToken) art);
+      ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
+      if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, art);
       }
       return item;
    }
@@ -361,22 +355,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
-      IAtsTeamWorkflow teamWf = null;
-      if (artifact instanceof IAtsTeamWorkflow) {
-         teamWf = (IAtsTeamWorkflow) artifact;
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
-      }
-      return teamWf;
-   }
-
-   @Override
    public IAtsGoal getGoal(ArtifactToken artifact) {
       IAtsGoal goal = null;
       if (artifact instanceof IAtsGoal) {
          goal = (IAtsGoal) artifact;
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
          goal = new Goal(atsApi.getLogger(), atsApi, artifact);
       }
       return goal;
@@ -387,7 +370,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       IAtsTask task = null;
       if (artifact instanceof IAtsTask) {
          task = (IAtsTask) artifact;
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Task)) {
          task = new Task(atsApi.getLogger(), atsApi, artifact);
       }
       return task;
@@ -398,7 +381,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       IAtsAbstractReview review = null;
       if (artifact instanceof IAtsAbstractReview) {
          review = (IAtsAbstractReview) artifact;
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.PeerToPeerReview)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
          review = new PeerToPeerReview(atsApi.getLogger(), atsApi, artifact);
       } else {
          review = new DecisionReview(atsApi.getLogger(), atsApi, artifact);
@@ -411,7 +394,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       IAtsAction action = null;
       if (artifact instanceof IAtsAction) {
          action = (IAtsAction) artifact;
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
          action = new Action(atsApi, artifact);
       }
       return action;

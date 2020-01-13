@@ -87,7 +87,7 @@ public class AtsProgramService implements IAtsProgramService {
          country = (IAtsCountry) countryId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(countryId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Country)) {
+         if (art.isOfType( AtsArtifactTypes.Country)) {
             country = new Country(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -101,7 +101,7 @@ public class AtsProgramService implements IAtsProgramService {
          insertion = (IAtsInsertion) insertionId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(insertionId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Insertion)) {
+         if (art.isOfType( AtsArtifactTypes.Insertion)) {
             insertion = new Insertion(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -115,7 +115,7 @@ public class AtsProgramService implements IAtsProgramService {
          insertionActivity = (IAtsInsertionActivity) insertionActivityId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(insertionActivityId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.InsertionActivity)) {
+         if (art.isOfType( AtsArtifactTypes.InsertionActivity)) {
             insertionActivity = new InsertionActivity(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -224,7 +224,7 @@ public class AtsProgramService implements IAtsProgramService {
          program = new Program(atsApi.getLogger(), atsApi, (ArtifactToken) programId);
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(programId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.Program)) {
+         if (art.isOfType( AtsArtifactTypes.Program)) {
             program = new Program(atsApi.getLogger(), atsApi, art);
          }
       }

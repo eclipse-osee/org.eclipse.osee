@@ -204,12 +204,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return results;
    }
 
-   private boolean isArtifactTypeMatch(ArtifactId artifact, Collection<ArtifactTypeToken> artTypes) {
+   private boolean isArtifactTypeMatch(ArtifactToken artifact, Collection<ArtifactTypeToken> artTypes) {
       if (artTypes.isEmpty()) {
          return true;
       }
       for (ArtifactTypeToken artType : artTypes) {
-         if (atsApi.getArtifactResolver().isOfType(artifact, artType)) {
+         if (artifact.isOfType(artType)) {
             return true;
          }
       }
@@ -602,7 +602,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends ArtifactId> ResultSet<T> getResultArtifacts() {
+   public <T extends ArtifactToken> ResultSet<T> getResultArtifacts() {
       List<T> items = new ArrayList<>();
       for (IAtsWorkItem workItem : getResults()) {
          if (workItem == null) {
@@ -613,7 +613,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
       // filter on original artifact types
       List<T> artifacts = new LinkedList<>();
-      for (ArtifactId artifact : items) {
+      for (ArtifactToken artifact : items) {
          boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactTypes);
          boolean releaseOptionMatch = isReleaseOptionMatch(artifact);
          if (artifactTypeMatch && releaseOptionMatch) {

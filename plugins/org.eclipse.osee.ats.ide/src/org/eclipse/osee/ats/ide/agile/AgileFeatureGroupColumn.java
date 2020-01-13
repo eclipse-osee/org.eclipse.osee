@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -212,8 +211,9 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       for (ArtifactId workItemId : workItemArts) {
          try {
             Artifact workItem = AtsClientService.get().getQueryServiceClient().getArtifact(workItemId);
-            List<Artifact> featureArts = workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
-            if (Artifacts.isOfType(workItem, AtsArtifactTypes.Action)) {
+            List<Artifact> featureArts =
+               workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
+            if (workItem.isOfType(AtsArtifactTypes.Action)) {
                Set<String> strs = new HashSet<>();
                for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(workItem)) {
                   for (ArtifactToken featureArt : AtsClientService.get().getQueryServiceClient().getArtifact(

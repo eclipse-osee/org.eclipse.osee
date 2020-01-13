@@ -50,6 +50,19 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return false;
    }
 
+   default boolean inheritsFrom(ArtifactTypeId otherType) {
+      if (equals(otherType)) {
+         return true;
+      } else {
+         for (ArtifactTypeToken superType : getSuperTypes()) {
+            if (superType.inheritsFrom(otherType)) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
    boolean isAbstract();
 
    List<ArtifactTypeToken> getSuperTypes();

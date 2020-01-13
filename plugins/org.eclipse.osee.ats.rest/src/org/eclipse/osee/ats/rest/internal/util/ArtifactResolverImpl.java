@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -76,10 +77,10 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, ArtifactTypeToken artifactType) {
+   public boolean isOfType(ArtifactToken artifact, ArtifactTypeToken artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return atsApi.getStoreService().isOfType(artifact, artifactType);
+      return artifact.isOfType( artifactType);
    }
 
    @Override

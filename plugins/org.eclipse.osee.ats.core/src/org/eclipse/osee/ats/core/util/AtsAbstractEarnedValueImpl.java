@@ -56,7 +56,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          workPackage = (IAtsWorkPackage) workPackageId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(workPackageId);
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.WorkPackage)) {
+         if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
             workPackage = new WorkPackage(atsApi.getLogger(), atsApi, art);
          }
       }

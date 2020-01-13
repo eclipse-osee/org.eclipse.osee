@@ -63,7 +63,7 @@ public class AgileBacklogWriter {
             ArtifactToken updateBacklogArt = atsApi.getQueryService().getArtifact(updatedBacklog.getId());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamId());
             ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
-            if (!atsApi.getStoreService().isOfType(updateBacklogArt, AtsArtifactTypes.Goal)) {
+            if (!updateBacklogArt.isOfType(AtsArtifactTypes.Goal)) {
                throw new OseeArgumentException("Backlog ID %d not valid type", updatedBacklog.getId());
             } else if (atsApi.getRelationResolver().getRelatedCount(updateBacklogArt,
                AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {

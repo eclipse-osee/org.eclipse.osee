@@ -88,7 +88,7 @@ public class ProgramOperations {
       if (level >= 0) {
          items.add(item);
       }
-      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileStory)) {
+      if (artifact.isOfType( AtsArtifactTypes.AgileStory)) {
          if (artifact.getName().contains("up")) {
             item.setAgilePoints("Large");
          } else if (artifact.getName().contains("forward")) {
@@ -159,27 +159,27 @@ public class ProgramOperations {
    }
 
    private String getImage(ArtifactToken artifact) {
-      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileProgramBacklog)) {
+      if (artifact.isOfType( AtsArtifactTypes.AgileProgramBacklog)) {
          return IMG_BASE_PATH + "agileProgramBacklog.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileProgram)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgram)) {
          return IMG_BASE_PATH + "agileProgram.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileProgramBacklogItem)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgramBacklogItem)) {
          return IMG_BASE_PATH + "agileProgramBacklogItem.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileProgramFeature)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgramFeature)) {
          return IMG_BASE_PATH + "agileProgramFeature.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileStory)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileStory)) {
          return IMG_BASE_PATH + "agileStory.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileSprint)) {
          return IMG_BASE_PATH + "agileSprint.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileBacklog)) {
          return IMG_BASE_PATH + "agileBacklog.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileTeam)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileTeam)) {
          return IMG_BASE_PATH + "agileTeam.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileFeatureGroup)) {
+      } else if (artifact.isOfType( AtsArtifactTypes.AgileFeatureGroup)) {
          return IMG_BASE_PATH + "agileFeatureGroup.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, CoreArtifactTypes.GeneralDocument)) {
+      } else if (artifact.isOfType( CoreArtifactTypes.GeneralDocument)) {
          return IMG_BASE_PATH + "generalDoc.gif";
-      } else if (atsApi.getStoreService().isOfType(artifact, CoreArtifactTypes.Folder)) {
+      } else if (artifact.isOfType( CoreArtifactTypes.Folder)) {
          return IMG_BASE_PATH + "folder.gif";
       }
       return null;

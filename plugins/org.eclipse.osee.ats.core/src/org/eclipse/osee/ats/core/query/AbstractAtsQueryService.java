@@ -62,7 +62,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch())) {
-         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(art);
             if (workItem != null) {
                workItems.add(workItem);
@@ -225,7 +225,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public <T> T getConfigItem(Long id) {
       T atsObject = null;
       ArtifactToken artifact = getArtifact(id);
-      if (artifact != null && atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AtsConfigArtifact)) {
+      if (artifact != null && artifact.isOfType(AtsArtifactTypes.AtsConfigArtifact)) {
          atsObject = (T) AtsObjects.getConfigObject(artifact, atsApi);
       }
       return atsObject;
@@ -233,7 +233,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      ArtifactId art = getArtifact(artifact);
+      ArtifactToken art = getArtifact(artifact);
       if (art != null) {
          return atsApi.getWorkItemService().getTeamWf(art);
       }
@@ -242,7 +242,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public IAtsTeamWorkflow getTeamWf(Long id) {
-      ArtifactId art = getArtifact(id);
+      ArtifactToken art = getArtifact(id);
       if (art != null) {
          return atsApi.getWorkItemService().getTeamWf(art);
       }

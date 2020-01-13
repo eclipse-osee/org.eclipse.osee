@@ -66,12 +66,13 @@ public class BacklogColumnTest extends ProgramColumn {
       when(goal.getName()).thenReturn("My Goal");
       when(atsApi.getStoreService()).thenReturn(storeService);
       when(goal.getStoreObject()).thenReturn(artId);
-      when(storeService.isOfType(artId, AtsArtifactTypes.AgileBacklog)).thenReturn(false);
+      when(artId.isOfType(AtsArtifactTypes.AgileBacklog)).thenReturn(false);
       str = BacklogColumn.getColumnText(workItem, atsApi, false);
       assertEquals("My Goal", str);
 
       when(relResolver.getRelated(workItem, AtsRelationTypes.Goal_Goal, IAtsWorkItem.class)).thenReturn(
          Arrays.asList(backlog));
+      when(backlog.getStoreObject()).thenReturn(artId);
       when(relResolver.getRelatedCount(backlog, AtsRelationTypes.AgileTeamToBacklog_AgileTeam)).thenReturn(1);
       when(backlog.getName()).thenReturn("My Backlog");
       str = BacklogColumn.getColumnText(workItem, atsApi, true);

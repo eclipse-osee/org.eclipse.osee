@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -87,9 +86,9 @@ public class UniqueNameRule extends AbstractValidationRule {
       return arts;
    }
 
-   private boolean isImplementationDetailsChild(ArtifactId childArtifact, ArtifactId parentArtifact) {
-      return atsApi.getStoreService().isOfType(parentArtifact, CoreArtifactTypes.SoftwareRequirementMsWord) && //
-         atsApi.getStoreService().isOfType(childArtifact, CoreArtifactTypes.AbstractImplementationDetails) && //
+   private boolean isImplementationDetailsChild(ArtifactToken childArtifact, ArtifactToken parentArtifact) {
+      return parentArtifact.isOfType(CoreArtifactTypes.SoftwareRequirementMsWord) && //
+         childArtifact.isOfType(CoreArtifactTypes.AbstractImplementationDetails) && //
          atsApi.getRelationResolver().getParent(childArtifact).equals(parentArtifact);
    }
 

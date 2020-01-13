@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -62,8 +61,6 @@ public interface IAtsStoreService {
 
    boolean isDateType(AttributeTypeId attributeType);
 
-   boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType);
-
    ArtifactTypeToken getArtifactType(Long artTypeId);
 
    void executeChangeSet(String comment, IAtsObject atsObject);
@@ -73,8 +70,6 @@ public interface IAtsStoreService {
    Collection<AttributeTypeToken> getAttributeTypes();
 
    boolean isChangedInDb(IAtsWorkItem workItem);
-
-   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken artifactType);
 
    void clearCaches(IAtsWorkItem workItem);
 
@@ -109,8 +104,6 @@ public interface IAtsStoreService {
          getArtifactType(stmt.getLong("art_type_id"))), query);
       return artIdToType;
    }
-
-   boolean isOfType(IAtsObject atsObject, ArtifactTypeToken... artifactType);
 
    boolean inheritsFrom(ArtifactTypeToken artType, ArtifactTypeToken... artifactType);
 

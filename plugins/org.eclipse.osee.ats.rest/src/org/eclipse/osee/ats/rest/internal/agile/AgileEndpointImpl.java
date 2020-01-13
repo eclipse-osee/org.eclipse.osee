@@ -330,7 +330,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          return featureItem;
       }
       ArtifactToken parentBacklogItem = atsApi.getQueryService().getArtifact(featureItem.getSelectedId());
-      if (atsApi.getStoreService().isOfType(parentBacklogItem, AtsArtifactTypes.AgileProgramFeature)) {
+      if (parentBacklogItem.isOfType(AtsArtifactTypes.AgileProgramFeature)) {
          parentBacklogItem = atsApi.getRelationResolver().getParent(parentBacklogItem);
       }
       JaxProgramBaseItem baseItem = updateProgramItem(program, featureItem,
@@ -554,7 +554,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(agileTeamArt)) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactToken subChild : atsApi.getRelationResolver().getChildren(child)) {
-               if (atsApi.getStoreService().isOfType(subChild, AtsArtifactTypes.AgileFeatureGroup)) {
+               if (subChild.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
                   IAgileFeatureGroup group = atsApi.getAgileService().getAgileFeatureGroup(subChild);
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());

@@ -85,9 +85,6 @@ public class CreateTasksOperation {
          }
          IAtsTeamWorkflow teamWf = getTeamWorkflow(teamWfId);
          if (teamWf == null) {
-            teamWf = atsApi.getWorkItemService().getTeamWf(ArtifactId.valueOf(teamWfId));
-         }
-         if (teamWf == null) {
             results.errorf("Team Workflow id %s does not exist", teamWfId);
             continue;
          }

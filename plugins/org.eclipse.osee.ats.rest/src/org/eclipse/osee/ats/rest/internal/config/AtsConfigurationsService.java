@@ -144,13 +144,13 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
       // load ats config objects
       for (ArtifactReadable configArtId : configArts) {
-         if (atsApi.getStoreService().isOfType(configArtId, TeamDefinition)) {
+         if (configArtId.isOfType(TeamDefinition)) {
             JaxTeamDefinition teamDef = createJaxTeamDefinition(configArtId);
             configs.addTeamDef(teamDef);
-         } else if (atsApi.getStoreService().isOfType(configArtId, ActionableItem)) {
+         } else if (configArtId.isOfType(ActionableItem)) {
             JaxActionableItem ai = createJaxActionableItem(configArtId);
             configs.addAi(ai);
-         } else if (atsApi.getStoreService().isOfType(configArtId, Version)) {
+         } else if (configArtId.isOfType(Version)) {
             JaxVersion version = createJaxVersion(configArtId);
             configs.addVersion(version);
          }

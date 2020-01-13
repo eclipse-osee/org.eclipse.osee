@@ -102,7 +102,7 @@ public final class AtsEditors {
    }
 
    public static void openATSArtifact(ArtifactToken artifact) {
-      if (AtsClientService.get().getStoreService().isOfType(artifact, AtsArtifactTypes.AtsArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
          try {
             openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
          } catch (Exception ex) {

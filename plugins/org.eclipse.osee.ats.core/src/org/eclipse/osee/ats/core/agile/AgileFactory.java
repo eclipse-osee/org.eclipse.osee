@@ -103,8 +103,8 @@ public class AgileFactory {
 
       Set<ArtifactId> atsTeamArts = new HashSet<>();
       for (long atsTeamId : team.getAtsTeamIds()) {
-         ArtifactId atsTeamArt = atsApi.getQueryService().getArtifact(atsTeamId);
-         if (atsTeamArt != null && atsApi.getStoreService().isOfType(atsTeamArt, AtsArtifactTypes.TeamDefinition)) {
+         ArtifactToken atsTeamArt = atsApi.getQueryService().getArtifact(atsTeamId);
+         if (atsTeamArt != null && atsTeamArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             atsTeamArts.add(atsTeamArt);
          } else {
             throw new OseeArgumentException("ID %d is not a valid Ats Team Definition", atsTeamId);
