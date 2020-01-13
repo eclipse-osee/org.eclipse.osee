@@ -13,7 +13,6 @@ package org.eclipse.osee.jaxrs;
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
 import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,13 +81,9 @@ public class JacksonFeature implements Feature {
 
    public static List<? extends Object> getProviders() {
       List<Object> providers = new ArrayList<>();
-      providers.add(JacksonFeature.newJacksonJsonProvider());
+      providers.add(new JacksonJaxbJsonProvider(JsonUtil.getMapper(), JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
       providers.add(JsonParseExceptionMapper.class);
       providers.add(JsonMappingExceptionMapper.class);
       return providers;
-   }
-
-   private static JacksonJsonProvider newJacksonJsonProvider() {
-      return new JacksonJaxbJsonProvider(JsonUtil.getMapper(), JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);
    }
 }

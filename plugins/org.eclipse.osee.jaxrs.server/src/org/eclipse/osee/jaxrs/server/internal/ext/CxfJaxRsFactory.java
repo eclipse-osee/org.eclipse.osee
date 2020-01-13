@@ -33,6 +33,7 @@ import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
 import org.eclipse.osee.jaxrs.JacksonFeature;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.jaxrs.server.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
 import org.eclipse.osee.jaxrs.server.internal.applications.AbstractJaxRsApplicationContainer;
@@ -44,6 +45,7 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsFactory;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProvider;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpService;
 
@@ -57,6 +59,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
    private List<? extends Object> providers;
    private Map<String, Object> properties;
    private Map<Object, Object> extensionMappings;
+   private OrcsApi orcsApi;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -64,6 +67,10 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    public void setHttpService(HttpService httpService) {
       this.httpService = httpService;
+   }
+
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    public void start(Map<String, Object> props) {
@@ -80,6 +87,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
       providers.add(waem);
       providers.add(new GenericExceptionMapper(logger));
+      providers.add(new OrcsParamConverterProvider(orcsApi.getOrcsTypes()));
       providers.addAll(JacksonFeature.getProviders());
       this.providers = providers;
 

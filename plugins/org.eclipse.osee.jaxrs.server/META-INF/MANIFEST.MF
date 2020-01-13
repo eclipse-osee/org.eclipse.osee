@@ -73,6 +73,8 @@ Import-Package: com.google.common.cache,
  org.eclipse.osee.jaxrs.mvc,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.data,
  org.eclipse.osgi.util,
  org.osgi.framework,
  org.osgi.service.http
