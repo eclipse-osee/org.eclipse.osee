@@ -28,8 +28,10 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
@@ -54,6 +56,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -261,12 +264,32 @@ public class TransitionToMenu {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                   if (stateDef != null && stateDef.getStateType().isCancelledState()) {
-                     EntryDialog dialog = new EntryDialog("Enter Cancellation Reason", "Enter Cancellation Reason");
-                     if (dialog.open() != 0) {
-                        result.setCancelled(true);
+                     EntryDialog cancelDialog;
+                     AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) workItem;
+                     boolean useEntryCancelWidgetDialog = false;
+                     for (IAtsLayoutItem layoutItem : stateDef.getLayoutItems()) {
+                        if (layoutItem.getName().contains("Cancel")) {
+                           useEntryCancelWidgetDialog = true;
+                           break;
+                        }
+                     }
+                     if (useEntryCancelWidgetDialog) {
+                        cancelDialog = new EntryCancelWidgetDialog("Cancellation Reason",
+                           "Select cancellation reason.  If other, please specify with details in the text entry.");
                      } else {
-                        result.setText(dialog.getEntry());
-                        result.set(true);
+                        cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                     }
+                     if (cancelDialog.open() != 0) {
+                        result.setCancelled(true);
+                     }
+                     result.set(true);
+                     if (useEntryCancelWidgetDialog) {
+                        awa.setSoleAttributeFromString(AtsAttributeTypes.CancelReason,
+                           ((EntryCancelWidgetDialog) cancelDialog).getEntry());
+                        awa.setSoleAttributeFromString(AtsAttributeTypes.CancelledReasonDetails,
+                           ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
+                     } else {
+                        result.setText(cancelDialog.getEntry());
                      }
                   }
                }
