@@ -104,4 +104,6 @@ public interface IAttributeResolver {
 
    Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact, AttributeTypeToken artifactReferencedAttributeType);
 
+   List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType);
+
 }

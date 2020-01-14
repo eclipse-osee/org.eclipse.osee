@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -300,6 +301,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) {
       return getAttributes(workItem.getStoreObject());
+   }
+
+   @Override
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType) {
+      return getArtifact(artifact).getAttributesToStringList(attributeType);
    }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -264,5 +265,10 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    public void setServices(AtsApi atsApi) {
       this.atsApi = atsApi;
+   }
+
+   @Override
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType) {
+      return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
    }
 }
