@@ -97,7 +97,11 @@
 			<url>http://download.eclipse.org/mylyn/releases/3.5/</url>
 		</repository>
 			
-		
+		<repository>
+			<id>findbugs</id>
+			<layout>p2</layout>
+			<url>http://findbugs.cs.umd.edu/eclipse</url>
+		</repository>
 		
 		<!--  <repository>
 			<id>orbit</id>

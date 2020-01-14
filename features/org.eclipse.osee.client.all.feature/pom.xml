@@ -14,6 +14,30 @@
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE Client All Feature (Incubation)</name>
 
+   <build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+						
+								<feature id="edu.umd.cs.findbugs.plugin.eclipse" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
 	<profiles>
 		<profile>
 			<id>osee-client-skip-source-features</id>
