@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.type.LinkType;
@@ -125,6 +126,16 @@ public class WordTemplateContentRendererHandler {
             if (!wtcData.getIsEdit()) {
                data = data.replaceAll(PGNUMTYPE_START_1, "");
             }
+
+            return new Pair<>(data, unknownGuids);
+         } else if (artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
+            //If the artifact is an empty ms word header, still want to tag that header with a book mark so it can be linked to. 
+            //Non empty ms word headers are caught above correctly
+            data = "";
+            LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
+            data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
+               unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
+            data = WordUtilities.reassignBookMarkID(data);
 
             return new Pair<>(data, unknownGuids);
          }
