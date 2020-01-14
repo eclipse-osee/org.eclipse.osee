@@ -35,7 +35,6 @@
 		<ant-commons-net-version>1.7.0</ant-commons-net-version>
 		<commons-net-version>1.4.1</commons-net-version>
 		<jacoco-version>0.5.3.201107060350</jacoco-version>
-		<findbugs-version>2.3.2</findbugs-version>
 		<pmd-version>2.5</pmd-version>
 		<checkstyle-version>2.6</checkstyle-version>
 		<javadoc-version>2.9.1</javadoc-version>
@@ -98,11 +97,7 @@
 			<url>http://download.eclipse.org/mylyn/releases/3.5/</url>
 		</repository>
 			
-		<repository>
-			<id>findbugs</id>
-			<layout>p2</layout>
-			<url>http://findbugs.cs.umd.edu/eclipse</url>
-		</repository>
+		
 		
 		<!--  <repository>
 			<id>orbit</id>
