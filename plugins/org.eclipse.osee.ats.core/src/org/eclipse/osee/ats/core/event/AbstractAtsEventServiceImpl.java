@@ -104,7 +104,7 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
          AtsTopicEvent topicEvent = AtsTopicEvent.get(topic);
          if (topicEvent != null) {
             List<IAtsWorkItemTopicEventListener> listeners = workItemEventListeners.getValues(topic);
-            if (!listeners.isEmpty()) {
+            if (listeners != null && !listeners.isEmpty()) {
                List<ArtifactId> workItemArtIds = getWorkItemArtIds(event);
                for (IAtsWorkItemTopicEventListener listener : listeners) {
                   try {
