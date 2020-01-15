@@ -92,7 +92,7 @@ public class TestDatabase {
       configuration = configAdmin.getConfiguration("org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory", null);
       configuration.update(newConfig(dbPath));
 
-      jdbcService = OsgiUtil.getService(JdbcService.class, "(osgi.binding=orcs.jdbc.service)", 5000L);
+      jdbcService = OsgiUtil.getService(JdbcService.class, "(osgi.binding=orcs.jdbc.service)", 30000L);
       Assert.assertNotNull("Unable to get JdbcService", jdbcService);
       boolean isAlive = jdbcService.isServerAlive(10000L);
       Assert.assertEquals("database service is not alive", true, isAlive);
