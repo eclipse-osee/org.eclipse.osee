@@ -23,6 +23,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,10 +111,15 @@ public final class GitOperationsImpl implements GitOperations {
       ArtifactToken latestCommit = ArtifactToken.SENTINEL;
       Date lastestAuthorDate = new Date(0);
       for (ArtifactReadable commit : commits) {
-         Date authorDate = commit.getSoleAttributeValue(GitCommitAuthorDate);
-         if (authorDate.after(lastestAuthorDate)) {
-            lastestAuthorDate = authorDate;
-            latestCommit = commit;
+         Date authorDate;
+         try {
+            authorDate = new SimpleDateFormat().parse(commit.getSoleAttributeValue(GitCommitAuthorDate));
+            if (authorDate.after(lastestAuthorDate)) {
+               lastestAuthorDate = authorDate;
+               latestCommit = commit;
+            }
+         } catch (ParseException ex) {
+            ex.printStackTrace();
          }
       }
       return latestCommit;

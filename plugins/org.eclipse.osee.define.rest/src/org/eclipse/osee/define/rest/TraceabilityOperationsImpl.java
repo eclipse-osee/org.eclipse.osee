@@ -26,6 +26,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_SupportingInfo;
 import java.io.Writer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -249,13 +251,23 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
          } else {
             latestSha = latestCommit.getSoleAttributeValue(GitCommitSha);
             file.latestChangeId = latestCommit.getSoleAttributeValue(GitChangeId, latestSha);
-            file.latestTimestamp = latestCommit.getSoleAttributeValue(GitCommitAuthorDate);
+            try {
+               file.latestTimestamp =
+                  new SimpleDateFormat().parse(latestCommit.getSoleAttributeValue(GitCommitAuthorDate));
+            } catch (ParseException ex) {
+               ex.printStackTrace();
+            }
          }
 
          if (baselinedCommitId.isValid()) {
             ArtifactReadable baselinedCommit = commits.get(baselinedCommitId);
             file.baselinedChangeId = baselinedCommit.getSoleAttributeValue(GitChangeId);
-            file.baselinedTimestamp = baselinedCommit.getSoleAttributeValue(GitCommitAuthorDate);
+            try {
+               file.baselinedTimestamp =
+                  new SimpleDateFormat().parse(baselinedCommit.getSoleAttributeValue(GitCommitAuthorDate));
+            } catch (ParseException ex) {
+               ex.printStackTrace();
+            }
          }
 
          files.add(file);
