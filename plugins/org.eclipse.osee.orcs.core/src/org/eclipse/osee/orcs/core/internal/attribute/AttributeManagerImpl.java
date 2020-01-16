@@ -51,9 +51,9 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData<ArtifactTypeToken, ArtifactData>, AttributeManager, AttributeExceptionFactory, Iterable<Map.Entry<AttributeTypeId, List<Attribute<Object>>>> {
+public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData<ArtifactTypeToken, ArtifactData>, AttributeManager, AttributeExceptionFactory, Iterable<Map.Entry<AttributeTypeToken, List<Attribute<?>>>> {
 
-   private final HashCollection<AttributeTypeId, Attribute<Object>> attributes;
+   private final HashCollection<AttributeTypeToken, Attribute<?>> attributes;
    private final String guid;
    private boolean isLoaded;
 
@@ -66,32 +66,32 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       guid = artifactData.getGuid();
    }
 
-   private List<Attribute<Object>> filterAttributes(List<Attribute<Object>> attributes, DeletionFlag deletionFlag) {
+   private <T> List<Attribute<T>> filterAttributes(List<Attribute<?>> attributes, DeletionFlag deletionFlag) {
 
       if (attributes == null) {
          return java.util.Collections.emptyList();
       }
       if (deletionFlag == DeletionFlag.INCLUDE_DELETED) {
-         return attributes;
+         return Collections.castAll(attributes);
       }
-      List<Attribute<Object>> notDeleted = new ArrayList<>(attributes.size());
-      for (Attribute<Object> attr : attributes) {
+      List<Attribute<T>> notDeleted = new ArrayList<>(attributes.size());
+      for (Attribute<?> attr : attributes) {
          if (!attr.isDeleted()) {
-            notDeleted.add(attr);
+            notDeleted.add((Attribute<T>) attr);
          }
       }
       return notDeleted;
    }
 
    @Override
-   public synchronized void add(AttributeTypeToken attributeType, Attribute<?> attribute) {
-      attributes.put(attributeType, (Attribute<Object>) attribute);
+   public synchronized <T> void add(AttributeTypeToken attributeType, Attribute<T> attribute) {
+      attributes.put(attributeType, attribute);
       attribute.getOrcsData().setArtifactId(this);
    }
 
    @Override
-   public synchronized void remove(AttributeTypeToken type, Attribute<?> attribute) {
-      attributes.removeValue(type, (Attribute<Object>) attribute);
+   public synchronized <T> void remove(AttributeTypeToken type, Attribute<T> attribute) {
+      attributes.removeValue(type, attribute);
       attribute.getOrcsData().setArtifactId(ArtifactId.SENTINEL);
    }
 
@@ -110,9 +110,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    @Override
    public void setAttributesNotDirty() {
-      for (Attribute<?> attribute : attributes.getValues()) {
-         attribute.clearDirty();
-      }
+      attributes.getValues().forEach(Attribute::clearDirty);
    }
 
    @Override
@@ -148,14 +146,14 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId) {
+   public <T> Attribute<T> getAttributeById(AttributeId attributeId) {
       return getAttributeById(attributeId, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag deletionFlag) {
-      Attribute<Object> attribute = null;
-      Optional<Attribute<Object>> tryFind =
+   public <T> Attribute<T> getAttributeById(AttributeId attributeId, DeletionFlag deletionFlag) {
+      Attribute<T> attribute = null;
+      Optional<Attribute<T>> tryFind =
          Iterables.tryFind(getAttributes(deletionFlag), OrcsPredicates.attributeId(attributeId));
       if (tryFind.isPresent()) {
          attribute = tryFind.get();
@@ -166,23 +164,23 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public List<Attribute<Object>> getAttributes() {
-      return filterAttributes(attributes.getValues(), DeletionFlag.EXCLUDE_DELETED);
+   public <T> List<Attribute<T>> getAttributes() {
+      return getAttributes(DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public List<Attribute<Object>> getAttributes(DeletionFlag deletionFlag) {
+   public <T> List<Attribute<T>> getAttributes(DeletionFlag deletionFlag) {
       return filterAttributes(attributes.getValues(), deletionFlag);
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) {
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeToken attributeType) {
       return getAttributes(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
-      return Collections.castAll(filterAttributes(attributes.getValues(attributeType), deletionFlag));
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      return filterAttributes(attributes.getValues(attributeType), deletionFlag);
    }
 
    @Override
@@ -196,7 +194,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
+   public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       List<Attribute<T>> attributes = getAttributes(attributeType);
 
       List<T> values = new LinkedList<>();
@@ -210,7 +208,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) {
+   public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
       String toReturn = defaultValue;
       List<Attribute<Object>> items = getAttributes(attributeType);
       if (!items.isEmpty()) {
@@ -221,7 +219,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType) {
+   public String getSoleAttributeAsString(AttributeTypeToken attributeType) {
       String toReturn = null;
       Object value = getSoleAttributeValue(attributeType);
       if (value instanceof InputStream) {
@@ -246,13 +244,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType) {
       Attribute<T> attribute = getSoleAttribute(attributeType);
       return attribute.getValue();
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, DeletionFlag flag, T defaultValue) {
       T value = defaultValue;
       Attribute<T> attribute = null;
       try {
@@ -266,7 +264,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
       T value = defaultValue;
       Attribute<T> attribute = null;
       try {
@@ -284,7 +282,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    @Override
    public <T> void setSoleAttributeValue(AttributeTypeToken attributeType, T value) {
-      Attribute<T> attribute = (Attribute<T>) getOrCreateSoleAttribute(attributeType);
+      Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       attribute.setValue(value);
    }
 
@@ -308,15 +306,15 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
     * the createAttributeFromString() method.
     */
    @Override
-   public void setAttributesFromStrings(AttributeTypeToken attributeType, Collection<String> values) {
+   public <T> void setAttributesFromStrings(AttributeTypeToken attributeType, Collection<String> values) {
       Set<String> uniqueItems = new LinkedHashSet<>(values);
-      List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
+      List<Attribute<T>> remainingAttributes = getAttributes(attributeType);
       List<String> remainingNewValues = new ArrayList<>(uniqueItems.size());
 
       // all existing attributes matching a new value will be left untouched
       for (String newValue : uniqueItems) {
          boolean found = false;
-         for (Attribute<Object> attribute : remainingAttributes) {
+         for (Attribute<T> attribute : remainingAttributes) {
             if (newValue.equals(attribute.getValue().toString())) {
                remainingAttributes.remove(attribute);
                found = true;
@@ -334,13 +332,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
             createAttributeFromString(attributeType, newValue);
          } else {
             int index = remainingAttributes.size() - 1;
-            Attribute<Object> attribute = remainingAttributes.get(index);
+            Attribute<T> attribute = remainingAttributes.get(index);
             attribute.setFromString(newValue);
             remainingAttributes.remove(index);
          }
       }
 
-      for (Attribute<Object> attribute : remainingAttributes) {
+      for (Attribute<T> attribute : remainingAttributes) {
          attribute.delete();
       }
    }
@@ -348,13 +346,13 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    @Override
    public <T> void setAttributesFromValues(AttributeTypeToken attributeType, Collection<T> values) {
       Set<T> uniqueItems = new LinkedHashSet<>(values);
-      List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
+      List<Attribute<T>> remainingAttributes = getAttributes(attributeType);
       List<T> remainingNewValues = new ArrayList<>(uniqueItems.size());
 
       // all existing attributes matching a new value will be left untouched
       for (T newValue : uniqueItems) {
          boolean found = false;
-         for (Attribute<Object> attribute : remainingAttributes) {
+         for (Attribute<T> attribute : remainingAttributes) {
             if (newValue.equals(attribute.getValue())) {
                remainingAttributes.remove(attribute);
                found = true;
@@ -372,22 +370,20 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
             createAttribute(attributeType, newValue);
          } else {
             int index = remainingAttributes.size() - 1;
-            Attribute<Object> attribute = remainingAttributes.get(index);
+            Attribute<T> attribute = remainingAttributes.get(index);
             attribute.setValue(newValue);
             remainingAttributes.remove(index);
          }
       }
 
-      for (Attribute<Object> attribute : remainingAttributes) {
+      for (Attribute<T> attribute : remainingAttributes) {
          attribute.delete();
       }
    }
 
    @Override
    public void deleteAttributesByArtifact() {
-      for (Attribute<?> attribute : attributes.getValues()) {
-         attribute.setArtifactDeleted();
-      }
+      attributes.getValues().forEach(Attribute::setArtifactDeleted);
    }
 
    @Override
@@ -400,7 +396,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public void deleteSoleAttribute(AttributeTypeId attributeType) {
+   public void deleteSoleAttribute(AttributeTypeToken attributeType) {
       Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
          deleteAttribute(attribute);
@@ -408,19 +404,17 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public void deleteAttributes(AttributeTypeId attributeType) {
-      List<Attribute<Object>> values = attributes.getValues(attributeType);
+   public void deleteAttributes(AttributeTypeToken attributeType) {
+      List<Attribute<?>> values = attributes.getValues(attributeType);
       if (values == null) {
          return;
       }
-      for (Attribute<?> attribute : values) {
-         attribute.delete();
-      }
+      values.forEach(Attribute::delete);
    }
 
    @Override
-   public void deleteAttributesWithValue(AttributeTypeId attributeType, Object value) {
-      List<Attribute<Object>> values = attributes.getValues(attributeType);
+   public void deleteAttributesWithValue(AttributeTypeToken attributeType, Object value) {
+      List<Attribute<?>> values = attributes.getValues(attributeType);
       if (values == null) {
          return;
       }
@@ -441,8 +435,8 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType) {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
-      Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
-      return (Attribute<T>) attr;
+      Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
+      return attr;
    }
 
    @Override
@@ -459,14 +453,14 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public Iterator<Map.Entry<AttributeTypeId, List<Attribute<Object>>>> iterator() {
+   public Iterator<Map.Entry<AttributeTypeToken, List<Attribute<?>>>> iterator() {
       return attributes.iterator();
    }
 
    //////////////////////////////////////////////////////////////
 
-   private Attribute<Object> getOrCreateSoleAttribute(AttributeTypeToken attributeType) {
-      List<Attribute<Object>> filterAttributes = getAttributes(attributeType);
+   private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeToken attributeType) {
+      List<Attribute<T>> filterAttributes = getAttributes(attributeType);
       int count = filterAttributes.size();
       if (count > 1) {
          throw new MultipleItemsExist("Multiple items found - total [%s]", count);
@@ -480,7 +474,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
     * Exclude any hard deleted attributes, but include artifact deleted attributes
     */
    @Override
-   public <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
+   public <T> Attribute<T> getSoleAttribute(AttributeTypeToken attributeType) {
       return getSoleAttribute(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
@@ -489,11 +483,11 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
     * all hard deleted attributes, but include artifact deleted attributes
     */
    @Override
-   public <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType, DeletionFlag flag) {
-      Collection<Attribute<Object>> filterAttributes = getAttributes(attributeType, flag);
+   public <T> Attribute<T> getSoleAttribute(AttributeTypeToken attributeType, DeletionFlag flag) {
+      Collection<Attribute<T>> filterAttributes = getAttributes(attributeType, flag);
       int size = filterAttributes.size();
       if (size == 1) {
-         return (Attribute<T>) filterAttributes.iterator().next();
+         return filterAttributes.iterator().next();
       } else if (size < 1) {
          throw createDoesNotExistException(attributeType);
       } else {
@@ -503,7 +497,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private void checkTypeValid(AttributeTypeToken attributeType) {
+   private <T> void checkTypeValid(AttributeTypeToken attributeType) {
       if (CoreAttributeTypes.Name.notEqual(attributeType)) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
@@ -512,11 +506,11 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private void checkMultiplicityCanAdd(AttributeTypeToken attributeType) {
+   private <T> void checkMultiplicityCanAdd(AttributeTypeToken attributeType) {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) + 1);
    }
 
-   private void checkMultiplicityCanDelete(AttributeTypeToken attributeType) {
+   private <T> void checkMultiplicityCanDelete(AttributeTypeToken attributeType) {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) - 1);
    }
 
@@ -560,7 +554,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private final int getRemainingAttributeCount(AttributeTypeToken attributeType) {
+   private final <T> int getRemainingAttributeCount(AttributeTypeToken attributeType) {
       int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
       return minLimit - getAttributeCount(attributeType);
    }

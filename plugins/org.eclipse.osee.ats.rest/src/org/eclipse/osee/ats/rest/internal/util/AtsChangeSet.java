@@ -112,7 +112,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
       getTransaction().deleteSoleAttribute(getArtifact(workItem), attributeType);
       add(workItem);
    }
@@ -130,7 +130,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
+   public void deleteAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
       getTransaction().deleteAttributesWithValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
@@ -182,7 +182,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public void deleteAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);
       add(atsObject);

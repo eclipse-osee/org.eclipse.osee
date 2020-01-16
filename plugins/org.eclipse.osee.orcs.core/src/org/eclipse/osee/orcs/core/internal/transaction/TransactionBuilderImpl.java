@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -311,19 +310,19 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) {
+   public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteSoleAttribute(attributeType);
    }
 
    @Override
-   public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeId attributeType) {
+   public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributes(attributeType);
    }
 
    @Override
-   public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, Object value) {
+   public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Object value) {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);
    }

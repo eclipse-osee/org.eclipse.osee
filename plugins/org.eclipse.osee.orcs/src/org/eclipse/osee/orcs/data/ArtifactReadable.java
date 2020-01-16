@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -75,7 +74,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes();
 
-   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType);
+   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType);
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag);
 

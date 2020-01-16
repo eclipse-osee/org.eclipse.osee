@@ -52,7 +52,7 @@ public interface IAtsChangeSet {
 
    boolean isEmpty();
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType);
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
    void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value);
 
@@ -66,13 +66,13 @@ public interface IAtsChangeSet {
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr);
 
-   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
+   void deleteAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value);
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name);
 
-   void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType);
+   void deleteAttributes(IAtsObject atsObject, AttributeTypeToken attributeType);
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId);
 
