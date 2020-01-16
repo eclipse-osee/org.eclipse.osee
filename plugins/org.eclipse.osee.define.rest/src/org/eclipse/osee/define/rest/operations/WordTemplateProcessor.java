@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +31,7 @@ import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
 import org.eclipse.osee.define.api.OseeLinkBuilder;
+import org.eclipse.osee.define.api.PublishingErrorElement;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
@@ -133,6 +135,7 @@ public class WordTemplateProcessor {
 
    protected final List<AttributeElement> attributeElements = new LinkedList<>();
    protected final List<MetadataElement> metadataElements = new LinkedList<>();
+   protected final List<PublishingErrorElement> errorElements = new LinkedList<>();
    protected final List<ArtifactReadable> nonTemplateArtifacts = new LinkedList<>();
    protected final Set<ArtifactReadable> processedArtifacts = new HashSet<>();
    protected PublishingOptions publishingOptions = new PublishingOptions();
@@ -143,6 +146,8 @@ public class WordTemplateProcessor {
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
    private final HashMap<ArtifactId, ArtifactId> artifactsToExclude;
    private final Set<ArtifactId> emptyFolders = new HashSet<>();
+   protected Set<String> bookmarkedIds = new HashSet<>();
+   protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
    private final Log logger;
    private final OrcsApi orcsApi;
@@ -388,7 +393,7 @@ public class WordTemplateProcessor {
          wordMl.addWordMl(updateFooter(endOfTemplate));
 
          displayNonTemplateArtifacts(nonTemplateArtifacts,
-            "Only artifacts of type Word Template Content are supported in this case.");
+            "Only artifacts of type Word Template Content are supported in this case.", wordMl);
 
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -802,8 +807,11 @@ public class WordTemplateProcessor {
       }
    }
 
-   protected void displayNonTemplateArtifacts(final Collection<ArtifactReadable> artifacts, final String warningString) {
-      //TODO Add page at end of published document that contains all errors
+   protected void displayNonTemplateArtifacts(final Collection<ArtifactReadable> artifacts, final String warningString, WordMLProducer wordMl) {
+      for (ArtifactReadable art : artifacts) {
+         errorElements.add(
+            new PublishingErrorElement(art.getId(), art.getName(), art.getArtifactType(), warningString));
+      }
    }
 
    public Set<ArtifactId> getEmptyFolders() {
@@ -820,6 +828,31 @@ public class WordTemplateProcessor {
    public List<ArtifactReadable> getScriptResult(String script) {
       //TODO use new orcs rest call from orcs api
       return null;
+   }
+
+   protected void addErrorLogToWordMl(WordMLProducer wordMl) {
+      addLinkNotInPublishErrors(wordMl);
+
+      if (!errorElements.isEmpty()) {
+         wordMl.startErrorLog();
+         for (PublishingErrorElement error : errorElements) {
+            wordMl.addErrorRow(error.getArtId().toString(), error.getArtName(), error.getArtType().getName(),
+               error.getErrorDescription());
+         }
+         wordMl.endErrorLog();
+      }
+   }
+
+   protected void addLinkNotInPublishErrors(WordMLProducer wordMl) {
+      if (!hyperlinkedIds.isEmpty()) {
+         for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
+            ArtifactReadable artifact = link.getValue();
+            String description =
+               "Contains the following GUIDs that are not found in this published document: " + link.getKey();
+            errorElements.add(new PublishingErrorElement(artifact.getId(), artifact.getName(),
+               artifact.getArtifactType(), description));
+         }
+      }
    }
 
    //Copied from DefaultArtifactRenderer for server publishing
@@ -841,6 +874,42 @@ public class WordTemplateProcessor {
          orderedAttributeTypes.add(contentType);
       }
       return orderedAttributeTypes;
+   }
+
+   protected void processLinkErrors(ArtifactReadable artifact, String data, Set<String> unknownIds) {
+      Pattern bookmarkHyperlinkPattern = Pattern.compile(
+         "(^<aml:annotation[^<>]+w:name=\"OSEE\\.[^\"]*\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/>)|" + "(<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.[^\"]*\"\\s+</w:instrText>)");
+      Pattern oseeLinkPattern = Pattern.compile("\"OSEE\\.[^\"]*\"");
+      Matcher match = bookmarkHyperlinkPattern.matcher(data);
+      Matcher linkMatch = null;
+      String id = "";
+
+      if (!unknownIds.isEmpty()) {
+         String description = "Contains the following unknown GUIDs: " + unknownIds;
+         errorElements.add(
+            new PublishingErrorElement(artifact.getId(), artifact.getName(), artifact.getArtifactType(), description));
+      }
+
+      while (match.find()) {
+         String foundMatch = match.group(0);
+         if (Strings.isValid(foundMatch)) {
+            linkMatch = oseeLinkPattern.matcher(foundMatch);
+            if (linkMatch.find()) {
+               id = foundMatch.substring(linkMatch.start() + 6, linkMatch.end() - 1);
+               if (foundMatch.contains("Bookmark")) {
+                  bookmarkedIds.add(id);
+                  if (hyperlinkedIds.containsKey(id)) {
+                     hyperlinkedIds.remove(id);
+                  }
+               } else if (foundMatch.contains("HYPERLINK")) {
+                  if (!bookmarkedIds.contains(id) && !hyperlinkedIds.containsKey(id)) {
+                     hyperlinkedIds.put(id, artifact);
+                  }
+               }
+            }
+         }
+      }
+
    }
 
    //Copied from WordTemplateRenderer for server publishing
@@ -888,8 +957,7 @@ public class WordTemplateProcessor {
          if (content != null) {
             data = content.getFirst();
             data = data.replaceAll(newLineChar, "");
-            //TODO Display unknown guids by printing them on final page of published document
-            //WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
+            processLinkErrors(artifact, data, content.getSecond());
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {

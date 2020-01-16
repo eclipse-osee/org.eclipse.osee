@@ -424,4 +424,31 @@ public class WordMLProducer {
    public void setMaxOutlineLevel(int maxOutlineLevel) {
       this.maxOutlineLevel = maxOutlineLevel;
    }
+
+   public void startErrorLog() {
+      startAppendixSubSection("Heading1", "Error Log");
+      startTable();
+      addWordMl(
+         "<w:tblPr><w:tblW w:w=\"0\" w:type=\"auto\"/><w:tblBorders><w:top w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/><w:left w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/><w:bottom w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/><w:right w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/><w:insideH w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/><w:insideV w:val=\"single\" w:sz=\"4\" wx:bdrwidth=\"10\" w:space=\"0\" w:color=\"auto\"/></w:tblBorders></w:tblPr>");
+      startTableRow();
+      addTableColumnHeader("Artifact Id");
+      addTableColumnHeader("Artifact Name");
+      addTableColumnHeader("Artifact Type");
+      addTableColumnHeader("Description");
+      endTableRow();
+   }
+
+   public void addErrorRow(String id, String name, String type, String description) {
+      startTableRow();
+      addTableColumns(id, name, type, description);
+      endTableRow();
+   }
+
+   public void endErrorLog() {
+      endTable();
+      addTableCaption("Error Log");
+      endAppendixSubSection();
+      setPageBreak(true);
+   }
+
 }
