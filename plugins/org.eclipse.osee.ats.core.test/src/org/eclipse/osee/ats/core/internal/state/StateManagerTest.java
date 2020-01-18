@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
@@ -53,10 +54,9 @@ public class StateManagerTest extends AbstractUserTest {
    @Mock private AtsApi atsApi;
    // @formatter:on
 
-   @Override
    @Before
    public void setup() {
-      super.setup();
+      MockitoAnnotations.initMocks(this);
 
       MockWorkItem workItem = Mockito.spy(new MockWorkItem("mock work item", "Endorse", StateType.Working));
       stateMgr = Mockito.spy(new StateManager(workItem, logFactory, atsApi));

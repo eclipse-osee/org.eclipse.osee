@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.log;
 
-import static org.mockito.Mockito.when;
+import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AtsLog}
@@ -28,19 +25,6 @@ import org.mockito.MockitoAnnotations;
  * @author Donald G. Dunne
  */
 public class AtsLogTest {
-
-   // @formatter:off
-   @Mock IAtsUser Joe, Kay;
-   // @formatter:on
-
-   @Before
-   public void setup() {
-      MockitoAnnotations.initMocks(this);
-      when(Joe.getName()).thenReturn("joe");
-      when(Joe.getUserId()).thenReturn("joe");
-      when(Kay.getName()).thenReturn("kay");
-      when(Kay.getUserId()).thenReturn("kay");
-   }
 
    public static IAtsLogItem getAnalyzeTestLogItem(Date date, IAtsUser user) {
       return new LogItem(LogType.Error, date, user.getUserId(), "Analyze", "my msg");
@@ -63,10 +47,10 @@ public class AtsLogTest {
       AtsLog log = new AtsLog();
       Assert.assertNull(log.getLastStatusDate());
       Date testDate2011 = getTestDate2011();
-      IAtsLogItem analyzeTestLogItem = getAnalyzeTestLogItem(testDate2011, Joe);
+      IAtsLogItem analyzeTestLogItem = getAnalyzeTestLogItem(testDate2011, joe);
       analyzeTestLogItem.setType(LogType.Metrics);
       log.addLogItem(analyzeTestLogItem);
-      IAtsLogItem implementTestLogItem = getImplementTestLogItem(getTestDate2012(), Joe);
+      IAtsLogItem implementTestLogItem = getImplementTestLogItem(getTestDate2012(), joe);
       implementTestLogItem.setType(LogType.Metrics);
       log.addLogItem(implementTestLogItem);
       Assert.assertTrue(log.isDirty());
@@ -81,8 +65,8 @@ public class AtsLogTest {
 
    private AtsLog getTestLog() {
       AtsLog log = new AtsLog();
-      log.addLogItem(getAnalyzeTestLogItem(getTestDate2011(), Joe));
-      log.addLogItem(getImplementTestLogItem(getTestDate2011(), Joe));
+      log.addLogItem(getAnalyzeTestLogItem(getTestDate2011(), joe));
+      log.addLogItem(getImplementTestLogItem(getTestDate2011(), joe));
       return log;
    }
 
@@ -92,7 +76,7 @@ public class AtsLogTest {
       log.internalResetCreatedDate(new Date());
       log.addLog(LogType.StateCancelled, "analyze", "msg", "345");
 
-      IAtsLogItem item = log.addLog(LogType.Originated, "analyze", "msg", Joe.getUserId());
+      IAtsLogItem item = log.addLog(LogType.Originated, "analyze", "msg", joe.getUserId());
       Assert.assertTrue(log.isDirty());
       Date testDate2011 = getTestDate2011();
       item.setDate(testDate2011);
@@ -107,7 +91,7 @@ public class AtsLogTest {
    public void testInternalGetCancelledReason() {
       AtsLog log = new AtsLog();
       Assert.assertEquals("", log.internalGetCancelledReason());
-      log.addLog(LogType.StateCancelled, "analyze", "cancel reason", Joe.getUserId());
+      log.addLog(LogType.StateCancelled, "analyze", "cancel reason", joe.getUserId());
       Assert.assertEquals("cancel reason", log.internalGetCancelledReason());
    }
 
@@ -115,9 +99,9 @@ public class AtsLogTest {
    public void testInternalGetCompletedFromState() {
       AtsLog log = new AtsLog();
       Assert.assertEquals("", log.internalGetCompletedFromState());
-      log.addLog(LogType.StateEntered, "analyze", "", Joe.getUserId());
-      log.addLog(LogType.StateComplete, "analyze", "", Joe.getUserId());
-      log.addLog(LogType.StateEntered, "completed", "", Joe.getUserId());
+      log.addLog(LogType.StateEntered, "analyze", "", joe.getUserId());
+      log.addLog(LogType.StateComplete, "analyze", "", joe.getUserId());
+      log.addLog(LogType.StateEntered, "completed", "", joe.getUserId());
       Assert.assertEquals("analyze", log.internalGetCompletedFromState());
       Assert.assertTrue(log.isDirty());
    }
@@ -135,7 +119,7 @@ public class AtsLogTest {
    public void testGetLastEvent() {
       AtsLog log = getTestLog();
       Assert.assertEquals("Implement", log.getLastEvent(LogType.Error).getState());
-      log.addLog(LogType.Error, "complete", "msg", Joe.getUserId());
+      log.addLog(LogType.Error, "complete", "msg", joe.getUserId());
       Assert.assertEquals("complete", log.getLastEvent(LogType.Error).getState());
       Assert.assertNull(log.getLastEvent(LogType.Metrics));
    }
@@ -146,7 +130,7 @@ public class AtsLogTest {
       Assert.assertEquals(null, log.getStateEvent(LogType.Error, "Analyze"));
 
       log = getTestLog();
-      IAtsLogItem secondLog = log.addLogItem(getAnalyzeTestLogItem(getTestDate2011(), Joe));
+      IAtsLogItem secondLog = log.addLogItem(getAnalyzeTestLogItem(getTestDate2011(), joe));
       secondLog.setMsg("2nd msg");
       Assert.assertEquals("2nd msg", log.getStateEvent(LogType.Error, "Analyze").getMsg());
 
@@ -190,5 +174,4 @@ public class AtsLogTest {
       Date date = cal.getTime();
       return date;
    }
-
 }

@@ -10,32 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.users;
 
-import static org.mockito.Mockito.when;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractUserTest {
-
-   // @formatter:off
-   @Mock protected IAtsUser joe, steve, alice;
-   // @formatter:on
-
-   @Before
-   public void setup() {
-      MockitoAnnotations.initMocks(this);
-      when(joe.getName()).thenReturn("joe");
-      when(joe.getUserId()).thenReturn("joe");
-
-      when(steve.getName()).thenReturn("steve");
-      when(steve.getUserId()).thenReturn("steve");
-
-      when(alice.getName()).thenReturn("alice");
-      when(alice.getUserId()).thenReturn("alice");
-
-   }
+   public static final IAtsUser joe = new AtsUser(123456L, "joe", "joe", "b@b.com", true);
+   public static final IAtsUser steve = new AtsUser(234567L, "steve", "steve", "asdf", false);
+   public static final IAtsUser alice = new AtsUser(345678L, "alice", "alice", null, true);
 }

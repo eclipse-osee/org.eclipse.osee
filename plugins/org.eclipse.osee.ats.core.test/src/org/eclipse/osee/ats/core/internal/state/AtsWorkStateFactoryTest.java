@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.state;
 
+import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
@@ -27,14 +28,14 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test unit for {@link AtsWorkStateFactory}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsWorkStateFactoryTest {
 
    // @formatter:off
    @Mock IAtsStateManager stateMgr;
-   @Mock IAtsUser Joe, Kay;
+   @Mock IAtsUser Kay;
    @Mock IAtsUserService userService;
    // @formatter:on
 
@@ -49,25 +50,24 @@ public class AtsWorkStateFactoryTest {
       String xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
       Assert.assertEquals("Implement;;;", xml);
 
-      when(Joe.getUserId()).thenReturn("asdf");
       when(Kay.getUserId()).thenReturn("qwer");
-      List<IAtsUser> asList = Arrays.asList(Joe, Kay);
+      List<IAtsUser> asList = Arrays.asList(joe, Kay);
       when(stateMgr.getAssignees("Implement")).thenReturn(asList);
 
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<asdf><qwer>;;", xml);
+      Assert.assertEquals("Implement;<joe><qwer>;;", xml);
 
       when(stateMgr.getHoursSpent("Implement")).thenReturn(1.3);
       when(stateMgr.getHoursSpentStr("Implement")).thenReturn("1.3");
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<asdf><qwer>;1.3;", xml);
+      Assert.assertEquals("Implement;<joe><qwer>;1.3;", xml);
 
       when(stateMgr.getPercentComplete("Implement")).thenReturn(23);
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<asdf><qwer>;1.3;23", xml);
+      Assert.assertEquals("Implement;<joe><qwer>;1.3;23", xml);
       when(stateMgr.getPercentComplete("Implement")).thenReturn(0);
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");
-      Assert.assertEquals("Implement;<asdf><qwer>;1.3;", xml);
+      Assert.assertEquals("Implement;<joe><qwer>;1.3;", xml);
    }
 
    @Test
@@ -80,9 +80,9 @@ public class AtsWorkStateFactoryTest {
       Assert.assertEquals(0, state.getAssignees().size());
       Assert.assertEquals(0, state.getPercentComplete());
 
-      when(userService.getUserById(eq("asdf"))).thenReturn(Joe);
+      when(userService.getUserById(eq("joe"))).thenReturn(joe);
       when(userService.getUserById(eq("qwer"))).thenReturn(Kay);
-      state = atsWorkStateFactory.fromStoreStr("Implement;<asdf><qwer>;1.3;20");
+      state = atsWorkStateFactory.fromStoreStr("Implement;<joe><qwer>;1.3;20");
       Assert.assertEquals("Implement", state.getName());
       Assert.assertEquals(1.3, state.getHoursSpent(), 0.01);
 
@@ -99,7 +99,6 @@ public class AtsWorkStateFactoryTest {
    @Test(expected = OseeArgumentException.class)
    public void testGetFromXml_Exception() {
       AtsWorkStateFactory atsWorkStateFactory = new AtsWorkStateFactory(userService);
-      atsWorkStateFactory.fromStoreStr("asdfa;");
+      atsWorkStateFactory.fromStoreStr("joey;");
    }
-
 }

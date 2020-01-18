@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.note;
 
+import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +36,6 @@ public class AtsNoteTest {
    // @formatter:off
    @Mock private IAtsUserService userService;
    @Mock private AtsApi atsApi;
-   @Mock private IAtsUser Joe;
    // @formatter:on
    List<IAtsUser> assignees = new ArrayList<>();
 
@@ -44,8 +44,7 @@ public class AtsNoteTest {
       MockitoAnnotations.initMocks(this);
 
       when(atsApi.getUserService()).thenReturn(userService);
-      when(userService.getUserById("333")).thenReturn(Joe);
-      when(Joe.getUserId()).thenReturn("333");
+      when(userService.getUserById(joe.getUserId())).thenReturn(joe);
    }
 
    @Test
@@ -53,13 +52,13 @@ public class AtsNoteTest {
       Date date = new Date();
       SimpleNoteStore store = new SimpleNoteStore();
       IAtsWorkItemNotes log = new AtsWorkItemNotes(store, atsApi);
-      NoteItem item = NoteItemTest.getTestNoteItem(date, Joe);
+      NoteItem item = NoteItemTest.getTestNoteItem(date, joe);
       log.addNoteItem(item);
 
       IAtsWorkItemNotes log2 = new AtsWorkItemNotes(store, atsApi);
       Assert.assertEquals(1, log2.getNoteItems().size());
       NoteItem loadItem = log2.getNoteItems().iterator().next();
-      NoteItemTest.validate(loadItem, date, Joe);
+      NoteItemTest.validate(loadItem, date, joe);
    }
 
    public class SimpleNoteStore implements INoteStorageProvider {

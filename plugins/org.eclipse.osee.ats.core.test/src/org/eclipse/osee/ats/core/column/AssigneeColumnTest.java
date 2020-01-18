@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.workflow.Action;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @tests AssigneeColumn
@@ -44,10 +45,10 @@ public class AssigneeColumnTest extends AbstractUserTest {
 
    AssigneeColumn assigneeColumn;
 
-   @Override
    @Before
    public void setup() {
-      super.setup();
+      MockitoAnnotations.initMocks(this);
+
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
       when(atsApi.getUserService()).thenReturn(userService);

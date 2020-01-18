@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.note;
 
+import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ public class NoteItemTest {
    // @formatter:off
    @Mock private IAtsUserService userService;
    @Mock private AtsApi atsApi;
-   @Mock private IAtsUser Joe;
    // @formatter:on
    List<IAtsUser> assignees = new ArrayList<>();
 
@@ -44,21 +44,20 @@ public class NoteItemTest {
       MockitoAnnotations.initMocks(this);
 
       when(atsApi.getUserService()).thenReturn(userService);
-      when(userService.getUserById("333")).thenReturn(Joe);
-      when(Joe.getUserId()).thenReturn("333");
+      when(userService.getUserById(joe.getUserId())).thenReturn(joe);
    }
 
    @Test
    public void testNoteItemNoteTypeStringStringUserString() {
       Date date = new Date();
-      NoteItem item = new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), Joe, "my msg");
-      validate(item, date, Joe);
+      NoteItem item = new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), joe, "my msg");
+      validate(item, date, joe);
    }
 
-   public static void validate(NoteItem item, Date date, IAtsUser Joe) {
+   public static void validate(NoteItem item, Date date, IAtsUser joe) {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
-      Assert.assertEquals(Joe, item.getUser());
+      Assert.assertEquals(joe, item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
@@ -69,52 +68,51 @@ public class NoteItemTest {
    @Test
    public void testNoteItemStringStringStringUserString() {
       Date date = new Date();
-      NoteItem item = new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), Joe, "my msg");
-      validate(item, date, Joe);
+      NoteItem item = new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), joe, "my msg");
+      validate(item, date, joe);
    }
 
    @Test
    public void testToString() {
       Date date = new Date();
-      NoteItem item = getTestNoteItem(date, Joe);
+      NoteItem item = getTestNoteItem(date, joe);
 
       Assert.assertEquals(
-         "Note: Comment from " + Joe.getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "Note: Comment from " + joe.getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
          item.toString());
    }
 
    @Test
    public void testToXmlFromXml() {
       Date date = new Date();
-      NoteItem item = getTestNoteItem(date, Joe);
+      NoteItem item = getTestNoteItem(date, joe);
       NoteItem item2 =
-         new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), Joe, "another message");
+         new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), joe, "another message");
 
       String xml = AtsWorkItemNotes.toXml(Arrays.asList(item, item2), atsApi);
       Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + Joe.getUserId() + "\"/>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + Joe.getUserId() + "\"/></AtsNote>",
+         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + joe.getUserId() + "\"/>" + //
+         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + joe.getUserId() + "\"/></AtsNote>",
          xml);
 
       List<NoteItem> items = AtsWorkItemNotes.fromXml(xml, "ASDF4", atsApi);
-      validate(items.iterator().next(), date, Joe);
+      validate(items.iterator().next(), date, joe);
 
       NoteItem fromXmlItem2 = items.get(1);
       Assert.assertEquals(NoteType.Question, fromXmlItem2.getType());
       Assert.assertEquals("Analyze", fromXmlItem2.getState());
-      Assert.assertEquals(Joe, fromXmlItem2.getUser());
+      Assert.assertEquals(joe, fromXmlItem2.getUser());
       Assert.assertEquals("another message", fromXmlItem2.getMsg());
    }
 
    @Test
    public void testToHTML() {
       Date date = new Date();
-      NoteItem item = getTestNoteItem(date, Joe);
+      NoteItem item = getTestNoteItem(date, joe);
 
       Assert.assertEquals(
-         "<b>Note:</b>Comment from " + Joe.getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(
+         "<b>Note:</b>Comment from " + joe.getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(
             date) + " - my msg",
          item.toHTML());
    }
-
 }

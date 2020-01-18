@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @tests ImplementersColumn
@@ -49,10 +50,10 @@ public class ImplementersColumnTest extends AbstractUserTest {
    AtsImplementersService impService;
    AssigneeColumn assigneeColumn;
 
-   @Override
    @Before
    public void setup() {
-      super.setup();
+      MockitoAnnotations.initMocks(this);
+
       when(atsApi.getUserService()).thenReturn(userService);
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
