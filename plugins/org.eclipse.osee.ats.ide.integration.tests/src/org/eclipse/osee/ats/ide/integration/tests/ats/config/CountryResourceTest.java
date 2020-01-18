@@ -37,11 +37,11 @@ public class CountryResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsCountryRestCall() {
-      testUrl("/ats/country/" + DemoCountry.usg.getId(), "USG");
+      testUrl("/ats/country/" + DemoCountry.usg.getIdString(), "USG");
    }
 
    @Test
    public void testAtsCountryDetailsRestCall() {
-      testCountriesUrl("/ats/country/" + DemoCountry.usg.getId() + "/details", 1, true);
+      testCountriesUrl("/ats/country/" + DemoCountry.usg.getIdString() + "/details", 1, true);
    }
 }

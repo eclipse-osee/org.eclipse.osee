@@ -45,8 +45,7 @@ public class Action extends AtsObject implements IAtsAction {
    @Override
    public String getAtsId() {
       try {
-         return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
-            String.valueOf(getId()));
+         return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, getIdString());
       } catch (OseeCoreException ex) {
          return null;
       }

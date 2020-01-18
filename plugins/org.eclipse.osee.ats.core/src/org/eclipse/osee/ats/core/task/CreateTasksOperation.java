@@ -236,7 +236,7 @@ public class CreateTasksOperation {
             for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
                JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsApi);
                if (newJaxTask == null) {
-                  results.errorf("Unable to create return New Task for id %s\n" + jaxTask.getId());
+                  results.errorf("Unable to create return New Task for id %s\n" + jaxTask.getIdString());
                }
                this.tasks.add(newJaxTask);
             }

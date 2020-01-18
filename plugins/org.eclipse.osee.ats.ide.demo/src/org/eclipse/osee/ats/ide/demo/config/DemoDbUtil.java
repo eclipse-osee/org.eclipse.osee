@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,7 +40,7 @@ public class DemoDbUtil {
    public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getId());
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getIdString());
       }
       Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
          QueryOption.CONTAINS_MATCH_OPTIONS);
@@ -64,8 +64,8 @@ public class DemoDbUtil {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
-      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, INTERFACE_INITIALIZATION,
-         branch);
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         INTERFACE_INITIALIZATION, branch);
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(ArtifactToken... aiTokens) {

@@ -122,7 +122,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       if (art != null) {
          try {
             ArtifactReadable artifact = art.getRelated(relationType).getOneOrDefault(ArtifactReadable.SENTINEL);
-            if (!artifact.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+            if (artifact.isValid()) {
                IAtsObject object = AtsObjects.getAtsObject(artifact, atsApi);
                if (object != null) {
                   related = (T) object;

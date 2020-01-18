@@ -96,7 +96,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       changes.setSoleAttributeValue(newArtifact, AtsAttributeTypes.Active, jaxAtsObject.isActive());
       create(jaxAtsObject, newArtifact, changes);
       changes.execute();
-      return Response.created(new URI("/" + jaxAtsObject.getId())).build();
+      return Response.created(new URI("/" + jaxAtsObject.getIdString())).build();
    }
 
    /**

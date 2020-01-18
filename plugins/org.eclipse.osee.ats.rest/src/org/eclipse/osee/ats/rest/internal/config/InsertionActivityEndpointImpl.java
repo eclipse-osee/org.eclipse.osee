@@ -50,7 +50,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    public Response update(JaxInsertionActivity activity) throws Exception {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(activity.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", activity.getId());
+         throw new OseeStateException("Artifact with id %d not found", activity.getIdString());
       }
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
@@ -60,7 +60,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
          changes.setSoleAttributeValue(insertionActivity, CoreAttributeTypes.Name, activity.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + activity.getId())).build();
+      return Response.created(new URI("/" + activity.getIdString())).build();
    }
 
    @Override

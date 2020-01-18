@@ -37,11 +37,11 @@ public class InsertionActivityResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsInsertionActivityRestCall() {
-      testUrl("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getId(), "COMM Page");
+      testUrl("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getIdString(), "COMM Page");
    }
 
    @Test
    public void testAtsInsertionActivityDetailsRestCall() {
-      testActivitiesUrl("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getId() + "/details", 1, true);
+      testActivitiesUrl("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getIdString() + "/details", 1, true);
    }
 }

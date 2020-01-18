@@ -79,7 +79,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
 
    private void checkUsedIds(ArtifactToken art) {
       if (usedIds.contains(art.getId())) {
-         throw new OseeArgumentException("Id %s already used.  Can't create token %s", art.getId(),
+         throw new OseeArgumentException("Id %s already used.  Can't create token %s", art.getIdString(),
             art.toStringWithId());
       }
       usedIds.add(art.getId());

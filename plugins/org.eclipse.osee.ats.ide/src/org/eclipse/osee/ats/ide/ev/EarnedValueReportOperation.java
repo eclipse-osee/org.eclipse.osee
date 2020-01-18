@@ -92,7 +92,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
       if (pcrId == null && art instanceof IAtsWorkItem) {
          pcrId = ((IAtsWorkItem) art).getAtsId();
       } else if (pcrId == null && art instanceof IAtsObject) {
-         pcrId = String.valueOf(((IAtsObject) art).getId());
+         pcrId = ((IAtsObject) art).getIdString();
       }
       return pcrId;
    }

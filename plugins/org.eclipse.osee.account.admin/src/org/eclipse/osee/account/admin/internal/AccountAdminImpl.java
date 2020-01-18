@@ -127,7 +127,7 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean setActive(ArtifactId accountId, boolean active) {
       boolean modified = false;
       Account account = getAccountById(accountId).getOneOrDefault(Account.SENTINEL);
-      if (account.getId() != Account.SENTINEL.getId() && account.isActive() != active) {
+      if (account.isValid() && account.isActive() != active) {
          getStorage().setActive(accountId, active);
          modified = true;
       }
@@ -208,7 +208,7 @@ public class AccountAdminImpl implements AccountAdmin {
       String email = authenticate(request);
       ResultSet<Account> result = getAccountByEmail(email);
       Account account = result.getAtMostOneOrDefault(Account.SENTINEL);
-      if (account.getId() == Account.SENTINEL.getId()) {
+      if (account.isInvalid()) {
          throw new AccountLoginException(
             "Login Error - Unable to find account for username[%s] using authentication scheme[%s]",
             request.getUserName(), request.getScheme());

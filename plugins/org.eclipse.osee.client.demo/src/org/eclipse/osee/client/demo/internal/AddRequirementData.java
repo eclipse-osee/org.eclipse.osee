@@ -231,7 +231,7 @@ public class AddRequirementData implements IDbInitializationTask {
    private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
-            artifactNameStr, branch.getId());
+            artifactNameStr, branch.getIdString());
       }
       Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
          QueryOption.CONTAINS_MATCH_OPTIONS);

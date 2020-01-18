@@ -236,8 +236,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
-         writer.writeStringField("Backlog Id", backlogArt.isValid() ? String.valueOf(backlogArt.getId()) : "");
-         writer.writeStringField("Backlog", backlogArt.isValid() ? String.valueOf(backlogArt.getName()) : "");
+         writer.writeStringField("Backlog Id", backlogArt.isValid() ? backlogArt.getIdString() : "");
+         writer.writeStringField("Backlog", backlogArt.isValid() ? backlogArt.getName() : "");
       }
       if (!identityView) {
          addAttributeData(writer, attributeTypes, artifact, Collections.emptyList(), atsApi, orcsApi);

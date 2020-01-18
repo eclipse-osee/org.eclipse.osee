@@ -40,8 +40,8 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -224,7 +224,7 @@ public class Pdd93CreateDemoAgile {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName(DemoArtifactToken.CIS_Agile_Team.getName());
       newTeam.setId(DemoArtifactToken.CIS_Agile_Team.getId());
-      newTeam.setProgramId(aProgram.getId().toString());
+      newTeam.setProgramId(aProgram.getIdString());
       Response response = AtsClientService.getAgile().createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 

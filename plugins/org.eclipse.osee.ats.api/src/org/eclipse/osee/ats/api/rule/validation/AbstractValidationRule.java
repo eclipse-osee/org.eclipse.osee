@@ -66,7 +66,7 @@ public abstract class AbstractValidationRule {
 
    public String getHyperlink(String name, String id, BranchId branch) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
-         id + "(" + branch.getId() + ")"), name);
+         id + "(" + branch.getIdString() + ")"), name);
    }
 
 }

@@ -336,7 +336,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (IAtsActionableItem aia : actionableItems) {
-            sb.append("Selected AI \"" + aia + "\" " + aia.getId() + "\n");
+            sb.append("Selected AI \"" + aia + "\" " + aia.getIdString() + "\n");
          }
          throw new OseeStateException(sb.toString());
       }

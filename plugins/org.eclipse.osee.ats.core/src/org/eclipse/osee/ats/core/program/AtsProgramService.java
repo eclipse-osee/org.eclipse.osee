@@ -87,7 +87,7 @@ public class AtsProgramService implements IAtsProgramService {
          country = (IAtsCountry) countryId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(countryId);
-         if (art.isOfType( AtsArtifactTypes.Country)) {
+         if (art.isOfType(AtsArtifactTypes.Country)) {
             country = new Country(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -101,7 +101,7 @@ public class AtsProgramService implements IAtsProgramService {
          insertion = (IAtsInsertion) insertionId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(insertionId);
-         if (art.isOfType( AtsArtifactTypes.Insertion)) {
+         if (art.isOfType(AtsArtifactTypes.Insertion)) {
             insertion = new Insertion(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -115,7 +115,7 @@ public class AtsProgramService implements IAtsProgramService {
          insertionActivity = (IAtsInsertionActivity) insertionActivityId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(insertionActivityId);
-         if (art.isOfType( AtsArtifactTypes.InsertionActivity)) {
+         if (art.isOfType(AtsArtifactTypes.InsertionActivity)) {
             insertionActivity = new InsertionActivity(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -224,7 +224,7 @@ public class AtsProgramService implements IAtsProgramService {
          program = new Program(atsApi.getLogger(), atsApi, (ArtifactToken) programId);
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(programId);
-         if (art.isOfType( AtsArtifactTypes.Program)) {
+         if (art.isOfType(AtsArtifactTypes.Program)) {
             program = new Program(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -321,7 +321,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program) {
       return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId())) //
+         .andAttr(AtsAttributeTypes.ProgramId, program.getIdString()) //
          .getConfigObjectResultSet().getList());
    }
 
@@ -329,7 +329,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program) {
       return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId())) //
+         .andAttr(AtsAttributeTypes.ProgramId, program.getIdString()) //
          .getConfigObjectResultSet().getList());
    }
 
@@ -353,7 +353,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) {
       IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId()));
+         .andAttr(AtsAttributeTypes.ProgramId, program.getIdString());
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -366,7 +366,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) {
       IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId()));
+         .andAttr(AtsAttributeTypes.ProgramId, program.getIdString());
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());

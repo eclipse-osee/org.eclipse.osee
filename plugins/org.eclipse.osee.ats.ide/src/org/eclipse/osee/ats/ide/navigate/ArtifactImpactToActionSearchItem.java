@@ -115,7 +115,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getId() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getIdString() + "\"");
 
          HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, BranchId> branchMap = ChangeManager.getModifingBranches(processArts);

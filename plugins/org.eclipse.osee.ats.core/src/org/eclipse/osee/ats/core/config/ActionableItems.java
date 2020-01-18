@@ -79,7 +79,7 @@ public class ActionableItems {
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
-      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getId() + ").\n\nChoose another item.";
+      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getIdString() + ").\n\nChoose another item.";
    }
 
    public static IAtsActionableItem getTopActionableItem(AtsApi atsApi) {

@@ -42,7 +42,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    public Response update(JaxCountry country) throws Exception {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(country.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", country.getId());
+         throw new OseeStateException("Artifact with id %d not found", country.getIdString());
       }
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
@@ -51,7 +51,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
          changes.setSoleAttributeValue(configArtifact, CoreAttributeTypes.Name, country.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + country.getId())).build();
+      return Response.created(new URI("/" + country.getIdString())).build();
    }
 
    @Override

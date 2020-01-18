@@ -110,7 +110,7 @@ public class KanbanOperations {
          //   "Cancelled"  : [ "9898" ],
          //   "Completed"  : [ "5656","4325" ]
          // },
-         jSprint.addStateNameToTaskId(workItem.getStateMgr().getCurrentStateName(), String.valueOf(aItem.getId()));
+         jSprint.addStateNameToTaskId(workItem.getStateMgr().getCurrentStateName(), aItem.getIdString());
 
          // "availableStates" : [ {
          //    "name" : "New",
@@ -201,7 +201,7 @@ public class KanbanOperations {
       rowIds.clear();
       for (ArtifactToken story : atsApi.getRelationResolver().getRelated(workItem,
          AtsRelationTypes.AgileStoryToItem_AgileStory)) {
-         jSprint.addRowIdToTaskId(story.getIdString(), String.valueOf(aItem.getId()));
+         jSprint.addRowIdToTaskId(story.getIdString(), aItem.getIdString());
       }
    }
 
@@ -242,7 +242,7 @@ public class KanbanOperations {
          assigneesIds.addAll(getImplementerUserIdsString(workItem, atsApi, teamMembers));
       }
       for (String assigneeId : assigneeIds) {
-         jSprint.addRowIdToTaskId(assigneeId, String.valueOf(aItem.getId()));
+         jSprint.addRowIdToTaskId(assigneeId, aItem.getIdString());
       }
    }
 
@@ -328,7 +328,7 @@ public class KanbanOperations {
    private JaxKbTask createJaxKbTask(IAgileItem aItem, IAtsWorkItem wItem, ArtifactToken artifact, IAgileTeam agileTeam, AtsApi atsApi) {
       JaxKbTask task = new JaxKbTask();
       task.setName(aItem.getName());
-      task.setGuid(String.valueOf(aItem.getId()));
+      task.setGuid(aItem.getIdString());
       task.setCanEdit(true);
       task.setArtifactType(wItem.getArtifactTypeName());
       task.getAttributeMap().put("Shortname", wItem.getAtsId());

@@ -36,7 +36,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       List<Long> ids = new ArrayList<>();
       for (ArtifactId atsTeam : atsApi.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         ids.add(new Long(atsTeam.getId()));
+         ids.add(atsTeam.getId());
       }
       return ids;
    }

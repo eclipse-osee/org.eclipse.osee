@@ -85,7 +85,7 @@ public class AgileFactory {
 
       ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifact(team.getId());
       if (agileTeamArt == null) {
-         throw new OseeStateException("Agile Team not found with Id [%d]", team.getId());
+         throw new OseeStateException("Agile Team not found with Id [%s]", team.getIdString());
       }
       if (Strings.isValid(team.getName()) && !team.getName().equals(agileTeamArt.getName())) {
          changes.setName(agileTeamArt, team.getName());

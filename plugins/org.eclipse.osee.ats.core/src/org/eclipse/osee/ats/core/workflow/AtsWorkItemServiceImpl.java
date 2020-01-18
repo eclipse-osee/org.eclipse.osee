@@ -311,7 +311,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public String getCancelUrl(IAtsWorkItem workItem, AtsApi atsApi) {
       String cancelActionUrl = atsApi.getConfigValue(CANCEL_HYPERLINK_URL_CONFIG_KEY);
       if (Strings.isValid(cancelActionUrl)) {
-         return cancelActionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
+         return cancelActionUrl.replaceFirst("ID", workItem.getIdString());
       }
       return null;
    }
@@ -404,7 +404,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public String getHtmlUrl(IAtsWorkItem workItem, AtsApi atsApi) {
       String actionUrl = atsApi.getConfigValue("ActionUrl_26_0");
       if (Strings.isValid(actionUrl)) {
-         return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
+         return actionUrl.replaceFirst("ID", workItem.getIdString());
       }
       return null;
    }

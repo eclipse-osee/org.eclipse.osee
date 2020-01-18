@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -161,7 +160,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
 
-      if (introArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+      if (introArt.isInvalid()) {
          introArt =
             orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
                introToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
@@ -169,11 +168,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.assertNotSentinel(introArt);
 
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
-      if (parentToken != null && !parentToken.getId().equals(Id.SENTINEL)) {
+      if (parentToken != null && parentToken.isValid()) {
          parentArt =
             orcsApi.getQueryFactory().fromBranch(newBranch).andId(parentToken).getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
-         if (parentArt.getId().equals(ArtifactReadable.SENTINEL.getId())) {
+         if (parentArt.isInvalid()) {
             parentArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
                parentToken.getArtifactType()).andNameEquals(parentToken.getName()).getResults().getAtMostOneOrDefault(
                   ArtifactReadable.SENTINEL);

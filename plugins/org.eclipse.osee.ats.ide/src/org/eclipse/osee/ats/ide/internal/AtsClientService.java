@@ -96,7 +96,8 @@ public class AtsClientService {
 
    public static TupleEndpoint getAtsBranchTupleEndpoint() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      String commonTupleUrl = String.format("%s/orcs/branch/%s/tuples", appServer, atsClient.getAtsBranch().getId());
+      String commonTupleUrl =
+         String.format("%s/orcs/branch/%s/tuples", appServer, atsClient.getAtsBranch().getIdString());
       JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
       atsBranchTupleEndpoint = jaxRsClient.target(commonTupleUrl).newProxy(TupleEndpoint.class);
       return atsBranchTupleEndpoint;

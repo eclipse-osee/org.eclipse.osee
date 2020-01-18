@@ -37,7 +37,7 @@ public class AgileProgramFeature extends AtsConfigObject implements IAgileProgra
          atsApi.getRelationResolver().getChildren(artifact).iterator(); iterator.hasNext();) {
          ArtifactToken child = iterator.next();
          if (child.isOfType(AtsArtifactTypes.AgileStory)) {
-            ids.add(new Long(child.getId()));
+            ids.add(child.getId());
          }
       }
       return ids;

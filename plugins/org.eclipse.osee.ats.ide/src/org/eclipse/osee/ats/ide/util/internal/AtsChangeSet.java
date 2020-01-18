@@ -461,7 +461,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef) {
       Artifact art = getArtifact(artifact);
-      art.addAttributeFromString(attributeType, artifactRef.getId().toString());
+      art.addAttributeFromString(attributeType, artifactRef.getIdString());
    }
 
    @Override

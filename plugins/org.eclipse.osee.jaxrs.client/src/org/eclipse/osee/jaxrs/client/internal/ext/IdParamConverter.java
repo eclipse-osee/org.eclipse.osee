@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public class IdParamConverter implements ParamConverter<Id> {
    @Override
    public String toString(Id value) {
-      return String.valueOf(value.getId());
+      return value.getIdString();
    }
 
    @Override

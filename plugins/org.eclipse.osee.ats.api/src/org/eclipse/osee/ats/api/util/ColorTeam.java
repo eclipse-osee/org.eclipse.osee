@@ -38,7 +38,7 @@ public class ColorTeam extends NamedIdBase {
 
    @Override
    public String toString() {
-      return "ColorTeam [id=" + id + ", name=" + getName() + ", id=" + getId() + " goalIds=" + goalIds + "]";
+      return "ColorTeam [id=" + id + ", name=" + getName() + ", id=" + getIdString() + " goalIds=" + goalIds + "]";
    }
 
 }

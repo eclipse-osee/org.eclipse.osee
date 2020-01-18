@@ -117,7 +117,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
          for (IAtsTask task : AtsClientService.get().getTaskService().getTask(teamWf)) {
             if (task.getStateMgr().getStateType().isInWork() && AtsClientService.get().getTaskService().isRelatedToState(
                task, state.getName())) {
-               return new Result(false, "Task " + task.getId() + " Not Complete");
+               return new Result(false, "Task " + task.getIdString() + " Not Complete");
             }
          }
       } catch (Exception ex) {

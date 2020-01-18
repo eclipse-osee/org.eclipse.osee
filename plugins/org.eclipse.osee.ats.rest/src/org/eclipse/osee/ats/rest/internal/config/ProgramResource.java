@@ -254,7 +254,7 @@ public class ProgramResource extends AbstractConfigResource {
 
    private Response getResponse(IAtsConfigObject config) {
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path(String.valueOf(config.getId())).build();
+      URI location = builder.path(config.getIdString()).build();
       Response response = Response.created(location).entity(config).build();
       return response;
    }

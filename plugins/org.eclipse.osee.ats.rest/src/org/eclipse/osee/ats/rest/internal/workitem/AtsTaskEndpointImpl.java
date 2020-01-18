@@ -95,7 +95,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       IAtsWorkItem task =
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
             taskId).getResults().getOneOrDefault(IAtsWorkItem.SENTINEL);
-      if (!task.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
+      if (task.isValid()) {
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);
          changes.deleteArtifact(task);
          changes.execute();

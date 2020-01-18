@@ -61,7 +61,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    public Response update(JaxProgram jaxProgram) throws Exception {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(jaxProgram.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with id %d not found", jaxProgram.getId());
+         throw new OseeStateException("Artifact with id %d not found", jaxProgram.getIdString());
       }
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
@@ -71,7 +71,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
          changes.setSoleAttributeValue(program, CoreAttributeTypes.Name, jaxProgram.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + jaxProgram.getId())).build();
+      return Response.created(new URI("/" + jaxProgram.getIdString())).build();
    }
 
    @Override

@@ -116,7 +116,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    @Override
    default String toStringWithId() {
-      return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getId());
+      return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getIdString());
 
    }
 

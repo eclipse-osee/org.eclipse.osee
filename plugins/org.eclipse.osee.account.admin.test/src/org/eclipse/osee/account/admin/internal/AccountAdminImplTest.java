@@ -160,6 +160,7 @@ public class AccountAdminImplTest {
 
       when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
       when(account.isActive()).thenReturn(true);
+      when(account.isValid()).thenReturn(true);
 
       boolean modified = accountAdmin.setActive(newAccountId, false);
       assertTrue(modified);

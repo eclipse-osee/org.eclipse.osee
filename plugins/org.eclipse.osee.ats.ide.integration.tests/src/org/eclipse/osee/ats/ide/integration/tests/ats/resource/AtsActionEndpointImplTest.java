@@ -543,7 +543,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(DemoUsers.Joe_Smith, createdBy);
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Originator.name(),
-         Arrays.asList(DemoUsers.Kay_Jones.getId().toString()));
+         Arrays.asList(DemoUsers.Kay_Jones.getIdString()));
    }
 
    public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeToken attrType, AttributeKey attrKey) {

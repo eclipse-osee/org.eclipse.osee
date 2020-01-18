@@ -34,7 +34,7 @@ public class AgileProgram extends AtsConfigObject implements IAgileProgram {
       List<Long> ids = new ArrayList<>();
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(artifact)) {
          if (child.isOfType(AtsArtifactTypes.AgileTeam)) {
-            ids.add(new Long(child.getId()));
+            ids.add(child.getId());
          }
       }
       return ids;

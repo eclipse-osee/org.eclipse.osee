@@ -77,7 +77,7 @@ public class AtsConfigLabelProvider extends ResultsXViewerLabelProvider implemen
          } else if (xCol.getName().equals("Name")) {
             return configObj.toString();
          } else if (xCol.getName().equals("Id")) {
-            return String.valueOf(configObj.getId());
+            return configObj.getIdString();
          }
          return "";
       }

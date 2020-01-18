@@ -86,7 +86,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       for (Long workItemId : workPackageData.getWorkItemIds()) {
          IAtsWorkItem workItem = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             workItemId).getResults().getAtMostOneOrDefault(IAtsWorkItem.SENTINEL);
-         if (workItem.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
+         if (workItem.isInvalid()) {
             rd.errorf("Work Item with id [%s] Not Found", workItemId);
          }
          if (!workItem.isTask() && !workItem.isTeamWorkflow()) {
@@ -164,7 +164,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       for (Long workItemId : workPackageData.getWorkItemIds()) {
          IAtsWorkItem workItem = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             workItemId).getResults().getAtMostOneOrDefault(IAtsWorkItem.SENTINEL);
-         if (workItem.getId().equals(IAtsWorkItem.SENTINEL.getId())) {
+         if (workItem.isInvalid()) {
             rd.errorf("Work Item with id [%s] Not Found", workItemId);
          }
          if (atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
