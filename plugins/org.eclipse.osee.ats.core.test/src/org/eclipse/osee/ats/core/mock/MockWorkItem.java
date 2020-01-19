@@ -31,28 +31,21 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  * @author Donald G. Dunne
  */
 public class MockWorkItem implements IAtsWorkItem {
-
    private final String name;
    private final String atsId;
    private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
+   private final IAtsWorkDefinition workDefinition;
    private IAtsUser completedBy;
    private IAtsUser cancelledBy;
    private String completeFromState;
    private String cancelledFromState;
 
-   public MockWorkItem(String name, String currentStateName, StateType StateType) {
-      this(name);
-   }
-
-   public MockWorkItem(String name, String currentStateName, List<? extends IAtsUser> assignees) {
-      this(name);
-   }
-
-   public MockWorkItem(String name) {
+   public MockWorkItem(String name, String currentStateName, IAtsWorkDefinition workDefinition, StateType StateType) {
       this.name = name;
       atsId = name;
       this.stateMgr = new StateManager(this, new AtsLogFactory(), null);
+      this.workDefinition = workDefinition;
    }
 
    @Override
@@ -105,7 +98,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
-      return null;
+      return workDefinition;
    }
 
    @Override
@@ -241,7 +234,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public String toStringWithId() {
-      return String.format("[%s]-[%s]", getName(), getId());
+      return String.format("[%s]-[%s]", getName(), getIdString());
    }
 
    @Override

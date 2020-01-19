@@ -58,15 +58,14 @@ public class StateManagerTest extends AbstractUserTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      MockWorkItem workItem = Mockito.spy(new MockWorkItem("mock work item", "Endorse", StateType.Working));
-      stateMgr = Mockito.spy(new StateManager(workItem, logFactory, atsApi));
-      when(workItem.getWorkDefinition()).thenReturn(workDef);
+      MockWorkItem workItem = new MockWorkItem("mock work item", "Endorse", workDef, StateType.Working);
+      stateMgr = new StateManager(workItem, logFactory, atsApi);
+
       when(workDef.getStateByName("endorse")).thenReturn(endorseStateDef);
       when(endorseStateDef.getStateType()).thenReturn(StateType.Working);
 
       when(workDef.getStateByName("analyze")).thenReturn(analyzeStateDef);
       when(analyzeStateDef.getStateType()).thenReturn(StateType.Working);
-
    }
 
    @Test

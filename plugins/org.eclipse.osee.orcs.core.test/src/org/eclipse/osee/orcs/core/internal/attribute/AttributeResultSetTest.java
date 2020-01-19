@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.orcs.core.ds.Attribute;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeResultSet }
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeResultSetTest {
@@ -73,11 +73,9 @@ public class AttributeResultSetTest {
 
    @Test
    public void testIterator() {
-      List<Attribute<String>> spy = spy(list);
-      rSetNoType = new AttributeResultSet<>(factory, spy);
-      rSetNoType.iterator();
-
-      verify(spy).iterator();
+      list.add(attribute1);
+      rSetNoType = new AttributeResultSet<>(factory, list);
+      Assert.assertEquals("", attribute1, rSetNoType.iterator().next());
    }
 
    @Test

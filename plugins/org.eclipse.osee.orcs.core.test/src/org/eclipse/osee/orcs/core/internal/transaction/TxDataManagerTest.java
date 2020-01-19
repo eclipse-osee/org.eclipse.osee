@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,10 +46,8 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
-import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -69,8 +66,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link TxCallableFactory}
@@ -120,7 +115,7 @@ public class TxDataManagerTest {
       MockitoAnnotations.initMocks(this);
       txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, loader);
 
-      when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
+      when(artifact1.getExistingAttributeTypes()).thenAnswer(i -> types);
 
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
@@ -443,34 +438,7 @@ public class TxDataManagerTest {
       assertEquals(readable2, actual);
    }
 
-   @Test
-   public void testCopyArtifact() {
-
-      ArtifactData data = Mockito.mock(ArtifactData.class);
-      VersionData version = Mockito.mock(VersionData.class);
-      when(data.getVersion()).thenReturn(version);
-      when(version.getBranch()).thenReturn(COMMON);
-
-      when(data.getLocalId()).thenReturn(-1);
-      Artifact sourceArtifact = Mockito.spy(new ArtifactImpl(null, data, null));
-
-      when(data.getId()).thenReturn(artifactId2.getId());
-      when(data.getLocalId()).thenReturn(artifactId2.getId().intValue());
-      List<AttributeTypeToken> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
-      when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
-
-      when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isExistingVersionUsed()).thenReturn(false);
-
-      when(artifactFactory.copyArtifact(session, sourceArtifact, copyTypes, COMMON)).thenReturn(artifact2);
-      when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
-
-      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, COMMON, sourceArtifact);
-
-      verify(artifactFactory).copyArtifact(session, sourceArtifact, copyTypes, COMMON);
-
-      assertEquals(readable2, actual);
-   }
+   //org.eclipse.osee.orcs.api.OrcsTransactionTest.testCopyArtifact() already provides a higher fidelity test of copy artifact
 
    @Test
    public void testCopyArtifactId() {
@@ -654,15 +622,5 @@ public class TxDataManagerTest {
       txDataManager.unrelateFromAll(txData, readable1);
 
       verify(relationManager).unrelateFromAll(session, artifact1);
-   }
-
-   private <T> Answer<T> answerValue(final T value) {
-      return new Answer<T>() {
-
-         @Override
-         public T answer(InvocationOnMock invocation) throws Throwable {
-            return value;
-         }
-      };
    }
 }
