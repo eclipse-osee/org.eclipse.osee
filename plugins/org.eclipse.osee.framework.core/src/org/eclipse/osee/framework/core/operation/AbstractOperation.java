@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -24,11 +25,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public abstract class AbstractOperation implements IOperation {
-
+public abstract class AbstractOperation extends NamedBase implements IOperation {
    private IStatus status;
    private final String pluginId;
-   private final String name;
    private boolean wasExecuted = false;
    private final OperationLogger logger;
 
@@ -37,18 +36,13 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    public AbstractOperation(String operationName, String pluginId, OperationLogger logger) {
-      this.name = operationName;
+      super(operationName);
       this.logger = logger;
       if (Strings.isValid(pluginId)) {
          this.pluginId = pluginId;
       } else {
          this.pluginId = getClass().getPackage().getName();
       }
-   }
-
-   @Override
-   public String getName() {
-      return name;
    }
 
    /**
@@ -127,11 +121,6 @@ public abstract class AbstractOperation implements IOperation {
       if (monitor != null && monitor.isCanceled()) {
          throw new OperationCanceledException();
       }
-   }
-
-   @Override
-   public String toString() {
-      return getName();
    }
 
    /**

@@ -12,25 +12,19 @@ package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AppendableRule<T> implements Named {
-   private final String ruleName;
+public abstract class AppendableRule<T> extends NamedBase {
 
    public AppendableRule(String ruleName) {
-      this.ruleName = ruleName;
+      super(ruleName);
    }
 
    public AppendableRule() {
       this("unnamed rule");
-   }
-
-   @Override
-   public String getName() {
-      return ruleName;
    }
 
    public abstract void applyTo(Appendable appendable) throws IOException;
@@ -41,10 +35,5 @@ public abstract class AppendableRule<T> implements Named {
 
    public void applyTo(Appendable appendable, Map<String, String> attributes) throws IOException {
       applyTo(appendable);
-   }
-
-   @Override
-   public String toString() {
-      return ruleName;
    }
 }
