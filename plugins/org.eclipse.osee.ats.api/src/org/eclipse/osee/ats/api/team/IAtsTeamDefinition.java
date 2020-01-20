@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -104,7 +104,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
          }
 
          @Override
-         public ArtifactTypeId getArtifactType() {
+         public ArtifactTypeToken getArtifactType() {
             return null;
          }
 

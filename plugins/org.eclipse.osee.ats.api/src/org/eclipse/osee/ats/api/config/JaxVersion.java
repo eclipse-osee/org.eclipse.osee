@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +32,7 @@ public class JaxVersion extends JaxAtsConfigObject {
    }
 
    @Override
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.Version;
    }
 

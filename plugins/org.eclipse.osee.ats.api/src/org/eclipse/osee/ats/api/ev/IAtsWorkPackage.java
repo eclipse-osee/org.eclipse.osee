@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.ev;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -47,7 +47,7 @@ public interface IAtsWorkPackage extends IAtsConfigObject {
          }
 
          @Override
-         public ArtifactTypeId getArtifactType() {
+         public ArtifactTypeToken getArtifactType() {
             return null;
          }
 

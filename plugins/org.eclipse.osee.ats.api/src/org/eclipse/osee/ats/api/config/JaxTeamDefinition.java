@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -82,7 +82,7 @@ public class JaxTeamDefinition extends JaxAtsConfigObject {
    }
 
    @Override
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.TeamDefinition;
    }
 

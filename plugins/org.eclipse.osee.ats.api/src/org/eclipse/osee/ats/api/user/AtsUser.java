@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -96,7 +96,7 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    @Override
    @JsonIgnore
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return CoreArtifactTypes.User;
    }
 

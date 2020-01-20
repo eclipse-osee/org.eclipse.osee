@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -47,7 +47,7 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
    }
 
    @Override
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return object.getArtifactType();
    }
 }

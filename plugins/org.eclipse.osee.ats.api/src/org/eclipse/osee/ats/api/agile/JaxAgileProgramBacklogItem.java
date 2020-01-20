@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.agile;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -43,7 +43,7 @@ public class JaxAgileProgramBacklogItem extends JaxAgileProgramObject implements
    }
 
    @Override
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.AgileProgramBacklogItem;
    }
 
