@@ -392,9 +392,6 @@ public class WordTemplateProcessor {
          // Write out the last of the template
          wordMl.addWordMl(updateFooter(endOfTemplate));
 
-         displayNonTemplateArtifacts(nonTemplateArtifacts,
-            "Only artifacts of type Word Template Content are supported in this case.", wordMl);
-
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -832,6 +829,8 @@ public class WordTemplateProcessor {
 
    protected void addErrorLogToWordMl(WordMLProducer wordMl) {
       addLinkNotInPublishErrors(wordMl);
+      displayNonTemplateArtifacts(nonTemplateArtifacts,
+         "Only artifacts of type Word Template Content are supported in this case.", wordMl);
 
       if (!errorElements.isEmpty()) {
          wordMl.startErrorLog();
