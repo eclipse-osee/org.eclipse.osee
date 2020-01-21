@@ -27,6 +27,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.config.TeamDefinition;
+import org.eclipse.osee.ats.core.workflow.Task;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.junit.Assert;
@@ -77,13 +80,12 @@ public class AtsWorkItemFilterTest {
 
    @Test
    public void testIsOfType() {
-      when(atsApi.getArtifactResolver()).thenReturn(artifactResolver);
-      when(teamWf1.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
-      when(teamWf1.isOfType(AtsArtifactTypes.Task)).thenReturn(false);
-      when(teamWf2.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
-      when(teamWf2.isOfType(AtsArtifactTypes.Task)).thenReturn(false);
-      when(task1.isOfType(AtsArtifactTypes.Task)).thenReturn(true);
-      when(task1.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      IAtsTeamWorkflow teamWf1 =
+         new TeamWorkflow(null, atsApi, ArtifactToken.valueOf(1, "test temworkflow 1", AtsArtifactTypes.TeamWorkflow));
+      IAtsTeamWorkflow teamWf2 =
+         new TeamWorkflow(null, atsApi, ArtifactToken.valueOf(2, "test temworkflow 2", AtsArtifactTypes.TeamWorkflow));
+
+      IAtsTask task1 = new Task(null, atsApi, ArtifactToken.valueOf(3, "task 1", AtsArtifactTypes.Task));
 
       AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
 

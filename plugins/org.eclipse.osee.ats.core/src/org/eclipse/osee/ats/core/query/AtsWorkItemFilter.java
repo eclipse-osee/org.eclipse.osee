@@ -43,8 +43,8 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    @Override
    public IAtsWorkItemFilter isOfType(ArtifactTypeToken... artifactType) {
-      boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
+         boolean found = false;
          for (ArtifactTypeToken matchType : artifactType) {
             if (item.isOfType(matchType)) {
                found = true;

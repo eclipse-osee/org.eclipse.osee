@@ -37,6 +37,15 @@ public interface IAtsObject extends NamedId, HasDescription {
 
    ArtifactTypeToken getArtifactType();
 
+   default boolean isOfType(ArtifactTypeId... otherTypes) {
+      for (ArtifactTypeId otherType : otherTypes) {
+         if (getArtifactType().inheritsFrom(otherType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    default boolean isTypeEqual(ArtifactTypeId... artifactTypes) {
       ArtifactTypeId artifactType = getArtifactType();
       for (ArtifactTypeId artType : artifactTypes) {

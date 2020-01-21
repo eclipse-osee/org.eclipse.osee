@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -69,10 +68,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    default boolean isTeamWorkflow() {
       return isOfType(AtsArtifactTypes.TeamWorkflow);
-   }
-
-   default boolean isOfType(ArtifactTypeId... artifactType) {
-      return getStoreObject().isOfType(artifactType);
    }
 
    default boolean isDecisionReview() {
