@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
@@ -35,6 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
+import org.eclipse.osee.framework.ui.skynet.render.compare.NativeWordCompare;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.ProgramFinder;
 import org.eclipse.swt.program.Program;
@@ -46,8 +49,11 @@ import org.eclipse.swt.program.Program;
  */
 public class NativeRenderer extends FileSystemRenderer {
 
+   private final IComparator comparator;
+
    public NativeRenderer(Map<RendererOption, Object> rendererOptions) {
       super(rendererOptions);
+      this.comparator = new NativeWordCompare(this);
    }
 
    public NativeRenderer() {
@@ -90,9 +96,19 @@ public class NativeRenderer extends FileSystemRenderer {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
             return PRESENTATION_SUBTYPE_MATCH;
+         } else if (presentationType.matches(DIFF)) {
+            String extension = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Extension, "xml");
+            if (extension.contains("doc")) {
+               return PRESENTATION_SUBTYPE_MATCH;
+            }
          }
       }
       return NO_MATCH;
+   }
+
+   @Override
+   public IComparator getComparator() {
+      return comparator;
    }
 
    @Override
@@ -131,5 +147,10 @@ public class NativeRenderer extends FileSystemRenderer {
       for (Artifact artifact : artifacts) {
          super.open(Arrays.asList(artifact), presentationType);
       }
+   }
+
+   @Override
+   public boolean supportsCompare() {
+      return true;
    }
 }

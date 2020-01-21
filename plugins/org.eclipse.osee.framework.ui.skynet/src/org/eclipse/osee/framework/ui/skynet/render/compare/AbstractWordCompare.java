@@ -49,8 +49,8 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractWordCompare implements IComparator {
-   private final FileSystemRenderer renderer;
-   private final ArtifactDeltaToFileConverter converter;
+   protected final FileSystemRenderer renderer;
+   protected final ArtifactDeltaToFileConverter converter;
    private final List<AttributeTypeId> wordAttributeType = new ArrayList<>();
    protected boolean skipDialogs;
 
