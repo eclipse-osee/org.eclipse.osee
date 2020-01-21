@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -29,7 +31,7 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
 
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
-      if (IAtsAction.isOfType(atsObject) || IAtsTeamWorkflow.isOfType(atsObject)) {
+      if (atsObject.isOfType(TeamWorkflow, Action)) {
          return String.valueOf(getPercentCompleteFromTasks(atsObject, atsApi));
       }
       return "";
@@ -39,7 +41,7 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
    public static int getPercentCompleteFromTasks(IAtsObject atsObject, AtsApi atsApi) {
-      if (IAtsAction.isOfType(atsObject)) {
+      if (atsObject.isOfType(Action)) {
          IAtsAction action = (IAtsAction) atsObject;
          double percent = 0;
          for (IAtsTeamWorkflow teamWf : action.getTeamWorkflows()) {
@@ -53,7 +55,8 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
          Double rollPercent = percent / action.getTeamWorkflows().size();
          return rollPercent.intValue();
       }
-      if (IAtsTeamWorkflow.isOfType(atsObject)) {
+
+      if (atsObject.isOfType(TeamWorkflow)) {
          return getPercentCompleteFromTasks((IAtsTeamWorkflow) atsObject, atsApi);
       }
       return 0;

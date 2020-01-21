@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -80,7 +79,8 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       ISheetWriter excelWriter = new ExcelXmlWriter(file);
 
       BranchId branch = variableMap.getBranch(BRANCH);
-      List<ArtifactTypeToken> artifactTypes = variableMap.getArtifactTypes(ARTIFACT_TYPES);
+      ArtifactTypeToken[] artifactTypes =
+         variableMap.getArtifactTypes(ARTIFACT_TYPES).stream().toArray(ArtifactTypeToken[]::new);
 
       QueryBuilderArtifact queryBuilder = ArtifactQuery.createQueryBuilder(branch);
       queryBuilder.andExists(CoreAttributeTypes.WordTemplateContent);
@@ -91,8 +91,8 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       excelWriter.writeRow("Type", "Artifact", "Artifact Type", "Guid", "Subsystem", "Invalid Link Guid");
       while (artIter.hasNext()) {
          Artifact artifact = artIter.next();
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent) && //
-            isOfTypes(artifactTypes, artifact)) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent) && artifact.isOfType(
+            artifactTypes)) {
             try {
                String content = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WordTemplateContent, "");
                if (Strings.isValid(content)) {
@@ -107,15 +107,6 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
       excelWriter.endSheet();
       excelWriter.endWorkbook();
       Program.launch(file.getAbsolutePath());
-   }
-
-   private boolean isOfTypes(List<ArtifactTypeToken> artifactTypes, Artifact artifact) {
-      for (ArtifactTypeToken type : artifactTypes) {
-         if (artifact.isOfType(type)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    private void findIncorrectLinks(Artifact artifact, String content, ISheetWriter excelWriter) throws IOException {

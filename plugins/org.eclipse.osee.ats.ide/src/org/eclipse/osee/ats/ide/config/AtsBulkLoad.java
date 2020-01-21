@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -58,7 +57,7 @@ public class AtsBulkLoad {
       List<Artifact> teams = new ArrayList<>();
       List<Artifact> tasks = new ArrayList<>();
       for (Artifact art : artifacts) {
-         if (IAtsAction.isOfType(art)) {
+         if (art.isOfType(AtsArtifactTypes.Action)) {
             actions.add(art);
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teams.add(art);

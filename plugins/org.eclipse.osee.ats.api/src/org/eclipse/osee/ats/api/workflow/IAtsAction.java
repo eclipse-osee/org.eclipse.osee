@@ -17,13 +17,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
  * @author Donald G. Dunne
  */
 public interface IAtsAction extends IAtsObject, IAtsTeamWorkflowProvider {
-   // do nothing
 
    public String getAtsId();
 
    void setAtsId(String atsId);
 
-   public static boolean isOfType(Object object) {
-      return object instanceof IAtsAction;
-   }
 }

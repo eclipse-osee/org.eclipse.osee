@@ -18,7 +18,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -60,7 +59,7 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (IAtsAction.isOfType(element) || IAtsTeamWorkflow.isOfType(element)) {
+         if (element instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) element;
             if (workItem.isTeamWorkflow()) {
                return String.valueOf(

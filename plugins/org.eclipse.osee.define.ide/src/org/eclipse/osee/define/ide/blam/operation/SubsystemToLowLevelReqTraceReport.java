@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.Requirements;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -64,7 +64,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private final HashMap<String, List<Artifact>> subsysToSubsysReqsMap;
    private final List<Artifact> lowLevelReqs;
    private final HashSet<Artifact> components;
-   private Collection<ArtifactType> lowerLevelTypes;
+   private ArtifactTypeToken[] lowerLevelTypes;
 
    private XCombo branchViewWidget;
    private XListDropViewer lowerLevel;
@@ -95,7 +95,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       monitor.beginTask("Generate Report", 100);
 
       init();
-      lowerLevelTypes = variableMap.getCollection(ArtifactType.class, "Low Level Requirement Type(s)");
+      lowerLevelTypes =
+         variableMap.getCollection(ArtifactTypeToken.class, "Low Level Requirement Type(s)").stream().toArray(
+            ArtifactTypeToken[]::new);
 
       List<Artifact> arts = variableMap.getArtifacts("Lower Level Requirements");
       BranchId branch = arts.get(0).getBranch();
@@ -171,15 +173,6 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private boolean isOfLowerLevelRequirementType(Artifact artifact) {
-      for (ArtifactType artifactType : lowerLevelTypes) {
-         if (artifact.isOfType(artifactType)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    private void generateSubsystemToLowLevelReqTrace() throws IOException {
       excelWriter.startSheet("5-3", 7);
 
@@ -242,14 +235,13 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initLowLevelRequirements(List<Artifact> artifacts) {
-      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-         CoreRelationTypes.DefaultHierarchical_Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED, CoreRelationTypes.DefaultHierarchical_Child);
       for (Artifact artifact : artifacts) {
-         if (isOfLowerLevelRequirementType(artifact)) {
+         if (artifact.isOfType(lowerLevelTypes)) {
             lowLevelReqs.add(artifact);
          }
          for (Artifact descendant : artifact.getDescendants()) {
-            if (isOfLowerLevelRequirementType(descendant)) {
+            if (descendant.isOfType(lowerLevelTypes)) {
                lowLevelReqs.add(descendant);
             }
          }
@@ -258,8 +250,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initAllocationComponents(List<Artifact> artifacts) {
-      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
-         CoreRelationTypes.DefaultHierarchical_Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED, CoreRelationTypes.DefaultHierarchical_Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);

@@ -18,11 +18,5 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
  * @author Donald G. Dunne
  */
 public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
-
    IAtsTeamDefinition getTeamDefinition();
-
-   public static boolean isOfType(Object object) {
-      return object instanceof IAtsTeamWorkflow;
-   }
-
 }
