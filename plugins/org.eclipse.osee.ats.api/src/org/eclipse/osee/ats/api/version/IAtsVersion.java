@@ -26,8 +26,6 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
     * Name, Full Name, Description
     ******************************/
 
-   String getFullName();
-
    @Override
    String getDescription();
 

@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
@@ -161,11 +162,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleArtifactTypeNameColumn(Object element) {
-      if (element instanceof ICommitConfigItem) {
-         return ((ICommitConfigItem) element).getTypeName();
-      } else {
-         return "";
+      if (element instanceof IAtsObject) {
+         return ((IAtsObject) element).getArtifactToken().getName();
       }
+      return "";
    }
 
    private String handleCommitDateColumn(BranchId branch) {
@@ -268,5 +268,4 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    public void removeListener(ILabelProviderListener listener) {
       // do nothing
    }
-
 }

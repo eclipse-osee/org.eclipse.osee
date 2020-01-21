@@ -27,6 +27,4 @@ public interface ICommitConfigItem extends Named {
 
    public String getCommitFullDisplayName();
 
-   public String getTypeName();
-
 }

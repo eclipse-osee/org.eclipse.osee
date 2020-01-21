@@ -36,14 +36,12 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
    protected ArtifactToken artifact;
    protected final Log logger;
    protected final AtsApi atsApi;
-   private final ArtifactTypeToken artifactType;
 
    public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsApi = atsApi;
       this.artifact = artifact;
-      this.artifactType = artifactType;
       setStoreObject(artifact);
    }
 
@@ -53,22 +51,6 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
 
    public AtsApi getAtsApi() {
       return atsApi;
-   }
-
-   public void setFullName(String fullName) {
-      throw new UnsupportedOperationException("TeamDefinition.setFullName not implemented yet");
-   }
-
-   public String getTypeName() {
-      return artifactType.getName();
-   }
-
-   public String getFullName() {
-      return getTypeName();
-   }
-
-   public void setActionable(Boolean actionable) {
-      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented yet");
    }
 
    public Boolean isActionable() {

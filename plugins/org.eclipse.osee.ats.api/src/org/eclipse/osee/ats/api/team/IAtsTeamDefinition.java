@@ -124,11 +124,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
          }
 
          @Override
-         public String getTypeName() {
-            return null;
-         }
-
-         @Override
          public Boolean isActionable() {
             return false;
          }
