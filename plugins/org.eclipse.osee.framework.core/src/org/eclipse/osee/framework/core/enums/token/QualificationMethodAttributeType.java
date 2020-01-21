@@ -27,9 +27,10 @@ public class QualificationMethodAttributeType extends AttributeTypeEnum<Qualific
 	public final QualificationMethodEnum Analysis = new QualificationMethodEnum(2, "Analysis");
 	public final QualificationMethodEnum Inspection = new QualificationMethodEnum(3, "Inspection");
 	public final QualificationMethodEnum Similarity = new QualificationMethodEnum(4, "Similarity");
-	public final QualificationMethodEnum SpecialQualification = new QualificationMethodEnum(5, "Special Qualification");
-	public final QualificationMethodEnum Legacy = new QualificationMethodEnum(6, "Legacy");
-	public final QualificationMethodEnum Unspecified = new QualificationMethodEnum(7, "Unspecified");
+	public final QualificationMethodEnum PassThru = new QualificationMethodEnum(5, "Pass Thru");
+	public final QualificationMethodEnum SpecialQualification = new QualificationMethodEnum(6, "Special Qualification");
+	public final QualificationMethodEnum Legacy = new QualificationMethodEnum(7, "Legacy");
+	public final QualificationMethodEnum Unspecified = new QualificationMethodEnum(8, "Unspecified");
 	// @formatter:on
 
    public QualificationMethodAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {

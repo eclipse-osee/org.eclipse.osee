@@ -22,10 +22,11 @@ import org.eclipse.osee.framework.core.enums.token.SafetySeverityAttributeType.S
 public class SafetySeverityAttributeType extends AttributeTypeEnum<SafetySeverityEnum> {
 
    // @formatter:off
-	public final SafetySeverityEnum _1Catastrophic = new SafetySeverityEnum(0, "(1) Catastrophic");
-	public final SafetySeverityEnum _2Critical = new SafetySeverityEnum(1, "(2) Critical");
-	public final SafetySeverityEnum _3Marginal = new SafetySeverityEnum(2, "(3) Marginal");
-	public final SafetySeverityEnum _4Negligible = new SafetySeverityEnum(3, "(4) Negligible");
+	public final SafetySeverityEnum Catastrophic = new SafetySeverityEnum(0, "(1) Catastrophic");
+	public final SafetySeverityEnum Critical = new SafetySeverityEnum(1, "(2) Critical");
+	public final SafetySeverityEnum Marginal = new SafetySeverityEnum(2, "(3) Marginal");
+	public final SafetySeverityEnum Negligible = new SafetySeverityEnum(3, "(4) Negligible");
+	public final SafetySeverityEnum Unspecified = new SafetySeverityEnum(5, "Unspecified");
 	// @formatter:on
 
    public SafetySeverityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {

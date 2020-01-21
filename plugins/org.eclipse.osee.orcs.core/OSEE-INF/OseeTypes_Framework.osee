@@ -849,6 +849,15 @@ artifactType "Plain Text" extends "Artifact" {
 	attribute "Plain Text Content"
 }
 
+artifactType "Plain Text - Data Rights" extends "Plain Text" {
+	id 4527862492986312222
+   attribute "Doors ID"
+	attribute "Doors Hierarchy"
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
+	attribute "Page Orientation"
+}
+
 artifactType "Software Requirement Plain Text" extends "Plain Text" , "Direct Software Requirement" {
 	id 792
 }
@@ -1214,6 +1223,7 @@ oseeEnumType "enum.req.qualification.method" {
 	entry "Analysis"
 	entry "Inspection"
 	entry "Similarity"
+	entry "Pass Thru"	//Added 1/21/2020
 	 // same as Legacy
 	entry "Special Qualification"
 	entry "Legacy"
@@ -1458,8 +1468,13 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 
 oseeEnumType "enum.req.verification.event" {
 	id 3458764513820541317
+	entry "Flight Test"
+	entry "Ground Test"
+	entry "Lab Test"
+	entry "Simulation Test"
+	entry "Subsystem Test"
+	entry "Component Test"
 	entry "Unspecified"
-	
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
@@ -1946,6 +1961,7 @@ attributeType "Safety Severity" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.safety.severity"
+	defaultValue "Unspecified"
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
@@ -1956,6 +1972,7 @@ oseeEnumType "enum.safety.severity" {
 	entry "(2) Critical"
 	entry "(3) Marginal"
 	entry "(4) Negligible"
+	entry "Unspecified"
 }
 
 attributeType "Doors ID" extends EnumeratedAttribute {

@@ -22,7 +22,13 @@ import org.eclipse.osee.framework.core.enums.token.VerificationEventAttributeTyp
 public class VerificationEventAttributeType extends AttributeTypeEnum<VerificationEventEnum> {
 
    // @formatter:off
-	public final VerificationEventEnum Unspecified = new VerificationEventEnum(0, "Unspecified");
+   public final VerificationEventEnum FlightTest = new VerificationEventEnum(0, "Flight Test");
+   public final VerificationEventEnum GroundTest = new VerificationEventEnum(1, "Ground Test");
+   public final VerificationEventEnum LabTest = new VerificationEventEnum(2, "Lab Test");
+   public final VerificationEventEnum SimulationTest = new VerificationEventEnum(3, "Simulation Test");
+   public final VerificationEventEnum SubsystemTest = new VerificationEventEnum(4, "Subsystem Test");
+   public final VerificationEventEnum ComponentTest = new VerificationEventEnum(5, "Component Test");
+	public final VerificationEventEnum Unspecified = new VerificationEventEnum(6, "Unspecified");
 	// @formatter:on
 
    public VerificationEventAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {

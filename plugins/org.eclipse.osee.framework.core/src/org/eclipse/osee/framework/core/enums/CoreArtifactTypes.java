@@ -152,6 +152,12 @@ public interface CoreArtifactTypes {
       .zeroOrOne(PlainTextContent, ""));
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText));
    ArtifactTypeToken ImplementationDetailsPlainText = osee.add(osee.artifactType(638269899L, "Implementation Details Plain Text", false, PlainText, AbstractImplementationDetails));
+   ArtifactTypeToken PlainTextDataRights = osee.add(osee.artifactType(4527862492986312222L, "Plain Text With Data Rights", false, PlainText)
+      .zeroOrOne(DataRightsBasis, "")
+      .zeroOrOne(DataRightsClassification, "Unspecified")
+      .zeroOrOne(DoorsHierarchy, "")
+      .any(DoorsId, "")
+      .zeroOrOne(PageOrientation, "Portrait"));
    ArtifactTypeToken ReferenceDocument = osee.add(osee.artifactType(2084059074565751746L, "Reference Document", false, GeneralDocument)
       .any(DoorsId, ""));
    ArtifactTypeToken RendererTemplateWholeWord = osee.add(osee.artifactType(9L, "Renderer Template - Whole Word", false, MsWordWholeDocument)
@@ -170,7 +176,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(PotentialSecurityImpact, "false")
       .atLeastOne(QualificationMethod, "Unspecified", 3458764513820541311L)
       .zeroOrOne(SafetyImpact, "")
-      .zeroOrOne(SafetySeverity, "", 8602198000748353178L)
+      .zeroOrOne(SafetySeverity, "Unspecified", 8602198000748353178L)
       .zeroOrOne(SoftwareControlCategory, "Unspecified", 3766269001007852409L)
       .zeroOrOne(SoftwareControlCategoryRationale, "")
       .exactlyOne(Subsystem, "Unspecified", 3458764513820541310L)
