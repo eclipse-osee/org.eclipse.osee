@@ -100,7 +100,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
          viewer.update(node, null);
       }
       try {
-         for (ArtifactType childType : artifactType.getFirstLevelDescendantTypes()) {
+         for (ArtifactTypeToken childType : artifactType.getDirectDescendantTypes()) {
             GraphItem childItem = viewer.findGraphItem(childType);
             if (childItem != null && childItem instanceof GraphNode) {
                GraphNode node = (GraphNode) childItem;

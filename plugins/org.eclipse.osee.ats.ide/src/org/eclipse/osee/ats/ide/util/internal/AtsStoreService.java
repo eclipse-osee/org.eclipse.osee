@@ -116,7 +116,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<ArtifactTypeToken> allArtifactTypes) {
       allArtifactTypes.add(artifactType);
-      for (ArtifactTypeToken child : artifactType.getFirstLevelDescendantTypes()) {
+      for (ArtifactTypeToken child : artifactType.getDirectDescendantTypes()) {
          getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
       }
    }

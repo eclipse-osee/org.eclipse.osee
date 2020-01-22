@@ -373,14 +373,14 @@ public class ArtifactQuery {
 
    public static List<Artifact> getArtifactListFromTypeWithInheritence(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
-      Collection<ArtifactType> artifactTypes = artifactTypeFull.getAllDescendantTypes();
+      Collection<ArtifactTypeToken> artifactTypes = artifactTypeFull.getAllDescendantTypes();
       artifactTypes.add(artifactTypeFull);
       return getArtifactListFromTypes(artifactTypes, branch, allowDeleted);
    }
 
    public static int getArtifactCountFromTypeWithInheritence(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
-      Collection<ArtifactType> artifactTypes = artifactTypeFull.getAllDescendantTypes();
+      Collection<ArtifactTypeToken> artifactTypes = artifactTypeFull.getAllDescendantTypes();
       artifactTypes.add(artifactTypeFull);
       return getArtifactCountFromTypes(artifactTypes, branch, allowDeleted);
    }
@@ -769,7 +769,7 @@ public class ArtifactQuery {
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
       List<Long> artTypeIds = new LinkedList<>();
       String ids = "";
-      for (ArtifactType artType : artifactTypeFull.getAllDescendantTypes()) {
+      for (ArtifactTypeToken artType : artifactTypeFull.getAllDescendantTypes()) {
          artTypeIds.add(artType.getId());
          ids += artType.getIdString() + ",";
       }

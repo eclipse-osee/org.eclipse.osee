@@ -54,12 +54,7 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       addField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, new ArtifactTypeAttributesField(attributes));
    }
 
-   public boolean hasSuperArtifactTypes() {
-      Collection<ArtifactType> superTypes = getSuperArtifactTypes();
-      return superTypes != null && !superTypes.isEmpty();
-   }
-
-   public List<ArtifactType> getSuperArtifactTypes() {
+   private List<ArtifactType> getSuperArtifactTypes() {
       List<ArtifactType> defaultValue = Collections.emptyList();
       Collection<ArtifactType> types = getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
       return new ArrayList<ArtifactType>(types);
@@ -78,21 +73,23 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       }
    }
 
-   public Collection<ArtifactType> getFirstLevelDescendantTypes() {
-      return getDescendants(this, false);
+   @Override
+   public List<ArtifactTypeToken> getDirectDescendantTypes() {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.cast(getDescendants(this, false));
    }
 
-   public Collection<ArtifactType> getAllDescendantTypes() {
+   @Override
+   public List<ArtifactTypeToken> getAllDescendantTypes() {
       return getDescendants(this, true);
    }
 
-   private Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed) {
-      Collection<ArtifactType> descendants = new HashSet<>();
+   private List<ArtifactTypeToken> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed) {
+      List<ArtifactTypeToken> descendants = new ArrayList<>();
       populateDescendants(artifactType, descendants, isRecursionAllowed);
       return descendants;
    }
 
-   private void populateDescendants(ArtifactType artifactType, Collection<ArtifactType> descendants, boolean isRecursionAllowed) {
+   private void populateDescendants(ArtifactType artifactType, List<ArtifactTypeToken> descendants, boolean isRecursionAllowed) {
       for (ArtifactType type : artifactType.childTypes) {
          if (isRecursionAllowed) {
             populateDescendants(type, descendants, isRecursionAllowed);
@@ -115,10 +112,6 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       return getAttributeTypes(branch).contains(attributeType);
    }
 
-   public Map<BranchId, Collection<AttributeType>> getLocalAttributeTypes() {
-      return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
-   }
-
    public Collection<AttributeTypeToken> getAttributeTypes(Branch branch) {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
       Set<AttributeTypeToken> attributeTypes = new HashSet<>();
@@ -127,7 +120,8 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    }
 
    private static void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactType artifactType, Branch branch) {
-      Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
+      Map<BranchId, Collection<AttributeType>> validityMap =
+         artifactType.getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
 
       if (!validityMap.isEmpty()) {
          for (BranchId ancestor : branch.getAncestors()) {

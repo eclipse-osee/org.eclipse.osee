@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -73,6 +74,20 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return false;
    }
 
+   List<ArtifactTypeToken> getDirectDescendantTypes();
+
+   default List<ArtifactTypeToken> getAllDescendantTypes() {
+      List<ArtifactTypeToken> allDescendantTypes = new ArrayList<>();
+      getAllDescendantTypes(allDescendantTypes);
+      return allDescendantTypes;
+   }
+
+   default void getAllDescendantTypes(List<ArtifactTypeToken> allDescendantTypes) {
+      for (ArtifactTypeToken descendant : getDirectDescendantTypes()) {
+         descendant.getAllDescendantTypes(allDescendantTypes);
+      }
+   }
+
    boolean isAbstract();
 
    List<ArtifactTypeToken> getSuperTypes();
@@ -81,6 +96,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;
+         private final List<ArtifactTypeToken> directDescendants = new ArrayList<>(4);
          private final AttributeMultiplicity attributeTypes;
 
          public ArtifactTypeTokenImpl(Long id, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
@@ -96,6 +112,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             for (ArtifactTypeToken superType : superTypes) {
                attributeTypes.putAll(((ArtifactTypeTokenImpl) superType).attributeTypes);
             }
+
+            for (ArtifactTypeToken superType : superTypes) {
+               ((ArtifactTypeTokenImpl) superType).addDirectDescendantType(this);
+            }
          }
 
          @Override
@@ -106,6 +126,15 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          @Override
          public List<ArtifactTypeToken> getSuperTypes() {
             return superTypes;
+         }
+
+         @Override
+         public List<ArtifactTypeToken> getDirectDescendantTypes() {
+            return directDescendants;
+         }
+
+         public void addDirectDescendantType(ArtifactTypeToken descendantType) {
+            directDescendants.add(descendantType);
          }
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);

@@ -42,7 +42,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
             ArtifactType artifactType = (ArtifactType) entity;
             if (parentTypes.contains(artifactType)) {
                Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-               for (ArtifactTypeToken childType : artifactType.getFirstLevelDescendantTypes()) {
+               for (ArtifactTypeToken childType : artifactType.getDirectDescendantTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
@@ -50,7 +50,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
                return artifactTypes.toArray();
             } else if (parentTypes.contains(entity)) {
                Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-               for (ArtifactTypeToken childType : artifactType.getSuperArtifactTypes()) {
+               for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
@@ -59,16 +59,16 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
             } else if (selectedArtType.equals(entity) && selectedArtType.notEqual(CoreArtifactTypes.Artifact)) {
                Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
                // parents
-               for (ArtifactTypeToken childType : artifactType.getSuperArtifactTypes()) {
+               for (ArtifactTypeToken childType : artifactType.getSuperTypes()) {
                   if (parentTypes.contains(childType)) {
                      artifactTypes.add(childType);
                   }
                }
                // children
-               artifactTypes.addAll(artifactType.getFirstLevelDescendantTypes());
+               artifactTypes.addAll(artifactType.getDirectDescendantTypes());
                return artifactTypes.toArray();
             } else {
-               return artifactType.getFirstLevelDescendantTypes().toArray();
+               return artifactType.getDirectDescendantTypes().toArray();
             }
          }
       } catch (OseeCoreException ex) {
@@ -80,9 +80,9 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    @Override
    public Object[] getElements(Object inputElement) {
       try {
-         if (inputElement instanceof ArtifactType) {
-            ArtifactType artifactType = (ArtifactType) inputElement;
-            Set<ArtifactType> artifactTypes = new HashSet<>();
+         if (inputElement instanceof ArtifactTypeToken) {
+            ArtifactTypeToken artifactType = (ArtifactTypeToken) inputElement;
+            Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
             getParents(artifactType, artifactTypes);
             if (!parentTypes.contains(artifactType)) {
                artifactTypes.add(artifactType);
@@ -96,16 +96,16 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       return null;
    }
 
-   public void getParents(ArtifactType artifactType, Set<ArtifactType> parents) {
-      for (ArtifactType artType : artifactType.getSuperArtifactTypes()) {
+   public void getParents(ArtifactTypeToken artifactType, Set<ArtifactTypeToken> parents) {
+      for (ArtifactTypeToken artType : artifactType.getSuperTypes()) {
          parents.add(artType);
          parentTypes.add(artType);
          getParents(artType, parents);
       }
    }
 
-   public void getDecendents(ArtifactType artifactType, Set<ArtifactType> decendents) {
-      for (ArtifactType artType : artifactType.getFirstLevelDescendantTypes()) {
+   public void getDecendents(ArtifactTypeToken artifactType, Set<ArtifactTypeToken> decendents) {
+      for (ArtifactTypeToken artType : artifactType.getDirectDescendantTypes()) {
          if (!parentTypes.contains(artType)) {
             decendents.add(artType);
             getDecendents(artType, decendents);
