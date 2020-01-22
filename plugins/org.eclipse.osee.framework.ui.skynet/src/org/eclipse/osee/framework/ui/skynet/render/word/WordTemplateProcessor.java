@@ -123,7 +123,8 @@ public class WordTemplateProcessor {
    private AttributeTypeId headingAttributeType;
    private boolean outlining;
    private boolean recurseChildren;
-   private String outlineNumber;
+   private String outlineNumber = null;
+   private boolean includeEmptyHeaders = false;
 
    //Attribute Options
    private String attributeLabel;
@@ -203,6 +204,7 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             parseAttributeOptions(masterTemplateOptions);
             parseMetadataOptions(masterTemplateOptions);
+            parseOutliningOptions(masterTemplateOptions);
          }
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -230,6 +232,10 @@ public class WordTemplateProcessor {
 
       getExcludeArtifactTypes();
 
+      if (includeEmptyHeaders) {
+         renderer.updateOption(RendererOption.PUBLISH_EMPTY_HEADERS, true);
+      }
+
       if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
          isEmptyHeaders(artifacts);
       }
@@ -238,7 +244,7 @@ public class WordTemplateProcessor {
       renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
 
       AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, masterTemplateOptions, masterTemplateStyles,
-         file.getParent(), null, null, PREVIEW));
+         file.getParent(), outlineNumber, null, PREVIEW));
 
       if (!((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY)) && !isDiff) {
          RenderingUtil.ensureFilenameLimit(file);
@@ -355,8 +361,9 @@ public class WordTemplateProcessor {
             templateContent = templateContent.replaceAll(STYLES, templateStyles);
          }
 
-         this.outlineNumber = outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
-            artifacts) : outlineNumber;
+         this.outlineNumber =
+            Strings.isInValid(outlineNumber) ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
+               artifacts) : outlineNumber;
          templateContent = wordMl.setHeadingNumbers(this.outlineNumber, templateContent, outlineType);
 
          Matcher matcher = headElementsPattern.matcher(templateContent);
@@ -515,6 +522,13 @@ public class WordTemplateProcessor {
 
          outlining = options.getBoolean("Outlining");
          recurseChildren = options.getBoolean("RecurseChildren");
+         try {
+            includeEmptyHeaders = options.getBoolean("IncludeEmptyHeaders");
+         } catch (JSONException ex) {
+            // The template file json may not have this defined, default is false
+            includeEmptyHeaders = false;
+         }
+         outlineNumber = options.getString("OutlineNumber");
          String headingAttrType = options.getString("HeadingAttributeType");
          headingAttributeType = AttributeTypeManager.getType(headingAttrType);
       } catch (JSONException ex) {
