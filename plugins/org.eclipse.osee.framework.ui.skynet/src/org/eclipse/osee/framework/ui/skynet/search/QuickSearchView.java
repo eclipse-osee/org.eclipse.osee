@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -170,12 +171,14 @@ public class QuickSearchView extends GenericViewPart {
          ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
          sc.setExpandHorizontal(true);
          sc.setExpandVertical(true);
-         sc.setMinSize(400, 400);
+         sc.setMinSize(300, 300);
 
          Composite group = new Composite(sc, SWT.NONE);
          sc.setContent(group);
          group.setLayout(new GridLayout());
-         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gridData.widthHint = 300;
+         group.setLayoutData(gridData);
 
          branchSelect = new XBranchSelectWidget("");
          branchSelect.setDisplayLabel(false);
@@ -197,6 +200,11 @@ public class QuickSearchView extends GenericViewPart {
          panel.setLayout(gL);
          panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
+         if (AccessControlManager.isOseeAdmin()) {
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+            idSearchComposite.addListener(idSearchListener);
+         }
+
          Group attrSearchGroup = new Group(panel, SWT.NONE);
          attrSearchGroup.setLayout(new GridLayout());
          attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -211,8 +219,10 @@ public class QuickSearchView extends GenericViewPart {
          attrSearchComposite.setOptionsComposite(optionsComposite);
          optionsComposite.setAttrSearchComposite(attrSearchComposite);
 
-         idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
-         idSearchComposite.addListener(idSearchListener);
+         if (!AccessControlManager.isOseeAdmin()) {
+            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+            idSearchComposite.addListener(idSearchListener);
+         }
 
          addContextMenu(idSearchComposite.getSearchArea());
 
@@ -232,7 +242,8 @@ public class QuickSearchView extends GenericViewPart {
 
          setFocusWidget(attrSearchComposite);
 
-         sc.layout();
+         group.layout(true);
+         sc.layout(true);
       }
    }
 
