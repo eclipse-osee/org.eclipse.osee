@@ -16,18 +16,10 @@ package org.eclipse.osee.framework.skynet.core.internal;
 import com.google.common.io.ByteSource;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
@@ -47,30 +39,23 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.ClientCachingServiceProxy.TypesLoader;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DslToTypeLoader implements TypesLoader {
-
-   private final ArtifactTypeFactory artTypeFactory = new ArtifactTypeFactory();
    private final OseeEnumTypeFactory enumTypeFactory = new OseeEnumTypeFactory();
    private final OrcsTokenService tokenService;
 
@@ -102,16 +87,11 @@ public class DslToTypeLoader implements TypesLoader {
       }
 
       buffer.copyEnumTypes(caches.getEnumTypeCache());
-      buffer.copyArtTypes(caches.getArtifactTypeCache());
    }
 
    private void loadTypes(TypeBuffer buffer, BranchCache branchCache, OseeDsl model) {
       for (XOseeArtifactTypeOverride xArtifactTypeOverride : model.getArtifactTypeOverrides()) {
          translateXArtifactTypeOverride(xArtifactTypeOverride);
-      }
-
-      for (XArtifactType xArtifactType : model.getArtifactTypes()) {
-         translateXArtifactType(buffer, xArtifactType);
       }
 
       for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
@@ -122,60 +102,6 @@ public class DslToTypeLoader implements TypesLoader {
          translateXEnumType(buffer, xEnumType);
       }
 
-      for (XArtifactType xArtifactType : model.getArtifactTypes()) {
-         handleXArtifactTypeCrossRef(buffer, branchCache, xArtifactType);
-      }
-   }
-
-   private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
-      ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(Long.valueOf(xArtifactType.getId()));
-      translateSuperTypes(buffer, targetArtifactType, xArtifactType);
-      Map<BranchId, Collection<AttributeTypeToken>> validAttributesPerBranch =
-         getOseeAttributes(buffer, branchCache, xArtifactType);
-      targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
-   }
-
-   private void translateSuperTypes(TypeBuffer buffer, ArtifactType targetArtifactType, XArtifactType xArtifactType) {
-      Set<ArtifactType> oseeSuperTypes = new HashSet<>();
-      for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
-         String superTypeName = xSuperType.getName();
-         ArtifactType oseeSuperType = buffer.getArtTypes().getByName(superTypeName);
-         oseeSuperTypes.add(oseeSuperType);
-      }
-
-      if (!oseeSuperTypes.isEmpty()) {
-         targetArtifactType.setSuperTypes(oseeSuperTypes);
-      }
-   }
-
-   private Map<BranchId, Collection<AttributeTypeToken>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
-      Map<BranchId, Collection<AttributeTypeToken>> validAttributes = new HashMap<>();
-      for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
-         XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
-         BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
-         Long attrUuid = Long.valueOf(xAttributeType.getId());
-         AttributeTypeToken oseeAttributeType = tokenService.getAttributeType(attrUuid);
-         if (oseeAttributeType != null) {
-            Collection<AttributeTypeToken> listOfAllowedAttributes = validAttributes.get(branch);
-            if (listOfAllowedAttributes == null) {
-               listOfAllowedAttributes = new HashSet<>();
-               validAttributes.put(branch, listOfAllowedAttributes);
-            }
-            listOfAllowedAttributes.add(oseeAttributeType);
-         } else {
-            OseeLog.logf(Activator.class, Level.WARNING, "Type was null for \"%s\"", xArtifactType.getName());
-         }
-      }
-      return validAttributes;
-   }
-
-   private BranchId getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef) {
-      String branchIdStr = xAttributeTypeRef.getBranchUuid();
-      if (branchIdStr == null) {
-         return CoreBranches.SYSTEM_ROOT;
-      } else {
-         return BranchId.valueOf(branchIdStr);
-      }
    }
 
    private void translateXArtifactTypeOverride(XOseeArtifactTypeOverride xArtTypeOverride) {
@@ -230,13 +156,6 @@ public class DslToTypeLoader implements TypesLoader {
       for (AttributeOverrideOption xOverrideOption : xArtTypeOverride.getOverrideOptions()) {
          overrideVisitor.doSwitch(xOverrideOption);
       }
-   }
-
-   private void translateXArtifactType(TypeBuffer buffer, XArtifactType xArtifactType) {
-      String artifactTypeName = xArtifactType.getName();
-      Long artUuid = Long.valueOf(xArtifactType.getId());
-      artTypeFactory.createOrUpdate(buffer.getArtTypes(), artUuid, xArtifactType.isAbstract(), artifactTypeName,
-         tokenService);
    }
 
    private void translateXEnumType(TypeBuffer buffer, XOseeEnumType xEnumType) {
@@ -301,19 +220,10 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private static final class TypeBuffer {
-      private final ArtifactTypeCache artTypes = new ArtifactTypeCache();
       private final OseeEnumTypeCache enumTypes = new OseeEnumTypeCache();
-
-      public ArtifactTypeCache getArtTypes() {
-         return artTypes;
-      }
 
       public OseeEnumTypeCache getEnumTypes() {
          return enumTypes;
-      }
-
-      public void copyArtTypes(ArtifactTypeCache dest) {
-         copy(artTypes, dest);
       }
 
       public void copyEnumTypes(OseeEnumTypeCache dest) {
@@ -329,6 +239,5 @@ public class DslToTypeLoader implements TypesLoader {
             }
          }
       }
-
    }
 }

@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.framework.core.model.cache;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
+public class ArtifactTypeCache extends AbstractOseeCache<ArtifactTypeToken> {
 
    public ArtifactTypeCache() {
       super(OseeCacheEnum.ARTIFACT_TYPE_CACHE);

@@ -18,12 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-   AttributeTypeTest.class, //
-   BaseOseeTypeTest.class, //
-   BranchTest.class, //
-   OseeEnumTypeTest.class, //
-   RelationTypeTest.class, //
-   TransactionRecordTest.class, //
+   TransactionRecordTest.class//
 })
 /**
  * @author Roberto E. Escobar
