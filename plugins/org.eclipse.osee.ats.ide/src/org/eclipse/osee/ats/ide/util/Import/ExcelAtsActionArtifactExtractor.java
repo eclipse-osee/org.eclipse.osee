@@ -65,7 +65,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -598,8 +597,7 @@ public class ExcelAtsActionArtifactExtractor {
                      if (attributeType == null) {
                         resultData.errorf("Invalid Attribute Type Name => %s\n", header);
                      } else {
-                        if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
-                           AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                        if (!AtsArtifactTypes.Task.isValidAttributeType(attributeType)) {
                            resultData.errorf("Invalid Attribute Type for Task => %s\n", header);
                         } else {
                            String value = cols[i];

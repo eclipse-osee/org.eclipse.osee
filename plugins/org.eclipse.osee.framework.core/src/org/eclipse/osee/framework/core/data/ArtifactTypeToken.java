@@ -84,6 +84,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    default void getAllDescendantTypes(List<ArtifactTypeToken> allDescendantTypes) {
       for (ArtifactTypeToken descendant : getDirectDescendantTypes()) {
+         allDescendantTypes.add(descendant);
          descendant.getAllDescendantTypes(allDescendantTypes);
       }
    }
@@ -91,6 +92,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
    boolean isAbstract();
 
    List<ArtifactTypeToken> getSuperTypes();
+
+   public List<AttributeTypeToken> getValidAttributeTypes();
+
+   public boolean isValidAttributeType(AttributeTypeId attributeType);
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
@@ -135,6 +140,16 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
          public void addDirectDescendantType(ArtifactTypeToken descendantType) {
             directDescendants.add(descendantType);
+         }
+
+         @Override
+         public List<AttributeTypeToken> getValidAttributeTypes() {
+            return attributeTypes.getValidAttributeTypes();
+         }
+
+         @Override
+         public boolean isValidAttributeType(AttributeTypeId attributeType) {
+            return attributeTypes.containsKey(attributeType);
          }
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);

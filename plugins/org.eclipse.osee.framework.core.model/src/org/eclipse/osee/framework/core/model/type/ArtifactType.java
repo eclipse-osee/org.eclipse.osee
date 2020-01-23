@@ -138,6 +138,44 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    }
 
    @Override
+   public boolean isValidAttributeType(AttributeTypeId attributeType) {
+      Map<BranchId, Collection<AttributeType>> validityMap = getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+
+      for (Collection<AttributeType> types : validityMap.values()) {
+         if (types.contains(attributeType)) {
+            return true;
+         }
+      }
+
+      for (ArtifactType superType : getSuperArtifactTypes()) {
+         if (superType.isValidAttributeType(attributeType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public List<AttributeTypeToken> getValidAttributeTypes() {
+      List<AttributeTypeToken> attributeTypes = new ArrayList<>(100);
+      getValidAttributeTypes(attributeTypes, this);
+
+      for (ArtifactType superType : getSuperArtifactTypes()) {
+         getValidAttributeTypes(attributeTypes, superType);
+      }
+      return attributeTypes;
+   }
+
+   private void getValidAttributeTypes(List<AttributeTypeToken> attributeTypes, ArtifactType artifactType) {
+      Map<BranchId, Collection<AttributeType>> validityMap =
+         artifactType.getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+
+      for (Collection<AttributeType> types : validityMap.values()) {
+         attributeTypes.addAll(types);
+      }
+   }
+
+   @Override
    public boolean isAbstract() {
       return getFieldValueLogException(false, ARTIFACT_IS_ABSTRACT_FIELD_KEY);
    }

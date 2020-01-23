@@ -12,24 +12,21 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -64,11 +61,10 @@ public class ArtifactTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeTypeId attributeType, BranchId branchToken) {
-      Branch branch = getCacheService().getBranchCache().get(branchToken);
-      List<ArtifactType> artifactTypes = new ArrayList<>();
-      for (ArtifactType artifactType : getAllTypes()) {
-         if (artifactType.isValidAttributeType(attributeType, branch)) {
+   public static Collection<ArtifactTypeToken> getArtifactTypesFromAttributeType(AttributeTypeToken attributeType) {
+      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+      for (ArtifactTypeToken artifactType : getAllTypes()) {
+         if (artifactType.isValidAttributeType(attributeType)) {
             artifactTypes.add(artifactType);
          }
       }

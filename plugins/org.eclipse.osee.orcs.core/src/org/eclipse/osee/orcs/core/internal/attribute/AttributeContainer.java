@@ -37,8 +37,6 @@ public interface AttributeContainer extends ArtifactToken {
 
    int getAttributeCount(AttributeTypeToken type, DeletionFlag deletionFlag);
 
-   boolean isAttributeTypeValid(AttributeTypeToken attributeType);
-
    Collection<AttributeTypeToken> getValidAttributeTypes();
 
    Collection<AttributeTypeToken> getExistingAttributeTypes();

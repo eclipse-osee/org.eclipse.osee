@@ -538,6 +538,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
+   @Override
    public final boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -36,6 +37,13 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
 
    default boolean isTypeEqual(ArtifactTypeId artifactType) {
       return artifactType.equals(getArtifactType());
+   }
+
+   default boolean isAttributeTypeValid(AttributeTypeId attributeType) {
+      if (attributeType.equals(CoreAttributeTypes.Name)) {
+         return true;
+      }
+      return getArtifactType().isValidAttributeType(attributeType);
    }
 
    /**

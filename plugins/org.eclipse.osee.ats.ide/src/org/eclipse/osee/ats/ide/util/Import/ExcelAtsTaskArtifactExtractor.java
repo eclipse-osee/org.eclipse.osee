@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -241,8 +240,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      if (attributeType == null) {
                         rd.error("Invalid Attribute Type Name => " + header);
                      } else {
-                        if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
-                           AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                        if (!AtsArtifactTypes.Task.isValidAttributeType(attributeType)) {
                            rd.error("Invalid Attribute Type for Task => " + header);
                         } else {
                            String value = row[i];

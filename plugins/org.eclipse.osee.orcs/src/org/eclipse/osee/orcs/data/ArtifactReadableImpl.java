@@ -113,11 +113,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public boolean isAttributeTypeValid(AttributeTypeToken attributeType) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
       throw new UnsupportedOperationException();
    }

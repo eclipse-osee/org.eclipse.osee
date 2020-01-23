@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,5 +84,11 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
 
    public ArtifactTypeToken get() {
       return artifactType;
+   }
+
+   public List<AttributeTypeToken> getValidAttributeTypes() {
+      List<AttributeTypeToken> attributeTypes = new ArrayList<AttributeTypeToken>(size());
+      forEachKey(50000, attributeTypes::add);
+      return attributeTypes;
    }
 }

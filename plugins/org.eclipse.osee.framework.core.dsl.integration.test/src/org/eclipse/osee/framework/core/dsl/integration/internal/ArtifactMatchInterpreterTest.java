@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
@@ -281,11 +280,6 @@ public class ArtifactMatchInterpreterTest {
          @Override
          public ArtifactType getArtifactType() {
             return null;
-         }
-
-         @Override
-         public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
-            return false;
          }
 
          @Override
