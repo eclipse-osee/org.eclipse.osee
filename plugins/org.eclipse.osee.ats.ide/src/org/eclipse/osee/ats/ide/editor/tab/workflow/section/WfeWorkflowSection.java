@@ -250,7 +250,7 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
-   private void computeTextSizesAndReflow() {
+   public void computeTextSizesAndReflow() {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof XText) {
             AttributeFormPart.computeXTextSize((XText) widget);

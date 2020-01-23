@@ -609,4 +609,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
+   public void computeSizeAndReflow() {
+      for (WfeWorkflowSection section : sections) {
+         section.computeTextSizesAndReflow();
+      }
+   }
+
 }

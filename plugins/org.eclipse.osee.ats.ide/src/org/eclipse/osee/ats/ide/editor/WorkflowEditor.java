@@ -294,6 +294,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
+            getWorkFlowTab().computeSizeAndReflow();
             onDirtied();
          }
       } catch (Exception ex) {
