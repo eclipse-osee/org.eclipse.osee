@@ -43,7 +43,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(InsertDataCollector collector) {
       super.addInsertToBatch(collector);
       if (!artifact.isUseBackingdata()) {
-         internalAddInsertToBatch(collector, 1, INSERT_ARTIFACT, getGammaId(), artifact, artifact.getArtTypeId(),
+         internalAddInsertToBatch(collector, 1, INSERT_ARTIFACT, getGammaId(), artifact, artifact.getArtifactType(),
             artifact.getGuid());
       }
    }

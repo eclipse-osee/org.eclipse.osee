@@ -105,7 +105,7 @@ public final class Artifacts {
          details.put("Branch", String.valueOf(Xml.escape(artifact.getBranchToken().getName())));
          details.put("Branch Uuid", artifact.getBranch().getIdString());
          details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
-         details.put("Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
+         details.put("Artifact Type Id", artifact.getArtifactType().getIdString());
          details.put("Gamma Id", String.valueOf(artifact.getGammaId()));
          details.put("Historical", String.valueOf(artifact.isHistorical()));
          details.put("Deleted", String.valueOf(artifact.isDeleted()));

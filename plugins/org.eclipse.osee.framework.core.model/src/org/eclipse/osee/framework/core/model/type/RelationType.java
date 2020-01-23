@@ -79,7 +79,7 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return relationSide == RelationSide.SIDE_A ? getSideAName() : getSideBName();
    }
 
-   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactType artifactType) {
+   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
       ArtifactTypeToken allowedType = getArtifactType(relationSide);
       return artifactType.inheritsFrom(allowedType);
    }

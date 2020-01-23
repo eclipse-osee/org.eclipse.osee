@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -268,10 +267,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return getId().intValue();
    }
 
-   public final long getArtTypeId() {
-      return getArtifactType().getId();
-   }
-
    @Override
    public final BranchId getBranch() {
       return branch;
@@ -473,18 +468,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
    }
 
-   public List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) {
-      List<Artifact> descendants = new LinkedList<>();
-      for (Artifact child : getChildren()) {
-         ArtifactTypeToken childArtType = child.getArtifactType();
-         if (descendantTypes.contains(childArtType)) {
-            descendants.add(child);
-         }
-         child.getDescendants(descendants, DeletionFlag.EXCLUDE_DELETED);
-      }
-      return descendants;
-   }
-
    public final void addChild(Artifact artifact) {
       addChild(PREEXISTING, artifact);
    }
@@ -543,7 +526,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
-      return getArtifactTypeFull().isValidAttributeType(attributeType, BranchManager.getBranch(branch));
+      return ArtifactTypeManager.getType(artifactType).isValidAttributeType(attributeType,
+         BranchManager.getBranch(branch));
    }
 
    public final boolean isRelationTypeValid(IRelationType relationType) {
@@ -636,7 +620,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final Collection<AttributeTypeToken> getAttributeTypes() {
-      return getArtifactTypeFull().getAttributeTypes(BranchManager.getBranch(branch));
+      return ArtifactTypeManager.getType(artifactType).getAttributeTypes(BranchManager.getBranch(branch));
    }
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
@@ -1440,10 +1424,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final boolean isLinksLoaded() {
       return linksLoaded;
-   }
-
-   public final ArtifactType getArtifactTypeFull() {
-      return ArtifactTypeManager.getType(artifactType);
    }
 
    @Override
