@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,8 +49,7 @@ public class ArtifactTypeInheritanceTest {
 
    @Test
    public void testIsOfTypeWithNull() {
-      ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
-      Assert.assertFalse(baseArtifactType.inheritsFrom((ArtifactType) null));
+      Assert.assertFalse(Artifact.inheritsFrom((ArtifactType) null));
    }
 
    @Test

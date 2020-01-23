@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.internal;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

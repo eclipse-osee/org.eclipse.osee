@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -220,7 +219,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
-         ArtifactTypeId subjectArtifactTypeId = ArtifactTypeManager.getType(stmt.getLong("art_type_id"));
+         ArtifactTypeId subjectArtifactTypeId = ArtifactTypeId.valueOf(stmt.getLong("art_type_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
          BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
 

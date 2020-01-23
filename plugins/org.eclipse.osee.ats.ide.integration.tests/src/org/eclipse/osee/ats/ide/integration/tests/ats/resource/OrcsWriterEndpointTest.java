@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -84,9 +83,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
       for (OwArtifact art : collector.getCreate()) {
          long artTypeId = art.getType().getId();
-         ArtifactType typeById = ArtifactTypeManager.getType(artTypeId);
-         assertNotNull(typeById);
-         if (typeById.equals(CoreArtifactTypes.Folder)) {
+         if (CoreArtifactTypes.Folder.equals(artTypeId)) {
             long artId = art.getId();
             Artifact folderArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
             assertNotNull(folderArt);

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
@@ -113,7 +112,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int artId = chStmt.getInt("art_id");
             GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("gamma_id"));
             AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
-            ArtifactTypeId artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+            ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
             String isUri = chStmt.getString("uri");
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
