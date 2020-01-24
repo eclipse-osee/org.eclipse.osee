@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.List;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreContext;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -36,9 +37,10 @@ public interface SqlContext extends DataStoreContext {
 
    /**
     * Gives the JDBC driver a hint as to the number of rows that should be fetched from the database when more rows are
-    * needed. If the value specified is zero, then the hint is ignored. The default implementation returns 0
+    * needed. If the value specified is zero, then the hint is ignored. The default implementation returns
+    * {@link org.eclipse.osee.jdbc.JdbcConstants#JDBC__MAX_FETCH_SIZE}
     */
    default int getFetchSize() {
-      return 0;
+      return JdbcConstants.JDBC__MAX_FETCH_SIZE;
    }
 }
