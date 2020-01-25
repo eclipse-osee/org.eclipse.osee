@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
    ArtifactReadableImpl SENTINEL = new ArtifactReadableImpl(Id.SENTINEL, Artifact, COMMON, ArtifactId.SENTINEL,
-      ApplicabilityId.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null, null);
+      ApplicabilityId.BASE, TransactionId.SENTINEL, ModificationType.SENTINEL, null);
 
    TransactionId getLastModifiedTransaction();
 

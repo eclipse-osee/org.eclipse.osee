@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
@@ -47,9 +48,9 @@ public class DataModuleFactory {
    private final KeyValueModule keyValueModule;
    private final TxModule txModule;
    private final DataStoreAdmin dataStoreAdmin;
+   private final IResourceManager resourceManager;
 
-   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, DataStoreAdmin dataStoreAdmin) {
-      super();
+   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, DataStoreAdmin dataStoreAdmin, IResourceManager resourceManager) {
       this.logger = logger;
       this.loaderModule = loaderModule;
       this.queryModule = queryModule;
@@ -57,6 +58,7 @@ public class DataModuleFactory {
       this.keyValueModule = keyValueModule;
       this.txModule = txModule;
       this.dataStoreAdmin = dataStoreAdmin;
+      this.resourceManager = resourceManager;
    }
 
    public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
@@ -74,8 +76,8 @@ public class DataModuleFactory {
       SqlObjectLoader sqlObjectLoader = loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, orcsTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
-      final QueryEngine queryEngine =
-         queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService, sqlObjectLoader, keyValueStore);
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService,
+         sqlObjectLoader, keyValueStore, resourceManager);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       return new DataModule() {

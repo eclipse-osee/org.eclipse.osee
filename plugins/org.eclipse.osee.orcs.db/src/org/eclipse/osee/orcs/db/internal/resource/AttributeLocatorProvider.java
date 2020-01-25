@@ -26,10 +26,6 @@ import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
  */
 public class AttributeLocatorProvider implements IResourceLocatorProvider {
 
-   public AttributeLocatorProvider() {
-      super();
-   }
-
    @Override
    public IResourceLocator generateResourceLocator(String seed, String name) {
       URI uri = null;
@@ -65,23 +61,26 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       return Strings.isValid(value) && value.startsWith(getSupportedProtocol() + "://");
    }
 
+   public static void seedTo(StringBuilder builder, String seed) {
+      try {
+         char[] buffer = new char[3];
+         int cnt = -1;
+         Reader in = new StringReader(seed);
+         while ((cnt = in.read(buffer)) != -1) {
+            builder.append(buffer, 0, cnt);
+            builder.append("/");
+         }
+      } catch (IOException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+   }
+
    private String generatePath(String seed, String name) {
       StringBuilder builder = new StringBuilder();
       builder.append(getSupportedProtocol());
       builder.append("://");
       if (Strings.isValid(seed) && Strings.isValid(name)) {
-         try {
-            char[] buffer = new char[3];
-            int cnt = -1;
-            Reader in = new StringReader(seed);
-            while ((cnt = in.read(buffer)) != -1) {
-               builder.append(buffer, 0, cnt);
-               builder.append("/");
-            }
-         } catch (IOException ex) {
-            OseeCoreException.wrapAndThrow(ex);
-         }
-
+         seedTo(builder, seed);
          builder.append(name);
       } else {
          throw new MalformedLocatorException("Invalid arguments during locator generation.");

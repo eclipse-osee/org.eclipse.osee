@@ -73,7 +73,7 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTypes orcsTypes, OrcsTokenService tokenService, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue) {
+   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTypes orcsTypes, OrcsTokenService tokenService, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue, IResourceManager resourceManager) {
       AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
       ArtifactQuerySqlContextFactoryImpl artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
@@ -88,6 +88,6 @@ public class QueryModule {
          executorAdmin, loaderFactory, attributeTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
          sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, orcsTypes, tokenService,
-         keyValue);
+         keyValue, resourceManager);
    }
 }

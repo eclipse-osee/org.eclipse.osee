@@ -96,8 +96,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       KeyValueModule keyValueModule = new KeyValueModule(jdbcClient);
 
-      dataModuleFactory =
-         new DataModuleFactory(logger, loaderModule, queryModule, branchModule, keyValueModule, txModule, adminModule);
+      dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, keyValueModule,
+         txModule, adminModule, resourceManager);
    }
 
    public void stop() throws Exception {

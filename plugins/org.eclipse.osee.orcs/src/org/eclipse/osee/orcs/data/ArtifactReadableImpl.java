@@ -21,8 +21,10 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -45,7 +47,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author Ryan D. Brooks
  */
 public final class ArtifactReadableImpl extends BaseId implements ArtifactReadable {
-   private final HashCollection<AttributeTypeToken, Object> attributes = new HashCollection<>();
+   private final HashCollection<AttributeTypeToken, IAttribute<?>> attributes = new HashCollection<>();
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideA = new HashCollection<>();
    private final HashCollection<RelationTypeToken, ArtifactReadable> relationsSideB = new HashCollection<>();
    private final ArtifactTypeToken artifactType;
@@ -53,11 +55,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityId applicability;
-   private final ArtifactTypes artifactTypes;
    private final TransactionId txId;
    private final ModificationType modType;
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory, ArtifactTypes artifactTypes) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchId branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
@@ -66,7 +67,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.txId = txId;
       this.modType = modType;
       this.queryFactory = queryFactory;
-      this.artifactTypes = artifactTypes;
    }
 
    @Override
@@ -188,11 +188,12 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       if (attributes.isEmpty()) {
          throw new OseeStateException("attributes not loaded for artifact [%s]", getIdString());
       }
-      return (List<T>) attributes.getValues(attributeType);
+      return (List<T>) attributes.getValues(attributeType).stream().map(IAttribute::getValue).collect(
+         Collectors.toList());
    }
 
-   public void putAttributeValue(AttributeTypeToken attributeType, Object value) {
-      attributes.put(attributeType, value);
+   public void putAttributeValue(AttributeTypeGeneric<?> attributeType, IAttribute<?> attribute) {
+      attributes.put(attributeType, attribute);
    }
 
    public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact) {

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public final class OrcsTokenServiceImpl implements OrcsTokenService {
    private final Map<Long, ArtifactTypeToken> artifactTypes = new ConcurrentHashMap<>();
-   private final Map<Long, AttributeTypeToken> attributeTypes = new ConcurrentHashMap<>();
+   private final Map<Long, AttributeTypeGeneric<?>> attributeTypes = new ConcurrentHashMap<>();
    private final Map<Long, RelationTypeToken> relationTypes = new ConcurrentHashMap<>();
 
    /**
@@ -72,10 +72,10 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
-   public AttributeTypeToken getAttributeTypeOrSentinel(Long id) {
-      AttributeTypeToken attributeType = attributeTypes.get(id);
+   public AttributeTypeGeneric<?> getAttributeTypeOrSentinel(Long id) {
+      AttributeTypeGeneric<?> attributeType = attributeTypes.get(id);
       if (attributeType == null) {
-         return AttributeTypeToken.SENTINEL;
+         return AttributeTypeGeneric.SENTINEL;
       }
       return attributeType;
    }
@@ -98,7 +98,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
-   public void registerAttributeType(AttributeTypeToken attributeType) {
+   public void registerAttributeType(AttributeTypeGeneric<?> attributeType) {
       if (attributeTypes.putIfAbsent(attributeType.getId(), attributeType) != null) {
          throw new OseeArgumentException("An attribute type with the id %s has already been registered.",
             attributeType);

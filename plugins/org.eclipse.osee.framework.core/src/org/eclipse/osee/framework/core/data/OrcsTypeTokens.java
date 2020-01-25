@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.TriFunction;
  */
 public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
-   private final ChainingArrayList<@NonNull AttributeTypeToken> attributeTypes = new ChainingArrayList<>();
+   private final ChainingArrayList<@NonNull AttributeTypeGeneric<?>> attributeTypes = new ChainingArrayList<>();
    private final ChainingArrayList<@NonNull RelationTypeToken> relationTypes = new ChainingArrayList<>();
    private final NamespaceToken namespace;
 
@@ -49,7 +49,7 @@ public class OrcsTypeTokens {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
    }
 
-   public List<AttributeTypeToken> getAttributeTypes() {
+   public List<AttributeTypeGeneric<?>> getAttributeTypes() {
       return attributeTypes;
    }
 

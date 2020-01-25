@@ -26,7 +26,6 @@ public class DataResource {
    }
 
    public DataResource(String contentType, String encoding, String extension, String locator) {
-      super();
       this.contentType = contentType;
       this.encoding = encoding;
       this.extension = extension;

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -52,7 +54,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -77,13 +78,13 @@ public class QueryEngineImpl implements QueryEngine {
    private final SqlJoinFactory sqlJoinFactory;
    private final SqlObjectLoader sqlObjectLoader;
    private final ArtifactTypes artifactTypes;
-   private final AttributeTypes attributeTypes;
    private final RelationTypes relationTypes;
    private final KeyValueStore keyValue;
    private final SqlHandlerFactory handlerFactory;
    private final OrcsTokenService tokenService;
+   private final IResourceManager resourceManager;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, OrcsTokenService tokenService, KeyValueStore keyValue) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -92,11 +93,11 @@ public class QueryEngineImpl implements QueryEngine {
       this.sqlJoinFactory = sqlJoinFactory;
       this.sqlObjectLoader = sqlObjectLoader;
       this.artifactTypes = orcsTypes.getArtifactTypes();
-      this.attributeTypes = orcsTypes.getAttributeTypes();
       this.relationTypes = orcsTypes.getRelationTypes();
       this.tokenService = tokenService;
       this.keyValue = keyValue;
       this.handlerFactory = handlerFactory;
+      this.resourceManager = resourceManager;
    }
 
    @Override
@@ -181,15 +182,8 @@ public class QueryEngineImpl implements QueryEngine {
       return artifacts;
    }
 
-   private AttributeTypeToken getAttributeType(Long typeId) {
-      AttributeTypeToken attributeType;
-      boolean usingFullTokens = true;
-      if (usingFullTokens) {
-         // this will be used when the full attribute type tokens are committed (and this temporary if statement will be removed)
-         attributeType = tokenService.getAttributeTypeOrSentinel(typeId);
-      } else {
-         attributeType = attributeTypes.get(typeId);
-      }
+   private AttributeTypeGeneric<?> getAttributeType(Long typeId) {
+      AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrSentinel(typeId);
       if (attributeType.isInvalid()) {
          attributeType = AttributeTypeToken.createString(typeId, NamespaceToken.SENTINEL,
             "Mising Attribute Type " + typeId, MediaType.TEXT_PLAIN, "");
@@ -215,8 +209,13 @@ public class QueryEngineImpl implements QueryEngine {
          Long typeId = stmt.getLong("type_id");
          Long otherArtId = stmt.getLong("other_art_id");
          String value = stmt.getString("value");
+         String uri = stmt.getString("uri");
+
          if (otherArtId == 0) {
-            artifact.putAttributeValue(getAttributeType(typeId), value);
+            AttributeTypeGeneric<?> attributeType = getAttributeType(typeId);
+            Attribute<?> attribute =
+               new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
+            artifact.putAttributeValue(attributeType, attribute);
          } else {
             Long otherArtType = stmt.getLong("other_art_type_id");
             RelationSide side = value.equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
@@ -240,7 +239,7 @@ public class QueryEngineImpl implements QueryEngine {
       ArtifactTypeToken artifactType = artifactTypes.get(artifactTypeId);
       ApplicabilityId applic = ApplicabilityId.valueOf(stmt.getLong("app_id"));
       return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
-         modType, queryFactory, artifactTypes);
+         modType, queryFactory);
    }
 
    @Override

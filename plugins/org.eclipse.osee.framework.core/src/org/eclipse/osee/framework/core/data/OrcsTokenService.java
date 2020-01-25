@@ -38,7 +38,7 @@ public interface OrcsTokenService {
    /**
     * @return full attribute type token with the given id or sentinel if not found
     */
-   AttributeTypeToken getAttributeTypeOrSentinel(Long id);
+   AttributeTypeGeneric<?> getAttributeTypeOrSentinel(Long id);
 
    /**
     * @return full relation type token with the given id or sentinel if not found
@@ -55,7 +55,7 @@ public interface OrcsTokenService {
     * Register the given attribute type token based on its id. Throws OseeArgumentException if the types id is already
     * registered.
     */
-   void registerAttributeType(AttributeTypeToken attributeType);
+   void registerAttributeType(AttributeTypeGeneric<?> attributeType);
 
    /**
     * Register the given relation type token based on its id. Throws OseeArgumentException if the types id is already

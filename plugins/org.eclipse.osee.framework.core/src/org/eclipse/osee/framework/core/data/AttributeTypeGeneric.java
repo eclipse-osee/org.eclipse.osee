@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class AttributeTypeGeneric<T> extends NamedIdDescription implements AttributeTypeToken {
+   public static final AttributeTypeString SENTINEL =
+      AttributeTypeToken.createString(Id.SENTINEL, NamespaceToken.OSEE, Named.SENTINEL, "", "");
+
    private final String mediaType;
    private final TaggerTypeToken taggerType;
    private final NamespaceToken namespace;
