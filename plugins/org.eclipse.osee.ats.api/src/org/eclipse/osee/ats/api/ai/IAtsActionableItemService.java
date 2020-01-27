@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -55,5 +57,9 @@ public interface IAtsActionableItemService {
    IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsActionableItem getActionableItem(String value);
+
+   Collection<WorkType> getWorkTypes(IAtsWorkItem workItem);
+
+   boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
 }

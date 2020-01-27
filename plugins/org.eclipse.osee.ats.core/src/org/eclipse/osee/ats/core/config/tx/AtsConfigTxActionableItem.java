@@ -13,10 +13,13 @@ package org.eclipse.osee.ats.core.config.tx;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.Csci;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.AtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxActionableItem;
+import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -111,6 +114,26 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
       for (IAtsActionableItemArtifactToken cai : ais) {
          IAtsConfigTxActionableItem childAi = createChildActionableItem(cai);
          changes.addChild(ai, childAi.getAi());
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxActionableItem andWorkType(WorkType workType) {
+      changes.addAttribute(ai, AtsAttributeTypes.WorkType, workType.name());
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxActionableItem andProgram(IAtsProgramArtifactToken program) {
+      changes.addAttribute(ai, AtsAttributeTypes.ProgramId, program);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxActionableItem andCsci(Csci... cscis) {
+      for (Csci csci : cscis) {
+         changes.addAttribute(ai, AtsAttributeTypes.CSCI, csci.name());
       }
       return this;
    }

@@ -143,7 +143,7 @@ public class AtsProgramServiceTest {
 
    @Test
    public void testGetAIs() {
-      assertEquals(2, programService.getAis(sawProgram).size());
+      assertEquals(6, programService.getAis(sawProgram).size());
 
       assertEquals(1, programService.getAis(sawProgram, WorkType.Code).size());
 

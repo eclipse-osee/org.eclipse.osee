@@ -121,9 +121,9 @@ public abstract class BranchRegressionTest {
    public BranchRegressionTest() {
       ArtifactModifiedNames.addAll(
          Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT, FIFTH_ARTIFACT,
-            SUBSYSTEM_ARTIFACT, DemoArtifactToken.ParentArtifact.getName(), Requirements.SOFTWARE_REQUIREMENTS));
+            SUBSYSTEM_ARTIFACT, DemoArtifactToken.SystemReqArtifact.getName(), Requirements.SOFTWARE_REQUIREMENTS));
       NonRelArtifactModifedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
-         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, DemoArtifactToken.ParentArtifact.getName()));
+         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, DemoArtifactToken.SystemReqArtifact.getName()));
    }
 
    @BeforeClass
@@ -468,16 +468,18 @@ public abstract class BranchRegressionTest {
       // Create set of software requirement changes
       Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
          Requirements.SOFTWARE_REQUIREMENTS, workingBranch);
-      Artifact parentArt =
-         createSoftwareArtifact(DemoArtifactToken.ParentArtifact, softReqArt, getFirstArtifactCscis(), workingBranch);
-      Assert.assertNotNull(parentArt);
+
+      // No Add/Mode task cause wrong artifact type; Will get Relation task cause related to Soft Req
+      Artifact systemReqArt = createSoftwareArtifact(DemoArtifactToken.SystemReqArtifact, softReqArt,
+         getFirstArtifactCscis(), workingBranch);
+      Assert.assertNotNull(systemReqArt);
       Artifact firstArt =
          ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FIRST_ARTIFACT, workingBranch);
       Artifact secondArt =
          ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SECOND_ARTIFACT, workingBranch);
-      parentArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, firstArt);
-      parentArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, secondArt);
-      parentArt.persist("Parent for Arts");
+      systemReqArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, firstArt);
+      systemReqArt.addRelation(CoreRelationTypes.RequirementTrace_LowerLevelRequirement, secondArt);
+      systemReqArt.persist("System Req for Arts");
    }
 
    public void testWorkingBranchCommit() throws Exception {

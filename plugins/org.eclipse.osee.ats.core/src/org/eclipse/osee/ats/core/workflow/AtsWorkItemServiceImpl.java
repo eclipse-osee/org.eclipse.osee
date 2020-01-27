@@ -10,21 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -80,9 +78,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final AtsApi atsApi;
    private IAtsActionableItemService actionableItemService;
-   private final CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder() //
-      .expireAfterWrite(1, TimeUnit.MINUTES);
-   private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    private static Set<IAtsWorkflowHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
@@ -481,6 +476,19 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return null;
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes(IAtsWorkItem workItem) {
+      Collection<WorkType> workTypes = new HashSet<>();
+      workTypes.addAll(
+         atsApi.getTeamDefinitionService().getWorkTypes(atsApi.getTeamDefinitionService().getTeamDefinition(workItem)));
+      return workTypes;
+   }
+
+   @Override
+   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
+      return getWorkTypes(workItem).contains(workType);
    }
 
 }

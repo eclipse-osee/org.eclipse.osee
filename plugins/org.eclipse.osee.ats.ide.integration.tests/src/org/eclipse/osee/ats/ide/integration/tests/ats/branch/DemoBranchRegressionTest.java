@@ -242,8 +242,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
             "Handle Relation change to [Fourth Artifact - No CSCI]", //
             "Handle Relation change to [In-Branch Artifact to Delete Changed]", //
             "Handle Relation change to [In-Branch Artifact to Delete]", //
-            "Handle Relation change to [Parent Artifact]", //
-            "Handle Relation change to [Pre-Branch Artifact to Delete]", //
+            "Handle Relation change to [System Req Artifact]", //
             "Handle Relation change to [Second Artifact]", //
             "Handle Relation change to [Software Requirements]", //
             "Handle Relation change to [Third Artifact]", //

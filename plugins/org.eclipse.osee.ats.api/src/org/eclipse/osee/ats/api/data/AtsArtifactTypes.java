@@ -55,7 +55,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AllowUserActionCreation, "")
       .any(CSCI, "")
       .zeroOrOne(ProgramId, "")
-      .zeroOrOne(WorkType, ""));
+      .any(WorkType, ""));
    ArtifactTypeToken AtsUser = ats.add(ats.artifactType(58889929L, "User", false, CoreArtifactTypes.User)
       .any(AtsQuickSearch, "")
       .any(AtsUserConfig, ""));
@@ -187,7 +187,7 @@ public interface AtsArtifactTypes {
       .any(TaskSetId, "")
       .zeroOrOne(TeamUsesVersions, "false")
       .zeroOrOne(TeamWorkflowArtifactType, "")
-      .zeroOrOne(WorkType, "")
+      .any(WorkType, "")
       .zeroOrOne(WorkflowDefinition, "")
       .zeroOrOne(WorkflowDefinitionReference, ""));
    ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)

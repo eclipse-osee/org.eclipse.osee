@@ -18,8 +18,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -59,7 +61,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai = (IAtsActionableItem) aiId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(aiId);
-         if (art.isOfType( AtsArtifactTypes.ActionableItem)) {
+         if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
             ai = new ActionableItem(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -116,7 +118,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) {
-      if (!getActionableItemIds(atsObject).contains(atsObject)) {
+      if (!getActionableItemIds(atsObject).contains(aia.getArtifactId())) {
          changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
       }
    }
@@ -195,6 +197,29 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    @Override
    public IAtsActionableItem getActionableItem(String value) {
       return getActionableItemById(ArtifactId.valueOf(value));
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes(IAtsWorkItem workItem) {
+      Collection<WorkType> workTypes = new HashSet<>();
+      for (IAtsActionableItem ai : atsApi.getActionableItemService().getActionableItems(workItem)) {
+         Collection<String> workTypeStrs =
+            atsApi.getAttributeResolver().getAttributeValues(ai, AtsAttributeTypes.WorkType);
+         for (String workTypeStr : workTypeStrs) {
+            try {
+               WorkType workType = WorkType.valueOf(workTypeStr);
+               workTypes.add(workType);
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return workTypes;
+   }
+
+   @Override
+   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
+      return getWorkTypes(workItem).contains(workType);
    }
 
 }

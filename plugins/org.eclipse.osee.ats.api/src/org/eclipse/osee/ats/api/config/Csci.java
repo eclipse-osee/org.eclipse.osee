@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.demo.config;
+package org.eclipse.osee.ats.api.config;
 
 /**
  * @author Donald G. Dunne
  */
-public enum DemoCsci {
+public enum Csci {
    DP,
    SP,
    WP;

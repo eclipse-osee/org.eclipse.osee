@@ -37,7 +37,7 @@ public final class DemoArtifactToken {
    public static final ArtifactToken SwReqParaOnlyNoTask = ArtifactToken.valueOf(82251433L, "SW Req w/ Para Only Chg - No task should be created", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
    public static final ArtifactToken MsWordHeadingNoTask = ArtifactToken.valueOf(23238598L, "MS Word Heading - No task should be created", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
    public static final ArtifactToken InBranchArtifactToDelete = ArtifactToken.valueOf(56565656, "In-Branch Artifact to Delete", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
-   public static final ArtifactToken ParentArtifact = ArtifactToken.valueOf(45454545, "Parent Artifact", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord);
+   public static final ArtifactToken SystemReqArtifact = ArtifactToken.valueOf(45454545, "System Req Artifact", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord);
    public static final ArtifactToken EventsSwReq = ArtifactToken.valueOf(200090, "Events", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
 
    //////////////////////////////////

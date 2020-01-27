@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.config.tx;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxProgram;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
@@ -46,6 +47,14 @@ public class AtsConfigTxProgram extends AbstractAtsConfigTxObject<IAtsConfigTxPr
       changes.relate(program, AtsRelationTypes.TeamDefinitionToProgram_TeamDefinition, teamDef);
       changes.setSoleAttributeValue(program, AtsAttributeTypes.TeamDefinitionReference, teamDef);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId, program);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxProgram andCsci(Csci... cscis) {
+      for (Csci csci : cscis) {
+         changes.addAttribute(program, AtsAttributeTypes.CSCI, csci.name());
+      }
       return this;
    }
 

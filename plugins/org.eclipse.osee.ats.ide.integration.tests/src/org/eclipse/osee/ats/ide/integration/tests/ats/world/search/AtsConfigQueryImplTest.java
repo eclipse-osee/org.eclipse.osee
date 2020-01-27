@@ -14,13 +14,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.demo.config.DemoCsci;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
@@ -77,25 +77,24 @@ public class AtsConfigQueryImplTest {
    public void testWorkType() {
       IAtsConfigQuery query = queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code);
       ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
-      assertEquals(1, teamDefs.size());
+      assertEquals(2, teamDefs.size());
 
       query = queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code, WorkType.Test);
       teamDefs = query.getConfigObjectResultSet();
-      assertEquals(2, teamDefs.size());
+      assertEquals(4, teamDefs.size());
    }
 
    @Test
    public void testCsci() {
       IAtsConfigQuery query =
          queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code, WorkType.Test).andCsci(
-            Collections.singleton(DemoCsci.SP.name()));
+            Collections.singleton(Csci.SP.name()));
       ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
-      assertEquals(1, teamDefs.size());
+      assertEquals(2, teamDefs.size());
 
-      query =
-         queryService.createQuery(AtsArtifactTypes.TeamDefinition).andCsci(Collections.singleton(DemoCsci.SP.name()));
+      query = queryService.createQuery(AtsArtifactTypes.TeamDefinition).andCsci(Collections.singleton(Csci.SP.name()));
       teamDefs = query.getConfigObjectResultSet();
-      assertEquals(4, teamDefs.size());
+      assertEquals(3, teamDefs.size());
    }
 
    @Test

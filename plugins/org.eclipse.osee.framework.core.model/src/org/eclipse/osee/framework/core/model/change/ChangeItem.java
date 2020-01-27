@@ -164,10 +164,15 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    @Override
    public String toString() {
+      String artIdBStr = "";
+      if (getChangeType() == ChangeType.RELATION_CHANGE) {
+         artIdBStr = " artBId: " + getArtIdB();
+      }
       return String.format(
-         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
-         itemId, getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
-         getDestinationVersion(), getNetChange(), isSynthetic(), getIgnoreType().toString());
+         "ChangeItem %s - itemId:[%s] artId:%s%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
+         getChangeType().name(), itemId, getArtId(), artIdBStr, getItemTypeId(), getBaselineVersion(),
+         getFirstNonCurrentChange(), getCurrentVersion(), getDestinationVersion(), getNetChange(), isSynthetic(),
+         getIgnoreType().toString());
    }
 
    @Override

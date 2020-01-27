@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -44,5 +45,9 @@ public interface IAtsTeamDefinitionService {
    IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
+
+   Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef);
+
+   boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
 }

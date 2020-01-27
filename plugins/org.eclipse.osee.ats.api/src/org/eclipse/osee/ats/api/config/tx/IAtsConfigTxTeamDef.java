@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config.tx;
 
+import org.eclipse.osee.ats.api.config.Csci;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
@@ -69,4 +71,10 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andRelatedPeerWorkflowDefinition(NamedId... peerWorkDefs);
 
    IAtsConfigTxTeamDef andTaskSet(AtsTaskDefToken... taskDefs);
+
+   IAtsConfigTxTeamDef andWorkType(WorkType workType);
+
+   IAtsConfigTxTeamDef andProgram(IAtsProgramArtifactToken program);
+
+   IAtsConfigTxTeamDef andCsci(Csci... cscis);
 }

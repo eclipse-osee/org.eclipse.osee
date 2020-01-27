@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.config;
 
 /**
- * WorkTypes used for Category field for ATS Config objects
+ * WorkTypes used for ATS Config objects like Team Def an AI
  *
  * @author Donald G. Dunne
  */
@@ -19,17 +19,26 @@ public enum WorkType {
 
    Program("Top Level item of given type for a Program"),
    Code,
+   MissionCode,
+
    Test,
+   IntegrationTest,
+   SoftwareTest,
+
    Test_Librarian,
+
    Requirements,
    ImplDetails("Impl Details"),
+
    Applicability,
    SW_Design,
    SW_TechAppr,
    Test_Procedures,
    SubSystems,
+
    Software,
    Hardware,
+
    Issues,
    Support,
    Integration,

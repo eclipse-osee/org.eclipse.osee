@@ -12,11 +12,13 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -47,7 +49,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          teamDef = (IAtsTeamDefinition) teamDefId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(teamDefId);
-         if (art != null && art.isOfType( AtsArtifactTypes.TeamDefinition)) {
+         if (art != null && art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             teamDef = new TeamDefinition(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -115,6 +117,27 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    @Override
    public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
       return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef) {
+      Collection<WorkType> workTypes = new HashSet<>();
+      Collection<String> workTypeStrs =
+         atsApi.getAttributeResolver().getAttributeValues(teamDef, AtsAttributeTypes.WorkType);
+      for (String workTypeStr : workTypeStrs) {
+         try {
+            WorkType workType = WorkType.valueOf(workTypeStr);
+            workTypes.add(workType);
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      return workTypes;
+   }
+
+   @Override
+   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
+      return getWorkTypes(getTeamDefinition(workItem)).contains(workType);
    }
 
 }

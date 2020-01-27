@@ -11,12 +11,14 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
-import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd20CreateCommittedAction;
+import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -48,12 +50,21 @@ public class Pdd20CreateCommittedActionTest implements IPopulateDemoDatabaseTest
       testTeamContents(codeTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", DemoUsers.Joe_Smith.getName(),
          AtsDemoOseeTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Code));
+      Assert.assertTrue(AtsClientService.get().getWorkItemService().getWorkTypes(codeTeamArt).contains(WorkType.Code));
+      Assert.assertTrue(AtsClientService.get().getWorkItemService().isWorkType(codeTeamArt, WorkType.Code));
+
       testTeamContents(testTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", DemoUsers.Kay_Jones.getName(),
          AtsDemoOseeTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Test));
+      Assert.assertTrue(AtsClientService.get().getWorkItemService().getWorkTypes(testTeamArt).contains(WorkType.Test));
+      Assert.assertTrue(AtsClientService.get().getWorkItemService().isWorkType(testTeamArt, WorkType.Test));
+
       testTeamContents(reqTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", DemoUsers.Joe_Smith.getName(),
          AtsDemoOseeTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
+      Assert.assertTrue(
+         AtsClientService.get().getWorkItemService().getWorkTypes(reqTeamArt).contains(WorkType.Requirements));
+      Assert.assertTrue(AtsClientService.get().getWorkItemService().isWorkType(reqTeamArt, WorkType.Requirements));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

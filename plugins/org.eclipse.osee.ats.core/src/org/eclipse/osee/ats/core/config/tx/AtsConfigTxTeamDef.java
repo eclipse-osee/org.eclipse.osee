@@ -15,10 +15,13 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.RelatedTaskWorkflo
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.TeamWorkflowArtifactType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.config.Csci;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxVersion;
+import org.eclipse.osee.ats.api.config.tx.IAtsProgramArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -175,6 +178,26 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return version;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andWorkType(WorkType workType) {
+      changes.addAttribute(teamDef, AtsAttributeTypes.WorkType, workType.name());
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andProgram(IAtsProgramArtifactToken program) {
+      changes.addAttribute(teamDef, AtsAttributeTypes.ProgramId, program);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andCsci(Csci... cscis) {
+      for (Csci csci : cscis) {
+         changes.addAttribute(teamDef, AtsAttributeTypes.CSCI, csci.name());
+      }
+      return this;
    }
 
 }

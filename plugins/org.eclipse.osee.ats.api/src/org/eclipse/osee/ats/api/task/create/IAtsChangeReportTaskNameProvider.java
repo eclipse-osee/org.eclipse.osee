@@ -203,34 +203,40 @@ public interface IAtsChangeReportTaskNameProvider {
 
       Collection<RelationTypeToken> incRelTypes = crtd.getSetDef().getChgRptOptions().getRelationTypes();
       Collection<RelationTypeToken> exclRelTypes = crtd.getSetDef().getChgRptOptions().getNotRelationTypes();
-      List<ChangeItem> changeItems = crtd.getChangeItems();
       BranchId workingOrParentBranch = crtd.getWorkOrParentBranch();
-
       Set<ArtifactId> arts = new HashSet<>();
-      for (ChangeItem item : changeItems) {
-         if (item.getChangeType() != ChangeType.RELATION_CHANGE) {
-            continue;
-         }
-         if (ChangeItemUtil.createdAndDeleted(item)) {
-            continue;
-         }
-         if (exclRelTypes.contains(item.getItemTypeId())) {
-            continue;
-         }
-         if (!incRelTypes.isEmpty() && !incRelTypes.contains(item.getItemTypeId())) {
-            continue;
-         }
+      ChangeItemData data = getChangeItemData(crtd.getChangeItems(), crtd.getWorkOrParentBranch(), atsApi);
 
-         ArtifactTypeToken artAType = atsApi.getStoreService().getArtifactType(item.getArtId(), workingOrParentBranch);
-         ArtifactTypeToken artBType = atsApi.getStoreService().getArtifactType(item.getArtIdB(), workingOrParentBranch);
+      for (ChangeReportRollup rollup : data.getRollups().values()) {
 
-         ArtifactIncluded artAInc = isIncluded(crtd, crttwd, changeItems, artAType, atsApi);
-         ArtifactIncluded artBInc = isIncluded(crtd, crttwd, changeItems, artBType, atsApi);
+         List<ChangeItem> reqArtChangeItems = rollup.getChangeItems();
+         for (ChangeItem item : reqArtChangeItems) {
+            if (item.getChangeType() != ChangeType.RELATION_CHANGE) {
+               continue;
+            }
+            if (ChangeItemUtil.createdAndDeleted(item)) {
+               continue;
+            }
+            if (exclRelTypes.contains(item.getItemTypeId())) {
+               continue;
+            }
+            if (!incRelTypes.isEmpty() && !incRelTypes.contains(item.getItemTypeId())) {
+               continue;
+            }
 
-         if ((artAInc.isNotDeleted() && artAInc.isIncluded()) || //
-            (artBInc.isNotDeleted() && artBInc.isIncluded())) {
-            arts.add(item.getArtId());
-            arts.add(item.getArtIdB());
+            ArtifactTypeToken artAType =
+               atsApi.getStoreService().getArtifactType(item.getArtId(), workingOrParentBranch);
+            ArtifactTypeToken artBType =
+               atsApi.getStoreService().getArtifactType(item.getArtIdB(), workingOrParentBranch);
+
+            ArtifactIncluded artAInc = isIncluded(crtd, crttwd, reqArtChangeItems, artAType, atsApi);
+            ArtifactIncluded artBInc = isIncluded(crtd, crttwd, reqArtChangeItems, artBType, atsApi);
+
+            if ((artAInc.isNotDeleted() && artAInc.isIncluded()) || //
+               (artBInc.isNotDeleted() && artBInc.isIncluded())) {
+               arts.add(item.getArtId());
+               arts.add(item.getArtIdB());
+            }
          }
       }
       return arts;

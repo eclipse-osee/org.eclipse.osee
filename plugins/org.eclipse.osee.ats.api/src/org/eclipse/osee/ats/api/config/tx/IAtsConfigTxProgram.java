@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config.tx;
 
+import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
@@ -22,5 +23,7 @@ public interface IAtsConfigTxProgram {
    IAtsConfigTxProgram and(AttributeTypeToken attrType, Object value);
 
    IAtsConfigTxProgram andTeamDef(IAtsTeamDefinitionArtifactToken teamDef);
+
+   IAtsConfigTxProgram andCsci(Csci... cscis);
 
 }
