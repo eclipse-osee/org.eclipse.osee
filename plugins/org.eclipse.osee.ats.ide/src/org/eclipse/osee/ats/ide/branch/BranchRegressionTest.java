@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -51,8 +52,11 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -63,17 +67,21 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -125,13 +133,13 @@ public abstract class BranchRegressionTest {
    }
 
    @BeforeClass
-   public static void setUp() throws Exception {
+   public static void setUp() {
       RenderingUtil.setPopupsAllowed(false);
       OseeProperties.setIsInTest(true);
    }
 
    @AfterClass
-   public static void tearDown() throws Exception {
+   public static void tearDown() {
       OseeProperties.setIsInTest(false);
    }
 
@@ -146,8 +154,8 @@ public abstract class BranchRegressionTest {
    }
 
    @org.junit.Test
-   public void test() throws Exception {
-      testCleanup();
+   public void test() {
+      testSetup();
       testSetupInitialConditions();
       testMakePreBranchChanges();
       testCreateAction();
@@ -184,7 +192,8 @@ public abstract class BranchRegressionTest {
       testWorkingBranchCommitCheck();
 
       // Add trace so commit will go through
-      testCreateParentArtsOnWorkingBranch();
+      createParentArtsOnWorkingBranch();
+      testAfterCreateParentArtsOnWorkingBranch(); // Extend with additional checks
 
       testWorkingBranchCommit();
 
@@ -200,17 +209,18 @@ public abstract class BranchRegressionTest {
       testShowRequirementDiffsAction(); // Extend with additional checks
 
       testSevereLoggingMonitorResults();
-      testCleanupFinal();
+
+      testCleanup();
    }
 
-   public void testCleanup() throws Exception {
+   public void testSetup() {
       // Clear all listeners so events only processed by this test
       OseeEventManager.removeAllListeners();
 
       // Purge Action if already exists
       Collection<ActionArtifact> actionArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
-            AtsAttributeTypes.LegacyPcrId, getRpcrNumber()).createFilter().getActions());
+            AtsAttributeTypes.LegacyPcrId, getLegacyPcrId()).createFilter().getActions());
 
       Set<Artifact> artsToDel = new HashSet<>();
       for (Artifact actionArt : actionArts) {
@@ -221,23 +231,45 @@ public abstract class BranchRegressionTest {
                Collections.castAll(AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
          }
       }
-      // Purge pre-workingBranch artifact
+
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
 
-      for (Artifact art : ArtifactQuery.getArtifactListFromName(PRE_BRANCH_ARTIFACT_NAME, getProgramBranch())) {
-         art.deleteAndPersist();
+      testCleanup();
+   }
+
+   public void testCleanup() {
+
+      Set<Artifact> artsToDel = new HashSet<>();
+      for (String artName : Arrays.asList(PRE_BRANCH_ARTIFACT_NAME)) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromName(artName, DemoBranches.SAW_Bld_2,
+            DeletionFlag.INCLUDE_DELETED, QueryOption.EXACT_MATCH_OPTIONS)) {
+            artsToDel.add(art);
+         }
+      }
+      if (!artsToDel.isEmpty()) {
+         Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artsToDel));
       }
 
       // Purge working branches
-      purgeWorkingBranches(Arrays.asList(getRpcrNumber(), PRE_BRANCH_CHANGES));
+      List<String> branchNameStrs = new ArrayList<String>();
+      branchNameStrs.add(getLegacyPcrId());
+      branchNameStrs.add(PRE_BRANCH_CHANGES);
+      if (Strings.isValid(getBranchNameContains())) {
+         branchNameStrs.add(getBranchNameContains());
+      }
+      purgeWorkingBranches(branchNameStrs);
+
+      AtsUtilClient.setEmailEnabled(true);
+      OseeEventManager.removeAllListeners();
    }
 
-   protected static void purgeWorkingBranches(Collection<String> branchNamesContain) throws Exception {
+   protected static void purgeWorkingBranches(Collection<String> branchNamesContain) {
       try {
          // Delete working branches
          for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             for (String branchName : branchNamesContain) {
                if (workingBranch.getName().contains(branchName)) {
+                  ArtifactCache.deCache(workingBranch);
                   BranchManager.purgeBranch(workingBranch);
                }
             }
@@ -254,7 +286,7 @@ public abstract class BranchRegressionTest {
       OseeLog.registerLoggerListener(monitorLog);
    }
 
-   public void testMakePreBranchChanges() throws Exception {
+   public void testMakePreBranchChanges() {
       Assert.assertNotNull("Can't get program workingBranch", getProgramBranch());
 
       Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
@@ -319,12 +351,12 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testXCommitManagerAfterActionCreate() throws Exception {
+   public void testXCommitManagerAfterActionCreate() {
       Assert.assertEquals("Should be no committed branches", 0,
          AtsClientService.get().getBranchService().getBranchesCommittedTo(reqTeam).size());
    }
 
-   public void testCreateBranchFirstTime() throws Exception {
+   public void testCreateBranchFirstTime() {
       AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
       workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
@@ -338,7 +370,7 @@ public abstract class BranchRegressionTest {
       Assert.assertTrue("Delete Button should be enabled", enablement.isDeleteBranchButtonEnabled());
    }
 
-   public void testDeleteBranch() throws Exception {
+   public void testDeleteBranch() {
       // verify deletion of the workingBranch
       AtsBranchManager.deleteWorkingBranch(reqTeam, false, true);
       Assert.assertTrue(reqTeam.getWorkingBranch().isInvalid());
@@ -352,7 +384,7 @@ public abstract class BranchRegressionTest {
       Assert.assertFalse("Delete Button should be disabled", enablement.isDeleteBranchButtonEnabled());
    }
 
-   public void testXCommitManagerAfterDeleteBranch() throws Exception {
+   public void testXCommitManagerAfterDeleteBranch() {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
       Collection<CommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       for (CommitConfigItem configArt : configArtSet) {
@@ -363,13 +395,13 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testCreateBranchSecondTime() throws Exception {
+   public void testCreateBranchSecondTime() {
       AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
       workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
    }
 
-   public void testXWorkingBranchAfterSecondCreateBranch() throws Exception {
+   public void testXWorkingBranchAfterSecondCreateBranch() {
 
       // Verify the new status of the XWorkingBranch
       XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
@@ -381,7 +413,7 @@ public abstract class BranchRegressionTest {
       Assert.assertTrue("Delete Button should be enabled", enablement.isDeleteBranchButtonEnabled());
    }
 
-   public void testBranchesListedInXCommitManager() throws Exception {
+   public void testBranchesListedInXCommitManager() {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
       Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Verify the Parallel Branches listed in the XCommitManager
@@ -416,7 +448,6 @@ public abstract class BranchRegressionTest {
    }
 
    private void deletePreBranchArt() {
-      // Delete
       preBranchArt = softReqArt.getChild(PRE_BRANCH_ARTIFACT_NAME);
       Assert.assertNotNull("Couldn't retrieve pre-workingBranch artifact", preBranchArt);
       preBranchArt.deleteAndPersist();
@@ -426,7 +457,6 @@ public abstract class BranchRegressionTest {
       subsystemArt = createSubsystemArtifact(softReqArt, SUBSYSTEM_ARTIFACT);
       Assert.assertNotNull(subsystemArt);
 
-      // Make attribute change
       subsystemArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, "Test");
       subsystemArt.persist(getClass().getSimpleName());
    }
@@ -441,13 +471,13 @@ public abstract class BranchRegressionTest {
       createAndDeleteArt.persist(getClass().getSimpleName());
    }
 
-   private void createReqArtToDelete() throws Exception {
+   private void createReqArtToDelete() {
       createAndDeleteArt = createSoftwareArtifact(DemoArtifactToken.InBranchArtifactToDelete, softReqArt,
          getInBranchArtifactCscis(), workingBranch);
       Assert.assertNotNull(createAndDeleteArt);
    }
 
-   protected void createThirdFourthFifthReqArt() throws Exception {
+   protected void createThirdFourthFifthReqArt() {
       thirdArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementProcedureMsWord, softReqArt,
          THIRD_ARTIFACT, getThirdArtifactCscis(), workingBranch);
       Assert.assertNotNull(thirdArt);
@@ -460,9 +490,8 @@ public abstract class BranchRegressionTest {
 
    }
 
-   private void createFirstAndSecondReqArt() throws Exception {
-      softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS,
-         workingBranch);
+   private void createFirstAndSecondReqArt() {
+      softReqArt = getSoftwareReqFolder(workingBranch);
       Artifact firstArt = createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt,
          FIRST_ARTIFACT, getFirstArtifactCscis(), workingBranch);
       Assert.assertNotNull(firstArt);
@@ -471,10 +500,14 @@ public abstract class BranchRegressionTest {
       Assert.assertNotNull(secondArt);
    }
 
-   public void testCreateParentArtsOnWorkingBranch() throws Exception {
+   protected Artifact getSoftwareReqFolder(BranchId branch) {
+      return ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS,
+         branch);
+   }
+
+   public void createParentArtsOnWorkingBranch() {
       // Create set of software requirement changes
-      Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
-         Requirements.SOFTWARE_REQUIREMENTS, workingBranch);
+      Artifact softReqArt = getSoftwareReqFolder(workingBranch);
 
       // No Add/Mode task cause wrong artifact type; Will get Relation task cause related to Soft Req
       Artifact systemReqArt = createSoftwareArtifact(DemoArtifactToken.SystemReqArtifact, softReqArt,
@@ -489,7 +522,7 @@ public abstract class BranchRegressionTest {
       systemReqArt.persist("System Req for Arts");
    }
 
-   public void testWorkingBranchCommit() throws Exception {
+   public void testWorkingBranchCommit() {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
       Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Since commit workingBranch is a separate job, a callback will resume this thread
@@ -530,7 +563,7 @@ public abstract class BranchRegressionTest {
          commitCount == getExpectedBranchConfigItems() - 1);
    }
 
-   public void testXWorkingBranchAfterBranchCommit() throws Exception {
+   public void testXWorkingBranchAfterBranchCommit() {
 
       WorkflowEditor.editArtifact(reqTeam);
 
@@ -553,7 +586,7 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testChangesMadeWereCommitted() throws Exception {
+   public void testChangesMadeWereCommitted() {
       // Verify that the changes made on the workingBranch were committed to the main workingBranch
       // TODO This needs to be updated do handle multiple config artifacts when test gets updated to test for multiples
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(reqTeam);
@@ -608,7 +641,7 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testRequirementsWorkflowCompletion() throws Exception {
+   public void testRequirementsWorkflowCompletion() {
       // Complete Requirements and Start Code/Test
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("testRequirementsWorkflowCompletion");
       TransitionHelper helper =
@@ -715,7 +748,7 @@ public abstract class BranchRegressionTest {
       // do nothing
    }
 
-   public void testSevereLoggingMonitorResults() throws Exception {
+   public void testSevereLoggingMonitorResults() {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
       for (IHealthStatus stat : new ArrayList<>(stats)) {
          if (stat.getException() != null) {
@@ -724,32 +757,34 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   public void testCleanupFinal() throws Exception {
-      AtsUtilClient.setEmailEnabled(true);
-      OseeEventManager.removeAllListeners();
-   }
-
-   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchId branch) throws Exception, MultipleAttributesExist {
+   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchId branch) throws MultipleAttributesExist {
+      SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + artifactToken.getName());
       Artifact art1 = ArtifactTypeManager.addArtifact(artifactToken, branch);
-      return setParent(parent, partitions, art1);
+      tx.addArtifact(art1);
+      Artifact parentArt = setParent(parent, partitions, art1, tx);
+      tx.execute();
+      return parentArt;
    }
 
-   private Artifact setParent(Artifact parent, String[] partitions, Artifact art1) {
+   private Artifact setParent(Artifact parent, String[] partitions, Artifact art1, SkynetTransaction tx) {
       if (partitions != null) {
          art1.setAttributeValues(getCsciAttribute(), Arrays.asList(partitions));
       }
-      art1.persist(getClass().getSimpleName());
       parent.addChild(art1);
-      parent.persist(getClass().getSimpleName());
+      tx.addArtifact(parent);
       return art1;
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) throws Exception, MultipleAttributesExist {
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) {
+      SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
       Artifact art1 = ArtifactTypeManager.addArtifact(artifactType, branch, title);
-      return setParent(parent, partitions, art1);
+      tx.addArtifact(art1);
+      Artifact parentArt = setParent(parent, partitions, art1, tx);
+      tx.execute();
+      return parentArt;
    }
 
-   private Artifact createSubsystemArtifact(Artifact parent, String title) {
+   public Artifact createSubsystemArtifact(Artifact parent, String title) {
       Artifact art1 = null;
 
       try {
@@ -766,6 +801,32 @@ public abstract class BranchRegressionTest {
       return art1;
    }
 
+   protected void testTasksAgainstExpected(IAtsTeamWorkflow teamWf, Collection<String> expected) {
+
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
+
+      Assert.assertEquals(expected.size(), tasks.size());
+
+      for (IAtsTask task : tasks) {
+         boolean contains = expected.contains(task.getName());
+         Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
+
+         String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task,
+            AtsAttributeTypes.WorkflowNotes, "");
+         boolean deReferenced = note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE);
+
+         if (deReferenced) {
+            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
+               CoreAttributeTypes.StaticId);
+            Assert.assertTrue(staticIds.isEmpty());
+         } else {
+            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
+               CoreAttributeTypes.StaticId);
+            Assert.assertEquals(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID, staticIds.iterator().next());
+         }
+      }
+   }
+
    public static enum XWorkingBranchButtonState {
       CreateBranch,
       ArtExplore,
@@ -773,7 +834,11 @@ public abstract class BranchRegressionTest {
       DeleteBranch
    };
 
-   public abstract String getRpcrNumber();
+   public abstract String getLegacyPcrId();
+
+   public String getBranchNameContains() {
+      return null;
+   }
 
    public abstract String[] getPreBranchCscis();
 
@@ -792,6 +857,11 @@ public abstract class BranchRegressionTest {
    public abstract ArtifactTypeToken getCodeTeamWfArtType();
 
    public abstract ArtifactTypeToken getTestTeamWfArtType();
+
+   // Override to provide additional checks
+   protected void testAfterCreateParentArtsOnWorkingBranch() {
+      // do nothing
+   }
 
    // Override to provide additional checks
    protected void testShowRelatedTasksAction() {
@@ -813,7 +883,7 @@ public abstract class BranchRegressionTest {
       // do nothing
    }
 
-   public abstract List<String> getBranchNames() throws Exception;
+   public abstract List<String> getBranchNames();
 
    protected void testTaskWorkDefinition(StringBuffer sb, IAtsTask taskArt) {
       String taskWorkDefName = taskArt.getWorkDefinition().getName();

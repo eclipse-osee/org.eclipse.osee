@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -23,6 +25,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class ChangeReportRollup {
 
    private ArtifactId artId;
+   @JsonIgnore
+   private ArtifactToken artToken;
    private ArtifactTypeToken artType;
    private List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
 
@@ -56,7 +60,15 @@ public class ChangeReportRollup {
 
    @Override
    public String toString() {
-      return "CRR [artId=" + artId + ", " + "items=" + changeItems.size() + " artType=" + artType + "]";
+      return "CRR [artId=" + artToken.toStringWithId() + ", " + "items=" + changeItems.size() + " artType=" + artType + "]";
+   }
+
+   public ArtifactToken getArtToken() {
+      return artToken;
+   }
+
+   public void setArtToken(ArtifactToken artToken) {
+      this.artToken = artToken;
    }
 
 }

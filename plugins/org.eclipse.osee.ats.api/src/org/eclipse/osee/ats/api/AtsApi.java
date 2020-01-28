@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -189,9 +188,9 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService();
 
-   IAtsChangeSet createChangeSet(String comment, Branch branch);
+   IAtsChangeSet createChangeSet(String comment, BranchId branch);
 
-   IAtsChangeSet createChangeSet(String comment, Branch branch, AtsUser asUser);
+   IAtsChangeSet createChangeSet(String comment, BranchId branch, AtsUser asUser);
 
    IAtsServerEndpointProvider getServerEndpoints();
 

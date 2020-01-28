@@ -109,8 +109,8 @@ public class AtsTestUtil {
             results.errorf("Dirty Artifact [%s] attribute [%s] \n\n%s", artifact.toStringWithId(),
                Artifacts.getDirtyReport(artifact), results.toString());
          }
-         throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
-            dirtyArtifacts.size());
+         throw new OseeStateException("[%d] Dirty Artifacts found after populate [%s]", dirtyArtifacts.size(),
+            dirtyArtifacts);
       }
    }
 

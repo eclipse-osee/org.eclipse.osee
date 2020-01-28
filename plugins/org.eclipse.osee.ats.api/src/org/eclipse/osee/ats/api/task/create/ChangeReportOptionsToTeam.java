@@ -44,7 +44,7 @@ public class ChangeReportOptionsToTeam {
    @Override
    public String toString() {
       String nameProviderStr =
-         nameProviderId == null ? IAtsChangeReportTaskNameProvider.class.getSimpleName() : nameProviderId.getClass().getSimpleName();
+         nameProviderId == null ? IAtsChangeReportTaskNameProvider.class.getSimpleName() : nameProviderId.toStringWithId();
       return "ChangeReportOptionsToTeam [teamId=" + teamId + ", aiId=" + aiId + ", nameProvider=" + nameProviderStr + "]";
    }
 

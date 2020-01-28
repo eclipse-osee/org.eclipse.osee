@@ -209,12 +209,7 @@ public class CreateChangeReportTasksOperation {
                return crtd;
             }
 
-            // Going to create a ChangeReportTaskMatch for all the exist
-            // Then, going to compute/match all that are needed
-            // Later, all ChangeReportTaskMatch that have no task, create new task
-            //        all ChangeReportTaskMatch that have found == false, mark to dereference task
-
-            // Compute what tasks are needed from artifact changes; add task matches to crd
+            // Get task name provider if supplied or set to default
             ChangeReportTaskNameProviderToken nameProviderId = toSiblingTeamDef.getNameProviderId();
             if (nameProviderId == null) {
                nameProviderId = ChangeReportTaskNameProviderToken.DefaultChangeReportOptionsNameProvider;
@@ -227,12 +222,15 @@ public class CreateChangeReportTasksOperation {
                return crtd;
             }
 
+            // Add task match for each task that is needed
             Map<ArtifactId, ArtifactToken> idToArtifact = nameProvider.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
                if (crtd.isDebug()) {
                   crtd.getResults().logf("Task Computed as Needed [%s]\n", taskMatch.toString());
                }
             }
+
+            // TBD return if not tasks to create?
 
             // Get or create destTeamWf
             IAtsTeamWorkflow destTeamWf =

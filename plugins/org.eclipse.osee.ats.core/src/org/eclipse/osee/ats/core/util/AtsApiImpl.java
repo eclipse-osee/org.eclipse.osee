@@ -70,7 +70,6 @@ import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -548,12 +547,12 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    }
 
    @Override
-   public IAtsChangeSet createChangeSet(String comment, Branch branch) {
+   public IAtsChangeSet createChangeSet(String comment, BranchId branch) {
       return storeService.createAtsChangeSet(comment, branch, userService.getCurrentUser());
    }
 
    @Override
-   public IAtsChangeSet createChangeSet(String comment, Branch branch, AtsUser asUser) {
+   public IAtsChangeSet createChangeSet(String comment, BranchId branch, AtsUser asUser) {
       return storeService.createAtsChangeSet(comment, branch, asUser);
    }
 

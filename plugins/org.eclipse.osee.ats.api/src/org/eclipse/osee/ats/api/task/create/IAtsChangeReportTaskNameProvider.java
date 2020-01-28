@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeReportRollup;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -73,7 +74,7 @@ public interface IAtsChangeReportTaskNameProvider {
     */
    default void getRelArtifactNames(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, AtsApi atsApi) {
       for (ArtifactId chgRptArt : getRelArts(crtd, crttwd, atsApi)) {
-         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, idToArtifact, "Relation");
+         logAndAddTaskName(crtd, crttwd, atsApi, chgRptArt, idToArtifact, TaskChangeType.Relation.name());
       }
    }
 
@@ -88,15 +89,25 @@ public interface IAtsChangeReportTaskNameProvider {
       ArtifactToken art =
          atsApi.getQueryService().getArtifact(chgRptArt, crtd.getWorkOrParentBranch(), DeletionFlag.INCLUDE_DELETED);
       idToArtifact.put(art, art);
+      String safeName = getTaskName(atsApi, chgType, art);
+      if (Strings.isValid(safeName)) {
+         ChangeReportTaskMatch match = new ChangeReportTaskMatch();
+         match.setChgRptArt(chgRptArt);
+         match.setTaskName(safeName);
+         match.setType(ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded);
+         crttwd.getTaskMatches().add(match);
+      }
+   }
+
+   /**
+    * @return Name or null for no task
+    */
+   default String getTaskName(AtsApi atsApi, String chgType, ArtifactToken art) {
       String safeName = String.format("Handle %s change to [%s]", chgType, atsApi.getStoreService().getSafeName(art));
-      if ("Deleted".equals(chgType)) {
+      if (TaskChangeType.Deleted.name().equals(chgType)) {
          safeName += " (Deleted)";
       }
-      ChangeReportTaskMatch match = new ChangeReportTaskMatch();
-      match.setChgRptArt(chgRptArt);
-      match.setTaskName(safeName);
-      match.setType(ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded);
-      crttwd.getTaskMatches().add(match);
+      return safeName;
    }
 
    default ChangeReportModDelArts processModifiedDeletedArts(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Map<ArtifactId, ArtifactToken> idToArtifact, //
@@ -115,9 +126,9 @@ public interface IAtsChangeReportTaskNameProvider {
          if (result.isIncluded()) {
             if (result.isDeleted()) {
                delArts.add(rollup.getArtId());
-               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtId(), idToArtifact, "Deleted");
+               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtId(), idToArtifact, TaskChangeType.Deleted.name());
             } else {
-               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtId(), idToArtifact, "Add/Mod");
+               logAndAddTaskName(crtd, crttwd, atsApi, rollup.getArtId(), idToArtifact, TaskChangeType.AddMod.name());
                modArts.add(rollup.getArtId());
             }
          }
@@ -195,6 +206,8 @@ public interface IAtsChangeReportTaskNameProvider {
          ArtifactId artId = rollup.getArtId();
          ArtifactTypeToken artType = atsApi.getStoreService().getArtifactType(artId, branchId);
          rollup.setArtType(artType);
+         ArtifactToken tok = atsApi.getQueryService().getArtifact(artId, branchId, DeletionFlag.INCLUDE_DELETED);
+         rollup.setArtToken(tok);
       }
       return data;
    }
