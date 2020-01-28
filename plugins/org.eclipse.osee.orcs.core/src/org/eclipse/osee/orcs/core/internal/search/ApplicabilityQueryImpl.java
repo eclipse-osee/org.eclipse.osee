@@ -196,6 +196,18 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public List<ArtifactId> getBranchViewsForApplicability(BranchId branch, ApplicabilityId applId) {
+      List<ArtifactId> arts = new ArrayList<>();
+
+      for (Long long1 : queryFactory.tupleQuery().getTuple2E1ListRaw(CoreTupleTypes.ViewApplicability, branch,
+         applId.getId())) {
+         arts.add(ArtifactId.valueOf(long1));
+
+      }
+      return arts;
+   }
+
+   @Override
    public boolean featureExistsOnBranch(BranchId branch, String featureName) {
       boolean returnValue;
       ArtifactReadable jsonArtifact =

@@ -60,6 +60,8 @@ public interface ApplicabilityQuery {
 
    String getExistingFeatureApplicability(BranchId branch, ArtifactId viewId, String featureName);
 
+   List<ArtifactId> getBranchViewsForApplicability(BranchId branch, ApplicabilityId applId);
+
    boolean featureExistsOnBranch(BranchId branch, String featureName);
 
    boolean featureValueIsValid(BranchId branch, String featureName, String featureValue);

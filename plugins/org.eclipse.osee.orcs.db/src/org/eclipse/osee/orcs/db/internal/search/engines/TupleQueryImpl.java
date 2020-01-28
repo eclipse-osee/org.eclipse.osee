@@ -39,6 +39,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_E2_FROM_E1 =
       "select e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and e1 = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
+   private static final String SELECT_E1_FROM_E2 =
+      "select e1 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ?  and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = ?";
+
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
@@ -101,6 +104,13 @@ public class TupleQueryImpl implements TupleQuery {
       Map<Long, String> consumer = new TreeMap<>();
       getTuple2NamedId(tupleType, branchId, e1, (e2, value) -> consumer.put(e2, value));
       return (Iterable<E2>) consumer.values();
+   }
+
+   @Override
+   public <E1, E2> Iterable<Long> getTuple2E1ListRaw(Tuple2Type<E1, E2> tupleType, BranchId branchId, Long e2Raw) {
+      List<Long> consumer = new ArrayList<>();
+      runQuery("e1", consumer, SELECT_E1_FROM_E2, tupleType, branchId, e2Raw);
+      return consumer;
    }
 
    @Override
@@ -182,7 +192,8 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> GammaId getTuple2GammaFromE1E2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
-      return GammaId.valueOf(jdbcClient.fetch(0L, SELECT_TUPLE2_GAMMA_ANY_BRANCH_FROM_E1_E2, tupleType, toLong(e1), toLong(e2)));
+      return GammaId.valueOf(
+         jdbcClient.fetch(0L, SELECT_TUPLE2_GAMMA_ANY_BRANCH_FROM_E1_E2, tupleType, toLong(e1), toLong(e2)));
    }
 
    @Override

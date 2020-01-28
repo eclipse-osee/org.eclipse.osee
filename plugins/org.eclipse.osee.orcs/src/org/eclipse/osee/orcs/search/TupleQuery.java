@@ -28,6 +28,13 @@ public interface TupleQuery {
 
    <E1, E2> Iterable<Long> getTuple2Raw(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1);
 
+   /**
+    * @param e2Raw - instead of using the Applicability Value as a string (which later gets resolved to an
+    * ApplicabilityId, this fx takes the raw applicabilityId value
+    * @return - returns a list of branchView Ids for which the passed in Applicability is valid
+    */
+   <E1, E2> Iterable<Long> getTuple2E1ListRaw(Tuple2Type<E1, E2> tupleType, BranchId branchId, Long e2Raw);
+
    <E1, E2> void getTuple2NamedId(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, BiConsumer<Long, String> consumer);
 
    <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, E1 e1, BranchId branch, BiConsumer<Long, String> consumer);
