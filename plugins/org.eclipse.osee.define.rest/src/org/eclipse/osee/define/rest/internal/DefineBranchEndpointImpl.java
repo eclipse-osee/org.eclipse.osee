@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.rest.operations.ValidateBranchOperation;
 import org.eclipse.osee.define.rest.operations.ValidateProcFuncCalls;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -44,7 +44,7 @@ public final class DefineBranchEndpointImpl implements DefineBranchEndpointApi {
    @Path("{branch}/validate/arttype/{artType}/all")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public XResultData validateAll(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
+   public XResultData validateAll(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeToken artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
       return op.runAll(artType);
    }
@@ -54,7 +54,7 @@ public final class DefineBranchEndpointImpl implements DefineBranchEndpointApi {
    @Path("{branch}/validate/arttype/{artType}/dupparent")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
+   public XResultData getChildrenWithMultipleParents(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeToken artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
       return op.getChildrenWithMultipleParents(artType);
    }
@@ -64,7 +64,7 @@ public final class DefineBranchEndpointImpl implements DefineBranchEndpointApi {
    @Path("{branch}/validate/arttype/{artType}/orphan")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeId artType) {
+   public XResultData getOrphans(@PathParam("branch") BranchId branch, @PathParam("artType") ArtifactTypeToken artType) {
       ValidateBranchOperation op = new ValidateBranchOperation(jdbcClient, branch, orcsApi);
       return op.getOrphans(artType);
    }

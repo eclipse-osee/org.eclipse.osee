@@ -217,22 +217,6 @@ public final class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllDescendants() {
-      ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
-
-      //@formatter:off
-      assertContains(artTypes.getAllDescendantTypes(Artifact), Requirement, SoftwareRequirement, SystemRequirement, SubsystemRequirement, OtherArtifact, LastArtifact);
-      assertContains(artTypes.getAllDescendantTypes(Requirement), SoftwareRequirement, SystemRequirement, SubsystemRequirement, LastArtifact);
-      assertEquals(true, artTypes.getAllDescendantTypes(SoftwareRequirement).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(SystemRequirement).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(SystemRequirement).isEmpty());
-      assertEquals(true, artTypes.getAllDescendantTypes(LastArtifact).isEmpty());
-      assertContains(artTypes.getAllDescendantTypes(SubsystemRequirement), LastArtifact);
-      assertContains(artTypes.getAllDescendantTypes(OtherArtifact), SubsystemRequirement, LastArtifact);
-      //@formatter:on
-   }
-
-   @Test
    public void testIsValidAttributeType() {
       // Field 1 will only be visible on branch A and Branch D
       // Field 2 will only be visible on branch B and Branch E

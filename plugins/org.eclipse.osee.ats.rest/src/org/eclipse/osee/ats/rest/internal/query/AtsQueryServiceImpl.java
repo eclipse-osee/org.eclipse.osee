@@ -223,13 +223,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getArtifactByName(ArtifactTypeId artifactType, String name) {
+   public ArtifactToken getArtifactByName(ArtifactTypeToken artifactType, String name) {
       return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getExactlyOne();
 
    }
 
    @Override
-   public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeId artifactType, String name) {
+   public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeToken artifactType, String name) {
       return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrDefault(
          ArtifactReadable.SENTINEL);
 

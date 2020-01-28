@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -61,7 +61,7 @@ public class DuplicateParentBlam extends AbstractBlam {
 
       OseeClient oseeClient = ServiceUtil.getOseeClient();
       DefineBranchEndpointApi defineBrchEp = oseeClient.getDefineBranchEndpoint();
-      XResultData results = defineBrchEp.getChildrenWithMultipleParents(branch, ArtifactTypeId.SENTINEL);
+      XResultData results = defineBrchEp.getChildrenWithMultipleParents(branch, ArtifactTypeToken.SENTINEL);
       if (results.isErrors()) {
          List<ArtifactId> artifactIds = new ArrayList<>(results.getIds().size());
          for (String id : results.getIds()) {

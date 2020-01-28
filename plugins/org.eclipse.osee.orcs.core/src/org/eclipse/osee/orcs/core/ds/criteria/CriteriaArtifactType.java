@@ -13,24 +13,21 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaArtifactType extends Criteria {
 
-   private final Collection<? extends ArtifactTypeId> artifactTypes;
-   private final ArtifactTypes artTypeCache;
+   private final Collection<ArtifactTypeToken> artifactTypes;
    private final boolean includeTypeInheritance;
 
-   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends ArtifactTypeId> artifactTypes, boolean includeTypeInheritance) {
-      super();
+   public CriteriaArtifactType(Collection<ArtifactTypeToken> artifactTypes, boolean includeTypeInheritance) {
       this.artifactTypes = artifactTypes;
-      this.artTypeCache = artTypeCache;
       this.includeTypeInheritance = includeTypeInheritance;
    }
 
@@ -39,30 +36,24 @@ public class CriteriaArtifactType extends Criteria {
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
-   public Collection<? extends ArtifactTypeId> getOriginalTypes() {
+   public Collection<ArtifactTypeToken> getOriginalTypes() {
       return artifactTypes;
    }
 
    public Collection<? extends ArtifactTypeId> getTypes() {
-      Collection<? extends ArtifactTypeId> toReturn;
       if (includeTypeInheritance) {
          Collection<ArtifactTypeId> typesToUse = new LinkedHashSet<>();
-         for (ArtifactTypeId type : getOriginalTypes()) {
-            for (ArtifactTypeId descendant : artTypeCache.getAllDescendantTypes(type)) {
-               typesToUse.add(descendant);
-            }
-            typesToUse.add(type);
+         typesToUse.addAll(artifactTypes);
+         for (ArtifactTypeToken type : artifactTypes) {
+            typesToUse.addAll(type.getAllDescendantTypes());
          }
-         toReturn = typesToUse;
-      } else {
-         toReturn = getOriginalTypes();
+         return typesToUse;
       }
-      return toReturn;
+      return artifactTypes;
    }
 
    @Override
    public String toString() {
       return "CriteriaArtifactType [artifactTypes=" + artifactTypes + ", includeTypeInheritance=" + includeTypeInheritance + "]";
    }
-
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -33,10 +33,10 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public abstract class AbstractConfigResource {
 
    protected final AtsApi atsApi;
-   private final ArtifactTypeId artifactType;
+   private final ArtifactTypeToken artifactType;
    private final QueryBuilder query;
 
-   public AbstractConfigResource(ArtifactTypeId artifactType, AtsApi atsApi, OrcsApi orcsApi) {
+   public AbstractConfigResource(ArtifactTypeToken artifactType, AtsApi atsApi, OrcsApi orcsApi) {
       this.artifactType = artifactType;
       this.atsApi = atsApi;
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);

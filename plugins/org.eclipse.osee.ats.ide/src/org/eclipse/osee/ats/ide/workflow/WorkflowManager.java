@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,7 +61,7 @@ public class WorkflowManager {
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
-      for (ArtifactTypeId artType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+      for (ArtifactTypeToken artType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
             ArtifactQuery.getArtifactListFromType(artType, AtsClientService.get().getAtsBranch()));
          result.addAll(teamArts);

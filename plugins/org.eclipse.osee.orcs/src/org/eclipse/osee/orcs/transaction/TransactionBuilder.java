@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -206,7 +205,7 @@ public interface TransactionBuilder {
     */
    ArtifactToken getWriteable(ArtifactId artifact);
 
-   List<ArtifactToken> createArtifacts(ArtifactTypeId artifactType, ArtifactId parent, List<String> names);
+   List<ArtifactToken> createArtifacts(ArtifactTypeToken artifactType, ArtifactId parent, List<String> names);
 
    void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma);
 }

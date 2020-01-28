@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -633,8 +632,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       ////////////////////////////// Call handler to get actual types ?;
-      private Collection<ArtifactTypeId> asArtifactTypes(List<OsExpression> expressions) {
-         Set<ArtifactTypeId> toReturn = new LinkedHashSet<>();
+      private Collection<ArtifactTypeToken> asArtifactTypes(List<OsExpression> expressions) {
+         Set<ArtifactTypeToken> toReturn = new LinkedHashSet<>();
 
          List<Class<?>> resolvedTypes = resolver.resolveTypes(expressions);
          for (int index = 0; index < resolvedTypes.size(); index++) {

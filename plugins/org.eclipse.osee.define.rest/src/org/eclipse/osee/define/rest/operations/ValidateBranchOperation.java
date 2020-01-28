@@ -13,7 +13,7 @@ package org.eclipse.osee.define.rest.operations;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -46,7 +46,7 @@ public class ValidateBranchOperation {
       this(jdbcClient, branch, new XResultData(false), orcsApi);
    }
 
-   public XResultData getChildrenWithMultipleParents(ArtifactTypeId artType) {
+   public XResultData getChildrenWithMultipleParents(ArtifactTypeToken artType) {
       List<Long> artIds = new LinkedList<>();
       jdbcClient.runQuery(stmt -> artIds.add(stmt.getLong("b_art_id")), FIND_CHILDREN_WITH_DUPLICATE_DEF_HIER_PARENTS,
          branch);
@@ -66,13 +66,13 @@ public class ValidateBranchOperation {
       return results;
    }
 
-   public XResultData runAll(ArtifactTypeId artType) {
+   public XResultData runAll(ArtifactTypeToken artType) {
       getChildrenWithMultipleParents(artType);
       getOrphans(artType);
       return results;
    }
 
-   public XResultData getOrphans(ArtifactTypeId artType) {
+   public XResultData getOrphans(ArtifactTypeToken artType) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andRelationNotExists(
          CoreRelationTypes.DefaultHierarchical_Child).andIsOfType(artType).asArtifactIds()) {
@@ -81,7 +81,7 @@ public class ValidateBranchOperation {
       return results;
    }
 
-   private List<Long> filterByArtifactTypeInherited(List<Long> artIds, ArtifactTypeId artType) {
+   private List<Long> filterByArtifactTypeInherited(List<Long> artIds, ArtifactTypeToken artType) {
       List<Long> resultIds = new LinkedList<>();
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(branch).andIdsL(artIds).andIsOfType(
          artType).asArtifactIds()) {
@@ -89,5 +89,4 @@ public class ValidateBranchOperation {
       }
       return resultIds;
    }
-
 }

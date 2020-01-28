@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import com.google.common.collect.Sets;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -54,24 +51,6 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    @Override
    public ArtifactTypeToken get(Long id) {
       return getArtifactTypesIndex().get(id);
-   }
-
-   @Override
-   public Collection<? extends ArtifactTypeToken> getAllDescendantTypes(ArtifactTypeId artType) {
-      Conditions.checkNotNull(artType, "artifactType");
-      LinkedHashSet<ArtifactTypeToken> descendants = Sets.newLinkedHashSet();
-      walkDescendants(artType, descendants);
-      return descendants;
-   }
-
-   private void walkDescendants(ArtifactTypeId artifactType, Collection<ArtifactTypeToken> descendants) {
-      Collection<ArtifactTypeToken> childTypes = getArtifactTypesIndex().getDescendantTypes(artifactType);
-      if (!childTypes.isEmpty()) {
-         for (ArtifactTypeToken type : childTypes) {
-            walkDescendants(type, descendants);
-            descendants.add(type);
-         }
-      }
    }
 
    @Override

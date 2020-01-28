@@ -26,7 +26,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -408,23 +407,23 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andIsOfType(ArtifactTypeId... artifactType) {
+   public QueryBuilder andIsOfType(ArtifactTypeToken... artifactType) {
       return andIsOfType(Arrays.asList(artifactType));
    }
 
    @Override
-   public QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactTypes) {
-      return addAndCheck(new CriteriaArtifactType(artifactTypeCache, artifactTypes, true));
+   public QueryBuilder andIsOfType(Collection<ArtifactTypeToken> artifactTypes) {
+      return addAndCheck(new CriteriaArtifactType(artifactTypes, true));
    }
 
    @Override
-   public QueryBuilder andTypeEquals(ArtifactTypeId... artifactType) {
+   public QueryBuilder andTypeEquals(ArtifactTypeToken... artifactType) {
       return andTypeEquals(Arrays.asList(artifactType));
    }
 
    @Override
-   public QueryBuilder andTypeEquals(Collection<? extends ArtifactTypeId> artifactTypes) {
-      return addAndCheck(new CriteriaArtifactType(artifactTypeCache, artifactTypes, false));
+   public QueryBuilder andTypeEquals(Collection<ArtifactTypeToken> artifactTypes) {
+      return addAndCheck(new CriteriaArtifactType(artifactTypes, false));
    }
 
    @Override

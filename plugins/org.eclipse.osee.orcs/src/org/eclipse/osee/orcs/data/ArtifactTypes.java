@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -21,8 +20,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
  * @author Roberto E. Escobar
  */
 public interface ArtifactTypes extends IdCollection<ArtifactTypeToken> {
-
-   Collection<? extends ArtifactTypeToken> getAllDescendantTypes(ArtifactTypeId artType);
 
    boolean isValidAttributeType(ArtifactTypeToken artType, BranchId branch, AttributeTypeId attributeType);
 

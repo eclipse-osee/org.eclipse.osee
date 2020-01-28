@@ -13,15 +13,12 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -100,17 +97,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).isDeleted();
-   }
-
-   /**
-    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
-    */
-   @Override
-   public Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
-      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-      artifactTypes.addAll(
-         orcsApi.getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
-      return artifactTypes;
    }
 
    @Override

@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -102,23 +100,6 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
       return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isDeleted();
-   }
-
-   /**
-    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
-    */
-   @Override
-   public Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
-      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-      getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
-      return artifactTypes;
-   }
-
-   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<ArtifactTypeToken> allArtifactTypes) {
-      allArtifactTypes.add(artifactType);
-      for (ArtifactTypeToken child : artifactType.getDirectDescendantTypes()) {
-         getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
-      }
    }
 
    @Override

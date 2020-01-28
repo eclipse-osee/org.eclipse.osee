@@ -345,14 +345,14 @@ public class ArtifactQuery {
       return getOrCheckArtifact(QueryType.GET, getArtifactListFromAttribute(attributeType, attributeValue, branch));
    }
 
-   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch) {
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeToken artifactTypeToken, BranchId branch) {
       return getArtifactListFromType(artifactTypeToken, branch, EXCLUDE_DELETED);
    }
 
    /**
     * Does not return any inherited artifacts. Use getArtifactListFromTypeWithInheritence instead.
     */
-   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag allowDeleted) {
       return getArtifactListFrom(getArtifactEndpoint(branch).getArtifactIdsByType(artifactType), branch, allowDeleted);
    }
 
@@ -727,11 +727,11 @@ public class ArtifactQuery {
       return result;
    }
 
-   public static Collection<ArtifactToken> getArtifactTokenListFromTypeAndActive(ArtifactTypeId artifactType, AttributeTypeId attributeType, BranchId branch) {
+   public static Collection<ArtifactToken> getArtifactTokenListFromTypeAndActive(ArtifactTypeToken artifactType, AttributeTypeId attributeType, BranchId branch) {
       return getArtifactEndpoint(branch).getArtifactTokensByAttribute(attributeType, "false", false, artifactType);
    }
 
-   public static Collection<ArtifactToken> getArtifactTokenListFromType(ArtifactTypeId artifactType, BranchId branch) {
+   public static Collection<ArtifactToken> getArtifactTokenListFromType(ArtifactTypeToken artifactType, BranchId branch) {
       return getArtifactEndpoint(branch).getArtifactTokensByType(artifactType);
    }
 

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -155,22 +154,22 @@ public interface QueryBuilder extends Query {
    /**
     * Search criteria that finds a given artifact type using type inheritance
     */
-   QueryBuilder andIsOfType(ArtifactTypeId... artifactType);
+   QueryBuilder andIsOfType(ArtifactTypeToken... artifactType);
 
    /**
     * Search criteria that finds a given artifact types using type inheritance
     */
-   QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactType);
+   QueryBuilder andIsOfType(Collection<ArtifactTypeToken> artifactType);
 
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
-   QueryBuilder andTypeEquals(ArtifactTypeId... artifactType);
+   QueryBuilder andTypeEquals(ArtifactTypeToken... artifactType);
 
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
-   QueryBuilder andTypeEquals(Collection<? extends ArtifactTypeId> artifactType);
+   QueryBuilder andTypeEquals(Collection<ArtifactTypeToken> artifactType);
 
    /**
     * Search criteria that checks for the existence of an attribute type(s).

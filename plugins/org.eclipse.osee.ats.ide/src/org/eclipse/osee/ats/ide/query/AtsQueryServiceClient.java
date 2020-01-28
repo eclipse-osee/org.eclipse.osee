@@ -149,7 +149,7 @@ public class AtsQueryServiceClient {
       return toArtifacts(queryService.getArtifacts(ids));
    }
 
-   public Artifact getArtifactByName(ArtifactTypeId artifactType, String name) {
+   public Artifact getArtifactByName(ArtifactTypeToken artifactType, String name) {
       return toArtifact(queryService.getArtifactByName(artifactType, name));
    }
 

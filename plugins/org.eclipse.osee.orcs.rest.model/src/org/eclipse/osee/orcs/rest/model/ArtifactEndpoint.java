@@ -25,7 +25,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -66,27 +65,27 @@ public interface ArtifactEndpoint {
    @GET
    @Path("attType/{attributeType}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
+   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
    @Path("attType/{attributeType}/id")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType);
+   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeId attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
    @Path("map")
    @Produces(MediaType.APPLICATION_JSON)
-   List<Map<String, Object>> getArtifactMaps(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeId attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeId artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   List<Map<String, Object>> getArtifactMaps(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeId attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("type/{artifactType}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getArtifactTokensByType(@PathParam("artifactType") ArtifactTypeId artifactType);
+   List<ArtifactToken> getArtifactTokensByType(@PathParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
    @Path("type/{artifactType}/id")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeId artifactType);
+   List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeToken artifactType);
 
    /**
     * error if an artifact with the same name and type already exist
@@ -95,7 +94,7 @@ public interface ArtifactEndpoint {
    @Path("type/{artifactType}/parent/{parent}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> createArtifacts(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeId artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, List<String> names);
+   List<ArtifactToken> createArtifacts(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, List<String> names);
 
    @POST
    @Path("type/{artifactType}/parent/{parent}/create")
@@ -107,7 +106,7 @@ public interface ArtifactEndpoint {
    @Path("old-type/{oldType}/new-type/{newType}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> changeArtifactType(@PathParam("branch") BranchId branch, @PathParam("oldType") ArtifactTypeId oldType, @PathParam("newType") ArtifactTypeId newType, List<String> names);
+   List<ArtifactToken> changeArtifactType(@PathParam("branch") BranchId branch, @PathParam("oldType") ArtifactTypeToken oldType, @PathParam("newType") ArtifactTypeToken newType, List<String> names);
 
    @DELETE
    @Path("{artifact}")

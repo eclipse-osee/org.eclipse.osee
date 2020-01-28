@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -52,7 +52,9 @@ public interface IAtsStoreService {
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
-   Set<ArtifactTypeToken> getTeamWorkflowArtifactTypes();
+   default List<ArtifactTypeToken> getTeamWorkflowArtifactTypes() {
+      return AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes();
+   }
 
    AttributeTypeToken getAttributeType(String attrTypeName);
 
@@ -103,7 +105,6 @@ public interface IAtsStoreService {
          getArtifactType(stmt.getLong("art_type_id"))), query);
       return artIdToType;
    }
-
 
    boolean isHistorical(ArtifactId artifact);
 
