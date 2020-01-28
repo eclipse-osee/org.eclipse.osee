@@ -58,4 +58,9 @@ public class AtsConfigTxProgram extends AbstractAtsConfigTxObject<IAtsConfigTxPr
       return this;
    }
 
+   @Override
+   public IAtsProgram getProgram() {
+      return program;
+   }
+
 }

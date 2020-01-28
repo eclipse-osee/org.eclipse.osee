@@ -273,12 +273,19 @@ public abstract class BranchRegressionTest {
 
    public abstract void testCreateAction();
 
+   /**
+    * @return true if code workflow should be created for this test
+    */
+   public boolean hasCodeWorkflow() {
+      return true;
+   }
+
    protected void testTeamWorkflows(Collection<IAtsTeamWorkflow> teamWfs) {
       for (IAtsTeamWorkflow teamWf : teamWfs) {
          if (teamWf.getTeamDefinition().getName().contains("Req")) {
             reqTeam = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }
-         if (teamWf.getTeamDefinition().getName().contains("Code")) {
+         if (hasCodeWorkflow() && teamWf.getTeamDefinition().getName().contains("Code")) {
             codeTeam = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          }
          if (teamWf.getTeamDefinition().getName().contains("Test")) {
@@ -290,7 +297,9 @@ public abstract class BranchRegressionTest {
 
       validateNoBoostrapUser();
       Assert.assertNotNull("Req workflow not created", reqTeam);
-      Assert.assertNotNull("Code workflow not created", codeTeam);
+      if (hasCodeWorkflow()) {
+         Assert.assertNotNull("Code workflow not created", codeTeam);
+      }
       Assert.assertNotNull("Test workflow not created", testTeam);
       Assert.assertNotNull("Action not created", actionArt);
 

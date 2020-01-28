@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.config.tx;
 
 import org.eclipse.osee.ats.api.config.Csci;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
@@ -26,4 +27,5 @@ public interface IAtsConfigTxProgram {
 
    IAtsConfigTxProgram andCsci(Csci... cscis);
 
+   IAtsProgram getProgram();
 }

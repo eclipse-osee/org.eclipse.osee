@@ -188,4 +188,11 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
       return txTasks;
    }
 
+   @Override
+   public IAtsConfigTxProgram createProgram(ArtifactId parent, IAtsProgramArtifactToken program) {
+      IAtsConfigTxProgram txProgram = createProgram(program);
+      changes.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, txProgram.getProgram());
+      return txProgram;
+   }
+
 }
