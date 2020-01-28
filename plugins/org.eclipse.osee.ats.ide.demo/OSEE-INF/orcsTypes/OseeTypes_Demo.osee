@@ -32,18 +32,11 @@ artifactType "Demo Code Team Workflow" extends "Team Workflow" {
    attribute "demo.code.Ref PCR"
    attribute "demo.code.References"
    attribute "demo.code.Requirement Id"
-   attribute "demo.code.Dup CPCR No"
-   attribute "demo.code.Dup CSCI"
-   attribute "demo.code.Dup CPCR Type"
-   attribute "demo.code.Dup Of CPCR No Seq"
    attribute "demo.code.Librarian"
    attribute "demo.code.Promote Date"
    attribute "demo.code.Authorization Notes"
    attribute "demo.code.Rework Letter"
    attribute "demo.code.Problem No"
-   attribute "demo.code.DP Effectivity"
-   attribute "demo.code.SP Effectivity"
-   attribute "demo.code.WP Effectivity"
    attribute "Partition" branchUuid 3
 }
 
@@ -103,24 +96,11 @@ attributeType "demo.code.CSCI" extends StringAttribute {
 oseeEnumType "enum.demo.code.defect.code" {
    id 3458764513820541329
    entry "CL01 - Requirements Implemented Incorrectly" 
-   entry "CL02 - Initialization Error" 
-   entry "CL03 - Out of Range Error" 
-   entry "CL04 - Data Conversion Error" 
-   entry "CL05 - Buffer Sizing Error" 
    entry "CL06 - Timing Problem" 
    entry "CL07 - Interface Error" 
-   entry "CL08 - Logic Control Error" 
-   entry "CL09 - TYPO" 
-   entry "CL10 - Multiple Code Logic Problems" 
-   entry "CL99 - Other Code Logic Problem" 
    entry "NC01 - Requirement Error" 
    entry "NC02 - Test Script Error" 
-   entry "NC03 - CTE Error" 
    entry "NC04 - Hardware Error" 
-   entry "NC99 - Other NON-CODE Problem" 
-   entry "SV01 - Coding Standard Violation" 
-   entry "TE01 - Compiler/Linker/Assembler Problem" 
-   entry "TE02 - APEX Problem" 
    entry "TE99 - Other Tool Error" 
 }
 
@@ -140,7 +120,6 @@ oseeEnumType "enum.demo.code.detection" {
    entry "Hot Bench" 
    entry "Aircraft" 
    entry "Peer Review" 
-   entry "TRAX Issue" 
    entry "Other" 
 }
 
@@ -182,8 +161,6 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
 oseeEnumType "enum.demo.code.req.doc" {
    id 3458764513820541331
    entry "Unknown" 
-   entry "SubDD" 
-   entry "CSID" 
    entry "SRS" 
    entry "Other" 
 }
@@ -379,38 +356,6 @@ attributeType "demo.code.Requirement Id" extends StringAttribute {
    mediaType "text/plain"
 }
 
-attributeType "demo.code.Dup CPCR No" extends StringAttribute {
-   id 1152921504606847269
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.Dup CSCI" extends StringAttribute {
-   id 1152921504606847270
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
-   id 1152921504606847271
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.Dup Of CPCR No Seq" extends StringAttribute {
-   id 1152921504606847272
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
 attributeType "demo.code.Librarian" extends StringAttribute {
    id 1152921504606847273
    dataProvider DefaultAttributeDataProvider
@@ -447,30 +392,6 @@ attributeType "demo.code.Rework Letter" extends StringAttribute {
 
 attributeType "demo.code.Problem No" extends StringAttribute {
    id 1152921504606847277
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
-   id 1152921504606847278
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
-   id 1152921504606847279
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   mediaType "text/plain"
-}
-
-attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
-   id 1152921504606847280
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
