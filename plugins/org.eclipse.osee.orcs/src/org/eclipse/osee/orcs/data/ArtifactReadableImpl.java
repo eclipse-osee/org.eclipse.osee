@@ -180,7 +180,19 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public Long getSoleAttributeId(AttributeTypeToken attributeType) {
-      throw new UnsupportedOperationException();
+      List<IAttribute<?>> list = attributes.getValues(attributeType);
+      ensureNotMoreThanOne(attributeType, list.size());
+      return list.iterator().next().getId();
+   }
+
+   @Override
+   public Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue) {
+      List<IAttribute<?>> list = attributes.getValues(attributeType);
+      if (list == null) {
+         return defaultValue;
+      }
+      ensureNotMoreThanOne(attributeType, list.size());
+      return list.iterator().next().getId();
    }
 
    @Override

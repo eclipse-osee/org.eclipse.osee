@@ -161,6 +161,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public Long getSoleAttributeId(AttributeTypeToken attributeType, Long defaultValue) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       return getProxiedObject().getAttributeValues(attributeType);
    }
@@ -379,4 +384,5 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED,
          "Unknown Name: " + getIdString());
    }
+
 }
