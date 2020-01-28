@@ -27,7 +27,6 @@ public class CodeDetectionAttributeType extends AttributeTypeEnum<CodeDetectionE
 	public final CodeDetectionEnum HotBench = new CodeDetectionEnum(2, "Hot Bench");
 	public final CodeDetectionEnum Aircraft = new CodeDetectionEnum(3, "Aircraft");
 	public final CodeDetectionEnum PeerReview = new CodeDetectionEnum(4, "Peer Review");
-	public final CodeDetectionEnum TraxIssue = new CodeDetectionEnum(5, "TRAX Issue");
 	public final CodeDetectionEnum Other = new CodeDetectionEnum(6, "Other");
 	// @formatter:on
 

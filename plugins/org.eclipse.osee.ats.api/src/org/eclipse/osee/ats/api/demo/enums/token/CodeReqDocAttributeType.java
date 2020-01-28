@@ -23,8 +23,6 @@ public class CodeReqDocAttributeType extends AttributeTypeEnum<CodeReqDocEnum> {
 
    // @formatter:off
 	public final CodeReqDocEnum Unknown = new CodeReqDocEnum(0, "Unknown");
-	public final CodeReqDocEnum SubDD = new CodeReqDocEnum(1, "SubDD");
-	public final CodeReqDocEnum CSID = new CodeReqDocEnum(2, "CSID");
 	public final CodeReqDocEnum SRS = new CodeReqDocEnum(3, "SRS");
 	public final CodeReqDocEnum Other = new CodeReqDocEnum(4, "Other");
 	// @formatter:on

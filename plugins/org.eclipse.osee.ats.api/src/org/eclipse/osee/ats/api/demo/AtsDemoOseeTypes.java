@@ -59,18 +59,11 @@ public interface AtsDemoOseeTypes {
    AttributeTypeString RefPcr = atsDemo.createStringNoTag(1152921504606847266L, "demo.code.Ref PCR", MediaType.TEXT_PLAIN, "");
    AttributeTypeString References = atsDemo.createString(1152921504606847267L, "demo.code.References", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RequirementId = atsDemo.createStringNoTag(1152921504606847268L, "demo.code.Requirement Id", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DupCpcrNo = atsDemo.createStringNoTag(1152921504606847269L, "demo.code.Dup CPCR No", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DupCsci = atsDemo.createStringNoTag(1152921504606847270L, "demo.code.Dup CSCI", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DupCpcrType = atsDemo.createStringNoTag(1152921504606847271L, "demo.code.Dup CPCR Type", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DupOfCpcrNoSeq = atsDemo.createStringNoTag(1152921504606847272L, "demo.code.Dup Of CPCR No Seq", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Librarian = atsDemo.createString(1152921504606847273L, "demo.code.Librarian", MediaType.TEXT_PLAIN, "");
    AttributeTypeString PromoteDate = atsDemo.createStringNoTag(1152921504606847274L, "demo.code.Promote Date", MediaType.TEXT_PLAIN, "");
    AttributeTypeString AuthorizationNotes = atsDemo.createString(1152921504606847275L, "demo.code.Authorization Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ReworkLetter = atsDemo.createStringNoTag(1152921504606847276L, "demo.code.Rework Letter", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProblemNo = atsDemo.createStringNoTag(1152921504606847277L, "demo.code.Problem No", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString DpEffectivity = atsDemo.createStringNoTag(1152921504606847278L, "demo.code.DP Effectivity", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString SpEffectivity = atsDemo.createStringNoTag(1152921504606847279L, "demo.code.SP Effectivity", MediaType.TEXT_PLAIN, "");
-   AttributeTypeString WpEffectivity = atsDemo.createStringNoTag(1152921504606847280L, "demo.code.WP Effectivity", MediaType.TEXT_PLAIN, "");
 
    ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow)
       .zeroOrOne(ChangeType, "")
@@ -104,18 +97,11 @@ public interface AtsDemoOseeTypes {
       .zeroOrOne(RefPcr, "")
       .zeroOrOne(References, "")
       .zeroOrOne(RequirementId, "")
-      .zeroOrOne(DupCpcrNo, "")
-      .zeroOrOne(DupCsci, "")
-      .zeroOrOne(DupCpcrType, "")
-      .zeroOrOne(DupOfCpcrNoSeq, "")
       .zeroOrOne(Librarian, "")
       .zeroOrOne(PromoteDate, "")
       .zeroOrOne(AuthorizationNotes, "")
       .zeroOrOne(ReworkLetter, "")
       .zeroOrOne(ProblemNo, "")
-      .zeroOrOne(DpEffectivity, "")
-      .zeroOrOne(SpEffectivity, "")
-      .zeroOrOne(WpEffectivity, "")
       .atLeastOne(Partition, " "));
    ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
    ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
