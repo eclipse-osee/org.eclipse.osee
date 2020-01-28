@@ -40,6 +40,7 @@ public class WordUtilities {
    private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
    private static int bookMarkId = 1000;
    private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
+   private static String newLineChar = ">(\\r|\\n|\\r\\n)<";
 
    public static byte[] getFormattedContent(Element formattedItemElement) throws XMLStreamException {
       ByteArrayOutputStream data = new ByteArrayOutputStream(1024);
@@ -127,6 +128,16 @@ public class WordUtilities {
 
    public static String reassignBookMarkID(String content) {
       return updateBookmarkIds.fixTags(content);
+   }
+
+   /**
+    * Removes all new lines, CRLF, CR, or LF from the content in between 2 tags.
+    *
+    * @param content
+    * @return content
+    */
+   public static String removeNewLines(String content) {
+      return content.replaceAll(newLineChar, "><");
    }
 
 }

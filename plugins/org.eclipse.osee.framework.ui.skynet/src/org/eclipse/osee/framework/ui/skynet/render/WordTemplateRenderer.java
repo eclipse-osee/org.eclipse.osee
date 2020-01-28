@@ -205,7 +205,6 @@ public class WordTemplateRenderer extends WordRenderer {
 
          if (content != null) {
             data = content.getFirst();
-            data = data.replaceAll("(\\r|\\n|\\r\\n)<w:p", "<w:p"); //Removing special character sequence that prevents Word from opening the document
             WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
          }
 

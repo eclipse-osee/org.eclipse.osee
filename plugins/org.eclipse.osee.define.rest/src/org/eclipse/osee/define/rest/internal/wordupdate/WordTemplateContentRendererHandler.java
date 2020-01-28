@@ -84,6 +84,7 @@ public class WordTemplateContentRendererHandler {
             data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
                unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
+            data = WordUtilities.removeNewLines(data);
 
             // remove any existing footers and replace with the current one
             // first try to remove footer for extra paragraphs
@@ -129,13 +130,14 @@ public class WordTemplateContentRendererHandler {
 
             return new Pair<>(data, unknownGuids);
          } else if (artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
-            //If the artifact is an empty ms word header, still want to tag that header with a book mark so it can be linked to. 
+            //If the artifact is an empty ms word header, still want to tag that header with a book mark so it can be linked to.
             //Non empty ms word headers are caught above correctly
             data = "";
             LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
             data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
                unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
+            data = WordUtilities.removeNewLines(data);
 
             return new Pair<>(data, unknownGuids);
          }
