@@ -71,7 +71,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
-      return new AtsChangeSet(comment, asUser);
+      return new AtsChangeSet(comment, AtsClientService.get().getAtsBranch(), asUser);
    }
 
    @Override
@@ -282,6 +282,11 @@ public class AtsStoreService implements IAtsStoreService {
    public String getSafeName(ArtifactId art) {
       Artifact artifact = (Artifact) art;
       return artifact.getName();
+   }
+
+   @Override
+   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+      return new AtsChangeSet(comment, branch, asUser);
    }
 
 }

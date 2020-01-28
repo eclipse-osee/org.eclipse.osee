@@ -69,6 +69,7 @@ import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -549,6 +550,16 @@ public abstract class AtsApiImpl implements AtsApi {
 
    public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
+   }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment, Branch branch) {
+      return storeService.createAtsChangeSet(comment, branch, userService.getCurrentUser());
+   }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment, Branch branch, IAtsUser asUser) {
+      return storeService.createAtsChangeSet(comment, branch, asUser);
    }
 
 }

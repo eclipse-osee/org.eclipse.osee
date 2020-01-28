@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -63,11 +64,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public AtsChangeSet(String comment) {
-      this(comment, AtsClientService.get().getUserService().getCurrentUser());
+      this(comment, AtsClientService.get().getAtsBranch(), AtsClientService.get().getUserService().getCurrentUser());
    }
 
    public AtsChangeSet(String comment, IAtsUser asUser) {
-      super(comment, asUser);
+      this(comment, AtsClientService.get().getAtsBranch(), asUser);
+   }
+
+   public AtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+      super(comment, branch, asUser);
    }
 
    @Override
@@ -77,8 +82,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
       TransactionId transactionRecord;
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
+      if (branch == null) {
+         branch = AtsClientService.get().getAtsBranch();
+      }
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       try {
          // First, create or update any artifacts that changed
          for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
@@ -527,6 +534,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
       Artifact artifact =
          ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, artifactId);
+      add(artifact);
+      return artifact;
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, AtsClientService.get().getAtsBranch(), name);
+      addChild(parent, artifact);
       add(artifact);
       return artifact;
    }

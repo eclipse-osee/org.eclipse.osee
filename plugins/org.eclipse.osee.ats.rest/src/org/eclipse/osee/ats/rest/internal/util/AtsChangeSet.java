@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -56,8 +57,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    private final AtsApi atsApi;
 
-   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
-      super(comment, user);
+   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier, BranchId branch) {
+      super(comment, branch, user);
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.notifier = notifier;
@@ -65,7 +66,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public TransactionBuilder getTransaction() {
       if (transaction == null) {
-         transaction = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), asUser, comment);
+         if (branch == null) {
+            branch = atsApi.getAtsBranch();
+         }
+         transaction = orcsApi.getTransactionFactory().createTransaction(branch, asUser, comment);
       }
       return transaction;
    }
@@ -457,4 +461,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef) {
       addAttribute(artifact, attributeType, artifactRef.getIdString());
    }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
+      ArtifactToken artifact = getTransaction().createArtifact(artType, name);
+      addChild(parent, artifact);
+      add(artifact);
+      return artifact;
+   }
+
 }

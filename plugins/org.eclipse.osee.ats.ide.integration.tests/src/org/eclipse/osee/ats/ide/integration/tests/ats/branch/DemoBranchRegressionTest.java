@@ -178,22 +178,6 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public void testShowRelatedTasksAction() {
-      super.testShowRelatedTasksAction();
-      System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-   }
-
-   @Override
-   public void testShowRelatedRequirementAction() {
-      System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-   }
-
-   @Override
-   public void testShowRequirementDiffsAction() {
-      System.err.println(getClass().getSimpleName() + " - TBD: Add checks");
-   }
-
-   @Override
    public List<String> getBranchNames() throws Exception {
       return BranchNames;
    }

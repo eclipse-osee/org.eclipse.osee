@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -53,12 +54,16 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
    protected boolean execptionIfEmpty = true;
+   protected BranchId branch;
 
-   public AbstractAtsChangeSet(String comment, IAtsUser asUser) {
+   public AbstractAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
       this.comment = comment;
+      this.branch = branch;
       this.asUser = asUser;
       Conditions.checkNotNullOrEmpty(comment, "comment");
+      Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(asUser, "user");
+      Conditions.assertTrue(branch.isValid(), "%s is not a valid branch", branch);
    }
 
    @Override
@@ -69,7 +74,19 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
             add(object);
          }
       } else if (obj instanceof IAtsObject) {
+         IAtsObject atsObj = (IAtsObject) obj;
+         if (!atsObj.getStoreObject().getBranch().equals(branch)) {
+            throw new OseeArgumentException("Can't add %s from branch %s to conflicting branch %s in same transaction",
+               atsObj.toStringWithId(), atsObj.getStoreObject().getBranchIdString(), branch.getIdString());
+         }
          atsObjects.add((IAtsObject) obj);
+      } else if (obj instanceof ArtifactToken) {
+         ArtifactToken artTok = (ArtifactToken) obj;
+         if (!artTok.getBranch().equals(branch)) {
+            throw new OseeArgumentException("Can't add %s from branch %s to conflicting branch %s in same transaction",
+               artTok.toStringWithId(), artTok.getBranchIdString(), branch.getIdString());
+         }
+         artifacts.add((ArtifactToken) obj);
       } else if (obj instanceof ArtifactId) {
          artifacts.add((ArtifactId) obj);
       } else if (obj instanceof AtsRelationChange) {
@@ -262,6 +279,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          addChild(parent, art);
       }
       return art;
+   }
+
+   public BranchId getBranch() {
+      return branch;
    }
 
 }

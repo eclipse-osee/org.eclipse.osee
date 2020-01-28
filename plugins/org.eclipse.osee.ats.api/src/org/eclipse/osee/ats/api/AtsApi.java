@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
@@ -187,5 +188,9 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    IAtsEventService getEventService();
 
    IAtsTaskSetDefinitionProviderService getTaskSetDefinitionProviderService();
+
+   IAtsChangeSet createChangeSet(String comment, Branch branch);
+
+   IAtsChangeSet createChangeSet(String comment, Branch branch, IAtsUser asUser);
 
 }

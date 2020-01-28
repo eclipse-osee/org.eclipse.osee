@@ -131,4 +131,7 @@ public interface IAtsStoreService {
    String getSafeName(ArtifactId art);
 
    ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
+
+   IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser);
+
 }

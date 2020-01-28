@@ -76,7 +76,14 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
-      return new AtsChangeSet(atsApi, attributeResolver, orcsApi, stateFactory, logFactory, comment, asUser, notifier);
+      return createAtsChangeSet(comment, atsApi.getAtsBranch(), asUser);
+
+   }
+
+   @Override
+   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+      return new AtsChangeSet(atsApi, attributeResolver, orcsApi, stateFactory, logFactory, comment, asUser, notifier,
+         branch);
    }
 
    public QueryBuilder getQuery() {

@@ -179,4 +179,6 @@ public interface IAtsChangeSet {
 
    ArtifactToken createArtifact(ArtifactToken parent, ArtifactToken artifact);
 
+   ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name);
+
 }
