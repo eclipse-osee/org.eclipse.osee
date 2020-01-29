@@ -50,7 +50,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.FixWorkDefinitionToAttributeConversion;
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -126,16 +126,16 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionResource(atsServer, orcsApi));
       singletons.add(new InsertionActivityResource(atsServer, orcsApi));
 
-      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
-      singletons.add(new WorldResource(atsServer));
-      singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));
-      singletons.add(new AtsWorkDefEndpointImpl(atsServer, orcsApi));
 
       // Endpoints
+      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
+      singletons.add(new AtsWorldEndpointImpl(atsServer));
+      singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));
+      singletons.add(new AtsWorkDefEndpointImpl(atsServer, orcsApi));
       singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService, orcsApi));
       singletons.add(new CountryEndpointImpl(atsServer));
       singletons.add(new ProgramEndpointImpl(atsServer));

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -28,11 +29,14 @@ import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -43,17 +47,18 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Donald G. Dunne
  */
 @Path("world")
-public class WorldResource {
+public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
    private final IAtsServer atsServer;
    public final static List<String> namespaces =
       Arrays.asList("org.eclipse.osee.ats.WorldXViewer", "org.eclipse.osee.ats.BacklogXViewer",
          "org.eclipse.osee.ats.SprintXViewer", "org.eclipse.osee.ats.GoalXViewer", "org.eclipse.osee.ats.TaskXViewer");
 
-   public WorldResource(IAtsServer atsServer) {
+   public AtsWorldEndpointImpl(IAtsServer atsServer) {
       this.atsServer = atsServer;
    }
 
+   @Override
    @GET
    @Path("cust/global")
    @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +70,7 @@ public class WorldResource {
       return datas;
    }
 
+   @Override
    @GET
    @Path("cust")
    @Produces(MediaType.APPLICATION_JSON)
@@ -76,6 +82,7 @@ public class WorldResource {
       return datas;
    }
 
+   @Override
    @GET
    @Path("my/{id}")
    @Produces(MediaType.APPLICATION_JSON)
@@ -89,6 +96,7 @@ public class WorldResource {
       return myWorldItems;
    }
 
+   @Override
    @GET
    @Path("my/{id}/ui")
    @Produces(MediaType.TEXT_HTML)
@@ -104,6 +112,7 @@ public class WorldResource {
       return sb.toString();
    }
 
+   @Override
    @GET
    @Path("my/{id}/ui/{customize_guid}")
    @Produces(MediaType.TEXT_HTML)
@@ -132,6 +141,7 @@ public class WorldResource {
       return table;
    }
 
+   @Override
    @GET
    @Path("coll/{id}")
    @Produces(MediaType.APPLICATION_JSON)
@@ -154,6 +164,7 @@ public class WorldResource {
       return myWorldItems;
    }
 
+   @Override
    @GET
    @Path("coll/{id}/ui")
    @Produces(MediaType.TEXT_HTML)
@@ -164,6 +175,7 @@ public class WorldResource {
       return sb.toString();
    }
 
+   @Override
    @GET
    @Path("coll/{id}/ui/{customize_guid}")
    @Produces(MediaType.TEXT_HTML)
@@ -248,6 +260,17 @@ public class WorldResource {
          sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));
       }
       sb.append(AHTML.endMultiColumnTable());
+   }
+
+   @Override
+   @GET
+   @Path("search")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public ResultRows search(AtsSearchData atsSearchData) {
+      ResultRows rows = new ResultRows();
+
+      return rows;
    }
 
 }

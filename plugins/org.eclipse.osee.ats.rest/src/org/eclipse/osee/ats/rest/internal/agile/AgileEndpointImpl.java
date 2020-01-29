@@ -95,7 +95,7 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.ProgramOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperations;
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
-import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -1061,7 +1061,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
       String table =
-         WorldResource.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+         AtsWorldEndpointImpl.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
       return Response.ok().entity(table).build();
    }
 
@@ -1086,7 +1086,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       CustomizeData custData = atsApi.getStoreService().getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
       String table =
-         WorldResource.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+         AtsWorldEndpointImpl.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
       return Response.ok().entity(table).build();
    }
 
