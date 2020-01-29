@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.AttributeTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -33,7 +34,8 @@ import org.mockito.MockitoAnnotations;
  * @author John R. Misinco
  */
 public class AttributeTypePredicateHandlerTest {
-
+   @Mock
+   private OrcsApi orcsApi;
    @Mock
    private QueryBuilder builder;
    @Captor
@@ -53,8 +55,7 @@ public class AttributeTypePredicateHandlerTest {
       List<String> values = Collections.singletonList("value");
       Predicate testPredicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder).and(anyCollectionOf(AttributeTypeId.class), eq("value"), eq(QueryOption.TOKEN_DELIMITER__ANY));
    }
-
 }

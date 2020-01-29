@@ -68,7 +68,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public SearchResponse getSearchWithMatrixParams(SearchRequest params) {
       long startTime = System.currentTimeMillis();
 
-      SearchQueryBuilder searchQueryBuilder = DslFactory.createQueryBuilder();
+      SearchQueryBuilder searchQueryBuilder = DslFactory.createQueryBuilder(orcsApi);
       QueryBuilder builder = searchQueryBuilder.build(orcsApi.getQueryFactory(), params);
 
       builder.includeDeletedArtifacts(params.isIncludeDeleted());

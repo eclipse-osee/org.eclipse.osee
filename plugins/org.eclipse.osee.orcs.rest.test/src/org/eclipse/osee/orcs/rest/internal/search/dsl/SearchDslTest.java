@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -40,6 +41,7 @@ public class SearchDslTest {
    @Mock private PredicateHandler handler;
    @Mock private QueryFactory queryFactory;
    @Mock private QueryBuilder builder;
+   @Mock private OrcsApi orcsApi;
    @Captor private ArgumentCaptor<Long> fromBranch;
    // @formatter:on
 
@@ -52,7 +54,7 @@ public class SearchDslTest {
       Map<SearchMethod, PredicateHandler> handlers = new HashMap<>();
       handlers.put(SearchMethod.ATTRIBUTE_TYPE, handler);
 
-      dsl = new SearchQueryBuilder(handlers);
+      dsl = new SearchQueryBuilder(orcsApi, handlers);
    }
 
    @Test
@@ -66,6 +68,6 @@ public class SearchDslTest {
       dsl.build(queryFactory, params);
 
       verify(queryFactory).fromBranch(COMMON);
-      verify(handler).handle(builder, predicate);
+      verify(handler).handle(orcsApi, builder, predicate);
    }
 }

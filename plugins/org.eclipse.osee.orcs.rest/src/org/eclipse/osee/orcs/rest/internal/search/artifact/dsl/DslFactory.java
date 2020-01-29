@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.dsl;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.AttributeTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
@@ -27,13 +28,12 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
  * @author Roberto E. Escobar
  */
 public class DslFactory {
-
    private static SearchQueryBuilder builder;
 
-   public synchronized static SearchQueryBuilder createQueryBuilder() {
+   public synchronized static SearchQueryBuilder createQueryBuilder(OrcsApi orcsApi) {
       if (builder == null) {
          Map<SearchMethod, PredicateHandler> handlers = DslFactory.getHandlers();
-         builder = new SearchQueryBuilder(handlers);
+         builder = new SearchQueryBuilder(orcsApi, handlers);
       }
       return builder;
    }

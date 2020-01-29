@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IdsPredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -35,7 +36,8 @@ public class IdsPredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
-
+   @Mock
+   private OrcsApi orcsApi;
    @Captor
    private ArgumentCaptor<Collection<String>> guidsCaptor;
    @Captor
@@ -55,7 +57,7 @@ public class IdsPredicateHandlerTest {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder).andUuids(idsCaptor.capture());
       Assert.assertEquals(1, idsCaptor.getValue().size());
       Assert.assertTrue(idsCaptor.getValue().contains(12345L));
@@ -70,14 +72,14 @@ public class IdsPredicateHandlerTest {
       String id1 = GUID.create();
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -86,6 +88,6 @@ public class IdsPredicateHandlerTest {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 }

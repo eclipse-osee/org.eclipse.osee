@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -27,7 +28,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AttributeTypePredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) {
+   public QueryBuilder handle(OrcsApi orcsApi, QueryBuilder builder, Predicate predicate) {
       if (predicate.getType() != SearchMethod.ATTRIBUTE_TYPE) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.ATTRIBUTE_TYPE);
       }

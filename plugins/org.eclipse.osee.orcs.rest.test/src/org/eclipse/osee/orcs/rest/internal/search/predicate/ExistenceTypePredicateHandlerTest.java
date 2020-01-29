@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -46,7 +47,8 @@ public class ExistenceTypePredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
-
+   @Mock
+   private OrcsApi orcsApi;
    @Captor
    private ArgumentCaptor<IRelationType> relationTypeCaptor;
    @Captor
@@ -65,7 +67,7 @@ public class ExistenceTypePredicateHandlerTest {
       String relationValue = "12345";
       List<String> values = Collections.singletonList(relationValue);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder).andRelationExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
       Assert.assertTrue(12345L == relationTypeCaptor.getValue().getId());
@@ -79,7 +81,7 @@ public class ExistenceTypePredicateHandlerTest {
       String relationValue = "12345";
       List<String> values = Collections.singletonList(relationValue);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
 
       verify(builder).andRelationExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
@@ -96,7 +98,7 @@ public class ExistenceTypePredicateHandlerTest {
       List<String> values = Arrays.asList(relationValue1, relationValue2);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
 
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder, times(2)).andRelationExists(relationTypeCaptor.capture());
 
       Assert.assertEquals(2, relationTypeCaptor.getAllValues().size());
@@ -115,7 +117,7 @@ public class ExistenceTypePredicateHandlerTest {
       String attrUuid = "12345";
       List<String> values = Collections.singletonList(attrUuid);
       Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
       List<AttributeTypeId> attrTypes = new ArrayList<>(attrTypeSideCaptor.getValue());
@@ -131,7 +133,7 @@ public class ExistenceTypePredicateHandlerTest {
       List<String> values = Arrays.asList(attrType1, attrType2);
       Predicate testPredicate =
          new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
 
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
@@ -148,14 +150,14 @@ public class ExistenceTypePredicateHandlerTest {
       List<String> values = Collections.singletonList(value);
       Predicate testPredicate =
          new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder, never()).andExists(anyCollectionOf(AttributeTypeId.class));
 
       value = "12A4G";
       typeParameters = Collections.singletonList("relType");
       values = Collections.singletonList(value);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder, never()).andRelationExists(any(RelationTypeSide.class), any(RelationSide.class));
    }
 
@@ -164,6 +166,6 @@ public class ExistenceTypePredicateHandlerTest {
       ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"),
          Collections.singletonList("A12A4G"), QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 }

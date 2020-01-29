@@ -54,7 +54,7 @@ public class RelatedToPredicateHandlerTest {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"),
          Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(null, builder, testPredicate);
       verify(builder, times(2)).andRelatedTo(rtsCaptor.capture(), idsCaptor.capture());
       List<RelationTypeSide> rts = rtsCaptor.getAllValues();
       Assert.assertEquals(2, rts.size());
@@ -71,7 +71,7 @@ public class RelatedToPredicateHandlerTest {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"),
          Arrays.asList(GUID.create()), QueryOption.TOKEN_DELIMITER__ANY);
-      handler.handle(builder, testPredicate);
+      handler.handle(null, builder, testPredicate);
    }
 
    private void verifyRelationTypeSide(RelationTypeSide rts, String input) {

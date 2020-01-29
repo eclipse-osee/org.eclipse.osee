@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -26,17 +26,15 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class TypeEqualsPredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) {
+   public QueryBuilder handle(OrcsApi orcsApi, QueryBuilder builder, Predicate predicate) {
       if (predicate.getType() != SearchMethod.TYPE_EQUALS) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.TYPE_EQUALS);
       }
-      Collection<String> values = predicate.getValues();
-      Conditions.checkNotNull(values, "values");
-      Collection<ArtifactTypeToken> artTypes = PredicateHandlerUtil.getArtifactTypeTokens(values);
+      Collection<ArtifactTypeToken> artTypes =
+         getArtifactTypeTokens(orcsApi.getOrcsTypes().getArtifactTypes(), predicate);
       if (!artTypes.isEmpty()) {
          builder.andTypeEquals(artTypes);
       }
       return builder;
    }
-
 }

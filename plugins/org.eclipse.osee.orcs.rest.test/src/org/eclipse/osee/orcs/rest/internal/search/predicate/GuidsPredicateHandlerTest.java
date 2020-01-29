@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.GuidsPredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -34,7 +35,8 @@ public class GuidsPredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
-
+   @Mock
+   private OrcsApi orcsApi;
    @Captor
    private ArgumentCaptor<Collection<String>> guidsCaptor;
 
@@ -51,7 +53,7 @@ public class GuidsPredicateHandlerTest {
       String id2 = "AGUID234";
       List<String> values = Collections.singletonList(id2);
       Predicate testPredicate = new Predicate(SearchMethod.GUIDS, null, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
       verify(builder).andGuids(guidsCaptor.capture());
       Assert.assertEquals(1, guidsCaptor.getValue().size());
       Assert.assertTrue(guidsCaptor.getValue().contains(id2));
@@ -61,7 +63,7 @@ public class GuidsPredicateHandlerTest {
    public void testHandleBadValues() {
       GuidsPredicateHandler handler = new GuidsPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.GUIDS, null, null);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -70,6 +72,6 @@ public class GuidsPredicateHandlerTest {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);
-      handler.handle(builder, testPredicate);
+      handler.handle(orcsApi, builder, testPredicate);
    }
 }
