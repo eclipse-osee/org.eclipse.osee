@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 
@@ -34,6 +35,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private AtsNotifyEndpointApi notifyEp;
    private AtsActionEndpointApi actionEp;
    private final AtsApi atsApi;
+   private AtsWorldEndpointApi worldEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -48,6 +50,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          target = jaxRsClient.target(atsUri);
       }
       return target;
+   }
+
+   @Override
+   public AtsWorldEndpointApi getWorldEndpoint() {
+      if (worldEp == null) {
+         worldEp = getAtsTarget().newProxy(AtsWorldEndpointApi.class);
+      }
+      return worldEp;
    }
 
    @Override

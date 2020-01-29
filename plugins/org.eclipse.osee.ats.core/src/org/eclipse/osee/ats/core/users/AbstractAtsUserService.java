@@ -42,12 +42,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected final Map<Long, IAtsUser> accountIdToAtsUser = new ConcurrentHashMap<>(300);
-   protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
-   protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
+   protected final static Map<Long, IAtsUser> accountIdToAtsUser = new ConcurrentHashMap<>(300);
+   protected final static Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
+   protected final static Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
    protected IAtsConfigurationsService configurationService;
 
+   @Override
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
       this.configurationService = configurationService;
       Thread thread = new Thread(cacheLoader, "ATS User Loader");

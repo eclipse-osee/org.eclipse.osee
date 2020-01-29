@@ -58,4 +58,8 @@ public class ResultRow {
       this.id2 = id2;
    }
 
+   public void addValue(String value) {
+      this.values.add(value);
+   }
+
 }

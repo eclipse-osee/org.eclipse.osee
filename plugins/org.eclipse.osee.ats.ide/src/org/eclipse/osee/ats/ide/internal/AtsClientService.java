@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.ats.ide.workflow.WorkItemJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -33,6 +34,7 @@ public class AtsClientService {
    private static AtsTaskEndpointApi taskEp;
    private static AtsConfigEndpointApi configEp;
    private static AgileEndpointApi agileEp;
+   private static AtsWorldEndpointApi worldEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static TupleEndpoint atsBranchTupleEndpoint;
    private static AtsNotifyEndpointApi notifyEp;
@@ -105,6 +107,13 @@ public class AtsClientService {
          actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
       }
       return actionEp;
+   }
+
+   public static AtsWorldEndpointApi getWorldEndpoint() {
+      if (worldEp == null) {
+         worldEp = getAtsTarget().newProxy(AtsWorldEndpointApi.class);
+      }
+      return worldEp;
    }
 
 }

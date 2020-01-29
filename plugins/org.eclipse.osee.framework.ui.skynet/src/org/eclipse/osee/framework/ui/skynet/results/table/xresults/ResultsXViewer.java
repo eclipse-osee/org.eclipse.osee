@@ -20,8 +20,10 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
@@ -48,10 +50,16 @@ public class ResultsXViewer extends XViewer implements ISelectedArtifacts {
    public void handleDoubleClick() {
       if (listeners.isEmpty()) {
          if (getSelectedRows().size() > 0) {
+
             Object data = getSelectedRows().iterator().next().getData();
             if (data instanceof Artifact) {
                Artifact artifact = (Artifact) data;
                ArtifactDoubleClick.open(artifact);
+               return;
+            } else if (data instanceof ArtifactToken) {
+               Artifact artifact = ArtifactQuery.getArtifactFromToken((ArtifactToken) data);
+               ArtifactDoubleClick.open(artifact);
+               return;
             }
          }
       } else {

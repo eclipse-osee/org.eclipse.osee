@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -67,7 +68,7 @@ public interface AtsWorldEndpointApi {
    @Produces(MediaType.TEXT_HTML)
    String getCollectionUICustomized(long id, String customize_guid) throws Exception;
 
-   @GET
+   @PUT
    @Path("search")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)

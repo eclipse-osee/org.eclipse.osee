@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,8 +32,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -50,12 +51,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
    private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    public final static List<String> namespaces =
       Arrays.asList("org.eclipse.osee.ats.WorldXViewer", "org.eclipse.osee.ats.BacklogXViewer",
          "org.eclipse.osee.ats.SprintXViewer", "org.eclipse.osee.ats.GoalXViewer", "org.eclipse.osee.ats.TaskXViewer");
 
    public AtsWorldEndpointImpl(IAtsServer atsServer) {
       this.atsServer = atsServer;
+      this.atsApi = atsServer;
    }
 
    @Override
@@ -263,13 +266,13 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
+   @PUT
    @Path("search")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public ResultRows search(AtsSearchData atsSearchData) {
-      ResultRows rows = new ResultRows();
-
+      AtsWorldResultRowOperation op = new AtsWorldResultRowOperation(atsApi, atsSearchData);
+      ResultRows rows = op.run();
       return rows;
    }
 

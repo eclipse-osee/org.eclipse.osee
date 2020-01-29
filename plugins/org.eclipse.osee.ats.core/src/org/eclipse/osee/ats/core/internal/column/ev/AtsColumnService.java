@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
 import org.eclipse.osee.ats.core.internal.column.WorkDefinitionColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Donald G. Dunne
@@ -199,9 +200,13 @@ public class AtsColumnService implements IAtsColumnService {
 
          }
          if (id.startsWith("ats.")) {
-            AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(id);
-            if (attrType != null) {
-               column = new AttributeColumn(atsApi, attrType);
+            try {
+               AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(id);
+               if (attrType != null) {
+                  column = new AttributeColumn(atsApi, attrType);
+               }
+            } catch (OseeTypeDoesNotExist ex) {
+               // do nothing
             }
          }
       }

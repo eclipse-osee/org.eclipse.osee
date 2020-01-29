@@ -15,14 +15,17 @@ import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -63,9 +66,40 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
+      run(worldEditor, searchType, forcePend, false);
+   }
+
+   @Override
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
+         if (search2) {
+            Result result = worldParameterSearchItem.isParameterSelectionValid();
+            if (result.isFalse()) {
+               AWorkbench.popup(result);
+               return;
+            }
+
+            CustomizeData custData = worldEditor.getWorldComposite().getCustomizeDataCopy();
+            AtsSearchData data = AtsClientService.get().getQueryService().createSearchData(
+               workflowSearchItem.getNamespace(), workflowSearchItem.getSearchName());
+            workflowSearchItem.loadSearchData(data);
+            data.setCustomizeData(custData);
+
+            Thread srch = new Thread("ATS Search") {
+
+               @Override
+               public void run() {
+                  ResultRows resultRows = AtsClientService.getWorldEndpoint().search(data);
+                  ResultsEditor.open("Search Results", resultRows, false, data.getCustomizeData());
+                  super.run();
+               }
+
+            };
+            srch.start();
+            return;
+         }
          AtsSearchData savedData = workflowSearchItem.getSavedData();
          if (savedData != null) {
             worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);

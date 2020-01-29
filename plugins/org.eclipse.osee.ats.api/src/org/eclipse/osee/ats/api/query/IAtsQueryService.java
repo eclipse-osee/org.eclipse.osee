@@ -189,4 +189,8 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> modified, BranchId branch, DeletionFlag deletionFlag);
 
+   Collection<ArtifactToken> getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
+
+   Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
+
 }

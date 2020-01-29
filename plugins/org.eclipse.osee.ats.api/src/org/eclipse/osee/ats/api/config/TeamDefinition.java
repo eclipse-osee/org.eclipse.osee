@@ -119,7 +119,8 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    public Collection<TeamDefinition> getChildrenTeamDefs() {
       List<TeamDefinition> teamDefs = new LinkedList<>();
       for (Long id : getChildren()) {
-         teamDefs.add(atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id));
+         TeamDefinition teamDef = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id);
+         teamDefs.add(teamDef);
       }
       return teamDefs;
    }

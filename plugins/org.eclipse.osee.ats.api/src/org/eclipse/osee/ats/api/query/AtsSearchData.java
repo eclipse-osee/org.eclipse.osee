@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.query;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -23,7 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class AtsSearchData {
 
-   private long id;
+   @JsonSerialize(using = ToStringSerializer.class)
+   private Long id;
    private String searchName = "";
    private String userId = "";
    private String title = "";
@@ -34,14 +39,19 @@ public class AtsSearchData {
    private List<Long> aiIds;
    private Long versionId = 0L;
    private String state = "";
+   @JsonSerialize(using = ToStringSerializer.class)
    private Long programId = 0L;
+   @JsonSerialize(using = ToStringSerializer.class)
    private Long insertionId = 0L;
+   @JsonSerialize(using = ToStringSerializer.class)
    private Long insertionActivityId = 0L;
+   @JsonSerialize(using = ToStringSerializer.class)
    private Long workPackageId = 0L;
    private String colorTeam = "";
    private String namespace = "";
    private ReviewFormalType reviewType;
    private ReleasedOption releasedOption;
+   private CustomizeData customizeData;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -57,6 +67,7 @@ public class AtsSearchData {
       this.searchName = searchName;
    }
 
+   @JsonIgnore
    public AtsSearchData copy() {
       AtsSearchData item = new AtsSearchData(searchName);
       return copy(item);
@@ -238,6 +249,14 @@ public class AtsSearchData {
 
    public void setReleasedOption(ReleasedOption releasedOption) {
       this.releasedOption = releasedOption;
+   }
+
+   public CustomizeData getCustomizeData() {
+      return customizeData;
+   }
+
+   public void setCustomizeData(CustomizeData customizeData) {
+      this.customizeData = customizeData;
    }
 
 }

@@ -86,6 +86,7 @@ public class WorldSearchItemTest {
       AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser(),
          changes);
       changes.execute();
+
       data.setTeamDefIds(Arrays.asList(AtsTestUtil.getTestTeamDef().getId()));
       search = new WorldSearchItem(data);
       results = search.performSearch(SearchType.Search);

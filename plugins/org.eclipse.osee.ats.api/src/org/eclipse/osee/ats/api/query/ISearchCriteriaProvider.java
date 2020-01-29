@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2020 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.results.table;
+package org.eclipse.osee.ats.api.query;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IResultsXViewerRow {
+public interface ISearchCriteriaProvider {
 
-   public String getValue(int col);
-
-   public String[] values();
-
-   public Object getData();
+   public void andCriteria(IAtsQuery query);
 
 }

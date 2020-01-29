@@ -59,7 +59,15 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    private final IResultsEditorLabelProvider labelProvider;
    private final List<IResultsEditorTableListener> listeners;
    private IResultsEditorOutlineProvider outlineProvider;
-   private IResultsEditorOutlineProvider outlineProvider2;
+   private ResultsEditor editor;
+
+   public void setEditor(ResultsEditor editor) {
+      this.editor = editor;
+   }
+
+   public ResultsEditor getEditor() {
+      return editor;
+   }
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
       this(tabName, columns, rows, contentProvider, labelProvider, null);
@@ -121,8 +129,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       }
 
       GridData gd = new GridData(GridData.FILL_BOTH);
-      resultsXViewer =
-         new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
+      resultsXViewer = new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
       resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       for (IResultsEditorTableListener listener : listeners) {
          resultsXViewer.addListener(listener);
@@ -247,6 +254,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       this.outlineProvider = outlineProvider;
    }
 
+   @Override
    public IResultsEditorOutlineProvider getOutlineProvider() {
       return outlineProvider;
    }

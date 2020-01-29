@@ -238,17 +238,29 @@ public class WorldXWidgetActionPage extends FormPage {
    public void createButtonCompositeOnLeft(Composite mainComp) {
       Composite buttonComp = toolkit.createComposite(mainComp, SWT.NONE);
       buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+      buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.BOTTOM, false, true));
 
-      Button runButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
+      Button searchButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
       GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
-      runButton.setLayoutData(gridData);
-      runButton.addSelectionListener(new SelectionAdapter() {
+      searchButton.setLayoutData(gridData);
+      searchButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             handleSearchButtonPressed();
          }
       });
+
+      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+         Button search2Button = toolkit.createButton(buttonComp, "Search-2 (Beta)", SWT.PUSH);
+         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
+         search2Button.setLayoutData(gridData);
+         search2Button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               handleSearch2ButtonPressed();
+            }
+         });
+      }
 
       buttonComp.layout();
    }
@@ -269,6 +281,15 @@ public class WorldXWidgetActionPage extends FormPage {
       reSearch(false);
    }
 
+   public void reSearch2() {
+      Result result = isResearchSearchValid();
+      if (result.isFalse()) {
+         AWorkbench.popup(result);
+         return;
+      }
+      reSearch2(false);
+   }
+
    public IXWidgetOptionResolver getXWidgetOptionResolver() {
       return new DefaultXWidgetOptionResolver();
    }
@@ -281,11 +302,23 @@ public class WorldXWidgetActionPage extends FormPage {
       }
    }
 
+   public void handleSearch2ButtonPressed() {
+      try {
+         reSearch2();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
    /*
     * Mainly for testing purposes
     */
    public void reSearch(boolean forcePend) {
       worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
+   }
+
+   public void reSearch2(boolean forcePend) {
+      worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend, true);
    }
 
    public void setTableTitle(final String title, final boolean warning) {

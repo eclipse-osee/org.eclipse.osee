@@ -33,4 +33,12 @@ public class ResultRows {
       results.add(row);
    }
 
+   public List<String> getHeaders() {
+      return headers;
+   }
+
+   public void setHeaders(List<String> headers) {
+      this.headers = headers;
+   }
+
 }

@@ -16,10 +16,11 @@ import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 
 /**
  * Client provider for server endpoints.
- * 
+ *
  * @author Donald G. Dunne
  */
 public interface IAtsServerEndpointProvider {
@@ -38,5 +39,7 @@ public interface IAtsServerEndpointProvider {
    public AtsWorkPackageEndpointApi getWorkPackageEndpoint();
 
    public AtsActionEndpointApi getActionEndpoint();
+
+   AtsWorldEndpointApi getWorldEndpoint();
 
 }

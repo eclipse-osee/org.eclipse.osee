@@ -100,7 +100,9 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          teamDef.setParentId(parent.getId());
       }
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamDefArt)) {
-         teamDef.getChildren().add(child.getId());
+         if (child.isOfType(AtsArtifactTypes.TeamDefinition)) {
+            teamDef.getChildren().add(child.getId());
+         }
       }
       return teamDef;
    }
@@ -364,12 +366,14 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse) {
+   public Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition teamDef, boolean recurse) {
       Set<IAtsTeamDefinition> children = new HashSet<>();
-      for (IAtsTeamDefinition child : getChildrenTeamDefinitions(topTeamDef)) {
+      Collection<TeamDefinition> cTeamDefs = getChildrenTeamDefinitions(teamDef);
+      for (IAtsTeamDefinition child : cTeamDefs) {
          children.add(child);
          if (recurse) {
-            children.addAll(getChildren(child, recurse));
+            Set<IAtsTeamDefinition> children2 = getChildren(child, recurse);
+            children.addAll(children2);
          }
       }
       return children;

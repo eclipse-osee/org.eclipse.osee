@@ -11,9 +11,9 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
@@ -36,33 +36,35 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    @Override
    @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
+      Collection<IAtsTeamDefinition> results = new ArrayList<>();
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       } else if (parentElement instanceof IAtsTeamDefinition && active != null) {
          try {
             IAtsTeamDefinition teamDef = (IAtsTeamDefinition) parentElement;
-            return AtsClientService.get().getTeamDefinitionService().getActive(
-               AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, false), active).toArray();
+            Set<IAtsTeamDefinition> children =
+               AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, false);
+            Collection<IAtsTeamDefinition> teamDefs =
+               AtsClientService.get().getTeamDefinitionService().getActive(children, active);
+            results = teamDefs;
          } catch (Exception ex) {
             // do nothing
          }
       } else if (parentElement instanceof TeamDefinition && active != null) {
          try {
             TeamDefinition teamDef = (TeamDefinition) parentElement;
-            List<TeamDefinition> teamDefs = new LinkedList<>();
             for (Long id : teamDef.getChildren()) {
                TeamDefinition td =
                   AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
                if (active == Active.Both || (active == Active.Active && td.isActive()) || (active == Active.InActive && !td.isActive())) {
-                  teamDefs.add(td);
+                  results.add(td);
                }
             }
-            return teamDefs.toArray();
          } catch (Exception ex) {
             // do nothing
          }
       }
-      return new Object[] {};
+      return results.toArray();
    }
 
    @Override
@@ -81,6 +83,9 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
    @Override
    public boolean hasChildren(Object element) {
+      if (element instanceof TeamDefinition) {
+         return !((TeamDefinition) element).getChildren().isEmpty();
+      }
       return getChildren(element).length > 0;
    }
 

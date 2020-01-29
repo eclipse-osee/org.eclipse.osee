@@ -82,6 +82,7 @@ import org.eclipse.osee.ats.ide.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
+import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchItem;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -166,27 +167,16 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
-         //@formatter:off
-         /* Current OSEE Navigator Order
-          *    - My World
-          *    - Recently Visited Workflows
-          *    - Action Search
-          *    - Saved Action Search
-          *    > Advanced Searches
-          *    > Open Views
-          *    _
-          *    Rest
-          */
-         //@formatter:on
-         IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
-         items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
+
+         items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", null)));
          items.add(new RecentlyVisitedNavigateItems(item));
          items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
+
          createMySearchesSection(item, items);
-         //Advanced Searches
-         createAdvancedSearchesSection(item, items, user);
-         //Open Views
-         createOpenViewsSection(item, items, user);
+
+         createAdvancedSearchesSection(item, items, null);
+
+         createOpenViewsSection(item, items);
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
 
          if (AgileUtil.isAgileUser(AtsClientService.get())) {
@@ -212,39 +202,35 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void createAdvancedSearchesSection(XNavigateItem parent, List<XNavigateItem> items, IAtsUser user) {
-      //@formatter:off
-      /* "Advanced Searches" Top Folder
-       *   - My Favorites
-       *   - My Subscribed
-       *   - Team Workflow Search
-       *   - User's World
-       *   - Rest
-       */
       XNavigateItem advancedSearchesItems = new XNavigateItemFolder(parent, "Advanced Searches");
-      new SearchNavigateItem(advancedSearchesItems, new MyFavoritesSearchItem("My Favorites", user));
-      new SearchNavigateItem(advancedSearchesItems, new MySubscribedSearchItem("My Subscribed", user));
+      new SearchNavigateItem(advancedSearchesItems, new MyFavoritesSearchItem("My Favorites", null));
+      new SearchNavigateItem(advancedSearchesItems, new MySubscribedSearchItem("My Subscribed", null));
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchTeamWorkflowSearchItem());
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchTaskSearchItem());
       new SearchNavigateItem(advancedSearchesItems, new MyWorldSearchItem("User's World"));
       new ArtifactImpactToActionSearchItem(advancedSearchesItems);
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchGoalSearchItem());
+
+      new SearchNavigateItem(advancedSearchesItems,
+         new SearchTeamWorkflowsByProgramSearchItem("Search Team Workflows by Program", null, false));
+
       // Search Items
       new XNavigateItemOperation(advancedSearchesItems, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
          new MultipleIdSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport));
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
          new MultipleIdSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor));
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.OPEN_BY_ID,
-         "Search by ID(s) - Multi-Line - Open World Editor", new MultipleIdMultiLineSearchOperationFactory(
-            "Search by ID(s) - Open World Editor", AtsEditor.WorldEditor));
-      new XNavigateItemOperation(advancedSearchesItems, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
+         "Search by ID(s) - Multi-Line - Open World Editor",
+         new MultipleIdMultiLineSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor));
+      new XNavigateItemOperation(advancedSearchesItems, AtsImage.WORKFLOW_CONFIG,
+         "Search by ID(s) - Open Workflow Editor",
          new MultipleIdSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor));
       new XNavigateItemOperation(advancedSearchesItems, AtsImage.GLOBE, "Action Quick Search",
          new AtsQuickSearchOperationFactory());
       items.add(advancedSearchesItems);
-      //@formatter:on
    }
 
-   private void createOpenViewsSection(XNavigateItem parent, List<XNavigateItem> items, IAtsUser user) {
+   private void createOpenViewsSection(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem openViewsItems = new XNavigateItemFolder(parent, "Open Views");
       new XNavigateItemAction(openViewsItems, new OpenArtifactExplorerViewAction(), FrameworkImage.ARTIFACT_EXPLORER);
       new XNavigateItemAction(openViewsItems, new OpenArtifactQuickSearchViewAction(), FrameworkImage.ARTIFACT_SEARCH);

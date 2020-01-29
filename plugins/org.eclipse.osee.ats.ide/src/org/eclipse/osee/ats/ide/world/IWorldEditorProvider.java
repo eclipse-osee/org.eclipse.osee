@@ -27,6 +27,10 @@ public interface IWorldEditorProvider {
     */
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend);
 
+   default public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend, boolean search2) {
+      // do nothing
+   }
+
    public String getSelectedName(SearchType searchType);
 
    public String getName();

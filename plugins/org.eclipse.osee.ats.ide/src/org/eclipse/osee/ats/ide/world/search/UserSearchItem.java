@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class UserSearchItem extends WorldUISearchItem {
 
-   protected final IAtsUser user;
+   protected IAtsUser user;
    protected IAtsUser selectedUser;
    private Active active = Active.Active;
 
@@ -52,14 +52,21 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this.selectedUser = userSearchItem.selectedUser;
    }
 
+   private IAtsUser getUser() {
+      if (this.user == null) {
+         this.user = AtsClientService.get().getUserService().getCurrentUser();
+      }
+      return this.user;
+   }
+
    @Override
    public String getSelectedName(SearchType searchType) {
       return String.format("%s - %s", super.getSelectedName(searchType), getUserSearchName());
    }
 
    public String getUserSearchName() {
-      if (user != null) {
-         return user.getName();
+      if (getUser() != null) {
+         return getUser().getName();
       } else if (selectedUser != null) {
          return selectedUser.getName();
       }
@@ -71,8 +78,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (isCancelled()) {
          return EMPTY_SET;
       }
-      if (user != null) {
-         return searchIt(user);
+      if (getUser() != null) {
+         return searchIt(getUser());
       } else {
          return searchIt();
       }
@@ -95,7 +102,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    @Override
    public void performUI(SearchType searchType) {
       super.performUI(searchType);
-      if (user != null) {
+      if (getUser() != null) {
          return;
       }
       if (searchType == SearchType.ReSearch && selectedUser != null) {
@@ -116,7 +123,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    public IAtsUser getDefaultUser() {
-      return user;
+      return getUser();
    }
 
    @Override

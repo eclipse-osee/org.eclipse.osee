@@ -105,7 +105,9 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai.setParentId(parent.getId());
       }
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(aiArt)) {
-         ai.getChildren().add(child.getId());
+         if (child.isOfType(AtsArtifactTypes.ActionableItem)) {
+            ai.getChildren().add(child.getId());
+         }
       }
       return ai;
    }

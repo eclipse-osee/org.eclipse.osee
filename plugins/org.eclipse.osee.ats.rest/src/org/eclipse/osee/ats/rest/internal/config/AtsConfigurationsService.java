@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -57,6 +58,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
+      // Kick off loading user cache; Runs in background thread, so ok to do this on construction
+      atsApi.getUserService().setConfigurationService(this);
    }
 
    /**
@@ -154,28 +157,32 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       }
 
       // load team def tree
-
-      addTeamDefinitionChildrenWIthRecurse(AtsArtifactToken.TopTeamDefinition.getId(), idToArtifact, configs,
-         teamDefIds);
+      addTeamDefinitionChildrenWIthRecurse(
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.TopTeamDefinition.getId()),
+         idToArtifact, configs, teamDefIds);
       configs.setTopTeamDefinition(AtsArtifactToken.TopTeamDefinition);
 
       // load actionable items tree
-      addActionableItemChildrenWIthRecurse(AtsArtifactToken.TopActionableItem.getId(), idToArtifact, configs, aiIds);
+      addActionableItemChildrenWIthRecurse(
+         (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.TopActionableItem.getId()),
+         idToArtifact, configs, aiIds);
       configs.setTopActionableItem(AtsArtifactToken.TopActionableItem);
 
       return configs;
    }
 
-   private TeamDefinition addTeamDefinitionChildrenWIthRecurse(Long teamDefId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> teamDefIds) {
-      ArtifactReadable teamDef = idToArtifact.get(teamDefId);
+   private TeamDefinition addTeamDefinitionChildrenWIthRecurse(ArtifactReadable teamDef, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> teamDefIds) {
       if (teamDef != null && teamDef.isOfType(TeamDefinition)) {
-         TeamDefinition jaxTeamDef = configs.getIdToTeamDef().get(teamDefId);
-         for (Long childId : teamDef.getChildrentIds()) {
-            if (teamDefIds.contains(childId)) {
-               TeamDefinition child = addTeamDefinitionChildrenWIthRecurse(childId, idToArtifact, configs, teamDefIds);
-               if (child != null) {
-                  child.setParentId(teamDefId);
-                  jaxTeamDef.addChild(child);
+         TeamDefinition jaxTeamDef = configs.getIdToTeamDef().get(teamDef.getId());
+         for (ArtifactReadable childArt : teamDef.getChildren()) {
+            if (childArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
+               if (teamDefIds.contains(childArt.getId())) {
+                  TeamDefinition child =
+                     addTeamDefinitionChildrenWIthRecurse(childArt, idToArtifact, configs, teamDefIds);
+                  if (child != null) {
+                     child.setParentId(teamDef.getId());
+                     jaxTeamDef.addChild(child);
+                  }
                }
             }
          }
@@ -183,14 +190,14 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          for (Long versionId : atsApi.getRelationResolver().getRelatedIds(teamDef, TeamDefinitionToVersion_Version)) {
             jaxTeamDef.addVersion(versionId);
             Version version = configs.getIdToVersion().get(versionId);
-            version.setTeamDefId(teamDefId);
+            version.setTeamDefId(teamDef.getId());
          }
          // add team to ai ids
          for (Long aiId : atsApi.getRelationResolver().getRelatedIds(teamDef, TeamActionableItem_ActionableItem)) {
             ActionableItem jai = configs.getIdToAi().get(aiId);
             if (jai != null) {
                jaxTeamDef.addAi(aiId);
-               jai.setTeamDefId(teamDefId);
+               jai.setTeamDefId(teamDef.getId());
             }
          }
          return jaxTeamDef;
@@ -198,16 +205,17 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return null;
    }
 
-   private ActionableItem addActionableItemChildrenWIthRecurse(Long aiId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> aiIds) {
-      ArtifactReadable aiArt = idToArtifact.get(aiId);
+   private ActionableItem addActionableItemChildrenWIthRecurse(ArtifactReadable aiArt, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> aiIds) {
       if (aiArt != null && aiArt.isOfType(ActionableItem)) {
-         ActionableItem jaxAi = configs.getIdToAi().get(aiId);
-         for (Long childId : aiArt.getChildrentIds()) {
-            if (aiIds.contains(childId)) {
-               ActionableItem child = addActionableItemChildrenWIthRecurse(childId, idToArtifact, configs, aiIds);
-               if (child != null) {
-                  child.setParentId(aiId);
-                  jaxAi.addChild(child);
+         ActionableItem jaxAi = configs.getIdToAi().get(aiArt.getId());
+         for (ArtifactReadable childArt : aiArt.getChildren()) {
+            if (childArt.isOfType(AtsArtifactTypes.ActionableItem)) {
+               if (aiIds.contains(childArt.getId())) {
+                  ActionableItem child = addActionableItemChildrenWIthRecurse(childArt, idToArtifact, configs, aiIds);
+                  if (child != null) {
+                     child.setParentId(aiArt.getId());
+                     jaxAi.addChild(child);
+                  }
                }
             }
          }

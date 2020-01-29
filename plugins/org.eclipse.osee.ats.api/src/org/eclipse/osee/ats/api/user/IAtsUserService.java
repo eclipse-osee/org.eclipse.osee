@@ -15,6 +15,7 @@ import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -75,5 +76,7 @@ public interface IAtsUserService {
    AtsUser getAtsUser(IAtsUser user);
 
    Collection<IAtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
+
+   void setConfigurationService(IAtsConfigurationsService configurationService);
 
 }

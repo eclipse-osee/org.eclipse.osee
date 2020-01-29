@@ -132,6 +132,7 @@ public class AtsApplication extends Application {
       singletons.add(new UserResource(atsServer.getUserService()));
 
       // Endpoints
+      // NOTE: @Consumes(MediaType.APPLICATION_JSON) doesn't work with GET, must be PUT
       singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
       singletons.add(new AtsWorldEndpointImpl(atsServer));
       singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));

@@ -48,6 +48,11 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
+   public Collection<? extends ArtifactToken> runQueryNew() {
+      return query.asArtifacts();
+   }
+
+   @Override
    public void createQueryBuilder() {
       if (query == null) {
          query = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch());

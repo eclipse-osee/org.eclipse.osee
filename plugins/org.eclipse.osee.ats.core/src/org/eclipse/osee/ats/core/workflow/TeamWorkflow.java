@@ -29,6 +29,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
+   IAtsTeamDefinition teamDef = null;
+
    public TeamWorkflow(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(logger, atsApi, artifact, AtsArtifactTypes.TeamWorkflow);
    }
@@ -48,11 +50,12 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
-      IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(artifact,
-         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-      if (teamDefId.isValid()) {
-         teamDef = atsApi.getQueryService().getConfigItem(teamDefId);
+      if (teamDef == null) {
+         ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(artifact,
+            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+         if (teamDefId.isValid()) {
+            teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefId);
+         }
       }
       return teamDef;
    }

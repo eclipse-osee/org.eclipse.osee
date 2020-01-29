@@ -22,9 +22,18 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.result.ResultRow;
+import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -34,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
@@ -348,6 +358,77 @@ public class ResultsEditor extends AbstractArtifactEditor {
             }
          }
       });
+   }
+
+   public static void open(String title, ResultRows resultRows, boolean forcePend) {
+      open(title, resultRows, forcePend, null);
+   }
+
+   public static void open(String title, ResultRows resultRows, boolean forcePend, CustomizeData customizeData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+
+               List<XViewerColumn> columns = new ArrayList<>();
+               if (customizeData == null) {
+                  for (String header : resultRows.getHeaders()) {
+                     columns.add(new XViewerColumn(header, header, 200, XViewerAlign.Left, true, SortDataType.String,
+                        false, ""));
+                  }
+               } else {
+                  for (XViewerColumn col : customizeData.getColumnData().getColumns()) {
+                     if (col.isShow()) {
+                        columns.add(new XViewerColumn(col.getId(), col.getName(), col.getWidth(), col.getAlign(), true,
+                           col.getSortDataType(), false, col.getDescription()));
+                     }
+                  }
+               }
+
+               List<IResultsXViewerRow> artRows = new ArrayList<>();
+               try {
+                  for (ResultRow row : resultRows.getResults()) {
+                     String artId = row.getId();
+                     String branchId = row.getId2();
+                     if (Strings.isNumeric(artId) && Strings.isNumeric(branchId)) {
+                        ArtifactToken art = ArtifactToken.valueOf(Long.valueOf(artId), BranchId.valueOf(branchId));
+                        artRows.add(
+                           new ResultsXViewerRow(row.getValues().toArray(new String[row.getValues().size()]), art));
+                     }
+                  }
+               } catch (OseeCoreException ex) {
+                  // do nothing
+               }
+
+               ResultsEditorTableTab tab = new ResultsEditorTableTab("Items", columns, artRows);
+
+               IResultsEditorProvider provider = new IResultsEditorProvider() {
+
+                  private List<IResultsEditorTab> tabs;
+
+                  @Override
+                  public String getEditorName() {
+                     return title;
+                  }
+
+                  @Override
+                  public List<IResultsEditorTab> getResultsEditorTabs() {
+                     if (tabs == null) {
+                        tabs = new LinkedList<>();
+                        tabs.add(tab);
+                     }
+                     return tabs;
+                  }
+               };
+
+               ResultsEditorInput input = new ResultsEditorInput(provider);
+               page.openEditor(input, EDITOR_ID);
+            } catch (PartInitException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      }, forcePend);
    }
 
 }

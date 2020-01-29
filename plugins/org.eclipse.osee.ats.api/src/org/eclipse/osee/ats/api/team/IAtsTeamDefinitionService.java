@@ -98,7 +98,7 @@ public interface IAtsTeamDefinitionService {
 
    List<IAtsTeamDefinition> getActive(Collection<IAtsTeamDefinition> teamDefs, Active active);
 
-   Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse);
+   Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition teamDef, boolean recurse);
 
    IAtsTeamDefinition getTopTeamDefinition();
 

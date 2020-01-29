@@ -47,6 +47,11 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
+   public Collection<? extends ArtifactToken> runQueryNew() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public void createQueryBuilder() {
       if (query == null) {
          query = ArtifactQuery.createQueryBuilder(AtsClientService.get().getAtsBranch());

@@ -99,6 +99,30 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return onlyIds;
    }
 
+   /**
+    * Only supports Team Workflows
+    */
+   @Override
+   public <T extends IAtsWorkItem> Collection<T> getItemsNew() {
+      Set<ArtifactTypeToken> allArtTypes = getAllArtTypes();
+
+      List<ArtifactTypeToken> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
+      boolean teamsTypeDefOrAisOrVersionSearched = isTeamTypeDefAisOrVersionSearched(allArtTypes);
+
+      /**
+       * First, search for Team Workflows
+       */
+      Collection<T> teamWfs = Collections.emptyList();
+      Set<T> allResults = new HashSet<>();
+      if (!teamWorkflowArtTypes.isEmpty()) {
+         teamWfs = getTeamWorkflowsNew(teamWorkflowArtTypes, allResults, allArtTypes);
+      }
+      if (allArtTypes.contains(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         teamWfs = getTeamWorkflowsNew(allArtTypes, allResults, allArtTypes);
+      }
+      return teamWfs;
+   }
+
    @Override
    public <T extends IAtsWorkItem> Collection<T> getItems() {
       Set<ArtifactTypeToken> allArtTypes = getAllArtTypes();
@@ -123,22 +147,22 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
        * and reviews are what to use to search against
        */
       if (!teamWorkflowArtTypes.isEmpty() && teamsTypeDefOrAisOrVersionSearched) {
-         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults, allArtTypes);
+         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults, allArtTypes, false);
       }
 
       /**
        * Else, perform task and review searches as normal
        */
       else {
-         getTasksFromSearchCriteria(allResults, allArtTypes);
-         getReviewsFromSearchCriteria(allResults, allArtTypes);
+         getTasksFromSearchCriteria(allResults, allArtTypes, false);
+         getReviewsFromSearchCriteria(allResults, allArtTypes, false);
       }
 
       /**
        * Search Goals, Sprints and Backlogs as normal
        */
-      getGoalsFromSearchCriteria(allResults, allArtTypes);
-      getSprintsFromSearchCriteria(allResults, allArtTypes);
+      getGoalsFromSearchCriteria(allResults, allArtTypes, false);
+      getSprintsFromSearchCriteria(allResults, allArtTypes, false);
 
       for (IAtsQueryFilter filter : queryFilters) {
          allResults = filter.applyFilter(allResults);
@@ -148,15 +172,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public abstract Collection<? extends ArtifactToken> runQuery();
 
+   public abstract Collection<? extends ArtifactToken> runQueryNew();
+
    @SuppressWarnings("unchecked")
-   private <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> Collection<T> collectResults(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       Set<T> workItems = new HashSet<>();
       if (isOnlyIds()) {
          onlyIds.addAll(handleReleaseOption(queryGetIds()));
       }
       // filter on original artifact types
       else {
-         for (ArtifactToken artifact : runQuery()) {
+         for (ArtifactToken artifact : newSearch ? runQueryNew() : runQuery()) {
             if (isArtifactTypeMatch(artifact, allArtTypes)) {
                IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
                if (workItem != null) {
@@ -216,7 +242,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return false;
    }
 
-   private <T> void getTasksFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> void getTasksFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
          if (artType.inheritsFrom(AtsArtifactTypes.Task)) {
@@ -236,12 +262,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          addEvConfigCriteria();
 
-         collectResults(allResults, allArtTypes);
+         collectResults(allResults, allArtTypes, newSearch);
       }
 
    }
 
-   private <T> void getReviewsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> void getReviewsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       List<ArtifactTypeToken> artTypes = getReviewArtifactTypes(allArtTypes);
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
@@ -254,11 +280,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             queryAndRelatedTo(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, teamWfIds);
          }
 
-         collectResults(allResults, allArtTypes);
+         collectResults(allResults, allArtTypes, newSearch);
       }
    }
 
-   private <T> void getSprintsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> void getSprintsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
          if (artType.inheritsFrom(AtsArtifactTypes.AgileSprint)) {
@@ -268,11 +294,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
          getBaseSearchCriteria(artTypes, true, allArtTypes);
-         collectResults(allResults, allArtTypes);
+         collectResults(allResults, allArtTypes, newSearch);
       }
    }
 
-   private <T> void getGoalsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> void getGoalsFromSearchCriteria(Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
          if (artType.inheritsFrom(AtsArtifactTypes.Goal) || workItemTypes.contains(WorkItemType.AgileBacklog)) {
@@ -291,7 +317,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          } else if (isGoalSpecified && !isAgileSpecified) {
             queryAndNotExists(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          }
-         collectResults(allResults, allArtTypes);
+         collectResults(allResults, allArtTypes, newSearch);
       }
    }
 
@@ -330,7 +356,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return artTypes;
    }
 
-   private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+   private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       List<ArtifactTypeToken> artTypes = new LinkedList<>();
       for (ArtifactTypeToken artType : allArtTypes) {
          if (artType.inheritsFrom(AtsArtifactTypes.Task)) {
@@ -360,11 +386,19 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          addEvConfigCriteria();
 
-         collectResults(allResults, allArtTypes);
+         collectResults(allResults, allArtTypes, newSearch);
       }
    }
 
+   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflowsNew(Collection<ArtifactTypeToken> teamWorkflowArtTypes, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+      return getTeamWorkflows(teamWorkflowArtTypes, allResults, allArtTypes, true);
+   }
+
    private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(Collection<ArtifactTypeToken> teamWorkflowArtTypes, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes) {
+      return getTeamWorkflows(teamWorkflowArtTypes, allResults, allArtTypes, false);
+   }
+
+   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(Collection<ArtifactTypeToken> teamWorkflowArtTypes, Set<T> allResults, Set<ArtifactTypeToken> allArtTypes, boolean newSearch) {
       createQueryBuilder();
       getBaseSearchCriteria(teamWorkflowArtTypes, true, allArtTypes);
 
@@ -378,7 +412,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       addEvConfigCriteria();
 
-      return collectResults(allResults, allArtTypes);
+      return collectResults(allResults, allArtTypes, newSearch);
    }
 
    private void addEvConfigCriteria() {
@@ -579,6 +613,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
+   public <T extends IAtsWorkItem> ResultSet<T> getResultsNew() {
+      return ResultSets.newResultSet(getItemsNew());
+   }
+
+   @Override
    public IAtsQuery andAssignee(IAtsUser... assignees) {
       List<String> userIds = new ArrayList<>();
       for (IAtsUser user : assignees) {
@@ -601,6 +640,29 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public <T extends ArtifactToken> ResultSet<T> getResultArtifacts() {
       List<T> items = new ArrayList<>();
       for (IAtsWorkItem workItem : getResults()) {
+         if (workItem == null) {
+            System.err.println("Unexpected null workitem");
+         } else {
+            items.add((T) workItem.getStoreObject());
+         }
+      }
+      // filter on original artifact types
+      List<T> artifacts = new LinkedList<>();
+      for (ArtifactToken artifact : items) {
+         boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactTypes);
+         boolean releaseOptionMatch = isReleaseOptionMatch(artifact);
+         if (artifactTypeMatch && releaseOptionMatch) {
+            artifacts.add((T) artifact);
+         }
+      }
+      return ResultSets.newResultSet(artifacts);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T extends ArtifactToken> ResultSet<T> getResultArtifactsNew() {
+      List<T> items = new ArrayList<>();
+      for (IAtsWorkItem workItem : getResultsNew()) {
          if (workItem == null) {
             System.err.println("Unexpected null workitem");
          } else {

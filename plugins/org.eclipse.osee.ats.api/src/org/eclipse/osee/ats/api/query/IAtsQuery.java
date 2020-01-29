@@ -40,6 +40,8 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems();
 
+   <T extends IAtsWorkItem> Collection<T> getItemsNew();
+
    <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
    IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption);
@@ -60,9 +62,13 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> ResultSet<T> getResults();
 
+   <T extends IAtsWorkItem> ResultSet<T> getResultsNew();
+
    IAtsQuery andAssignee(IAtsUser... assignees);
 
    <T extends ArtifactToken> ResultSet<T> getResultArtifacts();
+
+   <T extends ArtifactToken> ResultSet<T> getResultArtifactsNew();
 
    IAtsQuery isOfType(Collection<WorkItemType> workItemTypes);
 
