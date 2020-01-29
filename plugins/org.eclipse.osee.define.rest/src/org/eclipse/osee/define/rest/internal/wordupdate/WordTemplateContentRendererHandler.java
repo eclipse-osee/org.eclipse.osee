@@ -102,7 +102,7 @@ public class WordTemplateContentRendererHandler {
                if (lastIndex != -1) {
                   // temp should equal <w:p wsp:rsidR ..</w:p> ...
                   String temp = data.substring(lastIndex);
-                  temp = temp.replaceAll("<w:p[^>]*>(<w:pPr><w:spacing[^>]*></w:spacing></w:pPr>)?</w:p>", "");
+                  temp = temp.replaceAll("<w:p\\s[^>]*>(<w:pPr><w:spacing[^>]*></w:spacing></w:pPr>)?</w:p>", "");
                   data = data.substring(0, lastIndex) + temp;
                }
             }
