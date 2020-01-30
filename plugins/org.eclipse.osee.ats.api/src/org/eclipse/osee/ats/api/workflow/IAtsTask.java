@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -140,6 +141,11 @@ public interface IAtsTask extends IAtsWorkItem {
 
          @Override
          public List<IAtsUser> getImplementers() {
+            return null;
+         }
+
+         @Override
+         public AtsApi getAtsApi() {
             return null;
          }
 

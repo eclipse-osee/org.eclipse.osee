@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
@@ -344,7 +345,8 @@ public class ActionFactory implements IAtsActionFactory {
       // Create team workflow artifacts
       List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
-         List<IAtsUser> leads = new LinkedList<>(teamDef.getLeads(actionableItems));
+         List<IAtsUser> leads =
+            new LinkedList<>(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef, actionableItems));
          if (leads.isEmpty()) {
             leads.add(AtsCoreUsers.UNASSIGNED_USER);
          }

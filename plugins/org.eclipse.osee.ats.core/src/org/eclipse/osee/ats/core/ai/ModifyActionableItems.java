@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
@@ -44,11 +45,13 @@ public class ModifyActionableItems {
    private final List<CreateTeamData> teamDatas = new ArrayList<>();
    private final List<IAtsActionableItem> addAis = new ArrayList<>();
    private final List<IAtsActionableItem> removeAis = new ArrayList<>();
-   private final Map<IAtsTeamDefinition, CreateTeamData> teamDefToTeamDataMap =
-      new HashMap<>();
+   private final Map<IAtsTeamDefinition, CreateTeamData> teamDefToTeamDataMap = new HashMap<>();
    private final ITeamDefinitionUtility teamDefUtil;
+   private final AtsApi atsApi;
 
-   public ModifyActionableItems(XResultData results, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> currAIsForAllWfs, Collection<IAtsActionableItem> currWorkflowDesiredAIs, Collection<IAtsActionableItem> newAIs, IAtsUser modifiedBy, ITeamDefinitionUtility teamDefUtil) {
+   public ModifyActionableItems(XResultData results, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> currAIsForAllWfs, //
+      Collection<IAtsActionableItem> currWorkflowDesiredAIs, Collection<IAtsActionableItem> newAIs, IAtsUser modifiedBy, //
+      ITeamDefinitionUtility teamDefUtil, AtsApi atsApi) {
       this.results = results;
       this.teamWf = teamWf;
       this.currAIsForAllWfs = currAIsForAllWfs;
@@ -56,6 +59,7 @@ public class ModifyActionableItems {
       this.newAIs = newAIs;
       this.modifiedBy = modifiedBy;
       this.teamDefUtil = teamDefUtil;
+      this.atsApi = atsApi;
    }
 
    public void performModification() {
@@ -92,9 +96,9 @@ public class ModifyActionableItems {
             CreateTeamData createTeamData = teamDefToTeamDataMap.get(teamDef);
             createTeamData.getActionableItems().add(ai);
          } else {
-            CreateTeamData createTeamData =
-               new CreateTeamData(teamDef, Arrays.asList(ai), new LinkedList<>(teamDef.getLeads()), createdDate,
-                  modifiedBy, CreateTeamOption.Duplicate_If_Exists);
+            CreateTeamData createTeamData = new CreateTeamData(teamDef, Arrays.asList(ai),
+               new LinkedList<>(atsApi.getTeamDefinitionService().getLeads(teamDef)), createdDate, modifiedBy,
+               CreateTeamOption.Duplicate_If_Exists);
             teamDatas.add(createTeamData);
             teamDefToTeamDataMap.put(teamDef, createTeamData);
          }

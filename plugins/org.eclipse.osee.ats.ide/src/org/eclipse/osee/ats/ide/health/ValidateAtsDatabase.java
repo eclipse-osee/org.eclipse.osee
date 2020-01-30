@@ -669,7 +669,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(art);
             try {
-               BranchId parentBranchId = teamDef.getBaselineBranchId();
+               BranchId parentBranchId = AtsClientService.get().getTeamDefinitionService().getBaselineBranchId(teamDef);
                if (parentBranchId.isValid()) {
                   validateBranchId(teamDef, parentBranchId, results);
                }
@@ -947,15 +947,19 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
-               if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
-                  if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
+               IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
+               IAtsTeamDefinition teamDefHoldVer =
+                  AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
+                     teamArt.getTeamDefinition());
+               if (version != null && teamDefHoldVer != null) {
+                  Collection<IAtsVersion> versions =
+                     AtsClientService.get().getVersionService().getVersions(teamDefHoldVer);
+                  if (!versions.contains(version)) {
                      results.log(artifact, "testAtsWorkflowsValidVersion",
                         "Error: Team workflow " + XResultDataUI.getHyperlink(
                            teamArt) + " has version" + XResultDataUI.getHyperlink(
-                              artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(
-                                 AtsClientService.get().getQueryServiceClient().getArtifact(
-                                    teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
+                              (Artifact) version.getStoreObject()) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(
+                                 AtsClientService.get().getQueryServiceClient().getArtifact(teamDefHoldVer)));
                   }
                }
             }

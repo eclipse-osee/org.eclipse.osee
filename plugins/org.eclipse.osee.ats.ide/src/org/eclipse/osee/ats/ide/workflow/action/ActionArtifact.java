@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -86,6 +87,11 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    @Override
    public ArtifactToken getStoreObject() {
       return this;
+   }
+
+   @Override
+   public AtsApi getAtsApi() {
+      return AtsClientService.get();
    }
 
 }

@@ -282,7 +282,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return false;
       }
       try {
-         return teamArt.getTeamDefinition().hasRule(option.name());
+         return AtsClientService.get().getTeamDefinitionService().hasRule(teamArt.getTeamDefinition(), option.name());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;

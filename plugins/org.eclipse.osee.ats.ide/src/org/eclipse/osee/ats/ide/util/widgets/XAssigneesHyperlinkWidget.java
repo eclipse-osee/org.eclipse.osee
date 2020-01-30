@@ -36,10 +36,10 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
 
    @Override
    public String getCurrentValue() {
-	  Collection<String> assigneeNames = new HashSet<>();
-	  for(IAtsUser singleAssignee : assignees){
-		assigneeNames.add(singleAssignee.getName());
-	  }
+      Collection<String> assigneeNames = new HashSet<>();
+      for (IAtsUser singleAssignee : assignees) {
+         assigneeNames.add(singleAssignee.getName());
+      }
       return Collections.toString("; ", assigneeNames);
    }
 
@@ -47,7 +47,7 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    public boolean handleSelection() {
       UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
          AtsClientService.get().getUserService().getUsers(Active.Active));
-      uld.setTeamMembers(teamDef.getMembersAndLeads());
+      uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
 
       if (!assignees.isEmpty()) {
          uld.setInitialSelections(assignees);

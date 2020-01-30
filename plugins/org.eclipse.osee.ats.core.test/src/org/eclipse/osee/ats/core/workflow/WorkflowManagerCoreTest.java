@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.core.workflow;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -38,6 +40,8 @@ public class WorkflowManagerCoreTest {
    @Mock private IAtsStateDefinition analyzeState, implementState;
    @Mock private IAtsTask task;
    @Mock private IAtsUser Joe, Mary;
+   @Mock private AtsApi atsApi;
+   @Mock private IAtsTeamDefinitionService teamDefinitionService;
    // @formatter:on
    List<IAtsUser> assignees = new ArrayList<>();
 
@@ -51,6 +55,8 @@ public class WorkflowManagerCoreTest {
       when(analyzeState.getName()).thenReturn("analyze");
       when(implementState.getName()).thenReturn("implement");
       when(teamWf.getAssignees()).thenReturn(assignees);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(teamDef.getAtsApi()).thenReturn(atsApi);
    }
 
    @Test
@@ -62,7 +68,7 @@ public class WorkflowManagerCoreTest {
       Assert.assertFalse(wmc.teamDefHasRule(task, option));
       Assert.assertFalse(wmc.teamDefHasRule(review, option));
 
-      when(teamDef.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
+      when(teamDefinitionService.hasRule(teamDef, RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
 
       Assert.assertTrue(wmc.teamDefHasRule(teamWf, option));
       Assert.assertTrue(wmc.teamDefHasRule(review, option));
@@ -103,9 +109,9 @@ public class WorkflowManagerCoreTest {
       when(analyzeState.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
 
       // teamDef has rule
-      when(teamDef.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
+      when(teamDefinitionService.hasRule(teamDef, RuleDefinitionOption.AllowEditToAll.name())).thenReturn(true);
       Assert.assertTrue(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
-      when(teamDef.hasRule(RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
+      when(teamDefinitionService.hasRule(teamDef, RuleDefinitionOption.AllowEditToAll.name())).thenReturn(false);
       Assert.assertFalse(wmc.isWorkItemEditable(teamWf, analyzeState, Mary, false));
 
       // statics

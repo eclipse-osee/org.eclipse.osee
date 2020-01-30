@@ -78,7 +78,7 @@ public class AutoAddActionToGoalTest {
       changes.clear();
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
 
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
@@ -108,7 +108,7 @@ public class AutoAddActionToGoalTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
@@ -136,7 +136,7 @@ public class AutoAddActionToGoalTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
 
@@ -177,7 +177,7 @@ public class AutoAddActionToGoalTest {
       GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal", changes);
 
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();

@@ -109,7 +109,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          if (!Strings.isValid(newVer)) {
             resultData.error("Version name can't be blank");
          }
-         for (IAtsVersion verArt : teamDefHoldingVersions.getVersions()) {
+         for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions)) {
             if (verArt.getName().equals(newVer)) {
                resultData.error(String.format("Version [%s] already exists", newVer));
             }

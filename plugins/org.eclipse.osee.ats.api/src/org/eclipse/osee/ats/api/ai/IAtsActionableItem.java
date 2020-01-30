@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.api.ai;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.rule.IAtsRules;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -49,13 +49,6 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
    Collection<String> getStaticIds();
 
    public Boolean isActionable();
-
-   /*****************************************************
-    * Team Leads, Members
-    ******************************************************/
-   Collection<IAtsUser> getLeads();
-
-   Collection<IAtsUser> getSubscribed();
 
    boolean isAllowUserActionCreation();
 
@@ -118,18 +111,13 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
          }
 
          @Override
-         public Collection<IAtsUser> getLeads() {
-            return null;
-         }
-
-         @Override
-         public Collection<IAtsUser> getSubscribed() {
-            return null;
-         }
-
-         @Override
          public boolean isAllowUserActionCreation() {
             return false;
+         }
+
+         @Override
+         public AtsApi getAtsApi() {
+            return null;
          }
 
       }

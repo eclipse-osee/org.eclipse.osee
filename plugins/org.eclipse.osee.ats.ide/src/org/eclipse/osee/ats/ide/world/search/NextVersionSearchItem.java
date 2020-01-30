@@ -60,7 +60,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       try {
          if (teamDef != null) {
             name += " - " + teamDef.getName();
-            selectedVersionArt = teamDef.getNextReleaseVersion();
+            selectedVersionArt = AtsClientService.get().getVersionService().getNextReleaseVersion(teamDef);
             name += selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "";
          }
       } catch (Exception ex) {
@@ -82,14 +82,14 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       if (isCancelled()) {
          return EMPTY_SET;
       }
-      if (getTeamDefinition().getNextReleaseVersion() == null) {
+      if (AtsClientService.get().getVersionService().getNextReleaseVersion(getTeamDefinition()) == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return EMPTY_SET;
       }
       List<Artifact> arts = new ArrayList<>();
       List<Artifact> castAll =
          Collections.castAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
-            getTeamDefinition().getNextReleaseVersion()));
+            AtsClientService.get().getVersionService().getNextReleaseVersion(getTeamDefinition())));
       arts.addAll(castAll);
       if (isCancelled()) {
          return EMPTY_SET;

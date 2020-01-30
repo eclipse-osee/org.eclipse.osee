@@ -56,7 +56,8 @@ public class WorkflowManagerCore {
          teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
       }
       if (teamWf != null && teamWf.getTeamDefinition() != null) {
-         hasRule = teamWf.getTeamDefinition().hasRule(option.name());
+         hasRule = teamWf.getTeamDefinition().getAtsApi().getTeamDefinitionService().hasRule(teamWf.getTeamDefinition(),
+            option.name());
       }
       return hasRule;
    }

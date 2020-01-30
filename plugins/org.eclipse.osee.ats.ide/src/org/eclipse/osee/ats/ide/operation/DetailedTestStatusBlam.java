@@ -163,7 +163,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
                   versionsListViewer.setInputAtsObjects(new ArrayList<>());
                   reportBranchWidget.setSelection(null);
                } else {
-                  Collection<IAtsVersion> versionArtifacts = teamDefHoldingVersions.getVersions();
+                  Collection<IAtsVersion> versionArtifacts =
+                     AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions);
                   versionsListViewer.setInputAtsObjects(versionArtifacts);
                   reportBranchWidget.setSelection(null);
                   versionsListViewer.addSelectionChangedListener(branchSelectionListener);

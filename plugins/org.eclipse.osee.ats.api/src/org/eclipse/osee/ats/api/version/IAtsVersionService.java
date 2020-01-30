@@ -53,7 +53,7 @@ public interface IAtsVersionService {
 
    IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
-   IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
+   IAtsVersion getVersion(IAtsProgram program, String versionName);
 
    IAtsVersion createVersion(String name, long id, IAtsChangeSet changes);
 
@@ -66,5 +66,23 @@ public interface IAtsVersionService {
    IAtsVersion createVersion(String title, long id, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsVersion createVersion(String name, IAtsChangeSet changes, AtsApi atsApi);
+
+   boolean isTeamUsesVersions(IAtsTeamDefinition teamDef);
+
+   IAtsVersion getNextReleaseVersion(IAtsTeamDefinition teamDef);
+
+   IAtsTeamDefinition getTeamDefinitionHoldingVersions(IAtsTeamDefinition teamDef);
+
+   IAtsVersion getVersion(IAtsTeamDefinition teamDef, String name);
+
+   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType);
+
+   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType);
+
+   Collection<IAtsVersion> getVersionsLocked(IAtsTeamDefinition teamDef, VersionLockedType lockType);
+
+   Collection<IAtsVersion> getVersionsReleased(IAtsTeamDefinition teamDef, VersionReleaseType releaseType);
+
+   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef);
 
 }

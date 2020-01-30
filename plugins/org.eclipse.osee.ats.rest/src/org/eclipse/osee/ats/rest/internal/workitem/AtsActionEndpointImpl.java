@@ -180,7 +180,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
       List<String> versions = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
-      IAtsTeamDefinition targedVersionsTeamDef = teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions();
+      IAtsTeamDefinition targedVersionsTeamDef =
+         atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
       if (targedVersionsTeamDef != null) {
          for (IAtsVersion version : atsApi.getVersionService().getVersions(targedVersionsTeamDef)) {
             if (!version.isReleased()) {
@@ -317,8 +318,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             String version = values.iterator().next();
             if (currVersion == null || !currVersion.getIdString().equals(version)) {
                IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef =
-                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
+                  workItem.getParentTeamWorkflow().getTeamDefinition());
                for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
                   if (teamDefVer.getIdString().equals(version)) {
                      newVer = teamDefVer;
@@ -337,8 +338,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             String version = values.iterator().next();
             if (currVersion == null || !currVersion.getName().equals(version)) {
                IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef =
-                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
+                  workItem.getParentTeamWorkflow().getTeamDefinition());
                for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
                   if (teamDefVer.getName().equals(version)) {
                      newVer = teamDefVer;

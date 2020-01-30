@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.commit;
 
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -26,5 +27,7 @@ public interface ICommitConfigItem extends Named {
    public Result isAllowCreateBranchInherited();
 
    public String getCommitFullDisplayName();
+
+   public IAtsConfigObject getConfigObject();
 
 }

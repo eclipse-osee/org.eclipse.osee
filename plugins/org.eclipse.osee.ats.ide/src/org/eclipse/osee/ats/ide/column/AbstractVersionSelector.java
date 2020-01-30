@@ -80,7 +80,7 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       //validate multi-select
       IAtsTeamDefinition teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : awas) {
-         if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
+         if (!AtsClientService.get().getVersionService().isTeamUsesVersions(teamArt.getTeamDefinition())) {
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
@@ -103,12 +103,14 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
             }
          }
          if (teamDefHoldingVersions != null && teamDefHoldingVersions.notEqual(
-            teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())) {
+            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+               teamArt.getTeamDefinition()))) {
             AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
             return false;
          }
          if (teamDefHoldingVersions == null) {
-            teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
+            teamDefHoldingVersions = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+               teamArt.getTeamDefinition());
          }
       }
 
@@ -145,7 +147,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
 
    public IAtsVersion promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, IAtsTeamDefinition teamDefHoldingVersions) {
       if (teamDefHoldingVersions == null) {
-         teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
+         teamDefHoldingVersions = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+            teamArt.getTeamDefinition());
       }
       final VersionListDialog dialog;
       if (versionReleaseType == null || versionLockType == null) {
@@ -153,10 +156,12 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
             AWorkbench.popup("ERROR", "No versions configured for impacted team(s).");
             return null;
          }
-         dialog = new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions());
+         dialog = new VersionListDialog("Select Version", "Select Version",
+            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
       } else {
          dialog = new VersionListDialog("Select Version", "Select Version",
-            teamDefHoldingVersions.getVersions(versionReleaseType, versionLockType));
+            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions, versionReleaseType,
+               versionLockType));
       }
       if (AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
          dialog.setInitialSelections(

@@ -61,7 +61,8 @@ public interface IPopulateDemoDatabase {
       }
       if (!teamWf.isCompletedOrCancelled()) {
          // Reset assignees that may have been overwritten during transition
-         teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
+         teamWf.getStateMgr().setAssignees(
+            AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
       }
    }
 

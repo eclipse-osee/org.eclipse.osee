@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link ModifyActionableItemsBlam}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ModifyActionableItemsBlamTest {
@@ -34,7 +34,7 @@ public class ModifyActionableItemsBlamTest {
    }
 
    @Test
-   public void testOpenAtsExportBlam() {
+   public void testModifyActionableItemsBlam() {
       BlamEditor.closeAll();
       ModifyActionableItemsBlam blam = new ModifyActionableItemsBlam();
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();

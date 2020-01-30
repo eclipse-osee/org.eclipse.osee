@@ -62,7 +62,7 @@ public class VersionTeamMetrics {
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<>();
-         for (IAtsVersion verArt : verTeamDef.getVersions()) {
+         for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(verTeamDef)) {
             for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
                verArt)) {
                Date origDate = team.getCreatedDate();
@@ -80,7 +80,7 @@ public class VersionTeamMetrics {
    }
 
    private void orderReleasedVersions() {
-      for (IAtsVersion verArt : verTeamDef.getVersions()) {
+      for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(verTeamDef)) {
          VersionMetrics verMet = new VersionMetrics(verArt, this);
          Date relDate = verArt.getReleaseDate();
          if (relDate != null) {

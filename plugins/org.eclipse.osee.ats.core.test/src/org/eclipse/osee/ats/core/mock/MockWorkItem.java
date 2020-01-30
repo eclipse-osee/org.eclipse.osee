@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.mock;
 
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -250,5 +251,10 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public void clearCaches() {
       // do nothing
+   }
+
+   @Override
+   public AtsApi getAtsApi() {
+      return null;
    }
 }

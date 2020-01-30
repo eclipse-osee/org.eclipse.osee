@@ -101,7 +101,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    @Override
    public String getEditorTitle() {
       try {
-         if (getTeamDefinition().isTeamUsesVersions()) {
+         if (AtsClientService.get().getVersionService().isTeamUsesVersions(getTeamDefinition())) {
             IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
             return String.format("%s: [%s] - %s", getTeamName(), version != null ? version : "Un-Targeted", getName());
 
@@ -199,8 +199,9 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
          if (artifact != null) {
             manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
          }
-         if (manDayHours == 0 && teamDef.getParentTeamDef() != null) {
-            return getHoursPerWorkDayFromItemAndChildren(teamDef.getParentTeamDef());
+         if (manDayHours == 0 && AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+            return getHoursPerWorkDayFromItemAndChildren(
+               AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef));
          }
          return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {

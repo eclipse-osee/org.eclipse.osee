@@ -111,7 +111,8 @@ public final class AtsIdProvider {
    protected String getAttrValueFromTeamDef(AttributeTypeToken attrType) {
       String attrValue = attrResolver.getSoleAttributeValueAsString(teamDef, attrType, (String) null);
       if (!Strings.isValid(attrValue)) {
-         IAtsTeamDefinition parentTeamDef = teamDef.getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition parentTeamDef =
+            teamDef.getAtsApi().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
          if (parentTeamDef != null) {
             attrValue = attrResolver.getSoleAttributeValueAsString(parentTeamDef, attrType, (String) null);
          }

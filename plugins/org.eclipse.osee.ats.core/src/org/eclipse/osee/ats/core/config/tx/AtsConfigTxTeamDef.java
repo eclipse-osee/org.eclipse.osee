@@ -86,7 +86,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    private void handleParallelVersions(IAtsConfigTxVersion version, IOseeBranch... parallelVersions) {
       for (IOseeBranch parallelVer : parallelVersions) {
          boolean found = false;
-         for (IAtsVersion teamDefVer : teamDef.getVersions()) {
+         for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
             if (teamDefVer.getBaselineBranchId().isValid() && teamDefVer.getBaselineBranchId().equals(
                parallelVer.getId())) {
                changes.relate(version.getVersion(), AtsRelationTypes.ParallelVersion_Child, teamDefVer);

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.program;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -32,6 +33,11 @@ public interface IAtsProgram extends IAtsConfigObject {
 
          @Override
          public ArtifactTypeToken getArtifactType() {
+            return null;
+         }
+
+         @Override
+         public AtsApi getAtsApi() {
             return null;
          }
 

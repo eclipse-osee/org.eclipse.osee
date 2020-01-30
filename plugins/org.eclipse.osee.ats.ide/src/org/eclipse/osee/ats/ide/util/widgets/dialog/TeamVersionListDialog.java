@@ -90,7 +90,8 @@ public class TeamVersionListDialog extends SelectionDialog {
                ArrayList<Object> objs = new ArrayList<>();
                try {
                   selectedTeamDef = (IAtsTeamDefinition) teamCombo.getSelected();
-                  for (IAtsVersion pda : selectedTeamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
+                  for (IAtsVersion pda : AtsClientService.get().getVersionService().getVersions(selectedTeamDef,
+                     VersionReleaseType.Both, VersionLockedType.Both)) {
                      objs.add(pda);
                   }
                   versionCombo.setInput(objs);
@@ -123,7 +124,8 @@ public class TeamVersionListDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<>();
          try {
-            for (IAtsVersion pda : teamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
+            for (IAtsVersion pda : AtsClientService.get().getVersionService().getVersions(teamDef,
+               VersionReleaseType.Both, VersionLockedType.Both)) {
                objs.add(pda);
             }
             versionCombo.setInput(objs);

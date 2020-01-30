@@ -144,10 +144,12 @@ public class ExcelAtsActionArtifactExtractor {
          if (!aData.version.equals("")) {
             try {
                for (IAtsTeamDefinition teamDef : teamDefs) {
-                  if (teamDef.getTeamDefinitionHoldingVersions() == null) {
+                  if (AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef) == null) {
                      rd.errorf("No Team Definitions Holding Versions found for Team Definition [%s]", teamDef);
                   }
-                  if (teamDef.getTeamDefinitionHoldingVersions().getVersion(aData.version) == null) {
+                  IAtsTeamDefinition teamDefHolVer =
+                     AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
+                  if (AtsClientService.get().getVersionService().getVersion(teamDefHolVer, aData.version) == null) {
                      rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version, teamDef);
                   }
                }
@@ -305,7 +307,9 @@ public class ExcelAtsActionArtifactExtractor {
       addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWf.getStoreObject()), changes);
 
       if (!aData.version.equals("")) {
-         IAtsVersion version = teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersion(aData.version);
+         IAtsTeamDefinition teamDefHoldVer =
+            AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
+         IAtsVersion version = AtsClientService.get().getVersionService().getVersion(teamDefHoldVer, aData.version);
          if (version == null) {
             rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version, teamWf.getTeamDefinition());
          }

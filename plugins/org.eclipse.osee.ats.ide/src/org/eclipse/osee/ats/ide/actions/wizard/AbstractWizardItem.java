@@ -174,7 +174,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void createTargetedVersionAndBranchWidgets(Composite parent, IAtsTeamDefinition teamDef) {
-      IAtsTeamDefinition teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
+      IAtsTeamDefinition teamDefHoldingVersions =
+         atsApi.getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
       if (teamDefHoldingVersions != null) {
          List<IAtsVersion> versions = new LinkedList<>();
          for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDefHoldingVersions)) {

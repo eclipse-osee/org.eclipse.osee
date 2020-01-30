@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -68,6 +70,8 @@ public class AtsMockitoTest {
    @Mock protected IAtsBranchService branchService;
    @Mock protected IAtsWorkDefinitionService workDefService;
    @Mock protected IAtsWorkItemService workItemService;
+   @Mock protected IAtsActionableItemService actionableItemService;
+   @Mock protected IAtsTeamDefinitionService teamDefinitionService;
    @Mock protected AtsApi atsApi;
    // @formatter:on
 
@@ -92,6 +96,8 @@ public class AtsMockitoTest {
       when(atsApi.getBranchService()).thenReturn(branchService);
       when(atsApi.getWorkDefinitionService()).thenReturn(workDefService);
       when(atsApi.getWorkItemService()).thenReturn(workItemService);
+      when(atsApi.getActionableItemService()).thenReturn(actionableItemService);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
 
       when(currentUser.getName()).thenReturn("User1");
       when(currentUser.getId()).thenReturn(Lib.generateId());
@@ -128,8 +134,10 @@ public class AtsMockitoTest {
       when(teamDef.getName()).thenReturn(getTitle("Test Team Def"));
       when(teamDef.getId()).thenReturn(Lib.generateId());
       when(teamDef.isActive()).thenReturn(true);
-      when(teamDef.getLeads()).thenReturn(Arrays.asList(currentUser));
-      when(teamDef.getActionableItems()).thenReturn(aias);
+      when(teamDef.getAtsApi()).thenReturn(atsApi);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(teamDefinitionService.getLeads(teamDef)).thenReturn(Arrays.asList(currentUser));
+      when(actionableItemService.getActionableItems(teamDef)).thenReturn(aias);
       when(attrResolver.getSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, "")).thenReturn(
          WORK_DEF_NAME);
       when(attrResolver.getSoleArtifactIdReference(teamDef, AtsAttributeTypes.WorkflowDefinitionReference,
@@ -142,7 +150,7 @@ public class AtsMockitoTest {
 
       Set<IAtsVersion> vers = new HashSet<>();
       vers.addAll(Arrays.asList(ver1, ver2, ver3, ver4));
-      when(teamDef.getVersions()).thenReturn(vers);
+      when(teamDefinitionService.getVersions(teamDef)).thenReturn(vers);
 
       when(action.getTeamWorkflows()).thenReturn(Arrays.asList(teamWf));
       when(action.getId()).thenReturn(45L);

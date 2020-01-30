@@ -96,6 +96,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    private Set<IAtsActionableItem> currAIsForAllWfs;
    private List<IAtsActionableItem> currWorkflowDesiredAIs;
    private List<IAtsActionableItem> newAIs;
+   private WorkflowsActiveAisContentProvider wfAiProvider;
 
    public ModifyActionableItemsBlam() {
       // do nothing
@@ -137,7 +138,9 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       newLabel.setText("New Workflows\n(select to create new workflows)");
 
       wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-      wfTree.getViewer().setContentProvider(new WorkflowsActiveAisContentProvider(defaultTeamWorkflow, Active.Active));
+      wfAiProvider =
+         new WorkflowsActiveAisContentProvider(defaultTeamWorkflow == null ? null : defaultTeamWorkflow, Active.Active);
+      wfTree.getViewer().setContentProvider(wfAiProvider);
       wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       wfTree.getViewer().setComparator(new AtsObjectNameSorter());
       wfTree.setLayoutData(data);
@@ -223,6 +226,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    }
 
    private void refreshTables(final TeamWorkFlowArtifact teamWf) {
+      final WorkflowsActiveAisContentProvider fWfAiProvider = wfAiProvider;
+
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
@@ -231,6 +236,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                clearTables();
             } else {
                try {
+                  fWfAiProvider.setTeamWf(teamWf);
                   wfTree.getViewer().setInput(teamWf);
                   Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
                   wfTree.setInitalChecked(actionableItems);
@@ -295,7 +301,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          IAtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
 
          ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs,
-            currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility());
+            currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility(), AtsClientService.get());
          job.performModification();
 
          if (!logOnly) {

@@ -46,7 +46,7 @@ public class XAssigneesListWidget extends AbstractXAssigneesListWidget {
          UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.",
             AtsClientService.get().getUserService().getUsers(Active.Active));
          if (teamDef != null) {
-            uld.setTeamMembers(teamDef.getMembersAndLeads());
+            uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
          }
          uld.setInitialSelections(assignees);
 

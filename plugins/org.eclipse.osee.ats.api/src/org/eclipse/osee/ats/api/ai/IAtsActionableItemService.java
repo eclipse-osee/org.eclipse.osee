@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.Result;
@@ -27,21 +27,21 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface IAtsActionableItemService {
 
-   Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject);
+   Set<IAtsActionableItem> getActionableItems(IAtsWorkItem workItem);
 
-   String getActionableItemsStr(IAtsObject atsObject);
+   String getActionableItemsStr(IAtsWorkItem workItem);
 
-   Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject);
+   Collection<ArtifactId> getActionableItemIds(IAtsWorkItem workItem);
 
-   void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes);
+   void addActionableItem(IAtsWorkItem workItem, IAtsActionableItem aia, IAtsChangeSet changes);
 
-   void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes);
+   void removeActionableItem(IAtsWorkItem workItem, IAtsActionableItem aia, IAtsChangeSet changes);
 
-   Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes);
+   Result setActionableItems(IAtsWorkItem workItem, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes);
 
-   boolean hasActionableItems(IAtsObject atsObject);
+   boolean hasActionableItems(IAtsWorkItem workItem);
 
-   Collection<IAtsTeamDefinition> getCorrespondingTeamDefinitions(IAtsObject atsObject);
+   Collection<IAtsActionableItem> getActionableItems(IAtsTeamDefinition teamDef);
 
    List<IAtsActionableItem> getActiveActionableItemsAndChildren(IAtsTeamDefinition teamDef);
 
@@ -61,5 +61,9 @@ public interface IAtsActionableItemService {
    Collection<WorkType> getWorkTypes(IAtsWorkItem workItem);
 
    boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
+
+   Collection<IAtsUser> getSubscribed(IAtsActionableItem ai);
+
+   Collection<IAtsUser> getLeads(IAtsActionableItem ai);
 
 }

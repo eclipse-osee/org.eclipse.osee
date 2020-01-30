@@ -130,7 +130,7 @@ public class AtsBranchConfigurationTest {
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
       long version1Id = 0L, version2Id = 0L;
-      for (IAtsVersion vArt : teamDef.getVersions()) {
+      for (IAtsVersion vArt : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
             version1Id = vArt.getId();

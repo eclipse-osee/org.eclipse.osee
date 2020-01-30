@@ -104,7 +104,8 @@ public class Pdd23CreateNoBranchAction implements IPopulateDemoDatabase {
 
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
-            teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
+            teamWf.getStateMgr().setAssignees(
+               AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 
          setVersion(teamWf, DemoArtifactToken.SAW_Bld_2, changes);

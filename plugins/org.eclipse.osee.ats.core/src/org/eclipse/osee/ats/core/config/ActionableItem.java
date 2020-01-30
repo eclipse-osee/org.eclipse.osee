@@ -72,7 +72,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
          }
       } else {
          for (ArtifactToken artifact : atsApi.getRelationResolver().getChildren(artifact)) {
-            if (artifact.isOfType( AtsArtifactTypes.ActionableItem)) {
+            if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                children.add(new ActionableItem(logger, atsApi, artifact));
             }
          }
@@ -108,8 +108,8 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
             teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(
                atsApi.getQueryService().getArtifact(jaxAI.getTeamDefId()));
          } else {
-            ArtifactToken art =
-               atsApi.getRelationResolver().getRelatedOrSentinel(artifact, AtsRelationTypes.TeamActionableItem_TeamDefinition);
+            ArtifactToken art = atsApi.getRelationResolver().getRelatedOrSentinel(artifact,
+               AtsRelationTypes.TeamActionableItem_TeamDefinition);
             if (art.isValid()) {
                teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(art);
             }

@@ -60,14 +60,16 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
       try {
          VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version to Release",
-            teamDefHoldingVersions.getVersions(VersionReleaseType.UnReleased, VersionLockedType.Both));
+            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions,
+               VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = dialog.open();
          if (result == 0) {
             IAtsVersion version = dialog.getSelectedFirst();
 
             // Validate team lead status
-            if (!AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(
-               version).getLeads().contains(AtsClientService.get().getUserService().getCurrentUser())) {
+            if (!AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getTeamDefinitionService().getLeads(
+               AtsClientService.get().getVersionService().getTeamDefinition(version)).contains(
+                  AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
@@ -102,7 +104,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
                dialog = new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                  teamDefHoldingVersions.getVersions());
+                  AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
                result = dialog.open();
                if (result == 0) {
                   version = dialog.getSelectedFirst();

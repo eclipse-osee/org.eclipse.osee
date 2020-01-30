@@ -97,8 +97,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
    @Test
    public void testGetTeamWf() {
       Assert.assertEquals("Test Team Wf", teamWf.getName());
-      Assert.assertTrue(teamWf.getActionableItems().contains(testAi));
-      Assert.assertTrue(teamWf.getActionableItems().contains(testAi2));
       Assert.assertEquals(teamDef, teamWf.getTeamDefinition());
       Assert.assertEquals("ATS0008", teamWf.getAtsId());
       Assert.assertEquals(AtsArtifactTypes.TeamWorkflow.getName(), teamWf.getArtifactTypeName());
@@ -134,8 +132,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
    @Test
    public void testGetTeamDef() {
       Assert.assertEquals("AMT - Obj:[Test Team Def]  Class:[MyTestClass]", teamDef.getName());
-      Assert.assertTrue(teamDef.getActionableItems().contains(testAi));
-      Assert.assertTrue(teamDef.getActionableItems().contains(testAi2));
       Assert.assertTrue(teamDef.isActive());
    }
 

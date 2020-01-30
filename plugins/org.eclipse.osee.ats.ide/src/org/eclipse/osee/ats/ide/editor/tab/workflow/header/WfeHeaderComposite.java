@@ -254,7 +254,8 @@ public class WfeHeaderComposite extends Composite {
       if (!workItem.isTeamWorkflow()) {
          return false;
       }
-      return ((TeamWorkFlowArtifact) workItem).getTeamDefinition().isTeamUsesVersions();
+      return AtsClientService.get().getVersionService().isTeamUsesVersions(
+         ((TeamWorkFlowArtifact) workItem).getTeamDefinition());
    }
 
    private static Color getLightGreyColor() {

@@ -14,10 +14,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -42,6 +44,8 @@ public class AtsIdProviderTest {
    @Mock private IAtsTeamDefinition teamDef;
    @Mock private IAtsTeamDefinition parentTeamDef;
    @Mock private IAtsChangeSet changes;
+   @Mock private IAtsTeamDefinitionService teamDefinitionService;
+   @Mock private AtsApi atsApi;
    // @formatter:on
 
    AtsIdProvider atsIdProvider = null;
@@ -53,6 +57,8 @@ public class AtsIdProviderTest {
       atsIdProvider = new AtsIdProvider(sequenceProvider, attrResolver, newObject, teamDef);
 
       when(sequenceProvider.getNext("ATS_SEQ")).thenReturn(345L);
+      when(teamDef.getAtsApi()).thenReturn(atsApi);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
    }
 
    @Test
@@ -65,11 +71,11 @@ public class AtsIdProviderTest {
       when(
          attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
             null);
-      when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(null);
+      when(teamDefinitionService.getTeamDefHoldingVersions(teamDef)).thenReturn(null);
 
       Assert.assertNull(atsIdProvider.getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix));
 
-      when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
+      when(teamDefinitionService.getTeamDefHoldingVersions(teamDef)).thenReturn(parentTeamDef);
       when(attrResolver.getSoleAttributeValueAsString(parentTeamDef, AtsAttributeTypes.AtsIdPrefix,
          (String) null)).thenReturn("ATS");
 
@@ -135,7 +141,7 @@ public class AtsIdProviderTest {
       when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
          (String) null)).thenReturn("ASDF_SEQ");
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
-      when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
+      when(teamDefinitionService.getTeamDefHoldingVersions(teamDef)).thenReturn(parentTeamDef);
 
       atsIdProvider.setAtsId(changes);
 
@@ -153,7 +159,7 @@ public class AtsIdProviderTest {
       when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
          (String) null)).thenReturn("ASDF_SEQ");
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
-      when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
+      when(teamDefinitionService.getTeamDefHoldingVersions(teamDef)).thenReturn(parentTeamDef);
 
       atsIdProvider.setAtsId(changes);
 

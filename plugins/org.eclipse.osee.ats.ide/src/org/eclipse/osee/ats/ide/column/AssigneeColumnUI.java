@@ -132,7 +132,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
 
       IAtsTeamWorkflow parentWorklfow = workItems.iterator().next().getParentTeamWorkflow();
       if (parentWorklfow != null) {
-         uld.setTeamMembers(parentWorklfow.getTeamDefinition().getMembersAndLeads());
+         uld.setTeamMembers(
+            AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(parentWorklfow.getTeamDefinition()));
       }
       if (workItems.size() == 1) {
          uld.setInitialSelections(workItems.iterator().next().getStateMgr().getAssignees());

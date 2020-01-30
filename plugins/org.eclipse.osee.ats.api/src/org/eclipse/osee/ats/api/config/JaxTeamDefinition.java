@@ -15,12 +15,13 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxTeamDefinition extends JaxAtsConfigObject {
+public class JaxTeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefinition {
 
    @JsonSerialize(using = ToStringSerializer.class)
    Long parentId;

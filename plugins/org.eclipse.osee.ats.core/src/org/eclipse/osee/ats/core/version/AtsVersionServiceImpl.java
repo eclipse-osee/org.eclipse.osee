@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.version;
 
 import java.rmi.activation.Activator;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,6 +29,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.VersionLockedType;
+import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -62,7 +65,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          version = (IAtsVersion) versionId;
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(versionId);
-         if (art.isOfType( AtsArtifactTypes.Version)) {
+         if (art.isOfType(AtsArtifactTypes.Version)) {
             version = new Version(atsApi.getLogger(), atsApi, art);
          }
       }
@@ -246,7 +249,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
+   public IAtsVersion getVersion(IAtsProgram program, String versionName) {
       return atsApi.getProgramService().getVersion(program, versionName);
    }
 
@@ -274,6 +277,96 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public IAtsVersion createVersion(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, id);
       return new Version(atsApi.getLogger(), atsApi, artifact);
+   }
+
+   @Override
+   public boolean isTeamUsesVersions(IAtsTeamDefinition teamDef) {
+      return getTeamDefinitionHoldingVersions(teamDef) != null;
+   }
+
+   @Override
+   public IAtsVersion getNextReleaseVersion(IAtsTeamDefinition teamDef) {
+      IAtsVersion result = null;
+      for (IAtsVersion version : getVersions(teamDef)) {
+         if (version.isNextVersion()) {
+            result = version;
+            break;
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefinitionHoldingVersions(IAtsTeamDefinition teamDef) {
+      IAtsTeamDefinition teamDefHoldVer = null;
+      if (getVersions(teamDef).size() > 0) {
+         teamDefHoldVer = teamDef;
+      } else {
+         IAtsTeamDefinition parentTda = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
+         if (parentTda != null) {
+            teamDefHoldVer = getTeamDefinitionHoldingVersions(parentTda);
+         }
+      }
+      return teamDefHoldVer;
+   }
+
+   @Override
+   public IAtsVersion getVersion(IAtsTeamDefinition teamDef, String name) {
+      IAtsVersion result = null;
+      for (IAtsVersion version : getVersions(teamDef)) {
+         if (version.getName().equals(name)) {
+            result = version;
+            break;
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.setIntersection(
+         getVersionsReleased(teamDef, releaseType), getVersionsLocked(teamDef, lockedType));
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType) {
+      IAtsTeamDefinition teamDefHoldVer = getTeamDefinitionHoldingVersions(teamDef);
+      if (teamDef == null) {
+         return new ArrayList<>();
+      }
+      return getVersions(teamDefHoldVer, releaseType, lockedType);
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersionsLocked(IAtsTeamDefinition teamDef, VersionLockedType lockType) {
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
+      for (IAtsVersion version : getVersions(teamDef)) {
+         if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
+            versions.add(version);
+         } else if (!version.isVersionLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
+            versions.add(version);
+         }
+      }
+      return versions;
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersionsReleased(IAtsTeamDefinition teamDef, VersionReleaseType releaseType) {
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
+      for (IAtsVersion version : getVersions(teamDef)) {
+         if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
+            versions.add(version);
+         } else if (!version.isReleased() && releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
+            versions.add(version);
+         }
+      }
+      return versions;
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef) {
+      IAtsTeamDefinition teamDefHoldVer = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
+      return getVersions(teamDefHoldVer);
    }
 
 }

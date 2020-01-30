@@ -115,7 +115,8 @@ public class NewRoleDialog extends MessageDialog {
          }
       }
       if (teamDef != null) {
-         users.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(teamDef.getMembersAndLeads()));
+         users.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(
+            AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)));
       }
 
       return customArea;

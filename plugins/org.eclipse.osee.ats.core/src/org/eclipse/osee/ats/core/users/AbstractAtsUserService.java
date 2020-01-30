@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -26,9 +27,14 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -40,7 +46,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
    protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
-
    protected IAtsConfigurationsService configurationService;
 
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
@@ -229,6 +234,19 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       atsUser.setActive(user.isActive());
       atsUser.setId(user.getId());
       return atsUser;
+   }
+
+   @Override
+   public Collection<IAtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation) {
+      Set<IAtsUser> results = new HashSet<>();
+      for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
+         String userId = (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+            CoreAttributeTypes.UserId, null);
+         IAtsUser lead = atsApi.getUserService().getUserById(userId);
+         Conditions.assertNotNull(lead, "Lead can not be null with userArt %s", userArt);
+         results.add(lead);
+      }
+      return results;
    }
 
 }

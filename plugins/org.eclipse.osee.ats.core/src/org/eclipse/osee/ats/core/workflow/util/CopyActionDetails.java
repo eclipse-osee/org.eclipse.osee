@@ -113,8 +113,8 @@ public class CopyActionDetails {
                return formatStr;
             }
          }
-         if (teamDef.getParentTeamDef() != null) {
-            return getFormatStr(teamDef.getParentTeamDef());
+         if (atsApi.getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+            return getFormatStr(atsApi.getTeamDefinitionService().getParentTeamDef(teamDef));
          }
       }
       return null;

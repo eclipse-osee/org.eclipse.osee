@@ -65,14 +65,15 @@ public class AtsBranchServiceImplTest {
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       org.junit.Assert.assertEquals("commitObjs has wrong size", 1, commitObjs.size());
-      assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));
+      assertTrue("commitObjs is missing teamDef",
+         ((ICommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
    }
 
    @Test
@@ -108,7 +109,7 @@ public class AtsBranchServiceImplTest {
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
-      for (IAtsVersion version : teamDef.getVersions()) {
+      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
@@ -128,6 +129,7 @@ public class AtsBranchServiceImplTest {
       commitObjs =
          AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
-      assertTrue("commitObjs has wrong object", commitObjs.contains(teamDef));
+      assertTrue("commitObjs has wrong object",
+         ((ICommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
    }
 }

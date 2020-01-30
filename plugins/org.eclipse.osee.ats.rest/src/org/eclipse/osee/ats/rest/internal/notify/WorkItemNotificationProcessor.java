@@ -211,7 +211,7 @@ public class WorkItemNotificationProcessor {
                   Collection<IAtsUser> subscribedUsers = new HashSet<>();
                   // Handle Team Definitions
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-                  subscribedUsers.addAll(teamDef.getSubscribed());
+                  subscribedUsers.addAll(atsApi.getTeamDefinitionService().getSubscribed(teamDef));
                   if (subscribedUsers.size() > 0) {
                      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                         AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
@@ -221,7 +221,7 @@ public class WorkItemNotificationProcessor {
 
                   // Handle Actionable Items
                   for (IAtsActionableItem aia : teamWf.getActionableItems()) {
-                     subscribedUsers = aia.getSubscribed();
+                     subscribedUsers = atsApi.getActionableItemService().getSubscribed(aia);
                      if (subscribedUsers.size() > 0) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",

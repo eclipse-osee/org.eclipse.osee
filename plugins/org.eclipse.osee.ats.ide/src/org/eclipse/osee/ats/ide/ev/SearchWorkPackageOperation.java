@@ -92,7 +92,9 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       for (IAtsTeamDefinition teamDef : teamDefs2) {
          ids.add(teamDef.getStoreObject());
          if (includeChildrenTeamDefs2) {
-            addAllTeamDefIds(monitor, teamDef.getChildrenTeamDefinitions(), includeChildrenTeamDefs2, ids);
+            addAllTeamDefIds(monitor,
+               AtsClientService.get().getTeamDefinitionService().getChildrenTeamDefinitions(teamDef),
+               includeChildrenTeamDefs2, ids);
             checkForCancelledStatus(monitor);
          }
       }

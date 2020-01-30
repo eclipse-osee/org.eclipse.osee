@@ -60,7 +60,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          if (selectedTeamDef == null) {
             return;
          }
-         if (selectedTeamDef.getTeamDefinitionHoldingVersions() == null) {
+         if (AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedTeamDef) == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;
          }
@@ -73,7 +73,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    public List<Artifact> getResults() {
       return AtsClientService.get().getConfigArtifacts(
-         selectedTeamDef.getTeamDefinitionHoldingVersions().getVersions());
+         AtsClientService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(selectedTeamDef));
    }
 
    /**

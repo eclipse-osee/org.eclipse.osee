@@ -74,7 +74,8 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
-            teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
+            teamWf.getStateMgr().setAssignees(
+               AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 
          setVersion(teamWf, DemoArtifactToken.SAW_Bld_2, changes);
@@ -99,8 +100,9 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       }
       AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
 
-      Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
-         DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
+      Artifact branchArtifact =
+         DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
+            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Interface.name());
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
       Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
@@ -108,8 +110,9 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       branchArtifact.addRelation(CoreRelationTypes.Allocation_Component, comArt);
       branchArtifact.persist(getClass().getSimpleName());
 
-      Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
-         DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
+      Artifact parentArtifact =
+         DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,
+            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeamArt.getWorkingBranch()).iterator().next();
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.CSCI, DemoCscis.Navigation.name());
       parentArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem,
          DemoSubsystems.Cognitive_Decision_Aiding.name());

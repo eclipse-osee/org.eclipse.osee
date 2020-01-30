@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -74,6 +76,8 @@ public class WorkItemNotificationProcessorTest {
    @Mock IRelationResolver relResolver;
    @Mock IAtsStateDefinition stateDef;
    @Mock IAtsTeamDefinition teamDef;
+   @Mock IAtsTeamDefinitionService teamDefinitionService;
+   @Mock IAtsActionableItemService actionableItemService;
    @Mock IAtsActionableItem ai;
 
    // @formatter:on
@@ -104,6 +108,8 @@ public class WorkItemNotificationProcessorTest {
       when(workItemService.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
       when(atsServer.getWorkItemService()).thenReturn(workItemService);
+      when(atsServer.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(atsServer.getActionableItemService()).thenReturn(actionableItemService);
       when(workItemService.getCancelUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn(
          "http://ats/action/ID/cancel");
       when(workItemService.getHtmlUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn("http://ats/action/ID");
@@ -325,25 +331,25 @@ public class WorkItemNotificationProcessorTest {
 
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
-      when(teamDef.getSubscribed()).thenReturn(new ArrayList<IAtsUser>());
-      when(ai.getSubscribed()).thenReturn(new ArrayList<IAtsUser>());
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<IAtsUser>());
+      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<IAtsUser>());
       Assert.assertEquals(0, notifications.getNotificationEvents().size());
 
       notifications = new AtsNotificationCollector();
-      when(teamDef.getSubscribed()).thenReturn(Arrays.asList(kay_ValidEmail));
-      when(ai.getSubscribed()).thenReturn(new ArrayList<IAtsUser>());
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(Arrays.asList(kay_ValidEmail));
+      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<IAtsUser>());
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
 
       notifications = new AtsNotificationCollector();
-      when(teamDef.getSubscribed()).thenReturn(new ArrayList<IAtsUser>());
-      when(ai.getSubscribed()).thenReturn(Arrays.asList(kay_ValidEmail));
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<IAtsUser>());
+      when(actionableItemService.getSubscribed(ai)).thenReturn(Arrays.asList(kay_ValidEmail));
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
 
       notifications = new AtsNotificationCollector();
-      when(teamDef.getSubscribed()).thenReturn(Arrays.asList(jason_ValidEmail));
-      when(ai.getSubscribed()).thenReturn(Arrays.asList(kay_ValidEmail));
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(Arrays.asList(jason_ValidEmail));
+      when(actionableItemService.getSubscribed(ai)).thenReturn(Arrays.asList(kay_ValidEmail));
       processor.run(notifications, event);
       Assert.assertEquals(2, notifications.getNotificationEvents().size());
    }

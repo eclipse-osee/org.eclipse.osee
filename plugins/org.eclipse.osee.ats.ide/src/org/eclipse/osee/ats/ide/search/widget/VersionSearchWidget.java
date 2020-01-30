@@ -92,7 +92,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
 
    private List<IAtsVersion> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
       List<IAtsVersion> versions = new ArrayList<>();
-      versions.addAll(teamDefHoldingVersions.getVersions());
+      versions.addAll(AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
       Collections.sort(versions, new Comparator<IAtsVersion>() {
 
          @Override
@@ -136,7 +136,9 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       Collection<IAtsTeamDefinition> teamDefArts = getSelectedTeamDefinitions();
       if (!teamDefArts.isEmpty()) {
 
-         IAtsTeamDefinition teamDefHoldingVersions = teamDefArts.iterator().next().getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition teamDefHoldingVersions =
+            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+               teamDefArts.iterator().next());
          if (teamDefHoldingVersions != null) {
             versions.addAll(getSortedVersions(teamDefHoldingVersions));
          }
@@ -146,9 +148,11 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
          for (IAtsActionableItem ai : teamActArts) {
             for (ArtifactToken teamDefArt : AtsClientService.get().getRelationResolver().getRelated(ai,
                AtsRelationTypes.TeamActionableItem_TeamDefinition)) {
-               IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(
-                  teamDefArt).getTeamDefinitionHoldingVersions();
-               versions.addAll(getSortedVersions(teamDef));
+               IAtsTeamDefinition teamDef =
+                  AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(teamDefArt);
+               IAtsTeamDefinition teamDefHoldVer =
+                  AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
+               versions.addAll(getSortedVersions(teamDefHoldVer));
             }
          }
       }

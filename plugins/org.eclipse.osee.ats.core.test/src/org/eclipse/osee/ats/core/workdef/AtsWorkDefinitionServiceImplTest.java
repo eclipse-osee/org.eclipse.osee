@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -80,6 +81,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock IAtsTask task;
    @Mock AtsApi atsApi;
    @Mock IAtsWorkDefinitionService workDefService;
+   @Mock IAtsTeamDefinitionService teamDefinitionService;
 
    // @formatter:on
 
@@ -87,9 +89,10 @@ public class AtsWorkDefinitionServiceImplTest {
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
       when(atsApi.isWorkDefAsName()).thenReturn(true);
-      when(topTeamDef.getParentTeamDef()).thenReturn(null);
-      when(projTeamDef.getParentTeamDef()).thenReturn(topTeamDef);
-      when(featureTeamDef.getParentTeamDef()).thenReturn(projTeamDef);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(atsApi.getTeamDefinitionService().getParentTeamDef(topTeamDef)).thenReturn(null);
+      when(atsApi.getTeamDefinitionService().getParentTeamDef(projTeamDef)).thenReturn(topTeamDef);
+      when(atsApi.getTeamDefinitionService().getParentTeamDef(featureTeamDef)).thenReturn(projTeamDef);
       // always return default when requested
       when(workDefinitionService.getWorkDefinitionByName(
          eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()))).thenReturn(defaultPeerToPeerWorkDef);

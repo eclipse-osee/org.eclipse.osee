@@ -103,8 +103,8 @@ public class ActionOperations {
             String version = values.iterator().next();
             if (currVersion == null || !currVersion.getIdString().equals(version)) {
                IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef =
-                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
+                  workItem.getParentTeamWorkflow().getTeamDefinition());
                for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
                   if (teamDefVer.getIdString().equals(version)) {
                      newVer = teamDefVer;
@@ -123,9 +123,9 @@ public class ActionOperations {
             String version = values.iterator().next();
             if (currVersion == null || !currVersion.getName().equals(version)) {
                IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef =
-                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
-               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
+               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinition(workItem);
+               IAtsTeamDefinition teamDefHoldVer = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
+               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDefHoldVer)) {
                   if (teamDefVer.getName().equals(version)) {
                      newVer = teamDefVer;
                      break;

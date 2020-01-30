@@ -68,12 +68,13 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    @Override
    public Object getParent(Object element) {
       if (element instanceof IAtsTeamDefinition) {
-         return ((IAtsTeamDefinition) element).getParentTeamDef();
+         return (AtsClientService.get().getTeamDefinitionService().getParentTeamDef((IAtsTeamDefinition) element));
       } else if (element instanceof JaxTeamDefinition) {
          Long id = ((JaxTeamDefinition) element).getId();
          if (id > 0) {
             JaxTeamDefinition td =
                AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+            return td;
          }
       }
       return null;

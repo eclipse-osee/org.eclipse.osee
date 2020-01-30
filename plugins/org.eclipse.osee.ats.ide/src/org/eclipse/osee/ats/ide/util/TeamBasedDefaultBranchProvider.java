@@ -40,8 +40,8 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
          }
 
          Collection<BranchId> branches = new LinkedList<>();
-         for (IAtsTeamDefinition team : teams) {
-            branches.add(team.getTeamBranchId());
+         for (IAtsTeamDefinition teamDef : teams) {
+            branches.add(AtsClientService.get().getTeamDefinitionService().getTeamBranchId(teamDef));
          }
 
          return branches;

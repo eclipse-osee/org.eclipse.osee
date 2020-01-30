@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
@@ -113,7 +114,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       BranchId parentBranch = BranchId.SENTINEL;
 
       // Check for parent branch id in Version artifact
-      if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
+      if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          IAtsVersion verArt = atsApi.getVersionService().getTargetedVersion(teamWf);
          if (verArt != null) {
             parentBranch = getBranch((IAtsConfigObject) verArt);
@@ -121,8 +122,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch.isInvalid() && teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
-         parentBranch = getBranch((IAtsConfigObject) teamWf.getTeamDefinition());
+      if (parentBranch.isInvalid() && teamWf.isTeamWorkflow() && atsApi.getBranchService().isBranchValid(
+         new CommitConfigItem(teamWf.getTeamDefinition(), atsApi))) {
+         parentBranch = getBranch(teamWf.getTeamDefinition());
       }
 
       // If not defined, return SENTINEL
@@ -152,13 +154,14 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
-      if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
+      if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
             return atsApi.getVersionService().getTargetedVersion(teamWf);
          }
       } else {
-         if (teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
-            return teamWf.getTeamDefinition();
+         CommitConfigItem item = new CommitConfigItem(teamWf.getTeamDefinition(), atsApi);
+         if (teamWf.isTeamWorkflow() && atsApi.getBranchService().isBranchValid(item)) {
+            return item;
          }
       }
       return null;
@@ -231,13 +234,14 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
       Set<ICommitConfigItem> configObjects = new HashSet<>();
-      if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
+      if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
             Versions.getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf), configObjects, atsApi);
          }
       } else {
-         if (teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
-            configObjects.add(teamWf.getTeamDefinition());
+         CommitConfigItem item = new CommitConfigItem(teamWf.getTeamDefinition(), atsApi);
+         if (teamWf.isTeamWorkflow() && atsApi.getBranchService().isBranchValid(item)) {
+            configObjects.add(item);
          }
       }
       return configObjects;
@@ -335,8 +339,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       if (branch.isInvalid() && configObject instanceof IAtsTeamDefinition) {
          IAtsTeamDefinition teamDef = (IAtsTeamDefinition) configObject;
-         if (teamDef.getBaselineBranchId().isValid()) {
-            branch = teamDef.getBaselineBranchId();
+         if (atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef).isValid()) {
+            branch = atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef);
          }
       }
       if (branch.isInvalid()) {
@@ -356,8 +360,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getBranch(ICommitConfigItem configObject) {
-      return getBranch((IAtsConfigObject) configObject);
+   public BranchId getBranch(ICommitConfigItem configItem) {
+      return getBranch(configItem.getConfigObject());
    }
 
    @Override
@@ -419,7 +423,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       if (!teamWf.isTeamWorkflow()) {
          return Result.FalseResult;
       }
-      if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
+      if (atsApi.getVersionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          IAtsVersionService versionService = atsApi.getVersionService();
          if (!versionService.hasTargetedVersion(teamWf)) {
             return new Result(false, "Workflow not targeted for Version");
@@ -436,12 +440,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return Result.TrueResult;
 
       } else {
-         Result result = teamWf.getTeamDefinition().isAllowCommitBranchInherited();
+         Result result = atsApi.getTeamDefinitionService().isAllowCommitBranchInherited(teamWf.getTeamDefinition());
          if (result.isFalse()) {
             return result;
          }
 
-         if (!isBranchValid(teamWf.getTeamDefinition())) {
+         if (!atsApi.getBranchService().isBranchValid(new CommitConfigItem(teamWf.getTeamDefinition(), atsApi))) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamWf.getTeamDefinition() + "]");
          }
@@ -455,7 +459,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return Result.FalseResult;
       }
 
-      if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
+      if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          IAtsVersionService versionService = atsApi.getVersionService();
          if (!versionService.hasTargetedVersion(teamWf)) {
             return new Result(false, "Workflow not targeted for Version");
@@ -476,16 +480,16 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return Result.TrueResult;
 
       } else {
-         Result result = teamWf.getTeamDefinition().isAllowCreateBranchInherited();
+         Result result = atsApi.getTeamDefinitionService().isAllowCreateBranchInherited(teamWf.getTeamDefinition());
          if (result.isFalse()) {
             return result;
          }
 
-         if (!isBranchValid(teamWf.getTeamDefinition())) {
+         if (!atsApi.getBranchService().isBranchValid(new CommitConfigItem(teamWf.getTeamDefinition(), atsApi))) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamWf.getTeamDefinition() + "]");
          }
-         BranchId baselineBranch = getBranch((IAtsConfigObject) teamWf.getTeamDefinition());
+         BranchId baselineBranch = getBranch(teamWf.getTeamDefinition());
          if (!getBranchType(baselineBranch).isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }

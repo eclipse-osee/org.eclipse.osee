@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -25,6 +26,7 @@ public class JaxAtsObject extends NamedIdBase {
    protected String guid;
    protected boolean active;
    private String description;
+   private AtsApi atsApi;
 
    public JaxAtsObject() {
       this(Id.SENTINEL, "");
@@ -70,6 +72,14 @@ public class JaxAtsObject extends NamedIdBase {
 
    public void setGuid(String guid) {
       this.guid = guid;
+   }
+
+   public AtsApi getAtsApi() {
+      return atsApi;
+   }
+
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
 }

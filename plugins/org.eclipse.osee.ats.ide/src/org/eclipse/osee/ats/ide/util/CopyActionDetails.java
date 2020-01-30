@@ -110,8 +110,8 @@ public class CopyActionDetails {
                return formatStr;
             }
          }
-         if (teamDef.getParentTeamDef() != null) {
-            return getFormatStr(teamDef.getParentTeamDef());
+         if (AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+            return getFormatStr(AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef));
          }
       }
       return null;

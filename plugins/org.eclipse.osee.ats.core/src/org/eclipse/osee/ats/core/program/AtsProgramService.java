@@ -283,9 +283,9 @@ public class AtsProgramService implements IAtsProgramService {
          program = atsApi.getProgramService().getProgramById(ArtifactId.valueOf((String) object));
       }
       if (program == null) {
-         IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition topTeamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
          if (topTeamDef != null && teamDef.notEqual(topTeamDef)) {
-            program = loadProgram(teamDef.getParentTeamDef());
+            program = loadProgram(atsApi.getTeamDefinitionService().getParentTeamDef(teamDef));
          }
       }
       if (program == null) {
@@ -478,7 +478,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsVersion> getVersions(IAtsProgram program) {
       IAtsTeamDefinition teamDefHoldingVersions = atsApi.getProgramService().getTeamDefHoldingVersions(program);
       if (teamDefHoldingVersions != null) {
-         return teamDefHoldingVersions.getVersions();
+         return atsApi.getVersionService().getVersions(teamDefHoldingVersions);
       }
       return java.util.Collections.emptyList();
    }

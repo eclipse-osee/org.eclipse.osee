@@ -13,8 +13,11 @@ package org.eclipse.osee.ats.api.user;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -70,5 +73,7 @@ public interface IAtsUserService {
    void setCurrentUser(IAtsUser user);
 
    AtsUser getAtsUser(IAtsUser user);
+
+   Collection<IAtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
 
 }

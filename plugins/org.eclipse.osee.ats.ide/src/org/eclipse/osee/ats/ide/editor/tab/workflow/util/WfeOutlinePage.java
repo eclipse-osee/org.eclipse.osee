@@ -508,7 +508,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             try {
                IAtsTeamDefinition teamDef =
                   ((TeamWorkFlowArtifact) workflowEditor.getWfeInput().getArtifact()).getTeamDefinition();
-               for (String workRuleDef : teamDef.getRules()) {
+               for (String workRuleDef : AtsClientService.get().getTeamDefinitionService().getRules(teamDef)) {
                   String location = String.format("Team Definition [%s]", teamDef);
                   result.add(new RuleAndLocation(workRuleDef, location));
                   if (workRuleDef.startsWith("ats")) {

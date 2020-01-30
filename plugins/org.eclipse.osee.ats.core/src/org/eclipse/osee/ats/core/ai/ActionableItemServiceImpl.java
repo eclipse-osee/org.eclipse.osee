@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -26,11 +25,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.config.ActionableItem;
-import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -83,21 +83,21 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
             ais.add(ai);
          }
       }
-      for (IAtsTeamDefinition childTeamDef : teamDef.getChildrenTeamDefinitions()) {
+      for (IAtsTeamDefinition childTeamDef : atsApi.getTeamDefinitionService().getChildrenTeamDefinitions(teamDef)) {
          getActiveActionableItemsAndChildrenRecurse(childTeamDef, ais);
       }
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) {
+   public Set<IAtsActionableItem> getActionableItems(IAtsWorkItem workItem) {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      if (!atsStoreService.isDeleted(atsObject)) {
-         for (ArtifactId id : getActionableItemIds(atsObject)) {
+      if (!atsStoreService.isDeleted(workItem)) {
+         for (ArtifactId id : getActionableItemIds(workItem)) {
             IAtsActionableItem aia = atsApi.getQueryService().getConfigItem(id);
             if (aia == null) {
                OseeLog.logf(ActionableItemServiceImpl.class, Level.SEVERE,
                   "Actionable Item id [%s] from [%s] doesn't match item in AtsConfigCache", id,
-                  atsObject.toStringWithId());
+                  workItem.toStringWithId());
             } else {
                ais.add(aia);
             }
@@ -107,42 +107,42 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public String getActionableItemsStr(IAtsObject atsObject) {
-      return AtsObjects.toString("; ", getActionableItems(atsObject));
+   public String getActionableItemsStr(IAtsWorkItem workItem) {
+      return AtsObjects.toString("; ", getActionableItems(workItem));
    }
 
    @Override
-   public Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject) {
-      return attrResolver.getAttributeValues(atsObject, AtsAttributeTypes.ActionableItemReference);
+   public Collection<ArtifactId> getActionableItemIds(IAtsWorkItem workItem) {
+      return attrResolver.getAttributeValues(workItem, AtsAttributeTypes.ActionableItemReference);
    }
 
    @Override
-   public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) {
-      if (!getActionableItemIds(atsObject).contains(aia.getArtifactId())) {
-         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
+   public void addActionableItem(IAtsWorkItem workItem, IAtsActionableItem aia, IAtsChangeSet changes) {
+      if (!getActionableItemIds(workItem).contains(aia.getArtifactId())) {
+         changes.addAttribute(workItem, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
       }
    }
 
    @Override
-   public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) {
-      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
+   public void removeActionableItem(IAtsWorkItem workItem, IAtsActionableItem aia, IAtsChangeSet changes) {
+      changes.deleteAttribute(workItem, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
    }
 
    @Override
-   public Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) {
-      Set<IAtsActionableItem> existingAias = getActionableItems(atsObject);
+   public Result setActionableItems(IAtsWorkItem workItem, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) {
+      Set<IAtsActionableItem> existingAias = getActionableItems(workItem);
 
       // Remove non-selected items
       for (IAtsActionableItem existingAia : existingAias) {
          if (!newItems.contains(existingAia)) {
-            removeActionableItem(atsObject, existingAia, changes);
+            removeActionableItem(workItem, existingAia, changes);
          }
       }
 
       // Add newly-selected items
       for (IAtsActionableItem newItem : newItems) {
          if (!existingAias.contains(newItem)) {
-            addActionableItem(atsObject, newItem, changes);
+            addActionableItem(workItem, newItem, changes);
          }
       }
 
@@ -150,22 +150,23 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public boolean hasActionableItems(IAtsObject atsObject) {
+   public boolean hasActionableItems(IAtsWorkItem workItem) {
       boolean hasAis = false;
-      hasAis = attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItemReference) > 0;
+      hasAis = attrResolver.getAttributeCount(workItem, AtsAttributeTypes.ActionableItemReference) > 0;
       if (!hasAis && atsApi.getStoreService().getAttributeTypes().contains(AtsAttributeTypes.ActionableItem)) {
-         hasAis = attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItem) > 0;
+         hasAis = attrResolver.getAttributeCount(workItem, AtsAttributeTypes.ActionableItem) > 0;
       }
       return hasAis;
    }
 
    @Override
-   public Collection<IAtsTeamDefinition> getCorrespondingTeamDefinitions(IAtsObject atsObject) {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      if (getActionableItems(atsObject).size() > 0) {
-         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(getActionableItems(atsObject)));
+   public Collection<IAtsActionableItem> getActionableItems(IAtsTeamDefinition teamDef) {
+      Set<IAtsActionableItem> aias = new HashSet<>();
+      for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDef,
+         AtsRelationTypes.TeamActionableItem_ActionableItem)) {
+         aias.add(atsApi.getActionableItemService().getActionableItemById(ai));
       }
-      return teamDefs;
+      return aias;
    }
 
    @Override
@@ -220,6 +221,18 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    @Override
    public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
       return getWorkTypes(workItem).contains(workType);
+   }
+
+   @Override
+   public Collection<IAtsUser> getSubscribed(IAtsActionableItem ai) {
+      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getArtifactToken(),
+         AtsRelationTypes.SubscribedUser_User);
+   }
+
+   @Override
+   public Collection<IAtsUser> getLeads(IAtsActionableItem ai) {
+      return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getStoreObject(),
+         AtsRelationTypes.TeamLead_Lead);
    }
 
 }

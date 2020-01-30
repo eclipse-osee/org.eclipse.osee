@@ -14,9 +14,11 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionUtility;
@@ -40,11 +42,15 @@ public class ModifyActionableItemsTest {
    @Mock private IAtsActionableItem ai1, ai2, ai3;
    @Mock private ITeamDefinitionUtility teamDefUtil;
    @Mock private IAtsTeamDefinition teamDef;
+   @Mock private AtsApi atsApi;
+   @Mock private IAtsTeamDefinitionService teamDefinitionService;
    // @formatter:on
 
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
+      when(atsApi.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(teamDefinitionService.getLeads(teamDef)).thenReturn(Collections.emptyList());
    }
 
    @Test
@@ -56,7 +62,7 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
       ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
-         newAIs, modifiedBy, teamDefUtil);
+         newAIs, modifiedBy, teamDefUtil, atsApi);
       job.performModification();
 
       Assert.assertEquals(1, job.getAddAis().size());
@@ -74,7 +80,7 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
       ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
-         newAIs, modifiedBy, teamDefUtil);
+         newAIs, modifiedBy, teamDefUtil, atsApi);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());
@@ -92,7 +98,7 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
       ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
-         newAIs, modifiedBy, teamDefUtil);
+         newAIs, modifiedBy, teamDefUtil, atsApi);
       job.performModification();
 
       Assert.assertTrue(results.toString().contains("Error: All AIs can not be removed"));
@@ -115,7 +121,7 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> newAIs = Arrays.asList(ai3);
 
       ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
-         newAIs, modifiedBy, teamDefUtil);
+         newAIs, modifiedBy, teamDefUtil, atsApi);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());
@@ -144,7 +150,7 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> newAIs = Arrays.asList(ai2);
 
       ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
-         newAIs, modifiedBy, teamDefUtil);
+         newAIs, modifiedBy, teamDefUtil, atsApi);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());

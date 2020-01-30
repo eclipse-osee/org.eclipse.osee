@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -123,7 +124,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
          try {
             IAtsTeamDefinition teamDef = atsApi.getVersionService().getTeamDefinition(this);
             if (teamDef != null) {
-               return teamDef.getTeamBranchId();
+               return atsApi.getTeamDefinitionService().getTeamBranchId(teamDef);
             } else {
                return BranchId.SENTINEL;
             }
@@ -137,6 +138,11 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    public BranchId getBaselineBranchId() {
       return BranchId.valueOf(
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchId, "-1"));
+   }
+
+   @Override
+   public IAtsConfigObject getConfigObject() {
+      return this;
    }
 
 }

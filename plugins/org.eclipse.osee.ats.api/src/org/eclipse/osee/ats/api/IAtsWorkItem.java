@@ -229,6 +229,11 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
             // do nothing
          }
 
+         @Override
+         public AtsApi getAtsApi() {
+            return null;
+         }
+
       }
       return new IAtsWorkItemSentinel();
    }

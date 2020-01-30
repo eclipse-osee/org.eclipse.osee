@@ -124,7 +124,8 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version",
-               selectedTeamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both));
+               AtsClientService.get().getVersionService().getVersions(selectedTeamDef, VersionReleaseType.Both,
+                  VersionLockedType.Both));
             if (dialog.open() == 0) {
                selectedVersionArt = dialog.getSelectedFirst();
                return;

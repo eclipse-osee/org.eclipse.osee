@@ -182,7 +182,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
             try {
                Collection<IAtsVersion> versionArtifacts =
-                  AtsClientService.get().getProgramService().getTeamDefHoldingVersions(selectedProgram).getVersions();
+                  AtsClientService.get().getProgramService().getVersions(selectedProgram);
                versionsListViewer.setInputAtsObjects(versionArtifacts);
 
                requirementsBranchWidget.setSelection(null);

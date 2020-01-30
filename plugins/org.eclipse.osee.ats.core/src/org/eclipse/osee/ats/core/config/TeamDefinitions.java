@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -67,7 +68,8 @@ public class TeamDefinitions {
 
    public static Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse) {
       Set<IAtsTeamDefinition> children = new HashSet<>();
-      for (IAtsTeamDefinition child : topTeamDef.getChildrenTeamDefinitions()) {
+      for (IAtsTeamDefinition child : AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(
+         topTeamDef)) {
          children.add(child);
          if (recurse) {
             children.addAll(getChildren(child, recurse));
@@ -102,7 +104,7 @@ public class TeamDefinitions {
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, queryService)) {
-         if (teamDef.getVersions().size() > 0) {
+         if (AtsApiService.get().getVersionService().getVersions(teamDef).size() > 0) {
             teamDefs.add(teamDef);
          }
       }
@@ -118,7 +120,8 @@ public class TeamDefinitions {
    public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.add(teamDef);
-      for (IAtsTeamDefinition child : teamDef.getChildrenTeamDefinitions()) {
+      for (IAtsTeamDefinition child : AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(
+         teamDef)) {
          teamDefs.addAll(getTeamsFromItemAndChildren(child));
       }
       return teamDefs;

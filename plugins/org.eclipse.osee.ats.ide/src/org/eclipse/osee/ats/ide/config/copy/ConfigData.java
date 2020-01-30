@@ -92,8 +92,8 @@ public class ConfigData {
 
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parentTeamDef = null;
-      if (teamDef.getParentTeamDef() != null) {
-         parentTeamDef = teamDef.getParentTeamDef();
+      if (AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+         parentTeamDef = AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef);
       } else {
          parentTeamDef = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService());
       }
@@ -103,7 +103,8 @@ public class ConfigData {
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
-      Collection<IAtsActionableItem> fromAias = teamDef.getActionableItems();
+      Collection<IAtsActionableItem> fromAias =
+         AtsClientService.get().getActionableItemService().getActionableItems(teamDef);
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {

@@ -12,27 +12,20 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G Dunne
  */
-public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
+public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
    protected ArtifactToken artifact;
    protected final Log logger;
    protected final AtsApi atsApi;
@@ -49,6 +42,7 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
       return logger;
    }
 
+   @Override
    public AtsApi getAtsApi() {
       return atsApi;
    }
@@ -86,35 +80,6 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
       return results;
    }
 
-   public Collection<IAtsUser> getLeads() {
-      return getRelatedUsers(AtsRelationTypes.TeamLead_Lead);
-   }
-
-   public Collection<IAtsUser> getSubscribed() {
-      return getRelatedUsers(AtsRelationTypes.SubscribedUser_User);
-   }
-
-   protected Collection<IAtsUser> getRelatedUsers(RelationTypeSide relation) {
-      Set<IAtsUser> results = new HashSet<>();
-      try {
-         for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
-            String userId = (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
-               CoreAttributeTypes.UserId, null);
-            IAtsUser lead = atsApi.getUserService().getUserById(userId);
-            Conditions.assertNotNull(lead, "Lead can not be null with userArt %s", userArt);
-            results.add(lead);
-         }
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error getting related Users for relationTypeSide[%s]", relation);
-      }
-      return results;
-   }
-
-   @Override
-   public ArtifactToken getStoreObject() {
-      return artifact != null ? artifact : super.getStoreObject();
-   }
-
    @Override
    public Long getId() {
       return artifact.getId();
@@ -123,5 +88,25 @@ public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObj
    @Override
    public String getDescription() {
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+   }
+
+   public ArtifactToken loadStoreObject() {
+      ArtifactToken art = atsApi.getQueryService().getArtifact(artifact.getId());
+      if (art.isValid()) {
+         setStoreObject(art);
+      }
+      return art;
+   }
+
+   @Override
+   public ArtifactToken getStoreObject() {
+      if (artifact != null) {
+         return artifact;
+      }
+
+      if (super.getStoreObject() == null) {
+         return loadStoreObject();
+      }
+      return super.getStoreObject();
    }
 }

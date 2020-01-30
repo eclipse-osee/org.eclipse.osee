@@ -117,7 +117,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                   new OpenWorkflowsByTeamDefSearchItem("Show Open " + childTeamDef + " Workflows",
                      new SimpleTeamDefinitionProvider(Arrays.asList(childTeamDef))));
             }
-            if (teamDef.isTeamUsesVersions()) {
+            if (AtsClientService.get().getVersionService().isTeamUsesVersions(teamDef)) {
                if (team.getName().contains("SAW")) {
                   new XNavigateUrlItem(teamItems, "Open SAW Website", "http://www.cisst.org/cisst/saw/", false);
                } else if (team.getName().contains("CIS")) {

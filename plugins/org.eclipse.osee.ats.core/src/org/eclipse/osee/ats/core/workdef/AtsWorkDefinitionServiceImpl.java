@@ -176,7 +176,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       if (workDef != null) {
          return workDef;
       }
-      IAtsTeamDefinition parentArt = teamDef.getParentTeamDef();
+      IAtsTeamDefinition parentArt = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
       if (parentArt != null) {
          workDef = getWorkDefinitionFromTeamDefinitionAttributeInherited(parentArt);
       }
@@ -321,23 +321,23 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     * @return WorkDefinitionMatch of teamDefinition configured with RelatedPeerWorkflowDefinition attribute with recurse
     * up to top teamDefinition or will return no match
     */
-   public IAtsWorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDefinition) {
-      Conditions.notNull(teamDefinition, AtsWorkDefinitionServiceImpl.class.getSimpleName());
+   public IAtsWorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDef) {
+      Conditions.notNull(teamDef, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       IAtsWorkDefinition workDefinition =
-         getWorkDefinitionFromAsObject(teamDefinition, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
+         getWorkDefinitionFromAsObject(teamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
       if (workDefinition == null || workDefinition.isInvalid()) {
-         IAtsTeamDefinition parentTeamDef = teamDefinition.getParentTeamDef();
+         IAtsTeamDefinition parentTeamDef = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
          if (parentTeamDef != null) {
             workDefinition = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(parentTeamDef);
          }
       }
       if (workDefinition == null && atsApi.isWorkDefAsName()) {
-         String workDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefinition,
+         String workDefId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef,
             AtsAttributeTypes.RelatedPeerWorkflowDefinition, "");
          if (Strings.isNumeric(workDefId)) {
             workDefinition = getWorkDefinition(Long.valueOf(workDefId));
          } else {
-            IAtsTeamDefinition parentTeamDef = teamDefinition.getParentTeamDef();
+            IAtsTeamDefinition parentTeamDef = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
             if (parentTeamDef != null) {
                workDefinition = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(parentTeamDef);
             }
@@ -476,7 +476,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
          }
          if (teamWf != null) {
-            hasRule = teamWf.getTeamDefinition().hasRule(option.name());
+            hasRule = atsApi.getTeamDefinitionService().hasRule(teamWf.getTeamDefinition(), option.name());
          }
       } catch (Exception ex) {
          atsApi.getLogger().error(ex, "Error reading rule [%s] for workItem %s", option, workItem.toStringWithId());
@@ -547,7 +547,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          return workDefinition;
       }
 
-      IAtsTeamDefinition parentTeamDef = teamDef.getParentTeamDef();
+      IAtsTeamDefinition parentTeamDef = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
       if (parentTeamDef == null) {
          return atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Team_Default);
       }

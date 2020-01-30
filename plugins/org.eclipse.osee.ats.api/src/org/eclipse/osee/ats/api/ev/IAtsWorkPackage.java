@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.ev;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -88,6 +89,11 @@ public interface IAtsWorkPackage extends IAtsConfigObject {
 
          @Override
          public Date getEndDate() {
+            return null;
+         }
+
+         @Override
+         public AtsApi getAtsApi() {
             return null;
          }
 

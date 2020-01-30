@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,6 +34,11 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    @Override
    public ArtifactToken getStoreObject() {
       return this;
+   }
+
+   @Override
+   public AtsApi getAtsApi() {
+      return AtsClientService.get();
    }
 
 }

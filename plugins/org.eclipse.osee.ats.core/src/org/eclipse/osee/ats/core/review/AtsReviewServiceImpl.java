@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -151,7 +152,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
 
       // Else if Team Workflow , return it to the leads of this team
-      users.addAll(teamWf.getTeamDefinition().getLeads());
+      users.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
       return users;
    }
 

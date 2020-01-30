@@ -455,7 +455,8 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setInitialSelections(aba.getTransitionAssignees());
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+         uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(
+            awa.getParentTeamWorkflow().getTeamDefinition()));
       }
       if (uld.open() != 0) {
          return;

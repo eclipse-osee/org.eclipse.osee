@@ -82,7 +82,9 @@ public class ConfigDataTest {
       ConfigData data = new ConfigData();
       IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Code);
       data.setTeamDef(tda);
-      Assert.assertEquals(DemoTestUtil.getActionableItem(DemoActionableItems.CIS_CSCI), data.getParentActionableItem());
+      IAtsActionableItem actionableItem = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_CSCI);
+      IAtsActionableItem parentActionableItem = data.getParentActionableItem();
+      Assert.assertEquals(actionableItem, parentActionableItem);
 
       tda = DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_SW);
       data.setTeamDef(tda);

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.model.impl;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -50,4 +52,10 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
    public ArtifactTypeToken getArtifactType() {
       return object.getArtifactType();
    }
+
+   @Override
+   public AtsApi getAtsApi() {
+      return AtsApiService.get();
+   }
+
 }

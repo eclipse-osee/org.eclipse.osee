@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -120,7 +121,8 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       assignees.addAll(workItem.getStateMgr().getAssignees());
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-         assignees.addAll(((IAtsTeamWorkflow) workItem).getTeamDefinition().getLeads());
+         assignees.addAll(
+            AtsApiService.get().getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition()));
          if (!assignees.contains(asUser)) {
             assignees.add(asUser);
          }

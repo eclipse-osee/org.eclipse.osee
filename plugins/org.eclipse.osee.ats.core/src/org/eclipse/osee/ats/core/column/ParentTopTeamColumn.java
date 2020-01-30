@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Provides for rollup of parent workflow's top team definition
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class ParentTopTeamColumn {
@@ -58,7 +58,8 @@ public final class ParentTopTeamColumn {
    protected static String getTopTeamDefName(IAtsTeamDefinition teamDef) {
       String result = "";
       if (teamDef != null) {
-         IAtsTeamDefinition teamDefinitionHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
+         IAtsTeamDefinition teamDefinitionHoldingVersions =
+            teamDef.getAtsApi().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
          if (teamDefinitionHoldingVersions != null) {
             teamDef = teamDefinitionHoldingVersions;
          }

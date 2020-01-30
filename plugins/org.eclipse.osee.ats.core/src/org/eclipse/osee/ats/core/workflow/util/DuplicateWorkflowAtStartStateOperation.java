@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -55,7 +56,7 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
          List<IAtsUser> assignees = new LinkedList<>();
          assignees.addAll(teamWf.getStateMgr().getAssignees());
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-         assignees.addAll(teamDef.getLeads());
+         assignees.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef));
          IAtsUser user = atsApi.getUserService().getCurrentUser();
          if (!assignees.contains(user)) {
             assignees.add(user);

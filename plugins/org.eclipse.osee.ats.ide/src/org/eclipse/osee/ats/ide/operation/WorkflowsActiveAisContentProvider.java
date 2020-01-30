@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
 
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
 
    private final Active active;
-   private final TeamWorkFlowArtifact teamWf;
+   private TeamWorkFlowArtifact teamWf;
 
    public WorkflowsActiveAisContentProvider(TeamWorkFlowArtifact teamWf, Active active) {
       this.teamWf = teamWf;
@@ -40,7 +41,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
       Collection<IAtsActionableItem> ais = new ArrayList<>();
       if (inputElement instanceof TeamWorkFlowArtifact) {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) inputElement;
-         ais.addAll(teamWf.getTeamDefinition().getActionableItems());
+         ais.addAll(AtsClientService.get().getActionableItemService().getActionableItems(teamWf.getTeamDefinition()));
       }
       return ais.toArray(new Object[ais.size()]);
    }
@@ -61,7 +62,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       Object parent = null;
       if (element instanceof IAtsActionableItem) {
-         if (teamWf.getActionableItems().contains(element)) {
+         if (teamWf != null && teamWf.getActionableItems().contains(element)) {
             parent = teamWf;
          } else {
             IAtsActionableItem ai = (IAtsActionableItem) element;
@@ -105,6 +106,14 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       // do nothing
+   }
+
+   public TeamWorkFlowArtifact getTeamWf() {
+      return teamWf;
+   }
+
+   public void setTeamWf(TeamWorkFlowArtifact teamWf) {
+      this.teamWf = teamWf;
    }
 
 }

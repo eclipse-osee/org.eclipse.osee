@@ -79,7 +79,7 @@ public class VersionReportJob extends Job {
    public static String getFullReleaseReport(IAtsTeamDefinition teamDef, IProgressMonitor monitor) {
       // Sort by release date and estimated release date
       Map<String, IAtsVersion> dateToVerArt = new HashMap<>();
-      for (IAtsVersion verArt : teamDef.getVersions()) {
+      for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          Date estRelDate = verArt.getEstimatedReleaseDate();
          Date relDate = verArt.getReleaseDate();
          if (relDate != null) {
@@ -116,9 +116,10 @@ public class VersionReportJob extends Job {
       }
       sb.append(AHTML.addSpace(5));
       int x = 1;
-      for (IAtsVersion verArt : teamDef.getVersions()) {
+      for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(teamDef)) {
          if (monitor != null) {
-            String str = "Processing version " + x++ + "/" + teamDef.getVersions().size();
+            String str = "Processing version " + x++ + "/" + AtsClientService.get().getVersionService().getVersions(
+               teamDef).size();
             monitor.subTask(str);
          }
          if (verArt.isReleased() || verArt.isNextVersion()) {

@@ -64,14 +64,14 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (IAtsUser user : teamDef.getMembers()) {
+            for (IAtsUser user : AtsClientService.get().getTeamDefinitionService().getMembers(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (IAtsUser user : teamDef.getLeads()) {
+            for (IAtsUser user : AtsClientService.get().getTeamDefinitionService().getLeads(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
