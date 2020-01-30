@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -365,13 +366,13 @@ public class OrcsCollectorWriter {
             RelationTypeSide relTypeSide =
                RelationTypeSide.create(RelationSide.SIDE_A, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
-               getTransaction().relate(otherArtifact, relType, artifact);
+               getTransaction().relate(otherArtifact, relType, artifact, RelationSorter.USER_DEFINED);
             }
          } else {
             RelationTypeSide relTypeSide =
                RelationTypeSide.create(RelationSide.SIDE_B, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
-               getTransaction().relate(artifact, relType, otherArtifact);
+               getTransaction().relate(artifact, relType, otherArtifact, RelationSorter.USER_DEFINED);
             }
          }
       }
