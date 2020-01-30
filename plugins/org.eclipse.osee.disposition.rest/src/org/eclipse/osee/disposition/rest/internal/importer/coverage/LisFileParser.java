@@ -600,14 +600,19 @@ public class LisFileParser implements DispoImporterApi {
 
       if (item != null) {
          Integer lineNumber = Integer.valueOf(m.group(3));
-         Integer bitsTrue = Integer.valueOf(m.group(4));
-         Integer bitsUsed = Integer.valueOf(m.group(5));
+         Integer bitsValue = Integer.valueOf(m.group(4));
+         Integer bitsMask = Integer.valueOf(m.group(5));
 
          Map<String, Boolean> bitsTrueMap =
-            getBitToBoolean(Integer.toString(bitsTrue, 2), Integer.toString(bitsUsed, 2));
+            getBitToBoolean(Integer.toString(bitsValue, 2), Integer.toString(bitsMask, 2));
 
          for (String abbrevCond : bitsTrueMap.keySet()) {
-            String TorF = bitsTrueMap.get(abbrevCond) ? "T" : "F";
+            String TorF = "";
+            if (bitsTrueMap.get(abbrevCond) == null) {
+               TorF = " ";
+            } else {
+               TorF = bitsTrueMap.get(abbrevCond) ? "T" : "F";
+            }
             String location = formatLocation(lineNumber, abbrevCond, TorF);
             Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
             if (matchingDiscrepancy != null) {
@@ -630,28 +635,39 @@ public class LisFileParser implements DispoImporterApi {
       return String.format("%s.%s.%s", lineNumber, abbrevCond.charAt(0) - 64 + " (" + abbrevCond + ")", TorF);
    }
 
-   private Map<String, Boolean> getBitToBoolean(String bitsTrue, String bitsUsed) {
+   private Map<String, Boolean> getBitToBoolean(String bitsValue, String bitsMask) {
       Map<String, Boolean> toReturn = new HashMap<>();
-      char[] bitsUsedArray = bitsUsed.toCharArray();
-      char[] bitsTrueArray = bitsTrue.toCharArray();
-      int totalResultIndex = bitsTrueArray.length - 1;
+      char[] bitsMaskedArray = bitsMask.toCharArray();
+      char[] bitsValueArray = bitsValue.toCharArray();
+      int totalResultIndex = bitsValueArray.length - 1;
 
-      int sizeDelta = bitsUsedArray.length - bitsTrueArray.length;
-      int highestChar = 63 + bitsUsedArray.length;
-      for (int i = 1; i <= sizeDelta; i++) {
+      int sizeDelta = bitsMaskedArray.length - bitsValueArray.length;
+      int highestChar = 63 + bitsMaskedArray.length;
+      for (int i = 0; i < sizeDelta; i++) {
+         char valueMaskBit = bitsMaskedArray[i];
          char c = (char) highestChar--;
          String key = Character.toString(c);
-         toReturn.put(key, false);
+         if (valueMaskBit == '1') {
+            toReturn.put(key, false);
+         } else {
+            toReturn.put(key, null);
+         }
       }
 
-      for (int i = 0; i < bitsTrueArray.length; i++) {
-         char valueC = bitsTrueArray[i];
+      for (int i = 0; i < bitsValueArray.length; i++) {
+         char valueC = bitsValueArray[i];
+         char valueMaskBit = bitsMaskedArray[i + sizeDelta];
+         String key = "";
          if (i != totalResultIndex) {
             char c = (char) highestChar--;
-            String key = Character.toString(c);
-            toReturn.put(key, valueC == '1');
+            key = Character.toString(c);
          } else {
-            toReturn.put("RESULT", valueC == '1');
+            key = "RESULT";
+         }
+         if (valueMaskBit == '0' && valueC == '0') {
+            toReturn.put(key, null);
+         } else {
+            toReturn.put(key, valueC == '1');
          }
       }
       return toReturn;
