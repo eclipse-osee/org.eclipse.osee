@@ -1620,7 +1620,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    @Override
    public final boolean equals(Object obj) {
       boolean equals = super.equals(obj);
-      if (equals && obj instanceof HasBranch) {
+      if (equals && obj instanceof HasBranch && ((HasBranch) obj).getBranch().isValid()) {
          return isOnSameBranch((HasBranch) obj);
       }
       return equals;
