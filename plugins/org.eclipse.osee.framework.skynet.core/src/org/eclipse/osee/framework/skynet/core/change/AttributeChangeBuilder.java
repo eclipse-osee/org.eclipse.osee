@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -29,7 +30,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    private final String isUri;
    private String wasUri;
 
-   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType, String isUri, String wasUri) {
+   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType, String isUri, String wasUri) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -35,13 +36,13 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
-   public ArtifactChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public ArtifactChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<ArtifactId> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<ArtifactId> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() {
-      Map<Integer, ArtifactChangeBuilder> artifactChangeBuilders = new HashMap<>();
+      Map<ArtifactId, ArtifactChangeBuilder> artifactChangeBuilders = new HashMap<>();
       boolean hasBranch = getSourceBranch() != null;
       TransactionToken fromTransactionId;
       TransactionToken toTransactionId;
@@ -75,7 +76,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
          TransactionDelta txDelta = new TransactionDelta(fromTransactionId, toTransactionId);
 
          while (chStmt.next()) {
-            int artId = chStmt.getInt("art_id");
+            ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
             ArtifactChangeBuilder artifactChangeBuilder =
@@ -96,5 +97,4 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
       return getChangeBuilders();
    }
-
 }

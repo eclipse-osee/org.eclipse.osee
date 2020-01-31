@@ -29,9 +29,9 @@ public abstract class ChangeBuilder {
    private final ArtifactTypeId artifactType;
    private final boolean isHistorical;
 
-   public ChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
+   public ChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
       this.sourceGamma = sourceGamma;
-      this.artId = ArtifactId.valueOf(artId);
+      this.artId = artId;
       this.txDelta = txDelta;
       this.modType = modType;
       this.branch = branch;

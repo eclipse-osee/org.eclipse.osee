@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,12 +28,11 @@ public abstract class ChangeAcquirer {
    private final TransactionToken transactionId;
    private final IProgressMonitor monitor;
    private final Artifact specificArtifact;
-   private final Set<Integer> artIds;
+   private final Set<ArtifactId> artIds;
    private final ArrayList<ChangeBuilder> changeBuilders;
-   private final Set<Integer> newAndDeletedArtifactIds;
+   private final Set<ArtifactId> newAndDeletedArtifactIds;
 
-   public ChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
-      super();
+   public ChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<ArtifactId> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<ArtifactId> newAndDeletedArtifactIds) {
       this.sourceBranch = sourceBranch;
       this.transactionId = transactionId;
       this.monitor = monitor;
@@ -62,7 +62,7 @@ public abstract class ChangeAcquirer {
       return specificArtifact;
    }
 
-   protected Set<Integer> getArtIds() {
+   protected Set<ArtifactId> getArtIds() {
       return artIds;
    }
 
@@ -70,7 +70,7 @@ public abstract class ChangeAcquirer {
       return changeBuilders;
    }
 
-   protected Set<Integer> getNewAndDeletedArtifactIds() {
+   protected Set<ArtifactId> getNewAndDeletedArtifactIds() {
       return newAndDeletedArtifactIds;
    }
 

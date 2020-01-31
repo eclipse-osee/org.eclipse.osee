@@ -27,7 +27,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;

@@ -158,8 +158,8 @@ public final class RevisionChangeLoader {
       }
       monitor.beginTask("Find Changes", 100);
 
-      Set<Integer> artIds = new HashSet<>();
-      Set<Integer> newAndDeletedArtifactIds = new HashSet<>();
+      Set<ArtifactId> artIds = new HashSet<>();
+      Set<ArtifactId> newAndDeletedArtifactIds = new HashSet<>();
       boolean isHistorical = sourceBranch == null;
 
       ArrayList<ChangeBuilder> changeBuilders = new ArrayList<>();
