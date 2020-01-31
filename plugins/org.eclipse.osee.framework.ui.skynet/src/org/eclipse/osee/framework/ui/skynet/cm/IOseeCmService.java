@@ -14,7 +14,12 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -28,17 +33,32 @@ public interface IOseeCmService {
       Task
    };
 
-   KeyedImage getImage(ImageType imageType);
+   default void openArtifact(ArtifactId artifactId, OseeCmEditor oseeCmEditor) {
+      Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, CoreBranches.COMMON);
+      RendererManager.openInJob(artifact, PresentationType.GENERALIZED_EDIT);
+   }
 
-   void openArtifact(ArtifactId artifact, OseeCmEditor oseeCmEditor);
+   default void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor) {
+      RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
+   }
 
-   void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
+   default boolean isPcrArtifact(Artifact artifact) {
+      return false;
+   }
 
-   boolean isPcrArtifact(Artifact artifact);
+   default boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch) {
+      return true;
+   }
 
-   boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch);
+   default KeyedImage getImage(ImageType imageType) {
+      return FrameworkImage.HEADING;
+   }
 
-   boolean isWorkFlowBranch(BranchId branch);
+   default boolean isWorkFlowBranch(BranchId branch) {
+      return false;
+   }
 
-   void commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource);
+   default void commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource) {
+      //
+   }
 }
