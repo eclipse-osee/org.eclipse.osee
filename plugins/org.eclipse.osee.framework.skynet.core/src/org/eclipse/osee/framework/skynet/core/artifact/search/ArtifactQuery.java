@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -371,17 +370,15 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactTypes, branch, ALL, allowDeleted).getArtifacts(1000, null);
    }
 
-   public static List<Artifact> getArtifactListFromTypeWithInheritence(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
-      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
-      Collection<ArtifactTypeToken> artifactTypes = artifactTypeFull.getAllDescendantTypes();
-      artifactTypes.add(artifactTypeFull);
+   public static List<Artifact> getArtifactListFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag allowDeleted) {
+      Collection<ArtifactTypeToken> artifactTypes = artifactType.getAllDescendantTypes();
+      artifactTypes.add(artifactType);
       return getArtifactListFromTypes(artifactTypes, branch, allowDeleted);
    }
 
-   public static int getArtifactCountFromTypeWithInheritence(ArtifactTypeId artifactType, BranchId branch, DeletionFlag allowDeleted) {
-      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
-      Collection<ArtifactTypeToken> artifactTypes = artifactTypeFull.getAllDescendantTypes();
-      artifactTypes.add(artifactTypeFull);
+   public static int getArtifactCountFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag allowDeleted) {
+      Collection<ArtifactTypeToken> artifactTypes = artifactType.getAllDescendantTypes();
+      artifactTypes.add(artifactType);
       return getArtifactCountFromTypes(artifactTypes, branch, allowDeleted);
    }
 
@@ -764,16 +761,14 @@ public class ArtifactQuery {
          + "txs.BRANCH_ID = ? and art.art_id in ( ART_IDS_HERE ) and txs.TX_CURRENT = 1 and attr.ATTR_TYPE_ID = 1152921504606847088 " //
          + "and attr.ART_ID = art.ART_ID and txs.GAMMA_ID = ATTR.GAMMA_ID";
 
-   public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(ArtifactTypeId artifactType, AttributeTypeId attributetype, String value, BranchId branch) {
-
-      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
+   public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(ArtifactTypeToken artifactType, AttributeTypeId attributetype, String value, BranchId branch) {
       List<Long> artTypeIds = new LinkedList<>();
       String ids = "";
-      for (ArtifactTypeToken artType : artifactTypeFull.getAllDescendantTypes()) {
+      for (ArtifactTypeToken artType : artifactType.getAllDescendantTypes()) {
          artTypeIds.add(artType.getId());
          ids += artType.getIdString() + ",";
       }
-      artTypeIds.add(artifactTypeFull.getId());
+      artTypeIds.add(artifactType.getId());
       ids = ids.replaceFirst(",$", "");
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();

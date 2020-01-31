@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -26,12 +26,12 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Single section for artifact type
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XArtifactTypeComboViewer extends XComboViewer {
    public static final String WIDGET_ID = XArtifactTypeComboViewer.class.getSimpleName();
-   private ArtifactType selectedArtifactType = null;
+   private ArtifactTypeToken selectedArtifactType = null;
 
    public XArtifactTypeComboViewer() {
       super("Artifact Type", SWT.READ_ONLY);
@@ -42,8 +42,8 @@ public class XArtifactTypeComboViewer extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-         List<ArtifactType> sortedArtifatTypes = new ArrayList<>();
+         Collection<? extends ArtifactTypeToken> artifactTypes = ArtifactTypeManager.getAllTypes();
+         List<ArtifactTypeToken> sortedArtifatTypes = new ArrayList<>();
          sortedArtifatTypes.addAll(artifactTypes);
          Collections.sort(sortedArtifatTypes);
          getComboViewer().setInput(sortedArtifatTypes);
@@ -57,12 +57,12 @@ public class XArtifactTypeComboViewer extends XComboViewer {
 
          @Override
          public void widgetModified(XWidget widget) {
-            selectedArtifactType = (ArtifactType) getSelected();
+            selectedArtifactType = (ArtifactTypeToken) getSelected();
          }
       });
    }
 
-   public ArtifactType getSelectedTeamDef() {
+   public ArtifactTypeToken getSelectedTeamDef() {
       return selectedArtifactType;
    }
 

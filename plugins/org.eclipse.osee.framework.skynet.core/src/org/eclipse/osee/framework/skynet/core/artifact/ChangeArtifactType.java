@@ -202,7 +202,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType) {
+   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeToken artifactType) {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,

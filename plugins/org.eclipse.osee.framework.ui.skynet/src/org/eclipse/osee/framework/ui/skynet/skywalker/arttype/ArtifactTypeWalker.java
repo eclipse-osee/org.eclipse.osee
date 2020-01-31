@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -88,7 +87,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
       setFocusWidget(viewer.getControl());
    }
 
-   private void explore(ArtifactType artifactType) {
+   private void explore(ArtifactTypeToken artifactType) {
       ArtifactTypeContentProvider contentProvider = (ArtifactTypeContentProvider) viewer.getContentProvider();
       contentProvider.getParentTypes().clear();
       contentProvider.setSelectedArtType(artifactType);

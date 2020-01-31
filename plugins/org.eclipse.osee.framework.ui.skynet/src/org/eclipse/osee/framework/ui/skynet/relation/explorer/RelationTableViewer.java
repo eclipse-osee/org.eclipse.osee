@@ -20,8 +20,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,7 +56,7 @@ public class RelationTableViewer {
    public static final int INVALID_NAME_NUM = 0;
    public static final int INVALID_REASON_NUM = 1;
 
-   public ArrayList<ArtifactType> fullDescriptorList;
+   public ArrayList<ArtifactTypeToken> fullDescriptorList;
 
    public RelationTableViewer(Table validTable, Table invalidTable, BranchId branch) {
       try {

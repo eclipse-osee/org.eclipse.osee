@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 
 /**
  * Multi selection of artifact types with checkbox dialog and filtering
- * 
+ *
  * @author Donald G. Dunne
  */
-public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactType> {
+public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTypeToken> {
 
    public static final String WIDGET_ID = XArtifactTypeMultiChoiceSelect.class.getSimpleName();
 
@@ -46,5 +46,4 @@ public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTy
       dialog.setInput(ArtifactTypeManager.getAllTypes());
       return dialog;
    }
-
 }

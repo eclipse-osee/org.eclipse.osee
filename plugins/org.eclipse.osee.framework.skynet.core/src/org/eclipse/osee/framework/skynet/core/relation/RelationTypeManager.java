@@ -13,13 +13,12 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -38,7 +37,7 @@ public class RelationTypeManager {
       return getCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(ArtifactTypeId artifactType, BranchId branch) {
+   public static List<RelationType> getValidTypes(ArtifactTypeToken artifactType, BranchId branch) {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
@@ -53,11 +52,10 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(IRelationType relType, ArtifactTypeId artifactType, RelationSide relationSide) {
+   public static int getRelationSideMax(IRelationType relType, ArtifactTypeToken artifactType, RelationSide relationSide) {
       RelationType relationType = getType(relType);
       int toReturn = 0;
-      ArtifactType type = getCacheService().getArtifactTypeCache().get(artifactType);
-      if (relationType.isArtifactTypeAllowed(relationSide, type)) {
+      if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;

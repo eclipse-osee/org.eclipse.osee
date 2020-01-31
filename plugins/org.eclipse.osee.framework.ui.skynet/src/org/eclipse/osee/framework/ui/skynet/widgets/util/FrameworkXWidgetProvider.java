@@ -16,11 +16,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -421,7 +421,7 @@ public final class FrameworkXWidgetProvider {
                XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
                String defaultType = xWidgetLayoutData.getDefaultValue();
                if (Strings.isValid(defaultType)) {
-                  List<ArtifactType> types = new LinkedList<>();
+                  List<ArtifactTypeToken> types = new LinkedList<>();
                   for (String type : defaultType.split(",")) {
                      try {
                         types.add(ArtifactTypeManager.getType(type));

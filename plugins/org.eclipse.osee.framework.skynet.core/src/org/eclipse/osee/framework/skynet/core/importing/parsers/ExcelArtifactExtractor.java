@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -80,8 +80,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
    private static final class ExcelRowProcessor implements RowProcessor {
 
-      private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
-         new DoubleKeyHashMap<>();
+      private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper = new DoubleKeyHashMap<>();
 
       private static enum RowTypeEnum {
          PARAGRAPH_NO(CoreAttributeTypes.ParagraphNumber.getName()),
@@ -114,7 +113,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
       private int rowCount;
       private String[] headerRow;
-      private ArtifactType primaryDescriptor;
+      private ArtifactTypeToken primaryDescriptor;
       private boolean importingRelations;
 
       public ExcelRowProcessor(RoughArtifactCollector collector) {

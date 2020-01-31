@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -67,7 +66,7 @@ public class VariableMap {
    }
 
    public ArtifactTypeToken getArtifactType(String parameterName) {
-      return getSingleCollectionValue(ArtifactType.class, parameterName);
+      return getSingleCollectionValue(ArtifactTypeToken.class, parameterName);
    }
 
    public List<ArtifactTypeToken> getArtifactTypes(String parameterName) {

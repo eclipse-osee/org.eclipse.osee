@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -38,8 +37,8 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    @Override
    public Object[] getConnectedTo(Object entity) {
       try {
-         if (entity instanceof ArtifactType) {
-            ArtifactType artifactType = (ArtifactType) entity;
+         if (entity instanceof ArtifactTypeToken) {
+            ArtifactTypeToken artifactType = (ArtifactTypeToken) entity;
             if (parentTypes.contains(artifactType)) {
                Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
                for (ArtifactTypeToken childType : artifactType.getDirectDescendantTypes()) {

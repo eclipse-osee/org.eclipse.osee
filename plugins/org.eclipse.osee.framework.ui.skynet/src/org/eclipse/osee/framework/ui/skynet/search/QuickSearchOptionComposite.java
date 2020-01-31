@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -557,14 +556,14 @@ public class QuickSearchOptionComposite extends Composite {
       @Override
       public void configure() {
          try {
-            Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
+            Collection<? extends ArtifactTypeToken> artifactTypes = ArtifactTypeManager.getAllTypes();
             FilteredCheckboxArtifactTypeDialog dialog = new FilteredCheckboxArtifactTypeDialog(
                "Artifact Type Filter Selection", "Select artifact types to search in.");
             dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 
             List<ArtifactTypeToken> selectedElements = new ArrayList<>();
-            for (ArtifactType type : artifactTypes) {
+            for (ArtifactTypeToken type : artifactTypes) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);
                }
@@ -602,7 +601,7 @@ public class QuickSearchOptionComposite extends Composite {
             for (String entry : items) {
                try {
                   Long id = Long.parseLong(entry);
-                  ArtifactType type = ArtifactTypeManager.getType(id);
+                  ArtifactTypeToken type = ArtifactTypeManager.getType(id);
                   configuration.add(type);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
