@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -115,7 +114,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
    }
 
-   private Artifact getArtifactFromCache(IProgressMonitor monitor, ArtifactType artifactType, String name) {
+   private Artifact getArtifactFromCache(IProgressMonitor monitor, ArtifactTypeToken artifactType, String name) {
 
       if (artifactType.inheritsFrom(CoreArtifactTypes.TestUnit)) {
          if (testUnitData == null) {

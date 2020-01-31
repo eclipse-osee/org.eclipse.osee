@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -141,8 +140,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
       BranchId requirementsBranch = variableMap.getBranch(PROGRAM_BRANCH);
       Object view = variableMap.getValue(BRANCH_VIEW);
       setViewId(view);
-      Collection<? extends ArtifactTypeToken> types =
-         variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to Trace");
+      Collection<ArtifactTypeToken> types =
+         variableMap.getCollection(ArtifactTypeToken.class, "Artifact Type(s) to Trace");
       boolean searchInherited = variableMap.getBoolean("Search Inherited Types");
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       List<TraceabilityStyle> selectedReports = getStyles(variableMap);

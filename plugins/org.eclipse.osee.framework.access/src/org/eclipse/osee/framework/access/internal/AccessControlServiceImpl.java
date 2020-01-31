@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -219,14 +218,13 @@ public class AccessControlServiceImpl implements IAccessControlService {
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
-         ArtifactTypeId subjectArtifactTypeId = ArtifactTypeId.valueOf(stmt.getLong("art_type_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
          BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
 
          accessControlListCache.put(subjectId.getId(), branchAccessObject, permission);
          objectToSubjectCache.put(branchAccessObject, subjectId);
 
-         ArtifactType subjectArtifactType = getArtifactTypeCache().get(subjectArtifactTypeId);
+         ArtifactTypeToken subjectArtifactType = getArtifactTypeCache().getById(stmt.getLong("art_type_id"));
          if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
             populateGroupMembers(subjectId);
          }
@@ -241,7 +239,6 @@ public class AccessControlServiceImpl implements IAccessControlService {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          ArtifactId objectId = ArtifactId.valueOf(stmt.getLong("art_id"));
          BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
-         Long subjectArtifactTypeId = stmt.getLong("art_type_id");
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
 
          if (permission != null) {
@@ -251,7 +248,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
                AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branch);
                cacheAccessObject(subjectId, permission, accessObject);
 
-               ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
+               ArtifactTypeToken subjectArtifactType = getArtifactTypeCache().getById(stmt.getLong("art_type_id"));
                if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
                   populateGroupMembers(subjectId);
                }

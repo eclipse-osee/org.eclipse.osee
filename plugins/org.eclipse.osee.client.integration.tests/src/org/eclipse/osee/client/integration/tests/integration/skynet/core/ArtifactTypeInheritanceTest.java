@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -54,7 +55,7 @@ public class ArtifactTypeInheritanceTest {
 
    @Test
    public void testAllArtifactTypesInheritFromArtifactWithIsOfType() {
-      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
+      for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
          Assert.assertTrue(String.format("[%s] was not of type [%s]", artifactType, CoreArtifactTypes.Artifact),
             artifactType.inheritsFrom(CoreArtifactTypes.Artifact));
       }
