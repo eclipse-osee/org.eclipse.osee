@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -39,8 +38,7 @@ public class RecentlyVisitedItems {
    }
 
    public void addVisited(IAtsWorkItem workItem) {
-      RecentlyVisistedItem item = RecentlyVisistedItem.valueOf(workItem.getArtifactToken(),
-         ArtifactTypeToken.valueOf(workItem.getArtifactType().getId(), workItem.getArtifactTypeName()));
+      RecentlyVisistedItem item = RecentlyVisistedItem.valueOf(workItem.getArtifactToken(), workItem.getArtifactType());
       visited.remove(item);
       visited.add(item);
       if (visited.size() > getRecentlyVisitedCount()) {

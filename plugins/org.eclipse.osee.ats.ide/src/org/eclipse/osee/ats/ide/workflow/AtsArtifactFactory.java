@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -46,7 +48,6 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -126,15 +127,30 @@ public class AtsArtifactFactory extends ArtifactFactory {
       disabledUserCreationTypes.add(AgileSprint);
       String configValue = AtsClientService.get().getConfigValue(AtsUtil.USER_CREATION_DISABLED);
       if (Strings.isValid(configValue)) {
-         for (String artifactTypeToken : configValue.split(";")) {
-            ArtifactTypeId artifactTypeFromToken = TokenFactory.createArtifactTypeFromToken(artifactTypeToken);
-            if (artifactTypeFromToken == null) {
+         for (String artifactTypeNamedIdStr : configValue.split(";")) {
+            ArtifactTypeId artifactTypeId = createArtifactTypeIdFromToken(artifactTypeNamedIdStr);
+            if (artifactTypeId == null) {
                OseeLog.logf(Activator.class, Level.SEVERE,
                   "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtil.USER_CREATION_DISABLED);
             } else {
-               disabledUserCreationTypes.add(artifactTypeFromToken);
+               disabledUserCreationTypes.add(artifactTypeId);
             }
          }
       }
+   }
+
+   private static final Pattern nameIdPattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]");
+
+   /**
+    * @param token as [name]-[uuid]
+    */
+   private static ArtifactTypeId createArtifactTypeIdFromToken(String token) {
+      Matcher matcher = nameIdPattern.matcher(token);
+      if (matcher.find()) {
+         long id = Long.valueOf(matcher.group(2));
+         String name = matcher.group(1);
+         return ArtifactTypeToken.valueOf(id, name);
+      }
+      return null;
    }
 }

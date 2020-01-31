@@ -21,7 +21,6 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    private final List<ArtifactTypeToken> artifactTypes;
 
    public ArtifactTypeSearch(List<ArtifactTypeToken> artifactTypes) {
-      super();
       this.artifactTypes = artifactTypes;
    }
 
@@ -56,5 +55,4 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    public void addToQuery(QueryBuilderArtifact builder) {
       builder.andIsOfType(artifactTypes);
    }
-
 }

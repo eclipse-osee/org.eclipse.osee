@@ -27,10 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
    ArtifactTypeToken SENTINEL = valueOf(Id.SENTINEL, Named.SENTINEL);
 
-   public static ArtifactTypeToken valueOf(String id) {
-      return valueOf(Long.valueOf(id), Named.SENTINEL);
-   }
-
    public static ArtifactTypeToken valueOf(long id, String name, ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
    }
