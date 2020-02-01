@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.ui.internal;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
 
@@ -30,8 +30,8 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
       new ExtensionDefinedObjects<>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
 
    @Override
-   public Iterable<? extends NamedIdBase> getBranches() {
-      List<NamedIdBase> toReturn = new ArrayList<>();
+   public Iterable<? extends NamedId> getBranches() {
+      List<NamedId> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getBranches());
       }
@@ -39,8 +39,8 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends NamedIdBase> getArtifactTypes() {
-      List<NamedIdBase> toReturn = new ArrayList<>();
+   public Iterable<? extends NamedId> getArtifactTypes() {
+      List<NamedId> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getArtifactTypes());
       }
@@ -48,8 +48,8 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends NamedIdBase> getAttributeTypes() {
-      List<NamedIdBase> toReturn = new ArrayList<>();
+   public Iterable<? extends NamedId> getAttributeTypes() {
+      List<NamedId> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getAttributeTypes());
       }
@@ -57,8 +57,8 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends NamedIdBase> getRelationTypes() {
-      List<NamedIdBase> toReturn = new ArrayList<>();
+   public Iterable<? extends NamedId> getRelationTypes() {
+      List<NamedId> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getRelationTypes());
       }

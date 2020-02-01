@@ -17,13 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeCache<T> {
+public abstract class AbstractOseeCache<T extends NamedId> implements IOseeCache<T> {
    private final ConcurrentHashMap<String, T> nameToTypeMap = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
    private final OseeCacheEnum cacheId;

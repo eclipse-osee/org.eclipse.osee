@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
@@ -51,8 +51,8 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
       if (acceptor.canAcceptMoreProposals()) {
          Image image = imageProvider.getBranchImage();
 
-         Iterable<? extends NamedIdBase> entries = provider.getBranches();
-         for (NamedIdBase entry : entries) {
+         Iterable<? extends NamedId> entries = provider.getBranches();
+         for (NamedId entry : entries) {
             ICompletionProposal proposal = createCompletionProposal(OrcsScriptUtil.quote(entry.getName()),
                new StyledString(entry.getName()), image, Integer.MIN_VALUE, context.getPrefix(), context);
             acceptor.accept(proposal);
@@ -64,7 +64,7 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
    public void complete_OsMetaTypeId(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       super.complete_OsMetaTypeId(model, ruleCall, context, acceptor);
       String name = model.getClass().getName().toLowerCase();
-      Iterable<? extends NamedIdBase> entries;
+      Iterable<? extends NamedId> entries;
       if (name.contains("artifact")) {
          entries = provider.getArtifactTypes();
       } else if (name.contains("attribute")) {
@@ -74,7 +74,7 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
       } else {
          entries = Collections.emptyList();
       }
-      for (NamedIdBase entry : entries) {
+      for (NamedId entry : entries) {
          Image image = null;
          if (name.contains("artifact")) {
             image = imageProvider.getArtifactTypeImage(entry);

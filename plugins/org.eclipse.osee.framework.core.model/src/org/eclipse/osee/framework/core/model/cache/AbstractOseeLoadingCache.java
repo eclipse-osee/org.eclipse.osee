@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeLoadingCache<T extends NamedIdBase> extends AbstractOseeCache<T> implements IOseeLoadingCache<T> {
+public abstract class AbstractOseeLoadingCache<T extends NamedId> extends AbstractOseeCache<T> implements IOseeLoadingCache<T> {
    private final IOseeDataAccessor<T> dataAccessor;
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
