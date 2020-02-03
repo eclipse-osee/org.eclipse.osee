@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AuthenticationManager implements IAuthenticationManager {
 
    private final Map<String, IAuthenticationProvider> authenticationProviders = new ConcurrentHashMap<>();
+
+   private static AtomicBoolean logged = new AtomicBoolean(false);
 
    public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider) {
       final String providerId = authenticationProvider.getProtocol();
@@ -76,10 +79,12 @@ public class AuthenticationManager implements IAuthenticationManager {
 
    private IAuthenticationProvider getAuthenticationProvider() {
       String key = getProtocol();
-      System.err.println(String.format("Authentication Provider key [%s]", key));
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);
-         System.err.println(String.format("Authentication Provider [%s]", provider));
+         if (logged.compareAndSet(false, true)) {
+            System.err.println(
+               String.format("Authentication Provider [%s]-[%s]", key, provider.getClass().getSimpleName()));
+         }
          if (provider != null) {
             return provider;
          }
