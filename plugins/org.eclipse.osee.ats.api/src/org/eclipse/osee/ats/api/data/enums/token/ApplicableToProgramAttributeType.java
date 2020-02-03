@@ -21,18 +21,17 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class ApplicableToProgramAttributeType extends AttributeTypeEnum<ApplicableToProgramEnum> {
 
-   // @formatter:off
-	public final ApplicableToProgramEnum Yes = new ApplicableToProgramEnum(0, "Yes");
-	public final ApplicableToProgramEnum No = new ApplicableToProgramEnum(1, "No");
-	// @formatter:on
+   public final ApplicableToProgramEnum Yes = new ApplicableToProgramEnum(0, "Yes");
+   public final ApplicableToProgramEnum No = new ApplicableToProgramEnum(1, "No");
 
    public ApplicableToProgramAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921949227188394L, namespace, "ats.Applicable to Program", mediaType, "", taggerType);
+      super(1152921949227188394L, namespace, "ats.Applicable to Program", mediaType, "", taggerType, 2);
    }
 
    public class ApplicableToProgramEnum extends EnumToken {
       public ApplicableToProgramEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

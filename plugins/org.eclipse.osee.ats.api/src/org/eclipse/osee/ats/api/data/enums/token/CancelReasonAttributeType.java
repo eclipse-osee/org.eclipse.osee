@@ -21,20 +21,20 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class CancelReasonAttributeType extends AttributeTypeEnum<CancelReasonEnum> {
 
-   // @formatter:off
-	public final CancelReasonEnum CanNotDuplicate = new CancelReasonEnum(0, "Can Not Duplicate");
-	public final CancelReasonEnum Duplicate = new CancelReasonEnum(1, "Duplicate");
-	public final CancelReasonEnum NotAProblem = new CancelReasonEnum(2, "Not a Problem");
-	public final CancelReasonEnum OtherMustEnterCancelledDetails = new CancelReasonEnum(3, "Other (Must enter cancelled details)");
-	// @formatter:on
+   public final CancelReasonEnum CanNotDuplicate = new CancelReasonEnum(0, "Can Not Duplicate");
+   public final CancelReasonEnum Duplicate = new CancelReasonEnum(1, "Duplicate");
+   public final CancelReasonEnum NotAProblem = new CancelReasonEnum(2, "Not a Problem");
+   public final CancelReasonEnum OtherMustEnterCancelledDetails =
+      new CancelReasonEnum(3, "Other (Must enter cancelled details)");
 
    public CancelReasonAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(5718762723487704057L, namespace, "ats.Cancel Reason", mediaType, "", taggerType);
+      super(5718762723487704057L, namespace, "ats.Cancel Reason", mediaType, "", taggerType, 4);
    }
 
    public class CancelReasonEnum extends EnumToken {
       public CancelReasonEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

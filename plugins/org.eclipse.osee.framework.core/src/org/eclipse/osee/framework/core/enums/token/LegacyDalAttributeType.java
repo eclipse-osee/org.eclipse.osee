@@ -21,23 +21,22 @@ import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType.Legacy
  */
 public class LegacyDalAttributeType extends AttributeTypeEnum<LegacyDalEnum> {
 
-   // @formatter:off
-	public final LegacyDalEnum A = new LegacyDalEnum(0, "A");
-	public final LegacyDalEnum B = new LegacyDalEnum(1, "B");
-	public final LegacyDalEnum C = new LegacyDalEnum(2, "C");
-	public final LegacyDalEnum D = new LegacyDalEnum(3, "D");
-	public final LegacyDalEnum E = new LegacyDalEnum(4, "E");
-	public final LegacyDalEnum Unspecified = new LegacyDalEnum(5, "Unspecified");
-	// @formatter:on
+   public final LegacyDalEnum A = new LegacyDalEnum(0, "A");
+   public final LegacyDalEnum B = new LegacyDalEnum(1, "B");
+   public final LegacyDalEnum C = new LegacyDalEnum(2, "C");
+   public final LegacyDalEnum D = new LegacyDalEnum(3, "D");
+   public final LegacyDalEnum E = new LegacyDalEnum(4, "E");
+   public final LegacyDalEnum Unspecified = new LegacyDalEnum(5, "Unspecified");
 
    public LegacyDalAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
       super(1152921504606847120L, namespace, "Legacy DAL", mediaType,
-         "Legacy Development Assurance Level (original DAL)", taggerType);
+         "Legacy Development Assurance Level (original DAL)", taggerType, 6);
    }
 
    public class LegacyDalEnum extends EnumToken {
       public LegacyDalEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

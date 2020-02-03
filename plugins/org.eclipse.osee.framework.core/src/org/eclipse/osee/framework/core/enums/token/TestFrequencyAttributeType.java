@@ -21,18 +21,17 @@ import org.eclipse.osee.framework.core.enums.token.TestFrequencyAttributeType.Te
  */
 public class TestFrequencyAttributeType extends AttributeTypeEnum<TestFrequencyEnum> {
 
-   // @formatter:off
-	public final TestFrequencyEnum OneTime = new TestFrequencyEnum(0, "One Time");
-	public final TestFrequencyEnum Recurring = new TestFrequencyEnum(1, "Recurring");
-	// @formatter:on
+   public final TestFrequencyEnum OneTime = new TestFrequencyEnum(0, "One Time");
+   public final TestFrequencyEnum Recurring = new TestFrequencyEnum(1, "Recurring");
 
    public TestFrequencyAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847103L, namespace, "Test Frequency", mediaType, "", taggerType);
+      super(1152921504606847103L, namespace, "Test Frequency", mediaType, "", taggerType, 2);
    }
 
    public class TestFrequencyEnum extends EnumToken {
       public TestFrequencyEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

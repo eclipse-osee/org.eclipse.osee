@@ -30,12 +30,13 @@ public class CsciAttributeType extends AttributeTypeEnum<CsciEnum> {
    public final CsciEnum Visual = new CsciEnum(5, "Visual");
 
    public CsciAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847136L, namespace, "CSCI", mediaType, "", taggerType);
+      super(1152921504606847136L, namespace, "CSCI", mediaType, "", taggerType, 6);
    }
 
    public class CsciEnum extends EnumToken {
       public CsciEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

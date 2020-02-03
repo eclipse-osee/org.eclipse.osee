@@ -21,19 +21,18 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class CodeReqDocAttributeType extends AttributeTypeEnum<CodeReqDocEnum> {
 
-   // @formatter:off
-	public final CodeReqDocEnum Unknown = new CodeReqDocEnum(0, "Unknown");
-	public final CodeReqDocEnum SRS = new CodeReqDocEnum(3, "SRS");
-	public final CodeReqDocEnum Other = new CodeReqDocEnum(4, "Other");
-	// @formatter:on
+   public final CodeReqDocEnum Unknown = new CodeReqDocEnum(0, "Unknown");
+   public final CodeReqDocEnum SRS = new CodeReqDocEnum(3, "SRS");
+   public final CodeReqDocEnum Other = new CodeReqDocEnum(4, "Other");
 
    public CodeReqDocAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1740569308658341L, namespace, "demo.code.Req Doc", mediaType, "", taggerType);
+      super(1740569308658341L, namespace, "demo.code.Req Doc", mediaType, "", taggerType, 5);
    }
 
    public class CodeReqDocEnum extends EnumToken {
       public CodeReqDocEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

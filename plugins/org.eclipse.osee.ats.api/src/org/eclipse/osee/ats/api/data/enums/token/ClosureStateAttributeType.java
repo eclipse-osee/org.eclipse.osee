@@ -21,20 +21,19 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class ClosureStateAttributeType extends AttributeTypeEnum<ClosureStateEnum> {
 
-   // @formatter:off
-	public final ClosureStateEnum Open = new ClosureStateEnum(0, "Open");
-	public final ClosureStateEnum PrepareToClose = new ClosureStateEnum(1, "Prepare to Close");
-	public final ClosureStateEnum CloseOut = new ClosureStateEnum(2, "Close Out");
-	public final ClosureStateEnum Closed = new ClosureStateEnum(3, "Closed");
-	// @formatter:on
+   public final ClosureStateEnum Open = new ClosureStateEnum(0, "Open");
+   public final ClosureStateEnum PrepareToClose = new ClosureStateEnum(1, "Prepare to Close");
+   public final ClosureStateEnum CloseOut = new ClosureStateEnum(2, "Close Out");
+   public final ClosureStateEnum Closed = new ClosureStateEnum(3, "Closed");
 
    public ClosureStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847452L, namespace, "ats.closure.Closure State", mediaType, "", taggerType);
+      super(1152921504606847452L, namespace, "ats.closure.Closure State", mediaType, "", taggerType, 4);
    }
 
    public class ClosureStateEnum extends EnumToken {
       public ClosureStateEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

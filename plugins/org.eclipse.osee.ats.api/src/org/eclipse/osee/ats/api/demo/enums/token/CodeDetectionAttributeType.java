@@ -21,22 +21,21 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class CodeDetectionAttributeType extends AttributeTypeEnum<CodeDetectionEnum> {
 
-   // @formatter:off
-	public final CodeDetectionEnum TestScriptS = new CodeDetectionEnum(0, "Test Script(s)");
-	public final CodeDetectionEnum InspectionTest = new CodeDetectionEnum(1, "Inspection (Test)");
-	public final CodeDetectionEnum HotBench = new CodeDetectionEnum(2, "Hot Bench");
-	public final CodeDetectionEnum Aircraft = new CodeDetectionEnum(3, "Aircraft");
-	public final CodeDetectionEnum PeerReview = new CodeDetectionEnum(4, "Peer Review");
-	public final CodeDetectionEnum Other = new CodeDetectionEnum(6, "Other");
-	// @formatter:on
+   public final CodeDetectionEnum TestScriptS = new CodeDetectionEnum(0, "Test Script(s)");
+   public final CodeDetectionEnum InspectionTest = new CodeDetectionEnum(1, "Inspection (Test)");
+   public final CodeDetectionEnum HotBench = new CodeDetectionEnum(2, "Hot Bench");
+   public final CodeDetectionEnum Aircraft = new CodeDetectionEnum(3, "Aircraft");
+   public final CodeDetectionEnum PeerReview = new CodeDetectionEnum(4, "Peer Review");
+   public final CodeDetectionEnum Other = new CodeDetectionEnum(6, "Other");
 
    public CodeDetectionAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847243L, namespace, "demo.code.Detection", mediaType, "", taggerType);
+      super(1152921504606847243L, namespace, "demo.code.Detection", mediaType, "", taggerType, 7);
    }
 
    public class CodeDetectionEnum extends EnumToken {
       public CodeDetectionEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

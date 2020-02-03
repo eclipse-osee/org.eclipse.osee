@@ -21,20 +21,19 @@ import org.eclipse.osee.framework.core.enums.token.FeatureValueAttributeType.Fea
  */
 public class FeatureValueAttributeType extends AttributeTypeEnum<FeatureValueTypeEnum> {
 
-   // @formatter:off
-	public final FeatureValueTypeEnum String = new FeatureValueTypeEnum(0, "String");
-	public final FeatureValueTypeEnum Boolean = new FeatureValueTypeEnum(1, "Boolean");
-	public final FeatureValueTypeEnum Decimal = new FeatureValueTypeEnum(2, "Decimal");
-	public final FeatureValueTypeEnum Integer = new FeatureValueTypeEnum(3, "Integer");
-	// @formatter:on
+   public final FeatureValueTypeEnum String = new FeatureValueTypeEnum(0, "String");
+   public final FeatureValueTypeEnum Boolean = new FeatureValueTypeEnum(1, "Boolean");
+   public final FeatureValueTypeEnum Decimal = new FeatureValueTypeEnum(2, "Decimal");
+   public final FeatureValueTypeEnum Integer = new FeatureValueTypeEnum(3, "Integer");
 
    public FeatureValueAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(31669009535111027L, namespace, "Feature Value Type", mediaType, "", taggerType);
+      super(31669009535111027L, namespace, "Feature Value Type", mediaType, "", taggerType, 4);
    }
 
    public class FeatureValueTypeEnum extends EnumToken {
       public FeatureValueTypeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

@@ -21,20 +21,19 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class ChangeTypeAttributeType extends AttributeTypeEnum<ChangeTypeEnum> {
 
-   // @formatter:off
-	public final ChangeTypeEnum Improvement = new ChangeTypeEnum(0, "Improvement");
-	public final ChangeTypeEnum Problem = new ChangeTypeEnum(1, "Problem");
-	public final ChangeTypeEnum Support = new ChangeTypeEnum(2, "Support");
-	public final ChangeTypeEnum Refinement = new ChangeTypeEnum(3, "Refinement");
-	// @formatter:on
+   public final ChangeTypeEnum Improvement = new ChangeTypeEnum(0, "Improvement");
+   public final ChangeTypeEnum Problem = new ChangeTypeEnum(1, "Problem");
+   public final ChangeTypeEnum Support = new ChangeTypeEnum(2, "Support");
+   public final ChangeTypeEnum Refinement = new ChangeTypeEnum(3, "Refinement");
 
    public ChangeTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847180L, namespace, "ats.Change Type", mediaType, "", taggerType);
+      super(1152921504606847180L, namespace, "ats.Change Type", mediaType, "", taggerType, 4);
    }
 
    public class ChangeTypeEnum extends EnumToken {
       public ChangeTypeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

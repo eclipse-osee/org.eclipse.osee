@@ -21,21 +21,20 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class PriorityAttributeType extends AttributeTypeEnum<PriorityEnum> {
 
-   // @formatter:off
-	public final PriorityEnum Priority1 = new PriorityEnum(0, "1");
-	public final PriorityEnum Priority2 = new PriorityEnum(1, "2");
-	public final PriorityEnum Priority3 = new PriorityEnum(2, "3");
-	public final PriorityEnum Priority4 = new PriorityEnum(3, "4");
-	public final PriorityEnum Priority5 = new PriorityEnum(4, "5");
-	// @formatter:on
+   public final PriorityEnum Priority1 = new PriorityEnum(0, "1");
+   public final PriorityEnum Priority2 = new PriorityEnum(1, "2");
+   public final PriorityEnum Priority3 = new PriorityEnum(2, "3");
+   public final PriorityEnum Priority4 = new PriorityEnum(3, "4");
+   public final PriorityEnum Priority5 = new PriorityEnum(4, "5");
 
    public PriorityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847179L, namespace, "ats.Priority", mediaType, "", taggerType);
+      super(1152921504606847179L, namespace, "ats.Priority", mediaType, "", taggerType, 5);
    }
 
    public class PriorityEnum extends EnumToken {
       public PriorityEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

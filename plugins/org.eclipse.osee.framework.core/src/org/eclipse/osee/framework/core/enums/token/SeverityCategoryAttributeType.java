@@ -21,23 +21,22 @@ import org.eclipse.osee.framework.core.enums.token.SeverityCategoryAttributeType
  */
 public class SeverityCategoryAttributeType extends AttributeTypeEnum<SeverityCategoryEnum> {
 
-   // @formatter:off
-	public final SeverityCategoryEnum I = new SeverityCategoryEnum(0, "I");
-	public final SeverityCategoryEnum II = new SeverityCategoryEnum(1, "II");
-	public final SeverityCategoryEnum III = new SeverityCategoryEnum(2, "III");
-	public final SeverityCategoryEnum IV = new SeverityCategoryEnum(3, "IV");
-	public final SeverityCategoryEnum NH = new SeverityCategoryEnum(4, "NH");
-	public final SeverityCategoryEnum Unspecified = new SeverityCategoryEnum(5, "Unspecified");
-	// @formatter:on
+   public final SeverityCategoryEnum I = new SeverityCategoryEnum(0, "I");
+   public final SeverityCategoryEnum II = new SeverityCategoryEnum(1, "II");
+   public final SeverityCategoryEnum III = new SeverityCategoryEnum(2, "III");
+   public final SeverityCategoryEnum IV = new SeverityCategoryEnum(3, "IV");
+   public final SeverityCategoryEnum NH = new SeverityCategoryEnum(4, "NH");
+   public final SeverityCategoryEnum Unspecified = new SeverityCategoryEnum(5, "Unspecified");
 
    public SeverityCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
       super(1152921504606847114L, namespace, "Severity Category", mediaType, "Severity Category Classification",
-         taggerType);
+         taggerType, 6);
    }
 
    public class SeverityCategoryEnum extends EnumToken {
       public SeverityCategoryEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

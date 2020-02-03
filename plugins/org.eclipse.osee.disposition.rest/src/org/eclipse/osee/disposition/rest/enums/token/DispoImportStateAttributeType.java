@@ -21,23 +21,22 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class DispoImportStateAttributeType extends AttributeTypeEnum<DispoImportStateEnum> {
 
-   // @formatter:off
-	public final DispoImportStateEnum All = new DispoImportStateEnum(0, "All");
-	public final DispoImportStateEnum None = new DispoImportStateEnum(1, "None");
-	public final DispoImportStateEnum NoChange = new DispoImportStateEnum(2, "No Change");
-	public final DispoImportStateEnum OK = new DispoImportStateEnum(3, "OK");
-	public final DispoImportStateEnum Warnings = new DispoImportStateEnum(4, "Warnings");
-	public final DispoImportStateEnum Failed = new DispoImportStateEnum(5, "Failed");
-	public final DispoImportStateEnum Unspecified = new DispoImportStateEnum(6, "Unspecified");
-	// @formatter:on
+   public final DispoImportStateEnum All = new DispoImportStateEnum(0, "All");
+   public final DispoImportStateEnum None = new DispoImportStateEnum(1, "None");
+   public final DispoImportStateEnum NoChange = new DispoImportStateEnum(2, "No Change");
+   public final DispoImportStateEnum OK = new DispoImportStateEnum(3, "OK");
+   public final DispoImportStateEnum Warnings = new DispoImportStateEnum(4, "Warnings");
+   public final DispoImportStateEnum Failed = new DispoImportStateEnum(5, "Failed");
+   public final DispoImportStateEnum Unspecified = new DispoImportStateEnum(6, "Unspecified");
 
    public DispoImportStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(3458764513820541334L, namespace, "dispo.Import State", mediaType, "", taggerType);
+      super(3458764513820541334L, namespace, "dispo.Import State", mediaType, "", taggerType, 7);
    }
 
    public class DispoImportStateEnum extends EnumToken {
       public DispoImportStateEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

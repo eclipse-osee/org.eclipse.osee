@@ -21,20 +21,19 @@ import org.eclipse.osee.framework.core.enums.token.FunctionalGroupingAttributeTy
  */
 public class FunctionalGroupingAttributeType extends AttributeTypeEnum<FunctionalGroupingEnum> {
 
-   // @formatter:off
-	public final FunctionalGroupingEnum Avionics = new FunctionalGroupingEnum(0, "Avionics");
-	public final FunctionalGroupingEnum VmsFlightControl = new FunctionalGroupingEnum(1, "VMS/Flight Control");
-	public final FunctionalGroupingEnum EngineFuelHydraulics = new FunctionalGroupingEnum(2, "Engine/Fuel/Hydraulics");
-	public final FunctionalGroupingEnum Electrical = new FunctionalGroupingEnum(3, "Electrical");
-	// @formatter:on
+   public final FunctionalGroupingEnum Avionics = new FunctionalGroupingEnum(0, "Avionics");
+   public final FunctionalGroupingEnum VmsFlightControl = new FunctionalGroupingEnum(1, "VMS/Flight Control");
+   public final FunctionalGroupingEnum EngineFuelHydraulics = new FunctionalGroupingEnum(2, "Engine/Fuel/Hydraulics");
+   public final FunctionalGroupingEnum Electrical = new FunctionalGroupingEnum(3, "Electrical");
 
    public FunctionalGroupingAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1741310787702764470L, namespace, "Functional Grouping", mediaType, "", taggerType);
+      super(1741310787702764470L, namespace, "Functional Grouping", mediaType, "", taggerType, 4);
    }
 
    public class FunctionalGroupingEnum extends EnumToken {
       public FunctionalGroupingEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

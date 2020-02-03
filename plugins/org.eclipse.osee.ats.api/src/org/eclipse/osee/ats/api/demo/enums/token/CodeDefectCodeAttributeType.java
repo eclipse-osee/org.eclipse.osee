@@ -21,23 +21,23 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class CodeDefectCodeAttributeType extends AttributeTypeEnum<CodeDefectCodeEnum> {
 
-   // @formatter:off
-	public final CodeDefectCodeEnum Cl01RequirementsImplementedIncorrectly = new CodeDefectCodeEnum(0, "CL01 - Requirements Implemented Incorrectly");
-	public final CodeDefectCodeEnum Cl06TimingProblem = new CodeDefectCodeEnum(5, "CL06 - Timing Problem");
-	public final CodeDefectCodeEnum Cl07InterfaceError = new CodeDefectCodeEnum(6, "CL07 - Interface Error");
-	public final CodeDefectCodeEnum Nc01RequirementError = new CodeDefectCodeEnum(11, "NC01 - Requirement Error");
-	public final CodeDefectCodeEnum Nc02TestScriptError = new CodeDefectCodeEnum(12, "NC02 - Test Script Error");
-	public final CodeDefectCodeEnum Nc04HardwareError = new CodeDefectCodeEnum(14, "NC04 - Hardware Error");
-	public final CodeDefectCodeEnum Te99OtherToolError = new CodeDefectCodeEnum(19, "TE99 - Other Tool Error");
-	// @formatter:on
+   public final CodeDefectCodeEnum Cl01RequirementsImplementedIncorrectly =
+      new CodeDefectCodeEnum(0, "CL01 - Requirements Implemented Incorrectly");
+   public final CodeDefectCodeEnum Cl06TimingProblem = new CodeDefectCodeEnum(5, "CL06 - Timing Problem");
+   public final CodeDefectCodeEnum Cl07InterfaceError = new CodeDefectCodeEnum(6, "CL07 - Interface Error");
+   public final CodeDefectCodeEnum Nc01RequirementError = new CodeDefectCodeEnum(11, "NC01 - Requirement Error");
+   public final CodeDefectCodeEnum Nc02TestScriptError = new CodeDefectCodeEnum(12, "NC02 - Test Script Error");
+   public final CodeDefectCodeEnum Nc04HardwareError = new CodeDefectCodeEnum(14, "NC04 - Hardware Error");
+   public final CodeDefectCodeEnum Te99OtherToolError = new CodeDefectCodeEnum(19, "TE99 - Other Tool Error");
 
    public CodeDefectCodeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847242L, namespace, "demo.code.Defect Code", mediaType, "", taggerType);
+      super(1152921504606847242L, namespace, "demo.code.Defect Code", mediaType, "", taggerType, 20);
    }
 
    public class CodeDefectCodeEnum extends EnumToken {
       public CodeDefectCodeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

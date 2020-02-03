@@ -180,7 +180,7 @@ public class OrcsTypeTokens {
 
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
       return attributeTypes.addAndReturn(
-         attributeEnumConstructor.apply(OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
+         attributeEnumConstructor.apply(determineTaggerType(mediaType), mediaType, namespace));
    }
 
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
@@ -190,25 +190,21 @@ public class OrcsTypeTokens {
 
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(QuinFunction<Long, String, TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, Long id, String name, String mediaType) {
       return attributeTypes.addAndReturn(
-         attributeEnumConstructor.apply(id, name, OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
+         attributeEnumConstructor.apply(id, name, determineTaggerType(mediaType), mediaType, namespace));
    }
 
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(QuinFunction<Long, String, TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, Long id, String name, String mediaType) {
       return attributeTypes.addAndReturn(
-         attributeEnumConstructor.apply(id, name, OrcsTypeTokens.determineTaggerType(mediaType), mediaType, namespace));
+         attributeEnumConstructor.apply(id, name, determineTaggerType(mediaType), mediaType, namespace));
    }
 
-   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   public @NonNull DynamicEnumAttributeType createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
-         new AttributeTypeEnum(id, namespace, name, mediaType, description, taggerType));
+         new DynamicEnumAttributeType(id, namespace, name, mediaType, description, taggerType));
    }
 
-   public @NonNull AttributeTypeEnum createEnum(Long id, String name, String mediaType, String description) {
+   public @NonNull DynamicEnumAttributeType createEnum(Long id, String name, String mediaType, String description) {
       return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
-   }
-
-   public @NonNull AttributeTypeEnum createEnumNoTag(Long id, String name, String mediaType, String description) {
-      return createEnum(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {

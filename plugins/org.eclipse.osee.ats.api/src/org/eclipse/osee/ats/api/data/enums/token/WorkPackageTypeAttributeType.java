@@ -21,23 +21,22 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class WorkPackageTypeAttributeType extends AttributeTypeEnum<WorkPackageTypeEnum> {
 
-   // @formatter:off
-	public final WorkPackageTypeEnum Discrete = new WorkPackageTypeEnum(0, "Discrete");
-	public final WorkPackageTypeEnum DiscreteComplete = new WorkPackageTypeEnum(1, "Discrete - % Complete");
-	public final WorkPackageTypeEnum Discrete50_50 = new WorkPackageTypeEnum(2, "Discrete - 50-50");
-	public final WorkPackageTypeEnum Discrete0_100 = new WorkPackageTypeEnum(3, "Discrete - 0-100");
-	public final WorkPackageTypeEnum LOE = new WorkPackageTypeEnum(4, "LOE");
-	public final WorkPackageTypeEnum LOE_Planning = new WorkPackageTypeEnum(5, "LOE_Planning");
-	public final WorkPackageTypeEnum Planning = new WorkPackageTypeEnum(6, "Planning");
-	// @formatter:on
+   public final WorkPackageTypeEnum Discrete = new WorkPackageTypeEnum(0, "Discrete");
+   public final WorkPackageTypeEnum DiscreteComplete = new WorkPackageTypeEnum(1, "Discrete - % Complete");
+   public final WorkPackageTypeEnum Discrete50_50 = new WorkPackageTypeEnum(2, "Discrete - 50-50");
+   public final WorkPackageTypeEnum Discrete0_100 = new WorkPackageTypeEnum(3, "Discrete - 0-100");
+   public final WorkPackageTypeEnum LOE = new WorkPackageTypeEnum(4, "LOE");
+   public final WorkPackageTypeEnum LOE_Planning = new WorkPackageTypeEnum(5, "LOE_Planning");
+   public final WorkPackageTypeEnum Planning = new WorkPackageTypeEnum(6, "Planning");
 
    public WorkPackageTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(72057594037928065L, namespace, "ats.Work Package Type", mediaType, "", taggerType);
+      super(72057594037928065L, namespace, "ats.Work Package Type", mediaType, "", taggerType, 7);
    }
 
    public class WorkPackageTypeEnum extends EnumToken {
       public WorkPackageTypeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

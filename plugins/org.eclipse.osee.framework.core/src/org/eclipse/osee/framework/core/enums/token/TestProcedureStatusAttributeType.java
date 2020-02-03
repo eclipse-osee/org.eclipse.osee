@@ -21,22 +21,24 @@ import org.eclipse.osee.framework.core.enums.token.TestProcedureStatusAttributeT
  */
 public class TestProcedureStatusAttributeType extends AttributeTypeEnum<TestProcedureStatusEnum> {
 
-   // @formatter:off
-	public final TestProcedureStatusEnum NotPerformed = new TestProcedureStatusEnum(0, "Not Performed");
-	public final TestProcedureStatusEnum CompletedAnalysisInWork = new TestProcedureStatusEnum(1, "Completed -- Analysis in Work");
-	public final TestProcedureStatusEnum CompletedPassed = new TestProcedureStatusEnum(2, "Completed -- Passed");
-	public final TestProcedureStatusEnum CompletedWithIssues = new TestProcedureStatusEnum(3, "Completed -- With Issues");
-	public final TestProcedureStatusEnum CompletedWithIssuesResolved = new TestProcedureStatusEnum(4, "Completed -- With Issues Resolved");
-	public final TestProcedureStatusEnum PartiallyComplete = new TestProcedureStatusEnum(5, "Partially Complete");
-	// @formatter:on
+   public final TestProcedureStatusEnum NotPerformed = new TestProcedureStatusEnum(0, "Not Performed");
+   public final TestProcedureStatusEnum CompletedAnalysisInWork =
+      new TestProcedureStatusEnum(1, "Completed -- Analysis in Work");
+   public final TestProcedureStatusEnum CompletedPassed = new TestProcedureStatusEnum(2, "Completed -- Passed");
+   public final TestProcedureStatusEnum CompletedWithIssues =
+      new TestProcedureStatusEnum(3, "Completed -- With Issues");
+   public final TestProcedureStatusEnum CompletedWithIssuesResolved =
+      new TestProcedureStatusEnum(4, "Completed -- With Issues Resolved");
+   public final TestProcedureStatusEnum PartiallyComplete = new TestProcedureStatusEnum(5, "Partially Complete");
 
    public TestProcedureStatusAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847075L, namespace, "Test Procedure Status", mediaType, "", taggerType);
+      super(1152921504606847075L, namespace, "Test Procedure Status", mediaType, "", taggerType, 6);
    }
 
    public class TestProcedureStatusEnum extends EnumToken {
       public TestProcedureStatusEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

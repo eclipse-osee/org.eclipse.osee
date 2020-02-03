@@ -21,21 +21,20 @@ import org.eclipse.osee.framework.core.enums.token.VerificationLevelAttributeTyp
  */
 public class VerificationLevelAttributeType extends AttributeTypeEnum<VerificationLevelEnum> {
 
-   // @formatter:off
-	public final VerificationLevelEnum System = new VerificationLevelEnum(0, "System");
-	public final VerificationLevelEnum Subsystem = new VerificationLevelEnum(1, "Subsystem");
-	public final VerificationLevelEnum Component = new VerificationLevelEnum(2, "Component");
-	public final VerificationLevelEnum Unspecified = new VerificationLevelEnum(3, "Unspecified");
-	public final VerificationLevelEnum NA = new VerificationLevelEnum(4, "N/A");
-	// @formatter:on
+   public final VerificationLevelEnum System = new VerificationLevelEnum(0, "System");
+   public final VerificationLevelEnum Subsystem = new VerificationLevelEnum(1, "Subsystem");
+   public final VerificationLevelEnum Component = new VerificationLevelEnum(2, "Component");
+   public final VerificationLevelEnum Unspecified = new VerificationLevelEnum(3, "Unspecified");
+   public final VerificationLevelEnum NA = new VerificationLevelEnum(4, "N/A");
 
    public VerificationLevelAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847115L, namespace, "Verification Level", mediaType, "", taggerType);
+      super(1152921504606847115L, namespace, "Verification Level", mediaType, "", taggerType, 5);
    }
 
    public class VerificationLevelEnum extends EnumToken {
       public VerificationLevelEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

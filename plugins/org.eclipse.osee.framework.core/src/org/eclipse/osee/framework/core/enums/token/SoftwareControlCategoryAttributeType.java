@@ -21,23 +21,22 @@ import org.eclipse.osee.framework.core.enums.token.SoftwareControlCategoryAttrib
  */
 public class SoftwareControlCategoryAttributeType extends AttributeTypeEnum<SoftwareControlCategoryEnum> {
 
-   // @formatter:off
-	public final SoftwareControlCategoryEnum _1At = new SoftwareControlCategoryEnum(0, "1(AT)");
-	public final SoftwareControlCategoryEnum _2Sat = new SoftwareControlCategoryEnum(1, "2(SAT)");
-	public final SoftwareControlCategoryEnum _3Rft = new SoftwareControlCategoryEnum(2, "3(RFT)");
-	public final SoftwareControlCategoryEnum _4In = new SoftwareControlCategoryEnum(3, "4(IN)");
-	public final SoftwareControlCategoryEnum _5Nsi = new SoftwareControlCategoryEnum(4, "5(NSI)");
-	public final SoftwareControlCategoryEnum Unspecified = new SoftwareControlCategoryEnum(5, "Unspecified");
-	// @formatter:on
+   public final SoftwareControlCategoryEnum _1At = new SoftwareControlCategoryEnum(0, "1(AT)");
+   public final SoftwareControlCategoryEnum _2Sat = new SoftwareControlCategoryEnum(1, "2(SAT)");
+   public final SoftwareControlCategoryEnum _3Rft = new SoftwareControlCategoryEnum(2, "3(RFT)");
+   public final SoftwareControlCategoryEnum _4In = new SoftwareControlCategoryEnum(3, "4(IN)");
+   public final SoftwareControlCategoryEnum _5Nsi = new SoftwareControlCategoryEnum(4, "5(NSI)");
+   public final SoftwareControlCategoryEnum Unspecified = new SoftwareControlCategoryEnum(5, "Unspecified");
 
    public SoftwareControlCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
       super(1958401980089733639L, namespace, "Software Control Category", mediaType,
-         "Software Control Category Classification", taggerType);
+         "Software Control Category Classification", taggerType, 6);
    }
 
    public class SoftwareControlCategoryEnum extends EnumToken {
       public SoftwareControlCategoryEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

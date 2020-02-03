@@ -21,19 +21,18 @@ import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType.
  */
 public class PageOrientationAttributeType extends AttributeTypeEnum<PageOrientationEnum> {
 
-   // @formatter:off
-	public final PageOrientationEnum Portrait = new PageOrientationEnum(0, "Portrait");
-	public final PageOrientationEnum Landscape = new PageOrientationEnum(1, "Landscape");
-	// @formatter:on
+   public final PageOrientationEnum Portrait = new PageOrientationEnum(0, "Portrait");
+   public final PageOrientationEnum Landscape = new PageOrientationEnum(1, "Landscape");
 
    public PageOrientationAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
       super(1152921504606847091L, namespace, "Page Orientation", mediaType, "Page Orientation: Landscape/Portrait",
-         taggerType);
+         taggerType, 2);
    }
 
    public class PageOrientationEnum extends EnumToken {
       public PageOrientationEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

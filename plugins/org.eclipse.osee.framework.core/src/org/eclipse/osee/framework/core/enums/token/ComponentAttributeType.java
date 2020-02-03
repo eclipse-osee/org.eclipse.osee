@@ -21,18 +21,17 @@ import org.eclipse.osee.framework.core.enums.token.ComponentAttributeType.Compon
  */
 public class ComponentAttributeType extends AttributeTypeEnum<ComponentEnum> {
 
-   // @formatter:off
-	public final ComponentEnum TopLevelProductComponent = new ComponentEnum(0, "Top level product component");
-	public final ComponentEnum Unspecified = new ComponentEnum(1, "Unspecified");
-	// @formatter:on
+   public final ComponentEnum TopLevelProductComponent = new ComponentEnum(0, "Top level product component");
+   public final ComponentEnum Unspecified = new ComponentEnum(1, "Unspecified");
 
    public ComponentAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847125L, namespace, "Component", mediaType, "", taggerType);
+      super(1152921504606847125L, namespace, "Component", mediaType, "", taggerType, 2);
    }
 
    public class ComponentEnum extends EnumToken {
       public ComponentEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

@@ -21,19 +21,18 @@ import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType.GfeCfeEnu
  */
 public class GfeCfeAttributeType extends AttributeTypeEnum<GfeCfeEnum> {
 
-   // @formatter:off
-	public final GfeCfeEnum CFE = new GfeCfeEnum(0, "CFE");
-	public final GfeCfeEnum GFE = new GfeCfeEnum(1, "GFE");
-	public final GfeCfeEnum Unspecified = new GfeCfeEnum(2, "Unspecified");
-	// @formatter:on
+   public final GfeCfeEnum CFE = new GfeCfeEnum(0, "CFE");
+   public final GfeCfeEnum GFE = new GfeCfeEnum(1, "GFE");
+   public final GfeCfeEnum Unspecified = new GfeCfeEnum(2, "Unspecified");
 
    public GfeCfeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847144L, namespace, "GFE / CFE", mediaType, "", taggerType);
+      super(1152921504606847144L, namespace, "GFE / CFE", mediaType, "", taggerType, 3);
    }
 
    public class GfeCfeEnum extends EnumToken {
       public GfeCfeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

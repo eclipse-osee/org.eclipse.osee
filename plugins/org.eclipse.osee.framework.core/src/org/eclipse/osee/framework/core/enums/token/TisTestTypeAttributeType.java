@@ -21,18 +21,17 @@ import org.eclipse.osee.framework.core.enums.token.TisTestTypeAttributeType.TisT
  */
 public class TisTestTypeAttributeType extends AttributeTypeEnum<TisTestTypeEnum> {
 
-   // @formatter:off
-	public final TisTestTypeEnum StationaryVehicle = new TisTestTypeEnum(0, "Stationary Vehicle");
-	public final TisTestTypeEnum InOperation = new TisTestTypeEnum(1, "In Operation");
-	// @formatter:on
+   public final TisTestTypeEnum StationaryVehicle = new TisTestTypeEnum(0, "Stationary Vehicle");
+   public final TisTestTypeEnum InOperation = new TisTestTypeEnum(1, "In Operation");
 
    public TisTestTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847118L, namespace, "TIS Test Type", mediaType, "TIS Test Type", taggerType);
+      super(1152921504606847118L, namespace, "TIS Test Type", mediaType, "TIS Test Type", taggerType, 2);
    }
 
    public class TisTestTypeEnum extends EnumToken {
       public TisTestTypeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

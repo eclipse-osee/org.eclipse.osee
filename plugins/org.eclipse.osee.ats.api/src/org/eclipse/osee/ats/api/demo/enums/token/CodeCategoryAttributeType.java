@@ -21,21 +21,20 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class CodeCategoryAttributeType extends AttributeTypeEnum<CodeCategoryEnum> {
 
-   // @formatter:off
-	public final CodeCategoryEnum CodeProblem = new CodeCategoryEnum(0, "Code Problem");
-	public final CodeCategoryEnum DesignImplementation = new CodeCategoryEnum(1, "Design/Implementation");
-	public final CodeCategoryEnum CommentChangeOnly = new CodeCategoryEnum(2, "Comment Change Only");
-	public final CodeCategoryEnum NonMission = new CodeCategoryEnum(3, "Non-Mission");
-	public final CodeCategoryEnum Workaround = new CodeCategoryEnum(4, "Workaround");
-	// @formatter:on
+   public final CodeCategoryEnum CodeProblem = new CodeCategoryEnum(0, "Code Problem");
+   public final CodeCategoryEnum DesignImplementation = new CodeCategoryEnum(1, "Design/Implementation");
+   public final CodeCategoryEnum CommentChangeOnly = new CodeCategoryEnum(2, "Comment Change Only");
+   public final CodeCategoryEnum NonMission = new CodeCategoryEnum(3, "Non-Mission");
+   public final CodeCategoryEnum Workaround = new CodeCategoryEnum(4, "Workaround");
 
    public CodeCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847238L, namespace, "demo.code.Category", mediaType, "", taggerType);
+      super(1152921504606847238L, namespace, "demo.code.Category", mediaType, "", taggerType, 5);
    }
 
    public class CodeCategoryEnum extends EnumToken {
       public CodeCategoryEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

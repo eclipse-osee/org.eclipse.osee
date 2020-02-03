@@ -21,18 +21,17 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class ReviewFormalTypeAttributeType extends AttributeTypeEnum<ReviewFormalTypeEnum> {
 
-   // @formatter:off
-	public final ReviewFormalTypeEnum InFormal = new ReviewFormalTypeEnum(0, "InFormal");
-	public final ReviewFormalTypeEnum Formal = new ReviewFormalTypeEnum(1, "Formal");
-	// @formatter:on
+   public final ReviewFormalTypeEnum InFormal = new ReviewFormalTypeEnum(0, "InFormal");
+   public final ReviewFormalTypeEnum Formal = new ReviewFormalTypeEnum(1, "Formal");
 
    public ReviewFormalTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847177L, namespace, "ats.Review Formal Type", mediaType, "", taggerType);
+      super(1152921504606847177L, namespace, "ats.Review Formal Type", mediaType, "", taggerType, 2);
    }
 
    public class ReviewFormalTypeEnum extends EnumToken {
       public ReviewFormalTypeEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

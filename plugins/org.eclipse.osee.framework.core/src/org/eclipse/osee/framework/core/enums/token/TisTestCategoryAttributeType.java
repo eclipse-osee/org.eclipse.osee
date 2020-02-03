@@ -21,19 +21,18 @@ import org.eclipse.osee.framework.core.enums.token.TisTestCategoryAttributeType.
  */
 public class TisTestCategoryAttributeType extends AttributeTypeEnum<TisTestCategoryEnum> {
 
-   // @formatter:off
-	public final TisTestCategoryEnum SPEC_COMP = new TisTestCategoryEnum(0, "SPEC_COMP");
-	public final TisTestCategoryEnum DEV = new TisTestCategoryEnum(1, "DEV");
-	public final TisTestCategoryEnum USG = new TisTestCategoryEnum(2, "USG");
-	// @formatter:on
+   public final TisTestCategoryEnum SPEC_COMP = new TisTestCategoryEnum(0, "SPEC_COMP");
+   public final TisTestCategoryEnum DEV = new TisTestCategoryEnum(1, "DEV");
+   public final TisTestCategoryEnum USG = new TisTestCategoryEnum(2, "USG");
 
    public TisTestCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847119L, namespace, "TIS Test Category", mediaType, "TIS Test Category", taggerType);
+      super(1152921504606847119L, namespace, "TIS Test Category", mediaType, "TIS Test Category", taggerType, 3);
    }
 
    public class TisTestCategoryEnum extends EnumToken {
       public TisTestCategoryEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }

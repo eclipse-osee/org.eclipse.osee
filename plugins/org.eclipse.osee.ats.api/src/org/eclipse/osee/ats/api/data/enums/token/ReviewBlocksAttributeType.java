@@ -21,19 +21,18 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  */
 public class ReviewBlocksAttributeType extends AttributeTypeEnum<ReviewBlocksEnum> {
 
-   // @formatter:off
-	public final ReviewBlocksEnum None = new ReviewBlocksEnum(0, "None");
-	public final ReviewBlocksEnum Transition = new ReviewBlocksEnum(1, "Transition");
-	public final ReviewBlocksEnum Commit = new ReviewBlocksEnum(2, "Commit");
-	// @formatter:on
+   public final ReviewBlocksEnum None = new ReviewBlocksEnum(0, "None");
+   public final ReviewBlocksEnum Transition = new ReviewBlocksEnum(1, "Transition");
+   public final ReviewBlocksEnum Commit = new ReviewBlocksEnum(2, "Commit");
 
    public ReviewBlocksAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847176L, namespace, "ats.Review Blocks", mediaType, "", taggerType);
+      super(1152921504606847176L, namespace, "ats.Review Blocks", mediaType, "", taggerType, 3);
    }
 
    public class ReviewBlocksEnum extends EnumToken {
       public ReviewBlocksEnum(int ordinal, String name) {
          super(ordinal, name);
+         addEnum(this);
       }
    }
 }
