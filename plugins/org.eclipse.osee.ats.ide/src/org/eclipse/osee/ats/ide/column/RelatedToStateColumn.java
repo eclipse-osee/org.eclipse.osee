@@ -142,7 +142,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         if (Artifacts.isOfType(treeItem, AtsArtifactTypes.Task)) {
+         if (Artifacts.isOfType(treeItem.getData(), AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
             boolean modified = promptChangeRelatedToState(taskArt, isPersistViewer());
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
