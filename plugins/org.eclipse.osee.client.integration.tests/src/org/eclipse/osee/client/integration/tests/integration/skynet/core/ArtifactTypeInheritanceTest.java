@@ -50,7 +50,7 @@ public class ArtifactTypeInheritanceTest {
 
    @Test
    public void testIsOfTypeWithNull() {
-      Assert.assertFalse(Artifact.inheritsFrom((ArtifactType) null));
+      Assert.assertFalse(Artifact.inheritsFrom((ArtifactTypeToken) null));
    }
 
    @Test

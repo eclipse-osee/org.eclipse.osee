@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -86,10 +86,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          getTestRelationType(relationType, CoreArtifactTypes.Artifact, CoreArtifactTypes.SoftwareRequirementMsWord);
 
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
-      ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artTypeToken1, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE,
@@ -111,8 +110,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
@@ -136,10 +134,9 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
-      ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artTypeToken1, null, null, Collections.singleton(testRelationType));
 
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
       Scope expectedScope = new Scope();
@@ -162,8 +159,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
@@ -189,8 +185,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
@@ -233,8 +228,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
@@ -323,8 +317,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactTypeToken artTypeToken1 = CoreArtifactTypes.SoftwareRequirementMsWord;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getId(), artTypeToken1.getName(), false);
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
       ArtifactToken dummy = ArtifactToken.valueOf(43, artifactName, BranchId.SENTINEL);

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
@@ -77,15 +79,12 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
+      ArtifactTypeToken artifactType = Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactTypeToken artifactType2 = CoreArtifactTypes.Requirement;
-      ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
-
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactProxy artifactProxy = createArtifactProxy(artArtifactType, Name, wasIsAttributeTypeValidCalled, true);
+      ArtifactProxy artifactProxy = createArtifactProxy(Artifact, Name, wasIsAttributeTypeValidCalled, true);
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artifactProxy, expectedScope);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
@@ -93,19 +92,16 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
    @Test
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch() {
-
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      ArtifactTypeToken artifactType = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType = Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactType artArtifactType = new ArtifactType(artifactType.getId(), artifactType.getName(), false);
-
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactProxy artifactProxy = createArtifactProxy(artArtifactType, Name, wasIsAttributeTypeValidCalled, true);
+      ArtifactProxy artifactProxy = createArtifactProxy(artifactType, Name, wasIsAttributeTypeValidCalled, true);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, Name, PermissionEnum.WRITE,
          expectedScope);
@@ -122,13 +118,12 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
       restriction.setArtifactTypeRef(artifactTypeRef);
 
-      ArtifactTypeToken artifactType2 = CoreArtifactTypes.Requirement;
+      ArtifactTypeToken artifactType2 = Requirement;
       ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
 
       // Make expectedAccessObject inherit from ArtifactType
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(
-         new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
       artArtifactType.setSuperTypes(superTypes);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
@@ -139,7 +134,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
-   private static ArtifactProxy createArtifactProxy(ArtifactType artifactType, final AttributeTypeId expectedAttributeType, final MutableBoolean wasIsAttributeTypeValidCalled, final boolean isTypeValid) {
+   private static ArtifactProxy createArtifactProxy(ArtifactTypeToken artifactType, final AttributeTypeId expectedAttributeType, final MutableBoolean wasIsAttributeTypeValidCalled, final boolean isTypeValid) {
       MockArtifactProxy artData = new MockArtifactProxy(artifactType) {
 
          @Override
