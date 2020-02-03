@@ -81,12 +81,12 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class WordMlLinkHandler {
 
-   private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
-   private static final Matcher WORDML_LINK =
-      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
-   private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
+   private static final Pattern OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL);
+   private static final Pattern WORDML_LINK =
+      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL);
+   private static final Pattern HYPERLINK_PATTERN = Pattern.compile(
       "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
-      Pattern.DOTALL).matcher("");
+      Pattern.DOTALL);
    private static final Pattern IS_GUID = Pattern.compile("\\D");
 
    public static final String WORDML_KEY = "wordml";
@@ -131,14 +131,13 @@ public class WordMlLinkHandler {
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
 
       // Detect new style link marker
-      OSEE_LINK_PATTERN.reset(content);
-      while (OSEE_LINK_PATTERN.find()) {
-         String guid = OSEE_LINK_PATTERN.group(1);
+      Matcher oseeMatcher = OSEE_LINK_PATTERN.matcher(content);
+      while (oseeMatcher.find()) {
+         String guid = oseeMatcher.group(1);
          if (Strings.isValid(guid)) {
-            matchMap.put(guid, new MatchRange(OSEE_LINK_PATTERN.start(), OSEE_LINK_PATTERN.end()));
+            matchMap.put(guid, new MatchRange(oseeMatcher.start(), oseeMatcher.end()));
          }
       }
-      OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, unknownGuids,
@@ -162,31 +161,29 @@ public class WordMlLinkHandler {
       HashCollection<String, MatchRange> matchMap = new HashCollection<>();
 
       OseeLinkParser linkParser = new OseeLinkParser();
-      WORDML_LINK.reset(content);
-      while (WORDML_LINK.find()) {
-         String link = WORDML_LINK.group(1);
+      Matcher wordMlMatcher = WORDML_LINK.matcher(content);
+      while (wordMlMatcher.find()) {
+         String link = wordMlMatcher.group(1);
          if (Strings.isValid(link)) {
             linkParser.parse(link);
             String guid = linkParser.getGuid();
             if (Strings.isValid(guid)) {
-               matchMap.put(guid, new MatchRange(WORDML_LINK.start(), WORDML_LINK.end()));
+               matchMap.put(guid, new MatchRange(wordMlMatcher.start(), wordMlMatcher.end()));
             }
          }
       }
-      WORDML_LINK.reset();
 
-      HYPERLINK_PATTERN.reset(content);
-      while (HYPERLINK_PATTERN.find()) {
-         String link = HYPERLINK_PATTERN.group(1);
+      Matcher hyperlinkMatcher = HYPERLINK_PATTERN.matcher(content);
+      while (hyperlinkMatcher.find()) {
+         String link = hyperlinkMatcher.group(1);
          if (Strings.isValid(link)) {
             linkParser.parse(link);
             String guid = linkParser.getGuid();
             if (Strings.isValid(guid)) {
-               matchMap.put(guid, new MatchRange(HYPERLINK_PATTERN.start(), HYPERLINK_PATTERN.end()));
+               matchMap.put(guid, new MatchRange(hyperlinkMatcher.start(), hyperlinkMatcher.end()));
             }
          }
       }
-      HYPERLINK_PATTERN.reset();
 
       return matchMap;
    }

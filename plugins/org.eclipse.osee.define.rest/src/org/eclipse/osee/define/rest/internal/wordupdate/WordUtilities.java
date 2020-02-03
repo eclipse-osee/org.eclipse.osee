@@ -34,7 +34,7 @@ public class WordUtilities {
    public static final String LISTNUM_FIELD_HEAD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
-   private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
+   private static final Pattern binIdPattern = Pattern.compile("wordml://(.+?)[.]");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
    private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
@@ -101,7 +101,7 @@ public class WordUtilities {
       ChangeSet changeSet = new ChangeSet(content);
       Map<String, String> guidMap = new HashMap<>();
 
-      binIdMatcher.reset(content);
+      Matcher binIdMatcher = binIdPattern.matcher(content);
       boolean atLeastOneMatch = false;
       while (binIdMatcher.find()) {
          atLeastOneMatch = true;
@@ -115,6 +115,7 @@ public class WordUtilities {
 
          changeSet.replace(binIdMatcher.start(1), binIdMatcher.end(1), guid);
       }
+
       if (atLeastOneMatch) {
          return changeSet.toString();
       }
