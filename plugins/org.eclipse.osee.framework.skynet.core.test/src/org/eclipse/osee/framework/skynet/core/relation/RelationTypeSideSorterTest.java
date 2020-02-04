@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -187,12 +186,11 @@ public class RelationTypeSideSorterTest {
    }
 
    private static class MockArtifact extends Artifact {
-      private static final ArtifactType artifactType = new ArtifactType(Artifact.getId(), Artifact.getName(), false);
       private final String name;
       private List<Artifact> artifacts = new ArrayList<>();
 
       public MockArtifact(String name, String guid) {
-         super(guid, COMMON, artifactType);
+         super(guid, COMMON, Artifact);
          this.name = name;
       }
 

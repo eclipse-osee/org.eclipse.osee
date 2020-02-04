@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -71,16 +72,16 @@ public class ArtifactTypeManager {
       return artifactTypes;
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(BranchId branch) {
+   public static Collection<ArtifactTypeToken> getValidArtifactTypes(BranchId branch) {
       // TODO Filter artifact types by branch
       return getAllTypes();
    }
 
-   public static Collection<ArtifactType> getConcreteArtifactTypes(BranchId branch) {
-      Collection<ArtifactType> types = getAllTypes();
-      Iterator<ArtifactType> iterator = types.iterator();
+   public static Collection<ArtifactTypeToken> getConcreteArtifactTypes(BranchId branch) {
+      Collection<ArtifactTypeToken> types = getAllTypes();
+      Iterator<ArtifactTypeToken> iterator = types.iterator();
       while (iterator.hasNext()) {
-         ArtifactType type = iterator.next();
+         ArtifactTypeToken type = iterator.next();
          if (type.isAbstract()) {
             iterator.remove();
          }
@@ -88,15 +89,15 @@ public class ArtifactTypeManager {
       return types;
    }
 
-   public static Collection<ArtifactType> getAllTypes() {
-      return getCache().getAll();
+   public static Collection<ArtifactTypeToken> getAllTypes() {
+      return Collections.cast(getCache().getAll());
    }
 
-   public static ArtifactType getType(Long id) {
+   public static ArtifactTypeToken getType(Long id) {
       if (id == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", id);
       }
-      ArtifactType artifactType = getCache().getByGuid(id);
+      ArtifactTypeToken artifactType = getCache().getByGuid(id);
       if (artifactType == null) {
          getCacheService().reloadTypes();
          artifactType = getCache().getByGuid(id);
@@ -111,15 +112,19 @@ public class ArtifactTypeManager {
     * @return the artifact type matching the name
     * @param name artifact type name to match
     */
-   public static ArtifactType getType(String name) {
+   public static ArtifactTypeToken getType(String name) {
       return getCache().getByName(name);
    }
 
-   public static ArtifactType getType(ArtifactTypeId artifactType) {
+   public static ArtifactTypeToken getType(ArtifactTypeId artifactType) {
+      return getFullType(artifactType);
+   }
+
+   public static ArtifactType getFullType(ArtifactTypeId artifactType) {
       if (artifactType instanceof ArtifactType) {
          return (ArtifactType) artifactType;
       }
-      return getType(artifactType.getId());
+      return getCache().getByGuid(artifactType.getId());
    }
 
    public static Artifact addArtifact(ArtifactToken artifactToken) {

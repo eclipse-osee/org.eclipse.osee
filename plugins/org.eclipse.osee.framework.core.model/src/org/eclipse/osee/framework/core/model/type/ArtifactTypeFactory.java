@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public final class ArtifactTypeFactory implements IOseeTypeFactory {
 
-   public ArtifactType create(Long guid, boolean isAbstract, String name) {
+   private ArtifactType create(Long guid, boolean isAbstract, String name) {
       Conditions.checkNotNullOrEmpty(name, "artifact type name");
       return new ArtifactType(guid, name, isAbstract);
    }

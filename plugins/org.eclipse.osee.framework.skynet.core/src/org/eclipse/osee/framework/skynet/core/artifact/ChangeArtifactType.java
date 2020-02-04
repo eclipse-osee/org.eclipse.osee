@@ -80,7 +80,7 @@ public class ChangeArtifactType {
          throw new OseeArgumentException("The new artifact type can not be empty");
       }
 
-      ArtifactType newArtifactType = ArtifactTypeManager.getType(newArtifactTypeToken);
+      ArtifactTypeToken newArtifactType = ArtifactTypeManager.getType(newArtifactTypeToken);
 
       try {
          app.internalChangeArtifactType(inputArtifacts, newArtifactType, prompt);
@@ -97,7 +97,7 @@ public class ChangeArtifactType {
     * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
     * the type should not be changed
     */
-   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) {
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType, boolean prompt) {
 
       createAttributeRelationTransactions(inputArtifacts, newArtifactType);
       boolean changeOk = !prompt;
@@ -128,7 +128,7 @@ public class ChangeArtifactType {
       OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
    }
 
-   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) {
+   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType) {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
@@ -194,7 +194,7 @@ public class ChangeArtifactType {
    private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType) {
 
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
-         ArtifactType aType = ArtifactTypeManager.getType(artifactType);
+         ArtifactType aType = ArtifactTypeManager.getFullType(artifactType);
          if (!aType.isValidAttributeType(attributeType, BranchManager.getBranch(artifact.getBranch()))) {
             artifact.deleteAttributes(attributeType);
             attributeTypes.add(attributeType);
@@ -237,7 +237,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) {
+   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType) {
       List<Object[]> insertData = new ArrayList<>();
 
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";

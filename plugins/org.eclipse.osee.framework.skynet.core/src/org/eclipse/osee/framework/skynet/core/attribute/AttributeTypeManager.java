@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -55,8 +55,9 @@ public class AttributeTypeManager {
 
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
-      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         attributeTypes.addAll(artifactType.getAttributeTypes(BranchManager.getBranch(branch)));
+      for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
+         attributeTypes.addAll(
+            ArtifactTypeManager.getFullType(artifactType).getAttributeTypes(BranchManager.getBranch(branch)));
       }
       return attributeTypes;
    }

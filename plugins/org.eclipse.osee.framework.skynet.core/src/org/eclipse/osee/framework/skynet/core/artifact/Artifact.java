@@ -526,7 +526,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
-      return ArtifactTypeManager.getType(artifactType).isValidAttributeType(attributeType,
+      return ArtifactTypeManager.getFullType(artifactType).isValidAttributeType(attributeType,
          BranchManager.getBranch(branch));
    }
 
@@ -620,7 +620,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final Collection<AttributeTypeToken> getAttributeTypes() {
-      return ArtifactTypeManager.getType(artifactType).getAttributeTypes(BranchManager.getBranch(branch));
+      return ArtifactTypeManager.getFullType(artifactType).getAttributeTypes(BranchManager.getBranch(branch));
    }
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {

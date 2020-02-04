@@ -43,8 +43,8 @@ public final class RelationType extends AbstractOseeType implements RelationType
    protected void initializeFields() {
       addField(RELATION_SIDE_A_NAME_FIELD_KEY, new OseeField<String>());
       addField(RELATION_SIDE_B_NAME_FIELD_KEY, new OseeField<String>());
-      addField(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
-      addField(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
+      addField(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, new OseeField<ArtifactTypeToken>());
+      addField(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, new OseeField<ArtifactTypeToken>());
       addField(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, new OseeField<RelationSorter>());
       addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }

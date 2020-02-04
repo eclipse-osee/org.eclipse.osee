@@ -63,8 +63,8 @@ public class ArtifactTypeInheritanceTest {
 
    @Test
    public void testAttributeTypesOfDescendants() {
-      ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
-      Set<ArtifactType> allTypes = new HashSet<>(ArtifactTypeManager.getAllTypes());
+      ArtifactType baseArtifactType = ArtifactTypeManager.getFullType(CoreArtifactTypes.Artifact);
+      Set<ArtifactTypeToken> allTypes = new HashSet<>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 
       Branch branch = BranchManager.getBranch(CoreBranches.SYSTEM_ROOT);
@@ -72,8 +72,9 @@ public class ArtifactTypeInheritanceTest {
 
       Assert.assertTrue(baseAttributeTypes.size() > 0); // Must have at least name
 
-      for (ArtifactType artifactType : allTypes) {
-         Collection<AttributeTypeToken> childAttributeTypes = artifactType.getAttributeTypes(branch);
+      for (ArtifactTypeToken artifactType : allTypes) {
+         Collection<AttributeTypeToken> childAttributeTypes =
+            ArtifactTypeManager.getFullType(artifactType).getAttributeTypes(branch);
          Collection<AttributeTypeToken> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
          Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
             complement.isEmpty());

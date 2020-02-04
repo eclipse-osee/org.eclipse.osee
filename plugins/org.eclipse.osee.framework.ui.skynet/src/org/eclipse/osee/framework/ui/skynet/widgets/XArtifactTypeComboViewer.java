@@ -42,7 +42,7 @@ public class XArtifactTypeComboViewer extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<? extends ArtifactTypeToken> artifactTypes = ArtifactTypeManager.getAllTypes();
+         Collection<ArtifactTypeToken> artifactTypes = ArtifactTypeManager.getAllTypes();
          List<ArtifactTypeToken> sortedArtifatTypes = new ArrayList<>();
          sortedArtifatTypes.addAll(artifactTypes);
          Collections.sort(sortedArtifatTypes);
