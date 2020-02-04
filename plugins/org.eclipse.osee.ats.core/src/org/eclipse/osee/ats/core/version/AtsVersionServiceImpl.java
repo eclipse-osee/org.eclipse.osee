@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.version;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Active;
 import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,13 +31,14 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -66,9 +69,31 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       } else {
          ArtifactToken art = atsApi.getQueryService().getArtifact(versionId);
          if (art.isOfType(AtsArtifactTypes.Version)) {
-            version = new Version(atsApi.getLogger(), atsApi, art);
+            version = createVersion(art);
          }
       }
+      return version;
+   }
+
+   @Override
+   public Version createVersion(ArtifactToken verArt) {
+      Version version = new Version(verArt, atsApi);
+      version.setName(verArt.getName());
+      version.setId(verArt.getId());
+      version.setGuid(verArt.getGuid());
+      version.setActive(atsApi.getAttributeResolver().getSoleAttributeValue(verArt, Active, true));
+      version.setAllowCreateBranch(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.AllowCreateBranch, false));
+      version.setAllowCommitBranch(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.AllowCommitBranch, false));
+      version.setReleased(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.Released, false));
+      version.setLocked(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.VersionLocked, false));
+      version.setNextVersion(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.NextVersion, false));
+      version.setBaselineBranch(BranchId.valueOf(
+         atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1")));
       return version;
    }
 
@@ -176,7 +201,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       boolean locked = false;
       IAtsVersion verArt = getTargetedVersion(teamWf);
       if (verArt != null) {
-         locked = verArt.isVersionLocked();
+         locked = verArt.isLocked();
       }
       return locked;
    }
@@ -276,7 +301,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsVersion createVersion(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, id);
-      return new Version(atsApi.getLogger(), atsApi, artifact);
+      return new Version(artifact, atsApi);
    }
 
    @Override
@@ -341,9 +366,9 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public Collection<IAtsVersion> getVersionsLocked(IAtsTeamDefinition teamDef, VersionLockedType lockType) {
       ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions(teamDef)) {
-         if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
+         if (version.isLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if (!version.isVersionLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
+         } else if (!version.isLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }
@@ -367,6 +392,56 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef) {
       IAtsTeamDefinition teamDefHoldVer = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
       return getVersions(teamDefHoldVer);
+   }
+
+   @Override
+   public BranchId getBaselineBranchIdInherited(IAtsVersion version) {
+      if (version.getBaselineBranch().isValid()) {
+         return version.getBaselineBranch();
+      } else {
+         try {
+            IAtsTeamDefinition teamDef = getTeamDefinition(version);
+            if (teamDef != null) {
+               return atsApi.getTeamDefinitionService().getTeamBranchId(teamDef);
+            } else {
+               return BranchId.SENTINEL;
+            }
+         } catch (OseeCoreException ex) {
+            return BranchId.SENTINEL;
+         }
+      }
+   }
+
+   @Override
+   public Result isAllowCommitBranchInherited(IAtsVersion version) {
+      if (!version.isAllowCommitBranch()) {
+         return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
+      }
+      if (version.isInvalid()) {
+         return new Result(false, "Parent Branch not configured for Version [" + this + "]");
+      }
+      return Result.TrueResult;
+   }
+
+   @Override
+   public Date getEstimatedReleaseDate(IAtsVersion version) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.EstimatedReleaseDate, null);
+   }
+
+   @Override
+   public Date getReleaseDate(IAtsVersion version) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.ReleaseDate, null);
+   }
+
+   @Override
+   public Result isAllowCreateBranchInherited(IAtsVersion version) {
+      if (!version.isAllowCreateBranch()) {
+         return new Result(false, "Branch creation disabled for Version [" + this + "]");
+      }
+      if (version.isBranchInvalid()) {
+         return new Result(false, "Parent Branch not configured for Version [" + this + "]");
+      }
+      return Result.TrueResult;
    }
 
 }

@@ -10,67 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.version;
 
-import java.util.Collection;
-import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
+public interface IAtsVersion extends IAtsConfigObject {
 
-   /*****************************
-    * Name, Full Name, Description
-    ******************************/
-
-   @Override
-   String getDescription();
-
-   @Override
-   String toString();
-
-   /*****************************
-    * Branching Data
-    ******************************/
-   /**
-    * @return directly configured baseline branch id or parentTeamDefinition's branch id
-    */
-   @Override
-   BranchId getBaselineBranchId();
-
-   BranchId getBaselineBranchIdInherited();
-
-   @Override
-   String getCommitFullDisplayName();
-
-   @Override
-   Result isAllowCreateBranchInherited();
+   BranchId getBaselineBranch();
 
    boolean isAllowCreateBranch();
 
    boolean isAllowCommitBranch();
 
-   @Override
-   Result isAllowCommitBranchInherited();
-
-   /*****************************
-    * Misc
-    ******************************/
-   Date getReleaseDate();
-
-   Boolean isReleased();
-
-   Date getEstimatedReleaseDate();
-
-   Collection<String> getStaticIds();
+   boolean isReleased();
 
    boolean isLocked();
 
-   Boolean isVersionLocked();
+   boolean isNextVersion();
 
-   Boolean isNextVersion();
+   default boolean isBranchValid() {
+      return getBaselineBranch().isValid();
+   }
+
+   default boolean isBranchInvalid() {
+      return getBaselineBranch().isInvalid();
+   }
 
 }

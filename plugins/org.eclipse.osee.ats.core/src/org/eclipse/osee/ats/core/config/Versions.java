@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -63,9 +64,9 @@ public class Versions {
    }
 
    public static void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts, AtsApi atsApi) {
-      configArts.add(version);
+      configArts.add(new CommitConfigItem(version, atsApi));
       for (IAtsVersion childArt : getParallelVersions(version, atsApi)) {
-         if (!configArts.contains(childArt)) {
+         if (!configArts.contains(new CommitConfigItem(childArt, atsApi))) {
             getParallelVersions(childArt, configArts, atsApi);
          }
       }

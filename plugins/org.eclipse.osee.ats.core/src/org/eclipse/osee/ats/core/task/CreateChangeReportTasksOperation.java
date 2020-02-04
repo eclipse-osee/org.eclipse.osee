@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
@@ -237,9 +238,10 @@ public class CreateChangeReportTasksOperation {
             IAtsTeamWorkflow destTeamWf =
                ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, teamDef);
             if (destTeamWf == null) {
-               CreateTasksWorkflow workflowCreator = new CreateTasksWorkflow(hostTeamWf.getName(),
-                  setDef.getChgRptOptions().getCreateOptions(), true, reportOnly, crttwd.getRd(), changes, new Date(),
-                  AtsCoreUsers.SYSTEM_USER, chgRptTeamWf, targetedVersion, crttwd.getWorkType(), null, null);
+               CreateTasksWorkflow workflowCreator =
+                  new CreateTasksWorkflow(hostTeamWf.getName(), setDef.getChgRptOptions().getCreateOptions(), true,
+                     reportOnly, crttwd.getRd(), changes, new Date(), AtsCoreUsers.SYSTEM_USER, chgRptTeamWf,
+                     new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
                workflowCreator.setActionableItem(ai);
                destTeamWf = workflowCreator.createMissingWorkflow();
                rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());

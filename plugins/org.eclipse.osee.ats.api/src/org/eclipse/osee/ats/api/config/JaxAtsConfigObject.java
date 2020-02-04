@@ -18,12 +18,24 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
 
+   boolean active = false;
+
    public JaxAtsConfigObject() {
       this(Id.SENTINEL, "");
    }
 
    public JaxAtsConfigObject(Long id, String name) {
       super(id, name);
+   }
+
+   @Override
+   public boolean isActive() {
+      return active;
+   }
+
+   @Override
+   public void setActive(boolean active) {
+      this.active = active;
    }
 
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
+import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -18,7 +19,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -84,5 +87,17 @@ public interface IAtsVersionService {
    Collection<IAtsVersion> getVersionsReleased(IAtsTeamDefinition teamDef, VersionReleaseType releaseType);
 
    Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef);
+
+   BranchId getBaselineBranchIdInherited(IAtsVersion version);
+
+   Result isAllowCommitBranchInherited(IAtsVersion version);
+
+   Date getEstimatedReleaseDate(IAtsVersion version);
+
+   Date getReleaseDate(IAtsVersion version);
+
+   Result isAllowCreateBranchInherited(IAtsVersion version);
+
+   Version createVersion(ArtifactToken verArt);
 
 }

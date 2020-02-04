@@ -31,13 +31,13 @@ import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
-import org.eclipse.osee.ats.api.config.JaxVersion;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -151,7 +151,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             JaxActionableItem ai = createJaxActionableItem(configArtId);
             configs.addAi(ai);
          } else if (configArtId.isOfType(Version)) {
-            JaxVersion version = createJaxVersion(configArtId);
+            Version version = atsApi.getVersionService().createVersion(configArtId);
             configs.addVersion(version);
          }
          idToArtifact.put(configArtId.getId(), configArtId);
@@ -186,7 +186,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          // add team to version ids
          for (Long versionId : atsApi.getRelationResolver().getRelatedIds(teamDef, TeamDefinitionToVersion_Version)) {
             jaxTeamDef.addVersion(versionId);
-            JaxVersion version = configs.getIdToVersion().get(versionId);
+            Version version = configs.getIdToVersion().get(versionId);
             version.setTeamDefId(teamDefId);
          }
          // add team to ai ids
@@ -213,15 +213,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          teamDef.getAis().add(ai.getId());
       }
       return teamDef;
-   }
-
-   private JaxVersion createJaxVersion(ArtifactReadable verArt) {
-      JaxVersion jaxVersion = new JaxVersion();
-      jaxVersion.setName(verArt.getName());
-      jaxVersion.setId(verArt.getId());
-      jaxVersion.setGuid(verArt.getGuid());
-      jaxVersion.setActive(verArt.getSoleAttributeValue(Active, true));
-      return jaxVersion;
    }
 
    private JaxActionableItem createJaxActionableItem(ArtifactReadable aiArt) {

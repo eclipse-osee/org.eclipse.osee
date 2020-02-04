@@ -138,13 +138,13 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       monitor.beginTask("Processing Versions", verMets.size());
       for (VersionMetrics verMet : verMets) {
          Date thisReleaseStartDate = verMet.getReleaseStartDate();
-         Date thisReleaseEndDate = verMet.getVerArt().getReleaseDate();
+         Date thisReleaseEndDate = AtsClientService.get().getVersionService().getReleaseDate(verMet.getVerArt());
          Date nextReleaseStartDate = null;
          Date nextReleaseEndDate = null;
          VersionMetrics nextVerMet = verMet.getNextVerMetViaReleaseDate();
          if (nextVerMet != null) {
             nextReleaseStartDate = nextVerMet.getReleaseStartDate();
-            nextReleaseEndDate = nextVerMet.getVerArt().getReleaseDate();
+            nextReleaseEndDate = AtsClientService.get().getVersionService().getReleaseDate(nextVerMet.getVerArt());
          }
          Integer numOrigDurningNextReleaseCycle = 0;
          if (nextReleaseStartDate != null && nextReleaseEndDate != null) {

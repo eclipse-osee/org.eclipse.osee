@@ -82,7 +82,7 @@ public class VersionTeamMetrics {
    private void orderReleasedVersions() {
       for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(verTeamDef)) {
          VersionMetrics verMet = new VersionMetrics(verArt, this);
-         Date relDate = verArt.getReleaseDate();
+         Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
          if (relDate != null) {
             relDateToVerMet.put(relDate, verMet);
          }

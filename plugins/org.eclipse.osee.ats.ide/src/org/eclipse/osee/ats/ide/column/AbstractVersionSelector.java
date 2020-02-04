@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -36,6 +37,8 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -174,8 +177,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       Object obj = dialog.getSelectedFirst();
       IAtsVersion newVersion = (IAtsVersion) obj;
       //now check selected version
-      if (newVersion != null && newVersion.isVersionLocked()) {
-         String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
+      if (newVersion != null && newVersion.isLocked()) {
+         String error = "Version \"" + getCommitFullDisplayName(newVersion) + "\" is locked or already released.";
          if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
             Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
             return null;
@@ -184,6 +187,22 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
          }
       }
       return newVersion;
+   }
+
+   public String getCommitFullDisplayName(IAtsVersion version) {
+      List<String> strs = new ArrayList<>();
+      strs.add(getName());
+      String fullName =
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.FullName, "");
+      if (Strings.isValid(fullName)) {
+         strs.add(fullName);
+      }
+      String description = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(version,
+         AtsAttributeTypes.Description, "");
+      if (Strings.isValid(description)) {
+         strs.add(description);
+      }
+      return Collections.toString(" - ", strs);
    }
 
    @Override

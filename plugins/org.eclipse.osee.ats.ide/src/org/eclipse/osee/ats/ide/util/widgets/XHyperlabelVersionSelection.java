@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.config.Version;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionTreeDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;

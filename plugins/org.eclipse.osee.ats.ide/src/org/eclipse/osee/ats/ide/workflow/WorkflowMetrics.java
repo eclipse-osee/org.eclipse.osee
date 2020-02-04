@@ -134,7 +134,7 @@ public class WorkflowMetrics {
       Date today = new Date();
       daysTillRel = 0;
       if (version != null && estimatedReleaseDate == null) {
-         estimatedReleaseDate = version.getEstimatedReleaseDate();
+         estimatedReleaseDate = AtsClientService.get().getVersionService().getEstimatedReleaseDate(version);
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);

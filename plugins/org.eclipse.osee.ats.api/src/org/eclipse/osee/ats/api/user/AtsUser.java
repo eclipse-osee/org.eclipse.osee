@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -27,8 +26,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    private String userId;
    private String email;
-   private ArtifactToken storeObject;
-   private IUserArtLoader userArtLoader;
 
    public AtsUser() {
       // for jax-rs instantiation
@@ -68,25 +65,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    @JsonIgnore
    public String toStringWithId() {
       return String.format("[%s]-[%s]", getName(), getUserId());
-   }
-
-   @Override
-   @JsonIgnore
-   public ArtifactToken getStoreObject() {
-      if (storeObject == null && userArtLoader != null) {
-         storeObject = userArtLoader.loadUser(this);
-      }
-      return storeObject;
-   }
-
-   @Override
-   public void setStoreObject(ArtifactToken artifact) {
-      this.storeObject = artifact;
-   }
-
-   @JsonIgnore
-   public void setUserArtLoader(IUserArtLoader userArtLoader) {
-      this.userArtLoader = userArtLoader;
    }
 
    @Override

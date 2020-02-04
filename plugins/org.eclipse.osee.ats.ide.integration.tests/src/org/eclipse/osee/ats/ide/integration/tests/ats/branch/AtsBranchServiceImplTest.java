@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -96,8 +97,10 @@ public class AtsBranchServiceImplTest {
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
-      assertTrue("commitObjs is missing verArt1", commitObjs.contains(version1));
-      assertTrue("commitObjs is missing verArt2", commitObjs.contains(version2));
+      assertTrue("commitObjs is missing verArt1",
+         commitObjs.contains(new CommitConfigItem(version1, AtsClientService.get())));
+      assertTrue("commitObjs is missing verArt2",
+         commitObjs.contains(new CommitConfigItem(version2, AtsClientService.get())));
    }
 
    @Test

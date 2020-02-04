@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.commit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -21,40 +22,101 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public class CommitConfigItem implements ICommitConfigItem {
 
-   private final IAtsTeamDefinition teamDef;
+   private IAtsTeamDefinition teamDef = null;
    private final AtsApi atsApi;
+   private IAtsVersion version = null;
 
    public CommitConfigItem(IAtsTeamDefinition teamDef, AtsApi atsApi) {
       this.teamDef = teamDef;
       this.atsApi = atsApi;
    }
 
+   public CommitConfigItem(IAtsVersion version, AtsApi atsApi) {
+      this.version = version;
+      this.atsApi = atsApi;
+   }
+
    @Override
    public BranchId getBaselineBranchId() {
-      return atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef);
+      if (teamDef == null) {
+         return version.getBaselineBranch();
+      } else {
+         return atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef);
+      }
    }
 
    @Override
    public Result isAllowCommitBranchInherited() {
-      return atsApi.getTeamDefinitionService().isAllowCommitBranchInherited(teamDef);
+      if (teamDef == null) {
+         return atsApi.getVersionService().isAllowCommitBranchInherited(version);
+      } else {
+         return atsApi.getTeamDefinitionService().isAllowCommitBranchInherited(teamDef);
+      }
    }
 
    @Override
    public Result isAllowCreateBranchInherited() {
-      return atsApi.getTeamDefinitionService().isAllowCreateBranchInherited(teamDef);
+      if (teamDef == null) {
+         return atsApi.getVersionService().isAllowCreateBranchInherited(version);
+      } else {
+         return atsApi.getTeamDefinitionService().isAllowCreateBranchInherited(teamDef);
+      }
    }
 
    @Override
    public IAtsConfigObject getConfigObject() {
-      return teamDef;
+      if (teamDef == null) {
+         return version;
+      } else {
+         return teamDef;
+      }
    }
 
    @Override
    public String getCommitFullDisplayName() {
-      if (teamDef != null) {
+      if (teamDef == null) {
+         return version.getName();
+      } else {
          return teamDef.getName();
       }
-      return "unknown";
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((teamDef == null) ? 0 : teamDef.hashCode());
+      result = prime * result + ((version == null) ? 0 : version.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      CommitConfigItem other = (CommitConfigItem) obj;
+      if (teamDef == null) {
+         if (other.teamDef != null) {
+            return false;
+         }
+      } else if (!teamDef.equals(other.teamDef)) {
+         return false;
+      }
+      if (version == null) {
+         if (other.version != null) {
+            return false;
+         }
+      } else if (!version.equals(other.version)) {
+         return false;
+      }
+      return true;
    }
 
 }

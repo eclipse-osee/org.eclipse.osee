@@ -133,8 +133,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
       addSpace();
 
       try {
-         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersion() != null && iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate() != null) {
-            estimatedReleaseXDate.setDate(iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate());
+         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersion() != null && AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+            iAtsMetricsProvider.getMetricsVersion()) != null) {
+            estimatedReleaseXDate.setDate(AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+               iAtsMetricsProvider.getMetricsVersion()));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -158,7 +160,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          return estimatedReleaseXDate.getDate();
       }
       if (iAtsMetricsProvider.getMetricsVersion() != null) {
-         return iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate();
+         return AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+            iAtsMetricsProvider.getMetricsVersion());
       }
       // Try to find an estimated release date from one of the workflows
       for (Artifact artifact : iAtsMetricsProvider.getMetricsWorkItems()) {
@@ -166,7 +169,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             IAtsVersion verArt =
                AtsClientService.get().getVersionService().getTargetedVersion((IAtsTeamWorkflow) artifact);
             if (verArt != null) {
-               Date estRelDate = verArt.getEstimatedReleaseDate();
+               Date estRelDate = AtsClientService.get().getVersionService().getEstimatedReleaseDate(verArt);
                if (estRelDate != null) {
                   return estRelDate;
                }
@@ -222,7 +225,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
          lines.add(new XBarGraphLine("Targeted Version", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getName()));
          String estimatedReleaseDateStr =
-            iAtsMetricsProvider.getMetricsVersion() == null || iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate().toString();
+            iAtsMetricsProvider.getMetricsVersion() == null || AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+               iAtsMetricsProvider.getMetricsVersion()) == null ? "Not Set" : AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+                  iAtsMetricsProvider.getMetricsVersion()).toString();
          lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : estimatedReleaseDateStr));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,

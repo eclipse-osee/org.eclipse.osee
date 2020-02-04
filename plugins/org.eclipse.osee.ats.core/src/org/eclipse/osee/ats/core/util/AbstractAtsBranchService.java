@@ -117,7 +117,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          IAtsVersion verArt = atsApi.getVersionService().getTargetedVersion(teamWf);
          if (verArt != null) {
-            parentBranch = getBranch((IAtsConfigObject) verArt);
+            parentBranch = getBranch(verArt);
          }
       }
 
@@ -156,7 +156,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
-            return atsApi.getVersionService().getTargetedVersion(teamWf);
+            return new CommitConfigItem(atsApi.getVersionService().getTargetedVersion(teamWf), atsApi);
          }
       } else {
          CommitConfigItem item = new CommitConfigItem(teamWf.getTeamDefinition(), atsApi);
@@ -333,8 +333,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       BranchId branch = BranchId.SENTINEL;
       if (configObject instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) configObject;
-         if (version.getBaselineBranchId().isValid()) {
-            branch = version.getBaselineBranchId();
+         if (version.getBaselineBranch().isValid()) {
+            branch = version.getBaselineBranch();
          }
       }
       if (branch.isInvalid() && configObject instanceof IAtsTeamDefinition) {
@@ -429,12 +429,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             return new Result(false, "Workflow not targeted for Version");
          }
          IAtsVersion targetedVersion = versionService.getTargetedVersion(teamWf);
-         Result result = targetedVersion.isAllowCommitBranchInherited();
+         Result result = targetedVersion.getAtsApi().getVersionService().isAllowCommitBranchInherited(targetedVersion);
          if (result.isFalse()) {
             return result;
          }
 
-         if (!isBranchValid(targetedVersion)) {
+         if (targetedVersion.isBranchInvalid()) {
             return new Result(false, "Parent Branch not configured for Version [" + targetedVersion + "]");
          }
          return Result.TrueResult;
@@ -465,15 +465,15 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             return new Result(false, "Workflow not targeted for Version");
          }
          IAtsVersion targetedVersion = versionService.getTargetedVersion(teamWf);
-         Result result = targetedVersion.isAllowCreateBranchInherited();
+         Result result = targetedVersion.getAtsApi().getVersionService().isAllowCreateBranchInherited(targetedVersion);
          if (result.isFalse()) {
             return result;
          }
 
-         if (!isBranchValid(targetedVersion)) {
+         if (!targetedVersion.isBranchValid()) {
             return new Result(false, "Parent Branch not configured for Version [" + targetedVersion + "]");
          }
-         BranchId baselineBranch = getBranch((IAtsConfigObject) targetedVersion);
+         BranchId baselineBranch = getBranch(targetedVersion);
          if (!getBranchType(baselineBranch).isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }

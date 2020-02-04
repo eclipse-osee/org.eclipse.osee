@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -32,11 +33,10 @@ public class AtsConfigurations {
    List<ArtifactId> atsAdmins = new ArrayList<>();
    ArtifactId topActionableItem;
    ArtifactId topTeamDefinition;
-   List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
    private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
-   private Map<Long, JaxVersion> idToVersion = new HashMap<>();
+   private Map<Long, Version> idToVersion = new HashMap<>();
 
    public List<AtsConfiguration> getConfigs() {
       return configs;
@@ -102,11 +102,11 @@ public class AtsConfigurations {
       this.idToTeamDef = idToTeamDef;
    }
 
-   public Map<Long, JaxVersion> getIdToVersion() {
+   public Map<Long, Version> getIdToVersion() {
       return idToVersion;
    }
 
-   public void setIdToVersion(Map<Long, JaxVersion> idToVersion) {
+   public void setIdToVersion(Map<Long, Version> idToVersion) {
       this.idToVersion = idToVersion;
    }
 
@@ -134,7 +134,7 @@ public class AtsConfigurations {
       idToAi.put(ai.getId(), ai);
    }
 
-   public void addVersion(JaxVersion version) {
+   public void addVersion(Version version) {
       idToVersion.put(version.getId(), version);
    }
 

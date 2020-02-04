@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.version;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -56,16 +57,16 @@ public class VersionsTest {
       Set<ICommitConfigItem> configArts = new HashSet<>();
       Versions.getParallelVersions(sawBld1Ver, configArts, AtsClientService.get());
       Assert.assertEquals(3, configArts.size());
-      Assert.assertTrue(configArts.contains(sawBld1Ver));
-      Assert.assertTrue(configArts.contains(sawBld2Ver));
-      Assert.assertTrue(configArts.contains(sawBld3Ver));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld1Ver, AtsClientService.get())));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld2Ver, AtsClientService.get())));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld3Ver, AtsClientService.get())));
 
       configArts.clear();
       Versions.getParallelVersions(sawBld2Ver, configArts, AtsClientService.get());
       Assert.assertEquals(3, configArts.size());
-      Assert.assertTrue(configArts.contains(sawBld1Ver));
-      Assert.assertTrue(configArts.contains(sawBld2Ver));
-      Assert.assertTrue(configArts.contains(sawBld3Ver));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld1Ver, AtsClientService.get())));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld2Ver, AtsClientService.get())));
+      Assert.assertTrue(configArts.contains(new CommitConfigItem(sawBld3Ver, AtsClientService.get())));
 
       configArts.clear();
       Versions.getParallelVersions(sawBld3Ver, configArts, AtsClientService.get());

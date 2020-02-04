@@ -135,7 +135,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
             try {
                if (version != null) {
-                  selectedBranch = version.getBaselineBranchIdInherited();
+                  selectedBranch = AtsClientService.get().getVersionService().getBaselineBranchIdInherited(version);
                   reportBranchWidget.setSelection(selectedBranch);
                }
             } catch (OseeCoreException ex) {

@@ -87,9 +87,9 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
          IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          if (verArt != null) {
             if (attributeType == AtsAttributeTypes.ReleaseDate) {
-               return verArt.getReleaseDate();
+               return AtsClientService.get().getVersionService().getReleaseDate(verArt);
             } else if (attributeType == AtsAttributeTypes.EstimatedReleaseDate) {
-               return verArt.getEstimatedReleaseDate();
+               return AtsClientService.get().getVersionService().getEstimatedReleaseDate(verArt);
             }
          }
       } else if (object instanceof AbstractWorkflowArtifact) {

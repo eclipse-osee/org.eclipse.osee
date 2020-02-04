@@ -158,7 +158,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
             try {
                if (version != null) {
-                  selectedBranch = version.getBaselineBranchIdInherited();
+                  selectedBranch = AtsClientService.get().getVersionService().getBaselineBranchIdInherited(version);
                   requirementsBranchWidget.setSelection(selectedBranch);
                   testProcedureBranchWidget.setSelection(selectedBranch);
                }

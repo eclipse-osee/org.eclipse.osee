@@ -18,14 +18,10 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IUserArtLoader;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Provides client configurations through server endpoint
@@ -65,37 +61,17 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    private AtsConfigurations loadConfigurations() {
       AtsConfigurations configs = AtsClientService.getConfigEndpoint().get();
+      for (Version version : configs.getIdToVersion().values()) {
+         version.setAtsApi(AtsClientService.get());
+      }
       for (TeamDefinition teamDef : configs.getIdToTeamDef().values()) {
          teamDef.setAtsApi(AtsClientService.get());
       }
       for (IAtsUser user : configs.getUsers()) {
          AtsUser jUser = (AtsUser) user;
-         jUser.setUserArtLoader(userLoader);
          jUser.setAtsApi(AtsClientService.get());
       }
       return configs;
-   }
-
-   /**
-    * Lazy Loader for user artifact
-    */
-   private final UserArtLoader userLoader = new UserArtLoader();
-   private class UserArtLoader implements IUserArtLoader {
-
-      @Override
-      public ArtifactToken loadUser(IAtsUser user) {
-         ArtifactToken userArt = null;
-         try {
-            userArt = UserManager.getUserByArtId(user.getId());
-            if (userArt == null) {
-               userArt = ArtifactQuery.getArtifactFromId(user.getId(), AtsClientService.get().getAtsBranch());
-            }
-         } catch (ArtifactDoesNotExist ex) {
-            // do nothing
-         }
-         user.setStoreObject(userArt);
-         return userArt;
-      }
    }
 
    @Override

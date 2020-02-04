@@ -54,7 +54,7 @@ public class VersionMetrics {
          sb.append(" Support: ");
          sb.append(getTeamWorkFlows(ChangeType.Support).size());
          sb.append(" Release Date: ");
-         sb.append(verArt.getReleaseDate());
+         sb.append(AtsClientService.get().getVersionService().getReleaseDate(verArt));
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
             sb.append(" Prev Release Version: <not found>");
@@ -62,7 +62,7 @@ public class VersionMetrics {
             sb.append(" Prev Release Version \"");
             sb.append(prevVerMet);
             sb.append("\"   Release Date: ");
-            sb.append(verArt.getReleaseDate());
+            sb.append(AtsClientService.get().getVersionService().getReleaseDate(verArt));
          }
          sb.append(" Start Date: ");
          sb.append(getReleaseStartDate());
@@ -79,7 +79,7 @@ public class VersionMetrics {
       if (startDate == null) {
          return null;
       }
-      Date relDate = verArt.getReleaseDate();
+      Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
       if (relDate == null) {
          return null;
       }
@@ -91,7 +91,7 @@ public class VersionMetrics {
       if (prevVerMet == null) {
          return null;
       }
-      Date relDate = prevVerMet.getVerArt().getReleaseDate();
+      Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
       return relDate;
    }
 
@@ -108,7 +108,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getPreviousVerMetViaReleaseDate() {
-      if (verArt.getReleaseDate() == null) {
+      if (AtsClientService.get().getVersionService().getReleaseDate(verArt) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -119,7 +119,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getNextVerMetViaReleaseDate() {
-      if (verArt.getReleaseDate() == null) {
+      if (AtsClientService.get().getVersionService().getReleaseDate(verArt) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);

@@ -613,7 +613,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             IAtsVersion version = AtsClientService.get().getVersionService().getById(artifact);
             if (version != null) {
                try {
-                  BranchId parentBranchId = version.getBaselineBranchId();
+                  BranchId parentBranchId = version.getBaselineBranch();
                   if (parentBranchId.isValid()) {
                      validateBranchId(version, parentBranchId, results);
                   }
@@ -644,7 +644,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                for (IAtsVersion parallelVersion : Versions.getParallelVersions(version, AtsClientService.get())) {
                   if (parallelVersion != null) {
                      try {
-                        if (!AtsClientService.get().getBranchService().isBranchValid(parallelVersion)) {
+                        if (parallelVersion.isBranchInvalid()) {
                            results.log(artifact, "testParallelConfig",
                               "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch id");
                         }
