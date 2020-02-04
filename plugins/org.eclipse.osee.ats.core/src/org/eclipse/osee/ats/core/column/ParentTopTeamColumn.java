@@ -47,7 +47,8 @@ public final class ParentTopTeamColumn {
          if (!actionableItems.isEmpty()) {
             teamDef = actionableItems.iterator().next().getTeamDefinition();
             if (teamDef == null) {
-               teamDef = actionableItems.iterator().next().getTeamDefinitionInherited();
+               IAtsActionableItem ai = actionableItems.iterator().next();
+               teamDef = ai.getAtsApi().getActionableItemService().getTeamDefinitionInherited(ai);
             }
             result = getTopTeamDefName(teamDef);
          }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.config.copy;
 
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -40,7 +41,7 @@ public class CopyAtsValidationTest {
 
       // set name to one that can't be converted
       ConfigData data = getConfigData();
-      IAtsActionableItem ai = data.getActionableItem();
+      ActionableItem ai = (ActionableItem) data.getActionableItem();
       String origName = ai.getName();
       ai.setName("CSCI");
 

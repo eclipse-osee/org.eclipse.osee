@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -52,9 +53,9 @@ public interface IAtsActionableItemService {
 
    IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef);
 
-   IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+   ActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
 
-   IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
+   ActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsActionableItem getActionableItem(String value);
 
@@ -65,5 +66,9 @@ public interface IAtsActionableItemService {
    Collection<IAtsUser> getSubscribed(IAtsActionableItem ai);
 
    Collection<IAtsUser> getLeads(IAtsActionableItem ai);
+
+   IAtsTeamDefinition getTeamDefinitionInherited(IAtsActionableItem ai);
+
+   ActionableItem createActionableItem(ArtifactToken aiArt);
 
 }

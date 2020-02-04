@@ -44,7 +44,7 @@ public class TeamColumn extends AbstractServicesColumn {
          if (atsApi.getReviewService().isStandAloneReview(peerRev)) {
             List<IAtsTeamDefinition> teams = new ArrayList<>();
             for (IAtsActionableItem ai : peerRev.getActionableItems()) {
-               if (ai.getTeamDefinitionInherited() != null) {
+               if (ai.getAtsApi().getActionableItemService().getTeamDefinitionInherited(ai) != null) {
                   teams.add(ai.getTeamDefinition());
                }
             }

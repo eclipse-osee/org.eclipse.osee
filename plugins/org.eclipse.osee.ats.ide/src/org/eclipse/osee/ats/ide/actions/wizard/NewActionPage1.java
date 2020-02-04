@@ -20,13 +20,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
-import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -159,9 +158,9 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
             IAtsClient atsClient = AtsClientService.get();
             AtsConfigurations configs = atsClient.getConfigService().getConfigurations();
             for (Long aiId : configs.getIdToAi().get(configs.getTopActionableItem().getId()).getChildren()) {
-               JaxActionableItem jai = configs.getIdToAi().get(aiId);
-               if (jai.isActive()) {
-                  activeActionableItemTree.add(new ActionableItem(atsClient.getLogger(), atsClient, jai));
+               ActionableItem ai = configs.getIdToAi().get(aiId);
+               if (ai.isActive()) {
+                  activeActionableItemTree.add(ai);
                }
             }
             treeViewer.getViewer().setInput(activeActionableItemTree);
@@ -213,7 +212,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
          boolean enabled = false;
          if (element instanceof IAtsActionableItem) {
             IAtsActionableItem ai = (IAtsActionableItem) element;
-            if (ai.isActionable() != null && ai.isActionable()) {
+            if (ai.isActionable()) {
                enabled = true;
             }
          }
@@ -272,9 +271,9 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
       for (Object obj : treeViewer.getChecked()) {
          if (obj instanceof IAtsActionableItem) {
             selected.add((IAtsActionableItem) obj);
-         } else if (obj instanceof JaxActionableItem) {
-            JaxActionableItem jai = (JaxActionableItem) obj;
-            selected.add(AtsClientService.get().getQueryService().getConfigItem(jai.getId()));
+         } else if (obj instanceof ActionableItem) {
+            ActionableItem ai = (ActionableItem) obj;
+            selected.add(AtsClientService.get().getQueryService().getConfigItem(ai.getId()));
          }
       }
       return selected;

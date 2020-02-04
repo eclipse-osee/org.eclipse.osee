@@ -22,6 +22,9 @@ public interface IAtsConfigurationsService {
 
    AtsConfigurations getConfigurations();
 
+   /**
+    * @return newly retrieved configs. Updates current cache with new.
+    */
    AtsConfigurations getConfigurationsWithPend();
 
    IAtsConfigTx createConfigTx(String string, IAtsUser asUser);

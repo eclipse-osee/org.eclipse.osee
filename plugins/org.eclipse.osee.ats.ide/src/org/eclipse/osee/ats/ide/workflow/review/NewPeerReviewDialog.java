@@ -183,7 +183,7 @@ public class NewPeerReviewDialog extends EntryDialog implements IsEnabled {
             return false;
          }
          IAtsActionableItem ai = selectedAis.iterator().next();
-         IAtsTeamDefinition teamDef = ai.getTeamDefinitionInherited();
+         IAtsTeamDefinition teamDef = ai.getAtsApi().getActionableItemService().getTeamDefinitionInherited(ai);
          if (teamDef == null) {
             AWorkbench.popup("No related Team Definition for selected Actionable Item.  Choose another");
             treeViewer.setChecked(ai, false);

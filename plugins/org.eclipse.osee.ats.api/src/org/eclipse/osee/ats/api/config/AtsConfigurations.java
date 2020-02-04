@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
@@ -34,7 +35,7 @@ public class AtsConfigurations {
    ArtifactId topActionableItem;
    ArtifactId topTeamDefinition;
    private Collection<String> validStateNames = new ArrayList<>();
-   private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
+   private Map<Long, ActionableItem> idToAi = new HashMap<>();
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
 
@@ -86,11 +87,11 @@ public class AtsConfigurations {
       this.atsAdmins = Collections.fromString(atsAdmins, ArtifactId::valueOf);
    }
 
-   public Map<Long, JaxActionableItem> getIdToAi() {
+   public Map<Long, ActionableItem> getIdToAi() {
       return idToAi;
    }
 
-   public void setIdToAi(Map<Long, JaxActionableItem> idToAi) {
+   public void setIdToAi(Map<Long, ActionableItem> idToAi) {
       this.idToAi = idToAi;
    }
 
@@ -130,7 +131,7 @@ public class AtsConfigurations {
       idToTeamDef.put(teamDef.getId(), teamDef);
    }
 
-   public void addAi(JaxActionableItem ai) {
+   public void addAi(ActionableItem ai) {
       idToAi.put(ai.getId(), ai);
    }
 

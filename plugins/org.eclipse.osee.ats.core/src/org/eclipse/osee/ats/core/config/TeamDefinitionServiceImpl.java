@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,10 +64,33 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
       if (teamDef == null) {
          ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(teamDefId);
          if (teamDefArt.isValid()) {
-            TeamDefinition teamDef2 = new TeamDefinition(teamDefArt, atsApi);
+            TeamDefinition teamDef2 = createTeamDefinition(teamDefArt);
             atsApi.getConfigService().getConfigurations().addTeamDef(teamDef2);
             teamDef = teamDef2;
          }
+      }
+      return teamDef;
+   }
+
+   @Override
+   public TeamDefinition createTeamDefinition(ArtifactToken teamDefArt) {
+      TeamDefinition teamDef = new TeamDefinition(teamDefArt, atsApi);
+      teamDef.setName(teamDefArt.getName());
+      teamDef.setId(teamDefArt.getId());
+      teamDef.setGuid(teamDefArt.getGuid());
+      teamDef.setActive(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.Active, true));
+      teamDef.setWorkType(
+         atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.WorkType, ""));
+      for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem)) {
+         teamDef.getAis().add(ai.getId());
+      }
+      ArtifactToken parent = atsApi.getRelationResolver().getParent(teamDefArt);
+      if (parent != null) {
+         teamDef.setParentId(parent.getId());
+      }
+      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamDefArt)) {
+         teamDef.getChildren().add(child.getId());
       }
       return teamDef;
    }
@@ -124,13 +148,13 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+   public TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, id);
-      return new TeamDefinition(artifact, atsApi);
+      return createTeamDefinition(artifact);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
+   public TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
       return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
    }
 
@@ -159,14 +183,15 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    public Collection<IAtsUser> getLeads(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
       Set<IAtsUser> leads = new HashSet<>();
       for (IAtsActionableItem aia : actionableItems) {
-         if (teamDef.equals(aia.getTeamDefinitionInherited())) {
+         if (teamDef.equals(aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia))) {
             // If leads are specified for this aia, add them
             Collection<IAtsUser> leads2 = atsApi.getActionableItemService().getLeads(aia);
             if (leads2.size() > 0) {
                leads.addAll(leads2);
             } else {
-               if (aia.getTeamDefinitionInherited() != null) {
-                  Collection<IAtsUser> leads3 = getLeads(aia.getTeamDefinitionInherited());
+               if (aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia) != null) {
+                  Collection<IAtsUser> leads3 =
+                     getLeads(aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia));
                   leads.addAll(leads3);
                }
             }

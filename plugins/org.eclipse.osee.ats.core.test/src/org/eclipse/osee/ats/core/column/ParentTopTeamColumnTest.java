@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
@@ -48,6 +49,7 @@ public class ParentTopTeamColumnTest {
    @Mock private IAtsTeamDefinitionService teamDefinitionService;
    @Mock private AtsApi atsApi;
    @Mock private IAtsVersionService versionService;
+   @Mock private IAtsActionableItemService actionableItemService;
 
    // @formatter:on
 
@@ -64,6 +66,8 @@ public class ParentTopTeamColumnTest {
       when(teamDefTop.getName()).thenReturn("TEAM top");
       when(atsApi.getVersionService()).thenReturn(versionService);
       when(noVersionsTeamDef.getAtsApi()).thenReturn(atsApi);
+      when(aia1.getAtsApi()).thenReturn(atsApi);
+      when(atsApi.getActionableItemService()).thenReturn(actionableItemService);
    }
 
    /**
@@ -116,7 +120,7 @@ public class ParentTopTeamColumnTest {
    @org.junit.Test
    public void testGetColumnText_fromStandAloneReview_inheritedAi() throws Exception {
       when(rev1.getActionableItems()).thenReturn(Collections.asHashSet(aia1));
-      when(aia1.getTeamDefinitionInherited()).thenReturn(teamDefChild);
+      when(aia1.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia1)).thenReturn(teamDefChild);
 
       String columnText = ParentTopTeamColumn.getColumnText(rev1);
 
@@ -129,7 +133,7 @@ public class ParentTopTeamColumnTest {
    @org.junit.Test
    public void testGetColumnText_fromStandAloneReview_noAis() throws Exception {
       when(rev1.getActionableItems()).thenReturn(java.util.Collections.<IAtsActionableItem> emptySet());
-      when(aia1.getTeamDefinitionInherited()).thenReturn(teamDefChild);
+      when(aia1.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia1)).thenReturn(teamDefChild);
 
       String columnText = ParentTopTeamColumn.getColumnText(rev1);
 

@@ -15,12 +15,14 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -46,9 +48,9 @@ public interface IAtsTeamDefinitionService {
     */
    IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId);
 
-   IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+   TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
 
-   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
+   TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
 
    Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef);
 
@@ -87,5 +89,7 @@ public interface IAtsTeamDefinitionService {
    Collection<String> getRules(IAtsTeamDefinition teamDef);
 
    boolean hasRule(IAtsTeamDefinition teamDef, String rule);
+
+   TeamDefinition createTeamDefinition(ArtifactToken teamDefArt);
 
 }

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -43,6 +44,7 @@ public class TeamColumnUtilityTest {
    @Mock private IAtsWorkItemService workItemService;
    @Mock private IAtsReviewService reviewService;
    @Mock private AtsApi atsApi;
+   @Mock private IAtsActionableItemService actionableItemService;
    // @formatter:on
 
    @Before
@@ -55,7 +57,9 @@ public class TeamColumnUtilityTest {
       when(standAloneReview.getActionableItems()).thenReturn(Collections.singleton(ai));
       when(teamDef.getName()).thenReturn(TEAM_NAME);
       when(reviewService.isStandAloneReview(standAloneReview)).thenReturn(true);
-      when(ai.getTeamDefinitionInherited()).thenReturn(teamDef);
+      when(ai.getAtsApi()).thenReturn(atsApi);
+      when(atsApi.getActionableItemService()).thenReturn(actionableItemService);
+      when(actionableItemService.getTeamDefinitionInherited(ai)).thenReturn(teamDef);
       when(ai.getTeamDefinition()).thenReturn(teamDef);
       when(atsApi.getReviewService()).thenReturn(reviewService);
    }

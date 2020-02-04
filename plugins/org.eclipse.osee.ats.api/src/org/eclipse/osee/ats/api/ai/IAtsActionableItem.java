@@ -13,7 +13,8 @@ package org.eclipse.osee.ats.api.ai;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.rule.IAtsRules;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -21,39 +22,17 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
-
-   /*****************************
-    * Name, Full Name, Description
-    ******************************/
-   void setName(String name);
+public interface IAtsActionableItem extends IAtsConfigObject {
 
    IAtsActionableItem SENTINEL = createSentinel();
 
-   void setDescription(String description);
-
-   /*****************************
-    * Parent and Children Team Definitions
-    ******************************/
-   Collection<IAtsActionableItem> getChildrenActionableItems();
-
-   IAtsActionableItem getParentActionableItem();
-
-   IAtsTeamDefinition getTeamDefinition();
-
-   IAtsTeamDefinition getTeamDefinitionInherited();
-
-   /*****************************
-    * Misc
-    ******************************/
-   Collection<String> getStaticIds();
-
-   public Boolean isActionable();
-
-   boolean isAllowUserActionCreation();
-
    public static IAtsActionableItem createSentinel() {
       final class IAtsActionableItemSentinel extends NamedIdBase implements IAtsActionableItem {
+
+         @Override
+         public AtsApi getAtsApi() {
+            return null;
+         }
 
          @Override
          public boolean isActive() {
@@ -62,27 +41,12 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
 
          @Override
          public ArtifactTypeToken getArtifactType() {
-            return null;
+            return AtsArtifactTypes.ActionableItem;
          }
 
          @Override
-         public Collection<String> getRules() {
-            return null;
-         }
-
-         @Override
-         public boolean hasRule(String rule) {
+         public boolean isActionable() {
             return false;
-         }
-
-         @Override
-         public void setDescription(String description) {
-            // Do nothing
-         }
-
-         @Override
-         public Collection<IAtsActionableItem> getChildrenActionableItems() {
-            return null;
          }
 
          @Override
@@ -91,23 +55,8 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
          }
 
          @Override
-         public IAtsTeamDefinition getTeamDefinition() {
+         public Collection<IAtsActionableItem> getChildrenActionableItems() {
             return null;
-         }
-
-         @Override
-         public IAtsTeamDefinition getTeamDefinitionInherited() {
-            return null;
-         }
-
-         @Override
-         public Collection<String> getStaticIds() {
-            return null;
-         }
-
-         @Override
-         public Boolean isActionable() {
-            return false;
          }
 
          @Override
@@ -116,12 +65,22 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
          }
 
          @Override
-         public AtsApi getAtsApi() {
+         public TeamDefinition getTeamDefinition() {
             return null;
          }
 
       }
       return new IAtsActionableItemSentinel();
    }
+
+   public boolean isActionable();
+
+   public IAtsActionableItem getParentActionableItem();
+
+   public Collection<IAtsActionableItem> getChildrenActionableItems();
+
+   public boolean isAllowUserActionCreation();
+
+   public IAtsTeamDefinition getTeamDefinition();
 
 }

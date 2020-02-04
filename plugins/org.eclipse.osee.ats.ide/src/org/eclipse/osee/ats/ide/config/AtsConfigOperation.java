@@ -18,7 +18,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -116,7 +118,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsTeamDefinition teamDef =
+      TeamDefinition teamDef =
          AtsClientService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes, atsApi);
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
@@ -124,6 +126,7 @@ public class AtsConfigOperation extends AbstractOperation {
          AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          CoreRelationTypes.DefaultHierarchical_Child, teamDef);
+      atsApi.getConfigService().getConfigurations().addTeamDef(teamDef);
       return teamDef;
    }
 
@@ -131,22 +134,29 @@ public class AtsConfigOperation extends AbstractOperation {
       Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
-      IAtsActionableItem parentAi =
+      ActionableItem parentAi =
          AtsClientService.get().getActionableItemService().createActionableItem(teamDefName, changes, atsApi);
       changes.setSoleAttributeValue(parentAi, AtsAttributeTypes.Actionable, false);
+      parentAi.setActionable(false);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, parentAi);
-      changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get()),
-         CoreRelationTypes.DefaultHierarchical_Child, parentAi);
+      parentAi.setTeamDefId(teamDef.getId());
+      IAtsActionableItem topAi = ActionableItems.getTopActionableItem(AtsClientService.get());
+      changes.relate(topAi, CoreRelationTypes.DefaultHierarchical_Child, parentAi);
+      parentAi.setParentId(topAi.getId());
 
+      atsApi.getConfigService().getConfigurations().addAi(parentAi);
       aias.add(parentAi);
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         IAtsActionableItem childAi =
+         ActionableItem childAi =
             AtsClientService.get().getActionableItemService().createActionableItem(name, changes, atsApi);
          changes.setSoleAttributeValue(childAi, AtsAttributeTypes.Actionable, true);
+         childAi.setActionable(true);
          changes.addChild(parentAi.getStoreObject(), childAi.getStoreObject());
+         childAi.setParentId(parentAi.getId());
          aias.add(childAi);
+         atsApi.getConfigService().getConfigurations().addAi(childAi);
       }
 
       return aias;

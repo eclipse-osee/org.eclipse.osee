@@ -331,7 +331,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
-      IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
+      IAtsTeamDefinition teamDef =
+         actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem);
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
             actionableItem);

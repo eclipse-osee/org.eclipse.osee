@@ -14,10 +14,8 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Configuration;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Active;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.AtsConfiguredBranch;
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Default;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Users_User;
@@ -27,20 +25,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
-import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -145,10 +141,10 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       // load ats config objects
       for (ArtifactReadable configArtId : configArts) {
          if (configArtId.isOfType(TeamDefinition)) {
-            TeamDefinition teamDef = createTeamDefinition(configArtId);
+            TeamDefinition teamDef = atsApi.getTeamDefinitionService().createTeamDefinition(configArtId);
             configs.addTeamDef(teamDef);
          } else if (configArtId.isOfType(ActionableItem)) {
-            JaxActionableItem ai = createJaxActionableItem(configArtId);
+            ActionableItem ai = atsApi.getActionableItemService().createActionableItem(configArtId);
             configs.addAi(ai);
          } else if (configArtId.isOfType(Version)) {
             Version version = atsApi.getVersionService().createVersion(configArtId);
@@ -191,7 +187,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          }
          // add team to ai ids
          for (Long aiId : atsApi.getRelationResolver().getRelatedIds(teamDef, TeamActionableItem_ActionableItem)) {
-            JaxActionableItem jai = configs.getIdToAi().get(aiId);
+            ActionableItem jai = configs.getIdToAi().get(aiId);
             if (jai != null) {
                jaxTeamDef.addAi(aiId);
                jai.setTeamDefId(teamDefId);
@@ -202,36 +198,13 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return null;
    }
 
-   private TeamDefinition createTeamDefinition(ArtifactReadable teamDefArt) {
-      TeamDefinition teamDef = new TeamDefinition(teamDefArt, atsApi);
-      teamDef.setName(teamDefArt.getName());
-      teamDef.setId(teamDefArt.getId());
-      teamDef.setGuid(teamDefArt.getGuid());
-      teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-      teamDef.setWorkType(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.WorkType, ""));
-      for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem)) {
-         teamDef.getAis().add(ai.getId());
-      }
-      return teamDef;
-   }
-
-   private JaxActionableItem createJaxActionableItem(ArtifactReadable aiArt) {
-      JaxActionableItem jaxAi = new JaxActionableItem();
-      jaxAi.setName(aiArt.getName());
-      jaxAi.setId(aiArt.getId());
-      jaxAi.setGuid(aiArt.getGuid());
-      jaxAi.setDescription(aiArt.getSoleAttributeValue(Description, ""));
-      jaxAi.setActive(aiArt.getSoleAttributeValue(Active, true));
-      return jaxAi;
-   }
-
-   private JaxActionableItem addActionableItemChildrenWIthRecurse(Long aiId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> aiIds) {
+   private ActionableItem addActionableItemChildrenWIthRecurse(Long aiId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs, List<Long> aiIds) {
       ArtifactReadable aiArt = idToArtifact.get(aiId);
       if (aiArt != null && aiArt.isOfType(ActionableItem)) {
-         JaxActionableItem jaxAi = configs.getIdToAi().get(aiId);
+         ActionableItem jaxAi = configs.getIdToAi().get(aiId);
          for (Long childId : aiArt.getChildrentIds()) {
             if (aiIds.contains(childId)) {
-               JaxActionableItem child = addActionableItemChildrenWIthRecurse(childId, idToArtifact, configs, aiIds);
+               ActionableItem child = addActionableItemChildrenWIthRecurse(childId, idToArtifact, configs, aiIds);
                if (child != null) {
                   child.setParentId(aiId);
                   jaxAi.addChild(child);

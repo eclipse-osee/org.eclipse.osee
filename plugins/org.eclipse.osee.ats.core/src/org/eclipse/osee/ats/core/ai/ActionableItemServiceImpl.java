@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.ai;
 
+import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Description;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -29,7 +31,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.core.config.ActionableItem;
+import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -59,11 +61,43 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
       IAtsActionableItem ai = null;
       if (aiId instanceof IAtsActionableItem) {
          ai = (IAtsActionableItem) aiId;
-      } else {
-         ArtifactToken art = atsApi.getQueryService().getArtifact(aiId);
-         if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ai = new ActionableItem(atsApi.getLogger(), atsApi, art);
+      }
+      if (ai == null) {
+         ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId.getId());
+      }
+      if (ai == null) {
+         ArtifactToken aiArt = atsApi.getQueryService().getArtifact(aiId);
+         if (aiArt.isValid()) {
+            ActionableItem ai2 = createActionableItem(aiArt);
+            atsApi.getConfigService().getConfigurations().addAi(ai2);
+            ai = ai2;
          }
+      }
+      return ai;
+   }
+
+   @Override
+   public ActionableItem createActionableItem(ArtifactToken aiArt) {
+      ActionableItem ai = new ActionableItem(aiArt, atsApi);
+      ai.setName(aiArt.getName());
+      ai.setId(aiArt.getId());
+      ai.setGuid(aiArt.getGuid());
+      ai.setDescription(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, Description, ""));
+      ai.setActive(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.Active, true));
+      ai.setActionable(atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.Actionable, true));
+      ai.setAllowUserActionCreation(
+         atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.AllowUserActionCreation, true));
+      ArtifactToken teamDefArt =
+         atsApi.getRelationResolver().getRelatedOrNull(aiArt, AtsRelationTypes.TeamActionableItem_TeamDefinition);
+      if (teamDefArt != null && teamDefArt.isValid()) {
+         ai.setTeamDefId(teamDefArt.getId());
+      }
+      ArtifactToken parent = atsApi.getRelationResolver().getParent(aiArt);
+      if (parent != null) {
+         ai.setParentId(parent.getId());
+      }
+      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(aiArt)) {
+         ai.getChildren().add(child.getId());
       }
       return ai;
    }
@@ -185,13 +219,13 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+   public ActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, id);
-      return new ActionableItem(atsApi.getLogger(), atsApi, artifact);
+      return createActionableItem(artifact);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
+   public ActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
       return createActionableItem(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
    }
 
@@ -233,6 +267,11 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    public Collection<IAtsUser> getLeads(IAtsActionableItem ai) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getStoreObject(),
          AtsRelationTypes.TeamLead_Lead);
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefinitionInherited(IAtsActionableItem ai) {
+      return TeamDefinitions.getImpactedTeamDef(ai);
    }
 
 }

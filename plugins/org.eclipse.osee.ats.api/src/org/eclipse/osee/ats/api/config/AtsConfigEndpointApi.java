@@ -38,8 +38,8 @@ public interface AtsConfigEndpointApi {
    public AtsConfigurations get();
 
    /**
-    * @return non-cached copy of AtsConfigurations read straight from database. Can take 30ish seconds to load. Use
-    * get() for quick access to cached copy.
+    * @return non-cached copy of AtsConfigurations read straight from database. Will update server cache with newly read
+    * copy. Can take 30ish seconds to load. Use get() for quick access to cached copy.
     */
    @GET
    @Path("fromdb")

@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -82,6 +83,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock AtsApi atsApi;
    @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsTeamDefinitionService teamDefinitionService;
+   @Mock IAtsActionableItemService actionableItemService;
 
    // @formatter:on
 
@@ -93,6 +95,8 @@ public class AtsWorkDefinitionServiceImplTest {
       when(atsApi.getTeamDefinitionService().getParentTeamDef(topTeamDef)).thenReturn(null);
       when(atsApi.getTeamDefinitionService().getParentTeamDef(projTeamDef)).thenReturn(topTeamDef);
       when(atsApi.getTeamDefinitionService().getParentTeamDef(featureTeamDef)).thenReturn(projTeamDef);
+      when(actionableItem.getAtsApi()).thenReturn(atsApi);
+      when(atsApi.getActionableItemService()).thenReturn(actionableItemService);
       // always return default when requested
       when(workDefinitionService.getWorkDefinitionByName(
          eq(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer.getName()))).thenReturn(defaultPeerToPeerWorkDef);
@@ -174,7 +178,7 @@ public class AtsWorkDefinitionServiceImplTest {
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());
 
-      when(actionableItem.getTeamDefinitionInherited()).thenReturn(topTeamDef);
+      when(actionableItemService.getTeamDefinitionInherited(actionableItem)).thenReturn(topTeamDef);
       when(attributeResolver.getSoleAttributeValueAsString(topTeamDef,
          AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference, "")).thenReturn(
             MyPeerToPeerWorkDefArt.getIdString());

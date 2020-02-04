@@ -310,7 +310,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public IAtsWorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) {
       Conditions.notNull(actionableItem, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       IAtsWorkDefinition workDef = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(
-         actionableItem.getTeamDefinitionInherited());
+         actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem));
       if (workDef == null) {
          workDef = getDefaultPeerToPeerWorkflowDefinition();
       }

@@ -29,7 +29,7 @@ public class JaxAtsObject extends NamedIdBase {
    protected boolean active;
    private String description;
    @JsonIgnore
-   private AtsApi atsApi;
+   protected AtsApi atsApi;
    @JsonIgnore
    private ArtifactToken artifact;
 

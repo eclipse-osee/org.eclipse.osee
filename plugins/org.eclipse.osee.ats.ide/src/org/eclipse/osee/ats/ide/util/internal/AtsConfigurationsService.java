@@ -14,6 +14,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -66,6 +67,9 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       }
       for (TeamDefinition teamDef : configs.getIdToTeamDef().values()) {
          teamDef.setAtsApi(AtsClientService.get());
+      }
+      for (ActionableItem ai : configs.getIdToAi().values()) {
+         ai.setAtsApi(atsApi);
       }
       for (IAtsUser user : configs.getUsers()) {
          AtsUser jUser = (AtsUser) user;

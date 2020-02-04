@@ -429,7 +429,8 @@ public class ActionFactory implements IAtsActionFactory {
 
       List<IAtsActionableItem> applicableAis = new LinkedList<>();
       for (IAtsActionableItem ai : actionableItems) {
-         IAtsTeamDefinition teamDefinitionInherited = ai.getTeamDefinitionInherited();
+         IAtsTeamDefinition teamDefinitionInherited =
+            ai.getAtsApi().getActionableItemService().getTeamDefinitionInherited(ai);
          if (teamDefinitionInherited != null && teamDef.getId().equals(teamDefinitionInherited.getId())) {
             applicableAis.add(ai);
          }

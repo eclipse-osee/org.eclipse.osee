@@ -18,11 +18,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -63,9 +61,12 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
    }
 
    public static ActionResult createActionWithAllAis() {
+      // Clear out config cache to ensure only get live configs
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
       Set<IAtsActionableItem> aias = new HashSet<>();
-      for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active,
-         AtsClientService.get().getQueryService())) {
+      for (IAtsActionableItem aia : AtsClientService.get().getConfigService().getConfigurations().getIdToAi().values()) {
          if (aia.isActionable() && aia.isAllowUserActionCreation()) {
             aias.add(aia);
          }
