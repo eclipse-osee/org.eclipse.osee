@@ -566,8 +566,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             section.getSection().setExpanded(false);
          }
       }
-      bodyComp.layout(true, true);
-      bodyComp.getParent().layout(true, true);
+      if (Widgets.isAccessible(bodyComp)) {
+         bodyComp.layout(true, true);
+         bodyComp.getParent().layout(true, true);
+      }
    }
 
    @Override
