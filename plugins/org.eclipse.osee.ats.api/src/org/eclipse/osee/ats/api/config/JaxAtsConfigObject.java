@@ -11,12 +11,19 @@
 package org.eclipse.osee.ats.api.config;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
 
-   // do nothing
+   public JaxAtsConfigObject() {
+      this(Id.SENTINEL, "");
+   }
+
+   public JaxAtsConfigObject(Long id, String name) {
+      super(id, name);
+   }
 
 }

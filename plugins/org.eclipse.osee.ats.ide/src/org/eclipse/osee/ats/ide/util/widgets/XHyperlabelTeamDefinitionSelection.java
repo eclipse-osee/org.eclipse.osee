@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
@@ -30,15 +30,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
-   Collection<JaxTeamDefinition> selectedTeamDefs = new HashSet<>();
-   Collection<JaxTeamDefinition> teamDefs;
+   Collection<TeamDefinition> selectedTeamDefs = new HashSet<>();
+   Collection<TeamDefinition> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
    public XHyperlabelTeamDefinitionSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);
    }
 
-   public Collection<JaxTeamDefinition> getSelectedTeamDefintions() {
+   public Collection<TeamDefinition> getSelectedTeamDefintions() {
       return selectedTeamDefs;
    }
 
@@ -53,7 +53,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return Collections.toString(",", selectedTeamDefs);
    }
 
-   public void setSelectedTeamDefs(Collection<JaxTeamDefinition> selectedTeamDefs) {
+   public void setSelectedTeamDefs(Collection<TeamDefinition> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
       refresh();
       notifyXModifiedListeners();
@@ -78,7 +78,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
          if (result == 0) {
             selectedTeamDefs.clear();
             for (Object obj : dialog.getResultAndRecursedTeamDefs()) {
-               selectedTeamDefs.add((JaxTeamDefinition) obj);
+               selectedTeamDefs.add((TeamDefinition) obj);
             }
             notifyXModifiedListeners();
          }
@@ -89,7 +89,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setTeamDefs(Collection<JaxTeamDefinition> teamDefs) {
+   public void setTeamDefs(Collection<TeamDefinition> teamDefs) {
       this.teamDefs = teamDefs;
       if (dialog != null) {
          dialog.setInput(teamDefs);

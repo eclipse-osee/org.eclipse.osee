@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -61,16 +61,16 @@ public class TeamDefinitionSearchWidget {
       return (XHyperlabelTeamDefinitionSelection) searchItem.getxWidgets().get(TEAM_DEFINITIONS);
    }
 
-   public void set(Collection<JaxTeamDefinition> teamDefs) {
+   public void set(Collection<TeamDefinition> teamDefs) {
       getWidget().setSelectedTeamDefs(teamDefs);
    }
 
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          getWidget().handleClear();
-         List<JaxTeamDefinition> teamDefs = new LinkedList<>();
+         List<TeamDefinition> teamDefs = new LinkedList<>();
          for (Long id : data.getTeamDefIds()) {
-            JaxTeamDefinition teamDef =
+            TeamDefinition teamDef =
                AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             if (teamDef != null) {
                teamDefs.add(teamDef);

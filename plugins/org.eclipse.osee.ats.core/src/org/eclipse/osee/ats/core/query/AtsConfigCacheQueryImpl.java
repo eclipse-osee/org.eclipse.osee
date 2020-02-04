@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
@@ -44,7 +44,7 @@ public class AtsConfigCacheQueryImpl implements IAtsConfigCacheQuery {
    public <T extends IAtsConfigObject> Collection<T> get(Class<T> clazz) {
       Set<T> results = new HashSet<>();
       if (artifactTypes.contains(AtsArtifactTypes.TeamDefinition)) {
-         for (JaxTeamDefinition teamDef : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
+         for (TeamDefinition teamDef : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
             if (active != null) {
                if (!active.equals(teamDef.isActive())) {
                   continue;

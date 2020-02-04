@@ -35,7 +35,7 @@ public class AtsConfigurations {
    List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
    private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
-   private Map<Long, JaxTeamDefinition> idToTeamDef = new HashMap<>();
+   private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, JaxVersion> idToVersion = new HashMap<>();
 
    public List<AtsConfiguration> getConfigs() {
@@ -94,11 +94,11 @@ public class AtsConfigurations {
       this.idToAi = idToAi;
    }
 
-   public Map<Long, JaxTeamDefinition> getIdToTeamDef() {
+   public Map<Long, TeamDefinition> getIdToTeamDef() {
       return idToTeamDef;
    }
 
-   public void setIdToTeamDef(Map<Long, JaxTeamDefinition> idToTeamDef) {
+   public void setIdToTeamDef(Map<Long, TeamDefinition> idToTeamDef) {
       this.idToTeamDef = idToTeamDef;
    }
 
@@ -126,7 +126,7 @@ public class AtsConfigurations {
       this.topTeamDefinition = topTeamDefinition;
    }
 
-   public void addTeamDef(JaxTeamDefinition teamDef) {
+   public void addTeamDef(TeamDefinition teamDef) {
       idToTeamDef.put(teamDef.getId(), teamDef);
    }
 

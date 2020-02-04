@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.JaxVersion;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -72,13 +72,13 @@ public class AtsProgramOperations {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleAttributeValue(program,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isValid()) {
-         JaxTeamDefinition jaxTeamDef =
+         TeamDefinition teamDef =
             atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
 
-         if (jaxTeamDef != null) {
-            progVer.setTeam(ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getName(), atsApi.getAtsBranch()));
+         if (teamDef != null) {
+            progVer.setTeam(ArtifactToken.valueOf(teamDef.getId(), teamDef.getName(), atsApi.getAtsBranch()));
 
-            for (Long versionId : jaxTeamDef.getVersions()) {
+            for (Long versionId : teamDef.getVersions()) {
                JaxVersion version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId);
 
                boolean verActive = version.isActive();

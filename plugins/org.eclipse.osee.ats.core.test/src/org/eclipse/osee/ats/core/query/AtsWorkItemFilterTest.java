@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -61,8 +61,8 @@ public class AtsWorkItemFilterTest {
    @Mock IAttributeResolver attributeResolver;
    // @formatter:on
 
-   private final IAtsTeamDefinition teamDef1 = new TeamDefinition(null, atsApi, CoreArtifactTokens.UserGroups);
-   private final IAtsTeamDefinition teamDef2 = new TeamDefinition(null, atsApi, CoreUserGroups.Everyone);
+   private final IAtsTeamDefinition teamDef1 = new TeamDefinition(CoreArtifactTokens.UserGroups, atsApi);
+   private final IAtsTeamDefinition teamDef2 = new TeamDefinition(CoreUserGroups.Everyone, atsApi);
 
    @Before
    public void setup() {

@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
+public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsTeamDefinition> {
 
    private final Active active;
    private List<IAtsTeamDefinition> initialTeamDefs;
@@ -52,8 +52,9 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(
-            TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getQueryService()));
+         List<IAtsTeamDefinition> topLevelTeamDefinitions =
+            TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getQueryService());
+         getTreeViewer().getViewer().setInput(topLevelTeamDefinitions);
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
 

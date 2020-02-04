@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -26,7 +28,10 @@ public class JaxAtsObject extends NamedIdBase {
    protected String guid;
    protected boolean active;
    private String description;
+   @JsonIgnore
    private AtsApi atsApi;
+   @JsonIgnore
+   private ArtifactToken artifact;
 
    public JaxAtsObject() {
       this(Id.SENTINEL, "");
@@ -80,6 +85,18 @@ public class JaxAtsObject extends NamedIdBase {
 
    public void setAtsApi(AtsApi atsApi) {
       this.atsApi = atsApi;
+   }
+
+   @JsonIgnore
+   public ArtifactToken getStoreObject() {
+      if (artifact == null && atsApi != null) {
+         artifact = atsApi.getQueryService().getArtifact(getId());
+      }
+      return artifact;
+   }
+
+   public void setStoreObject(ArtifactToken artifact) {
+      this.artifact = artifact;
    }
 
 }

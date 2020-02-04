@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -60,6 +61,7 @@ public interface IAtsObject extends NamedId, HasDescription {
       return ArtifactId.valueOf(getId());
    }
 
+   @JsonIgnore
    default ArtifactToken getArtifactToken() {
       return getStoreObject();
    }

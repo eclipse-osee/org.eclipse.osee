@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -46,12 +46,12 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          } catch (Exception ex) {
             // do nothing
          }
-      } else if (parentElement instanceof JaxTeamDefinition && active != null) {
+      } else if (parentElement instanceof TeamDefinition && active != null) {
          try {
-            JaxTeamDefinition teamDef = (JaxTeamDefinition) parentElement;
-            List<JaxTeamDefinition> teamDefs = new LinkedList<>();
+            TeamDefinition teamDef = (TeamDefinition) parentElement;
+            List<TeamDefinition> teamDefs = new LinkedList<>();
             for (Long id : teamDef.getChildren()) {
-               JaxTeamDefinition td =
+               TeamDefinition td =
                   AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
                if (active == Active.Both || (active == Active.Active && td.isActive()) || (active == Active.InActive && !td.isActive())) {
                   teamDefs.add(td);
@@ -69,10 +69,10 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       if (element instanceof IAtsTeamDefinition) {
          return (AtsClientService.get().getTeamDefinitionService().getParentTeamDef((IAtsTeamDefinition) element));
-      } else if (element instanceof JaxTeamDefinition) {
-         Long id = ((JaxTeamDefinition) element).getId();
+      } else if (element instanceof TeamDefinition) {
+         Long id = ((TeamDefinition) element).getId();
          if (id > 0) {
-            JaxTeamDefinition td =
+            TeamDefinition td =
                AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             return td;
          }

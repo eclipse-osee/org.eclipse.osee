@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -56,7 +56,7 @@ public class AtsObjectLabelProvider extends LabelProvider {
          return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(element));
       } else if (element instanceof IAtsActionableItem) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.ActionableItem);
-      } else if (element instanceof IAtsTeamDefinition || element instanceof JaxTeamDefinition) {
+      } else if (element instanceof IAtsTeamDefinition || element instanceof TeamDefinition) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.TeamDefinition);
       } else if (element instanceof IAtsVersion) {
          return ArtifactImageManager.getImage(AtsArtifactTypes.Version);

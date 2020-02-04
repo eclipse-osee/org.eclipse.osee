@@ -75,7 +75,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          }
       } else if (obj instanceof IAtsObject) {
          IAtsObject atsObj = (IAtsObject) obj;
-         if (!atsObj.getStoreObject().getBranch().equals(branch)) {
+         if (atsObj.getStoreObject() != null && !atsObj.getStoreObject().getBranch().equals(branch)) {
             throw new OseeArgumentException("Can't add %s from branch %s to conflicting branch %s in same transaction",
                atsObj.toStringWithId(), atsObj.getStoreObject().getBranchIdString(), branch.getIdString());
          }

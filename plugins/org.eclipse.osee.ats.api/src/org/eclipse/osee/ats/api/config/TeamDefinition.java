@@ -14,14 +14,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxTeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefinition {
+public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefinition {
 
    @JsonSerialize(using = ToStringSerializer.class)
    Long parentId;
@@ -29,6 +31,16 @@ public class JaxTeamDefinition extends JaxAtsConfigObject implements IAtsTeamDef
    List<Long> versions = new ArrayList<>();
    List<Long> children = new ArrayList<>();
    String workType;
+
+   public TeamDefinition() {
+      // for jax-rs
+   }
+
+   public TeamDefinition(ArtifactToken artifact, AtsApi atsApi) {
+      super(artifact.getId(), artifact.getName());
+      setStoreObject(artifact);
+      setAtsApi(atsApi);
+   }
 
    public Long getParentId() {
       return parentId;
@@ -62,7 +74,7 @@ public class JaxTeamDefinition extends JaxAtsConfigObject implements IAtsTeamDef
       this.children = children;
    }
 
-   public void addChild(JaxTeamDefinition child) {
+   public void addChild(TeamDefinition child) {
       children.add(child.getId());
    }
 
