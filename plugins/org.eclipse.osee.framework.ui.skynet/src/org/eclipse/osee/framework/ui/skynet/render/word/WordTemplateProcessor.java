@@ -636,6 +636,7 @@ public class WordTemplateProcessor {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
          }
+         WordUiUtil.getStoredResultData();
       }
       // maintain a list of artifacts that have been processed so we do not
       // have duplicates.

@@ -122,6 +122,7 @@ public class WholeWordRenderer extends WordRenderer {
             LinkType linkType = LinkType.OSEE_SERVER_LINK;
             content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids, presentationType);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
+            WordUiUtil.getStoredResultData();
 
             DataRightsClassification classification = artifact.getSoleAttributeValue(
                CoreAttributeTypes.DataRightsClassification, DataRightsClassification.noOverride);

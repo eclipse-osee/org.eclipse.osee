@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public final class WordUiUtil {
 
+   private static final XResultData storedRd = new XResultData(false);
+
    public static void displayUnknownGuids(Artifact artifact, Collection<String> unknownGuids) {
       if (Conditions.hasValues(unknownGuids)) {
          String invalidLinkMessage = "";
@@ -36,9 +38,24 @@ public final class WordUiUtil {
             invalidLinkMessage +=
                "\t\nInvalid Link: artifact with guid: " + unknownGuid + " does not exist on this branch.";
          }
-         displayUnhandledArtifacts(java.util.Collections.singleton(artifact),
+         displayUnhandledArtifact(artifact,
             String.format("\nThe following referenced GUIDs cannot be found:  \n\n%s", invalidLinkMessage));
       }
+   }
+
+   public static void displayUnhandledArtifact(final Artifact artifact, final String warningString) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            XResultData rd = createUnhandledArtifactsReport(java.util.Collections.singleton(artifact), warningString);
+            rd.log("\n\n");
+            storedRd.combine(rd);
+            if (!RenderingUtil.arePopupsAllowed()) {
+               OseeLog.logf(Activator.class, Level.INFO, "Test - Skip Unhandled Artifacts Report - %s - [%s]",
+                  warningString, artifact);
+            }
+         }
+      });
    }
 
    public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts, final String warningString) {
@@ -46,20 +63,7 @@ public final class WordUiUtil {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               XResultData rd = new XResultData(false);
-               rd.warning("\nYou chose to preview/edit artifacts that could not be handled: ");
-               rd.log(warningString + "\n");
-               rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "GUID"}));
-               for (Artifact artifact : artifacts) {
-                  try {
-                     rd.addRaw(AHTML.addRowMultiColumnTable(
-                        new String[] {artifact.toString(), XResultDataUI.getHyperlink(artifact)}));
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-               rd.addRaw(AHTML.endMultiColumnTable());
+               XResultData rd = createUnhandledArtifactsReport(artifacts, warningString);
                if (RenderingUtil.arePopupsAllowed()) {
                   XResultDataUI.report(rd, "Artifact Warning");
                } else {
@@ -69,6 +73,24 @@ public final class WordUiUtil {
             }
          });
       }
+   }
+
+   public static XResultData createUnhandledArtifactsReport(final Collection<Artifact> artifacts, final String warningString) {
+      XResultData rd = new XResultData(false);
+      rd.warning("\nYou chose to preview/edit artifacts that could not be handled: ");
+      rd.log(warningString + "\n");
+      rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "GUID"}));
+      for (Artifact artifact : artifacts) {
+         try {
+            rd.addRaw(
+               AHTML.addRowMultiColumnTable(new String[] {artifact.toString(), XResultDataUI.getHyperlink(artifact)}));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      rd.addRaw(AHTML.endMultiColumnTable());
+      return rd;
    }
 
    public static void displayErrorMessage(String errorMessage) {
@@ -94,9 +116,17 @@ public final class WordUiUtil {
             } else {
                OseeLog.logf(Activator.class, Level.SEVERE, err);
             }
-
          }
       });
+   }
+
+   public static void getStoredResultData() {
+      if (!storedRd.isEmpty()) {
+         if (RenderingUtil.arePopupsAllowed()) {
+            XResultDataUI.report(storedRd, "Artifact Warning");
+         }
+         storedRd.clear();
+      }
    }
 
    public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors, boolean diffFieldCodes) {
