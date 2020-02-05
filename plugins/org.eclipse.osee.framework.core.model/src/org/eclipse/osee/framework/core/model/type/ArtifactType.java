@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,18 +49,18 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
 
    protected void initializeFields() {
       addField(ARTIFACT_IS_ABSTRACT_FIELD_KEY, new OseeField<Boolean>());
-      addField(ARTIFACT_INHERITANCE_FIELD_KEY, new ArtifactSuperTypeField(this, superTypes));
+      addField(ARTIFACT_INHERITANCE_FIELD_KEY, new ArtifactSuperTypeField(this, null));
       addField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, new ArtifactTypeAttributesField(attributes));
    }
 
    private List<ArtifactType> getSuperArtifactTypes() {
-      List<ArtifactType> defaultValue = Collections.emptyList();
+      List<ArtifactType> defaultValue = new ArrayList<>();
       Collection<ArtifactType> types = getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
       return new ArrayList<ArtifactType>(types);
    }
 
    public void setSuperTypes(Set<ArtifactType> superType) {
-      Set<ArtifactType> originals = new HashSet<>(superTypes);
+      Set<ArtifactType> originals = new HashSet<ArtifactType>(superTypes);
       setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
       for (ArtifactType supers : superType) {
          supers.childTypes.add(this);

@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
@@ -28,7 +26,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.junit.Assert;
 import org.junit.Test;
@@ -119,15 +116,9 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactTypeToken artifactType2 = Requirement;
-      ArtifactType artArtifactType = new ArtifactType(artifactType2.getId(), artifactType2.getName(), false);
-
-      // Make expectedAccessObject inherit from ArtifactType
-      Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getId(), CoreArtifactTypes.Artifact.getName(), false));
-      artArtifactType.setSuperTypes(superTypes);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactProxy artifactProxy = createArtifactProxy(artArtifactType, Name, wasIsAttributeTypeValidCalled, true);
+      ArtifactProxy artifactProxy = createArtifactProxy(artifactType2, Name, wasIsAttributeTypeValidCalled, true);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, Name, PermissionEnum.WRITE,
          expectedScope);

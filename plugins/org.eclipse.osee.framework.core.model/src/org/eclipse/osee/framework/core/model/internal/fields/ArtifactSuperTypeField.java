@@ -15,23 +15,22 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> {
+public final class ArtifactSuperTypeField extends CollectionField<ArtifactTypeToken> {
 
    private final ArtifactTypeToken baseType;
 
-   public ArtifactSuperTypeField(ArtifactTypeToken baseType, Collection<ArtifactType> superTypes) {
+   public ArtifactSuperTypeField(ArtifactTypeToken baseType, Collection<ArtifactTypeToken> superTypes) {
       super(superTypes);
       this.baseType = baseType;
    }
 
    @Override
-   protected Collection<ArtifactType> checkInput(Collection<ArtifactType> input) {
-      Collection<ArtifactType> toReturn = Collections.emptyList();
+   protected Collection<ArtifactTypeToken> checkInput(Collection<ArtifactTypeToken> input) {
+      Collection<ArtifactTypeToken> toReturn = Collections.emptyList();
       if (input == null || input.isEmpty()) {
          if (baseType.notEqual(CoreArtifactTypes.Artifact)) {
             throw new OseeInvalidInheritanceException(

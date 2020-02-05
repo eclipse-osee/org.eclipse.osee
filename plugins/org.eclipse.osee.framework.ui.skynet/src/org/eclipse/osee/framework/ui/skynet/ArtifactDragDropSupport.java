@@ -195,10 +195,10 @@ public class ArtifactDragDropSupport {
          try {
             artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentUrl, location, branch);
          } catch (ArtifactDoesNotExist ex) {
-            Collection<? extends ArtifactTypeToken> artifactTypes =
+            Collection<ArtifactTypeToken> artifactTypes =
                ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentUrl);
             FilteredTreeDialog dialog = new FilteredTreeDialog("Artifact Types",
-               "No Artifact could be found for this file. To create one, please select an artfact type.",
+               "No Artifact could be found for this file. To create one, please select an artifact type.",
                new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());
             dialog.setInput(artifactTypes);
 

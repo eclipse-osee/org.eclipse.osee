@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -69,18 +67,11 @@ public class ChangeArtifactType {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt) {
-
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType, boolean prompt) {
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
-
-      if (newArtifactTypeToken == null) {
-         throw new OseeArgumentException("The new artifact type can not be empty");
-      }
-
-      ArtifactTypeToken newArtifactType = ArtifactTypeManager.getType(newArtifactTypeToken);
 
       try {
          app.internalChangeArtifactType(inputArtifacts, newArtifactType, prompt);
@@ -88,7 +79,6 @@ public class ChangeArtifactType {
          ArtifactQuery.reloadArtifacts(app.modifiedArtifacts);
          OseeCoreException.wrapAndThrow(ex);
       }
-
    }
 
    /**
@@ -191,11 +181,9 @@ public class ChangeArtifactType {
       message.append("Relation Types:\n" + relationTypes + "\n");
    }
 
-   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType) {
-
+   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeToken artifactType) {
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
-         ArtifactType aType = ArtifactTypeManager.getFullType(artifactType);
-         if (!aType.isValidAttributeType(attributeType, BranchManager.getBranch(artifact.getBranch()))) {
+         if (!ArtifactTypeManager.isValidAttributeType(attributeType, artifactType, artifact.getBranch())) {
             artifact.deleteAttributes(attributeType);
             attributeTypes.add(attributeType);
          }
@@ -203,7 +191,6 @@ public class ChangeArtifactType {
    }
 
    private void deleteInvalidRelations(Artifact artifact, ArtifactTypeToken artifactType) {
-
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,
             link.getSide(artifact)) == 0) {

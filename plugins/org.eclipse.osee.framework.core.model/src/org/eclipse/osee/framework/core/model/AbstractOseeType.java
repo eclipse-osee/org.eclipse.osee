@@ -77,6 +77,9 @@ public abstract class AbstractOseeType extends NamedIdBase implements IOseeStora
       } catch (OseeCoreException ex) {
          OseeLog.log(AbstractOseeType.class, Level.SEVERE, ex);
       }
+      if (value == null) {
+         return defaultValue;
+      }
       return value;
    }
 

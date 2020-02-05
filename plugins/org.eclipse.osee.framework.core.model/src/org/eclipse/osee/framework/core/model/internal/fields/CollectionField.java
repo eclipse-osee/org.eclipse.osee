@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Compare;
  */
 public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
 
-   private final Collection<T> items;
+   private Collection<T> items;
 
    public CollectionField(Collection<T> items) {
       super();
@@ -36,8 +36,7 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
       Collection<T> checked = checkInput(input);
       boolean isDifferent = Compare.isDifferent(get(), checked);
       if (isDifferent) {
-         items.clear();
-         items.addAll(checked);
+         items = checked;
       }
       isDirty |= isDifferent;
    }
@@ -46,5 +45,4 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
    protected Collection<T> checkInput(Collection<T> input) {
       return input;
    }
-
 }

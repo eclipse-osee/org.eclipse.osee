@@ -23,7 +23,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -397,9 +395,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          deleteUnmatchedArtifacts.setEnabled(toUpdate);
          if (toUpdate) {
             try {
-               ArtifactType artType = ArtifactTypeManager.getFullType(getArtifactType());
                attributeTypeSelectPanel.setAllowedAttributeTypes(
-                  artType.getAttributeTypes(BranchManager.getBranch(getDestinationArtifact().getBranch())));
+                  ArtifactTypeManager.getAttributeTypes(getArtifactType(), getDestinationArtifact().getBranch()));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -465,9 +462,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                if (getArtifactType() != null) {
-                  ArtifactType specificArtifactType = ArtifactTypeManager.getFullType(getArtifactType());
-                  attributeTypeSelectPanel.setAllowedAttributeTypes(specificArtifactType.getAttributeTypes(
-                     BranchManager.getBranch(getDestinationArtifact().getBranch())));
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(
+                     ArtifactTypeManager.getAttributeTypes(getArtifactType(), getDestinationArtifact().getBranch()));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

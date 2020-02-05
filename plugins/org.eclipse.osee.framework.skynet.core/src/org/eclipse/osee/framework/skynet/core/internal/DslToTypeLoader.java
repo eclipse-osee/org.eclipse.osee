@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -357,8 +358,8 @@ public class DslToTypeLoader implements TypesLoader {
       String sideATypeName = xRelationType.getSideAArtifactType().getName();
       String sideBTypeName = xRelationType.getSideBArtifactType().getName();
 
-      ArtifactType sideAType = buffer.getArtTypes().getByName(sideATypeName);
-      ArtifactType sideBType = buffer.getArtTypes().getByName(sideBTypeName);
+      ArtifactTypeToken sideAType = buffer.getArtTypes().getByName(sideATypeName);
+      ArtifactTypeToken sideBType = buffer.getArtTypes().getByName(sideBTypeName);
 
       Long relUuid = Long.valueOf(xRelationType.getId());
       relTypeFactory.createOrUpdate(buffer.getRelTypes(), //

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -127,6 +128,14 @@ public class ArtifactTypeManager {
       return getCache().getByGuid(artifactType.getId());
    }
 
+   public static Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artifactType, BranchId branch) {
+      return getFullType(artifactType).getAttributeTypes(BranchManager.getBranch(branch));
+   }
+
+   public static boolean isValidAttributeType(AttributeTypeId attributeType, ArtifactTypeToken artifactType, BranchId branch) {
+      return getAttributeTypes(artifactType, branch).contains(attributeType);
+   }
+
    public static Artifact addArtifact(ArtifactToken artifactToken) {
       Conditions.assertTrue(artifactToken.getBranch().isValid(), "Branch must be specified.");
       return addArtifact(artifactToken, artifactToken.getBranch());
@@ -187,7 +196,7 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeId newArtifactType) {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeToken newArtifactType) {
       for (ArtifactTypeId purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();

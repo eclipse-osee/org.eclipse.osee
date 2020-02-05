@@ -56,8 +56,7 @@ public class AttributeTypeManager {
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
       for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
-         attributeTypes.addAll(
-            ArtifactTypeManager.getFullType(artifactType).getAttributeTypes(BranchManager.getBranch(branch)));
+         attributeTypes.addAll(ArtifactTypeManager.getAttributeTypes(artifactType, BranchManager.getBranch(branch)));
       }
       return attributeTypes;
    }
