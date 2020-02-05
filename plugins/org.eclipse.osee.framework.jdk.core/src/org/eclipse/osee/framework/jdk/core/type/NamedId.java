@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public interface NamedId extends Named, Id {
 
-   public static NamedId SENTINEL = new NamedIdBase(-1L, "SENTINEL");
+   public static NamedId SENTINEL = new NamedIdBase(-1L, Named.SENTINEL);
    public static Pattern nameIdPattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]");
 
    default String toStringWithId() {

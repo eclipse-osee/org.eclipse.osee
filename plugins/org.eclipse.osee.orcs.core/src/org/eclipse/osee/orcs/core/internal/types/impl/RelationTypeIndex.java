@@ -26,7 +26,7 @@ public class RelationTypeIndex extends TokenTypeIndex<RelationTypeToken, XRelati
    private final ArtifactTypeIndex artifactTypeIndex;
 
    public RelationTypeIndex(ArtifactTypeIndex artifactTypeIndex) {
-      super();
+      super(RelationTypeToken.SENTINEL);
       this.artifactTypeIndex = artifactTypeIndex;
    }
 

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -32,8 +32,8 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
    private final BranchHierarchyProvider hierarchyProvider;
 
    public ArtifactTypeIndex(BranchHierarchyProvider hierarchyProvider) {
-      super();
-      this.tokenToTypeData = Maps.newHashMap();
+      super(ArtifactTypeToken.SENTINEL);
+      this.tokenToTypeData = new ConcurrentHashMap<>(1000);
       this.hierarchyProvider = hierarchyProvider;
    }
 

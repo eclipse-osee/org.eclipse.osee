@@ -11,11 +11,15 @@
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.orcs.data.EnumType;
 
 /**
  * @author Roberto E. Escobar
  */
 public class EnumTypeIndex extends TokenTypeIndex<EnumType, XOseeEnumType> {
-   //
+   public EnumTypeIndex() {
+      super(new EnumTypeImpl(Id.SENTINEL, Named.SENTINEL, null));
+   }
 }

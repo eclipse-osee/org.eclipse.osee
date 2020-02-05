@@ -25,6 +25,10 @@ public class AttributeTypeIndex extends TokenTypeIndex<AttributeTypeToken, XAttr
 
    private final Set<AttributeTypeId> taggables = new HashSet<>();
 
+   public AttributeTypeIndex() {
+      super(AttributeTypeToken.SENTINEL);
+   }
+
    @Override
    public void put(AttributeTypeToken token, XAttributeType dslType) {
       super.put(token, dslType);

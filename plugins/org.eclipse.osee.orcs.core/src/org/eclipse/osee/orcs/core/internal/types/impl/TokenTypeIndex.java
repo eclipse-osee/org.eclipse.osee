@@ -26,9 +26,10 @@ public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
    private final Map<Long, TOKEN> uuidToToken;
    private final BiMap<TOKEN, DSLTYPE> tokenToType;
 
-   public TokenTypeIndex() {
+   public TokenTypeIndex(TOKEN sentinel) {
       uuidToToken = Maps.newHashMap();
       tokenToType = HashBiMap.create();
+      uuidToToken.put(sentinel.getId(), sentinel);
    }
 
    public Collection<TOKEN> getAllTokens() {

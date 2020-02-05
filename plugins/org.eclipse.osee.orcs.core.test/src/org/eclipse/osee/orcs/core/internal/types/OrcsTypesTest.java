@@ -182,7 +182,7 @@ public final class OrcsTypesTest {
    public void testGetAllArtifactTypes() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(7, artTypes.size());
+      assertEquals(8, artTypes.size());
       assertEquals(false, artTypes.isEmpty());
 
       //@formatter:off
@@ -297,13 +297,13 @@ public final class OrcsTypesTest {
 
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(7, artTypes.size());
+      assertEquals(8, artTypes.size());
 
       orcsTypes.invalidateAll();
 
       resources.add(asInput(addTypeDef));
 
-      assertEquals(8, artTypes.size());
+      assertEquals(9, artTypes.size());
       ArtifactTypeToken artifactType = artTypes.get(35L);
 
       assertEquals("Added Artifact Type", artifactType.getName());
@@ -322,7 +322,7 @@ public final class OrcsTypesTest {
    public void testArtifactTypeOverride() {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(7, artTypes.size());
+      assertEquals(8, artTypes.size());
 
       assertContains(artTypes.getAttributeTypes(OtherArtifact, CoreBranches.SYSTEM_ROOT), Name, Annotation);
 
@@ -355,7 +355,7 @@ public final class OrcsTypesTest {
       resources.add(asInput(overrideArtTypes));
       orcsTypes.invalidateAll();
 
-      assertEquals(7, artTypes.size());
+      assertEquals(8, artTypes.size());
 
       assertContains(artTypes.getAttributeTypes(OtherArtifact, CoreBranches.SYSTEM_ROOT), Name, Field2);
       assertContains(artTypes.getAttributeTypes(OtherArtifact, BRANCH_A), Name, Annotation, Field2);
@@ -376,7 +376,7 @@ public final class OrcsTypesTest {
    public void testGetAllAttributeTypes() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      assertEquals(5, attrTypes.size());
+      assertEquals(6, attrTypes.size());
       assertEquals(false, attrTypes.isEmpty());
 
       //@formatter:off
@@ -612,7 +612,7 @@ public final class OrcsTypesTest {
    public void testReloadAddAttributeType() {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      assertEquals(5, attrTypes.size());
+      assertEquals(6, attrTypes.size());
 
       orcsTypes.invalidateAll();
 
@@ -629,7 +629,7 @@ public final class OrcsTypesTest {
 
       resources.add(asInput(addAttributeType));
 
-      assertEquals(6, attrTypes.size());
+      assertEquals(7, attrTypes.size());
 
       AttributeTypeToken attrType = attrTypes.get(1152921504606847106L);
 
@@ -653,7 +653,7 @@ public final class OrcsTypesTest {
    public void testGetAllRelationTypes() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(2, relTypes.size());
+      assertEquals(3, relTypes.size());
       assertEquals(false, relTypes.isEmpty());
 
       //@formatter:off
@@ -809,7 +809,7 @@ public final class OrcsTypesTest {
    public void testReloadAddRelationType() {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(2, relTypes.size());
+      assertEquals(3, relTypes.size());
       orcsTypes.invalidateAll();
 
       //@formatter:off
@@ -826,7 +826,7 @@ public final class OrcsTypesTest {
 
       resources.add(asInput(addType));
 
-      assertEquals(3, relTypes.size());
+      assertEquals(4, relTypes.size());
 
       RelationTypeToken relation = relTypes.get(2305843009213694297L);
 
