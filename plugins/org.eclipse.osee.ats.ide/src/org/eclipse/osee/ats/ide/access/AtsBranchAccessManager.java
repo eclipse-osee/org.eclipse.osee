@@ -148,7 +148,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       try {
          contextIds.addAll(getFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)));
          if (contextIds.isEmpty()) {
-            for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            for (IAtsActionableItem aia : AtsClientService.get().getActionableItemService().getActionableItems(
                teamWf)) {
                Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(aia);
                if (artifact != null) {

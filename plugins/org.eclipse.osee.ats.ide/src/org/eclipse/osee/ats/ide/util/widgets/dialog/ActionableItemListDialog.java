@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
@@ -33,7 +32,7 @@ public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
       super("Select Actionable Item(s)", "Select Actionable Item(s)", new AITreeContentProvider(active),
          new AtsObjectLabelProvider(), new ArtifactNameSorter());
       try {
-         setInput(ActionableItems.getTopLevelActionableItems(active, AtsClientService.get()));
+         setInput(AtsClientService.get().getActionableItemService().getTopLevelActionableItems(active));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

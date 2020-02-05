@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
@@ -79,7 +78,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    @Override
    public void getWizardXWidgetExtensions(Collection<IAtsActionableItem> ais, Composite comp) {
 
-      Collection<IAtsTeamDefinition> teamDefs = ActionableItems.getImpactedTeamDefs(ais);
+      Collection<IAtsTeamDefinition> teamDefs =
+         AtsClientService.get().getActionableItemService().getImpactedTeamDefs(ais);
       boolean first = true;
       for (IAtsTeamDefinition teamDef : teamDefs) {
 

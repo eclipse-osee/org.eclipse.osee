@@ -104,15 +104,13 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
          label.setText(" " + "Error: No Actionable Items identified.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       } else {
-         StringBuffer sb = new StringBuffer(
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamWf));
+         StringBuffer sb =
+            new StringBuffer(AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));
          if (AtsClientService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
             sb.append("         Other: ");
             for (IAtsTeamWorkflow workflow : AtsClientService.get().getWorkItemService().getTeams(parentAction)) {
                if (workflow.notEqual(teamWf)) {
-                  sb.append(
-                     AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(
-                        workflow));
+                  sb.append(AtsClientService.get().getActionableItemService().getActionableItemsStr(workflow));
                   sb.append(", ");
                }
             }

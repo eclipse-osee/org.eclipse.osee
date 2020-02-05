@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -125,7 +124,8 @@ public class ExcelAtsActionArtifactExtractor {
                         "Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   } else {
                      IAtsActionableItem aia = aias.iterator().next();
-                     teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
+                     teamDefs.addAll(
+                        AtsClientService.get().getActionableItemService().getImpactedTeamDefs(Arrays.asList(aia)));
                      if (teamDefs.isEmpty()) {
                         rd.error(
                            "Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
@@ -222,10 +222,11 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionResult == null) {
                ChangeType changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
-               ActionResult aResult = AtsClientService.get().getActionFactory().createAction(null, aData.title,
-                  aData.desc, changeType, priorityStr, false, null,
-                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get()), createdDate,
-                  createdBy, null, changes);
+               ActionResult aResult =
+                  AtsClientService.get().getActionFactory().createAction(null, aData.title, aData.desc, changeType,
+                     priorityStr, false, null, AtsClientService.get().getActionableItemService().getActionableItems(
+                        aData.actionableItems),
+                     createdDate, createdBy, null, changes);
                actionNameToAction.put(aData.title, aResult);
                for (IAtsTeamWorkflow teamWf : aResult.getTeams()) {
                   processTeamWorkflow(changes, aData, teamWf);

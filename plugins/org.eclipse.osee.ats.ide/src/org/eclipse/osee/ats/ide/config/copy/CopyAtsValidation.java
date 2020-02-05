@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.ide.health.ValidateResults;
@@ -56,7 +55,8 @@ public class CopyAtsValidation {
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<>();
       aias.addAll(AtsClientService.get().getConfigArtifacts(
-         ActionableItems.getActionableItemsFromItemAndChildren(configData.getActionableItem())));
+         AtsClientService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
+            configData.getActionableItem())));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(aias, results);
 
       // Validate TeamDefs have Workflow Definitions
@@ -83,7 +83,8 @@ public class CopyAtsValidation {
       if (newName.equals(aiArt.getName())) {
          resultData.errorf("Could not get new name from name conversion for ActionableItem [%s]", aiArt.getName());
       }
-      for (IAtsActionableItem childAiArt : ActionableItems.getActionableItemsFromItemAndChildren(aiArt)) {
+      for (IAtsActionableItem childAiArt : AtsClientService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
+         aiArt)) {
          if (aiArt.notEqual(childAiArt)) {
             validateActionableItem(childAiArt);
          }

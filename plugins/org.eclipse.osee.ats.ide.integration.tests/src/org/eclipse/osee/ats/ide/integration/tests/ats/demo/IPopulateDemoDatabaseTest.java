@@ -74,7 +74,7 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertEquals(teamDef, teamWf.getTeamDefinition());
       Assert.assertEquals(assigneeStr, teamWf.getStateMgr().getAssigneesStr());
       Assert.assertEquals(actionableItemStr,
-         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamWf));
+         AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));
    }
 
    default void testSwDesign1PeerAnd1DecisionReview(TeamWorkFlowArtifact designTeam) {

@@ -339,7 +339,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       Conditions.assertNotNull(workDefinition, "WorkDefinition");
       IAtsPeerToPeerReview peerArt = createNewPeerToPeerReview(workDefinition, null, teamDef, reviewTitle, againstState,
          createdDate, createdBy, changes);
-      atsApi.getWorkItemService().getActionableItemService().addActionableItem(peerArt, actionableItem, changes);
+      atsApi.getActionableItemService().addActionableItem(peerArt, actionableItem, changes);
       return peerArt;
    }
 

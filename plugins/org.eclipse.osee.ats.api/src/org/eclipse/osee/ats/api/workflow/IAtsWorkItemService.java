@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -57,8 +56,6 @@ public interface IAtsWorkItemService {
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
    Collection<IAtsTeamWorkflow> getTeams(Object object);
-
-   IAtsActionableItemService getActionableItemService();
 
    /**
     * Assigned or Combined Id that will show at the top of the editor. Default is "<ATS Id> / <Legacy PCR Id (if set)>"

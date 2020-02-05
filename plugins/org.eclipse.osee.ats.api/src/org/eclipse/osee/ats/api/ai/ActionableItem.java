@@ -15,7 +15,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.JaxAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -32,7 +34,7 @@ public class ActionableItem extends JaxAtsConfigObject implements IAtsActionable
    Long parentId;
    @JsonSerialize(using = ToStringSerializer.class)
    Long teamDefId;
-   List<Long> children = new ArrayList<>();
+   Set<Long> children = new HashSet<>();
    boolean actionable = false;
    boolean allowUserActionCreation = true;
 
@@ -62,12 +64,12 @@ public class ActionableItem extends JaxAtsConfigObject implements IAtsActionable
       this.teamDefId = teamDefId;
    }
 
-   public List<Long> getChildren() {
+   public Set<Long> getChildren() {
       return children;
    }
 
-   public void setChildren(List<Long> children) {
-      this.children = children;
+   public void setChildren(Collection<Long> children) {
+      this.children.addAll(children);
    }
 
    public void addChild(ActionableItem child) {
@@ -125,6 +127,10 @@ public class ActionableItem extends JaxAtsConfigObject implements IAtsActionable
 
    public void setAllowUserActionCreation(boolean allowUserActionCreation) {
       this.allowUserActionCreation = allowUserActionCreation;
+   }
+
+   public boolean isInActive() {
+      return !active;
    }
 
 }

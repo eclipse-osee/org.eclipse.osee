@@ -25,6 +25,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -63,6 +64,9 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
 
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+      if (JsonUtil.hasAnnotation(SkipAtsConfigJsonWriter.class, annotations)) {
+         return false;
+      }
       boolean isWriteable = false;
       if (Collection.class.isAssignableFrom(type) && genericType instanceof ParameterizedType) {
          ParameterizedType parameterizedType = (ParameterizedType) genericType;

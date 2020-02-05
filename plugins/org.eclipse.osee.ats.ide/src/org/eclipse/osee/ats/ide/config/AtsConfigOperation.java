@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -135,22 +134,23 @@ public class AtsConfigOperation extends AbstractOperation {
 
       // Create top actionable item
       ActionableItem parentAi =
-         AtsClientService.get().getActionableItemService().createActionableItem(teamDefName, changes, atsApi);
+         AtsClientService.get().getActionableItemService().createActionableItem(teamDefName, changes);
       changes.setSoleAttributeValue(parentAi, AtsAttributeTypes.Actionable, false);
       parentAi.setActionable(false);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, parentAi);
       parentAi.setTeamDefId(teamDef.getId());
-      IAtsActionableItem topAi = ActionableItems.getTopActionableItem(AtsClientService.get());
+      IAtsActionableItem topAi = AtsClientService.get().getActionableItemService().getTopActionableItem(atsApi);
       changes.relate(topAi, CoreRelationTypes.DefaultHierarchical_Child, parentAi);
       parentAi.setParentId(topAi.getId());
+      changes.relate(AtsClientService.get().getActionableItemService().getTopActionableItem(AtsClientService.get()),
+         CoreRelationTypes.DefaultHierarchical_Child, parentAi);
 
       atsApi.getConfigService().getConfigurations().addAi(parentAi);
       aias.add(parentAi);
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         ActionableItem childAi =
-            AtsClientService.get().getActionableItemService().createActionableItem(name, changes, atsApi);
+         ActionableItem childAi = AtsClientService.get().getActionableItemService().createActionableItem(name, changes);
          changes.setSoleAttributeValue(childAi, AtsAttributeTypes.Actionable, true);
          childAi.setActionable(true);
          changes.addChild(parentAi.getStoreObject(), childAi.getStoreObject());

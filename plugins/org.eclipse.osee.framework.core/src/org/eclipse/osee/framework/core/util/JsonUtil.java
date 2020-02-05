@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
@@ -181,4 +182,14 @@ public class JsonUtil {
       objectMapper.registerModule(module);
       return objectMapper;
    }
+
+   public static boolean hasAnnotation(Class<? extends Annotation> toMatch, Annotation[] annotations) {
+      for (Annotation annotation : annotations) {
+         if (annotation.annotationType().isAssignableFrom(toMatch)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }

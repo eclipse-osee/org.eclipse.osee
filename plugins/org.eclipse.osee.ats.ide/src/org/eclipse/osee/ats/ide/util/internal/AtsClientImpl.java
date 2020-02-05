@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
+import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -53,6 +54,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.ide.util.AtsClientUtilImpl;
+import org.eclipse.osee.ats.ide.util.AtsServerEndpointProviderImpl;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
@@ -92,6 +94,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private IAtsClientUtil clientUtils;
    private AtsQueryServiceClient queryServiceClient;
    private IAtsWorkItemServiceClient workItemServiceClient;
+   private IAtsServerEndpointProvider serverEndpoints;
 
    public AtsClientImpl() {
       super();
@@ -119,7 +122,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       queryServiceClient = new AtsQueryServiceClient(this);
-      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
       actionFactory = new ActionFactory(attributeResolverService, this);
       taskService = new AtsTaskService(this);
@@ -389,6 +392,19 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          workItemServiceClient = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
       }
       return workItemServiceClient;
+   }
+
+   @Override
+   public IAtsServerEndpointProvider getServerEndpoints() {
+      if (serverEndpoints == null) {
+         serverEndpoints = new AtsServerEndpointProviderImpl(this);
+      }
+      return serverEndpoints;
+   }
+
+   @Override
+   public boolean isIde() {
+      return true;
    }
 
 }

@@ -109,7 +109,8 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       }
       createArtifactRelationHyperlinks("This", workItemArt, "is reviewed by",
          AtsRelationTypes.TeamWorkflowToReview_Review);
-      createArtifactRelationHyperlinks("This", workItemArt, "reviews", AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
+      createArtifactRelationHyperlinks("This", workItemArt, "reviews",
+         AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
       createArtifactRelationHyperlinks("This", workItemArt, "is superceded by",
          CoreRelationTypes.Supercedes_SupercededBy);
       createArtifactRelationHyperlinks("This", workItemArt, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
@@ -164,7 +165,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             return true;
          }
       }
-      if (workItem instanceof AbstractReviewArtifact && AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
+      if (workItem instanceof AbstractReviewArtifact && AtsClientService.get().getActionableItemService().hasActionableItems(
          workItem)) {
          return true;
       }

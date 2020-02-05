@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -292,7 +291,8 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
       try {
          for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
             if (!aia.isActionable() || !userActionCreationEnabled(aia)) {
-               AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(aia));
+               AWorkbench.popup("ERROR",
+                  AtsClientService.get().getActionableItemService().getNotActionableItemError(aia));
                treeViewer.setChecked(aia, false);
                return false;
             }

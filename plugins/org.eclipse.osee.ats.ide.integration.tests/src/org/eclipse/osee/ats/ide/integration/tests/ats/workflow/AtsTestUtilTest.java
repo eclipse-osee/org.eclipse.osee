@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
+import java.util.Set;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -82,11 +84,13 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf2().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf2());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
+      Set<IAtsActionableItem> actionableItems = AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsTestUtil.getTeamWf());
+      Set<IAtsActionableItem> actionableItems2 = AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsTestUtil.getTeamWf2());
       Assert.assertNotSame(
-         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
-            AtsTestUtil.getTeamWf()).iterator().next(),
-         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
-            AtsTestUtil.getTeamWf2()).iterator().next());
+         actionableItems.iterator().next(),
+         actionableItems2.iterator().next());
    }
 
    public void testGetTeamWf4() {
@@ -96,9 +100,9 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf4());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
       Assert.assertNotSame(
-         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+         AtsClientService.get().getActionableItemService().getActionableItems(
             AtsTestUtil.getTeamWf()).iterator().next(),
-         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+         AtsClientService.get().getActionableItemService().getActionableItems(
             AtsTestUtil.getTeamWf4()).iterator().next());
       Assert.assertEquals(AtsClientService.get().getVersionService().getTargetedVersion(AtsTestUtil.getTeamWf4()),
          AtsTestUtil.getVerArt4());

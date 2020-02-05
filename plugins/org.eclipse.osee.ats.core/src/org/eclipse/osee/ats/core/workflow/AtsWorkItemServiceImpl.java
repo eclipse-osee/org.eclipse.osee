@@ -48,7 +48,6 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
-import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
@@ -192,15 +191,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return null;
-   }
-
-   @Override
-   public IAtsActionableItemService getActionableItemService() {
-      if (actionableItemService == null) {
-         actionableItemService =
-            new ActionableItemServiceImpl(atsApi.getAttributeResolver(), atsApi.getStoreService(), atsApi);
-      }
-      return actionableItemService;
    }
 
    @Override

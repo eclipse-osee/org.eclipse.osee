@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -27,9 +32,9 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
 
    @JsonSerialize(using = ToStringSerializer.class)
    Long parentId;
-   List<Long> ais = new ArrayList<>();
-   List<Long> versions = new ArrayList<>();
-   List<Long> children = new ArrayList<>();
+   Set<Long> ais = new HashSet<>();
+   Set<Long> versions = new HashSet<>();
+   Set<Long> children = new HashSet<>();
    String workType;
 
    public TeamDefinition() {
@@ -50,28 +55,28 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
       this.parentId = parentId;
    }
 
-   public List<Long> getAis() {
+   public Set<Long> getAis() {
       return ais;
    }
 
-   public void setAis(List<Long> ais) {
-      this.ais = ais;
+   public void setAis(Collection<Long> ais) {
+      this.ais.addAll(ais);
    }
 
-   public List<Long> getVersions() {
+   public Set<Long> getVersions() {
       return versions;
    }
 
-   public void setVersions(List<Long> versions) {
-      this.versions = versions;
+   public void setVersions(Collection<Long> versions) {
+      this.versions.addAll(versions);
    }
 
-   public List<Long> getChildren() {
+   public Set<Long> getChildren() {
       return children;
    }
 
-   public void setChildren(List<Long> children) {
-      this.children = children;
+   public void setChildren(Collection<Long> children) {
+      this.children.addAll(children);
    }
 
    public void addChild(TeamDefinition child) {
@@ -97,6 +102,37 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    @Override
    public ArtifactTypeToken getArtifactType() {
       return AtsArtifactTypes.TeamDefinition;
+   }
+
+   @Override
+   @JsonIgnore
+   public Collection<ActionableItem> getActionableItems() {
+      List<ActionableItem> ais = new LinkedList<>();
+      for (Long id : getAis()) {
+         ais.add(atsApi.getConfigService().getConfigurations().getIdToAi().get(id));
+      }
+      return ais;
+   }
+
+   @Override
+   @JsonIgnore
+   public Collection<TeamDefinition> getChildrenTeamDefs() {
+      List<TeamDefinition> teamDefs = new LinkedList<>();
+      for (Long id : getChildren()) {
+         teamDefs.add(atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id));
+      }
+      return teamDefs;
+   }
+
+   public void addAi(ArtifactToken ai) {
+      if (ai.getId().equals(66382940L)) {
+         System.err.println("here2");
+      }
+      if (ais.contains(ai.getId())) {
+         System.err.println("here2");
+      } else {
+         ais.add(ai.getId());
+      }
    }
 
 }

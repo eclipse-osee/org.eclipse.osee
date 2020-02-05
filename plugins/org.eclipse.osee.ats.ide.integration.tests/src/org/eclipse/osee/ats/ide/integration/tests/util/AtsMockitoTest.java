@@ -12,10 +12,12 @@ package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -60,7 +62,7 @@ public class AtsMockitoTest {
    @Mock protected IAtsDecisionReview decRev;
    @Mock protected IAtsPeerToPeerReview peerRev;
    @Mock protected IAtsTask task1, task2;
-   @Mock protected IAtsActionableItem testAi, testAi2;
+   @Mock protected ActionableItem testAi, testAi2;
    @Mock protected IAtsAction action;
    @Mock protected IAtsStateDefinition analyze, implement, completed, cancelled;
    @Mock protected IAtsWorkDefinition workDef;
@@ -127,7 +129,7 @@ public class AtsMockitoTest {
 
       initializeAi(testAi, "AI", true, true);
       initializeAi(testAi2, "AI2", true, true);
-      Set<IAtsActionableItem> aias = new HashSet<>();
+      Collection<ActionableItem> aias = new HashSet<>();
       aias.add(testAi);
       aias.add(testAi2);
 
@@ -156,8 +158,12 @@ public class AtsMockitoTest {
       when(action.getId()).thenReturn(45L);
       when(action.getName()).thenReturn(getTitle("Action"));
 
+      Set<IAtsActionableItem> aias2 = new HashSet<>();
+      aias2.add(testAi);
+      aias2.add(testAi2);
+
       when(teamWf.getName()).thenReturn("Test Team Wf");
-      when(teamWf.getActionableItems()).thenReturn(aias);
+      when(teamWf.getActionableItems()).thenReturn(aias2);
       when(teamWf.getAtsId()).thenReturn("ATS0008");
       when(teamWf.getArtifactTypeName()).thenReturn(AtsArtifactTypes.TeamWorkflow.getName());
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);

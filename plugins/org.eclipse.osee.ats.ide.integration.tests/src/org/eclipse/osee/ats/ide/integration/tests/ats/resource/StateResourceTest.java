@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -81,8 +80,8 @@ public class StateResourceTest extends AbstractRestTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(StateResourceTest.class.getName());
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
          StateResourceTest.class.getName(), "description", ChangeType.Improvement, "1", false, null,
-         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-            AtsClientService.get()),
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())),
          new Date(), AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null,
          changes);
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();

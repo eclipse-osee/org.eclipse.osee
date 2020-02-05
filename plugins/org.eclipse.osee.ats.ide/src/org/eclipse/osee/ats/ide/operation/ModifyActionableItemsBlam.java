@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.DuplicateWorkflowAction;
@@ -250,7 +249,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   otherTree.getViewer().setInput(ais);
 
                   newTree.getViewer().setInput(
-                     ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get()));
+                     AtsClientService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -370,13 +369,11 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
             results.logf("Actionable Item [%s] will be added to this workflow\n", checkedAi);
-            AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(teamWf, checkedAi,
-               changes);
+            AtsClientService.get().getActionableItemService().addActionableItem(teamWf, checkedAi, changes);
          }
          for (IAtsActionableItem currAi : job.getRemoveAis()) {
             results.logf("Actionable Item [%s] will be removed from this workflow\n", currAi);
-            AtsClientService.get().getWorkItemService().getActionableItemService().removeActionableItem(teamWf, currAi,
-               changes);
+            AtsClientService.get().getActionableItemService().removeActionableItem(teamWf, currAi, changes);
             changes.add(teamWf);
          }
          if (!changes.isEmpty()) {

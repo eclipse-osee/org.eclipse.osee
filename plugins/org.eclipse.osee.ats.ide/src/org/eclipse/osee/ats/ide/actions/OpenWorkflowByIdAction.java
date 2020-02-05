@@ -12,11 +12,14 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,6 +50,14 @@ public class OpenWorkflowByIdAction extends Action {
 
    @Override
    public void run() {
+
+      System.err.println("here");
+
+      //      ActionableItem actionableItem = AtsClientService.getConfigEndpoint().getActionableItem(ArtifactId.valueOf(1866));
+
+      ActionableItem actionableItem2 =
+         AtsClientService.get().getServerEndpoints().getConfigEndpoint().getActionableItem(ArtifactId.valueOf(1866));
+
       MultipleIdSearchData data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);

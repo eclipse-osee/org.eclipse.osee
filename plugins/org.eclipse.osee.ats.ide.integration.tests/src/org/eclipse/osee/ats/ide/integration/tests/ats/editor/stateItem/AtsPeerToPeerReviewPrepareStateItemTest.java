@@ -55,7 +55,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), getClass().getSimpleName(), null, new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), changes);
          // Setup actionable item so don't get error that there is no parent team workflow
-         AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(peerRevArt,
+         AtsClientService.get().getActionableItemService().addActionableItem(peerRevArt,
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), changes);
          changes.execute();
       }

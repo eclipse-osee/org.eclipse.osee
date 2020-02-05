@@ -107,7 +107,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
          checkUsedIds(actionableItem);
          newAiArt = changes.createArtifact(actionableItem);
       }
-      IAtsActionableItem newAi = atsApi.getActionableItemService().getActionableItemById(newAiArt);
+      IAtsActionableItem newAi = atsApi.getActionableItemService().createActionableItem(newAiArt);
       newAis.put(newAiArt.getName(), newAi);
       return new AtsConfigTxActionableItem(newAi, atsApi, changes, this);
    }

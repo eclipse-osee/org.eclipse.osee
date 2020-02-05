@@ -220,7 +220,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
-      return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
+      return AtsClientService.get().getActionableItemService().getActionableItems(this);
    }
 
 }

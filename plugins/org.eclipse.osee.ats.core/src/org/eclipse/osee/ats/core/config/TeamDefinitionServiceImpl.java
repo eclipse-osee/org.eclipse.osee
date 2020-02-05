@@ -82,8 +82,10 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.Active, true));
       teamDef.setWorkType(
          atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt, AtsAttributeTypes.WorkType, ""));
-      for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem)) {
-         teamDef.getAis().add(ai.getId());
+      Collection<ArtifactToken> ais =
+         atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem);
+      for (ArtifactToken ai : ais) {
+         teamDef.addAi(ai);
       }
       ArtifactToken parent = atsApi.getRelationResolver().getParent(teamDefArt);
       if (parent != null) {

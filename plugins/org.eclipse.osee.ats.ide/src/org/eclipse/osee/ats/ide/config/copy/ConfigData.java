@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.ide.config.copy;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -103,12 +103,13 @@ public class ConfigData {
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
-      Collection<IAtsActionableItem> fromAias =
+      Collection<ActionableItem> fromAias =
          AtsClientService.get().getActionableItemService().getActionableItems(teamDef);
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
-         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get());
+         parentActionableItem =
+            AtsClientService.get().getActionableItemService().getTopActionableItem(AtsClientService.get());
       }
       return parentActionableItem;
    }

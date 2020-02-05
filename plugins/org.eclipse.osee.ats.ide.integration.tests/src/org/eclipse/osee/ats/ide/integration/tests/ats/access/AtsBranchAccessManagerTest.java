@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -98,8 +97,8 @@ public class AtsBranchAccessManagerTest {
 
       String aiContextId = "6789";
       Artifact aiArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
-            AtsClientService.get()).iterator().next());
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next());
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 

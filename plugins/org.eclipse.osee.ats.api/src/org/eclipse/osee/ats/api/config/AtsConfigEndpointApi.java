@@ -16,9 +16,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -31,7 +35,7 @@ public interface AtsConfigEndpointApi {
 
    /**
     * @return cached copy of AtsConfigurations that is reloaded every 5 minutes. Use getFromDb() for latest copy from
-    * database.
+    * database. This should not be used unless configurations are being updated. Use AtsApi.getConfigurations.
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
@@ -39,7 +43,8 @@ public interface AtsConfigEndpointApi {
 
    /**
     * @return non-cached copy of AtsConfigurations read straight from database. Will update server cache with newly read
-    * copy. Can take 30ish seconds to load. Use get() for quick access to cached copy.
+    * copy. Can take 30ish seconds to load. Use get() for quick access to cached copy. This should not be used unless
+    * configurations are being updated. Use AtsApi.getConfigurations
     */
    @GET
    @Path("fromdb")
@@ -105,5 +110,11 @@ public interface AtsConfigEndpointApi {
    @Path("init/ats")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData atsDbInit();
+
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("ai/{aiId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ActionableItem getActionableItem(@PathParam("aiId") ArtifactId aiId);
 
 }

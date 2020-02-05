@@ -18,15 +18,14 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
+import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -72,8 +71,9 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
       // Create Action
-      IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtDeleteOneWorkflow, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
+      IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtDeleteOneWorkflow,
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
       verifyExists(TestNames.TeamArtDeleteOneWorkflow, 1, 1, 0, 2, 1);
@@ -94,9 +94,8 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
       IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
-         ActionableItems.getActionableItems(
-            Arrays.asList(DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName()),
-            AtsClientService.get()));
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())));
 
       // Verify exists
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 1, 1, 2, 1);
@@ -112,8 +111,9 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testTeamArtPurge() throws Exception {
       // Create Action
-      IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtPurge, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
+      IAtsTeamWorkflow teamWf =
+         createAction(TestNames.TeamArtPurge, AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
       verifyExists(TestNames.TeamArtPurge, 1, 1, 0, 2, 1);
@@ -129,8 +129,9 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testActionDelete() throws Exception {
       // Create Action
-      IAtsTeamWorkflow teamWf = createAction(TestNames.ActionDelete, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
+      IAtsTeamWorkflow teamWf =
+         createAction(TestNames.ActionDelete, AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
       verifyExists(TestNames.ActionDelete, 1, 1, 0, 2, 1);
@@ -146,8 +147,9 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testActionPurge() throws Exception {
       // Create Action
-      IAtsTeamWorkflow teamWf = createAction(TestNames.ActionPurge, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
+      IAtsTeamWorkflow teamWf =
+         createAction(TestNames.ActionPurge, AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
       verifyExists(TestNames.ActionPurge, 1, 1, 0, 2, 1);

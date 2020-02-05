@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.config.copy.ConfigData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -88,7 +87,9 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get()), data.getParentActionableItem());
+      Assert.assertEquals(
+         AtsClientService.get().getActionableItemService().getTopActionableItem(AtsClientService.get()),
+         data.getParentActionableItem());
 
    }
 }

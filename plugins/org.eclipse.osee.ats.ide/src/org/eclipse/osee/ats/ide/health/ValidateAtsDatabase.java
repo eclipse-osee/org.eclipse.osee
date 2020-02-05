@@ -691,8 +691,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
-               if (!AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
-                  teamArt)) {
+               if (!AtsClientService.get().getActionableItemService().hasActionableItems(teamArt)) {
                   results.log(artifact, "testTeamWorkflows",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has 0 ActionableItems");
                }
@@ -700,8 +699,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   results.log(artifact, "testTeamWorkflows",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
-               List<Long> badIds = getInvalidIds(AtsObjects.toIds(
-                  AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(teamArt)));
+               List<Long> badIds = getInvalidIds(
+                  AtsObjects.toIds(AtsClientService.get().getActionableItemService().getActionableItems(teamArt)));
                if (!badIds.isEmpty()) {
                   results.log(artifact, "testTeamWorkflows", "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
                      teamArt) + " has AI ids that don't exisit " + badIds);
@@ -1031,7 +1030,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact instanceof AbstractReviewArtifact) {
                AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
                if (reviewArtifact.getRelatedArtifactsCount(
-                  AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow) == 0 && !AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
+                  AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow) == 0 && !AtsClientService.get().getActionableItemService().hasActionableItems(
                      reviewArtifact)) {
                   results.log(artifact, "testReviewsHaveParentWorkflowOrActionableItems",
                      "Error: Review " + XResultDataUI.getHyperlink(

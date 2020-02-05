@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
@@ -320,5 +321,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          rd.error(Lib.exceptionToString(ex));
       }
       return rd;
+   }
+
+   @Override
+   public ActionableItem getActionableItem(ArtifactId aiId) {
+      return atsApi.getActionableItemService().getActionableItemById(aiId);
    }
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
+import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
@@ -118,7 +119,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          new AtsStoreServiceImpl(attributeResolverService, this, orcsApi, stateFactory, logFactory, this, jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
-      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
       actionFactory = new ActionFactory(attributeResolverService, this);
 
       agileService = new AgileService(logger, this);
@@ -340,6 +341,17 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          healthService = new AtsHealthServiceImpl(this);
       }
       return healthService;
+   }
+
+   @Override
+   public IAtsServerEndpointProvider getServerEndpoints() {
+      // Not supported on server cause you can use server services
+      return null;
+   }
+
+   @Override
+   public boolean isIde() {
+      return false;
    }
 
 }

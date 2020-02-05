@@ -263,32 +263,32 @@ public class AtsTestUtil {
       IAtsActionableItem topAi =
          AtsClientService.get().getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
 
-      testAi = (ActionableItem) AtsClientService.get().getActionableItemService().createActionableItem(
-         getTitle("AI", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
+      testAi = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI", postFixName),
+         Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
       testAi.setActive(true);
       testAi.setActionable(true);
       changes.addChild(topAi, testAi);
 
-      testAi2 = (ActionableItem) AtsClientService.get().getActionableItemService().createActionableItem(
-         getTitle("AI2", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
+      testAi2 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI2", postFixName),
+         Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
       testAi2.setActive(true);
       testAi2.setActionable(true);
       changes.addChild(testAi, testAi2);
 
-      testAi3 = (ActionableItem) AtsClientService.get().getActionableItemService().createActionableItem(
-         getTitle("AI3", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
+      testAi3 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI3", postFixName),
+         Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
       testAi3.setActive(true);
       testAi3.setActionable(true);
       changes.addChild(testAi, testAi3);
 
-      testAi4 = (ActionableItem) AtsClientService.get().getActionableItemService().createActionableItem(
-         getTitle("AI4", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
+      testAi4 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI4", postFixName),
+         Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
       testAi4.setActive(true);

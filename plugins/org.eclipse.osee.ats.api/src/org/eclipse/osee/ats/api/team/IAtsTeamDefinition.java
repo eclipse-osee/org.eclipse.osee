@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.team;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -41,8 +44,22 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
             return null;
          }
 
+         @Override
+         public Collection<ActionableItem> getActionableItems() {
+            return null;
+         }
+
+         @Override
+         public Collection<TeamDefinition> getChildrenTeamDefs() {
+            return null;
+         }
+
       }
       return new IAtsTeamDefinitionSentinel();
    }
+
+   Collection<ActionableItem> getActionableItems();
+
+   Collection<TeamDefinition> getChildrenTeamDefs();
 
 }

@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -86,17 +87,11 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
 
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+      if (JsonUtil.hasAnnotation(SkipAtsConfigJsonWriter.class, annotations)) {
+         return false;
+      }
       boolean assignableFrom = IAtsConfigObject.class.isAssignableFrom(type);
       return assignableFrom && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
-   }
-
-   private boolean matches(Class<? extends Annotation> toMatch, Annotation[] annotations) {
-      for (Annotation annotation : annotations) {
-         if (annotation.annotationType().isAssignableFrom(toMatch)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    private AttributeTypes getAttributeTypes() {
@@ -109,8 +104,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       try {
          writer = jsonFactory.createGenerator(entityStream);
          writer.writeStartArray();
-         addProgramObject(atsApi, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations),
-            getAttributeTypes());
+         addProgramObject(atsApi, orcsApi, config, annotations, writer,
+            JsonUtil.hasAnnotation(IdentityView.class, annotations), getAttributeTypes());
          writer.writeEndArray();
       } finally {
          if (writer != null) {

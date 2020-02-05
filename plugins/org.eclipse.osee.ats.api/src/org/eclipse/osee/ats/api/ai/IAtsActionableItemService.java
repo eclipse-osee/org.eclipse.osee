@@ -14,13 +14,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -42,20 +45,20 @@ public interface IAtsActionableItemService {
 
    boolean hasActionableItems(IAtsWorkItem workItem);
 
-   Collection<IAtsActionableItem> getActionableItems(IAtsTeamDefinition teamDef);
+   Collection<ActionableItem> getActionableItems(IAtsTeamDefinition teamDef);
 
    List<IAtsActionableItem> getActiveActionableItemsAndChildren(IAtsTeamDefinition teamDef);
 
    /**
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
-   IAtsActionableItem getActionableItemById(ArtifactId aiId);
+   ActionableItem getActionableItemById(ArtifactId aiId);
 
    IAtsActionableItem getActionableItem(IAtsTeamDefinition teamDef);
 
-   ActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+   ActionableItem createActionableItem(String name, long id, IAtsChangeSet changes);
 
-   ActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi);
+   ActionableItem createActionableItem(String name, IAtsChangeSet changes);
 
    IAtsActionableItem getActionableItem(String value);
 
@@ -70,5 +73,31 @@ public interface IAtsActionableItemService {
    IAtsTeamDefinition getTeamDefinitionInherited(IAtsActionableItem ai);
 
    ActionableItem createActionableItem(ArtifactToken aiArt);
+
+   Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai);
+
+   Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai);
+
+   void getActionableItemsFromItemAndChildren(IAtsActionableItem ai, Set<IAtsActionableItem> aias);
+
+   Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames);
+
+   Collection<IAtsActionableItem> getUserEditableActionableItems(Collection<IAtsActionableItem> actionableItems);
+
+   Set<IAtsActionableItem> getChildren(IAtsActionableItem topActionableItem, boolean recurse);
+
+   List<IAtsActionableItem> getActive(Collection<IAtsActionableItem> ais, Active active);
+
+   List<IAtsActionableItem> getTopLevelActionableItems(Active active);
+
+   Collection<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService);
+
+   IAtsActionableItem getTopActionableItem(AtsApi atsApi);
+
+   String getNotActionableItemError(IAtsConfigObject configObject);
+
+   Collection<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService);
+
+   Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais);
 
 }

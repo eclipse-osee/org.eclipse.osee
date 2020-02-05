@@ -47,7 +47,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    public Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {
-         aias.addAll(AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(team));
+         aias.addAll(AtsClientService.get().getActionableItemService().getActionableItems(team));
       }
       return aias;
    }

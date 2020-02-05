@@ -125,7 +125,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public boolean isStandAloneReview() {
-      return AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(this);
+      return AtsClientService.get().getActionableItemService().hasActionableItems(this);
    }
 
    public Artifact getArtifact() {
@@ -141,7 +141,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
-      return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
+      return AtsClientService.get().getActionableItemService().getActionableItems(this);
    }
 
    @Override

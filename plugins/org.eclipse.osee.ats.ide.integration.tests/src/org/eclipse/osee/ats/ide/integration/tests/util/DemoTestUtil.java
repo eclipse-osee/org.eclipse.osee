@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -66,8 +65,8 @@ public class DemoTestUtil {
    public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) {
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null, title, "Description",
          ChangeType.Improvement, "2", false, null,
-         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-            AtsClientService.get()),
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName())),
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       IAtsTeamWorkflow teamWf = null;
@@ -80,7 +79,8 @@ public class DemoTestUtil {
    }
 
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) {
-      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()), AtsClientService.get());
+      return AtsClientService.get().getActionableItemService().getActionableItems(
+         Arrays.asList(demoActionableItems.getName()));
    }
 
    public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) {

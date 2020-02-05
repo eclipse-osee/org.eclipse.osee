@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public abstract class JaxAtsConfigObject extends JaxAtsObject implements IAtsConfigObject {
 
-   boolean active = false;
+   protected boolean active = false;
 
    public JaxAtsConfigObject() {
       this(Id.SENTINEL, "");

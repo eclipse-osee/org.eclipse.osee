@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
@@ -154,7 +153,7 @@ public class AtsBranchConfigurationTest {
       }
 
       Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get());
+         AtsClientService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
@@ -256,7 +255,8 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
       }
       Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"), AtsClientService.get());
+         AtsClientService.get().getActionableItemService().getActionableItems(
+            appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.reset("Test branch via team definition: create action");
