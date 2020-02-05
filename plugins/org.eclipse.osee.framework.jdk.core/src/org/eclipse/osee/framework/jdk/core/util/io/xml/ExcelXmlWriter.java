@@ -199,6 +199,27 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    }
 
    @Override
+   public void endWorkbook(boolean close) throws IOException {
+      try {
+         if (inSheet) {
+            endSheet();
+         }
+         if (activeSheetNum >= 0) {
+            out.write(" <ExcelWorkbook xmlns=\"urn:schemas-microsoft-com:office:excel\">\n");
+            out.write("  <ActiveSheet>" + activeSheetNum + "</ActiveSheet>\n");
+            out.write(" </ExcelWorkbook>\n");
+         }
+         out.write("</Workbook>\n");
+      } finally {
+         if (close) {
+            Lib.close(out);
+         } else {
+            out.flush();
+         }
+      }
+   }
+
+   @Override
    protected void startRow() throws IOException {
       out.write("   <Row");
       if (rowHeight != 0.0) {

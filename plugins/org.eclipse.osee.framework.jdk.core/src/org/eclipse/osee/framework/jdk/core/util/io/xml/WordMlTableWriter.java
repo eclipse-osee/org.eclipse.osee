@@ -90,4 +90,9 @@ public class WordMlTableWriter extends AbstractSheetWriter {
       //
    }
 
+   @Override
+   public void endWorkbook(boolean closeFile) {
+      //do nothing
+   }
+
 }

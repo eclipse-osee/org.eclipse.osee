@@ -43,4 +43,6 @@ public interface ISheetWriter {
 
    public void endWorkbook() throws IOException;
 
+   public void endWorkbook(boolean closeFile) throws IOException;
+
 }

@@ -97,4 +97,9 @@ public final class TextSheetWriter extends AbstractSheetWriter {
    public void setActiveSheet(int sheetNum) {
       //
    }
+
+   @Override
+   public void endWorkbook(boolean closeFile) {
+      //do nothing
+   }
 }
