@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -53,15 +52,14 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
 
          @Override
          public void done(IJobChangeEvent event) {
-            try {
+
+            if (branchProvider.getBranch().isValid()) {
+
                Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
-               if (assocArt.isInvalid()) {
-                  AWorkbench.popup("ERROR", "Cannot access associated artifact.");
-               } else {
-                  RendererManager.openInJob(assocArt, PresentationType.SPECIALIZED_EDIT);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Cannot access associated artifact.", ex);
+               RendererManager.openInJob(assocArt, PresentationType.SPECIALIZED_EDIT);
+
+            } else {
+               AWorkbench.popup("", "Please select a branch from the Select Branch button");
             }
          }
       });
@@ -84,5 +82,6 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       }
       setImageDescriptor(descriptor);
       setEnabled(isEnabled);
+
    }
 }

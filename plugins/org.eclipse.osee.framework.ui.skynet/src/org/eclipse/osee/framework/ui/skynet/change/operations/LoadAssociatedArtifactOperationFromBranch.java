@@ -23,12 +23,17 @@ public class LoadAssociatedArtifactOperationFromBranch extends AbstractOperation
    public LoadAssociatedArtifactOperationFromBranch(IBranchProvider branchProvider) {
       super("Load Associated Artifact", Activator.PLUGIN_ID);
       this.branchProvider = branchProvider;
+
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+
       monitor.worked(calculateWork(0.80));
-      BranchManager.getAssociatedArtifact(branchProvider.getBranch());
+      if (branchProvider.getBranch().isValid()) {
+         BranchManager.getAssociatedArtifact(branchProvider.getBranch());
+      }
+
       monitor.worked(calculateWork(0.20));
    }
 }
