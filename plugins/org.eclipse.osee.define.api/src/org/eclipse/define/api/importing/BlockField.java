@@ -21,24 +21,25 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class BlockField {
    protected String data;
    protected final BlockFieldToken bft;
+   protected boolean match = false;
+   protected boolean created = false;
 
    public BlockField(BlockFieldToken bft) {
       this.bft = bft;
       this.data = "";
    }
 
-   public Boolean fillContent(String content) {
-      Boolean match = false;
+   public BlockField fillContent(String content) {
       Conditions.assertNotNullOrEmpty(content, "null content in add content to block");
       String strippedContent = content.replaceAll("<[^>]+>", "");
       Matcher contentMatcher = bft.contentRegex.matcher(strippedContent);
       if (contentMatcher.find()) {
          data = contentMatcher.group(1);
-         match = true;
+         this.match = true;
       } else {
          data = "";
       }
-      return match;
+      return this;
    }
 
    public void appendContent(String content, boolean first) {
@@ -67,5 +68,21 @@ public class BlockField {
 
    public AttributeTypeToken getOseeType() {
       return bft.getOseeType();
+   }
+
+   public boolean isMatch() {
+      return match;
+   }
+
+   public void setMatch(boolean value) {
+      this.match = value;
+   }
+
+   public boolean isCreated() {
+      return created;
+   }
+
+   public void setCreated(boolean value) {
+      this.created = value;
    }
 }

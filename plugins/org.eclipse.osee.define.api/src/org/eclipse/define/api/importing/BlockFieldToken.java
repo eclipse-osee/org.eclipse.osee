@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class BlockFieldToken extends NamedIdBase {
    protected final Pattern typeRegex;
-   protected final Pattern contentRegex;
+   public final Pattern contentRegex;
    private final AttributeTypeToken oseeType;
    private final Function<BlockFieldToken, BlockField> parser;
 

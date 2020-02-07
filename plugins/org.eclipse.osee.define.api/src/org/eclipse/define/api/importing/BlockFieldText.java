@@ -27,8 +27,7 @@ public class BlockFieldText extends BlockField {
    }
 
    @Override
-   public Boolean fillContent(String content) {
-      Boolean match = false;
+   public BlockField fillContent(String content) {
       Conditions.assertNotNullOrEmpty(content, "null content in add content to block");
 
       // text field uses full content to get all of the word content into the attribute
@@ -43,15 +42,12 @@ public class BlockFieldText extends BlockField {
                String text = contentMatcher.group(3);
                // string will have an extra :, replace it
                data = paragraph + text.replaceFirst("<w:r><w:t> :  ", "<w:r><w:t>");
+               this.setMatch(true);
             }
          } else {
             data = "";
          }
       }
-
-      match = true;
-
-      return match;
+      return this;
    }
-
 }
