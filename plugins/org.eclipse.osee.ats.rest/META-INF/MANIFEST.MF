@@ -61,8 +61,8 @@ Import-Package: com.fasterxml.jackson.core,
  org.eclipse.osee.orcs.utility,
  org.eclipse.osee.template.engine,
  org.json,
- org.osgi.framework;version="1.9.0",
- org.osgi.service.event;version="1.4.0"
+ org.osgi.framework,
+ org.osgi.service.event
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server
 Export-Package: org.eclipse.osee.ats.rest,

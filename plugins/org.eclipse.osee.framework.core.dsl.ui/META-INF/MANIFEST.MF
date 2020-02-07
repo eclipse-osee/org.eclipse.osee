@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl;visibility:=reexport,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare
 Import-Package: org.apache.commons.logging,
- org.apache.log4j;version="1.2.15",
+ org.apache.log4j,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.framework.core.dsl.ui,
  org.eclipse.osee.framework.core.dsl.ui.contentassist,

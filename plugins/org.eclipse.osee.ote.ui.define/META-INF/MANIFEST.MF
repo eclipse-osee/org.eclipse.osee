@@ -32,8 +32,8 @@ Export-Package: org.eclipse.osee.ote.ui.define,
  org.eclipse.osee.ote.ui.define.views
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.lowagie.text;version="2.1.7",
- org.apache.commons.lang;version="2.4.0",
+Import-Package: com.lowagie.text,
+ org.apache.commons.lang,
  org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.framework.access,
@@ -52,4 +52,4 @@ Import-Package: com.lowagie.text;version="2.1.7",
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.ui.forms.widgets,
- org.osgi.service.event;version="1.3.1"
+ org.osgi.service.event

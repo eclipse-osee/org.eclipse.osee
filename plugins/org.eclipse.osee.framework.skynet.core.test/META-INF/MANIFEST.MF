@@ -11,7 +11,7 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.mockito;visibility:=reexport,
  org.objenesis
 Export-Package: org.eclipse.osee.framework.skynet.core
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.enums.token,

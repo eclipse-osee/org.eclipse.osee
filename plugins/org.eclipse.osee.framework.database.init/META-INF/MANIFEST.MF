@@ -6,9 +6,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.database.init.internal.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Import-Package: org.apache.commons.lang,
  org.apache.commons.lang.builder,
- org.apache.xml.serialize;version="2.9.0",
+ org.apache.xml.serialize,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.equinox.app,
