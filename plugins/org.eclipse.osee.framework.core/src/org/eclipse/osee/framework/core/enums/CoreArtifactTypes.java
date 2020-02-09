@@ -270,6 +270,7 @@ public interface CoreArtifactTypes {
       .any(FavoriteBranch, "")
       .zeroOrOne(FaxPhone, "")
       .zeroOrOne(MobilePhone, "")
+      .any(LoginId, "")
       .any(Notes, "")
       .zeroOrOne(Phone, "")
       .zeroOrOne(State, "")
