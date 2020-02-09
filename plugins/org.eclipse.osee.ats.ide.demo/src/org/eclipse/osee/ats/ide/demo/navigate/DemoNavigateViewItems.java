@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
@@ -112,7 +111,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem(
                "Show Open " + teamDef + " Workflows", new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))));
             // Handle all children teams
-            for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getChildren(teamDef, true)) {
+            for (IAtsTeamDefinition childTeamDef : AtsClientService.get().getTeamDefinitionService().getChildren(
+               teamDef, true)) {
                new SearchNavigateItem(teamItems,
                   new OpenWorkflowsByTeamDefSearchItem("Show Open " + childTeamDef + " Workflows",
                      new SimpleTeamDefinitionProvider(Arrays.asList(childTeamDef))));

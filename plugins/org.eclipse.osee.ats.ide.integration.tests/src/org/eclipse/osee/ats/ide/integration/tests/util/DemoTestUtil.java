@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -89,7 +88,8 @@ public class DemoTestUtil {
 
    public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
-      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
+      Collection<IAtsTeamDefinition> teamDefs =
+         AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
 
       AtsClientService.get().getActionFactory().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, new Date(),

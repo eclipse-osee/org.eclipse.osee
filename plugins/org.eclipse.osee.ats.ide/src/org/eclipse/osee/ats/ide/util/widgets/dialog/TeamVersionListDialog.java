@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
@@ -59,8 +58,8 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       ArrayList<Object> objs = new ArrayList<>();
       try {
-         for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active,
-            AtsClientService.get().getQueryService())) {
+         for (IAtsTeamDefinition art : AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(
+            active)) {
             objs.add(art);
          }
       } catch (Exception ex) {

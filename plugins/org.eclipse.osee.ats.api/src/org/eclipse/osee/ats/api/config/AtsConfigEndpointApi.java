@@ -124,4 +124,10 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public Version getVersion(@PathParam("verId") ArtifactId verId);
 
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("teamdef/{teamDefId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TeamDefinition getTeamDefinition(@PathParam("teamDefId") ArtifactId teamDefId);
+
 }

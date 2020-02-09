@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 
@@ -42,7 +41,8 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof IAtsTeamDefinition && active != null) {
          try {
             IAtsTeamDefinition teamDef = (IAtsTeamDefinition) parentElement;
-            return TeamDefinitions.getActive(TeamDefinitions.getChildren(teamDef, false), active).toArray();
+            return AtsClientService.get().getTeamDefinitionService().getActive(
+               AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, false), active).toArray();
          } catch (Exception ex) {
             // do nothing
          }
@@ -72,8 +72,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       } else if (element instanceof TeamDefinition) {
          Long id = ((TeamDefinition) element).getId();
          if (id > 0) {
-            TeamDefinition td =
-               AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+            TeamDefinition td = AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             return td;
          }
       }

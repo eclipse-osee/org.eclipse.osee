@@ -297,7 +297,7 @@ public class AtsTestUtil {
       changes.addChild(testAi, testAi4);
 
       teamDef = AtsClientService.get().getTeamDefinitionService().createTeamDefinition(
-         getTitle("Team Def", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
+         getTitle("Team Def", postFixName), Lib.generateArtifactIdAsInt(), changes);
       AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().put(teamDef.getId(), teamDef);
 
       // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
@@ -350,6 +350,10 @@ public class AtsTestUtil {
       teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       changes.execute();
+
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
@@ -740,6 +744,10 @@ public class AtsTestUtil {
 
    public static Result createWorkingBranchFromTeamWf() {
       configureVer1ForWorkingBranch();
+
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().clearCaches();
+
       Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
          return result;

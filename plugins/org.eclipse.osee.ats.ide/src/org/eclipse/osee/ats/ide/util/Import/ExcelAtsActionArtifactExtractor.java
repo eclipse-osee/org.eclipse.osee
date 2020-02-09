@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -222,11 +221,10 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionResult == null) {
                ChangeType changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
-               ActionResult aResult =
-                  AtsClientService.get().getActionFactory().createAction(null, aData.title, aData.desc, changeType,
-                     priorityStr, false, null, AtsClientService.get().getActionableItemService().getActionableItems(
-                        aData.actionableItems),
-                     createdDate, createdBy, null, changes);
+               ActionResult aResult = AtsClientService.get().getActionFactory().createAction(null, aData.title,
+                  aData.desc, changeType, priorityStr, false, null,
+                  AtsClientService.get().getActionableItemService().getActionableItems(aData.actionableItems),
+                  createdDate, createdBy, null, changes);
                actionNameToAction.put(aData.title, aResult);
                for (IAtsTeamWorkflow teamWf : aResult.getTeams()) {
                   processTeamWorkflow(changes, aData, teamWf);
@@ -407,7 +405,8 @@ public class ExcelAtsActionArtifactExtractor {
    public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) {
       Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = new HashMap<>();
       for (IAtsActionableItem aia : aias) {
-         IAtsTeamDefinition teamDef = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
+         IAtsTeamDefinition teamDef =
+            AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {
             teamDefToAias.get(teamDef).add(aia);
          } else {

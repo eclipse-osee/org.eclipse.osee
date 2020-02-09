@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -39,7 +38,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) {
-      this(active, TeamDefinitions.getTeamTopLevelJaxDefinitions(active, AtsClientService.get()));
+      this(active, AtsClientService.get().getTeamDefinitionService().getTeamTopLevelJaxDefinitions(active));
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinition> TeamDefinitions) {

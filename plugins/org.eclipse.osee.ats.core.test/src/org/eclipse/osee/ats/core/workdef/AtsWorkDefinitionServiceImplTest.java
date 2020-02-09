@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -64,8 +65,8 @@ public class AtsWorkDefinitionServiceImplTest {
    private static final ArtifactId MyTaskWorkDefArt = ArtifactId.valueOf(34345L);
 
    // @formatter:off
-   @Mock IAtsTeamDefinition topTeamDef;
-   @Mock IAtsTeamDefinition projTeamDef;
+   @Mock TeamDefinition topTeamDef;
+   @Mock TeamDefinition projTeamDef;
    @Mock IAtsTeamDefinition featureTeamDef;
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsWorkDefinitionService workDefinitionService;

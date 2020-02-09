@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.ide.config.version;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
@@ -44,8 +43,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          return selectedTeamDef;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(
-         TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService()));
+      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

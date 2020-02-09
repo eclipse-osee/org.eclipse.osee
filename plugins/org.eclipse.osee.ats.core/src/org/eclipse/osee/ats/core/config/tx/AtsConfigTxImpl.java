@@ -70,7 +70,7 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
          checkUsedIds(teamDef);
          newTeam = changes.createArtifact(teamDef);
       }
-      IAtsTeamDefinition newTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(newTeam);
+      IAtsTeamDefinition newTeamDef = atsApi.getTeamDefinitionService().createTeamDefinition(newTeam);
       if (parent != null) {
          changes.relate(parent, CoreRelationTypes.DefaultHierarchical_Child, newTeamDef);
       }

@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
@@ -52,7 +51,7 @@ public class TeamDefinitionSearchWidget {
    public Collection<IAtsTeamDefinition> get() {
       XHyperlabelTeamDefinitionSelection widget = getWidget();
       if (widget != null) {
-         return TeamDefinitions.getTeamDefs(widget.getSelectedTeamDefintions(), AtsClientService.get());
+         return AtsClientService.get().getTeamDefinitionService().getTeamDefs(widget.getSelectedTeamDefintions());
       }
       return null;
    }

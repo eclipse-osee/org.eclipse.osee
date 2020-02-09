@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitionSorter;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -47,7 +46,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
 
       Collection<IAtsTeamDefinition> teamDefs = null;
       try {
-         teamDefs = TeamDefinitions.getTeamDefinitions(Active.Active, AtsClientService.get().getQueryService());
+         teamDefs = AtsClientService.get().getTeamDefinitionService().getTeamDefinitions(Active.Active);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }

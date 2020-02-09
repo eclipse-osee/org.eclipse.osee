@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -33,12 +32,14 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -53,20 +54,27 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId) {
-      IAtsTeamDefinition teamDef = null;
-      if (teamDefId instanceof IAtsTeamDefinition) {
-         teamDef = (IAtsTeamDefinition) teamDefId;
+   public TeamDefinition getTeamDefinitionById(ArtifactId teamDefId) {
+      TeamDefinition teamDef = null;
+      if (teamDefId instanceof TeamDefinition) {
+         teamDef = (TeamDefinition) teamDefId;
       }
       if (teamDef == null) {
          teamDef = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamDefId.getId());
       }
       if (teamDef == null) {
-         ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(teamDefId);
-         if (teamDefArt.isValid()) {
-            TeamDefinition teamDef2 = createTeamDefinition(teamDefArt);
-            atsApi.getConfigService().getConfigurations().addTeamDef(teamDef2);
-            teamDef = teamDef2;
+         // Don't want to load artifacts on client.  Request from server.
+         if (atsApi.isIde()) {
+            teamDef =
+               atsApi.getServerEndpoints().getConfigEndpoint().getTeamDefinition(ArtifactId.valueOf(teamDefId.getId()));
+            teamDef.setAtsApi(atsApi);
+         } else {
+            ArtifactToken teamDefArt = atsApi.getQueryService().getArtifact(teamDefId);
+            if (teamDefArt.isValid()) {
+               TeamDefinition teamDef2 = createTeamDefinition(teamDefArt);
+               atsApi.getConfigService().getConfigurations().addTeamDef(teamDef2);
+               teamDef = teamDef2;
+            }
          }
       }
       return teamDef;
@@ -98,10 +106,10 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) {
-      IAtsTeamDefinition teamDef = null;
+   public TeamDefinition getTeamDefinition(IAtsWorkItem workItem) {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      TeamDefinition teamDef = null;
       if (teamDefId.isValid()) {
          teamDef = getTeamDefinitionById(teamDefId);
       }
@@ -111,9 +119,10 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       List<IAtsVersion> versions = new ArrayList<>();
-      for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(teamDef,
-         AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(atsApi.getVersionService().getVersionById(verArt));
+      TeamDefinition teamD = atsApi.getConfigService().getConfigurations().getTeamDef(teamDef);
+      for (Long verId : teamD.getVersions()) {
+         Version version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(verId);
+         versions.add(version);
       }
       return versions;
    }
@@ -131,10 +140,11 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(String name) {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefArt =
-         atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.TeamDefinition, name);
-      if (teamDefArt.isValid()) {
-         teamDef = getTeamDefinitionById(teamDefArt);
+      for (TeamDefinition teamD : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
+         if (teamD.getName().equals(name)) {
+            teamDef = teamD;
+            break;
+         }
       }
       return teamDef;
    }
@@ -142,22 +152,22 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam) {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-      for (ArtifactId atsTeamArt : atsApi.getRelationResolver().getRelated(agileTeam,
+      for (ArtifactId teamDef : atsApi.getRelationResolver().getRelated(agileTeam,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         teamDefs.add(getTeamDefinitionById(atsTeamArt));
+         teamDefs.add(getTeamDefinitionById(teamDef));
       }
       return teamDefs;
    }
 
    @Override
-   public TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+   public TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, id);
       return createTeamDefinition(artifact);
    }
 
    @Override
-   public TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes, atsApi);
+   public TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes) {
+      return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes);
    }
 
    @Override
@@ -282,25 +292,16 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public IAtsTeamDefinition getParentTeamDef(IAtsTeamDefinition teamDef) {
-      ArtifactToken parentArt = atsApi.getRelationResolver().getParent(teamDef.getArtifactToken());
-      if (parentArt != null && parentArt.notEqual(AtsArtifactToken.HeadingFolder)) {
-         return getTeamDefinitionById(parentArt);
-      }
-      return null;
+   public TeamDefinition getParentTeamDef(IAtsTeamDefinition teamDef) {
+      TeamDefinition teamD = atsApi.getConfigService().getConfigurations().getTeamDef(teamDef);
+      TeamDefinition parent = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(teamD.getParentId());
+      return parent;
    }
 
    @Override
-   public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions(IAtsTeamDefinition teamDef) {
-      Set<IAtsTeamDefinition> children = new HashSet<>();
-      for (ArtifactId childArt : atsApi.getRelationResolver().getRelated(teamDef.getStoreObject(),
-         CoreRelationTypes.DefaultHierarchical_Child)) {
-         IAtsTeamDefinition childTeamDef = getTeamDefinitionById(childArt);
-         if (childTeamDef != null) {
-            children.add(childTeamDef);
-         }
-      }
-      return children;
+   public Collection<TeamDefinition> getChildrenTeamDefinitions(IAtsTeamDefinition teamDef) {
+      TeamDefinition teamD = atsApi.getConfigService().getConfigurations().getTeamDef(teamDef);
+      return teamD.getChildrenTeamDefs();
    }
 
    @Override
@@ -330,6 +331,196 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          }
       }
       return result;
+   }
+
+   @Override
+   public Collection<TeamDefinition> getTopLevelTeamDefinitions(Active active) {
+      List<TeamDefinition> teamDefs = new ArrayList<>();
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinitionOrSentinel();
+      if (topTeamDef.isValid()) {
+         TeamDefinition tTeamDef = getTeamDefinitionById(topTeamDef.getStoreObject());
+         return tTeamDef.getChildrenTeamDefs();
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public List<IAtsTeamDefinition> getActive(Collection<IAtsTeamDefinition> teamDefs, Active active) {
+      List<IAtsTeamDefinition> results = new ArrayList<>();
+      for (IAtsTeamDefinition teamDef : teamDefs) {
+         if (active == Active.Both) {
+            results.add(teamDef);
+         } else {
+            // assume active unless otherwise specified
+            boolean attributeActive = teamDef.isActive();
+            if (active == Active.Active && attributeActive) {
+               results.add(teamDef);
+            } else if (active == Active.InActive && !attributeActive) {
+               results.add(teamDef);
+            }
+         }
+      }
+      return results;
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse) {
+      Set<IAtsTeamDefinition> children = new HashSet<>();
+      for (IAtsTeamDefinition child : getChildrenTeamDefinitions(topTeamDef)) {
+         children.add(child);
+         if (recurse) {
+            children.addAll(getChildren(child, recurse));
+         }
+      }
+      return children;
+   }
+
+   @Override
+   public List<IAtsTeamDefinition> getTeamDefinitions(Active active) {
+      List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
+      for (IAtsTeamDefinition teamDef : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
+         if (teamDef.isActive()) {
+            teamDefs.add(teamDef);
+         }
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public Collection<TeamDefinition> getTeamTopLevelDefinitions(Active active) {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinitionOrSentinel();
+      if (topTeamDef.isInvalid()) {
+         return java.util.Collections.emptyList();
+      }
+      return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
+   }
+
+   @Override
+   public IAtsTeamDefinition getTopTeamDefinition() {
+      return atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
+         atsApi.getConfigService().getConfigurations().getTopTeamDefinition().getId());
+   }
+
+   @Override
+   public IAtsTeamDefinition getTopTeamDefinitionOrSentinel() {
+      IAtsTeamDefinition teamDef = getTopTeamDefinition();
+      if (teamDef == null) {
+         return IAtsTeamDefinition.SENTINEL;
+      }
+      return teamDef;
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(active)) {
+         if (AtsApiService.get().getVersionService().getVersions(teamDef).size() > 0) {
+            teamDefs.add(teamDef);
+         }
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) {
+      Set<IAtsTeamDefinition> aiTeams = new HashSet<>();
+      getTeamFromItemAndChildren(ai, aiTeams);
+      return aiTeams;
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
+      teamDefs.add(teamDef);
+      for (IAtsTeamDefinition child : AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(
+         teamDef)) {
+         teamDefs.addAll(getTeamsFromItemAndChildren(child));
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams) {
+      aiTeams.add(ai.getTeamDefinition());
+
+      for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
+         getTeamFromItemAndChildren(childArt, aiTeams);
+      }
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both)) {
+         if (teamDefNames.contains(teamDef.getName())) {
+            teamDefs.add(teamDef);
+         }
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both)) {
+         if (teamDef.getName().startsWith(prefix)) {
+            teamDefs.add(teamDef);
+         }
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) {
+      Set<IAtsTeamDefinition> resultTeams = new HashSet<>();
+      for (IAtsActionableItem ai : ais) {
+         resultTeams.addAll(getImpactedTeamDefInherited(ai));
+      }
+      return resultTeams;
+   }
+
+   @Override
+   public IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem ai) {
+      if (ai.getTeamDefinition() != null) {
+         return ai.getTeamDefinition();
+      }
+      if (ai.getParentActionableItem() != null) {
+         return getImpactedTeamDef(ai.getParentActionableItem());
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem ai) {
+      if (ai == null) {
+         return java.util.Collections.emptyList();
+      }
+      if (ai.getTeamDefinition() != null) {
+         return java.util.Collections.singleton(ai.getTeamDefinition());
+      }
+      IAtsActionableItem parentArt = ai.getParentActionableItem();
+      return getImpactedTeamDefInherited(parentArt);
+   }
+
+   @Override
+   public Collection<TeamDefinition> getTeamTopLevelJaxDefinitions(Active active) {
+      List<TeamDefinition> teamDefs = new LinkedList<>();
+      TeamDefinition topTeam = atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
+         atsApi.getConfigService().getConfigurations().getTopTeamDefinition().getId());
+      for (Long id : topTeam.getChildren()) {
+         teamDefs.add(atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(id));
+      }
+      return teamDefs;
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getTeamDefs(Collection<TeamDefinition> jTeamDefs) {
+      List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+      for (TeamDefinition jTeamDef : jTeamDefs) {
+         teamDefs.add(atsApi.getQueryService().getConfigItem(jTeamDef.getId()));
+      }
+      return teamDefs;
+
    }
 
 }

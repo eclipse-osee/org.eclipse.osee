@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
@@ -127,8 +126,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(
-         TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService()));
+      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

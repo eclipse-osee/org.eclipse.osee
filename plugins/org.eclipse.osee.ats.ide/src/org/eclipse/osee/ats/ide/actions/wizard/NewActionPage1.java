@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -298,7 +297,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
             }
          }
          Collection<IAtsTeamDefinition> teamDefs =
-            TeamDefinitions.getImpactedTeamDefs(getSelectedIAtsActionableItems());
+            AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(getSelectedIAtsActionableItems());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

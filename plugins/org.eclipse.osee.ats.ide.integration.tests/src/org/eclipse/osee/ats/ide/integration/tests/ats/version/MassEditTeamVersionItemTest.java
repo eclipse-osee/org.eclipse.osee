@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -33,8 +32,8 @@ public class MassEditTeamVersionItemTest {
 
    @Test
    public void test() {
-      IAtsTeamDefinition teamDef = TeamDefinitions.getTeamDefinitions(Arrays.asList("SAW SW"),
-         AtsClientService.get().getQueryService()).iterator().next();
+      IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitions(
+         Arrays.asList("SAW SW")).iterator().next();
 
       MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, AtsImage.ACTION);
       search.setSelectedTeamDef(teamDef);

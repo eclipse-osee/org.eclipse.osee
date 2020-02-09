@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -137,8 +136,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(
-         TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService()));
+      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

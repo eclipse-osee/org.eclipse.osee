@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.config;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
  * @author Donald G Dunne
@@ -21,7 +22,7 @@ public class TeamDefinitionUtility implements ITeamDefinitionUtility {
 
    @Override
    public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) {
-      return TeamDefinitions.getImpactedTeamDefs(aias);
+      return AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(aias);
    }
 
 }

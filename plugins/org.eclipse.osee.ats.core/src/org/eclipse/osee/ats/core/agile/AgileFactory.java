@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -194,8 +194,8 @@ public class AgileFactory {
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, id);
       IAgileSprint sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
 
-      atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()), null,
-         changes);
+      atsApi.getActionFactory().setAtsId(sprint, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+         null, changes);
 
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(sprint, null, changes);
@@ -228,8 +228,8 @@ public class AgileFactory {
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
       IAgileBacklog backlog = atsApi.getWorkItemService().getAgileBacklog(backlogArt);
 
-      atsApi.getActionFactory().setAtsId(backlog, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()), null,
-         changes);
+      atsApi.getActionFactory().setAtsId(backlog, AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+         null, changes);
 
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(backlog, null, changes);

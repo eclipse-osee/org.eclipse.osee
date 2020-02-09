@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -116,8 +115,9 @@ public class CreateTasksWorkflow {
             if (aia != null) {
                actionableItems.add(aia);
                IAtsTeamWorkflow newTeamWf = atsApi.getActionFactory().createTeamWorkflow(action,
-                  TeamDefinitions.getImpactedTeamDefs(actionableItems).iterator().next(), actionableItems, assignees,
-                  changes, createdDate, createdBy, getNewActionListeners(), CreateTeamOption.Duplicate_If_Exists);
+                  AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems).iterator().next(),
+                  actionableItems, assignees, changes, createdDate, createdBy, getNewActionListeners(),
+                  CreateTeamOption.Duplicate_If_Exists);
 
                if (createTasksOptions.contains(CreateTasksOption.CreateWorkflowsAsOseeSystem)) {
                   newTeamWf.getStateMgr().internalSetCreatedBy(AtsCoreUsers.SYSTEM_USER, changes);

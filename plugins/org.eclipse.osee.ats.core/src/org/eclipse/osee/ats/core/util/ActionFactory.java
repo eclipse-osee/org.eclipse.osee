@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
@@ -333,7 +332,7 @@ public class ActionFactory implements IAtsActionFactory {
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
-      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
+      Collection<IAtsTeamDefinition> teamDefs = atsApi.getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (IAtsActionableItem aia : actionableItems) {
@@ -370,7 +369,7 @@ public class ActionFactory implements IAtsActionFactory {
 
    private IAtsTeamDefinition getTopTeamDef() {
       if (topTeamDefinition == null) {
-         topTeamDefinition = TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService());
+         topTeamDefinition = AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition();
       }
       return topTeamDefinition;
    }

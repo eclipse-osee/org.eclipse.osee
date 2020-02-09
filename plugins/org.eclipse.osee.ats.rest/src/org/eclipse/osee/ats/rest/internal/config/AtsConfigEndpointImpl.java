@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -333,4 +334,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public Version getVersion(ArtifactId verId) {
       return atsApi.getVersionService().getVersionById(verId);
    }
+
+   @Override
+   public TeamDefinition getTeamDefinition(ArtifactId teamDefId) {
+      return atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefId);
+   }
+
 }

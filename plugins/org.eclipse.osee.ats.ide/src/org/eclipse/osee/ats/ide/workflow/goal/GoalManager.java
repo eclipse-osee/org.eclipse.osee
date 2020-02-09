@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -66,7 +65,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       IAtsWorkDefinition workDef =
          AtsClientService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
       return createGoal(title, AtsArtifactTypes.Goal, workDef,
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes, null);
+         AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(), changes, null);
    }
 
    public static GoalArtifact createGoal(String title, ArtifactTypeToken artifactType, IAtsWorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {

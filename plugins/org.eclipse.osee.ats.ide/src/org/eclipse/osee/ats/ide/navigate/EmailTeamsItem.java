@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -90,13 +89,13 @@ public class EmailTeamsItem extends XNavigateItemAction {
       if (teamDef != null) {
          Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          teamDefs.add(teamDef);
-         teamDefs.addAll(TeamDefinitions.getChildren(teamDef, true));
+         teamDefs.addAll(AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, true));
          return teamDefs;
       }
       TeamDefinitionTreeWithChildrenDialog ld = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
       int result = ld.open();
       if (result == 0) {
-         return TeamDefinitions.getTeamDefs(ld.getResultAndRecursedTeamDefs(), AtsClientService.get());
+         return AtsClientService.get().getTeamDefinitionService().getTeamDefs(ld.getResultAndRecursedTeamDefs());
       }
       return java.util.Collections.emptyList();
    }

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
@@ -114,7 +113,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog dialog = new TeamDefinitionDialog();
             dialog.setInput(
-               TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getQueryService()));
+               AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both));
             int result = dialog.open();
             if (result == 0) {
                selectedTeamDef = dialog.getSelectedFirst();

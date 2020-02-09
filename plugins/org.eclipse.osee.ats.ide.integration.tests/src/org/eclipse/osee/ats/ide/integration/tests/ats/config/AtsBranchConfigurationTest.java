@@ -114,6 +114,9 @@ public class AtsBranchConfigurationTest {
       Collection<String> actionableItems = appendToName(BRANCH_VIA_VERSIONS, "A1", "A2");
       AtsConfigOperation operation = configureAts(namespace, name, versions, actionableItems);
 
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
       // create main branch
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Creating root branch");
@@ -129,7 +132,8 @@ public class AtsBranchConfigurationTest {
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
       long version1Id = 0L, version2Id = 0L;
-      for (IAtsVersion vArt : AtsClientService.get().getVersionService().getVersions(teamDef)) {
+      Collection<IAtsVersion> versions2 = AtsClientService.get().getVersionService().getVersions(teamDef);
+      for (IAtsVersion vArt : versions2) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
             version1Id = vArt.getId();

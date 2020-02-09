@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.ide.health.ValidateResults;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -61,7 +60,8 @@ public class CopyAtsValidation {
 
       // Validate TeamDefs have Workflow Definitions
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      teamDefs.addAll(TeamDefinitions.getTeamsFromItemAndChildren(configData.getTeamDef()));
+      teamDefs.addAll(
+         AtsClientService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(configData.getTeamDef()));
 
       results.addResultsMapToResultData(resultData);
    }
@@ -71,7 +71,8 @@ public class CopyAtsValidation {
       if (newName.equals(teamDef.getName())) {
          resultData.errorf("Could not get new name from name conversion for Team Definition [%s]", teamDef.getName());
       }
-      for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
+      for (IAtsTeamDefinition childTeamDef : AtsClientService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(
+         teamDef)) {
          if (teamDef.notEqual(childTeamDef)) {
             validateTeamDefinition(childTeamDef);
          }

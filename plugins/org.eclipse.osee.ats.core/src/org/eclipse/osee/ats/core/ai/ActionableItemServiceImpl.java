@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -272,7 +271,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public IAtsTeamDefinition getTeamDefinitionInherited(IAtsActionableItem ai) {
-      return TeamDefinitions.getImpactedTeamDef(ai);
+      return atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
    }
 
    @Override
@@ -315,7 +314,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
 
    @Override
    public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) {
-      return TeamDefinitions.getImpactedTeamDefs(ais);
+      return atsApi.getTeamDefinitionService().getImpactedTeamDefs(ais);
    }
 
    @Override

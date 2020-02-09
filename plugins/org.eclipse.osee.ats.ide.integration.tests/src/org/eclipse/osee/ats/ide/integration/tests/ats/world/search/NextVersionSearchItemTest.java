@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
@@ -31,8 +30,8 @@ public class NextVersionSearchItemTest {
 
    @Test
    public void testByTeam() {
-      IAtsTeamDefinition teamDef = TeamDefinitions.getTeamDefinitions(Arrays.asList("SAW SW"),
-         AtsClientService.get().getQueryService()).iterator().next();
+      IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitions(
+         Arrays.asList("SAW SW")).iterator().next();
       NextVersionSearchItem search = new NextVersionSearchItem(teamDef, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();
       DemoTestUtil.assertTypes(results, 17, IAtsTeamWorkflow.class);

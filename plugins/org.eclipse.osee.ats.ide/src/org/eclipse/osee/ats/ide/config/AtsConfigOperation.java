@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -118,12 +118,12 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, AtsApi atsApi) {
       TeamDefinition teamDef =
-         AtsClientService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes, atsApi);
-      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+         AtsClientService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes);
+      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
-      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
          AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
-      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
          CoreRelationTypes.DefaultHierarchical_Child, teamDef);
       atsApi.getConfigService().getConfigurations().addTeamDef(teamDef);
       return teamDef;
@@ -167,6 +167,8 @@ public class AtsConfigOperation extends AbstractOperation {
          for (String name : versionNames) {
             IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name, changes);
             AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef, changes);
+            ((TeamDefinition) teamDef).getVersions().add(version.getId());
+            ((Version) version).setTeamDefId(teamDef.getId());
          }
       }
    }

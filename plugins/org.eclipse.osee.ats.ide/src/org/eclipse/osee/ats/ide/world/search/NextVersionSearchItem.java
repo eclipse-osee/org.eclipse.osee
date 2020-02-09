@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
@@ -109,7 +108,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       try {
          TeamDefinitionDialog dialog = new TeamDefinitionDialog();
          dialog.setInput(
-            TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService()));
+            AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDef = dialog.getSelectedFirst();

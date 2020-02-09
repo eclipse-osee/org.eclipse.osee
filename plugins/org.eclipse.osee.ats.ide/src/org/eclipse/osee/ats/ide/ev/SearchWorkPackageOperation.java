@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -63,7 +65,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       }
       checkForCancelledStatus(monitor);
       List<ArtifactId> ids = new ArrayList<>();
-      addAllTeamDefIds(monitor, teamDefs, includeChildrenTeamDefs, ids);
+      addAllTeamDefIds(monitor, Collections.castAll(teamDefs), includeChildrenTeamDefs, ids);
       addAllAisIds(monitor, ais, includeChildrenAis, ids);
 
       for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch())) {
@@ -88,7 +90,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       }
    }
 
-   private void addAllTeamDefIds(IProgressMonitor monitor, Collection<IAtsTeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<ArtifactId> ids) {
+   private void addAllTeamDefIds(IProgressMonitor monitor, Collection<TeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<ArtifactId> ids) {
       for (IAtsTeamDefinition teamDef : teamDefs2) {
          ids.add(teamDef.getStoreObject());
          if (includeChildrenTeamDefs2) {

@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 
 /**
@@ -31,7 +30,8 @@ public class AtsActionableItemToTeamDefinitionTest {
       for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
          AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
-            Collection<IAtsTeamDefinition> impactedTeamDefs = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia));
+            Collection<IAtsTeamDefinition> impactedTeamDefs =
+               AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia));
             if (impactedTeamDefs.isEmpty()) {
                sb.append("[" + aia + "]");
                error = true;

@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -1004,7 +1003,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem aia =
                   AtsClientService.get().getActionableItemService().getActionableItemById(artifact);
-               if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+               if (aia.isActionable() && AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(
+                  Arrays.asList(aia)).isEmpty()) {
                   results.log(artifact, "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(),
                         artifact) + " has no related IAtsTeamDefinition and is set to Actionable");

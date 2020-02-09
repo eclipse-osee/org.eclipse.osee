@@ -111,7 +111,9 @@ public class AtsBranchServiceImplTest {
    public void testGetCommitTransactionsAndConfigItemsForTeam_txRecords() {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
+
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());

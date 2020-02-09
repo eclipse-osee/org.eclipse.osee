@@ -11,7 +11,8 @@
 package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.AtsApi;
+import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -46,11 +48,11 @@ public interface IAtsTeamDefinitionService {
    /**
     * @return this object casted, else if hard artifact constructed, else load and construct
     */
-   IAtsTeamDefinition getTeamDefinitionById(ArtifactId teamDefId);
+   TeamDefinition getTeamDefinitionById(ArtifactId teamDefId);
 
-   TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
+   TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes);
 
-   TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
+   TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes);
 
    Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef);
 
@@ -78,9 +80,9 @@ public interface IAtsTeamDefinitionService {
 
    boolean isAllowCreateBranch(IAtsTeamDefinition teamDef);
 
-   IAtsTeamDefinition getParentTeamDef(IAtsTeamDefinition teamDef);
+   TeamDefinition getParentTeamDef(IAtsTeamDefinition teamDef);
 
-   Collection<IAtsTeamDefinition> getChildrenTeamDefinitions(IAtsTeamDefinition teamDef);
+   Collection<TeamDefinition> getChildrenTeamDefinitions(IAtsTeamDefinition teamDef);
 
    boolean isTeamUsesVersions(IAtsTeamDefinition teamDefinition);
 
@@ -91,5 +93,41 @@ public interface IAtsTeamDefinitionService {
    boolean hasRule(IAtsTeamDefinition teamDef, String rule);
 
    TeamDefinition createTeamDefinition(ArtifactToken teamDefArt);
+
+   Collection<TeamDefinition> getTopLevelTeamDefinitions(Active active);
+
+   List<IAtsTeamDefinition> getActive(Collection<IAtsTeamDefinition> teamDefs, Active active);
+
+   Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse);
+
+   IAtsTeamDefinition getTopTeamDefinition();
+
+   IAtsTeamDefinition getTopTeamDefinitionOrSentinel();
+
+   Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active);
+
+   Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai);
+
+   Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef);
+
+   List<IAtsTeamDefinition> getTeamDefinitions(Active active);
+
+   Collection<TeamDefinition> getTeamTopLevelDefinitions(Active active);
+
+   void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams);
+
+   Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames);
+
+   Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix);
+
+   Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais);
+
+   IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem ai);
+
+   Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem ai);
+
+   Collection<TeamDefinition> getTeamTopLevelJaxDefinitions(Active active);
+
+   Collection<IAtsTeamDefinition> getTeamDefs(Collection<TeamDefinition> jTeamDefs);
 
 }

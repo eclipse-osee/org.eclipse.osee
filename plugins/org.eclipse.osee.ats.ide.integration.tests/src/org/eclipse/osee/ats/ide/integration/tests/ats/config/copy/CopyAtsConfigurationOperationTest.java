@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.ide.config.copy.ConfigData;
 import org.eclipse.osee.ats.ide.config.copy.CopyAtsConfigurationOperation;
 import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
@@ -52,7 +51,7 @@ public class CopyAtsConfigurationOperationTest {
       Assert.assertFalse(rd.isErrors());
 
       Collection<IAtsTeamDefinition> teamDefs =
-         TeamDefinitions.getTeamDefinitionsNameStartsWith("CISv2", AtsClientService.get().getQueryService());
+         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionsNameStartsWith("CISv2");
       Assert.assertEquals(5, teamDefs.size());
 
       Collection<IAtsActionableItem> ais = getActionableItemsNameStartsWith("CISv2");

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
@@ -137,6 +138,13 @@ public class AtsConfigurations {
 
    public void addVersion(Version version) {
       idToVersion.put(version.getId(), version);
+   }
+
+   public TeamDefinition getTeamDef(IAtsTeamDefinition teamDef) {
+      if (teamDef instanceof TeamDefinition) {
+         return (TeamDefinition) teamDef;
+      }
+      return idToTeamDef.get(teamDef.getId());
    }
 
 }

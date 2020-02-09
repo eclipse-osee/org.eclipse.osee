@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.config.version.VersionMetrics;
@@ -66,7 +65,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
       try {
          teamReleaseableDefinitions =
-            TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getQueryService());
+            AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }
