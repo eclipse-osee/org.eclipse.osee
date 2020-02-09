@@ -160,7 +160,7 @@ public class AtsObjects {
    public static IAtsConfigObject getConfigObject(ArtifactToken artifact, AtsApi atsApi) {
       IAtsConfigObject configObject;
       if (artifact.isOfType(AtsArtifactTypes.Version)) {
-         configObject = atsApi.getVersionService().getVersion(artifact);
+         configObject = atsApi.getVersionService().getVersionById(artifact);
       } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
          configObject = atsApi.getTeamDefinitionService().getTeamDefinitionById(artifact);
       } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {

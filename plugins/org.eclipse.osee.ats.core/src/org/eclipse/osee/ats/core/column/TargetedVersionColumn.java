@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -37,14 +36,15 @@ public class TargetedVersionColumn extends AbstractServicesColumn {
          IAtsAction action = (IAtsAction) atsObject;
          Set<String> strs = new HashSet<>();
          for (IAtsTeamWorkflow team : action.getTeamWorkflows()) {
-            String str = Versions.getTargetedVersionStr(team, atsApi.getVersionService());
+            String str = atsApi.getVersionService().getTargetedVersionStr(team, atsApi.getVersionService());
             if (Strings.isValid(str)) {
                strs.add(str);
             }
          }
          result = Collections.toString(";", strs);
       } else if (atsObject instanceof IAtsWorkItem) {
-         result = Versions.getTargetedVersionStr((IAtsWorkItem) atsObject, atsApi.getVersionService());
+         result =
+            atsApi.getVersionService().getTargetedVersionStr((IAtsWorkItem) atsObject, atsApi.getVersionService());
       }
       return result;
    }

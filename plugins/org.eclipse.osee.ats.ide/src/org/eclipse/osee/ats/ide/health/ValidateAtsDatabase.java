@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -610,7 +609,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getVersionService().getById(artifact);
+            IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(artifact);
             if (version != null) {
                try {
                   BranchId parentBranchId = version.getBaselineBranch();
@@ -639,9 +638,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getVersionService().getById(artifact);
+            IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(artifact);
             if (version != null) {
-               for (IAtsVersion parallelVersion : Versions.getParallelVersions(version, AtsClientService.get())) {
+               for (IAtsVersion parallelVersion : AtsClientService.get().getVersionService().getParallelVersions(
+                  version)) {
                   if (parallelVersion != null) {
                      try {
                         if (parallelVersion.isBranchInvalid()) {

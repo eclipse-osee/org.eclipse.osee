@@ -18,9 +18,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -41,7 +44,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.service.event.Event;
@@ -62,14 +64,37 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion getVersion(ArtifactId versionId) {
-      IAtsVersion version = null;
-      if (versionId instanceof IAtsVersion) {
-         version = (IAtsVersion) versionId;
+   public Version getVersionById(IAtsVersion versionId) {
+      Version version = null;
+      if (versionId instanceof Version) {
+         version = (Version) versionId;
       } else {
-         ArtifactToken art = atsApi.getQueryService().getArtifact(versionId);
-         if (art.isOfType(AtsArtifactTypes.Version)) {
-            version = createVersion(art);
+         version = getVersionById(versionId.getStoreObject());
+      }
+      return version;
+   }
+
+   @Override
+   public Version getVersionById(ArtifactId versionId) {
+      Version version = null;
+      if (versionId instanceof Version) {
+         version = (Version) versionId;
+      }
+      if (version == null) {
+         version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId.getId());
+      }
+      if (version == null) {
+         // Don't want to load artifacts on client.  Request from server.
+         if (atsApi.isIde()) {
+            version = atsApi.getServerEndpoints().getConfigEndpoint().getVersion(ArtifactId.valueOf(versionId.getId()));
+            version.setAtsApi(atsApi);
+         } else {
+            ArtifactToken verArt = atsApi.getQueryService().getArtifact(versionId);
+            if (verArt.isValid()) {
+               Version version2 = createVersion(verArt);
+               atsApi.getConfigService().getConfigurations().addVersion(version2);
+               version = version2;
+            }
          }
       }
       return version;
@@ -113,7 +138,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          ArtifactId artId = atsApi.getRelationResolver().getRelatedOrNull(workItem,
             AtsRelationTypes.TeamWorkflowToFoundInVersion_Version);
          if (artId != null && artId.isValid()) {
-            IAtsVersion foundInVersion = atsApi.getVersionService().getVersion(artId);
+            IAtsVersion foundInVersion = getVersionById(artId);
             return foundInVersion;
          }
          return null;
@@ -135,7 +160,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = atsApi.getVersionService().getVersion(versions.iterator().next());
+            version = getVersionById(versions.iterator().next());
          }
       }
       return version;
@@ -213,34 +238,20 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      Object verArt = atsApi.getQueryService().getArtifact(version);
-      if (verArt == null) {
-         throw new OseeStateException("Version [%s] does not exist.", version);
-      }
-      Object teamDefArt = atsApi.getQueryService().getArtifact(teamDef);
-      if (teamDefArt == null) {
-         throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
-      }
       if (!atsApi.getRelationResolver().areRelated(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition,
          teamDef)) {
-         changes.relate(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDefArt);
+         changes.relate(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
       }
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) {
-      return atsApi.getRelationResolver().getRelatedOrNull(version,
-         AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, IAtsTeamDefinition.class);
-   }
-
-   @Override
-   public IAtsVersion getById(ArtifactId id) {
-      IAtsVersion version = null;
-      ArtifactToken verArt = atsApi.getQueryService().getArtifact(id.getId());
-      if (verArt != null) {
-         version = atsApi.getVersionService().getVersion(verArt);
+      Version ver = getVersionById(version);
+      IAtsTeamDefinition teamDef = null;
+      if (ver.getTeamDefId() > 0) {
+         teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(ver.getTeamDefId()));
       }
-      return version;
+      return teamDef;
    }
 
    @Override
@@ -264,11 +275,11 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
-      IAtsVersion version = null;
-      version = atsApi.getProgramService().getVersion(program, versionName);
+   public Version createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
+      Version version = null;
+      version = (Version) atsApi.getProgramService().getVersion(program, versionName);
       if (version == null) {
-         version = atsApi.getVersionService().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
+         version = getVersionById(changes.createArtifact(AtsArtifactTypes.Version, versionName));
       }
       return version;
    }
@@ -279,29 +290,19 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion createVersion(String title, long id, IAtsChangeSet changes) {
-      return createVersion(title, id, changes, atsApi);
-   }
-
-   @Override
-   public IAtsVersion createVersion(String name, IAtsChangeSet changes) {
-      return createVersion(name, changes, atsApi);
-   }
-
-   @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       return atsApi.getTeamDefinitionService().getVersions(teamDef);
    }
 
    @Override
-   public IAtsVersion createVersion(String title, IAtsChangeSet changes, AtsApi atsApi) {
-      return createVersion(title, Lib.generateArtifactIdAsInt(), changes, atsApi);
+   public Version createVersion(String title, IAtsChangeSet changes) {
+      return createVersion(title, Lib.generateArtifactIdAsInt(), changes);
    }
 
    @Override
-   public IAtsVersion createVersion(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, id);
-      return new Version(artifact, atsApi);
+   public Version createVersion(String name, long id, IAtsChangeSet changes) {
+      ArtifactToken verArt = changes.createArtifact(AtsArtifactTypes.Version, name, id);
+      return createVersion(verArt);
    }
 
    @Override
@@ -324,7 +325,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsTeamDefinition getTeamDefinitionHoldingVersions(IAtsTeamDefinition teamDef) {
       IAtsTeamDefinition teamDefHoldVer = null;
-      if (getVersions(teamDef).size() > 0) {
+      if (hasVersions(teamDef)) {
          teamDefHoldVer = teamDef;
       } else {
          IAtsTeamDefinition parentTda = atsApi.getTeamDefinitionService().getParentTeamDef(teamDef);
@@ -333,6 +334,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          }
       }
       return teamDefHoldVer;
+   }
+
+   @Override
+   public boolean hasVersions(IAtsTeamDefinition teamDef) {
+      return !atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(
+         teamDef.getId()).getVersions().isEmpty();
    }
 
    @Override
@@ -442,6 +449,44 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
+   }
+
+   @Override
+   public String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService) {
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      if (teamWf != null) {
+         IAtsVersion version = versionService.getTargetedVersion(workItem);
+         if (version != null) {
+            if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
+               String errStr =
+                  "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
+               return "!Error " + errStr;
+            }
+            return version.getName();
+         }
+      }
+      return "";
+   }
+
+   @Override
+   public List<IAtsVersion> getParallelVersions(IAtsVersion version) {
+      List<IAtsVersion> parallelVersions = new ArrayList<>();
+      for (ArtifactId parallelVersion : atsApi.getRelationResolver().getRelated(
+         atsApi.getQueryService().getArtifact(version), AtsRelationTypes.ParallelVersion_Child)) {
+         IAtsVersion parallelVer = getVersionById(parallelVersion);
+         parallelVersions.add(parallelVer);
+      }
+      return parallelVersions;
+   }
+
+   @Override
+   public void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts) {
+      configArts.add(new CommitConfigItem(version, atsApi));
+      for (IAtsVersion childArt : getParallelVersions(version)) {
+         if (!configArts.contains(new CommitConfigItem(childArt, atsApi))) {
+            getParallelVersions(childArt, configArts);
+         }
+      }
    }
 
 }

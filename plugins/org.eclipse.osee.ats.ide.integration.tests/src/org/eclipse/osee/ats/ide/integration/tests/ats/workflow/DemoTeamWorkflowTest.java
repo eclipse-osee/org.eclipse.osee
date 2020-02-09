@@ -86,7 +86,7 @@ public class DemoTeamWorkflowTest {
       results = transitionMgr.handleAllAndPersist();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
-      IAtsVersion sawBuild2Version = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion sawBuild2Version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
       assertNotNull(sawBuild2Version);
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
       changes.execute();

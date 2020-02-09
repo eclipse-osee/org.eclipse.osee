@@ -69,6 +69,7 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId.getId());
       }
       if (ai == null) {
+         // Don't want to load artifacts on client.  Request from server.
          if (atsApi.isIde()) {
             ai = atsApi.getServerEndpoints().getConfigEndpoint().getActionableItem(ArtifactId.valueOf(aiId.getId()));
             ai.setAtsApi(atsApi);

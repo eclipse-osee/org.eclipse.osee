@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.ats.api.AtsApi;
+import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -46,29 +48,23 @@ public interface IAtsVersionService {
 
    void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes);
 
-   IAtsVersion getById(ArtifactId id);
-
    BranchId getBranch(IAtsVersion version);
 
    IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team);
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
 
-   IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
+   Version createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
    IAtsVersion getVersion(IAtsProgram program, String versionName);
 
-   IAtsVersion createVersion(String name, long id, IAtsChangeSet changes);
-
-   IAtsVersion createVersion(String name, IAtsChangeSet changes);
-
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
-   IAtsVersion getVersion(ArtifactId versionId);
+   Version getVersionById(ArtifactId versionId);
 
-   IAtsVersion createVersion(String title, long id, IAtsChangeSet changes, AtsApi atsApi);
+   Version createVersion(String title, long id, IAtsChangeSet changes);
 
-   IAtsVersion createVersion(String name, IAtsChangeSet changes, AtsApi atsApi);
+   Version createVersion(String name, IAtsChangeSet changes);
 
    boolean isTeamUsesVersions(IAtsTeamDefinition teamDef);
 
@@ -99,5 +95,15 @@ public interface IAtsVersionService {
    Result isAllowCreateBranchInherited(IAtsVersion version);
 
    Version createVersion(ArtifactToken verArt);
+
+   String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService);
+
+   List<IAtsVersion> getParallelVersions(IAtsVersion version);
+
+   void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts);
+
+   Version getVersionById(IAtsVersion versionId);
+
+   boolean hasVersions(IAtsTeamDefinition teamDef);
 
 }

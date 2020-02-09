@@ -484,7 +484,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
 
       // Set to Build 1 by id
-      IAtsVersion sawBld1Ver = AtsClientService.get().getVersionService().getVersion(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion sawBld1Ver = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
          Collections.singletonList(sawBld1Ver.getIdString()));
 

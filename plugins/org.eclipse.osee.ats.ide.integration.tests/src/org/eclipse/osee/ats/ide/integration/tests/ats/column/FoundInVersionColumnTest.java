@@ -34,7 +34,7 @@ public class FoundInVersionColumnTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      IAtsVersion demoVersion = AtsClientService.get().getVersionService().getVersion(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion demoVersion = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
 
       // FIV not set
       Assert.assertEquals("",

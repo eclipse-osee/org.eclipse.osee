@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -91,8 +92,8 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class AtsTestUtil {
 
    private static TeamWorkFlowArtifact teamWf = null, teamArt2 = null, teamArt3 = null, teamArt4 = null;
-   private static IAtsTeamDefinition teamDef = null;
-   private static IAtsVersion verArt1 = null, verArt2 = null, verArt3 = null, verArt4 = null;
+   private static TeamDefinition teamDef = null;
+   private static Version verArt1 = null, verArt2 = null, verArt3 = null, verArt4 = null;
    private static DecisionReviewArtifact decRevArt = null;
    private static PeerToPeerReviewArtifact peerRevArt = null;
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
@@ -297,8 +298,7 @@ public class AtsTestUtil {
 
       teamDef = AtsClientService.get().getTeamDefinitionService().createTeamDefinition(
          getTitle("Team Def", postFixName), Lib.generateArtifactIdAsInt(), changes, AtsClientService.get());
-      AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().put(teamDef.getId(),
-         (TeamDefinition) teamDef);
+      AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().put(teamDef.getId(), teamDef);
 
       // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
       AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
@@ -321,18 +321,26 @@ public class AtsTestUtil {
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
+      verArt1.setTeamDefId(teamDef.getId());
+      teamDef.getVersions().add(verArt1.getId());
 
       verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
+      verArt2.setTeamDefId(teamDef.getId());
+      teamDef.getVersions().add(verArt2.getId());
 
       verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
+      verArt3.setTeamDefId(teamDef.getId());
+      teamDef.getVersions().add(verArt3.getId());
 
       verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
+      verArt4.setTeamDefId(teamDef.getId());
+      teamDef.getVersions().add(verArt4.getId());
 
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
          getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1", false, null,

@@ -44,7 +44,7 @@ public interface IPopulateDemoDatabase {
    }
 
    default void setVersion(IAtsTeamWorkflow teamWf, ArtifactToken versionToken, IAtsChangeSet changes) {
-      IAtsVersion version = AtsClientService.get().getVersionService().getById(versionToken);
+      IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(versionToken);
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
    }
 

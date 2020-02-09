@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -383,8 +382,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    private String getTargetedVersion(Artifact artifact) {
       try {
          if (artifact instanceof IAtsWorkItem) {
-            String str =
-               Versions.getTargetedVersionStr((IAtsWorkItem) artifact, AtsClientService.get().getVersionService());
+            String str = AtsClientService.get().getVersionService().getTargetedVersionStr((IAtsWorkItem) artifact,
+               AtsClientService.get().getVersionService());
             return str.isEmpty() ? "" : str;
          }
       } catch (OseeCoreException ex) {

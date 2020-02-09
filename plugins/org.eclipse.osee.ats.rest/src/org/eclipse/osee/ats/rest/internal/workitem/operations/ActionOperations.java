@@ -239,7 +239,7 @@ public class ActionOperations {
             atsApi.getVersionService().removeTargetedVersion((IAtsTeamWorkflow) workItem, changes);
             changes.executeIfNeeded();
          } else {
-            IAtsVersion version = atsApi.getVersionService().getById(artifacts.iterator().next());
+            IAtsVersion version = atsApi.getVersionService().getVersionById(artifacts.iterator().next());
             Conditions.assertNotNull(version, "No version found from artifact %s", artifacts.iterator().next());
             IAtsChangeSet changes = atsApi.createChangeSet("Set targeted version", asUser);
             atsApi.getVersionService().setTargetedVersion((IAtsTeamWorkflow) workItem, version, changes);

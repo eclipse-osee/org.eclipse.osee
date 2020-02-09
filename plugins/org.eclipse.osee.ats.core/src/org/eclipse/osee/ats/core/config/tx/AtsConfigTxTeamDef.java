@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -77,26 +76,15 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions) {
+   public IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(name, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return this;
    }
 
-   private void handleParallelVersions(IAtsConfigTxVersion version, IOseeBranch... parallelVersions) {
-      for (IOseeBranch parallelVer : parallelVersions) {
-         boolean found = false;
-         for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
-            if (teamDefVer.getBaselineBranch().isValid() && teamDefVer.getBaselineBranch().equals(
-               parallelVer.getId())) {
-               changes.relate(version.getVersion(), AtsRelationTypes.ParallelVersion_Child, teamDefVer);
-               found = true;
-            }
-         }
-         if (!found) {
-            throw new OseeArgumentException("No parallel version %s found for version %s", parallelVer.toStringWithId(),
-               version.getVersion().toStringWithId());
-         }
+   private void handleParallelVersions(IAtsConfigTxVersion version, IAtsVersionArtifactToken... parallelVersions) {
+      for (IAtsVersionArtifactToken parallelVer : parallelVersions) {
+         changes.relate(version.getVersion(), AtsRelationTypes.ParallelVersion_Child, parallelVer);
       }
    }
 
@@ -107,7 +95,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions) {
+   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return this;
@@ -174,7 +162,7 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IOseeBranch... parallelVersions) {
+   public IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken versionTok, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return version;

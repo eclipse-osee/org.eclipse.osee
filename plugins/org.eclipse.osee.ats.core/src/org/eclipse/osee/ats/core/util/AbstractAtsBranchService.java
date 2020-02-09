@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.commit.operations.CommitOverrideOperationsImpl;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -236,7 +235,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       Set<ICommitConfigItem> configObjects = new HashSet<>();
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
-            Versions.getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf), configObjects, atsApi);
+            atsApi.getVersionService().getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf),
+               configObjects);
          }
       } else {
          CommitConfigItem item = new CommitConfigItem(teamWf.getTeamDefinition(), atsApi);

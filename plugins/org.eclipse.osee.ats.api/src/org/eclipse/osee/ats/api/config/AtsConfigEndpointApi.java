@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -116,5 +117,11 @@ public interface AtsConfigEndpointApi {
    @Path("ai/{aiId}")
    @Produces(MediaType.APPLICATION_JSON)
    public ActionableItem getActionableItem(@PathParam("aiId") ArtifactId aiId);
+
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("version/{verId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Version getVersion(@PathParam("verId") ArtifactId verId);
 
 }

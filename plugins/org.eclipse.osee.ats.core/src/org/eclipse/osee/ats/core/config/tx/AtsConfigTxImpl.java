@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.tx.AtsVersionArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
@@ -37,7 +38,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -129,7 +130,8 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
          changes.setSoleAttributeValue(verArt, AtsAttributeTypes.AllowCreateBranch, true);
       }
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt);
-      IAtsVersion newVersion = atsApi.getVersionService().getVersion(verArt);
+      Version newVersion = atsApi.getVersionService().createVersion(verArt);
+      ((TeamDefinition) teamDef).addVersion(newVersion.getId());
       return new AtsConfigTxVersion(newVersion, atsApi, changes, this);
    }
 

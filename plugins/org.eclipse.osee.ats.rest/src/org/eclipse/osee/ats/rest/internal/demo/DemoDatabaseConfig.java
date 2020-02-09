@@ -499,9 +499,9 @@ public class DemoDatabaseConfig {
    private void configureForParallelCommit() {
       IAtsChangeSet changes = atsApi.createChangeSet("configureForParallelCommit");
 
-      IAtsVersion sawBld1Ver = atsApi.getVersionService().getById(DemoArtifactToken.SAW_Bld_1);
-      IAtsVersion sawBld2Ver = atsApi.getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
-      IAtsVersion sawBld3Ver = atsApi.getVersionService().getById(DemoArtifactToken.SAW_Bld_3);
+      IAtsVersion sawBld1Ver = atsApi.getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion sawBld2Ver = atsApi.getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion sawBld3Ver = atsApi.getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_3);
 
       changes.relate(sawBld1Ver, AtsRelationTypes.ParallelVersion_Child, sawBld2Ver);
 

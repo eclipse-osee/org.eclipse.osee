@@ -30,7 +30,7 @@ public class VersionTargetedForTeamSearchItemTest {
 
    @Test
    public void testByVersion() {
-      IAtsVersion version = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
       VersionTargetedForTeamSearchItem search =
          new VersionTargetedForTeamSearchItem(null, version, false, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();

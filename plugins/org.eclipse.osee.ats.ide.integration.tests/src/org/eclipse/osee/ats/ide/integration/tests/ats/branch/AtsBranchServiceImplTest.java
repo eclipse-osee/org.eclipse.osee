@@ -70,6 +70,10 @@ public class AtsBranchServiceImplTest {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
+
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       org.junit.Assert.assertEquals("commitObjs has wrong size", 1, commitObjs.size());
@@ -116,6 +120,10 @@ public class AtsBranchServiceImplTest {
          changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
+
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, 0L);

@@ -193,7 +193,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
          INewActionListener.super.teamCreated(action, teamWf, changes);
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, getRpcrNumber());
-         IAtsVersion version = AtsClientService.get().getVersionService().getVersion(DemoArtifactToken.SAW_Bld_2);
+         IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
          AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
       }
 

@@ -247,15 +247,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private IAtsVersion getSawBld1() {
-      return AtsClientService.get().getVersionService().getById(SAW_Bld_1);
+      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_1);
    }
 
    private IAtsVersion getSawBld2() {
-      return AtsClientService.get().getVersionService().getById(SAW_Bld_2);
+      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_2);
    }
 
    private IAtsVersion getSawBld3() {
-      return AtsClientService.get().getVersionService().getById(SAW_Bld_3);
+      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_3);
    }
 
    private void validateActionAtStart(IAtsTeamWorkflow teamWf) {

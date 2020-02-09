@@ -113,7 +113,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
       List<IAtsVersion> versions = new ArrayList<>();
       for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(atsApi.getVersionService().getVersion(verArt));
+         versions.add(atsApi.getVersionService().getVersionById(verArt));
       }
       return versions;
    }

@@ -146,6 +146,9 @@ public class AtsBranchConfigurationTest {
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
 
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+
       // create action and target for version
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO,
@@ -162,6 +165,9 @@ public class AtsBranchConfigurationTest {
       IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeams(result).iterator().next();
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
+
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
 
