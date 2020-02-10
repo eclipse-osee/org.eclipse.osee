@@ -1560,4 +1560,23 @@
             id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditorInputFactory">
       </factory>
    </extension>
+   <!-- Contributions to Debug View Toolbar -->
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            targetID="org.eclipse.debug.ui.DebugView"
+            id="org.eclipse.debug.ui.debugview.toolbar">
+         <action
+               id="org.eclipse.debug.ui.debugview.toolbar.collapseAll"
+               toolbarPath="threadGroup"
+               hoverIcon="$nl$/OSEE-INF/images/collapseAll.gif"
+               class="org.eclipse.osee.framework.ui.skynet.util.CollapseAllCommandAction"
+               disabledIcon="$nl$/OSEE-INF/images/collapseAll.gif"
+               icon="$nl$/OSEE-INF/images/collapseAll.gif"
+               label="Collapse-All"
+               tooltip="Collapse-All">
+         </action>
+      </viewContribution>
+   </extension>
+   
 </plugin>
