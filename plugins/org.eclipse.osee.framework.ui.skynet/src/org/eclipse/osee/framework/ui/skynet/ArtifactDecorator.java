@@ -161,7 +161,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          attributesAction = new ShowAttributeAction(branchProvider, FrameworkImage.FILTERS);
       }
 
-      if (showArtIds == null && isAdmin()) {
+      if (showArtIds == null) {
          showArtIds = new DecoratorAction("Artifact Ids", FrameworkImage.FILTERS, false);
       }
       if (saveSettingsAction == null) {
