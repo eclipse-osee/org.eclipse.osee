@@ -142,6 +142,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    /**
+    * Write union keyword in recursive query using a Common Table Expression (WITH statement)
+    */
+   public void writeCteRecursiveUnion() {
+      write("\n ");
+      write(jdbcClient.getDbType().getCteRecursiveUnion());
+      write("\n");
+   }
+
+   /**
     * Add a named non-recursive query using a Common Table Expression (WITH statement)
     */
    public String startCommonTableExpression(String prefix) {

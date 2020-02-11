@@ -29,9 +29,9 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
       writer.write("SELECT b_art_id, 1 FROM osee_relation_link rel, osee_txs txs WHERE ");
       writer.writeEqualsParameterAnd("a_art_id", criteria.getStartArtifact());
       writer.writeEqualsParameterAnd("rel_link_type_id", criteria.getRelationType());
-      writer.write(" rel.gamma_id = txs.gamma_id AND ");
+      writer.write("rel.gamma_id = txs.gamma_id AND ");
       writer.writeTxBranchFilter("txs");
-      writer.write(" UNION ALL\n");
+      writer.writeCteRecursiveUnion();
       writer.write(" SELECT b_art_id, child_level + 1 FROM " + cteAlias);
       writer.write(", osee_relation_link rel, osee_txs txs");
       writer.write(" WHERE a_art_id = id AND rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id AND ");

@@ -34,7 +34,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
       cteAlias = writer.startRecursiveCommonTableExpression("anstrof", "(parent_id, branch_level)");
       writer.write("SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n   WHERE ");
       writer.writeEqualsParameter("anch_br1", "branch_id", criteria.getChild());
-      writer.write("\n UNION ALL\n");
+      writer.writeCteRecursiveUnion();
       writer.write(" SELECT parent_branch_id, branch_level - 1 FROM " + cteAlias);
       writer.write(", osee_branch br WHERE br.branch_id = parent_id");
    }

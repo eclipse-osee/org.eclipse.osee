@@ -92,6 +92,15 @@ public class JdbcDbType extends BaseId {
       return equals(oracle) ? "" : "RECURSIVE";
    }
 
+   /**
+    * return union keyword in recursive query using a Common Table Expression (WITH statement). Oracle requires UNION
+    * ALL (does not support UNION in a recursive CTE). HSQLDB version 2.3.2+ hangs indefinitely when UNION ALL is used.
+    * In other (not a recursive CTE) UNION ALL performs better because it does not have to eliminate duplicates.
+    */
+   public String getCteRecursiveUnion() {
+      return equals(hsql) ? "UNION" : "UNION ALL";
+   }
+
    public String getComplementSql() {
       return equals(oracle) ? "MINUS" : "EXCEPT";
    }
