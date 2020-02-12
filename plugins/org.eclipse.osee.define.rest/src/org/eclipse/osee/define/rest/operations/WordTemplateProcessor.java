@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
+import org.eclipse.osee.define.api.OseeHierarchyComparator;
 import org.eclipse.osee.define.api.OseeLinkBuilder;
 import org.eclipse.osee.define.api.PublishingErrorElement;
 import org.eclipse.osee.define.api.PublishingOptions;
@@ -908,6 +909,17 @@ public class WordTemplateProcessor {
          }
       }
 
+   }
+
+   protected void sortQueryListByHierarchy(List<ArtifactReadable> artifacts) {
+      OseeHierarchyComparator comparator = new OseeHierarchyComparator(null);
+      artifacts.sort(comparator);
+
+      for (Map.Entry<ArtifactReadable, String> entry : comparator.errors.entrySet()) {
+         ArtifactReadable art = entry.getKey();
+         String description = entry.getValue();
+         errorElements.add(new PublishingErrorElement(art.getId(), art.getName(), art.getArtifactType(), description));
+      }
    }
 
    //Copied from WordTemplateRenderer for server publishing
