@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -227,11 +228,14 @@ public class AtsHealthCheckOperation {
       public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.isTeamWorkflow()) {
             IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+            Collection<IRelationLink> links = atsApi.getRelationResolver().getRelations(teamWf.getArtifactId(),
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+            if (links.size() > 1) {
+               error(results, workItem, "Team workflow has " + links.size() + " versions; should only be 0 or 1");
+            }
             Collection<ArtifactToken> versions =
                atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-            if (versions.size() > 1) {
-               error(results, workItem, "Team workflow has " + versions.size() + " versions; should only be 0 or 1");
-            } else if (versions.size() == 1) {
+            if (versions.size() == 1) {
                IAtsVersion version = atsApi.getQueryService().getConfigItem(versions.iterator().next());
                if (version != null && !getTeamVersions(teamWf.getTeamDefinition(), atsApi).contains(version)) {
                   error(results, workItem,

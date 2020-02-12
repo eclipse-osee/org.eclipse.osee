@@ -355,7 +355,7 @@ public class ArtifactEventTest {
       return remoteEvent;
    }
 
-   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
@@ -369,7 +369,7 @@ public class ArtifactEventTest {
       remGuidRel.setBranchGuid(COMMON);
       remGuidRel.setGammaId(incrementingGammaId.increment(1).getIdIntValue());
       remGuidRel.setRelTypeGuid(relType.getId());
-      remGuidRel.setRelationId(relationId);
+      remGuidRel.setRelationId(relationId.intValue());
       remGuidRel.setArtAId(artA.getArtId());
       remGuidRel.setArtBId(artB.getArtId());
       remGuidRel.setArtA(FrameworkEventUtil.getRemoteBasicGuidArtifact(artA.getBasicGuidArtifact()));
@@ -527,7 +527,7 @@ public class ArtifactEventTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long.valueOf(getIncrementingRelationId()),
             RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
 
       // Send
@@ -636,7 +636,7 @@ public class ArtifactEventTest {
 
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent =
-         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
+         getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long.valueOf(getIncrementingRelationId()),
             RelationEventType.Added, CoreRelationTypes.DefaultHierarchical_Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
       relation.setRationale(RATIONALE_STR);

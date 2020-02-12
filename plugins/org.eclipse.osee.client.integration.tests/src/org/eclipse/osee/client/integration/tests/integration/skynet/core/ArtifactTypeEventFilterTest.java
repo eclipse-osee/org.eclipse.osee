@@ -1,7 +1,7 @@
 /*
  * Created on Mar 25, 2014
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE  
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
@@ -62,7 +62,8 @@ public class ArtifactTypeEventFilterTest {
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
-         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234, GammaId.valueOf(123), 55, guidArtA, 66, guidArtB);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy.getGuid(), 234L, GammaId.valueOf(123), 55, guidArtA, 66,
+         guidArtB);
       relations.add(relation);
 
       // guidArt in relation matches

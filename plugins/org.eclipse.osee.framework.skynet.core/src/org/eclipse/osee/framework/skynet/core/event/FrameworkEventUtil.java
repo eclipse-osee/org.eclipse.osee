@@ -187,7 +187,7 @@ public final class FrameworkEventUtil {
       remEvent.setGammaId(guidRel.getGammaId().getIdIntValue());
       remEvent.setBranchGuid(guidRel.getBranch());
       remEvent.setRelTypeGuid(guidRel.getRelTypeGuid());
-      remEvent.setRelationId(guidRel.getRelationId());
+      remEvent.setRelationId(guidRel.getRelationId().intValue());
       remEvent.setArtAId(guidRel.getArtAId());
       remEvent.setArtBId(guidRel.getArtBId());
       remEvent.setModTypeGuid(guidRel.getModType().getGuid());
@@ -220,9 +220,10 @@ public final class FrameworkEventUtil {
          OseeLog.log(Activator.class, Level.WARNING,
             "Can't determine RelationEventType from guid " + guidRel.getModTypeGuid());
       }
-      EventBasicGuidRelation event = new EventBasicGuidRelation(eventType, guidRel.getBranch(),
-         guidRel.getRelTypeGuid(), guidRel.getRelationId(), GammaId.valueOf(guidRel.getGammaId()), guidRel.getArtAId(),
-         getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
+      EventBasicGuidRelation event =
+         new EventBasicGuidRelation(eventType, guidRel.getBranch(), guidRel.getRelTypeGuid(),
+            Long.valueOf(guidRel.getRelationId()), GammaId.valueOf(guidRel.getGammaId()), guidRel.getArtAId(),
+            getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
          event.setRationale(guidRel.getRationale());
       }

@@ -23,9 +23,9 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
    BranchId branch;
    Long relTypeUuid;
    GammaId gammaId;
-   int relationId;
+   Long relationId;
 
-   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relationId, GammaId gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, Long relationId, GammaId gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branch = branch;
       this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;
@@ -133,11 +133,11 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       return true;
    }
 
-   public int getRelationId() {
+   public Long getRelationId() {
       return relationId;
    }
 
-   public void setRelationId(int relationId) {
+   public void setRelationId(Long relationId) {
       this.relationId = relationId;
    }
 

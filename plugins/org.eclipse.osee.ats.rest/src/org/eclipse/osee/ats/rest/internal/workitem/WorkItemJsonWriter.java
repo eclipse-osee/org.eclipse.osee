@@ -242,14 +242,14 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             writer.writeObjectFieldStart("TargetedVersion");
             String versionStr = atsApi.getWorkItemService().getTargetedVersionStr(teamWf);
             writer.writeObjectField("value", versionStr);
-            writer.writeNumberField("gammaId", relations.iterator().next().getGammaId());
+            writer.writeNumberField("gammaId", relations.iterator().next().getGammaId().getId());
             writer.writeEndObject();
             if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
                ArtifactToken version = atsApi.getRelationResolver().getRelatedOrNull(action,
                   AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
                writer.writeObjectFieldStart("TargetedVersionToken");
                writer.writeStringField("id", String.valueOf(relations.iterator().next().getArtIdB()));
-               writer.writeNumberField("gammaId", relations.iterator().next().getGammaId());
+               writer.writeNumberField("gammaId", relations.iterator().next().getGammaId().getId());
                writer.writeStringField("name", version.getName());
                writer.writeEndObject();
             }

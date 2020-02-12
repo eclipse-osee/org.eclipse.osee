@@ -28,6 +28,7 @@ public interface IAtsHealthCheck {
    public default void error(HealthCheckResults results, IAtsWorkItem workItem, String format, Object... data) {
       results.log(workItem.getStoreObject(), getClass().getSimpleName(),
          String.format("Error: " + format + " for " + workItem.getAtsId(), data));
+      System.err.println(String.format("Error: " + format + " for " + workItem.getAtsId(), data));
    }
 
 }

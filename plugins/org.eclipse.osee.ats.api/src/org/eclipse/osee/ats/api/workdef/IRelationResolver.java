@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -80,5 +81,7 @@ public interface IRelationResolver {
    }
 
    Collection<ArtifactToken> getAncestors(ArtifactToken artifact);
+
+   Collection<IRelationLink> getRelations(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
 }

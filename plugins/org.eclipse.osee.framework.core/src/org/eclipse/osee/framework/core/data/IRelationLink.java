@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public interface IRelationLink extends RelationId {
 
-   long getGammaId();
+   GammaId getGammaId();
 
    ModificationType getModificationType();
 
@@ -31,5 +31,7 @@ public interface IRelationLink extends RelationId {
    int getArtIdA();
 
    int getArtIdB();
+
+   boolean isDeleted();
 
 }

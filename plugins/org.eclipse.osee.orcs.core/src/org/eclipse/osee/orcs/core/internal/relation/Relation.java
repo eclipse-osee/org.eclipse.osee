@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
@@ -158,7 +159,9 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
 
    @Override
    public String toString() {
-      return "Relation [relationData=" + relationData + ", isDirty=" + getOrcsData().isDirty() + "]";
+      return String.format("Relation id=%s, a=%s, type=%s, typeId=%s, b=%s, dirty=%s", getOrcsData().getId(),
+         getOrcsData().getArtIdA(), getOrcsData().getType().getName(), getOrcsData().getType().getId(),
+         getOrcsData().getArtIdB(), getOrcsData().isDirty());
    }
 
    @Override
@@ -167,8 +170,8 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    }
 
    @Override
-   public long getGammaId() {
-      return getOrcsData().getVersion().getGammaId().getId();
+   public GammaId getGammaId() {
+      return getOrcsData().getVersion().getGammaId();
    }
 
    @Override
@@ -179,5 +182,10 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    @Override
    public int getArtIdB() {
       return getOrcsData().getArtIdB();
+   }
+
+   @Override
+   public boolean isDeleted() {
+      return getModificationType().isDeleted();
    }
 }

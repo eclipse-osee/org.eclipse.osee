@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -43,8 +44,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public class RelationLink implements HasBranch {
-   private int relationId;
+public class RelationLink implements HasBranch, IRelationLink {
+   private long relationId;
    private GammaId gammaId;
    private String rationale;
    private final RelationTypeToken relationType;
@@ -110,6 +111,7 @@ public class RelationLink implements HasBranch {
       return relationSide == RelationSide.SIDE_A ? artifactA : artifactB;
    }
 
+   @Override
    public boolean isDeleted() {
       return modificationType.isDeleted();
    }
@@ -250,10 +252,12 @@ public class RelationLink implements HasBranch {
       this.rationale = rationale;
    }
 
+   @Override
    public boolean isOfType(IRelationType oseeType) {
       return relationType.equals(oseeType);
    }
 
+   @Override
    public RelationTypeToken getRelationType() {
       return relationType;
    }
@@ -305,10 +309,12 @@ public class RelationLink implements HasBranch {
       this.relationId = relationId;
    }
 
-   public int getId() {
+   @Override
+   public Long getId() {
       return relationId;
    }
 
+   @Override
    public GammaId getGammaId() {
       return gammaId;
    }
@@ -326,6 +332,7 @@ public class RelationLink implements HasBranch {
       return branch;
    }
 
+   @Override
    public ModificationType getModificationType() {
       return modificationType;
    }
@@ -385,11 +392,22 @@ public class RelationLink implements HasBranch {
       return useBackingData;
    }
 
+   @Override
    public String getIdString() {
       return String.valueOf(getId());
    }
 
    public RelationId getRelationId() {
       return RelationId.valueOf(getId());
+   }
+
+   @Override
+   public int getArtIdA() {
+      return 0;
+   }
+
+   @Override
+   public int getArtIdB() {
+      return 0;
    }
 }
