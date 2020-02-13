@@ -58,10 +58,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
                ensureLoaded();
                navigateItem.getChildren().clear();
                for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
-                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(item.getIdToken());
-                  if (workItem != null && !AtsClientService.get().getStoreService().isDeleted(item.getIdToken())) {
-                     new RecentlyVisitedNavigateItem(navigateItem, item);
-                  }
+                  new RecentlyVisitedNavigateItem(navigateItem, item);
                }
                Displays.ensureInDisplayThread(new Runnable() {
 

@@ -27,7 +27,7 @@ public class XNavigateItem {
    private final List<XNavigateItem> children = new ArrayList<>();
    private String name;
    private XNavigateItem parent;
-   private final KeyedImage oseeImage;
+   protected KeyedImage oseeImage;
    private List<IXNavigateMenuItem> menuItems;
    private Object data;
    private long id = 0L;

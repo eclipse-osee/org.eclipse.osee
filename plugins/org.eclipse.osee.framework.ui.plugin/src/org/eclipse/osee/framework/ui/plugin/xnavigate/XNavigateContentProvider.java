@@ -53,7 +53,8 @@ public class XNavigateContentProvider implements ITreeContentProvider {
    public boolean hasChildren(Object element) {
       if (element instanceof XNavigateItem) {
          try {
-            return ((XNavigateItem) element).hasChildren();
+            boolean hasChildren = ((XNavigateItem) element).hasChildren();
+            return hasChildren;
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, Level.SEVERE, ex);
          }
