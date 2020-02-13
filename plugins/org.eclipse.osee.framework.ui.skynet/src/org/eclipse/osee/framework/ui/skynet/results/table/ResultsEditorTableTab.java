@@ -129,7 +129,8 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       }
 
       GridData gd = new GridData(GridData.FILL_BOTH);
-      resultsXViewer = new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
+      resultsXViewer =
+         new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
       resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       for (IResultsEditorTableListener listener : listeners) {
          resultsXViewer.addListener(listener);
@@ -145,6 +146,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       resultsXViewer.setLabelProvider(provider);
       resultsXViewer.setInput(getTableRows());
       resultsXViewer.getTree().setLayoutData(gd);
+      resultsXViewer.updateStatusLabel();
       return comp;
    }
 
