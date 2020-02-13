@@ -24,7 +24,7 @@ public class AtsNotifyEndpointImplTest {
 
    @Test
    public void testAtsNotify() {
-      AtsNotifyEndpointApi notifyEndpoint = AtsClientService.getNotifyEndpoint();
+      AtsNotifyEndpointApi notifyEndpoint = AtsClientService.get().getServerEndpoints().getNotifyEndpoint();
       Assert.assertNotNull(notifyEndpoint);
    }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow;
+package org.eclipse.osee.ats.core.workflow.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -32,7 +32,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -75,7 +75,7 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
 
       List<IAtsWorkItem> items = new LinkedList<>();
       if (!ids.isEmpty()) {
-         items.addAll(AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+         items.addAll(AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
             ids.toArray(new Long[ids.size()])).getItems());
       }
       return items;

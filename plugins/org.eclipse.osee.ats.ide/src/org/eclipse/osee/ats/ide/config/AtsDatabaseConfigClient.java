@@ -23,7 +23,7 @@ public class AtsDatabaseConfigClient implements IDbInitializationTask {
    @Override
    public void run() {
 
-      XResultData results = AtsClientService.getConfigEndpoint().atsDbInit();
+      XResultData results = AtsClientService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }

@@ -86,7 +86,7 @@ public class AtsWorkDefinitionServiceImplTest {
       NewTaskDatas datas = new NewTaskDatas();
       datas.add(taskData);
 
-      JaxAtsTasks tasks = AtsClientService.getTaskEp().create(datas);
+      JaxAtsTasks tasks = AtsClientService.get().getServerEndpoints().getTaskEp().create(datas);
       JaxAtsTask task = tasks.getTasks().iterator().next();
       IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(task.getId());
 

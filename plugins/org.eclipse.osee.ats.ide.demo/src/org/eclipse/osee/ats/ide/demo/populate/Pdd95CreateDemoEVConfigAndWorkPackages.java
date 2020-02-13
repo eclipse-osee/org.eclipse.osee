@@ -132,9 +132,10 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    // configure USG for country, program, insertion, activity and work package
    private void createUsgCountryConfig() {
       try {
-         CountryEndpointApi countryEp = AtsClientService.getCountryEp();
-         InsertionEndpointApi insertionEp = AtsClientService.getInsertionEp();
-         InsertionActivityEndpointApi insertionActivityEp = AtsClientService.getInsertionActivityEp();
+         CountryEndpointApi countryEp = AtsClientService.get().getServerEndpoints().getCountryEp();
+         InsertionEndpointApi insertionEp = AtsClientService.get().getServerEndpoints().getInsertionEp();
+         InsertionActivityEndpointApi insertionActivityEp =
+            AtsClientService.get().getServerEndpoints().getInsertionActivityEp();
 
          // create country
          createCountry(countryEp, DemoCountry.usg);
@@ -171,10 +172,11 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private void createCntryCountryConfig() {
       try {
          DemoCountry country = DemoCountry.cntry;
-         CountryEndpointApi countryEp = AtsClientService.getCountryEp();
-         ProgramEndpointApi programEp = AtsClientService.getProgramEp();
-         InsertionEndpointApi insertionEp = AtsClientService.getInsertionEp();
-         InsertionActivityEndpointApi insertionActivityEp = AtsClientService.getInsertionActivityEp();
+         CountryEndpointApi countryEp = AtsClientService.get().getServerEndpoints().getCountryEp();
+         ProgramEndpointApi programEp = AtsClientService.get().getServerEndpoints().getProgramEp();
+         InsertionEndpointApi insertionEp = AtsClientService.get().getServerEndpoints().getInsertionEp();
+         InsertionActivityEndpointApi insertionActivityEp =
+            AtsClientService.get().getServerEndpoints().getInsertionActivityEp();
 
          // create country
          createCountry(countryEp, country);

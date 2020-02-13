@@ -137,7 +137,7 @@ public class XBranchViewSelect extends GenericXWidget {
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         AtsClientService.getAtsBranchTupleEndpoint().addTuple2(CoreTupleTypes.VersionConfig,
+         AtsClientService.get().getServerEndpoints().getTupleEp().addTuple2(CoreTupleTypes.VersionConfig,
             ArtifactId.valueOf(artifact.getId()), ArtifactId.valueOf(dialog.getSelection()));
          return true;
       }

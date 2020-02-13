@@ -14,9 +14,9 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.WorkItemsJsonReader;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +32,8 @@ public class WorkItemsJsonReaderWriterTest {
       IAtsTeamWorkflow sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
 
       Collection<IAtsWorkItem> workItems =
-         AtsClientService.getActionEndpoint().getActionDetails(sawCodeCommittedWf.getIdString());
+         AtsClientService.get().getServerEndpoints().getActionEndpoint().getActionDetails(
+            sawCodeCommittedWf.getIdString());
       Assert.assertTrue(workItems.size() == 1);
    }
 
@@ -40,7 +41,8 @@ public class WorkItemsJsonReaderWriterTest {
    public void testGetMultiple() throws Exception {
       String ids = AtsObjects.toIdsString(",", DemoUtil.getSawCommittedTeamWfs());
 
-      Collection<IAtsWorkItem> workItems = AtsClientService.getActionEndpoint().getActionDetails(ids);
+      Collection<IAtsWorkItem> workItems =
+         AtsClientService.get().getServerEndpoints().getActionEndpoint().getActionDetails(ids);
       Assert.assertTrue(workItems.size() == 3);
    }
 

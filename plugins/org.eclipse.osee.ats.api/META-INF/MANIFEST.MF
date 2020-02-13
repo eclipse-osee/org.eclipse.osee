@@ -78,6 +78,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.jaxrs.mvc,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
+ org.eclipse.osee.orcs.rest.model,
  org.osgi.framework,
  org.osgi.service.event
 Bundle-ActivationPolicy: lazy

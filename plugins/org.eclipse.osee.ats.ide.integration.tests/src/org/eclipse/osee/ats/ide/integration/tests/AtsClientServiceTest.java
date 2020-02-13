@@ -26,6 +26,6 @@ public class AtsClientServiceTest {
 
    @org.junit.Test
    public void testHealthEndpoint() {
-      Assert.assertTrue(AtsClientService.getHealthEndpoint().alive());
+      Assert.assertTrue(AtsClientService.get().getServerEndpoints().getHealthEndpoint().alive());
    }
 }

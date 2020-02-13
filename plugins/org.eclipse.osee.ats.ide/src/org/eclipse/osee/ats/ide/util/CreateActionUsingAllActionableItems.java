@@ -62,7 +62,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
 
    public static ActionResult createActionWithAllAis() {
       // Clear out config cache to ensure only get live configs
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
       Set<IAtsActionableItem> aias = new HashSet<>();

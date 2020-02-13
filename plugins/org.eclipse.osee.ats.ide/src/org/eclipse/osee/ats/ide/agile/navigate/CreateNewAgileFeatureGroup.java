@@ -68,7 +68,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi teamApi = AtsClientService.getAgileEndpoint();
+                  AgileEndpointApi teamApi = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
                   JaxNewAgileFeatureGroup newGroup = new JaxNewAgileFeatureGroup();
                   for (String name : ed.getEntry().split(",")) {
                      newGroup.setName(name);

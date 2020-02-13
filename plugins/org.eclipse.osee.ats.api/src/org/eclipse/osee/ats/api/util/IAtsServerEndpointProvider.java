@@ -12,11 +12,18 @@ package org.eclipse.osee.ats.api.util;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
+import org.eclipse.osee.ats.api.country.CountryEndpointApi;
+import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
+import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
+import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
+import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
+import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
 /**
  * Client provider for server endpoints.
@@ -40,6 +47,22 @@ public interface IAtsServerEndpointProvider {
 
    public AtsActionEndpointApi getActionEndpoint();
 
-   AtsWorldEndpointApi getWorldEndpoint();
+   public AtsWorldEndpointApi getWorldEndpoint();
+
+   public AtsCpaEndpointApi getCpaEndpoint();
+
+   AtsHealthEndpointApi getHealthEndpoint();
+
+   InsertionActivityEndpointApi getInsertionActivityEp();
+
+   InsertionEndpointApi getInsertionEp();
+
+   ProgramEndpointApi getProgramEp();
+
+   CountryEndpointApi getCountryEp();
+
+   AgileEndpointApi getAgile();
+
+   TupleEndpoint getTupleEp();
 
 }

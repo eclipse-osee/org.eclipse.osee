@@ -10,23 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests;
 
-import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
-import org.eclipse.osee.ats.api.country.CountryEndpointApi;
-import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
-import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
-import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
-import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
-import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
-import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
-import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
-import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
-import org.eclipse.osee.ats.ide.workflow.WorkItemJsonReader;
-import org.eclipse.osee.ats.ide.workflow.WorkItemsJsonReader;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 
 /**
  * @author Donald G. Dunne
@@ -34,18 +18,6 @@ import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 public class AtsClientService {
 
    private static IAtsClient atsClient;
-   private static AgileEndpointApi agile;
-   private static JaxRsWebTarget target;
-   private static CountryEndpointApi countryEp;
-   private static ProgramEndpointApi programEp;
-   private static InsertionEndpointApi insertionEp;
-   private static InsertionActivityEndpointApi insertionActivityEp;
-   private static AtsTaskEndpointApi taskEp;
-   private static AtsNotifyEndpointApi notifyEp;
-   private static AtsConfigEndpointApi configEp;
-   private static AtsHealthEndpointApi healthEp;
-   private static AtsWorkPackageEndpointApi workPackageEp;
-   private static AtsActionEndpointApi actionEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -55,91 +27,4 @@ public class AtsClientService {
       return atsClient;
    }
 
-   private static JaxRsWebTarget getAtsTarget() {
-      if (target == null) {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         String atsUri = String.format("%s/ats", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
-         target = target.register(WorkItemsJsonReader.class);
-      }
-      return target;
-   }
-
-   public static AgileEndpointApi getAgile() {
-      if (agile == null) {
-         agile = getAtsTarget().newProxy(AgileEndpointApi.class);
-      }
-      return agile;
-   }
-
-   public static CountryEndpointApi getCountryEp() {
-      if (countryEp == null) {
-         countryEp = getAtsTarget().newProxy(CountryEndpointApi.class);
-      }
-      return countryEp;
-   }
-
-   public static ProgramEndpointApi getProgramEp() {
-      if (programEp == null) {
-         programEp = getAtsTarget().newProxy(ProgramEndpointApi.class);
-      }
-      return programEp;
-   }
-
-   public static InsertionEndpointApi getInsertionEp() {
-      if (insertionEp == null) {
-         insertionEp = getAtsTarget().newProxy(InsertionEndpointApi.class);
-      }
-      return insertionEp;
-   }
-
-   public static InsertionActivityEndpointApi getInsertionActivityEp() {
-      if (insertionActivityEp == null) {
-         insertionActivityEp = getAtsTarget().newProxy(InsertionActivityEndpointApi.class);
-      }
-      return insertionActivityEp;
-   }
-
-   public static AtsTaskEndpointApi getTaskEp() {
-      if (taskEp == null) {
-         taskEp = getAtsTarget().newProxy(AtsTaskEndpointApi.class);
-      }
-      return taskEp;
-   }
-
-   public static AtsNotifyEndpointApi getNotifyEndpoint() {
-      if (notifyEp == null) {
-         notifyEp = getAtsTarget().newProxy(AtsNotifyEndpointApi.class);
-      }
-      return notifyEp;
-   }
-
-   public static AtsConfigEndpointApi getConfigEndpoint() {
-      if (configEp == null) {
-         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
-      }
-      return configEp;
-   }
-
-   public static AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
-      if (workPackageEp == null) {
-         workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
-      }
-      return workPackageEp;
-   }
-
-   public static AtsActionEndpointApi getActionEndpoint() {
-      if (actionEp == null) {
-         actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
-      }
-      return actionEp;
-   }
-
-   public static AtsHealthEndpointApi getHealthEndpoint() {
-      if (healthEp == null) {
-         healthEp = getAtsTarget().newProxy(AtsHealthEndpointApi.class);
-      }
-      return healthEp;
-   }
 }

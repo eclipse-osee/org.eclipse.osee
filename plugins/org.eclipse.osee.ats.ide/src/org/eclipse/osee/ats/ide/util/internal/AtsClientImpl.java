@@ -232,7 +232,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public synchronized void sendNotifications(final AtsNotificationCollector notifications) {
       if (AtsUtilClient.isEmailEnabled()) {
-         AtsNotifyEndpointApi notifyEndpoint = AtsClientService.getNotifyEndpoint();
+         AtsNotifyEndpointApi notifyEndpoint = AtsClientService.get().getServerEndpoints().getNotifyEndpoint();
          Jobs.startJob(new Job("Send Notifications") {
 
             @Override
@@ -341,7 +341,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
     */
    @Override
    public void reloadServerAndClientCaches() {
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurations();
    }
 

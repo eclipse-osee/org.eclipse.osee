@@ -67,7 +67,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
+                  AgileEndpointApi ageilEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
                   JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
                   Artifact firstArtifact = dialog.getSelectedFirst();
 

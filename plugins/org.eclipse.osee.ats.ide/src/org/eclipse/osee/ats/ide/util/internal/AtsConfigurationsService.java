@@ -15,13 +15,16 @@ import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -61,21 +64,27 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    private AtsConfigurations loadConfigurations() {
-      AtsConfigurations configs = AtsClientService.getConfigEndpoint().get();
-      for (Version version : configs.getIdToVersion().values()) {
-         version.setAtsApi(AtsClientService.get());
+      IAtsClient iAtsClient = AtsClientService.get();
+      if (iAtsClient != null) {
+         IAtsServerEndpointProvider serverEndpoints = iAtsClient.getServerEndpoints();
+         AtsConfigEndpointApi configEndpoint = serverEndpoints.getConfigEndpoint();
+         AtsConfigurations configs = configEndpoint.get();
+         for (Version version : configs.getIdToVersion().values()) {
+            version.setAtsApi(AtsClientService.get());
+         }
+         for (TeamDefinition teamDef : configs.getIdToTeamDef().values()) {
+            teamDef.setAtsApi(AtsClientService.get());
+         }
+         for (ActionableItem ai : configs.getIdToAi().values()) {
+            ai.setAtsApi(atsApi);
+         }
+         for (IAtsUser user : configs.getUsers()) {
+            AtsUser jUser = (AtsUser) user;
+            jUser.setAtsApi(AtsClientService.get());
+         }
+         return configs;
       }
-      for (TeamDefinition teamDef : configs.getIdToTeamDef().values()) {
-         teamDef.setAtsApi(AtsClientService.get());
-      }
-      for (ActionableItem ai : configs.getIdToAi().values()) {
-         ai.setAtsApi(atsApi);
-      }
-      for (IAtsUser user : configs.getUsers()) {
-         AtsUser jUser = (AtsUser) user;
-         jUser.setAtsApi(AtsClientService.get());
-      }
-      return configs;
+      return new AtsConfigurations();
    }
 
    @Override
@@ -85,7 +94,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          results.error("ATS base config has already been completed");
          return results;
       }
-      return AtsClientService.getConfigEndpoint().atsDbInit();
+      return AtsClientService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
    }
 
 }

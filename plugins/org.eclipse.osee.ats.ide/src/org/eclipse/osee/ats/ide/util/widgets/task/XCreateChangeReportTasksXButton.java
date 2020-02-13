@@ -80,7 +80,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                data.setTaskDefToken(taskDefToken);
                data.setHostTeamWf(hostTeamWf);
                data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
-               data = AtsClientService.getTaskEp().create(data);
+               data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
                XResultDataUI.report(data.getResults(), getName());
 
                // Reload team wfs if tasks created

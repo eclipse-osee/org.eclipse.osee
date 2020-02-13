@@ -25,7 +25,7 @@ public class ProgramEndpointImplTest {
 
    @Test
    public void testGetProgramVersions() {
-      List<ProgramVersions> progVers = AtsClientService.getProgramEp().getVersions(null);
+      List<ProgramVersions> progVers = AtsClientService.get().getServerEndpoints().getProgramEp().getVersions(null);
       Assert.assertNotNull(progVers);
    }
 

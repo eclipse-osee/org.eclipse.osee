@@ -57,7 +57,7 @@ public class AtsTaskEndpointImplTest {
    @Before
    public void setup() {
       client = AtsClientService.get();
-      taskEp = AtsClientService.getTaskEp();
+      taskEp = AtsClientService.get().getServerEndpoints().getTaskEp();
       taskId1 = Lib.generateArtifactIdAsInt();
       taskId2 = Lib.generateArtifactIdAsInt();
       taskId3 = Lib.generateArtifactIdAsInt();

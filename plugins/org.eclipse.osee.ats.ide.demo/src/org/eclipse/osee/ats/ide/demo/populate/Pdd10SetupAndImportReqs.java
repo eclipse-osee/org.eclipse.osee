@@ -83,7 +83,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
       OseeLog.log(Activator.class, Level.INFO, "Populate Demo Database");
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurations();
 
       // Import all requirements on SAW_Bld_1 Branch
@@ -124,8 +124,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       Artifact virtualFixDetailReqImpl =
          ArtifactTypeManager.addArtifact(DemoArtifactToken.VirtualFixDetailReqImplementation, SAW_Bld_1);
 
-      Artifact robotInterface =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot Interfaces", SAW_Bld_1);
+      Artifact robotInterface = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Robot Interfaces", SAW_Bld_1);
       robotInterface.addChild(robotInterfaceHeader);
       transaction.addArtifact(robotInterfaceHeader);
 
@@ -157,8 +157,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       eventDetailsHeader.addChild(eventDetail);
       transaction.addArtifact(eventDetail);
 
-      Artifact virtualFix =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Virtual fixtures", SAW_Bld_1);
+      Artifact virtualFix = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Virtual fixtures", SAW_Bld_1);
       virtualFix.addChild(virtualFixDetailHeader);
       transaction.addArtifact(virtualFixDetailHeader);
 

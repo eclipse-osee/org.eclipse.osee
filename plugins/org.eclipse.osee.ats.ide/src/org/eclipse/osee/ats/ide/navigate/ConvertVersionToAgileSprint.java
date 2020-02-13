@@ -99,7 +99,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
          }
       }
       try {
-         AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
+         AgileEndpointApi ageilEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
          JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
          long teamId = agileTeam.getId();
 

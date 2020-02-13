@@ -68,7 +68,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
+                  AgileEndpointApi agileEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
                   JaxNewAgileBacklog newBacklog = new JaxNewAgileBacklog();
                   newBacklog.setName(ed.getEntry());
                   Artifact firstArtifact = dialog.getSelectedFirst();

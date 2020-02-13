@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
@@ -168,7 +167,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       IOperation op = AtsBranchManager.commitWorkingBranch(reqTeamArt, false, true,
          AtsClientService.get().getBranchService().getBranch(
-            (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt)),
+            AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt)),
          true);
       Operations.executeWorkAndCheckStatus(op);
 
@@ -216,7 +215,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
        * parent branch which is being changed on the working branch.
        */
       BranchId parentBranch = AtsClientService.get().getBranchService().getBranch(
-         (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt));
+         AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt));
       Artifact parentArtifact = ArtifactQuery.getArtifactFromId(testArtifact.getId(), parentBranch);
       String subsystemStrBefore = parentArtifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem).toString();
       if (subsystemStrBefore.equals(DemoSubsystems.Communications.name())) {

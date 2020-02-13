@@ -77,6 +77,8 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class Pdd93CreateDemoAgile {
 
+   private AgileEndpointApi agileEp;
+
    private static void validateArtifactCache() {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
       if (!list.isEmpty()) {
@@ -92,6 +94,8 @@ public class Pdd93CreateDemoAgile {
    }
 
    public void run() throws Exception {
+      agileEp = AtsClientService.get().getServerEndpoints().getAgile();
+
       validateArtifactCache();
 
       AtsClientService.get().reloadServerAndClientCaches();
@@ -209,7 +213,7 @@ public class Pdd93CreateDemoAgile {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName("Facilities Team");
       newTeam.setId(teamId);
-      Response response = AtsClientService.getAgile().createTeam(newTeam);
+      Response response = AtsClientService.get().getServerEndpoints().getAgile().createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Create Backlog
@@ -217,7 +221,7 @@ public class Pdd93CreateDemoAgile {
       backlog.setName("Facilities Backlog");
       backlog.setId(9991L);
       backlog.setTeamId(newTeam.getId());
-      response = AtsClientService.getAgile().createBacklog(teamId, backlog);
+      response = agileEp.createBacklog(teamId, backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
    }
 
@@ -227,7 +231,7 @@ public class Pdd93CreateDemoAgile {
       newTeam.setName(DemoArtifactToken.CIS_Agile_Team.getName());
       newTeam.setId(DemoArtifactToken.CIS_Agile_Team.getId());
       newTeam.setProgramId(aProgram.getIdString());
-      Response response = AtsClientService.getAgile().createTeam(newTeam);
+      Response response = agileEp.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
@@ -242,7 +246,7 @@ public class Pdd93CreateDemoAgile {
       backlog.setName(DemoArtifactToken.CIS_Backlog.getName());
       backlog.setId(DemoArtifactToken.CIS_Backlog.getId());
       backlog.setTeamId(newTeam.getId());
-      response = AtsClientService.getAgile().createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
+      response = agileEp.createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
    }
 
@@ -255,7 +259,7 @@ public class Pdd93CreateDemoAgile {
    }
 
    private void createSawAgileTeam(IAgileProgram aProgram) {
-      AgileEndpointApi agile = AtsClientService.getAgile();
+      AgileEndpointApi agile = agileEp;
 
       // Create Team
       JaxNewAgileTeam newTeam = getJaxAgileTeam();
@@ -462,12 +466,11 @@ public class Pdd93CreateDemoAgile {
          "Communications", "10/03/2016"));
 
       int x = 1;
-      for (JaxAtsObject jaxWorkItem : AtsClientService.getAgile().getSprintItemsAsJax(teamId,
-         sprint.getId()).getAtsObjects()) {
+      for (JaxAtsObject jaxWorkItem : agileEp.getSprintItemsAsJax(teamId, sprint.getId()).getAtsObjects()) {
          SprintItemData data = getSprintData(datas, x++, jaxWorkItem);
          String featureGroupName = data.getFeature();
          if (Strings.isValid(featureGroupName)) {
-            AtsClientService.getAgile().addFeatureGroup(jaxWorkItem.getId(), featureGroupName);
+            agileEp.addFeatureGroup(jaxWorkItem.getId(), featureGroupName);
          }
          String unPlannedStr = data.getUnPlanned();
          boolean unPlanned = false;
@@ -476,10 +479,10 @@ public class Pdd93CreateDemoAgile {
                unPlanned = true;
             }
          }
-         AtsClientService.getAgile().setUnPlanned(jaxWorkItem.getId(), unPlanned);
+         agileEp.setUnPlanned(jaxWorkItem.getId(), unPlanned);
          String points = data.getPoints();
          if (Strings.isValid(points)) {
-            AtsClientService.getAgile().setPoints(jaxWorkItem.getId(), points);
+            agileEp.setPoints(jaxWorkItem.getId(), points);
          }
       }
    }

@@ -63,7 +63,7 @@ public class DbInitTest {
          ClientSessionManager.releaseSession();
          ClientSessionManager.getSession();
          UserManager.releaseUser();
-         AtsClientService.getConfigEndpoint().getWithPend();
+         AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
          AtsClientService.get().clearCaches();
 
          if (UserManager.getUser().getUserId().equals("bootstrap")) {

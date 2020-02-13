@@ -91,7 +91,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
                @Override
                public void run() {
-                  ResultRows resultRows = AtsClientService.getWorldEndpoint().search(data);
+                  ResultRows resultRows = AtsClientService.get().getServerEndpoints().getWorldEndpoint().search(data);
                   ResultsEditor.open("Search Results", resultRows, false, data.getCustomizeData());
                   super.run();
                }

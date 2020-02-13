@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.annotation;version="2.9.2",
  com.google.common.base,
  com.google.common.cache,
  javax.ws.rs.core,
@@ -77,5 +78,7 @@ Export-Package: org.eclipse.osee.ats.core.access,
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.logger,
- org.eclipse.osee.framework.core
+ org.eclipse.osee.framework.core,
+ javax.ws.rs,
+ com.fasterxml.jackson.core.jackson-databind
 

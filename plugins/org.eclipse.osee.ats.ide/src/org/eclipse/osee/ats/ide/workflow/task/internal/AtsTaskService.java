@@ -80,7 +80,7 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
    public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
       List<IAtsTask> tasks = new LinkedList<>();
 
-      AtsTaskEndpointApi taskEp = AtsClientService.getTaskEp();
+      AtsTaskEndpointApi taskEp = AtsClientService.get().getServerEndpoints().getTaskEp();
       JaxAtsTasks jaxTasks = taskEp.create(newTaskDatas);
       newTaskDatas.setResults(jaxTasks.getResults());
       if (newTaskDatas.getResults().isErrors()) {
@@ -206,7 +206,7 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
 
    @Override
    public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData) {
-      return AtsClientService.getTaskEp().create(changeReportTaskData);
+      return AtsClientService.get().getServerEndpoints().getTaskEp().create(changeReportTaskData);
    }
 
    @Override
@@ -215,7 +215,7 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(hostTeamWf);
       data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
-      return AtsClientService.getTaskEp().create(data);
+      return AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
    }
 
    @Override

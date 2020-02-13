@@ -174,12 +174,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public List<ChangeItem> getChangeData(BranchId branch) {
-      return AtsClientService.getActionEndpoint().getBranchChangeData(branch);
+      return AtsClientService.get().getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
    }
 
    @Override
    public List<ChangeItem> getChangeData(TransactionId transaction) {
-      return AtsClientService.getActionEndpoint().getTransactionChangeData(transaction);
+      return AtsClientService.get().getServerEndpoints().getActionEndpoint().getTransactionChangeData(transaction);
    }
 
    @Override

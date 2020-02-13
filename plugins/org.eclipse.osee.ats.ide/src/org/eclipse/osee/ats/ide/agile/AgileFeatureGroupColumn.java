@@ -118,7 +118,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          return false;
       }
 
-      AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
+      AgileEndpointApi agileEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
       long teamId = items.getCommonBacklog().getTeamId();
       try {

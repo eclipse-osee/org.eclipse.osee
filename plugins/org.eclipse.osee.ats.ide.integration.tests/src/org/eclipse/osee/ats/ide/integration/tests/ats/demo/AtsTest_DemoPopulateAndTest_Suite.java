@@ -86,7 +86,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       // Re-authenticate so we can continue
       IdeClientSession session = ClientSessionManager.getSession();
       UserManager.releaseUser();
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
       Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),

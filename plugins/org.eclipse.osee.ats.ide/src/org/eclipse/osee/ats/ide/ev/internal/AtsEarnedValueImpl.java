@@ -73,7 +73,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
          data.getWorkItemIds().add(workItem.getId());
       }
 
-      AtsWorkPackageEndpointApi workPackageEp = AtsClientService.getWorkPackageEndpoint();
+      AtsWorkPackageEndpointApi workPackageEp = AtsClientService.get().getServerEndpoints().getWorkPackageEndpoint();
       if (remove) {
          XResultData rd = workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
          if (rd.isErrors()) {

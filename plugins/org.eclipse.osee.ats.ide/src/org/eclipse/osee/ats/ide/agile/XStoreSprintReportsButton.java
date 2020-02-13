@@ -73,8 +73,8 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
          try {
             ArtifactToken teamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
                AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-            XResultData results =
-               AtsClientService.getAgileEndpoint().storeSprintReports(teamArt.getId(), this.sprint.getId());
+            XResultData results = AtsClientService.get().getServerEndpoints().getAgileEndpoint().storeSprintReports(
+               teamArt.getId(), this.sprint.getId());
             if (results.isErrors()) {
                AWorkbench.popup(getLabel() + " errors " + results.toString());
                return;

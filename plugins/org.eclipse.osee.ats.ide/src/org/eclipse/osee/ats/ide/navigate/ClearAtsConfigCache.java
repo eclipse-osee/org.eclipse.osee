@@ -29,7 +29,7 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
    }

@@ -71,7 +71,7 @@ public class AtsBranchServiceImplTest {
       }
       changes.execute();
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
       Collection<Object> commitObjs =
@@ -123,7 +123,7 @@ public class AtsBranchServiceImplTest {
       }
       changes.execute();
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
       //Test TxRecords

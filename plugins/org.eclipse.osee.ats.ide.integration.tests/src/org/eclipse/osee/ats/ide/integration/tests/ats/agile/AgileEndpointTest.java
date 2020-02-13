@@ -44,7 +44,7 @@ public class AgileEndpointTest {
 
    @Before
    public void setup() {
-      agile = AtsClientService.getAgile();
+      agile = AtsClientService.get().getServerEndpoints().getAgile();
       teamId = Lib.generateArtifactIdAsInt();
    }
 

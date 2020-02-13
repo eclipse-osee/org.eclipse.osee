@@ -24,7 +24,7 @@ public class AtsConfigEndpointImplClientIntegrationTest {
 
    @org.junit.Test
    public void testAlive() {
-      AtsConfigEndpointApi configEp = AtsClientService.getConfigEndpoint();
+      AtsConfigEndpointApi configEp = AtsClientService.get().getServerEndpoints().getConfigEndpoint();
       XResultData resultData = configEp.alive();
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());
    }

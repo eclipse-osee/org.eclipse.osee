@@ -31,7 +31,7 @@ public class AtsWorkPackageEndpointImplTest {
 
    @Before
    public void setup() {
-      workPackageEp = AtsClientService.getWorkPackageEndpoint();
+      workPackageEp = AtsClientService.get().getServerEndpoints().getWorkPackageEndpoint();
    }
 
    @Test

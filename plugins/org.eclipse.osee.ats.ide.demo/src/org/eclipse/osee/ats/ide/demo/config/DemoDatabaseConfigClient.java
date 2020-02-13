@@ -26,7 +26,7 @@ public class DemoDatabaseConfigClient implements IDbInitializationTask {
    @Override
    public void run() {
 
-      XResultData results = AtsClientService.getConfigEndpoint().demoDbInit();
+      XResultData results = AtsClientService.get().getServerEndpoints().getConfigEndpoint().demoDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }
@@ -34,7 +34,7 @@ public class DemoDatabaseConfigClient implements IDbInitializationTask {
       TestUtil.setDemoDb(true);
 
       // Reload caches cause Demo sheet import added new users
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurations();
    }
 

@@ -353,7 +353,7 @@ public class AtsTestUtil {
 
       changes.execute();
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
    }
@@ -747,7 +747,7 @@ public class AtsTestUtil {
    public static Result createWorkingBranchFromTeamWf() {
       configureVer1ForWorkingBranch();
 
-      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
       Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
