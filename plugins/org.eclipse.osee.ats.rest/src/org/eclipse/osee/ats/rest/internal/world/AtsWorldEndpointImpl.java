@@ -15,13 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -36,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -62,10 +57,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("cust/global")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Collection<CustomizeData> getCustomizationsGlobal() throws Exception {
+   public Collection<CustomizeData> getCustomizationsGlobal() {
       List<CustomizeData> datas = new LinkedList<>();
       for (String namespace : namespaces) {
          datas.addAll(atsServer.getCustomizationsGlobal(namespace));
@@ -74,10 +66,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("cust")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Collection<CustomizeData> getCustomizations() throws Exception {
+   public Collection<CustomizeData> getCustomizations() {
       List<CustomizeData> datas = new LinkedList<>();
       for (String namespace : namespaces) {
          datas.addAll(atsServer.getCustomizations(namespace));
@@ -86,11 +75,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("my/{id}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Collection<IAtsWorkItem> getMyWorld(@PathParam("id") int id) throws Exception {
-      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
+   public Collection<IAtsWorkItem> getMyWorld(ArtifactId userArtId) {
+      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
@@ -100,31 +86,25 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("my/{id}/ui")
-   @Produces(MediaType.TEXT_HTML)
-   public String getMyWorldUI(@PathParam("id") int id) throws Exception {
+   public String getMyWorldUI(ArtifactId userArtId) {
       StringBuilder sb = new StringBuilder();
-      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
+      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
-      getDefaultUiTable(id, sb, "My World - " + userById.getName(), myWorldItems);
+      getDefaultUiTable(sb, "My World - " + userById.getName(), myWorldItems);
       return sb.toString();
    }
 
    @Override
-   @GET
-   @Path("my/{id}/ui/{customize_guid}")
-   @Produces(MediaType.TEXT_HTML)
-   public String getMyWorldUICustomized(@PathParam("id") int id, @PathParam("customize_guid") String customize_guid) throws Exception {
+   public String getMyWorldUICustomized(ArtifactId userArtId, String customize_guid) {
       ElapsedTime time = new ElapsedTime("start");
-      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
+      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
-      Conditions.checkNotNull(userById, "User by Id " + id);
+      Conditions.checkNotNull(userById, "User by Id " + userArtId);
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
       CustomizeData customization = atsServer.getStoreService().getCustomizationByGuid(customize_guid);
@@ -145,11 +125,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("coll/{id}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Collection<IAtsWorkItem> getCollection(@PathParam("id") long id) throws Exception {
-      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
+   public Collection<IAtsWorkItem> getCollection(ArtifactId userArtId) {
+      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       return getCollection(collectorArt);
    }
 
@@ -168,21 +145,15 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("coll/{id}/ui")
-   @Produces(MediaType.TEXT_HTML)
-   public String getCollectionUI(@PathParam("id") long id) throws Exception {
+   public String getCollectionUI(ArtifactId collectorArtId) {
       StringBuilder sb = new StringBuilder();
-      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
-      getDefaultUiTable(id, sb, "Collection - " + collectorArt.getName(), getCollection(id));
+      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(collectorArtId);
+      getDefaultUiTable(sb, "Collection - " + collectorArt.getName(), getCollection(collectorArtId));
       return sb.toString();
    }
 
    @Override
-   @GET
-   @Path("coll/{id}/ui/{customize_guid}")
-   @Produces(MediaType.TEXT_HTML)
-   public String getCollectionUICustomized(@PathParam("id") long id, @PathParam("customize_guid") String customize_guid) throws Exception {
+   public String getCollectionUICustomized(ArtifactId collectorArtId, String customize_guid) {
       ElapsedTime time = new ElapsedTime("start");
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
@@ -191,7 +162,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
       // get work items
       ElapsedTime getWorkItems = new ElapsedTime("get work items");
-      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
+      ArtifactReadable collectorArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(collectorArtId);
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
       getWorkItems.end();
 
@@ -200,7 +171,6 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          collectorItems);
       time.end();
       return table;
-
    }
 
    public static String getCustomizedTable(AtsApi atsApi, String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
@@ -247,7 +217,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       return sb.toString();
    }
 
-   private void getDefaultUiTable(long id, StringBuilder sb, String tableName, Collection<IAtsWorkItem> workItems) throws Exception {
+   private void getDefaultUiTable(StringBuilder sb, String tableName, Collection<IAtsWorkItem> workItems) {
       List<IAtsColumnId> columns = Arrays.asList(AtsColumnId.Team, AtsColumnId.State, AtsColumnId.Priority,
          AtsColumnId.ChangeType, AtsColumnId.Assignees, AtsColumnId.Title, AtsColumnId.ActionableItem,
          AtsColumnId.CreatedDate, AtsColumnId.TargetedVersion, AtsColumnId.Notes, AtsColumnId.AtsId);
@@ -266,14 +236,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    @Override
-   @PUT
-   @Path("search")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
    public ResultRows search(AtsSearchData atsSearchData) {
       AtsWorldResultRowOperation op = new AtsWorldResultRowOperation(atsApi, atsSearchData);
       ResultRows rows = op.run();
       return rows;
    }
-
 }
