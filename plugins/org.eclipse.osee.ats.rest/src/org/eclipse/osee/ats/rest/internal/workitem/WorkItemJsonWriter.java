@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -51,7 +52,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Donald G. Dunne
@@ -236,7 +236,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    private static void writeTargetedVersion(AtsApi atsApi, JsonGenerator writer, ArtifactReadable action, IAtsWorkItem workItem, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
-         ResultSet<RelationReadable> relations =
+         ResultSet<IRelationLink> relations =
             action.getRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
          if (!relations.isEmpty()) {
             writer.writeObjectFieldStart("TargetedVersion");

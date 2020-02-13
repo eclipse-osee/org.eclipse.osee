@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -45,7 +46,6 @@ import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Megumi Telles
@@ -265,9 +265,14 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<RelationReadable> getRelations(RelationTypeSide typeAndSide) {
-      return new ResultSetList<>(
-         Collections.castAll(getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
+   public ResultSet<IRelationLink> getRelations(RelationTypeSide typeAndSide) {
+      List<IRelationLink> rels = new ArrayList<>();
+      for (IRelationLink link : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
+         if (link.getRelationType().equals(typeAndSide.getRelationType())) {
+            rels.add(link);
+         }
+      }
+      return new ResultSetList<>(Collections.castAll(rels));
    }
 
    @Override

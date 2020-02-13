@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +62,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public boolean isMember(Long id) {
       checkGroupExists();
-      for (RelationReadable rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
+      for (IRelationLink rel : getArtifact().getRelations(CoreRelationTypes.Users_User)) {
          if (rel.getArtIdB() == id.intValue()) {
             return true;
          }

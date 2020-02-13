@@ -8,21 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Donald G. Dunne
  */
-public interface RelationReadable extends RelationId, OrcsReadable {
+public interface IRelationLink extends RelationId {
 
    long getGammaId();
 
-   @Override
    ModificationType getModificationType();
 
    RelationTypeId getRelationType();

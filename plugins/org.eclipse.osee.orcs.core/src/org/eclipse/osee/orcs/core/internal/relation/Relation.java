@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -20,12 +21,11 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
-import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Relation implements RelationReadable, HasOrcsData<RelationTypeToken, RelationData>, OrcsWriteable {
+public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, RelationData>, OrcsWriteable {
    private RelationData relationData;
 
    public Relation(RelationData relationData) {

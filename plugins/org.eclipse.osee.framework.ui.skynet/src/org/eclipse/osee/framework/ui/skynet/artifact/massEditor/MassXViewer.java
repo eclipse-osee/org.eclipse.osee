@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.AddRelationColumnAction;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -72,7 +74,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
-   private String title;
    private final Set<Artifact> artifacts = new HashSet<>(50);
    private final IDirtiableEditor editor;
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
@@ -439,6 +440,15 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          return;
       }
       super.refreshColumnsWithPreCompute(getInput());
+   }
+
+   @Override
+   public void updateMenuActionsForHeader() {
+      MenuManager mm = getMenuManager();
+      mm.insert(0, new GroupMarker("TOP"));
+      mm.insertBefore("TOP", new AddRelationColumnAction(this, false));
+      mm.insertBefore("TOP", new AddRelationColumnAction(this, true));
+      mm.insertBefore("TOP", new Separator());
    }
 
 }
