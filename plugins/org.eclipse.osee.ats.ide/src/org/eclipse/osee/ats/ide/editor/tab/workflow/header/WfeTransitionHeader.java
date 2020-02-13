@@ -76,12 +76,13 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicEventListener {
 
-   private final Label transitionAssigneesLabel, transitionToStateLabel;
+   private final Label transitionAssigneesLabel;
    private final AbstractWorkflowArtifact awa;
    private final WorkflowEditor editor;
    private IAtsStateDefinition userSelectedTransitionToState;
    private final boolean isEditable;
    private final Hyperlink transitionLabelLink;
+   private final Hyperlink stateLabelLink;
 
    public WfeTransitionHeader(Composite parent, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
@@ -123,8 +124,13 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       transitionLabelLink.setFont(FontManager.getCourierNew12Bold());
       transitionLabelLink.setToolTipText("Select to transition workflow to the default or selected state");
 
-      Hyperlink toStateLabelLink = editor.getToolkit().createHyperlink(this, "To State", SWT.NONE);
-      toStateLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
+      Label transitionToLabel = editor.getToolkit().createLabel(this, "To");
+      transitionToLabel.setLayoutData(new GridData());
+
+      String toStateName = getToState() == null ? "<not set>" : getToState().getName();
+      stateLabelLink = editor.getToolkit().createHyperlink(this, toStateName, SWT.NONE);
+      stateLabelLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      stateLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
             try {
@@ -138,10 +144,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
             }
          }
       });
-      String toStateName = getToState() == null ? "<not set>" : getToState().getName();
-      transitionToStateLabel = editor.getToolkit().createLabel(this, toStateName);
-      transitionToStateLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      transitionToStateLabel.setToolTipText("Select to change state to transition to");
 
       if (editor.getWorkFlowTab().getHeader().isShowTargetedVersion()) {
          new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
@@ -429,11 +431,11 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
             toState = awa.getStateDefinition().getDefaultToState();
          }
          if (toState == null) {
-            transitionToStateLabel.setText("<Not Set>");
+            stateLabelLink.setText("<Not Set>");
          } else {
-            transitionToStateLabel.setText(toState.getName());
+            stateLabelLink.setText(toState.getName());
          }
-         transitionToStateLabel.getParent().layout();
+         stateLabelLink.getParent().layout();
 
          transitionLabelLink.setEnabled(true);
 
