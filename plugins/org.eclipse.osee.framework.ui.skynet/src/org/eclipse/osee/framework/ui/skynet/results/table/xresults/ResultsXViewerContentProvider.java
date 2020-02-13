@@ -34,16 +34,26 @@ public class ResultsXViewerContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
+      if (parentElement instanceof IResultsXViewerRow) {
+         Collection<IResultsXViewerRow> children = ((IResultsXViewerRow) parentElement).getChildren();
+         return children.toArray(new IResultsXViewerRow[children.size()]);
+      }
       return EMPTY_ARRAY;
    }
 
    @Override
    public Object getParent(Object element) {
+      if (element instanceof IResultsXViewerRow) {
+         return ((IResultsXViewerRow) element).getParent();
+      }
       return null;
    }
 
    @Override
    public boolean hasChildren(Object element) {
+      if (element instanceof IResultsXViewerRow) {
+         return ((IResultsXViewerRow) element).hasChildren();
+      }
       return false;
    }
 

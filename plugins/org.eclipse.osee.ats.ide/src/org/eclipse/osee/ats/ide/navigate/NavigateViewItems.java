@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.GenerateFullVersionReportItem;
 import org.eclipse.osee.ats.ide.config.version.GenerateVersionReportItem;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
+import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.ev.EvNavigateItems;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
@@ -188,6 +189,8 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
          addExtensionPointItems(item, items);
 
+         createVersionsSection(item, items);
+
          createEmailItems(item, items);
 
          createReportItems(item, items);
@@ -240,7 +243,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    private void createAdminItems(XNavigateItem parent, List<XNavigateItem> items) {
       if (AtsClientService.get().getUserService().isAtsAdmin()) {
-         createVersionsSection(parent, items);
          createWorkDefinitionsSection(parent, items);
          createExampleItems(parent, items);
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
@@ -346,14 +348,20 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem releaseItems = new XNavigateItem(parent, "Versions", FrameworkImage.VERSION);
-         new MassEditTeamVersionItem("Team Versions", releaseItems, FrameworkImage.VERSION);
+         new ParallelConfigurationView(releaseItems);
          new SearchNavigateItem(releaseItems,
             new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
-         new ReleaseVersionItem(releaseItems, null);
-         new CreateNewVersionItem(releaseItems, null);
          new GenerateVersionReportItem(releaseItems);
          new GenerateFullVersionReportItem(releaseItems);
+
+         // Admin
+         if (AtsClientService.get().getUserService().isAtsAdmin()) {
+            new MassEditTeamVersionItem("Team Versions (Admin)", releaseItems, FrameworkImage.VERSION);
+            new CreateNewVersionItem(releaseItems, null);
+            new ReleaseVersionItem(releaseItems, null);
+         }
+
          items.add(releaseItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.table;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * @author Donald G. Dunne
  */
@@ -20,5 +23,17 @@ public interface IResultsXViewerRow {
    public String[] values();
 
    public Object getData();
+
+   default public boolean hasChildren() {
+      return false;
+   }
+
+   default public Collection<IResultsXViewerRow> getChildren() {
+      return Collections.emptyList();
+   }
+
+   default IResultsXViewerRow getParent() {
+      return null;
+   }
 
 }

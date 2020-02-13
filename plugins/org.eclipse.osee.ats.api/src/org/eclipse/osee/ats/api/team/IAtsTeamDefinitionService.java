@@ -130,4 +130,6 @@ public interface IAtsTeamDefinitionService {
 
    Collection<IAtsTeamDefinition> getTeamDefs(Collection<TeamDefinition> jTeamDefs);
 
+   Collection<IAtsTeamDefinition> getTeamDefHoldingVersions();
+
 }

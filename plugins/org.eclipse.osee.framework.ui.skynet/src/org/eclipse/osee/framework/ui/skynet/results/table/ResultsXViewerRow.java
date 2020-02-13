@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.table;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,8 +19,12 @@ import java.util.List;
  */
 public class ResultsXViewerRow implements IResultsXViewerRow {
 
-   private final List<String> values;
+   protected final List<String> values;
    private Object data;
+
+   public ResultsXViewerRow() {
+      values = new ArrayList<String>();
+   }
 
    public ResultsXViewerRow(List<String> values, Object data) {
       this.data = data;
@@ -46,6 +51,10 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
    @Override
    public String[] values() {
       return values.toArray(new String[values.size()]);
+   }
+
+   public void addValue(String value) {
+      values.add(value);
    }
 
    @Override

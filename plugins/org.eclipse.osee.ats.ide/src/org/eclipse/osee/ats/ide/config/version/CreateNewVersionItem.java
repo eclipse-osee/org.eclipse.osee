@@ -54,7 +54,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public CreateNewVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDefHoldingVersions) {
-      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s)",
+      super(parent,
+         "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s) (Admin)",
          FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }

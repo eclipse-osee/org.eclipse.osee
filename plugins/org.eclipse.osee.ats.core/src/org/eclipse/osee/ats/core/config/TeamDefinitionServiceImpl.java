@@ -518,13 +518,24 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public Collection<IAtsTeamDefinition> getTeamDefs(Collection<TeamDefinition> jTeamDefs) {
+   public Collection<IAtsTeamDefinition> getTeamDefs(Collection<TeamDefinition> teamDefs) {
+      List<IAtsTeamDefinition> teamDefs2 = new LinkedList<>();
+      for (TeamDefinition teamDef : teamDefs) {
+         teamDefs2.add(atsApi.getQueryService().getConfigItem(teamDef.getId()));
+      }
+      return teamDefs2;
+
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getTeamDefHoldingVersions() {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-      for (TeamDefinition jTeamDef : jTeamDefs) {
-         teamDefs.add(atsApi.getQueryService().getConfigItem(jTeamDef.getId()));
+      for (TeamDefinition teamDef : atsApi.getConfigService().getConfigurations().getIdToTeamDef().values()) {
+         if (!teamDef.getVersions().isEmpty()) {
+            teamDefs.add(teamDef);
+         }
       }
       return teamDefs;
-
    }
 
 }
