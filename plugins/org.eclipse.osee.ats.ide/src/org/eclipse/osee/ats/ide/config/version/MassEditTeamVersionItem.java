@@ -13,12 +13,16 @@
 
 package org.eclipse.osee.ats.ide.config.version;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,8 +76,10 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    public List<Artifact> getResults() {
-      return AtsClientService.get().getConfigArtifacts(
-         AtsClientService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(selectedTeamDef));
+      Collection<IAtsVersion> versions =
+         AtsClientService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(selectedTeamDef);
+      Collection<ArtifactToken> verArtToks = AtsClientService.get().getQueryService().getArtifactsFromObjects(versions);
+      return Collections.castAll(verArtToks);
    }
 
    /**

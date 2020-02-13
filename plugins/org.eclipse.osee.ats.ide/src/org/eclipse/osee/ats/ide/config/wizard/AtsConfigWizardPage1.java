@@ -123,7 +123,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
                   ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
                   ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
                   ((XText) getXWidget(WORKFLOW_ID)).setText(
-                     "WorkDef_Team_SawLabs" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
+                     "WorkDef_Team_SawLabs" + AtsClientService.get().getRandomNum());
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -131,7 +131,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
          });
          setControl(comp);
          ((XText) getXWidget(WORKFLOW_ID)).setText(
-            "WorkDef_Team_SawLabs" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
+            "WorkDef_Team_SawLabs" + AtsClientService.get().getRandomNum());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -117,8 +117,7 @@ public class AtsBranchConfigurationTest {
       Collection<String> actionableItems = appendToName(BRANCH_VIA_VERSIONS, "A1", "A2");
       AtsConfigOperation operation = configureAts(namespace, name, versions, actionableItems);
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
 
       // create main branch
       if (DEBUG) {
@@ -153,8 +152,7 @@ public class AtsBranchConfigurationTest {
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
 
       // create action and target for version
       if (DEBUG) {
@@ -173,10 +171,9 @@ public class AtsBranchConfigurationTest {
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
 
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get());
 
       // Transition to desired state
       if (DEBUG) {

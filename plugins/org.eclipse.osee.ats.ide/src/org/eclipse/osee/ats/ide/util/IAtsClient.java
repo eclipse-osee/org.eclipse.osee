@@ -13,10 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util;
 
-import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
@@ -27,7 +24,6 @@ import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
@@ -35,30 +31,18 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  */
 public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsVersionServiceProvider {
 
-   List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects);
-
-   void reloadAllCaches(boolean pend);
-
-   AtsApi getServices();
-
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
-   void reloadConfigCache(boolean pend);
-
-   void reloadUserCache(boolean pend);
-
    OseeClient getOseeClient();
-
-   void reloadServerAndClientCaches();
-
-   IAtsClientUtil getClientUtils();
 
    AtsQueryServiceClient getQueryServiceClient();
 
    IAtsTaskServiceClient getTaskServiceClient();
 
    IAtsWorkItemServiceClient getWorkItemServiceClient();
+
+   AtsApi getServices();
 
 }

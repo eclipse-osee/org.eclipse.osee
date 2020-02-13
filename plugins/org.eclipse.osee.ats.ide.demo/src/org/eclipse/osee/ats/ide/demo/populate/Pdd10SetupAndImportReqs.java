@@ -86,8 +86,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
       OseeLog.log(Activator.class, Level.INFO, "Populate Demo Database");
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurations();
+      AtsClientService.get().reloadServerAndClientCaches();
 
       // Import all requirements on SAW_Bld_1 Branch
       demoDbImportReqsTx();

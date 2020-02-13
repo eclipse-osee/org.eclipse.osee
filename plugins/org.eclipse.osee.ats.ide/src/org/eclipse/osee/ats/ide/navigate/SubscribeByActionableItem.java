@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -63,7 +64,8 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
             return;
          }
          Collection<IAtsActionableItem> selected = diag.getChecked();
-         Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
+         Collection<Artifact> arts =
+            Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(selected));
 
          User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
          SubscribeUtility.setSubcriptionsAndPersist(user, AtsRelationTypes.SubscribedUser_Artifact, arts,

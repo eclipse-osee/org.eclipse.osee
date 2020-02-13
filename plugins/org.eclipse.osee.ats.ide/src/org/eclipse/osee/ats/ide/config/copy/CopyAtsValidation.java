@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.ide.health.ValidateResults;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -56,9 +57,9 @@ public class CopyAtsValidation {
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<>();
-      aias.addAll(AtsClientService.get().getConfigArtifacts(
+      aias.addAll(Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(
          AtsClientService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
-            configData.getActionableItem())));
+            configData.getActionableItem()))));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(aias, results);
 
       // Validate TeamDefs have Workflow Definitions

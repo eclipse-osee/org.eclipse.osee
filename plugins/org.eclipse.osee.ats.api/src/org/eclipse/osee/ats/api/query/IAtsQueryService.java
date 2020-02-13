@@ -202,4 +202,6 @@ public interface IAtsQueryService {
 
    List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount);
 
+   Collection<ArtifactToken> getArtifactsFromObjects(Collection<? extends IAtsObject> atsObjects);
+
 }

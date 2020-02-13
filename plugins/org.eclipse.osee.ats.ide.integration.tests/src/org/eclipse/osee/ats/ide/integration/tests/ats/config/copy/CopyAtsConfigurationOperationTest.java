@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -61,7 +62,8 @@ public class CopyAtsConfigurationOperationTest {
       Assert.assertEquals(5, ais.size());
 
       ValidateResults results = new ValidateResults();
-      Collection<Artifact> aiaArts = AtsClientService.get().getConfigArtifacts(ais);
+      Collection<Artifact> aiaArts =
+         Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(ais));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, results);
       Assert.assertEquals(0, results.getTestNameToResultsMap().size());
    }

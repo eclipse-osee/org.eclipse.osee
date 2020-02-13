@@ -222,7 +222,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
           * Clear server and client caches so these new ATS Config objects are seen. This will only work in a singleton
           * server environment.
           */
-         AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
+         AtsClientService.get().reloadServerAndClientCaches();
          AtsClientService.get().clearCaches();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");

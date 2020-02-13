@@ -69,7 +69,7 @@ public class NewDefectDialog extends EntryDialog {
          public void mouseUp(MouseEvent e) {
             super.mouseUp(e);
             if (e.button == 3) {
-               text.set("description " + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
+               text.set("description " + AtsClientService.get().getRandomNum());
                severityCombo.set("Issue");
                text2.set("location");
             }

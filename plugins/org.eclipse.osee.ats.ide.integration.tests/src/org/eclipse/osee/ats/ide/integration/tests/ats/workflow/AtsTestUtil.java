@@ -353,9 +353,7 @@ public class AtsTestUtil {
 
       changes.execute();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
-
+      AtsClientService.get().reloadServerAndClientCaches();
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
@@ -745,7 +743,7 @@ public class AtsTestUtil {
    public static Result createWorkingBranchFromTeamWf() {
       configureVer1ForWorkingBranch();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
       AtsClientService.get().clearCaches();
 
       Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);

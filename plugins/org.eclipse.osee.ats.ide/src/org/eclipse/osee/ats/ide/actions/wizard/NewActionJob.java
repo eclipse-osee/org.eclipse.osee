@@ -72,7 +72,7 @@ public class NewActionJob extends Job {
             throw new OseeArgumentException("Actionable Items can not be empty for New Action");
          }
          if ("tt".equals(title)) {
-            title += " " + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
+            title += " " + AtsClientService.get().getRandomNum();
          }
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create New Action");
          result = AtsClientService.get().getActionFactory().createAction(

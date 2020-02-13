@@ -73,8 +73,7 @@ public class AtsBranchServiceImplTest {
       }
       changes.execute();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
 
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
@@ -125,8 +124,7 @@ public class AtsBranchServiceImplTest {
       }
       changes.execute();
 
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurationsWithPend();
+      AtsClientService.get().reloadServerAndClientCaches();
 
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),

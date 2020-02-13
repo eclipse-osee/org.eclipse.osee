@@ -37,8 +37,7 @@ public class DemoDatabaseConfigClient implements IDbInitializationTask {
       TestUtil.setDemoDb(true);
 
       // Reload caches cause Demo sheet import added new users
-      AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
-      AtsClientService.get().getConfigService().getConfigurations();
+      AtsClientService.get().reloadServerAndClientCaches();
    }
 
 }

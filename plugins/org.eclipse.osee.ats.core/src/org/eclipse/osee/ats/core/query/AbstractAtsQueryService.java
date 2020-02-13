@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -342,6 +343,15 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
       AtsSearchDataSearch query = new AtsSearchDataSearch(atsSearchData, atsApi, provider);
       return Collections.castAll(query.performSearchNew());
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsFromObjects(Collection<? extends IAtsObject> atsObjects) {
+      List<ArtifactToken> arts = new ArrayList<>();
+      for (IAtsObject obj : atsObjects) {
+         arts.add(getArtifact(obj));
+      }
+      return arts;
    }
 
 }

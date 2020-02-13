@@ -29,12 +29,14 @@ import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -98,8 +100,11 @@ public class CreateNewVersionItem extends XNavigateItemAction {
                AtsClientService.get().getQueryServiceClient().getArtifact(newVersions.iterator().next()),
                PresentationType.DEFAULT_OPEN);
          } else {
-            MassArtifactEditor.editArtifacts(String.format("New Versions for [%s]", teamDefHoldingVersions),
-               AtsClientService.get().getConfigArtifacts(newVersions), TableLoadOption.None);
+            Collection<ArtifactToken> artToks =
+               AtsClientService.get().getQueryService().getArtifactsFromObjects(newVersions);
+            List<Artifact> arts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artToks);
+            MassArtifactEditor.editArtifacts(String.format("New Versions for [%s]", teamDefHoldingVersions), arts,
+               TableLoadOption.None);
          }
 
       }
