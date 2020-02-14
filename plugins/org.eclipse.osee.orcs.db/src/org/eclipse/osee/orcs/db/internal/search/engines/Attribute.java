@@ -43,7 +43,6 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    }
 
    private String loadBinaryAttribute() {
-      //      AttributeLocatorProvider.seedTo(builder, gammaId)
       try {
          DataResource dataResource = new DataResource();
          dataResource.setLocator(uri);

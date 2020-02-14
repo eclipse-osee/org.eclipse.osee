@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingRequirement_LowerLevelRequirement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -191,6 +194,14 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactToken> getArtifactTokensByType(ArtifactTypeToken artifactType) {
       return orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactType).asArtifactTokens();
+   }
+
+   @Override
+   public List<ArtifactToken> expGetArtifactTokens(ArtifactTypeToken artifactType, ArtifactId parent, ArtifactId view) {
+      List<ArtifactReadable> artifacts =
+         orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(DefaultHierarchical_Child,
+            parent).follow(SupportingRequirement_LowerLevelRequirement).asArtifacts();
+      return Collections.cast(artifacts);
    }
 
    @Override

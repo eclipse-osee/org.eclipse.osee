@@ -83,6 +83,11 @@ public interface ArtifactEndpoint {
    List<ArtifactToken> getArtifactTokensByType(@PathParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
+   @Path("exp")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> expGetArtifactTokens(@DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("parent") ArtifactId parent, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+
+   @GET
    @Path("type/{artifactType}/id")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactId> getArtifactIdsByType(@PathParam("artifactType") ArtifactTypeToken artifactType);
