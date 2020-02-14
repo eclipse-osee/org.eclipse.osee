@@ -44,7 +44,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn is =
       new XViewerColumn("framework.history.is", "Is", 150, XViewerAlign.Left, true, SortDataType.String, false, null);
 
-   public final static String NAMESPACE = "osee.skynet.gui.HisotryXViewer";
+   public final static String NAMESPACE = "HisotryXViewer";
    private final IHistoryTransactionProvider txCache;
 
    public HistoryXViewerFactory(IOseeTreeReportProvider reportProvider, IHistoryTransactionProvider txCache) {

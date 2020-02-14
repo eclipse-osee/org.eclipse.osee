@@ -50,12 +50,12 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn branchAccessContextId = new XViewerColumn("framework.branch.access",
       "Branch Access Context Id", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
 
-   public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
+   public final static String NAMESPACE = "BranchXViewer";
 
    public BranchXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-      registerColumns(branchName, branchType, branchState, createdDate, author, comment, associatedArtifact, parentBranch,
-         branchId, archivedState, branchAccessContextId, inheritAccessControl);
+      registerColumns(branchName, branchType, branchState, createdDate, author, comment, associatedArtifact,
+         parentBranch, branchId, archivedState, branchAccessContextId, inheritAccessControl);
    }
 
    @Override

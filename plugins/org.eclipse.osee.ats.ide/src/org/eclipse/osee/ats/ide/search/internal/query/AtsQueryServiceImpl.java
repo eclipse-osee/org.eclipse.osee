@@ -215,7 +215,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          }
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.WARNING, ex,
-            "Can't deserialize ATS Quick Search value [%s] for namespace [%s]", jsonValue, namespace);
+            "Can't deserialize ATS Quick Search value [%s] for NAMESPACE [%s]", jsonValue, namespace);
       }
       return data;
    }
@@ -239,7 +239,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          }
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.WARNING, ex,
-            "Can't create ATS Quick Search namespace [%s] and searchName [%s]", namespace, searchName);
+            "Can't create ATS Quick Search NAMESPACE [%s] and searchName [%s]", namespace, searchName);
       }
       return data;
    }

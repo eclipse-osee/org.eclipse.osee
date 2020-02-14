@@ -47,7 +47,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    private static Artifact globalCustomizationsArtifact;
    // Collection of all customizations both from local and global storage
    private static List<CustomizeData> custDatas;
-   // Storage mechanism (user's User Artifact) for storage of selected default customizations guids for each XViewer namespace
+   // Storage mechanism (user's User Artifact) for storage of selected default customizations guids for each XViewer NAMESPACE
    private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
    // Attribute name for storing customizations both locally and globally
    private final SkynetXViewerFactory skynetXViewerFactory;
@@ -73,7 +73,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       ensurePopulated(false);
       List<CustomizeData> thisCustDatas = new ArrayList<>();
       for (CustomizeData custData : custDatas) {
-         if (custData.getNameSpace().equals(this.skynetXViewerFactory.getNamespace())) {
+         if (custData.getNameSpace().contains(this.skynetXViewerFactory.getNamespace())) {
             thisCustDatas.add(custData);
          }
       }
@@ -86,7 +86,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
          if (attribute.getDisplayableString().contains(
-            "namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
+            "NAMESPACE=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
                "name=\"" + custData.getName() + "\"")) {
             attribute.setValue(custData.getXml(true));
             found = true;
@@ -165,7 +165,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    @SuppressWarnings("deprecation")
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) {
-      Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
+      Pattern pattern = Pattern.compile("name=\"(.*?)\".*?NAMESPACE=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CoreAttributeTypes.XViewerCustomization)) {
          String str = attribute.getDisplayableString();
          Matcher m = pattern.matcher(str);

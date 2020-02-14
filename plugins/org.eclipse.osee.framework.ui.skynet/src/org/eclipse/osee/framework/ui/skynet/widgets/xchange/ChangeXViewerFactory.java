@@ -48,7 +48,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       new XViewerColumn("attribute.Paragraph Number", CoreAttributeTypes.ParagraphNumber.getName(), 50,
          XViewerAlign.Left, false, SortDataType.Paragraph_Number, false, null);
 
-   public final static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
+   public final static String NAMESPACE = "ChangeXViewer";
 
    public ChangeXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);

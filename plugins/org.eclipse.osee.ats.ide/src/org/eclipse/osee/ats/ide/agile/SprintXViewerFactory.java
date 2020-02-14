@@ -37,9 +37,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class SprintXViewerFactory extends SkynetXViewerFactory {
 
    private final SprintArtifact soleSprintArtifact;
+   private static String NAMESPACE = "SprintXViewer";
 
    public SprintXViewerFactory(SprintArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
-      super("org.eclipse.osee.ats.ide.SprintXViewer", reportProvider);
+      super(NAMESPACE, reportProvider);
       this.soleSprintArtifact = soleSprintArtifact;
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();

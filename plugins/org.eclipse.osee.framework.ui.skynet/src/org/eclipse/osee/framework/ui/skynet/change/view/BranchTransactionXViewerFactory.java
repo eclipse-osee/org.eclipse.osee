@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
  */
 public class BranchTransactionXViewerFactory extends BranchXViewerFactory {
 
-   public final static String NAMESPACE = "osee.skynet.gui.BranchTransactionXViewer";
+   public final static String NAMESPACE = "BranchTransactionXViewer";
 
    public BranchTransactionXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(reportProvider);

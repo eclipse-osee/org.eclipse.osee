@@ -61,7 +61,7 @@ public class ArtifactAnnotation {
    }
 
    private static String TYPE_TAG = "type";
-   private static String NAMESPACE_TAG = "namespace";
+   private static String NAMESPACE_TAG = "NAMESPACE";
    private static String CONTENT_TAG = "content";
 
    public String toXml() {
@@ -95,7 +95,7 @@ public class ArtifactAnnotation {
    }
 
    /**
-    * @return the namespace
+    * @return the NAMESPACE
     */
    public String getNamespace() {
       return namespace;

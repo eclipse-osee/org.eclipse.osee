@@ -48,7 +48,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
    public static final String COLUMN_NAMESPACE = "ats.column";
-   public final static String NAMESPACE = "org.eclipse.osee.ats.ide.WorldXViewer";
+   public final static String NAMESPACE = "WorldXViewer";
 
    public WorldXViewerFactory() {
       this(null);

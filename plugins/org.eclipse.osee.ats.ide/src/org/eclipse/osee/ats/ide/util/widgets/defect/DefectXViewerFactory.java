@@ -40,7 +40,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 100,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
 
-   private final static String NAMESPACE = "osee.ats.DefectXViewer";
+   private final static String NAMESPACE = "DefectXViewer";
 
    public DefectXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);

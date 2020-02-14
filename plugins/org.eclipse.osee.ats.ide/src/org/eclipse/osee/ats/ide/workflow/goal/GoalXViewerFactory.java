@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private final GoalArtifact soleGoalArtifact;
+   private final static String NAMESPACE = "GoalXViewer";
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
@@ -63,7 +64,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       80};
 
    public GoalXViewerFactory(GoalArtifact soleGoalArtifact, IOseeTreeReportProvider reportProvider) {
-      super("org.eclipse.osee.ats.ide.GoalXViewer", reportProvider);
+      super(NAMESPACE, reportProvider);
       this.soleGoalArtifact = soleGoalArtifact;
       int widthIndex = 0;
       // Create new column from world columns but set show and width for task

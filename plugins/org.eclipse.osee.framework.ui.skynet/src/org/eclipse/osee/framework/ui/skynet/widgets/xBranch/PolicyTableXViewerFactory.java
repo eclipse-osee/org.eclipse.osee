@@ -19,10 +19,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  * @author Marc Potter
  */
 public class PolicyTableXViewerFactory extends SkynetXViewerFactory {
-   public static final String namespace = "osee.skynet.gui.branchAccessViewer";
+
+   public static final String NAMESPACE = "branchAccessViewer";
 
    public PolicyTableXViewerFactory() {
-      super(namespace, new OseeTreeReportAdapter("Table Report - Policy View"));
+      super(NAMESPACE, new OseeTreeReportAdapter("Table Report - Policy View"));
       PolicyTableColumns[] columns = PolicyTableColumns.values();
       XViewerColumn[] xColumns = new XViewerColumn[columns.length];
       for (int i = 0; i < columns.length; i++) {

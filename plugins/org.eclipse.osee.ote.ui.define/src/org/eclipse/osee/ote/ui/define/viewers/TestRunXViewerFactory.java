@@ -23,8 +23,10 @@ import org.eclipse.osee.ote.ui.define.views.TestRunView;
  */
 public class TestRunXViewerFactory extends SkynetXViewerFactory {
 
-   public static final XViewerColumn DISPOSITION = new XViewerColumn("ote.test.run.view.Disposition", "Disposition",
-      300, XViewerAlign.Left, true, SortDataType.String, true, null);
+   private static String NAMESPACE = "Disposition";
+
+   public static final XViewerColumn DISPOSITION =
+      new XViewerColumn(NAMESPACE, "Disposition", 300, XViewerAlign.Left, true, SortDataType.String, true, null);
 
    public TestRunXViewerFactory() {
       super(TestRunView.VIEW_ID, new OseeTreeReportAdapter("Test Run View"));

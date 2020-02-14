@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
+   public final static String NAMESPACE = "MergeXViewer";
+
    public final static XViewerColumn Conflict_Resolved = new XViewerColumn("framework.merge.conflictResolved",
       "Conflict Resolution", 43, XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn Artifact_Name = new XViewerColumn("framework.merge.artifactName", "Artifact Name",
@@ -40,7 +42,7 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.String, false, null);
 
    public MergeXViewerFactory(IOseeTreeReportProvider reportProvider) {
-      super("osee.skynet.gui.MergeXViewer", reportProvider);
+      super(NAMESPACE, reportProvider);
       registerColumns(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }

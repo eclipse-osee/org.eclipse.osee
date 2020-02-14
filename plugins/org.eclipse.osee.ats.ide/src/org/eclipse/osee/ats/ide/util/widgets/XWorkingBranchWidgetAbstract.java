@@ -71,7 +71,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
 
    @Override
    public IStatus isValid() {
-      // Need this cause it removes all error items of this namespace
+      // Need this cause it removes all error items of this NAMESPACE
       return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 

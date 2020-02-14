@@ -38,8 +38,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class BacklogXViewerFactory extends SkynetXViewerFactory {
 
+   public final static String NAMESPACE = "BacklogXViewerFactory";
+
    public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact, IOseeTreeReportProvider reportProvider) {
-      super("org.eclipse.osee.ats.ide.BacklogXViewer", reportProvider);
+      super(NAMESPACE, reportProvider);
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
       List<XViewerColumn> backlogCols = new LinkedList<>();

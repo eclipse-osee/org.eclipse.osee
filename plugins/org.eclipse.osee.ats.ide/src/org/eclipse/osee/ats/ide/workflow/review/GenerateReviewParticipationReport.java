@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
-   private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ide.ReviewParticipationReport";
+   private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "ReviewParticipationReport";
 
    private IAtsUser selectedUser = null;
 

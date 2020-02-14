@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class UserRoleXViewerFactory extends SkynetXViewerFactory {
 
-   private final static String NAMESPACE = "osee.ats.UserRoleXViewer";
+   private final static String NAMESPACE = "UserRoleXViewer";
+
    public static XViewerColumn Role_Col =
       new XViewerColumn("osee.userRole.role", "Role", 100, XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn User_Col =

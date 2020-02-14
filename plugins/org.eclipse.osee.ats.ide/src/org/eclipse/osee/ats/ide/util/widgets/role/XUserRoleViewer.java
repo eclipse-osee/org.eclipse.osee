@@ -395,7 +395,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          return new Status(IStatus.ERROR, getClass().getSimpleName(),
             "Exception validating roles. See log for details. " + ex.getLocalizedMessage(), ex);
       }
-      // Need this cause it removes all error items of this namespace
+      // Need this cause it removes all error items of this NAMESPACE
       return new Status(IStatus.OK, getClass().getSimpleName(), "");
    }
 

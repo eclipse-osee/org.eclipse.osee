@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class CommitXManagerFactory extends SkynetXViewerFactory {
 
+   public final static String NAMESPACE = "CommitXViewer";
+
    public static XViewerColumn Empty_Col =
       new XViewerColumn("osee.commit.empty", "Empty", 0, XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Action_Col = new XViewerColumn("osee.commit.action", "Action", 180, XViewerAlign.Left,
@@ -43,7 +45,7 @@ public class CommitXManagerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.String, false, null);
 
    public CommitXManagerFactory(IOseeTreeReportProvider reportProvider) {
-      super("osee.skynet.gui.CommitXViewer", reportProvider);
+      super(NAMESPACE, reportProvider);
       registerColumns(Empty_Col, Action_Col, Status_Col, Merge_Col, Dest_Branch_Col, Dest_Branch_Create_Date_Col,
          Version_Col, Configuring_Object_Col, Commit_Date, Commit_Comment);
    }
