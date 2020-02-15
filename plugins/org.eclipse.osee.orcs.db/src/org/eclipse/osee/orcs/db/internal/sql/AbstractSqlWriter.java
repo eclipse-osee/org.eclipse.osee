@@ -117,7 +117,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    /**
-    * Add a named recursive query using a Common Table Expression (WITH statement)
+    * Add a named recursive (if parameters is not null) query using a Common Table Expression (WITH statement)
     */
    public String startRecursiveCommonTableExpression(String prefix, String parameters) {
       boolean isRecursive = parameters != null;

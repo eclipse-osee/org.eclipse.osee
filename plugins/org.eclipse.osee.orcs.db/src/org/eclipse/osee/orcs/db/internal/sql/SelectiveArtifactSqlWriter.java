@@ -206,7 +206,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
          @Override
          public void addPredicates(AbstractSqlWriter writer) {
-            writer.writeEquals(relsAlias, "art_id", artAlias, "art_id");
+            writer.writeEquals(relsAlias, "other_art_id", artAlias, "art_id");
          }
 
          @Override
