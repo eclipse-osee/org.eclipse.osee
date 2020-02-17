@@ -880,6 +880,12 @@ artifactType "Software Test Procedure - Whole Word" extends "MS Word Whole Docum
 	attribute "Doors Hierarchy"
 }
 
+artifactType "Integration Test Procedure - MS Word" extends "MS Word Template", "Test Unit"  {
+	id 443398723457743215
+	attribute "Doors ID"
+	attribute "Doors Hierarchy"
+}
+
 artifactType "Integration Test Procedure - Whole Word" extends "MS Word Whole Document", "Test Unit"  {
 	id 443398723457743216
 	attribute "Doors ID"
