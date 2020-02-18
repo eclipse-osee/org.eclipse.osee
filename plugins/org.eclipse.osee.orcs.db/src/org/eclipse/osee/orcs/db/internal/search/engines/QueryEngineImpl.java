@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -26,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -182,15 +180,6 @@ public class QueryEngineImpl implements QueryEngine {
       return artifacts;
    }
 
-   private AttributeTypeGeneric<?> getAttributeType(Long typeId) {
-      AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrSentinel(typeId);
-      if (attributeType.isInvalid()) {
-         attributeType = AttributeTypeToken.createString(typeId, NamespaceToken.SENTINEL,
-            "Mising Attribute Type " + typeId, MediaType.TEXT_PLAIN, "");
-      }
-      return attributeType;
-   }
-
    private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer) {
       HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>(500);
 
@@ -212,7 +201,7 @@ public class QueryEngineImpl implements QueryEngine {
          String uri = stmt.getString("uri");
 
          if (otherArtId == 0) {
-            AttributeTypeGeneric<?> attributeType = getAttributeType(typeId);
+            AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             Attribute<?> attribute =
                new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
             artifact.putAttributeValue(attributeType, attribute);
@@ -248,31 +237,35 @@ public class QueryEngineImpl implements QueryEngine {
       HashCollection<AttributeTypeToken, Object> attributes = new HashCollection<>();
       Long[] artifactId = new Long[] {Id.SENTINEL};
       Long[] applicability = new Long[] {Id.SENTINEL};
+      ArtifactTypeToken[] artifactType = new ArtifactTypeToken[] {ArtifactTypeToken.SENTINEL};
 
       Consumer<JdbcStatement> consumer = stmt -> {
          Long newArtId = stmt.getLong("art_id");
          if (artifactId[0].equals(Id.SENTINEL)) {
             artifactId[0] = newArtId;
             applicability[0] = stmt.getLong("app_id");
+            artifactType[0] = tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id"));
          } else if (!artifactId[0].equals(newArtId)) {
-            maps.add(createFieldMap(artifactId[0], applicability[0], attributes));
+            maps.add(createFieldMap(artifactType[0], artifactId[0], applicability[0], attributes));
             attributes.clear();
             artifactId[0] = newArtId;
             applicability[0] = stmt.getLong("app_id");
+            artifactType[0] = tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id"));
          }
 
-         attributes.put(getAttributeType(stmt.getLong("type_id")), stmt.getString("value"));
+         attributes.put(tokenService.getAttributeTypeOrCreate(stmt.getLong("type_id")), stmt.getString("value"));
       };
       selectiveArtifactLoad(queryData, consumer);
       if (!artifactId[0].equals(Id.SENTINEL)) {
-         maps.add(createFieldMap(artifactId[0], applicability[0], attributes));
+         maps.add(createFieldMap(artifactType[0], artifactId[0], applicability[0], attributes));
       }
       return maps;
    }
 
-   private Map<String, Object> createFieldMap(Long artifactId, Long applicability, HashCollection<AttributeTypeToken, Object> attributes) {
+   private Map<String, Object> createFieldMap(ArtifactTypeToken artifactType, Long artifactId, Long applicability, HashCollection<AttributeTypeToken, Object> attributes) {
       Map<String, Object> map = new LinkedHashMap<>();
       map.put("Name", attributes.getValues(Name));
+      map.put("Artifact Type", artifactType.getIdString());
       map.put("Artifact Id", artifactId.toString());
       map.put("Applicability Id", applicability.toString());
 

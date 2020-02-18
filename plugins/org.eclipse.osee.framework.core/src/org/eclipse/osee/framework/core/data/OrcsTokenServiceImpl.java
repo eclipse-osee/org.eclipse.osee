@@ -90,13 +90,43 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public ArtifactTypeToken getArtifactTypeOrCreate(Long id) {
+      ArtifactTypeToken artifactType = getArtifactTypeOrSentinel(id);
+      if (artifactType.isInvalid()) {
+         artifactType = ArtifactTypeToken.valueOf(id, "Mising Artifact Type " + id);
+         registerArtifactType(artifactType);
+      }
+      return artifactType;
+   }
+
+   @Override
+   public AttributeTypeGeneric<?> getAttributeTypeOrCreate(Long id) {
+      AttributeTypeGeneric<?> attributeType = getAttributeTypeOrSentinel(id);
+      if (attributeType.isInvalid()) {
+         String missing = "Mising Attribute Type " + id;
+         attributeType = AttributeTypeToken.valueOf(id, missing, missing);
+         registerAttributeType(attributeType);
+      }
+      return attributeType;
+   }
+
+   @Override
+   public RelationTypeToken getRelationTypeOrCreate(Long id) {
+      RelationTypeToken relationType = getRelationTypeOrSentinel(id);
+      if (relationType.isInvalid()) {
+         relationType = RelationTypeToken.create(id, "Mising Artifact Type " + id);
+         registerRelationType(relationType);
+      }
+      return relationType;
+   }
+
+   @Override
    public void registerArtifactType(ArtifactTypeToken artifactType) {
       ArtifactTypeToken existingType = artifactTypes.putIfAbsent(artifactType.getId(), artifactType);
       if (existingType != null) {
          throw new OseeArgumentException("An artifact type %s with the same id as %s has already been registered.",
             existingType, artifactType);
       }
-      artifactTypes.put(artifactType.getId(), artifactType);
    }
 
    @Override
@@ -106,7 +136,6 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
             existingType, attributeType);
       }
-      attributeTypes.put(attributeType.getId(), attributeType);
    }
 
    @Override
@@ -116,7 +145,6 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          throw new OseeArgumentException("The relation type %s with the same id as %s has already been registered.",
             existingType, relationType);
       }
-      relationTypes.put(relationType.getId(), relationType);
    }
 
    public void start() {
