@@ -385,4 +385,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
          "Unknown Name: " + getIdString());
    }
 
+   @Override
+   public List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide) {
+      return getRelated(relationTypeSide).getList();
+   }
 }

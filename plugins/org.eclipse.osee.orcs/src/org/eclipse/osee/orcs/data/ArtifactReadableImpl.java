@@ -287,6 +287,11 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
+   public List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide) {
+      return getRelated(relationTypeSide, ArtifactTypeToken.SENTINEL);
+   }
+
+   @Override
    public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       return getRelated(relationTypeSide, artifactType, DeletionFlag.EXCLUDE_DELETED);
    }

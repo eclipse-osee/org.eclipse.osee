@@ -153,4 +153,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ApplicabilityId getApplicability();
 
    String getSafeName();
+
+   List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide);
 }
