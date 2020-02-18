@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.dialogs.FilteredTree;
 
 /**
  * @author Donald G. Dunne
@@ -207,16 +206,10 @@ public class XNavigateComposite extends Composite {
       });
    }
 
-   /**
-    * @return the listViewer
-    */
-   public FilteredTree getFilteredTree() {
+   public FilteredTreePlus getFilteredTree() {
       return filteredTree;
    }
 
-   /**
-    * @return the items
-    */
    @SuppressWarnings("unchecked")
    public List<XNavigateItem> getInput() {
       Object input = filteredTree.getViewer().getInput();

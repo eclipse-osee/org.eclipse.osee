@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -39,8 +40,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -288,6 +291,19 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).andIds(artifactIds).includeDeletedArtifacts(
             deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
+   }
+
+   @Override
+   public ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch) {
+      List<ArtifactReadable> arts = orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value),
+         QueryOption.EXACT_MATCH_OPTIONS).getResults().getList();
+      if (arts.size() == 1) {
+         return arts.iterator().next();
+      }
+      if (arts.size() > 1) {
+         throw new OseeArgumentException("Multiple artifacts found with value [%s]", value);
+      }
+      return ArtifactToken.SENTINEL;
    }
 
 }

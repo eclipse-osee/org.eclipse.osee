@@ -39,31 +39,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected AtsUser currentUser = null;
    protected IAtsConfigurationsService configurationService;
+   protected AtsUser currentUser;
 
    @Override
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
       this.configurationService = configurationService;
-   }
-
-   @Override
-   public AtsUser getCurrentUser() {
-      if (currentUser == null) {
-         currentUser = configurationService.getUserByUserId(getCurrentUserId());
-         if (currentUser == null) {
-            for (AtsUser user : getUsers(Active.Both)) {
-               if (user.getUserId().equals(getCurrentUserId())) {
-                  currentUser = user;
-                  break;
-               }
-            }
-         }
-         if (currentUser == null) {
-            currentUser = loadUserFromDbByUserId(getCurrentUserId());
-         }
-      }
-      return currentUser;
    }
 
    @Override
@@ -206,6 +187,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       atsUser.setEmail(user.getEmail());
       atsUser.setActive(user.isActive());
       atsUser.setId(user.getId());
+      atsUser.setLoginIds(user.getLoginIds());
       return atsUser;
    }
 
@@ -220,6 +202,18 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          results.add(lead);
       }
       return results;
+   }
+
+   @Override
+   public void addUser(AtsUser user) {
+      if (!configurationService.getConfigurations().getUsers().contains(user)) {
+         configurationService.getConfigurations().getUsers().add(user);
+      }
+   }
+
+   @Override
+   public void clearCaches() {
+      currentUser = null;
    }
 
 }

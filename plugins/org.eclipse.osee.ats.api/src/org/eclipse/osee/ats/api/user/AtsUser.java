@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -28,6 +30,9 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    private String userId;
    private String email;
+   private List<String> loginIds = new ArrayList<>();
+   private List<String> savedSearches = new ArrayList<>();
+   private List<ArtifactId> userGroups = new ArrayList<>();
 
    public AtsUser() {
       // for jax-rs instantiation
@@ -93,6 +98,30 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    @JsonIgnore
    public ArtifactId getArtifactId() {
       return ArtifactId.valueOf(getId());
+   }
+
+   public List<String> getLoginIds() {
+      return loginIds;
+   }
+
+   public void setLoginIds(List<String> loginIds) {
+      this.loginIds = loginIds;
+   }
+
+   public List<String> getSavedSearches() {
+      return savedSearches;
+   }
+
+   public void setSavedSearches(List<String> savedSearches) {
+      this.savedSearches = savedSearches;
+   }
+
+   public List<ArtifactId> getUserGroups() {
+      return userGroups;
+   }
+
+   public void setUserGroups(List<ArtifactId> userGroups) {
+      this.userGroups = userGroups;
    }
 
 }

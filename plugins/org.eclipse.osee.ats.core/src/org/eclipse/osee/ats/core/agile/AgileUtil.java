@@ -33,16 +33,15 @@ public class AgileUtil {
 
    public static boolean isAgileUser(AtsApi atsApi) {
       if (atsAgileUser == null) {
-         atsAgileUser = atsApi.getUserGroupService().isUserMember(CoreUserGroups.AgileUser,
-            atsApi.getUserService().getCurrentUser().getId());
+         atsAgileUser = atsApi.getUserService().getCurrentUser().getUserGroups().contains(CoreUserGroups.AgileUser);
       }
       return atsAgileUser;
    }
 
    public static boolean isEarnedValueUser(AtsApi atsApi) {
       if (atsEarnedValueUser == null) {
-         atsEarnedValueUser = atsApi.getUserGroupService().isUserMember(CoreUserGroups.EarnedValueUser,
-            atsApi.getUserService().getCurrentUser().getId());
+         atsEarnedValueUser =
+            atsApi.getUserService().getCurrentUser().getUserGroups().contains(CoreUserGroups.EarnedValueUser);
       }
       return atsEarnedValueUser;
    }

@@ -13,9 +13,11 @@ package org.eclipse.osee.ats.ide.internal;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.ide.navigate.SavedSearchesNavigateItem;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemEventHandler;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -32,6 +34,10 @@ public class Activator extends OseeActivator {
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic()));
       context.registerService(EventHandler.class.getName(), new AtsBranchAccessManager(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
+      context.registerService(EventHandler.class.getName(), new SavedSearchesNavigateItem(),
+         AtsUtil.hashTable(EventConstants.EVENT_TOPIC, FrameworkEvents.NAVIGATE_VIEW_LOADED));
+      context.registerService(EventHandler.class.getName(), new SavedSearchesNavigateItem(),
+         AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.SAVED_SEARCHES_MODIFIED));
    }
 
 }

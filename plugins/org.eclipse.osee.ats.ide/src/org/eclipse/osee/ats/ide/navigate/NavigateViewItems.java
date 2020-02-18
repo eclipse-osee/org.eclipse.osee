@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
@@ -70,8 +68,6 @@ import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.workdef.ValidateWorkDefinitionNavigateItem;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
-import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
-import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchGoalSearchItem;
@@ -123,7 +119,6 @@ import org.osgi.framework.Bundle;
 public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
    private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
-   public static long ATS_SEARCH_NAVIGATE_VIEW_ITEM = 324265264L;
 
    private final static NavigateViewItems instance = new NavigateViewItems();
 
@@ -173,7 +168,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          items.add(new RecentlyVisitedNavigateItems(item));
          items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
 
-         createMySearchesSection(item, items);
+         items.add(new SavedSearchesNavigateItem(item));
 
          createAdvancedSearchesSection(item, items, null);
 
@@ -393,32 +388,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       }
    }
 
-   private void createMySearchesSection(XNavigateItem parent, List<XNavigateItem> items) {
-      try {
-         XNavigateItem searches = new XNavigateItem(parent, "Saved Action Searches", AtsImage.SEARCH);
-         searches.setId(ATS_SEARCH_NAVIGATE_VIEW_ITEM);
-         populateSavedSearchesItem(searches);
-         items.add(searches);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Can't create section");
-      }
-   }
-
-   private static void populateSavedSearchesItem(XNavigateItem searches) {
-      for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
-         for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-            ArrayList<AtsSearchData> savedSearches = AtsClientService.get().getQueryService().getSavedSearches(
-               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace());
-            for (AtsSearchData data : savedSearches) {
-               AtsSearchWorkflowSearchItem searchItem = item.copy();
-               searchItem.setSavedData(data);
-               SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
-               navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
-            }
-         }
-      }
-   }
-
    private void addExtensionPointItems(XNavigateItem parentItem, List<XNavigateItem> items) {
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsNavigateItem");
@@ -507,17 +476,6 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    public void clearCaches() {
       ensurePopulatedRanOnce = false;
       items.clear();
-   }
-
-   public static void refreshTopAtsSearchItem() {
-      XNavigateItem searchesItem = NavigateView.getNavigateView().getItem(ATS_SEARCH_NAVIGATE_VIEW_ITEM, true);
-      if (searchesItem != null) {
-         searchesItem.getChildren().clear();
-         populateSavedSearchesItem(searchesItem);
-         if (NavigateView.getNavigateView() != null && NavigateView.isAccessible()) {
-            NavigateView.getNavigateView().refresh(searchesItem);
-         }
-      }
    }
 
 }

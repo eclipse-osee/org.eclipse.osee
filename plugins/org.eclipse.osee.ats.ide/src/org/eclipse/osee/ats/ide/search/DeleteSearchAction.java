@@ -15,9 +15,11 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.navigate.NavigateView;
-import org.eclipse.osee.ats.ide.navigate.NavigateViewItems;
+import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -56,9 +58,10 @@ public final class DeleteSearchAction extends Action {
             selected);
          AtsClientService.get().getQueryServiceClient().getArtifact(
             AtsClientService.get().getUserService().getCurrentUser()).reloadAttributesAndRelations();
-         if (NavigateView.getNavigateView() != null) {
-            NavigateViewItems.refreshTopAtsSearchItem();
-         }
+
+         TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
+         OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
+
          AWorkbench.popup("Search Deleted");
       }
    }

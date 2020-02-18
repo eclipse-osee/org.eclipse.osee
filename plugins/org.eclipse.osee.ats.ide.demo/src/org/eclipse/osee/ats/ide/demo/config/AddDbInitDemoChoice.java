@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.ide.demo.config;
 
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.database.init.DatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.DefaultOseeTypeDefinitions;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
@@ -27,6 +28,7 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    @Override
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
+      System.setProperty("user.name", DemoUsers.Joe_Smith.getLoginIds().iterator().next());
       config.addTask("org.eclipse.osee.ats.ide.AtsDatabaseConfigClient");
       config.addTask("org.eclipse.osee.ats.ide.demo.DemoDatabaseConfigClient");
       config.addTask("org.eclipse.osee.ats.ide.demo.DemoWebDatabaseConfig");

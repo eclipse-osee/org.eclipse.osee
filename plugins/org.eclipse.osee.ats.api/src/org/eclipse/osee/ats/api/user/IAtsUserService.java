@@ -79,4 +79,10 @@ public interface IAtsUserService {
 
    void setConfigurationService(IAtsConfigurationsService configurationService);
 
+   void addUser(AtsUser user);
+
+   void clearCaches();
+
+   AtsUser getCurrentUserNoCache();
+
 }

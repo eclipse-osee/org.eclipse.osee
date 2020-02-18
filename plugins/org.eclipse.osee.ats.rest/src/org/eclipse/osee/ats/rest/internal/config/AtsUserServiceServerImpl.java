@@ -16,6 +16,7 @@ import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -45,6 +46,19 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public String getCurrentUserId() {
       return SystemUser.OseeSystem.getUserId();
+   }
+
+   @Override
+   public AtsUser getCurrentUser() {
+      if (currentUser == null) {
+         currentUser = AtsCoreUsers.SYSTEM_USER;
+      }
+      return currentUser;
+   }
+
+   @Override
+   public AtsUser getCurrentUserNoCache() {
+      return getCurrentUser();
    }
 
    @Override
@@ -92,6 +106,10 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setEmail(userArt.getSoleAttributeAsString(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
+      atsUser.getLoginIds().addAll(userArt.getAttributeValues(CoreAttributeTypes.LoginId));
+      for (ArtifactReadable userGroupArt : userArt.getRelated(CoreRelationTypes.Users_Artifact)) {
+         atsUser.getUserGroups().add(ArtifactId.valueOf(userGroupArt.getId()));
+      }
       return atsUser;
    }
 
@@ -145,7 +163,12 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    public AtsUser getUserByArtifactId(ArtifactId id) {
-      ArtifactReadable userArt = getQuery().andId(id).getResults().getExactlyOne();
+      ArtifactReadable userArt = null;
+      if (id instanceof ArtifactReadable) {
+         userArt = (ArtifactReadable) id;
+      } else {
+         userArt = getQuery().andId(id).getResults().getExactlyOne();
+      }
       return createFromArtifact(userArt);
    }
 

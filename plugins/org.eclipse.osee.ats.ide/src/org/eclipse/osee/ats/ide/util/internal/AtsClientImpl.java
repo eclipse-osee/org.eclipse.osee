@@ -103,6 +103,15 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
       this.configurationsService.setAtsApi(this);
+      Job loadAtsConfig = new Job("Load ATS Configs") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            configurationsService.getConfigurationsWithPend();
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(loadAtsConfig);
    }
 
    @Override
@@ -201,6 +210,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    public void clearCaches() {
       // clear client config cache (read from server)
       getConfigService().getConfigurations();
+      getUserService().clearCaches();
 
       super.clearCaches();
 

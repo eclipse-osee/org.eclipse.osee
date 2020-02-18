@@ -19,6 +19,8 @@ public class FrameworkEvents {
    public static final String GLOBAL_WEB_PREFERENCES = "framework/web/prefs/modified/links/global";
    public static final String FRAMEWORK_LINK_EDIT = "framework/link/edit";
 
+   public static final String NAVIGATE_VIEW_LOADED = "framework/navigator/loaded";
+
    private FrameworkEvents() {
       // utility class
    }

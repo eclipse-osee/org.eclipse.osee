@@ -14,12 +14,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.navigate.NavigateView;
-import org.eclipse.osee.ats.ide.navigate.NavigateViewItems;
+import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -67,9 +69,10 @@ public final class SaveSearchAction extends Action {
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
          AtsClientService.get().getQueryService().saveSearch(asUser, data);
          AtsClientService.get().getQueryServiceClient().getArtifact(asUser).reloadAttributesAndRelations();
-         if (NavigateView.getNavigateView() != null) {
-            NavigateViewItems.refreshTopAtsSearchItem();
-         }
+
+         TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
+         OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
+
          AWorkbench.popupf("Search [%s] Saved", data.getSearchName());
       }
    }

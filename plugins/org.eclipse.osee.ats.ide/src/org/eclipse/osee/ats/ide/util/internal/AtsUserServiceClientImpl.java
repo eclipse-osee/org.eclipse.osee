@@ -19,6 +19,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -45,6 +45,24 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
+   }
+
+   @Override
+   public AtsUser getCurrentUser() {
+      if (currentUser == null) {
+         if (UserManager.isBootstrap()) {
+            currentUser = configurationService.getUserByUserId(AtsCoreUsers.BOOTSTRAP_USER.getUserId());
+         } else {
+            currentUser = configurationService.getUserByLoginId(System.getProperty("user.name"));
+         }
+      }
+      return currentUser;
+   }
+
+   @Override
+   public AtsUser getCurrentUserNoCache() {
+      currentUser = null;
+      return getCurrentUser();
    }
 
    @Override
@@ -147,15 +165,14 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         Artifact atsAdmin = AtsClientService.get().getQueryServiceClient().getArtifact(AtsUserGroups.AtsAdmin);
-         return atsAdmin.isRelated(CoreRelationTypes.Users_User, getCurrentOseeUser());
+         getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
       }
       return isAtsAdmin();
    }
 
    @Override
    public boolean isAtsAdmin() {
-      if (AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember()) {
+      if (getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin)) {
          return true;
       }
       return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser().getArtifactId());

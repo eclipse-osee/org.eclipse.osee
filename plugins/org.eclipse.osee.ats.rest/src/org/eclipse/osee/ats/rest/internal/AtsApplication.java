@@ -153,6 +153,16 @@ public class AtsApplication extends Application {
       singletons.add(new ActionUiResource(atsServer, logger));
       singletons.add(new ReportResource(orcsApi, atsServer));
 
+      Thread loadConfig = new Thread("Load ATS Config") {
+
+         @Override
+         public void run() {
+            atsServer.getConfigService().getConfigurations();
+         }
+
+      };
+      loadConfig.start();
+
       logger.warn("ATS Application Started - %s", System.getProperty("OseeApplicationServer"));
    }
 

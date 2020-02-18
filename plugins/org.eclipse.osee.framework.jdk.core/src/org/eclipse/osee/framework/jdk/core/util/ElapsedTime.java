@@ -22,6 +22,7 @@ public class ElapsedTime {
    Date endDate;
    private String name;
    private final boolean logStart;
+   private boolean on = true;
 
    public ElapsedTime(String name) {
       this(name, false);
@@ -35,13 +36,15 @@ public class ElapsedTime {
    public void start(String name) {
       this.name = name;
       startDate = new Date();
-      if (logStart) {
+      if (isOn() && logStart) {
          XConsoleLogger.err(name + " - start " + DateUtil.getTimeStamp() + "\n");
       }
    }
 
    public void logPoint(String pointName) {
-      XConsoleLogger.err(name + " - [" + pointName + "] " + DateUtil.getTimeStamp() + "\n");
+      if (isOn()) {
+         XConsoleLogger.err(name + " - [" + pointName + "] " + DateUtil.getTimeStamp() + "\n");
+      }
    }
 
    public static enum Units {
@@ -59,6 +62,9 @@ public class ElapsedTime {
    }
 
    public String end(Units units, boolean printToSysErr) {
+      if (!isOn()) {
+         return "";
+      }
       endDate = new Date();
       long timeSpent = endDate.getTime() - startDate.getTime();
       long time = timeSpent; // milliseconds
@@ -84,5 +90,17 @@ public class ElapsedTime {
    public Long getTimeSpent() {
       Date endDate = new Date();
       return endDate.getTime() - startDate.getTime();
+   }
+
+   public void off() {
+      setOn(false);
+   }
+
+   public boolean isOn() {
+      return on;
+   }
+
+   public void setOn(boolean on) {
+      this.on = on;
    }
 }

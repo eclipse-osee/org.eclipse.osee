@@ -357,16 +357,18 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
-      List<Long> childIds = new ArrayList<>();
+      List<Long> relatedIds = new ArrayList<>();
       for (Relation relation : getRelationManager().getRelations(getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)) {
-         boolean relIsSideA = relationTypeSide.getSide().isSideA();
-         boolean thisOnCorrectSide =
-            relIsSideA && relation.getArtIdB() == getId().intValue() || !relIsSideA && relation.getArtIdA() == getId().intValue();
-         if (thisOnCorrectSide && relation.getRelationType().matches(relationTypeSide)) {
-            childIds.add(Long.valueOf(relation.getArtIdB()));
+         if (relation.getRelationType().equals(relationTypeSide.getRelationType())) {
+            boolean aSide = relationTypeSide.getSide().isSideA();
+            if (aSide && relation.getArtIdB() == this.getIdIntValue()) {
+               relatedIds.add(Long.valueOf(relation.getArtIdA()));
+            } else if (!aSide && relation.getArtIdA() == this.getIdIntValue()) {
+               relatedIds.add(Long.valueOf(relation.getArtIdB()));
+            }
          }
       }
-      return childIds;
+      return relatedIds;
    }
 
    @Override

@@ -100,7 +100,7 @@ public class UserGroupService implements IUserGroupService {
 
       List<UserToken> users = new ArrayList<>();
       Artifact userGrpArt = ArtifactQuery.getArtifactFromToken(userGroup);
-      if (userGrpArt.isValid() && userGrpArt != null) {
+      if (userGrpArt != null && userGrpArt.isValid()) {
          List<Artifact> list = userGrpArt.getRelatedArtifacts(CoreRelationTypes.Users_User);
          for (Artifact art : list) {
             User user = (User) art;

@@ -46,11 +46,12 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    @Override
    public AtsConfigurations getConfigurationsWithPend() {
       invalidate();
-      return configurationsCache.get();
+      AtsConfigurations configs = configurationsCache.get();
+      return configs;
    }
 
    private void invalidate() {
-      configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+      configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 30, TimeUnit.MINUTES);
    }
 
    private Supplier<AtsConfigurations> getConfigurationsSupplier() {
@@ -93,6 +94,16 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          return results;
       }
       return AtsClientService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
+   }
+
+   @Override
+   public AtsUser getUserByLoginId(String loginId) {
+      return AtsClientService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin(loginId);
+   }
+
+   @Override
+   public boolean isConfigLoaded() {
+      return atsConfigurations != null;
    }
 
 }

@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -197,5 +198,14 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    IAtsServerEndpointProvider getServerEndpoints();
 
    boolean isIde();
+
+   default ArtifactId getStoreObject(IAtsObject atsObject) {
+      if (atsObject.getStoreObject() != null) {
+         return atsObject.getStoreObject();
+      }
+      ArtifactToken obj = getQueryService().getArtifact(atsObject);
+      atsObject.setStoreObject(obj);
+      return obj;
+   }
 
 }

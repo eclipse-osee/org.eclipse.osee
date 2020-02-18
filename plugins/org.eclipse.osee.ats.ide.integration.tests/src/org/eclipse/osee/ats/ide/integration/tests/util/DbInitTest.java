@@ -63,10 +63,12 @@ public class DbInitTest {
          ClientSessionManager.releaseSession();
          ClientSessionManager.getSession();
          UserManager.releaseUser();
+
          AtsClientService.get().getServerEndpoints().getConfigEndpoint().getWithPend();
          AtsClientService.get().clearCaches();
+         AtsClientService.get().getConfigService().getConfigurationsWithPend();
 
-         if (UserManager.getUser().getUserId().equals("bootstrap")) {
+         if (UserManager.isBootstrap()) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
          if (AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {

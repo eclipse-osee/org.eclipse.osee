@@ -38,6 +38,8 @@ public class AtsTopicEvent extends AbstractTopicEvent {
    public static final String NEW_ATS_VERSION_ID = "atsVersionId";
    public static final String PREVIOUS_ATS_VERSION_ID = "previousAtsVersionId";
 
+   public static final String SAVED_SEARCHES_MODIFIED = "saveSearchesModified";
+
    private AtsTopicEvent(EventType eventType, String topic) {
       super(eventType, topic);
       idToEvent.put(topic, this);

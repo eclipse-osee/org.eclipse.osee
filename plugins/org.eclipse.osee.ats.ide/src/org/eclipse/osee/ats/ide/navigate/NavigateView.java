@@ -36,10 +36,13 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.WorkbenchTargetProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
@@ -52,6 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -158,6 +162,12 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
                         OseeStatusContributionItemFactory.addTo(navView, false);
                         addExtensionPointListenerBecauseOfWorkspaceLoading();
+
+                        // Notify listeners that Navigator is loaded
+                        TopicEvent event =
+                           new TopicEvent(FrameworkEvents.NAVIGATE_VIEW_LOADED, "", "", EventType.LocalOnly);
+                        OseeEventManager.kickTopicEvent(NavigateView.class, event);
+
                      }
                   }
                } catch (Exception ex) {

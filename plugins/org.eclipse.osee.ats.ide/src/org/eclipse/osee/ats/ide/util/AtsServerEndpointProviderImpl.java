@@ -59,13 +59,18 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       this.atsApi = atsApi;
    }
 
-   private JaxRsWebTarget getAtsTarget() {
+   public static JaxRsWebTarget getAtsTargetSt() {
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      String atsUri = String.format("%s/ats", appServer);
+      JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
+      JaxRsWebTarget target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
+      target.register(WorkItemsJsonReader.class);
+      return target;
+   }
+
+   protected JaxRsWebTarget getAtsTarget() {
       if (target == null) {
-         String appServer = atsApi.getApplicationServerBase();
-         String atsUri = String.format("%s/ats", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
-         target.register(WorkItemsJsonReader.class);
+         target = getAtsTargetSt();
       }
       return target;
    }

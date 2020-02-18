@@ -193,4 +193,7 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsNew(AtsSearchData atsSearchData, ISearchCriteriaProvider provider);
 
+   @NonNull
+   ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch);
+
 }

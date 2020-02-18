@@ -39,4 +39,8 @@ public interface IAtsConfigurationsService {
 
    AtsUser getUserByName(String name);
 
+   AtsUser getUserByLoginId(String loginId);
+
+   boolean isConfigLoaded();
+
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
@@ -35,7 +37,6 @@ import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -64,18 +65,18 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
-   private final IAtsClient atsClient;
+   private final AtsApi atsApi;
    private static final Pattern namespacePattern = Pattern.compile("\"namespace\"\\s*:\\s*\"(.*?)\"");
 
-   public AtsQueryServiceImpl(IAtsClient atsClient, JdbcService jdbcService) {
-      super(jdbcService, atsClient.getServices());
-      this.atsClient = atsClient;
+   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService) {
+      super(jdbcService, atsApi);
+      this.atsApi = atsApi;
    }
 
    @Override
    public IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes) {
       Conditions.checkNotNull(workItemType, "workItemType");
-      AtsQueryImpl query = new AtsQueryImpl(atsClient);
+      AtsQueryImpl query = new AtsQueryImpl(atsApi);
       query.isOfType(workItemType);
       if (workItemTypes != null) {
          for (WorkItemType type : workItemTypes) {
@@ -87,23 +88,24 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType) {
-      AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsClient);
+      AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsApi);
       query.isOfType(artifactType);
       return query;
    }
 
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems, atsClient.getServices());
+      return new AtsWorkItemFilter(workItems, atsApi);
    }
 
    @Override
    public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
-      ArtifactId userArt = atsUser.getStoreObject();
-      for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
-         AtsAttributeTypes.AtsQuickSearch)) {
-         String jsonValue = (String) attr.getValue();
+      // Reload if current user
+      if (atsApi.getUserService().getCurrentUser().equals(atsUser) && AtsUtil.isInTest()) {
+         atsUser = atsApi.getUserService().getCurrentUserNoCache();
+      }
+      for (String jsonValue : atsUser.getSavedSearches()) {
          if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
                AtsSearchData data = fromJson(namespace, jsonValue);
@@ -120,9 +122,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public void saveSearch(AtsUser atsUser, AtsSearchData data) {
-      ArtifactId userArt = atsUser.getStoreObject();
+      ArtifactId userArt = atsApi.getStoreObject(atsUser);
       IAtsChangeSet changes =
-         atsClient.getStoreService().createAtsChangeSet("Save ATS Search", atsClient.getUserService().getCurrentUser());
+         atsApi.getStoreService().createAtsChangeSet("Save ATS Search", atsApi.getUserService().getCurrentUser());
 
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
@@ -141,7 +143,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
-      for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(artifact,
+      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(artifact,
          AtsAttributeTypes.AtsQuickSearch)) {
          String jsonValue = (String) attr.getValue();
          try {
@@ -158,9 +160,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public void removeSearch(AtsUser atsUser, AtsSearchData data) {
-      ArtifactId userArt = atsUser.getStoreObject();
-      IAtsChangeSet changes = atsClient.getStoreService().createAtsChangeSet("Remove ATS Search",
-         atsClient.getUserService().getCurrentUser());
+      ArtifactId userArt = atsApi.getStoreObject(atsUser);
+      IAtsChangeSet changes =
+         atsApi.getStoreService().createAtsChangeSet("Remove ATS Search", atsApi.getUserService().getCurrentUser());
 
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
@@ -176,7 +178,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public AtsSearchData getSearch(AtsUser atsUser, Long id) {
       try {
-         ArtifactId userArt = atsUser.getStoreObject();
+         ArtifactId userArt = atsApi.getStoreObject(atsUser);
          IAttribute<Object> attr = getAttrById(userArt, id);
          if (attr != null) {
             AtsSearchData existing = fromJson((String) attr.getValue());
@@ -205,7 +207,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    private AtsSearchData fromJson(String namespace, String jsonValue) {
       AtsSearchData data = null;
       try {
-         for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
+         for (IAtsSearchDataProvider provider : atsApi.getSearchDataProviders()) {
             if (provider.getSupportedNamespaces().contains(namespace)) {
                data = provider.fromJson(namespace, jsonValue);
                if (data != null) {
@@ -229,7 +231,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public AtsSearchData createSearchData(String namespace, String searchName) {
       AtsSearchData data = null;
       try {
-         for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
+         for (IAtsSearchDataProvider provider : atsApi.getSearchDataProviders()) {
             if (provider.getSupportedNamespaces().contains(namespace)) {
                data = provider.createSearchData(namespace, searchName);
                if (data != null) {
@@ -265,13 +267,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactToken getArtifactToken(ArtifactId artifactId) {
-      return ArtifactQuery.getArtifactTokenFromId(atsClient.getAtsBranch(), artifactId);
+      return ArtifactQuery.getArtifactTokenFromId(atsApi.getAtsBranch(), artifactId);
    }
 
    @Override
    public Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
       HashCollection<ArtifactId, ArtifactToken> tokenMap = ArtifactQuery.getArtifactTokenListFromRelated(
-         atsClient.getAtsBranch(), java.util.Collections.singleton(artifact), artifactType, relationType);
+         atsApi.getAtsBranch(), java.util.Collections.singleton(artifact), artifactType, relationType);
       Collection<ArtifactToken> result = tokenMap.getValues(artifact);
       if (result != null) {
          return result;
@@ -283,7 +285,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public Artifact getArtifact(Long id) {
       Conditions.assertTrue(id > 0, "Art Id must be > 0, not %s", id);
       try {
-         return ArtifactQuery.getArtifactFromId(id, atsClient.getAtsBranch());
+         return ArtifactQuery.getArtifactFromId(id, atsApi.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -347,19 +349,19 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          artifactIds.add(ArtifactId.valueOf(id));
       }
       return Collections.castAll(
-         ArtifactQuery.getArtifactListFrom(artifactIds, atsClient.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
+         ArtifactQuery.getArtifactListFrom(artifactIds, atsApi.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Override
    public ArtifactToken getArtifactByName(ArtifactTypeToken artType, String name) {
-      return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch());
+      return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch());
    }
 
    @Override
    public ArtifactToken getArtifactByNameOrSentinel(ArtifactTypeToken artType, String name) {
 
-      if (ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch()) != null) {
-         return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsClient.getAtsBranch());
+      if (ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch()) != null) {
+         return ArtifactQuery.checkArtifactFromTypeAndName(artType, name, atsApi.getAtsBranch());
       }
       return ArtifactReadable.SENTINEL;
 
@@ -372,13 +374,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactToken getArtifactByGuid(String guid) {
-      return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(guid, atsApi.getAtsBranch());
    }
 
    @Override
    public ArtifactToken getArtifactByGuidOrSentinel(String guid) {
-      if (ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch()) != null) {
-         return ArtifactQuery.getArtifactFromId(guid, atsClient.getAtsBranch());
+      if (ArtifactQuery.getArtifactFromId(guid, atsApi.getAtsBranch()) != null) {
+         return ArtifactQuery.getArtifactFromId(guid, atsApi.getAtsBranch());
       }
       return ArtifactReadable.SENTINEL;
    }
@@ -391,7 +393,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public IAtsConfigCacheQuery createConfigCacheQuery(ArtifactTypeToken... artifactType) {
-      AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsClient);
+      AtsConfigCacheQueryImpl query = new AtsConfigCacheQueryImpl(atsApi);
       query.isOfType(artifactType);
       return query;
    }
@@ -429,6 +431,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchId branch, DeletionFlag deletionFlag) {
       return Collections.castAll(ArtifactQuery.getArtifactListFrom(artifactIds, branch, deletionFlag));
+   }
+
+   @Override
+   public ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch) {
+      return ArtifactQuery.getArtifactFromAttribute(attrType, value, branch);
    }
 
 }

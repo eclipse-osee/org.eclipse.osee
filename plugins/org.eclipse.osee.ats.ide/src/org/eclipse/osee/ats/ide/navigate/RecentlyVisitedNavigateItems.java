@@ -129,7 +129,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
    @Override
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
-      if (!visitedItems.getReverseVisited().isEmpty()) {
+      if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
          ObjectMapper mapper = JsonUtil.getMapper();
          try {
             String toStoreJson = mapper.writeValueAsString(visitedItems);
