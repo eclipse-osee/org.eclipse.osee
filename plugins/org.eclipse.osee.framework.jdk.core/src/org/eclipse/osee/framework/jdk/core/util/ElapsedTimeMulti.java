@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 
 /**
@@ -70,14 +71,14 @@ public class ElapsedTimeMulti {
     */
    public void report(Units units) {
       Date now = new Date();
-      System.err.println("\n=========== Start ============");
+      XConsoleLogger.err("\n=========== Start ============");
       printName(now, name, units);
       for (Entry<String, Long> entry : idToTime.entrySet()) {
          if (!entry.getKey().equals(name)) {
             printName(now, entry.getKey(), units);
          }
       }
-      System.err.println("=========== End ============\n");
+      XConsoleLogger.err("=========== End ============\n");
    }
 
    private void printName(Date endDate, String name, Units units) {
@@ -94,7 +95,7 @@ public class ElapsedTimeMulti {
       }
       String str = String.format("%s- elapsed %d %s%s - start %s - end %s\n", name, time, units.name(), milliseconds,
          DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
-      System.err.println(str);
+      XConsoleLogger.err(str);
    }
 
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -216,13 +217,13 @@ public class JdbcServiceImpl implements JdbcService {
             if (client != null) {
                break;
             } else {
-               System.err.println("sleeping to get JDBC Client");
+               XConsoleLogger.err("sleeping to get JDBC Client");
                Thread.sleep(1000);
             }
          }
          if (client == null) {
             String msg = "JDBC client not available.  If using an embedded database, it may have hung.";
-            System.err.println(msg);
+            XConsoleLogger.err(msg);
             throw new OseeStateException(msg);
          }
 

@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -120,7 +121,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       if (Strings.isNumeric(name)) {
-         System.err.println(String.format("Can't get work def, but is numeric [%s], probably wrong method", name));
+         throw new OseeArgumentException("Can't get work def, but is numeric [%s], probably wrong method", name);
       }
       return null;
    }

@@ -683,7 +683,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          sb.append("] ");
       }
       String result = sb.toString();
-      System.err.println(result);
       return result;
    }
 

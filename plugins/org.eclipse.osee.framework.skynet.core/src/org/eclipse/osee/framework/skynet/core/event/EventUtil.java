@@ -58,7 +58,6 @@ public final class EventUtil {
                builder.append(" <<ERROR>> ");
                builder.append(ex.toString());
             }
-            System.err.println(builder.toString());
          }
          if (ex != null) {
             OseeLog.log(Activator.class, Level.SEVERE, formatMessage(message, args), ex);

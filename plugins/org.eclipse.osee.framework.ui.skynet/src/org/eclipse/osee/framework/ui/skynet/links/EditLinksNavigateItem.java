@@ -145,7 +145,6 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
    @Override
    public void fileChanged(String filename) {
       if (filename.endsWith(getFilename(global))) {
-         System.err.println("file changed: " + getFilename(global));
          storeChangeAndContinue();
       }
    }

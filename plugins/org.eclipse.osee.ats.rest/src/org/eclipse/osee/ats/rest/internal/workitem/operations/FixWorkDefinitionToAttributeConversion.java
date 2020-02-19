@@ -42,7 +42,6 @@ public class FixWorkDefinitionToAttributeConversion implements IAtsDatabaseConve
       int count = 1;
       for (Collection<ArtifactId> artIds : subDivide) {
          String msg = String.format("WorkItem Set: Processing %s / %s\n", count++, size);
-         System.err.println(msg);
          rd.logf(msg);
          List<Long> ids = new LinkedList<>();
          for (ArtifactId art : artIds) {
@@ -57,7 +56,6 @@ public class FixWorkDefinitionToAttributeConversion implements IAtsDatabaseConve
             if (!workDefinition.equals(computeWorkDefinition)) {
                String log = String.format("Work Def [%s] doesn't match computed [%s] for %s", workDefinition,
                   computeWorkDefinition, teamWf.toStringWithId());
-               System.err.println(log);
                rd.error(log);
             }
          }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.internal;
 
-import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
@@ -33,8 +32,6 @@ public class Activator extends OseeActivator {
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic()));
       context.registerService(EventHandler.class.getName(), new AtsBranchAccessManager(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
-      System.err.println(" TBD remove this once all types are loded by osgi (Ryan's commit)");
-      AtsDemoOseeTypes.Action.getName();
    }
 
 }

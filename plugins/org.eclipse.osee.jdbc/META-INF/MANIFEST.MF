@@ -12,6 +12,7 @@ Import-Package: org.apache.commons.dbcp,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.executor,
+ org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network,
@@ -27,9 +28,9 @@ Import-Package: org.apache.commons.dbcp,
  org.hsqldb.server;resolution:=optional,
  org.json;resolution:=optional,
  org.osgi.service.component;resolution:=optional,
- org.sqlite;resolution:=optional,
  org.postgresql;resolution:=optional,
- org.postgresql.core;resolution:=optional
+ org.postgresql.core;resolution:=optional,
+ org.sqlite;resolution:=optional
 Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
 DynamicImport-Package: oracle.*

@@ -33,7 +33,9 @@ public class XResultData {
    public static enum Type {
       Severe,
       Warning,
-      Info;
+      Info,
+      ConsoleErr,
+      ConsoleOut;
    }
 
    public static final Pattern ErrorPattern = Pattern.compile("Error: ");
@@ -48,7 +50,7 @@ public class XResultData {
    private int warningCount;
    private int infoCount;
    @JsonIgnore
-   private boolean enableOseeLog;
+   private boolean logToSysErr;
 
    public XResultData() {
       this(false);
@@ -56,13 +58,13 @@ public class XResultData {
 
    public XResultData(boolean enableOseeLog) {
       super();
-      this.enableOseeLog = enableOseeLog;
+      this.logToSysErr = enableOseeLog;
       clear();
    }
 
-   public XResultData(boolean enableOseeLog, IResultDataListener... listeners) {
+   public XResultData(boolean logToSysErr, IResultDataListener... listeners) {
       super();
-      this.enableOseeLog = enableOseeLog;
+      this.logToSysErr = logToSysErr;
       clear();
       if (listeners != null && listeners.length > 0) {
          this.listeners = Arrays.asList(listeners);
@@ -141,15 +143,15 @@ public class XResultData {
       }
    }
 
-   public void logStr(Type type, final String str) {
+   public void logStr(Type type, final String format, Object... data) {
       bumpCount(type, 1);
       String resultStr = "";
       if (type == Type.Warning) {
-         resultStr = "Warning: " + str;
+         resultStr = "Warning: " + String.format(format, data);
       } else if (type == Type.Severe) {
-         resultStr = "Error: " + str;
+         resultStr = "Error: " + String.format(format, data);
       } else {
-         resultStr = str;
+         resultStr = String.format(format, data);
       }
       addRaw(resultStr);
       if (listeners != null) {
@@ -157,8 +159,16 @@ public class XResultData {
             listener.log(type, resultStr);
          }
       }
-      if (isEnableOseeLog()) {
-         System.err.println(resultStr);
+      if (isLogToSysErr()) {
+         /**
+          * This is the only valid use of err.println. It allows XResultData to be used to log to console during
+          * development. Log statements can remain but enableOseeLog turned off for commit.
+          */
+         if (type == Type.Severe || type == Type.ConsoleErr) {
+            System.err.print(resultStr);
+         } else {
+            System.out.print(resultStr);
+         }
       }
    }
 
@@ -203,14 +213,6 @@ public class XResultData {
 
    public int getNumWarnings() {
       return getCount(Type.Warning);
-   }
-
-   public boolean isEnableOseeLog() {
-      return enableOseeLog;
-   }
-
-   public void setEnableOseeLog(boolean enableOseeLog) {
-      this.enableOseeLog = enableOseeLog;
    }
 
    public boolean isErrors() {
@@ -297,5 +299,13 @@ public class XResultData {
 
    public boolean isSuccess() {
       return !isErrors();
+   }
+
+   public boolean isLogToSysErr() {
+      return logToSysErr;
+   }
+
+   public void setLogToSysErr(boolean logToSysErr) {
+      this.logToSysErr = logToSysErr;
    }
 }

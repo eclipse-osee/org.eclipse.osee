@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -411,7 +412,8 @@ public class ConflictTestManager {
       conflict.getAttribute();
    }
 
-   public static boolean validateCommit() throws Exception {
+   public static XResultData validateCommit() throws Exception {
+      XResultData results = new XResultData();
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (!conflictDefs[i].destDelete && !conflictDefs[i].sourceDelete) {
             for (AttributeValue value : conflictDefs[i].values) {
@@ -430,27 +432,25 @@ public class ConflictTestManager {
                if (value.sourceDeleted) {
                   if (destArtifacts[i].getSoleAttributeValueAsString(value.attributeType, "Deleted").equals(
                      "Deleted")) {
-                     System.err.println("The attribute should have been deleted but wasn't");
-                     return false;
+                     results.error("The attribute should have been deleted but wasn't\n");
                   }
                } else if (!stringToObject(value.clas, expected).toString().equals(
                   destArtifacts[i].getSoleAttributeValueAsString(value.attributeType,
                      " ")) && !destArtifacts[i].isDeleted()) {
-                  System.err.println(
+                  results.error(
                      "Expected the " + value.attributeType + " attribute to have a value of " + stringToObject(
-                        value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
-                           value.attributeType, " ") + " for Artifact " + destArtifacts[i] + " conflict index: " + i);
-                  return false;
+                        value.clas,
+                        expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(value.attributeType,
+                           " ") + " for Artifact " + destArtifacts[i] + " conflict index: " + i + "\n");
                }
             }
          } else {
             if (conflictDefs[i].destDelete && !destArtifacts[i].isDeleted()) {
-               System.err.println("Artifact " + destArtifacts[i] + " " + i + " should be deleted but isn't");
-               return false;
+               results.error("Artifact " + destArtifacts[i] + " " + i + " should be deleted but isn't");
             }
          }
       }
-      return true;
+      return results;
    }
 
    public static void createModifications() {

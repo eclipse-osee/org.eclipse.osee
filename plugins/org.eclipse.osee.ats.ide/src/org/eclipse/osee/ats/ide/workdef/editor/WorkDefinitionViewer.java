@@ -123,21 +123,6 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
          @Override
          public void handleDoubleClick(ArrayList<ResultsXViewerRow> selectedRows) {
             handleSelection(definitionViewer, selectedRows);
-            // TBD            IResultsEditorTableListener.super.handleDoubleClick(selectedRows);
-            //            IWorkbenchPage page = AWorkbench.getActivePage();
-            //            ResultsXViewerRow row = selectedRows.iterator().next();
-            //            IAtsWorkDefinition workDef = (IAtsWorkDefinition) row.getData();
-            //
-            //            //            String workDefJavaFilename = workDef.getName().replaceAll("_", "");
-            //            //            workDefJavaFilename = workDefJavaFilename + ".java";
-            //
-            //            IFile file = OseeData.getIFile("workdef.java");
-            //            IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
-            //            try {
-            //               page.openEditor(new FileEditorInput(file), desc.getId());
-            //            } catch (PartInitException ex) {
-            //               System.err.println(Lib.exceptionToString(ex));
-            //            }
          }
 
       };

@@ -11,6 +11,7 @@
 package org.eclipse.osee.jdbc.internal;
 
 import java.lang.reflect.Constructor;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcLogger;
@@ -64,10 +65,9 @@ public final class JdbcServerFactory {
          @Override
          public void error(String msg, Object... data) {
             if (data.length > 0) {
-               System.err.printf(msg, data);
-               System.err.println();
+               XConsoleLogger.err(msg + "\n", data);
             } else {
-               System.err.println(msg);
+               XConsoleLogger.err(msg);
             }
          }
 

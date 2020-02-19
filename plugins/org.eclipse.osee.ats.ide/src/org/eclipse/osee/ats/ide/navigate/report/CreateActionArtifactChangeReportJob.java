@@ -118,10 +118,6 @@ public class CreateActionArtifactChangeReportJob extends Job {
                attributeType, commitConfigArt, rd);
          }
          x++;
-
-         //          System.err.println("Developmental purposes only, don't release with this");
-         //          if (x >= 5)
-         //          break;
       }
       rd.addRaw(AHTML.endMultiColumnTable());
    }

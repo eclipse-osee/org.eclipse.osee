@@ -6,7 +6,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.plugin.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core
 Export-Package: org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.server,
  org.eclipse.osee.framework.plugin.core.server.resources,
@@ -16,6 +17,7 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,

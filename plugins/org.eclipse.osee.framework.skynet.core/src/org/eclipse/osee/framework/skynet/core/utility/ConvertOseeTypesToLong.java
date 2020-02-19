@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.File;
@@ -8,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -23,9 +34,6 @@ public class ConvertOseeTypesToLong {
    public static void main(String[] args) {
       try {
          XResultData results = new XResultData();
-         //         for (String dirNam : Arrays.asList("C:\\UserData\\git_fix\\org.eclipse.osee\\plugins\\",
-         //            "C:\\UserData\\git_fix\\lba.osee\\plugins\\")) {
-         //         System.err.println("REMOVE THIS - FOR TEST PURPOSES ONLY");
          for (String dirNam : Arrays.asList(
             "C:\\UserData\\git_fix\\org.eclipse.osee\\plugins\\org.eclipse.osee.ats.api\\")) {
             File dir1 = new File(dirNam);
@@ -33,19 +41,17 @@ public class ConvertOseeTypesToLong {
                if (!Strings.isValid(filename)) {
                   continue;
                }
-               System.out.println(String.format("Processing [%s]", filename));
+               XConsoleLogger.err(String.format("Processing [%s]", filename));
                File file = new File(dir1 + "\\" + filename);
                try {
                   recurseAndFind(file, results);
                } catch (Exception ex) {
-                  System.err.println(ex.getLocalizedMessage());
+                  XConsoleLogger.err(ex.getLocalizedMessage());
                }
             }
          }
 
-         System.err.println("\n\n" + results.toString());
          String outputFilename = "C:\\UserData\\ConvertOseeTypesToLong.txt";
-         System.out.println("\n\nResults written to " + outputFilename + "\n");
          Lib.writeStringToFile(results.toString(), new File(outputFilename));
 
       } catch (Exception ex) {
@@ -62,12 +68,12 @@ public class ConvertOseeTypesToLong {
                try {
                   recurseAndFind(childFile, results);
                } catch (Exception ex) {
-                  System.err.println(ex.getLocalizedMessage());
+                  XConsoleLogger.err(ex.getLocalizedMessage());
                }
             }
          }
       } catch (Exception ex) {
-         System.err.println(ex.getLocalizedMessage());
+         XConsoleLogger.err(ex.getLocalizedMessage());
       }
       if (file.getAbsolutePath().endsWith(".java")) {
          //         results.log("Converting java file " + file);
@@ -93,7 +99,7 @@ public class ConvertOseeTypesToLong {
          }
 
       } else if (file.getAbsolutePath().endsWith(".osee")) {
-         System.err.println("File " + file.getName());
+         XConsoleLogger.err("File " + file.getName());
          results.log("Converting osee types file " + file);
          String text = Lib.fileToString(file);
          Matcher matcher = oseeUuidPattern.matcher(text);
@@ -118,7 +124,7 @@ public class ConvertOseeTypesToLong {
             hexStr = hexStr.replaceFirst("L", "");
             hexStr = hexStr.replaceAll(" ", "");
             long longVal = Long.parseUnsignedLong(hexStr, 16);
-            System.err.println(hex + "," + longVal);
+            XConsoleLogger.err(hex + "," + longVal);
             hexToLong.put(hex, longVal);
          }
       }

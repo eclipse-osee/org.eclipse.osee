@@ -65,7 +65,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
          getLogger().info("Authentication: LoginId: [%s] UserToken:[%s]", loginId, userTok);
          return userTok;
       } catch (Exception ex) {
-         System.err.println(
+         getLogger().error(
             String.format("Exception resolving loginId: [%s] - Exception: %s", loginId, Lib.exceptionToString(ex)));
       }
 

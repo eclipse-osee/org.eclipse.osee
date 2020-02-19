@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -91,12 +92,12 @@ public class OrcsAdminImpl implements OrcsAdmin {
          try {
             jdbcClient.runCall("create public synonym " + table + " for " + table);
          } catch (Exception ex) {
-            System.err.println("Error creating synonym for table " + table);
+            XConsoleLogger.err("Error creating synonym for table " + table);
          }
          try {
             jdbcClient.runCall("grant insert, update, delete, select on " + table + " to osee_client_role");
          } catch (Exception ex) {
-            System.err.println("Error granting permissions for table " + table);
+            XConsoleLogger.err("Error granting permissions for table " + table);
          }
       }
    }

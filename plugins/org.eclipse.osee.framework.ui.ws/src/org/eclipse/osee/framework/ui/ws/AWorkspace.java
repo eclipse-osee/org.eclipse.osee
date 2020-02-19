@@ -62,30 +62,22 @@ public final class AWorkspace {
          return iFile;
       }
       p = p.replace('\\', '/');
-      // System.err.println("p *" + p + "*");
       // Run through projects to see if any contain this file
       IProject projs[] = getProjects();
       for (int i = 0; i < projs.length; i++) {
          IProject proj = projs[i];
          String projLoc = proj.getLocation().toString();
-         // System.err.println("proj *" + projLoc + "*");
          if (p.equals(projLoc)) {
             return null;
          } else if (p.startsWith(projLoc)) {
-            // System.out.println("found it");
             p = p.replaceFirst(projLoc, "");
             p = "/" + proj.getName() + p;
-            // System.err.println("new pLoc*" + p + "*");
             path = new Path(p);
             iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
             if (iFile.exists()) {
                return iFile;
-            } else {
-               // System.err.println("iFile DOESN'T exist *" +
-               // iFile.getRawLocation()+ "*");
             }
          }
-         // System.out.println("proj");
       }
       return null;
    }

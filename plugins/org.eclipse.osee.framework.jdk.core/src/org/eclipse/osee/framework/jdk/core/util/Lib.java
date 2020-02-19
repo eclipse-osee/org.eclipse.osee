@@ -65,8 +65,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.InputBufferThread;
@@ -1133,8 +1135,8 @@ public final class Lib {
    public static String[] getArguments(String source) {
       ArrayList<String> theResults = new ArrayList<>();
       try {
+         // In getArguments, first char must be (
          if (source.charAt(0) != '(') {
-            System.err.println("In getArguments, first char must be \'(\'.");
             return null;
          }
 
@@ -1172,12 +1174,12 @@ public final class Lib {
          theResults.toArray(theTrueResults);
 
          if (theTrueResults.length != currentArg) {
-            System.err.println("In getArguments, number of argument mismatch.");
+            XConsoleLogger.err("In getArguments, number of argument mismatch.");
          }
 
          return theTrueResults;
       } catch (Exception e) {
-         e.printStackTrace();
+         XConsoleLogger.err(Lib.exceptionToString(e));
          return null;
       }
    }
@@ -1185,7 +1187,7 @@ public final class Lib {
    public static int getArgsLength(String source) {
       try {
          if (source.charAt(0) != '(') {
-            System.err.println("In getArguments, first char must be \'(\'.");
+            XConsoleLogger.err("In getArguments, first char must be \'(\'.");
             return -1;
          }
          int parens = 0;
@@ -1203,7 +1205,7 @@ public final class Lib {
             }
          }
 
-         System.err.println("In getArguments, problem occurred.");
+         XConsoleLogger.err("In getArguments, problem occurred.");
          return -1;
       } catch (Exception e) {
          e.printStackTrace();
@@ -1252,7 +1254,6 @@ public final class Lib {
       // print( "checking: " + seq.subSequence(start,
       // seq.length()).toString());
       for (i = 0; i < array.length; i++) {
-         // System.out.print( array[i]);
          if (array[i] == '/' && array[i + 1] == '*') {
 
             while (array[i] != '*' || array[i + 1] != '/') {
@@ -1779,7 +1780,7 @@ public final class Lib {
       try {
          uriPath = URLEncoder.encode(uriPath, "UTF-8");
       } catch (UnsupportedEncodingException ex) {
-         System.out.println("Cant Encode");
+         throw new OseeCoreException("Cant Encode");
       }
       uriPath = uriPath.replace(" ", "");
       uriPath = uriPath.replaceAll("%2F", "/");

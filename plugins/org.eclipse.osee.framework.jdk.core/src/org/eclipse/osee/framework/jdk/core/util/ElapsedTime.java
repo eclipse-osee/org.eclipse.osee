@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Date;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 
 /**
  * @author Donald G. Dunne
@@ -35,12 +36,12 @@ public class ElapsedTime {
       this.name = name;
       startDate = new Date();
       if (logStart) {
-         System.err.println("\n" + name + " - start " + DateUtil.getTimeStamp());
+         XConsoleLogger.err(name + " - start " + DateUtil.getTimeStamp() + "\n");
       }
    }
 
    public void logPoint(String pointName) {
-      System.err.println("\n" + name + " - [" + pointName + "] " + DateUtil.getTimeStamp());
+      XConsoleLogger.err(name + " - [" + pointName + "] " + DateUtil.getTimeStamp() + "\n");
    }
 
    public static enum Units {
@@ -72,7 +73,7 @@ public class ElapsedTime {
       String str = String.format("%s- elapsed %d %s%s - start %s - end %s", name, time, units.name(), milliseconds,
          DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
       if (printToSysErr) {
-         System.err.println(str + (logStart ? "" : "\n"));
+         XConsoleLogger.err(str + (logStart ? "" : "\n"));
       }
       return str;
    }

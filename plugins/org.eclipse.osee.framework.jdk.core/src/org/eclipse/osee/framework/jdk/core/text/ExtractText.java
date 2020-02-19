@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -59,7 +61,7 @@ public class ExtractText {
          in.close();
          out.close();
       } catch (IOException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(Lib.exceptionToString(ex));
          return;
       }
    }
@@ -91,7 +93,7 @@ public class ExtractText {
 
    public static void main(String[] args) {
       if (args.length < 1) {
-         System.out.println("Usage:	ExtractText [source	file]");
+         XConsoleLogger.out("Usage:	ExtractText [source	file]");
          return;
       }
       new ExtractText(args[0]);

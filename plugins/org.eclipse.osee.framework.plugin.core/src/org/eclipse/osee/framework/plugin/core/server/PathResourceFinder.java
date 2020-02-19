@@ -27,6 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.Activator;
 
@@ -95,7 +96,7 @@ public class PathResourceFinder extends ResourceFinder {
                   synchronized (this) {
                      this.wait(1000);
                   }
-                  System.err.println(String.format("trying to find :%s %d", path, j));
+                  XConsoleLogger.err(String.format("trying to find :%s %d", path, j));
                } catch (InterruptedException ex) {
                   // do nothing
                }

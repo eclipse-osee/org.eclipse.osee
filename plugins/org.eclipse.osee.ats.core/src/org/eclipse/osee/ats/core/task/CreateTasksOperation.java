@@ -178,13 +178,10 @@ public class CreateTasksOperation {
                   }
                   if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
                      List<Long> notFoundIds = new ArrayList<>();
-                     System.err.println(getClass().getSimpleName() + " - Fix art long not used below");
-                     for (Long art : relation.getRelatedIds()) {
-                        notFoundIds.addAll(relation.getRelatedIds());
-                        notFoundIds.removeAll(foundWorkItemIds);
-                        results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
-                           relation.getRelationTypeName(), notFoundIds, task);
-                     }
+                     notFoundIds.addAll(relation.getRelatedIds());
+                     notFoundIds.removeAll(foundWorkItemIds);
+                     results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
+                        relation.getRelationTypeName(), notFoundIds, task);
                   }
                }
             }

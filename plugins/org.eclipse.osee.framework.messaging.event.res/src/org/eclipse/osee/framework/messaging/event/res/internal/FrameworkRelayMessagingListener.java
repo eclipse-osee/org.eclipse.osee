@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.messaging.event.res.internal;
 
 import java.rmi.RemoteException;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
@@ -34,14 +35,14 @@ public class FrameworkRelayMessagingListener<T extends RemoteEvent> extends Osee
    @Override
    public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
       if (isVerbose) {
-         System.err.println(
+         XConsoleLogger.err(
             String.format(getClass().getSimpleName() + " - received [%s]", message.getClass().getSimpleName()));
       }
       try {
          T remoteEvent = asCastedMessage(message);
          frameworkEventListener.onEvent(remoteEvent);
       } catch (RemoteException ex) {
-         System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
+         XConsoleLogger.err(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
       }
    }
 

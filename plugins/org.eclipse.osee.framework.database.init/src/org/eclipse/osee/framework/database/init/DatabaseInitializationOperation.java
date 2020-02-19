@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.init.internal.Activator;
 import org.eclipse.osee.framework.database.init.internal.DbBootstrapTask;
 import org.eclipse.osee.framework.database.init.internal.GroupSelection;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -80,9 +81,8 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       });
       String dbName = ClientSessionManager.getDataStoreName();
       if (ClientSessionManager.isProductionDataStore()) {
-         System.err.println(
+         throw new OseeArgumentException(
             String.format("You are not allowed to run config client against production: [%s].\nExiting.", dbName));
-         return;
       }
 
       System.out.println("Begin Database Initialization...");

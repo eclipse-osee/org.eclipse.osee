@@ -17,6 +17,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class OverlayImage extends CompositeImageDescriptor {
 
    private final Image baseImage;
@@ -113,8 +116,6 @@ public class OverlayImage extends CompositeImageDescriptor {
 
    @Override
    protected Point getSize() {
-      // System.err.println("Width = " + baseImage.getBounds().width);
-      // System.err.println("Height = " + baseImage.getBounds().height);
       int baseWidth = baseImage.getBounds().width;
       int baseHeight = baseImage.getBounds().height;
 

@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -79,12 +80,13 @@ public class Pdd93CreateDemoAgile {
    private static void validateArtifactCache() {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
       if (!list.isEmpty()) {
+         XResultData results = new XResultData();
          for (Artifact artifact : list) {
-            System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
-               Artifacts.getDirtyReport(artifact)));
+            results.errorf("Artifact [%s] is dirty [%s]\n", artifact.toStringWithId(),
+               Artifacts.getDirtyReport(artifact));
          }
-         throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
-            list.size());
+         throw new OseeStateException("[%d] Dirty Artifacts found after populate\n\n %s ", list.size(),
+            results.toString());
       }
 
    }

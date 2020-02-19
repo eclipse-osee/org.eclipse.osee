@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 
 /**
  * Count all JUnit classes and sort/count by author
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UnitTestCounter {
@@ -78,7 +79,7 @@ public class UnitTestCounter {
          results.append("\n\n");
          results.append(results.toString());
 
-         System.err.println("\n\n" + errors);
+         XConsoleLogger.err("\n\n" + errors);
          String outputFilename = "C:\\UserData\\UnitTestCounter.csv";
          System.out.println("\n\nResults written to " + outputFilename + "\n");
          Lib.writeStringToFile(errors.toString() + "\n\n" + results.toString(), new File(outputFilename));
@@ -115,7 +116,7 @@ public class UnitTestCounter {
                authorToFileCount.put(author);
                authorToTestPointCount.put(author, fileTestPointCount + fileTestPointCountFromSuperclass);
             }
-            System.err.println(String.format("[%s] tests [ main:%s super:%s ]found in %s", totalFileTestPointCount,
+            XConsoleLogger.err(String.format("[%s] tests [ main:%s super:%s ]found in %s", totalFileTestPointCount,
                fileTestPointCount, fileTestPointCountFromSuperclass, file.getName()));
             results.append("\n");
          } else if (!UnitTestUtil.isSuite(file) && !UnitTestUtil.isMock(file) && !UnitTestUtil.isTestUtil(file)) {

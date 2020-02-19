@@ -147,7 +147,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
       //      }
       //      Collections.sort(javaStates);
       //      for (String state : javaStates) {
-      //         System.err.println(state);
+      //         rd.logf("%s\n", state);
       //      }
       return rd;
    }
@@ -163,10 +163,10 @@ public class ConvertWorkDefinitionsToJavaOperation {
    //         if (Strings.isNumeric(id)) {
    //            return Long.valueOf(id);
    //         } else if (workDefArt.isInvalid()) {
-   //            System.err.println("Invalid id " + id + " in " + name);
+   //            rd.errorf("Invalid id %s in %s", id,  name);
    //         }
    //      } else if (workDefArt.isInvalid()) {
-   //         System.err.println("Invalid id in " + name);
+   //         rd.errorf("Invalid id %s in %s", id,  name);
    //      }
    //      return workDefArt.getId();
    //   }

@@ -41,7 +41,6 @@ public class AtsWorldResultRowOperation {
       ResultRows rows = new ResultRows();
 
       Collection<ArtifactToken> artifacts = atsApi.getQueryService().getArtifacts(atsSearchData, null);
-      int x = 0;
       List<XViewerColumn> showCols = new ArrayList<>();
       for (XViewerColumn col : atsSearchData.getCustomizeData().getColumnData().getColumns()) {
          if (col.isShow()) {
@@ -49,7 +48,6 @@ public class AtsWorldResultRowOperation {
          }
       }
       for (ArtifactToken art : artifacts) {
-         System.err.println(x++ + " - " + art.toStringWithId());
          ResultRow row = new ResultRow(art.getId(), atsApi.getAtsBranch().getId());
          rows.add(row);
          for (XViewerColumn col : showCols) {

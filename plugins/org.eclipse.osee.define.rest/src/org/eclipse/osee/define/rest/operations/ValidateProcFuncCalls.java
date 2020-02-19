@@ -278,24 +278,6 @@ public class ValidateProcFuncCalls {
       }
    }
 
-   private void validateIndirectRequirementsNotReferencedInSoftReq() {
-      log("");
-      log("");
-      log("Errors: -------------------------------------------");
-      List<String> softReqWordContentLinkUiNames =
-         artTypeToWordContentLinkUiName.getValues(CoreArtifactTypes.SoftwareRequirementMsWord);
-      for (ArtifactTypeToken methodType : ID_METHOD_TYPES) {
-         List<String> artUiNames = artTypeToArtUiName.getValues(methodType);
-         for (String artUiName : artUiNames) {
-            if (softReqWordContentLinkUiNames.contains(artUiName)) {
-               ArtifactToken art = artNameToArtifact.get(artUiName);
-               log("Error: [%s] artifact %s IS referenced in Software Requirements", methodType.getName(),
-                  art.toStringWithId());
-            }
-         }
-      }
-   }
-
    // http://localhost:8092/define/branch/conv
    boolean reportOnly = true;
 
@@ -311,14 +293,10 @@ public class ValidateProcFuncCalls {
 
       List<Long> softwareReqArtIds = getSoftwareReqIds(branch);
       List<Collection<Long>> subDivide = Collections.subDivide(softwareReqArtIds, 100);
-      int x = 1, size = subDivide.size();
       getSrchReplStrs();
       for (Collection<Long> ids : subDivide) {
-         System.err.println(String.format("Processing %s/%s...", x++, size));
-         int y = 1, idsSize = ids.size();
          for (ArtifactReadable swArt : orcsApi.getQueryFactory().fromBranch(branch).andIdsL(
             ids).getResults().getList()) {
-            System.err.println(String.format("Processing %s/%s - %s/%s...", x, size, y++, idsSize));
             try {
                // Extract req links from word xml content
                String reqXmlStrOrig = swArt.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
@@ -345,7 +323,6 @@ public class ValidateProcFuncCalls {
             } catch (Exception ex) {
                String msg = String.format("Exception processing art %s - ex: %s", swArt.toStringWithId(),
                   ex.getLocalizedMessage());
-               System.err.println(msg);
                results.error(msg);
             }
          }
@@ -353,7 +330,6 @@ public class ValidateProcFuncCalls {
       if (!reportOnly && tx != null) {
          tx.commit();
       }
-      System.err.println("Complete");
    }
 
    private String performSearchAndReplace(String reqXmlStr) {
@@ -397,23 +373,22 @@ public class ValidateProcFuncCalls {
 
             String repl = searchReplaceLines[x + 2];
             if (srch.equals(repl)) {
-               //               System.err.println(String.format("Skipping same [%s][%s]", srch, repl));
+               // Skipping same
                continue;
             }
             if (!srch.startsWith("{") || !srch.endsWith("}")) {
-               System.err.println(String.format("Skipping unexpected srch str [%s]", srch));
+               // Skipping unexpected srch str
                continue;
             }
 
             if (repl.contains("N/A")) {
-               //               System.err.println(String.format("Skipping N/A [%s][%s]", srch, repl));
+               // Skipping N/A
                continue;
             }
             if (!repl.startsWith("{") || !repl.endsWith("}")) {
-               System.err.println(String.format("Skipping unexpected repl str [%s]", repl));
+               // Skipping unexpected repl str
                continue;
             }
-            System.err.println(String.format("srch [%s] repl [%s]", srch, repl));
             srchReplPairs.add(new Pair<>(srch, repl));
          }
       }

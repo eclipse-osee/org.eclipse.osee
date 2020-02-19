@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -106,9 +107,10 @@ public class AtsTestUtil {
    public static void validateArtifactCache() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       if (!dirtyArtifacts.isEmpty()) {
+         XResultData results = new XResultData();
          for (Artifact artifact : dirtyArtifacts) {
-            System.err.println(String.format("Dirty Artifact [%s] attribute [%s]", artifact.toStringWithId(),
-               Artifacts.getDirtyReport(artifact)));
+            results.errorf("Dirty Artifact [%s] attribute [%s] \n\n%s", artifact.toStringWithId(),
+               Artifacts.getDirtyReport(artifact), results.toString());
          }
          throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",
             dirtyArtifacts.size());

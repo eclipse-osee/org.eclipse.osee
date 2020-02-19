@@ -261,7 +261,6 @@ public class PolicyDialog extends Dialog {
                event.setBranch(artifact.getBranch());
                event.addArtifact(artifact.getUuid());
                OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
-               System.err.println("kicked access control event " + event);
             }
          } catch (Exception ex) {
             OseeLog.log(PolicyDialog.class, Level.SEVERE, ex);

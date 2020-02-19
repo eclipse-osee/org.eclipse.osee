@@ -280,18 +280,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    private String generateId(String id, String name) {
-      System.err.println(String.format("\nid [%s] name [%s]", id, name));
       String cleanName = name.replaceAll("-", " ");
       cleanName = cleanName.replaceAll("\\(", " ");
       cleanName = cleanName.replaceAll("\\)", " ");
       cleanName = cleanName.replaceAll("/", " ");
       cleanName = cleanName.replaceAll(" +", " ");
       cleanName = cleanName.replaceAll("^ ", "");
-      System.err.println(String.format("cleanName [%s]", cleanName));
       String replaceValue = Lib.toCamelCaseFromStringsWithSpaces(cleanName);
-      System.err.println(String.format("replaceValue [%s]", replaceValue));
       String result = id.replaceFirst(Lib.escapeForRegex(name), replaceValue);
-      System.err.println(String.format("result [%s]", result));
       return result;
    }
 

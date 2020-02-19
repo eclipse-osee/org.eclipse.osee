@@ -110,11 +110,8 @@ public class AtsHealthCheckOperation {
 
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
-         int numblocks = artIdLists.size();
-         int x = 1;
          for (Collection<Long> artIdList : artIdLists) {
 
-            System.err.println(String.format("processing %s / %s", x++, numblocks));
             Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
 
             // remove all deleted/purged artifacts first
@@ -211,8 +208,6 @@ public class AtsHealthCheckOperation {
 
       /**
        * Cache this cause it's expensive to do repeatedly for the same teamDef
-       *
-       * @param atsApi
        */
       private Collection<IAtsVersion> getTeamVersions(IAtsTeamDefinition teamDef, AtsApi atsApi) {
          Set<IAtsVersion> teamDefVersions = teamDefToVersions.getValues(teamDef);

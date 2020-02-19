@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 
 /**
  * Count all OSEE source lines of code
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SourceCounter {
@@ -132,7 +133,7 @@ public class SourceCounter {
          results.append("\n\n");
          //         results.append(results.toString());
 
-         System.err.println("\n\n" + errors);
+         XConsoleLogger.err("\n\n" + errors);
          String outputFilename = "C:\\UserData\\SourceCounter.csv";
          System.out.println("\n\nResults written to " + outputFilename + "\n");
          Lib.writeStringToFile(results.toString() + "\n\n" + errors.toString(), new File(outputFilename));
@@ -258,7 +259,7 @@ public class SourceCounter {
             String featureName = getFeatureName(packageName);
             productToSlocCount.put(featureName, slocCount);
 
-            System.err.println(String.format("[%s] sloc from author(s) [%s] for file [%s] and package [%s]", slocCount,
+            XConsoleLogger.err(String.format("[%s] sloc from author(s) [%s] for file [%s] and package [%s]", slocCount,
                authors, file.getName(), packageName));
          }
       }

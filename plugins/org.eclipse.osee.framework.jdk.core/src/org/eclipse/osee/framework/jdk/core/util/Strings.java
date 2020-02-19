@@ -40,19 +40,6 @@ public class Strings {
       // Utility class
    }
 
-   public static void error(Class<?> clazz, String format, Object... data) {
-      error(clazz.getSimpleName() + ": " + format, data);
-   }
-
-   /**
-    * Write to sys.out a formatted string
-    */
-   public static String error(String format, Object... data) {
-      String str = String.format(format, data);
-      System.err.println(str);
-      return str;
-   }
-
    /**
     * OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */

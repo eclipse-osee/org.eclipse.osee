@@ -14,18 +14,22 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ViewPartUtil {
 
    /**
     * Attempts to start up the ViewPart using an integer as the unique identifier for the secondary ID. This secondary
     * ID will be the smallest integer not currently being used as a secondary ID for this view type, beginning with 1.
-    * 
+    *
     * @param viewID The Canonical name to the ViewPart class to be started.
     * @return the integer used as the secondary ID
     */
@@ -68,8 +72,7 @@ public class ViewPartUtil {
       try {
          page.showView(viewID, Integer.toString(secondaryId), IWorkbenchPage.VIEW_ACTIVATE);
       } catch (PartInitException ex) {
-         System.err.println("COULD NOT FIND " + viewID + ", with ID # = " + secondaryId);
-         ex.printStackTrace();
+         XConsoleLogger.err("COULD NOT FIND " + viewID + ", with ID # = " + secondaryId);
       }
 
       return secondaryId;

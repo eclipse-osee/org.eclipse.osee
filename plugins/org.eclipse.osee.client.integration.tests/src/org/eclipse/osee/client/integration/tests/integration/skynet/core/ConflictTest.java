@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -176,7 +177,8 @@ public class ConflictTest {
          ConflictManagerExternal conflictManager =
             new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
          BranchManager.commitBranch(null, conflictManager, false, false);
-         assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
+         XResultData results = ConflictTestManager.validateCommit();
+         assertTrue("Commit did not complete as expected: " + results.toString(), results.isSuccess());
 
          assertTrue("Source Branch state incorrect",
             BranchManager.getState(ConflictTestManager.getSourceBranch()).isCommitted());

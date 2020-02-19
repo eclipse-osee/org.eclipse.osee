@@ -92,7 +92,6 @@ public class ConflictDeletionTest {
          artifactsToCheck.addAll(artifact.getDescendants());
       }
       if (DEBUG) {
-         System.err.println("Initial Status artifacts");
          for (Artifact artifact : artifactsToCheck) {
             dumpArtifact(artifact);
             for (Attribute<?> attribute : artifact.getAttributes()) {
@@ -102,18 +101,16 @@ public class ConflictDeletionTest {
                dumpRelation(relation, artifact);
             }
          }
-         System.err.println("Deleting the first set of artifacts");
       }
       for (Artifact artifact : artifacts) {
          artifact.deleteAndPersist();
-         if (DEBUG) {
-            System.err.println("Deleting Artifact " + artifact.getArtId());
-         }
       }
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
-      //Let's check both through the API and the SQL to make sure the Artifact is internally deleted
-      //and deleted in the Database, That we don't get some bad data case.
+      /**
+       * Let's check both through the API and the SQL to make sure the Artifact is internally deleted and deleted in the
+       * Database, That we don't get some bad data case.
+       */
 
       //Check that artifacts are deleted
       TransactionId deletionTransaction = TransactionId.SENTINEL;
@@ -174,9 +171,6 @@ public class ConflictDeletionTest {
       if (DELETE_TRANSACTION_TEST) {
          IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(deletionTransaction);
          Asserts.assertOperation(operation, IStatus.OK);
-         if (DEBUG) {
-            System.err.println("Deleting the Transaction");
-         }
          //This is only a DB deletion so it won't be reflected in the
          for (Artifact artifact : artifactsToCheck) {
             if (DEBUG) {

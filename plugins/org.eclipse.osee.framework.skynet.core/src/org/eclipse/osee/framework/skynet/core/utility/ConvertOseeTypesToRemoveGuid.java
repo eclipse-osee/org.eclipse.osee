@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
@@ -29,7 +30,7 @@ public class ConvertOseeTypesToRemoveGuid {
                try {
                   recurseAndFind(file);
                } catch (Exception ex) {
-                  System.err.println(ex.getLocalizedMessage());
+                  XConsoleLogger.err(ex.getLocalizedMessage());
                }
             }
          }
@@ -46,15 +47,15 @@ public class ConvertOseeTypesToRemoveGuid {
                try {
                   recurseAndFind(childFile);
                } catch (Exception ex) {
-                  System.err.println(ex.getLocalizedMessage());
+                  XConsoleLogger.err(ex.getLocalizedMessage());
                }
             }
          }
       } catch (Exception ex) {
-         System.err.println(ex.getLocalizedMessage());
+         XConsoleLogger.err(ex.getLocalizedMessage());
       }
       if (file.getAbsolutePath().endsWith(".osee")) {
-         System.err.println("File " + file.getName());
+         XConsoleLogger.err("File " + file.getName());
          String text = Lib.fileToString(file);
          text = text.replaceAll("guid +[0-9A-Za-z\\+_=]{20,22}", "");
          Lib.writeStringToFile(text, file);

@@ -16,6 +16,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -36,7 +38,7 @@ public class ExtractComments {
       try {
          in = new BufferedReader(new FileReader(sourceFile));
       } catch (FileNotFoundException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(Lib.exceptionToString(ex));
          throw new IllegalArgumentException(ex.toString());
       }
 
@@ -45,7 +47,7 @@ public class ExtractComments {
             handleComments();
          }
       } catch (IOException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(Lib.exceptionToString(ex));
          System.exit(2);
       }
       return comments.toArray();
@@ -73,7 +75,7 @@ public class ExtractComments {
             line = in.readLine();
          }
       } catch (IOException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(Lib.exceptionToString(ex));
          return;
       }
    }
@@ -112,7 +114,7 @@ public class ExtractComments {
 
    public static void main(String[] args) {
       if (args.length < 1) {
-         System.out.println("Usage:	ExtractComments [source	file]");
+         XConsoleLogger.out("Usage:	ExtractComments [source	file]");
          return;
       }
       ExtractComments app = new ExtractComments();
@@ -127,7 +129,7 @@ public class ExtractComments {
          }
          out.close();
       } catch (IOException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(Lib.exceptionToString(ex));
          return;
       }
    }

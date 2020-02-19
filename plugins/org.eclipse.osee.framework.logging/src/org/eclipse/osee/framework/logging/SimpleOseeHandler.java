@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.logging;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -37,9 +38,9 @@ public class SimpleOseeHandler extends Handler {
    public void publish(LogRecord record) {
       if (isLoggable(record)) {
          if (record.getLevel().intValue() >= Level.SEVERE.intValue()) {
-            System.err.println(getFormatter().format(record));
+            XConsoleLogger.err(getFormatter().format(record));
          } else {
-            System.out.println(getFormatter().format(record));
+            XConsoleLogger.out(getFormatter().format(record));
          }
       }
    }

@@ -43,7 +43,6 @@ public class ValidateResults {
          testNameToIdMap.put(testName, artifact.getId());
       }
       log(testName, message);
-      System.err.println(testName + " - " + message);
    }
 
    public void log(String testName, String message) {

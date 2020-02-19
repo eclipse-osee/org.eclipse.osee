@@ -71,7 +71,6 @@ public class ConvertWorkDefinitionOperations {
       int count = 1;
       int updatedCount = 0;
       for (Collection<ArtifactId> artIds : subDivide) {
-         System.err.println(String.format("WorkItem Set: Processing %s / %s\n", count, size));
          rd.logf(String.format("WorkItem Set: Processing %s / %s\n", count++, size));
          List<Long> ids = new LinkedList<>();
          for (ArtifactId art : artIds) {
@@ -242,8 +241,6 @@ public class ConvertWorkDefinitionOperations {
             AtsArtifactTypes.TeamDefinition).andExists(entry.getKey()).getResults().getList());
       }
 
-      int size = artifacts.size();
-      int count = 1;
       int updatedCount = 0;
       IAtsChangeSet changes = atsApi.createChangeSet("Update Team Def Workflow Definition");
       for (ArtifactToken teamDefArt : artifacts) {
@@ -251,7 +248,6 @@ public class ConvertWorkDefinitionOperations {
          if (deleted) {
             continue;
          }
-         System.err.println(String.format("TeamDef: Processing %s / %s", count++, size));
          for (Entry<AttributeTypeToken, AttributeTypeToken> entry : oldAttrTypeToNewTypeMap.entrySet()) {
             AttributeTypeToken oldAttrType = entry.getKey();
             AttributeTypeToken newAttrType = entry.getValue();

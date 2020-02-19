@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.plugin.core.server.task;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 
 /**
  * @author Ryan D. Brooks
@@ -23,7 +24,7 @@ public class NativeTaskMaster {
 
    public static void main(String[] args) {
       if (args.length != 1) {
-         System.err.println("Usage: java NativeTaskMaster <port>");
+         XConsoleLogger.err("Usage: java NativeTaskMaster <port>");
          return;
       }
 
@@ -31,7 +32,7 @@ public class NativeTaskMaster {
          NativeTaskMaster app = new NativeTaskMaster(Integer.parseInt(args[0]));
          app.listen();
       } catch (NumberFormatException ex) {
-         System.err.println(ex);
+         XConsoleLogger.err(ex);
          return;
       }
    }
@@ -46,7 +47,7 @@ public class NativeTaskMaster {
       try {
          serverSocket = new ServerSocket(port);
       } catch (IOException ex) {
-         System.err.println("Could not listen on port: " + port + ".");
+         XConsoleLogger.err("Could not listen on port: " + port + ".");
          return;
       }
    }

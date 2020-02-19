@@ -181,9 +181,6 @@ public class BranchVisualizationView extends ViewPart {
          for (IOseeBranch childBranch : BranchManager.getChildBranches(branch, false)) {
             if (BranchManager.getType(childBranch).isBaselineBranch()) {
                createEvents(gantEvent, childBranch, recurse);
-               System.err.println("parent" + branch.getName() + " - child " + childBranch.getName());
-            } else {
-               //                     System.out.println("skipping branch " + childBranch.getName());
             }
          }
       }

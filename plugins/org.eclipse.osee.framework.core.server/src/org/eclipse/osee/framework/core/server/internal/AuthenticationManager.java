@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -82,8 +83,7 @@ public class AuthenticationManager implements IAuthenticationManager {
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);
          if (logged.compareAndSet(false, true)) {
-            System.err.println(
-               String.format("Authentication Provider [%s]-[%s]", key, provider.getClass().getSimpleName()));
+            XConsoleLogger.err("Authentication Provider [%s]-[%s]", key, provider.getClass().getSimpleName());
          }
          if (provider != null) {
             return provider;

@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.support.test.util
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,

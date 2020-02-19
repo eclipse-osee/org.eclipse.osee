@@ -131,7 +131,7 @@ public class ExcelAtsTaskArtifactExtractor {
       protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma, XResultData rd) {
          this(monitor, newTaskData, sma);
          this.rd = rd;
-         this.rd.setEnableOseeLog(true);
+         this.rd.setLogToSysErr(true);
       }
 
       @Override

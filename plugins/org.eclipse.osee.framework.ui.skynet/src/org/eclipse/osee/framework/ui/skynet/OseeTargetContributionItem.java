@@ -87,7 +87,6 @@ public class OseeTargetContributionItem extends OseeStatusContributionItem {
                   return;
                }
             }
-            // System.err.println("Adding to " + viewPart);
             viewPart.getViewSite().getActionBars().getStatusLineManager().add(new OseeTargetContributionItem());
          }
       } catch (Exception ex) {

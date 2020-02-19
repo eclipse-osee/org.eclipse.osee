@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -27,8 +28,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -63,16 +64,11 @@ public class XWidgetsExampleBlam extends AbstractBlam {
 
          Button button = new Button(sel.getStyledText().getParent(), SWT.PUSH);
          button.setText("Click and double-click to see Event type");
-         button.addSelectionListener(new SelectionListener() {
+         button.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               System.err.println(String.format("handleWidgetSelected " + e.detail + " - " + e.time));
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-               System.err.println(String.format("haneldWidgetDefaultSelected " + e.detail));
+               AWorkbench.popup(String.format("handleWidgetSelected " + e.detail + " - " + e.time));
             }
 
          });
@@ -83,17 +79,17 @@ public class XWidgetsExampleBlam extends AbstractBlam {
 
             @Override
             public void mouseUp(MouseEvent e) {
-               System.err.println("mouseUp " + e.count);
+               AWorkbench.popup("mouseUp " + e.count);
             }
 
             @Override
             public void mouseDown(MouseEvent e) {
-               System.err.println("mouseDown " + e.count);
+               AWorkbench.popup("mouseDown " + e.count);
             }
 
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-               System.err.println("mouseDoubleClick " + e.count);
+               AWorkbench.popup("mouseDoubleClick " + e.count);
             }
          });
 

@@ -25,7 +25,7 @@ import org.junit.Test;
 /**
  * Tests ability of this WordMLNewLineMakerRule to make new paragraphs by injecting <w:p> at specific points in the
  * file.
- * 
+ *
  * @see WordMLNewLineMaker
  * @author Karol M. Wilk
  */
@@ -44,14 +44,11 @@ public final class WordMLNewLineMakerRuleTest {
       try {
          modifiedFile = wordNewLineMaker.computeChanges(getResourceData(INPUT_FILE_NAME));
       } catch (IOException ioex) {
-         System.err.println("Error: " + ioex.getMessage());
          Assert.fail("Unable to process the file, " + "WordMLNewLineMaker threw an IOException...");
       } catch (IllegalCharsetNameException illegalName) {
-         System.err.println("Error: " + illegalName.getMessage());
          Assert.fail(
             "Illegal charset name specified, " + "WordMLNewLineMaker threw an " + "IllegalCharsetNameException...");
       } catch (UnsupportedCharsetException unsupportedEx) {
-         System.err.println("Error: " + unsupportedEx.getMessage());
          Assert.fail("Unsupported charset, " + "WordMLNewLineMaker threw an " + "UnsupportedCharsetException...");
       }
       Assert.assertNotNull(modifiedFile);

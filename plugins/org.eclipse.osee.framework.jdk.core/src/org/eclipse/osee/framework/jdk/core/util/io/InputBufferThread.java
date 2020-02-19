@@ -16,11 +16,13 @@ import java.io.InterruptedIOException;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Sole purpose is to read input from a specified stream and save it into a buffer providing some access methods to the
  * buffer.
- * 
+ *
  * @author Michael P. Masterson
  */
 public class InputBufferThread extends Thread {
@@ -46,7 +48,7 @@ public class InputBufferThread extends Thread {
     */
    @Override
    public void run() {
-      System.out.println("thread started");
+      XConsoleLogger.out("thread started");
       int count = 0;
       try {
          int size = input.read(charBuffer);
@@ -63,19 +65,18 @@ public class InputBufferThread extends Thread {
          }
       } catch (InterruptedIOException e) {
          if (shouldStopRunning != true) {
-            // this is an error
-            e.printStackTrace(System.err);
+            XConsoleLogger.err(Lib.exceptionToString(e));
          }
       } catch (IOException e) {
          if (!shouldStopRunning) {
-            System.err.println("error at count " + count);
+            XConsoleLogger.err(Lib.exceptionToString(e), "error at count " + count);
             e.printStackTrace(System.err);
          }
       } finally {
          try {
             input.close();
          } catch (IOException e) {
-            e.printStackTrace(System.out);
+            XConsoleLogger.err(Lib.exceptionToString(e));
             System.out.flush();
          } finally {
             // wake up anyone waiting for data or else they will be stuck forever
@@ -88,7 +89,7 @@ public class InputBufferThread extends Thread {
 
    /**
     * Appends one character to the buffer.
-    * 
+    *
     * @param line The character to append
     */
    private void append(byte[] line, int size) {
@@ -98,7 +99,7 @@ public class InputBufferThread extends Thread {
 
    /**
     * Checks if the string passed is contained in the buffer so far
-    * 
+    *
     * @param matcher The string to look for
     * @return a positive value representing the index at which it was found or negative 1 if it was not found
     */
@@ -112,7 +113,7 @@ public class InputBufferThread extends Thread {
 
    /**
     * Checks if the string passed is contained in the buffer so far
-    * 
+    *
     * @param matcher The string to look for
     * @return a positive value representing the index at which it was found or negative 1 if it was not found
     */
@@ -217,7 +218,7 @@ public class InputBufferThread extends Thread {
 
    /**
     * Tells this thread whether to stop on the next cycle or not
-    * 
+    *
     * @param b True if the thread should stop on the next run cycle.
     */
    public void stopOnNextRun(boolean b) {

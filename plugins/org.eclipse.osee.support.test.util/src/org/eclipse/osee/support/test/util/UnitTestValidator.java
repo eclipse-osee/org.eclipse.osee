@@ -19,13 +19,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 
 /**
  * Validate that all Test or org.junit.Test classes exist in Suite or MasterTestSuite class
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UnitTestValidator {
@@ -33,8 +34,7 @@ public class UnitTestValidator {
    private static int suiteCount = 0;
    private static List<File> testClassFiles = new ArrayList<>();
    private static List<File> notForSuiteFiles = new ArrayList<>();
-   private static final Map<String, Collection<String>> testClassToSuites =
-      new HashMap<>(100);
+   private static final Map<String, Collection<String>> testClassToSuites = new HashMap<>(100);
    private static final List<File> suites = new ArrayList<>();
    private static final String NOT_FOR_SUITE = "NOT_FOR_SUITE";
 
@@ -78,11 +78,11 @@ public class UnitTestValidator {
 
          // output results for test classes without suites
          int noMatchCount = 0;
-         System.err.println("\n\n");
+         XConsoleLogger.err("\n\n");
          for (File testClass : testClassFiles) {
             String testClassName = testClass.getName();
             if (!testClassToSuites.containsKey(testClassName) && !notForSuiteFiles.contains(testClass)) {
-               System.err.println(String.format("No Suite contains test unit [%s] - Authors [%s]", testClassName,
+               XConsoleLogger.err(String.format("No Suite contains test unit [%s] - Authors [%s]", testClassName,
                   UnitTestUtil.getAuthors(testClass)));
                noMatchCount++;
             }

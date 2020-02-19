@@ -1,8 +1,13 @@
-/*
- * Created on Jun 30, 2017
+/*******************************************************************************
+ * Copyright (c) 2018 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.io.File;
@@ -22,6 +27,9 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.swt.program.Program;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class XResultPage extends XResultPageBase {
 
    private final Pattern ATS_NAME_AND_ID_REGEX = Pattern.compile("([A-Z]{3,4})=(.*?):(.*)");
@@ -37,7 +45,6 @@ public class XResultPage extends XResultPageBase {
 
    @Override
    public String handleIdCmdHyper(String str) {
-      // System.err.println("match " + line);
       // Match getText so it doesn't mess up replace
       // Retireve all ATS=WPN_PAGE:HSRID matches
       Matcher m = ATS_NAME_AND_ID_REGEX.matcher(str);

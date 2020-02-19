@@ -66,8 +66,6 @@ public class AtsTestDatabase {
    }
 
    public void initialize() throws Exception {
-      System.err.println("Initializing ATS Database");
-
       tempFolder = createTempFolder();
       Assert.assertNotNull("TempFolder cannot be null", tempFolder);
 

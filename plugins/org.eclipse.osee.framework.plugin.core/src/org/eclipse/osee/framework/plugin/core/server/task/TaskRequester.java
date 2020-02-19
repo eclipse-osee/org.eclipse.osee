@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 
 /**
  * @author Ryan D. Brooks
@@ -55,7 +56,7 @@ public class TaskRequester {
    }
 
    private static void printUsage() {
-      System.err.println("Usage: java TaskRequester <cmd> [args]");
+      XConsoleLogger.err("Usage: java TaskRequester <cmd> [args]");
    }
 
    public static void main(String[] args) throws IOException {

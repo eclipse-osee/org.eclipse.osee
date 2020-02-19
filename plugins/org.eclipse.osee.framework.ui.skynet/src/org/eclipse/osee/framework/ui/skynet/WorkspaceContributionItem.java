@@ -23,6 +23,9 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkspaceContributionItem extends OseeStatusContributionItem {
    public WorkspaceContributionItem() {
       super("org.eclipse.osee.framework.ui.skynet.workspace.status", getShortPath().length() + 5);
@@ -75,7 +78,6 @@ public class WorkspaceContributionItem extends OseeStatusContributionItem {
                   return;
                }
             }
-            // System.err.println("Adding to " + viewPart);
             viewPart.getViewSite().getActionBars().getStatusLineManager().add(new WorkspaceContributionItem());
          }
       } catch (Exception ex) {

@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -196,11 +197,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    private <T> void addtoResultsWithNullCheck(Set<T> allResults, Collection<? extends T> workItems) {
-      if (workItems.contains(null)) {
-         System.err.println("Null found in results.");
-      } else {
-         allResults.addAll(workItems);
-      }
+      Conditions.assertFalse(workItems.contains(null), "Null found in results.");
+      allResults.addAll(workItems);
    }
 
    private Collection<ArtifactId> handleReleaseOption(List<ArtifactId> queryGetIds) {
@@ -640,11 +638,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public <T extends ArtifactToken> ResultSet<T> getResultArtifacts() {
       List<T> items = new ArrayList<>();
       for (IAtsWorkItem workItem : getResults()) {
-         if (workItem == null) {
-            System.err.println("Unexpected null workitem");
-         } else {
-            items.add((T) workItem.getStoreObject());
-         }
+         Conditions.assertNotNull(workItem, "Null found in results.");
+         items.add((T) workItem.getStoreObject());
       }
       // filter on original artifact types
       List<T> artifacts = new LinkedList<>();
@@ -663,11 +658,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public <T extends ArtifactToken> ResultSet<T> getResultArtifactsNew() {
       List<T> items = new ArrayList<>();
       for (IAtsWorkItem workItem : getResultsNew()) {
-         if (workItem == null) {
-            System.err.println("Unexpected null workitem");
-         } else {
-            items.add((T) workItem.getStoreObject());
-         }
+         Conditions.assertNotNull(workItem, "Null found in results.");
+         items.add((T) workItem.getStoreObject());
       }
       // filter on original artifact types
       List<T> artifacts = new LinkedList<>();

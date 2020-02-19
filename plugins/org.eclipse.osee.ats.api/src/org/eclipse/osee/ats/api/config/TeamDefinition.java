@@ -126,14 +126,7 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    }
 
    public void addAi(ArtifactToken ai) {
-      if (ai.getId().equals(66382940L)) {
-         System.err.println("here2");
-      }
-      if (ais.contains(ai.getId())) {
-         System.err.println("here2");
-      } else {
-         ais.add(ai.getId());
-      }
+      ais.add(ai.getId());
    }
 
 }

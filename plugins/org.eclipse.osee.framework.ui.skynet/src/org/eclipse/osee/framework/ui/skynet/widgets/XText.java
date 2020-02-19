@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.MenuItem;
 
 /**
  * Generic label and text field object for use by single entry artifact attributes
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XText extends XWidget {
@@ -344,7 +344,7 @@ public class XText extends XWidget {
 
    /**
     * Set max character limit on text field
-    * 
+    *
     * @param limit - if 0, then limit is 999, else sets to limit
     */
    public void setMaxTextLimit(int limit) {
@@ -445,9 +445,6 @@ public class XText extends XWidget {
    }
 
    public String get() {
-      if (debug) {
-         System.err.println("text set *" + text + "*");
-      }
       return text;
    }
 
@@ -477,9 +474,6 @@ public class XText extends XWidget {
          this.text = "";
       } else {
          this.text = text;
-      }
-      if (debug) {
-         System.err.println("set *" + text + "*");
       }
       updateTextWidget();
    }
@@ -529,9 +523,6 @@ public class XText extends XWidget {
       return toHTML(labelFont, false);
    }
 
-   /**
-    * @return Returns the dragableArtifact.
-    */
    public boolean isDragableArtifact() {
       return dragableArtifact;
    }
@@ -565,16 +556,10 @@ public class XText extends XWidget {
       return sText.getText();
    }
 
-   /**
-    * @return the sText
-    */
    public StyledText getStyledText() {
       return sText;
    }
 
-   /**
-    * @return the font
-    */
    public Font getFont() {
       return font;
    }
