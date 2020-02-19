@@ -870,7 +870,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * value. Will not touch any other values.
     */
    public void setSingletonAttributeValue(AttributeTypeId attributeType, String value) {
-      List<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.StaticId, value);
+      List<Attribute<String>> attributes = getAttributes(attributeType, value);
       if (attributes.isEmpty()) {
          addAttribute(attributeType, value);
       } else if (attributes.size() > 1) {
