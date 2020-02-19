@@ -86,13 +86,8 @@ public class WordTemplateContentRendererHandler {
             data = WordUtilities.reassignBookMarkID(data);
             data = WordUtilities.removeNewLines(data);
 
-            // remove any existing footers and replace with the current one
-            // first try to remove footer for extra paragraphs
-            if (wtcData.getIsEdit()) {
-               data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
-            }
-
             // if no extra paragraphs have been added this will replace the normal footer
+            data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
             data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
 
