@@ -22,15 +22,11 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -64,7 +60,7 @@ public class UpdateAtsConfiguration {
 
    public XResultData createUpdateConfig(XResultData rd) {
       UserId user = SystemUser.OseeSystem;
-      ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(user, rd);
+      ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDatabaseConfig.getOrCreateAtsConfig(atsApi);
       createUpdateColorColumnAttributes();
       createUpdateConfigAttributes(atsConfigArt, user, rd);
       try {
@@ -142,20 +138,6 @@ public class UpdateAtsConfiguration {
       return VIEWS_EQUAL_KEY + JsonUtil.toJson(defaultViews);
    }
 
-   public ArtifactId getOrCreateAtsConfig(UserId userId, XResultData rd) {
-      ArtifactToken atsConfigArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
-      if (atsConfigArt == null) {
-         TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Create AtsConfig");
-         ArtifactToken headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
-         atsConfigArt = tx.createArtifact(AtsArtifactToken.AtsConfig);
-         tx.relate(headingArt, CoreRelationTypes.DefaultHierarchical_Parent, atsConfigArt);
-         tx.commit();
-         rd.log("Created AtsConfig");
-      }
-      return atsConfigArt;
-   }
-
    private void createUpdateColorColumnAttributes() {
       ColorColumns columns = new ColorColumns();
       columns.addColumn(ColorTeamColumn.getColor());
@@ -167,20 +149,6 @@ public class UpdateAtsConfiguration {
 
       Collection<String> validStateNames = atsApi.getWorkDefinitionService().getAllValidStateNames(new XResultData());
       atsApi.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
-   }
-
-   public ArtifactId getOrCreateConfigsFolder(UserId userId, XResultData rd) {
-      ArtifactId configsFolderArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.ConfigsFolder);
-      if (configsFolderArt == null) {
-         TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Create Configs Folder");
-         configsFolderArt = tx.createArtifact(AtsArtifactToken.ConfigsFolder);
-         ArtifactId headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
-         tx.relate(configsFolderArt, CoreRelationTypes.DefaultHierarchical_Parent, headingArt);
-         tx.commit();
-         rd.log("Created Configs Folder");
-      }
-      return configsFolderArt;
    }
 
    public Collection<String> getValidStateNames() {

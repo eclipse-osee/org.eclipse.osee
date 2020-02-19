@@ -25,11 +25,11 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -37,11 +37,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class AtsDatabaseConfig {
 
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
 
-   public AtsDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
+   public AtsDatabaseConfig(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    public XResultData run() {
@@ -68,6 +66,8 @@ public class AtsDatabaseConfig {
 
       createUserGroups(atsApi);
 
+      getOrCreateAtsConfig(atsApi);
+
       createUserCreationDisabledConfig();
 
       return results;
@@ -83,6 +83,16 @@ public class AtsDatabaseConfig {
          changes.createArtifact(userGroup, AtsUserGroups.AtsTempAdmin);
          changes.execute();
       }
+   }
+
+   public static ArtifactId getOrCreateAtsConfig(AtsApi atsApi) {
+      ArtifactToken atsConfigArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
+      if (atsConfigArt == null) {
+         IAtsChangeSet changes = atsApi.createChangeSet("Create AtsConfig");
+         changes.createArtifact(AtsArtifactToken.HeadingFolder, AtsArtifactToken.AtsConfig);
+         changes.execute();
+      }
+      return atsConfigArt;
    }
 
    private void createUserCreationDisabledConfig() {
@@ -103,15 +113,9 @@ public class AtsDatabaseConfig {
 
       changes.execute();
 
-      AtsConfigEndpointImpl configEp = new AtsConfigEndpointImpl(atsApi, orcsApi, atsApi.getLogger(), null);
-      XResultData results = configEp.createUpdateConfig();
-      if (results.isErrors()) {
-         return results;
-      }
-
       (new OrganizePrograms(atsApi)).run();
 
-      return results;
+      return new XResultData();
    }
 
 }

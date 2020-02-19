@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class AtsConfigurations {
 
-   private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
    ArtifactId topActionableItem;
@@ -43,10 +42,6 @@ public class AtsConfigurations {
    private Map<Long, AtsUser> idToUser = new HashMap<>();
    private Map<String, Long> userIdToUserArtId = new HashMap<>();
    private Map<String, Long> userNameToUserArtId = new HashMap<>();
-
-   public List<AtsConfiguration> getConfigs() {
-      return configs;
-   }
 
    public AtsViews getViews() {
       return views;
@@ -71,10 +66,6 @@ public class AtsConfigurations {
 
    public Collection<String> getValidStateNames() {
       return validStateNames;
-   }
-
-   public void setConfigs(List<AtsConfiguration> configs) {
-      this.configs = configs;
    }
 
    public void setValidStateNames(Collection<String> validStateNames) {

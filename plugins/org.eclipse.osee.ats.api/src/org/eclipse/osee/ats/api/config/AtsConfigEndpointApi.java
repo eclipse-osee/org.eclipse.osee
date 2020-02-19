@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.api.config;
 
 import java.util.List;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -22,7 +21,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
@@ -45,6 +43,9 @@ public interface AtsConfigEndpointApi {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfigurations get();
+
+   @POST
+   public XResultData createUpdateConfig();
 
    /**
     * @return non-cached copy of AtsConfigurations read straight from database. Will update server cache with newly read
@@ -87,24 +88,6 @@ public interface AtsConfigEndpointApi {
    @Path("genAttrTypeViews")
    @Produces(MediaType.APPLICATION_JSON)
    public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception;
-
-   /**
-    * Create new ATS configuration branch and ATS config object on Common branch
-    *
-    * @param form containing information to configure new ATS branch
-    * @param form.fromBranchId of branch to get config artifacts from
-    * @param form.newBranchName of new branch
-    * @param form.userId - userId of user performing transition
-    * @return json object with new branchId
-    */
-   @POST
-   @Path("branch")
-   @Consumes("application/x-www-form-urlencoded")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfiguration createConfig(MultivaluedMap<String, String> form);
-
-   @POST
-   public XResultData createUpdateConfig();
 
    @GET
    @Path("alive")

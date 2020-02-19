@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -53,17 +52,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUserNoCache() {
       return getCurrentUser();
-   }
-
-   private ArtifactReadable getArtifact(IAtsObject atsObject) {
-      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
-         return (ArtifactReadable) atsObject.getStoreObject();
-      }
-      return getArtifact(atsObject.getArtifactId());
-   }
-
-   private ArtifactReadable getArtifact(ArtifactId artifactId) {
-      return getQuery().andId(artifactId).getResults().getExactlyOne();
    }
 
    private ArtifactReadable getArtifactOrSentinel(ArtifactId artifactId) {

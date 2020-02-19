@@ -14,11 +14,8 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Configuration;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.AtsConfiguredBranch;
-import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Default;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
 import java.util.Collection;
@@ -29,7 +26,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
@@ -43,12 +39,10 @@ import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -149,19 +143,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             addExtraAttributes(user, atsApi);
          }
          idToArtifact.put(art.getId(), art);
-      }
-      time.end();
-
-      time.start("Server ACS - getAtsConfigurationsFromDb.configs");
-      Collection<ArtifactReadable> artifacts =
-         Collections.castAll(atsApi.getQueryService().getArtifacts(Configuration));
-      for (ArtifactReadable art : artifacts) {
-         AtsConfiguration config = new AtsConfiguration();
-         configs.getConfigs().add(config);
-         config.setName(art.getName());
-         config.setArtifactId(art);
-         config.setBranchId(BranchId.valueOf(art.getSoleAttributeValue(AtsConfiguredBranch, "0")));
-         config.setIsDefault(art.getSoleAttributeValue(Default, false));
       }
       time.end();
 
@@ -266,7 +247,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          results.error("ATS base config has already been completed");
          return results;
       }
-      AtsDatabaseConfig config = new AtsDatabaseConfig(atsApi, orcsApi);
+      AtsDatabaseConfig config = new AtsDatabaseConfig(atsApi);
       return config.run();
    }
 

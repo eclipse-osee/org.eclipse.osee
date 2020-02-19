@@ -42,7 +42,6 @@ public final class AtsArtifactToken {
    public static IAtsActionableItemArtifactToken TopActionableItem = AtsActionableItemArtifactToken.valueOf(122894L, "Actionable Items");
    public static ArtifactToken CountryFolder = ArtifactToken.valueOf(7968155, "Countries", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken ProgramFolder = ArtifactToken.valueOf(90442279, "Programs", COMMON, CoreArtifactTypes.Folder);
-   public static ArtifactToken ConfigsFolder = ArtifactToken.valueOf(5086714, "Configs", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken WorkDefinitionsFolder = ArtifactToken.valueOf(284655, "Work Definitions", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken WebPrograms = ArtifactToken.valueOf(277592, "Web Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);

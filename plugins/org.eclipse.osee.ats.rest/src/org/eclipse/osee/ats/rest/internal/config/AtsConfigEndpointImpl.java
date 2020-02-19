@@ -18,19 +18,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
-import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
@@ -40,22 +36,12 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -64,14 +50,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
-   private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private List<ArtifactImage> images;
 
-   public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
+   public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, ExecutorAdmin executorAdmin) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      this.logger = logger;
       this.executorAdmin = executorAdmin;
    }
 
@@ -132,101 +116,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public ViewModel getNewSource() {
       return new ViewModel("templates/newConfigBranch.html");
-   }
-
-   @Override
-   public AtsConfiguration createConfig(MultivaluedMap<String, String> form) {
-
-      // get parameters
-      BranchId fromBranchId = BranchId.valueOf(form.getFirst("fromBranchid"));
-      String newBranchName = form.getFirst("newBranchName");
-      Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
-      String userId = form.getFirst("userId");
-      Conditions.checkNotNullOrEmpty(userId, "UserId");
-      AtsUser user = atsApi.getUserService().getUserByUserId(userId);
-      if (user == null) {
-         logger.error("User by id [%s] does not exist", userId);
-      }
-      BranchId fromBranch = orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getExactlyOne();
-
-      // Create new baseline branch off Root
-      BranchId newBranch = orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user);
-
-      // Introduce all ATS heading artifacts to new branch
-      introduceAtsHeadingArtifacts(fromBranch, newBranch, user);
-
-      // Create config artifact on Common
-      AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, user, newBranch);
-
-      // Return new branch id
-      return config;
-   }
-
-   private void introduceAtsHeadingArtifacts(BranchId fromBranch, BranchId newBranch, UserId userId) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(newBranch, userId, "Add ATS Configuration");
-
-      ArtifactId headingArt = introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
-         CoreArtifactTokens.OseeConfiguration, null);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopActionableItem, newBranch, null, headingArt);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopTeamDefinition, newBranch, null, headingArt);
-      ArtifactId configArt =
-         introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch, null, headingArt);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.ConfigsFolder, newBranch, null, configArt);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.Users, newBranch, null, configArt);
-
-      tx.commit();
-   }
-
-   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, BranchId fromBranch, ArtifactToken introToken, BranchId newBranch, ArtifactToken parentToken, ArtifactId parentArt) {
-      ArtifactReadable introArt =
-         orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL);
-
-      if (introArt.isInvalid()) {
-         introArt =
-            orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
-               introToken.getName()).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
-      }
-      Conditions.assertNotSentinel(introArt);
-
-      ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
-      if (parentToken != null && parentToken.isValid()) {
-         parentArt =
-            orcsApi.getQueryFactory().fromBranch(newBranch).andId(parentToken).getResults().getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL);
-         if (parentArt.isInvalid()) {
-            parentArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
-               parentToken.getArtifactType()).andNameEquals(parentToken.getName()).getResults().getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL);
-         }
-      }
-      tx.addChild(parentArt, artifact);
-      return artifact;
-   }
-
-   private AtsConfiguration createConfigArtifactOnCommon(String branchName, UserId userId, BranchId branch) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId, "Add ATS Configuration");
-      AtsConfiguration config = new AtsConfiguration();
-      config.setName(branchName);
-      config.setBranchId(branch);
-      config.setIsDefault(false);
-      ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
-      config.setArtifactId(configArt);
-      tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
-      XResultData rd = new XResultData();
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsApi, orcsApi);
-
-      // Get or create Configs folder
-      ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userId, rd);
-      if (rd.isErrors()) {
-         throw new OseeStateException(rd.toString());
-      }
-      // Add configuration to configs folder
-      tx.relate(configsFolderArt, CoreRelationTypes.DefaultHierarchical_Child, configArt);
-      tx.commit();
-      return config;
    }
 
    @Override
