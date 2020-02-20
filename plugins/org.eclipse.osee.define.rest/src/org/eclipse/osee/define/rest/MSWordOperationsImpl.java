@@ -17,6 +17,7 @@ import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
+import org.eclipse.osee.define.rest.internal.wordupdate.WordMLApplicabilityHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.define.rest.operations.NestedTemplateStreamingOutput;
@@ -49,6 +50,13 @@ public class MSWordOperationsImpl implements MSWordOperations {
       WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
 
       return wordRendererHandler.renderWordML(data);
+   }
+
+   @Override
+   public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data) {
+      WordMLApplicabilityHandler wordHandler = new WordMLApplicabilityHandler(orcsApi, logger, branchId, viewId);
+
+      return wordHandler.previewValidApplicabilityContent(data);
    }
 
    @Override

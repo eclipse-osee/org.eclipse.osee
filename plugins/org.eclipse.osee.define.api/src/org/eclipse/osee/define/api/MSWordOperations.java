@@ -25,6 +25,8 @@ public interface MSWordOperations {
 
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
 
+   public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data);
+
    public StreamingOutput publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact);
 
 }
