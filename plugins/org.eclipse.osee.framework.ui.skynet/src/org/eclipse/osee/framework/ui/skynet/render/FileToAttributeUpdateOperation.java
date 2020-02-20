@@ -16,7 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class FileToAttributeUpdateOperation extends AbstractOperation {
    private final Artifact artifact;
-   private final AttributeTypeId attributeType;
+   private final AttributeTypeGeneric<?> attributeType;
    private final File file;
    private final AttributeModifier modifier;
 
-   public FileToAttributeUpdateOperation(File file, Artifact artifact, AttributeTypeId attributeType, AttributeModifier validator) {
+   public FileToAttributeUpdateOperation(File file, Artifact artifact, AttributeTypeGeneric<?> attributeType, AttributeModifier validator) {
       super("File To Artifact Update", Activator.PLUGIN_ID);
       this.artifact = artifact;
       this.attributeType = attributeType;
@@ -39,7 +39,7 @@ public class FileToAttributeUpdateOperation extends AbstractOperation {
       this.modifier = validator;
    }
 
-   public FileToAttributeUpdateOperation(File file, Artifact artifact, AttributeTypeId attributeType) {
+   public FileToAttributeUpdateOperation(File file, Artifact artifact, AttributeTypeGeneric<?> attributeType) {
       this(file, artifact, attributeType, null);
    }
 

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -822,7 +823,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
-   public final void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream stream) {
+   public final void setSoleAttributeFromStream(AttributeTypeGeneric<?> attributeType, InputStream stream) {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
