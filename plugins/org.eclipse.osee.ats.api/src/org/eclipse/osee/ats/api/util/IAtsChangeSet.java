@@ -141,9 +141,9 @@ public interface IAtsChangeSet {
 
    void addAttribute(ArtifactId artifactId, AttributeTypeToken attrType, Object value);
 
-   void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeToken attrType, String value);
+   void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, String value);
 
-   void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeToken attributeType, String value);
+   void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeGeneric<?> attributeType, String value);
 
    void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, InputStream inputStream);
 

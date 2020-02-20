@@ -447,9 +447,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeToken attrType, String value) {
+   public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, String value) {
       Artifact art = getArtifact(artifact);
-      art.setSoleAttributeFromString(attrType, value);
+      art.setSoleAttributeFromString(attributeType, value);
       add(art);
    }
 
