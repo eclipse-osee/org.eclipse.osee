@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -89,16 +90,20 @@ public class AttributeTypeManager {
       return getCache().existsByName(name);
    }
 
-   public static AttributeType getTypeById(Long guid) {
-      if (guid == null) {
-         throw new OseeArgumentException("[%s] is not a valid guid", guid);
+   public static AttributeTypeGeneric<?> getAttributeType(Long id) {
+      return getCacheService().getTokenService().getAttributeType(id);
+   }
+
+   public static AttributeType getTypeById(Long id) {
+      if (id == null) {
+         throw new OseeArgumentException("[%s] is not a valid guid", id);
       }
-      AttributeType attributeType = getCache().getByGuid(guid);
+      AttributeType attributeType = getCache().getByGuid(id);
       if (attributeType == null) {
          getCacheService().reloadTypes();
-         attributeType = getCache().getByGuid(guid);
+         attributeType = getCache().getByGuid(id);
          if (attributeType == null) {
-            throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", guid);
+            throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", id);
          }
       }
       return attributeType;

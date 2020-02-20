@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -93,7 +94,7 @@ public class ConflictManagerInternal {
                new AttributeConflict(GammaId.valueOf(chStmt.getLong("source_gamma_id")),
                   GammaId.valueOf(chStmt.getLong("dest_gamma_id")), ArtifactId.valueOf(chStmt.getLong("art_id")), null,
                   commitTransaction, chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
-                  AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id")),
+                  AttributeTypeManager.getAttributeType(chStmt.getLong("attr_type_id")),
                   BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                   BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
@@ -279,7 +280,7 @@ public class ConflictManagerInternal {
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
             GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));
-            AttributeTypeId attrTypeId = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
+            AttributeTypeGeneric<?> attrTypeId = AttributeTypeManager.getAttributeType(chStmt.getLong("attr_type_id"));
             String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
 

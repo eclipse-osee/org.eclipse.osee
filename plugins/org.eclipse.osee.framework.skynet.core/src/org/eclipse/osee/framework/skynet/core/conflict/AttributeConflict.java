@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -60,7 +60,7 @@ public class AttributeConflict extends Conflict {
    private final AttributeId attrId;
    private Object sourceObject;
    private Object destObject;
-   private final AttributeTypeId attributeType;
+   private final AttributeTypeGeneric<?> attributeType;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
    private boolean sourceEqualsDest;
@@ -69,7 +69,7 @@ public class AttributeConflict extends Conflict {
 
    private String changeItemName;
 
-   public AttributeConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   public AttributeConflict(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeGeneric<?> attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attributeType = attributeType;
@@ -112,7 +112,7 @@ public class AttributeConflict extends Conflict {
       return attribute;
    }
 
-   public AttributeTypeId getAttributeType() {
+   public AttributeTypeGeneric<?> getAttributeType() {
       return attributeType;
    }
 
@@ -208,7 +208,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() {
-      return new TreeSet<>(AttributeTypeManager.getEnumerationValues(getAttributeType()));
+      return new TreeSet<>(AttributeTypeManager.getEnumerationValues(attributeType));
    }
 
    public boolean setStringAttributeValue(String value) {
@@ -222,7 +222,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeFromString(getAttributeType(), value);
+      getArtifact().setSoleAttributeFromString(attributeType, value);
       getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
@@ -239,7 +239,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), value);
+      getArtifact().setSoleAttributeValue(attributeType, value);
       getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
@@ -258,7 +258,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(
             String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
+      getArtifact().setSoleAttributeValue(attributeType, getSourceObject());
       transaction.addArtifact(getArtifact());
       markStatusToReflectEdit();
       return true;
@@ -277,7 +277,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(
             String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
+      getArtifact().setSoleAttributeValue(attributeType, getSourceObject());
       getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
@@ -296,7 +296,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(
             String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
+      getArtifact().setSoleAttributeValue(attributeType, getDestObject());
       transaction.addArtifact(getArtifact());
       markStatusToReflectEdit();
       return true;
@@ -315,7 +315,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(
             String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
       }
-      getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
+      getArtifact().setSoleAttributeValue(attributeType, getDestObject());
       getArtifact().persist(getClass().getSimpleName());
       markStatusToReflectEdit();
       return true;
@@ -338,7 +338,7 @@ public class AttributeConflict extends Conflict {
          getAttribute().resetToDefaultValue();
          getArtifact().persist(getClass().getSimpleName());
       } else {
-         getArtifact().setSoleAttributeFromString(getAttributeType(), NO_VALUE);
+         getArtifact().setSoleAttributeFromString(attributeType, NO_VALUE);
          getArtifact().persist(getClass().getSimpleName());
       }
       computeEqualsValues();
@@ -439,7 +439,7 @@ public class AttributeConflict extends Conflict {
    public boolean isWordAttribute() {
       boolean toReturn = false;
       try {
-         toReturn = getAttributeType().equals(CoreAttributeTypes.WordTemplateContent);
+         toReturn = attributeType.equals(CoreAttributeTypes.WordTemplateContent);
       } catch (OseeCoreException ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }

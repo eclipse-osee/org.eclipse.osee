@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -34,7 +34,7 @@ public class EmbededAttributeEditorFactory {
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
 
-   public static IEmbeddedAttributeEditor getEmbeddedEditor(AttributeTypeId attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
+   public static IEmbeddedAttributeEditor getEmbeddedEditor(AttributeTypeGeneric<?> attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
       try {
          if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
             return new EmbeddedDateAttributeEditor(null, attributeHolder, displayName, attributeType, persist);

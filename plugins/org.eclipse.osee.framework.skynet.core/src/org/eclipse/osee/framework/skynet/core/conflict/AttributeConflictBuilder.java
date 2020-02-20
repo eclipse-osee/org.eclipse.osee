@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,9 +33,9 @@ public class AttributeConflictBuilder extends ConflictBuilder {
 
    private final String sourceValue;
    private final AttributeId attrId;
-   private final AttributeTypeId attrTypeId;
+   private final AttributeTypeGeneric<?> attrTypeId;
 
-   public AttributeConflictBuilder(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, AttributeId attrId, AttributeTypeId attrTypeId) {
+   public AttributeConflictBuilder(GammaId sourceGamma, GammaId destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, AttributeId attrId, AttributeTypeGeneric<?> attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
@@ -66,5 +66,4 @@ public class AttributeConflictBuilder extends ConflictBuilder {
       }
       return attributeConflict;
    }
-
 }
