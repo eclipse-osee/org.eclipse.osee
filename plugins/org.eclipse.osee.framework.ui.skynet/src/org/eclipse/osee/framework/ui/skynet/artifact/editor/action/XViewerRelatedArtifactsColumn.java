@@ -28,8 +28,8 @@ public class XViewerRelatedArtifactsColumn extends XViewerValueColumn {
    private final boolean asToken;
 
    public XViewerRelatedArtifactsColumn(RelationTypeSide rts, boolean asToken) {
-      super(ID, "", 90, XViewerAlign.Left, false, SortDataType.String, false,
-         "Show delimited list of artifacts on other side of relation.");
+      super(ID + rts.getRelationType().getName() + rts.getSide().name(), "", 90, XViewerAlign.Left, false,
+         SortDataType.String, false, "Show delimited list of artifacts on other side of relation.");
       this.rts = rts;
       this.asToken = asToken;
    }
