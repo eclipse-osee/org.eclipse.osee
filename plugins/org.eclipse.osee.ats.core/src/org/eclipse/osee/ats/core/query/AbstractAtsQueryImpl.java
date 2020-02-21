@@ -546,6 +546,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) {
+      Conditions.notNull(attributeType, "attributeType");
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }

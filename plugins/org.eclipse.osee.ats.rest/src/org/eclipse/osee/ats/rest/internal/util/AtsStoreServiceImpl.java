@@ -118,7 +118,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public AttributeTypeToken getAttributeType(String attrTypeName) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().getByName(attrTypeName);
+      AttributeTypeToken token = orcsApi.getOrcsTypes().getAttributeTypes().getByNameOrSentinel(attrTypeName);
+      if (token.isValid()) {
+         return token;
+      }
+      return null;
    }
 
    @Override

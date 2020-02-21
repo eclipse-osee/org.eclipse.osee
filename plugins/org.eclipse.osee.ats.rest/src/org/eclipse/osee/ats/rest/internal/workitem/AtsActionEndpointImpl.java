@@ -539,7 +539,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             if (attrType == null) {
                attrType = atsApi.getStoreService().getAttributeType(key);
             }
-            query.andAttr(attrType, entry.getValue());
+            if (attrType != null) {
+               query.andAttr(attrType, entry.getValue());
+            }
          }
       }
       if (teams.isEmpty()) {

@@ -99,7 +99,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public AttributeTypeToken getAttributeType(String attributeName) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().getByName(attributeName);
+      AttributeTypeToken token = orcsApi.getOrcsTypes().getAttributeTypes().getByNameOrSentinel(attributeName);
+      if (token.isValid()) {
+         return token;
+      }
+      return null;
    }
 
    @Override

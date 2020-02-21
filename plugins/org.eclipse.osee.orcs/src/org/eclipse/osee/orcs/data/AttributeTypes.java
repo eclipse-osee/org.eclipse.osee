@@ -56,6 +56,9 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    boolean isFloatingType(AttributeTypeId attrType);
 
+   /**
+    * @return AttributeTypeToken or OseeTypeDoesNotExist
+    */
    AttributeTypeToken getByName(String attrTypeName);
 
    boolean isStringType(AttributeTypeId attrType);
@@ -67,5 +70,7 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
    boolean typeExists(String attrTypeName);
 
    boolean typeExists(AttributeTypeId attrTypeId);
+
+   AttributeTypeToken getByNameOrSentinel(String attrTypeName);
 
 }

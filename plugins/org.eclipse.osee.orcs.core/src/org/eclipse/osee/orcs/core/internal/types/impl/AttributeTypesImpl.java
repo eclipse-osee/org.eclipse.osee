@@ -233,8 +233,17 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public AttributeTypeToken getByName(String attrTypeName) {
+   public AttributeTypeToken getByNameOrSentinel(String attrTypeName) {
+      for (AttributeTypeToken type : getAll()) {
+         if (type.getName().equals(attrTypeName)) {
+            return type;
+         }
+      }
+      return AttributeTypeToken.SENTINEL;
+   }
 
+   @Override
+   public AttributeTypeToken getByName(String attrTypeName) {
       for (AttributeTypeToken type : getAll()) {
          if (type.getName().equals(attrTypeName)) {
             return type;
