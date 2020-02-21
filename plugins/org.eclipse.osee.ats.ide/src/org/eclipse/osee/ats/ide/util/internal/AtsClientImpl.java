@@ -81,6 +81,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
+import org.eclipse.osee.jaxrs.JaxRsApi;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
@@ -95,10 +96,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private AtsQueryServiceClient queryServiceClient;
    private IAtsWorkItemServiceClient workItemServiceClient;
    private IAtsServerEndpointProvider serverEndpoints;
-
-   public AtsClientImpl() {
-      super();
-   }
+   private JaxRsApi jaxRsApi;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -112,6 +110,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          }
       };
       Jobs.startJob(loadAtsConfig);
+   }
+
+   public void setJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
    }
 
    @Override
@@ -129,7 +131,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
-      queryService = new AtsQueryServiceImpl(this, jdbcService);
+      queryService = new AtsQueryServiceImpl(this, jdbcService, jaxRsApi);
       queryServiceClient = new AtsQueryServiceClient(this);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 

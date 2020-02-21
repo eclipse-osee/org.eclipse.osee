@@ -102,7 +102,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
@@ -196,7 +195,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ProgramOperations ops = new ProgramOperations(atsApi);
       AtwNode atwTree = ops.getAtwTree(aProgram);
 
-      return "[" + JsonUtil.toJson(atwTree) + "]";
+      return "[" + orcsApi.jaxRsApi().toJson(atwTree) + "]";
    }
 
    @Override
@@ -1069,7 +1068,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       try {
          String custDataStr = OseeInf.getResourceContents("atsConfig/DefaultAgileCustomization.json", getClass());
          if (Strings.isValid(custDataStr)) {
-            result = JsonUtil.getMapper().readValue(custDataStr, CustomizeData.class);
+            result = orcsApi.jaxRsApi().readValue(custDataStr, CustomizeData.class);
          }
       } catch (Exception ex) {
          ex.printStackTrace();

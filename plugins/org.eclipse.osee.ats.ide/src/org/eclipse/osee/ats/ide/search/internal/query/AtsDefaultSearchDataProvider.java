@@ -14,19 +14,24 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.jaxrs.JaxRsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
 
+   private JaxRsApi jaxRsApi;
+
+   public void setJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
+
    @Override
    public AtsSearchData fromJson(String namespace, String jsonValue) {
       try {
-         jsonValue = convertFrom25To26(jsonValue);
-         return JsonUtil.getMapper().readValue(jsonValue, AtsSearchData.class);
+         return jaxRsApi.readValue(convertFrom25To26(jsonValue), AtsSearchData.class);
       } catch (Exception ex) {
          throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);
       }
@@ -43,5 +48,4 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
       data.setNamespace(namespace);
       return data;
    }
-
 }

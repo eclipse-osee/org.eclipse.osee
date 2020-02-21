@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -57,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.jaxrs.JaxRsApi;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -65,12 +65,15 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
-   private final AtsApi atsApi;
    private static final Pattern namespacePattern = Pattern.compile("\"namespace\"\\s*:\\s*\"(.*?)\"");
 
-   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService) {
+   private final AtsApi atsApi;
+   private final JaxRsApi jaxRsApi;
+
+   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService, JaxRsApi jaxRsApi) {
       super(jdbcService, atsApi);
       this.atsApi = atsApi;
+      this.jaxRsApi = jaxRsApi;
    }
 
    @Override
@@ -129,9 +132,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
-            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.AtsQuickSearch, getStoreString(data));
+            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.AtsQuickSearch, jaxRsApi.toJson(data));
          } else {
-            changes.setAttribute(userArt, attr, getStoreString(data));
+            changes.setAttribute(userArt, attr, jaxRsApi.toJson(data));
          }
          if (!changes.isEmpty()) {
             changes.execute();
@@ -139,7 +142,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to store ATS Search", ex);
       }
-
    }
 
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
@@ -190,10 +192,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to get ATS Search", ex);
       }
-   }
-
-   private String getStoreString(AtsSearchData data) throws Exception {
-      return JsonUtil.getMapper().writeValueAsString(data);
    }
 
    private AtsSearchData fromJson(String jsonValue) {
@@ -437,5 +435,4 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArtifactToken getArtifactFromAttribute(AttributeTypeString attrType, String value, BranchId branch) {
       return ArtifactQuery.getArtifactFromAttribute(attrType, value, branch);
    }
-
 }

@@ -12,7 +12,9 @@ package org.eclipse.osee.orcs;
 
 import javax.script.ScriptEngine;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.OrcsTokenService;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
+import org.eclipse.osee.jaxrs.JaxRsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -50,4 +52,8 @@ public interface OrcsApi {
    IAccessControlService getAccessControlService();
 
    boolean isTypesValid();
+
+   JaxRsApi jaxRsApi();
+
+   OrcsTokenService getTokenService();
 }

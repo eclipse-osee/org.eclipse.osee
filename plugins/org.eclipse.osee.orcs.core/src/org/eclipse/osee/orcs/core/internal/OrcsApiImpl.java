@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jaxrs.JaxRsApi;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -82,6 +83,7 @@ public class OrcsApiImpl implements OrcsApi {
    private SystemProperties properties;
    private EventAdmin eventAdmin;
    private OrcsTokenService tokenService;
+   private JaxRsApi jaxRsApi;
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -120,6 +122,10 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
+   }
+
+   public void setJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
    }
 
    public void start() {
@@ -329,5 +335,15 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
+   }
+
+   @Override
+   public JaxRsApi jaxRsApi() {
+      return jaxRsApi;
+   }
+
+   @Override
+   public OrcsTokenService getTokenService() {
+      return tokenService;
    }
 }
