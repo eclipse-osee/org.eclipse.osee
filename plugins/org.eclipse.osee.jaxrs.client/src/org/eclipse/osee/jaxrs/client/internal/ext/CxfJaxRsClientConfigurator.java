@@ -58,7 +58,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    private final OAuthFactory oauthFactory;
 
    public CxfJaxRsClientConfigurator(OAuthFactory oauthFactory) {
-      super();
       this.oauthFactory = oauthFactory;
    }
 

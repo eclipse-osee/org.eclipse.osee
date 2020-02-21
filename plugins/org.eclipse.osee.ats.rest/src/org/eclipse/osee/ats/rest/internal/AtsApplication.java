@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
@@ -52,7 +51,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.operations.FixWorkDefinitionT
 import org.eclipse.osee.ats.rest.internal.workitem.workdef.AtsWorkDefEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.world.AtsWorldEndpointImpl;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -103,7 +101,6 @@ public class AtsApplication extends Application {
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
       OseeTemplateTokens.register(registry);
-      JsonFactory jsonFactory = JsonUtil.getFactory();
 
       // Register conversions
       ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(orcsApi);
@@ -133,7 +130,7 @@ public class AtsApplication extends Application {
 
       // Endpoints
       // NOTE: @Consumes(MediaType.APPLICATION_JSON) doesn't work with GET, must be PUT
-      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
+      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi));
       singletons.add(new AtsWorldEndpointImpl(atsServer));
       singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));
       singletons.add(new AtsWorkDefEndpointImpl(atsServer, orcsApi));

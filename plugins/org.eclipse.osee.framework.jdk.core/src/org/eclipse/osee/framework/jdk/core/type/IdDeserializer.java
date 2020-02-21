@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 import java.util.function.Function;
@@ -39,7 +40,7 @@ public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
    public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
       Long id;
-      if (readTree instanceof TextNode || readTree instanceof IntNode) {
+      if (readTree instanceof TextNode || readTree instanceof IntNode || readTree instanceof LongNode) {
          String value = readTree.asText();
          id = value.equals("") ? -1L : Long.valueOf(value);
       } else {

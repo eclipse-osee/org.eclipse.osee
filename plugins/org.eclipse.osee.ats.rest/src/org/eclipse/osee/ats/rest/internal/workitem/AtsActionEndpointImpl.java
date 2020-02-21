@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import com.fasterxml.jackson.core.JsonFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +101,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Context
    private HttpHeaders httpHeaders;
 
-   public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, JsonFactory jsonFactory) {
+   public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();

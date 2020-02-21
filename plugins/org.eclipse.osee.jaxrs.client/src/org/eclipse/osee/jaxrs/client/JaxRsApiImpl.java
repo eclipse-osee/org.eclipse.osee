@@ -16,9 +16,17 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import java.io.IOException;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -35,6 +43,22 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    public void start() {
       SimpleModule module = JsonUtil.createModule();
+
+      module.addDeserializer(AttributeTypeGeneric.class,
+         new IdDeserializer<AttributeTypeGeneric<?>>(tokenService::getAttributeType));
+      module.addDeserializer(AttributeTypeToken.class,
+         new IdDeserializer<AttributeTypeToken>(tokenService::getAttributeType));
+      module.addDeserializer(AttributeTypeId.class,
+         new IdDeserializer<AttributeTypeId>(tokenService::getAttributeType));
+
+      module.addDeserializer(ArtifactTypeToken.class,
+         new IdDeserializer<ArtifactTypeToken>(tokenService::getArtifactType));
+      module.addDeserializer(ArtifactTypeId.class, new IdDeserializer<ArtifactTypeId>(tokenService::getArtifactType));
+
+      module.addDeserializer(RelationTypeToken.class,
+         new IdDeserializer<RelationTypeToken>(tokenService::getRelationType));
+      module.addDeserializer(RelationTypeId.class, new IdDeserializer<RelationTypeId>(tokenService::getRelationType));
+
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();
    }
