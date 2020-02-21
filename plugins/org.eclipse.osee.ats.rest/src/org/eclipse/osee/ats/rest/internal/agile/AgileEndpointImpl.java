@@ -196,8 +196,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ProgramOperations ops = new ProgramOperations(atsApi);
       AtwNode atwTree = ops.getAtwTree(aProgram);
 
-      String string = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(atwTree);
-      return "[" + string + "]";
+      return "[" + JsonUtil.toJson(atwTree) + "]";
    }
 
    @Override

@@ -85,7 +85,6 @@ public class JsonArtifactTransferTest {
    }
 
    private String generateJsonOutput() {
-      String output = null;
       List<JsonArtRep> outputItems = new ArrayList<>();
       for (int i = 0; i < 5; i++) {
          JsonArtRep rep = new JsonArtRep();
@@ -100,13 +99,7 @@ public class JsonArtifactTransferTest {
          rep.setAttrs(attrs);
          outputItems.add(rep);
       }
-      try {
-         output = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(outputItems);
-         System.out.println(output);
-      } catch (IOException ex) {
-         //
-      }
-      return output;
+      return JsonUtil.toJson(outputItems);
    }
 
    private void parseJsonOutput(String output) throws IOException {

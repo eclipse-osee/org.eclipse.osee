@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.doors.connector.ui.viewer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.doors.connector.core.Requirement;
@@ -76,12 +75,7 @@ public class RdfExplorerDragAndDrop {
       for (Requirement reqt : reqs) {
          reqsOut.add(makeJsonArtifactRepresentation(reqt));
       }
-
-      try {
-         event.data = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(reqsOut);
-      } catch (IOException ex) {
-         //
-      }
+      event.data = JsonUtil.toJson(reqsOut);
    }
 
    private JsonArtifactRepresentation makeJsonArtifactRepresentation(Requirement reqt) {

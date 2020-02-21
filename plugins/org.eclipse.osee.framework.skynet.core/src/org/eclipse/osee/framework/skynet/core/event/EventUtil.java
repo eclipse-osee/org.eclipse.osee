@@ -107,7 +107,7 @@ public final class EventUtil {
     */
    public static TopicEvent createTopic(String topic, Object event, EventType eventType) {
       try {
-         return new TopicEvent(topic, "json", JsonUtil.getMapper().writeValueAsString(event), eventType);
+         return new TopicEvent(topic, "json", JsonUtil.toJson(event), eventType);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error reading topic json [%s]", event.toString());
       }

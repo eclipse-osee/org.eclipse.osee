@@ -67,7 +67,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
          + "Delete line to remove.\n// Copy existing link and clear id for new link.\n// Save to Update\n" //
          + "// Example: {\"name\":\"Google\",\"url\":\"http://www.google.com\",\"id\":\"AOd9poc8Kz02K3K7xfwA\",\"team\":\"" + DemoUsers.Joe_Smith.getName() + "\",\"tags\":[]}\n\n");
       for (Link link : webPrefs.getLinks().values()) {
-         sb.append(JsonUtil.getMapper().writeValueAsString(link) + "\n");
+         sb.append(JsonUtil.toJson(link) + "\n");
       }
       File outFile = getLinksFile();
       Lib.writeStringToFile(sb.toString(), outFile);

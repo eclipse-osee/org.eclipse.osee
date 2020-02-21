@@ -144,7 +144,7 @@ public class LinkUtil {
    }
 
    private static void saveWebPrefsToArtifactAndKickEvent(boolean global, Artifact useArtifact, AccountWebPreferences webPrefs) throws Exception {
-      String json = JsonUtil.getMapper().writeValueAsString(webPrefs);
+      String json = JsonUtil.toJson(webPrefs);
       useArtifact.setSoleAttributeValue(CoreAttributeTypes.WebPreferences, json);
       useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());
 

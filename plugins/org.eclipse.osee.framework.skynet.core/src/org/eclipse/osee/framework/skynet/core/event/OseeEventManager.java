@@ -135,7 +135,7 @@ public final class OseeEventManager {
       try {
          if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
             String message = String.format("USER_AUTHENTICATED [%s] Payload [%s]", UserManager.getUser().getUserId(),
-               JsonUtil.getMapper().writeValueAsString(payload));
+               JsonUtil.toJson(payload));
             ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(CoreActivityTypes.ACCESS_CONTROL_MODIFIED,
                0L, ActivityLog.COMPLETE_STATUS, message);
          }
