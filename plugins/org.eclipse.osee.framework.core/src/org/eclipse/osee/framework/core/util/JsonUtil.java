@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -60,48 +62,64 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class JsonUtil {
 
-   private static ObjectMapper mapper;
-   private static ObjectMapper mapper2;
+   private static ObjectMapper mapper = createStandardDateObjectMapper(createModule());
+   private static ObjectMapper mapper2 =
+      createObjectMapper(createModule()).setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
 
-   static {
-      mapper = createObjectMapper().setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
-      mapper2 = createObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm a z"));
-   }
-
-   public static synchronized ObjectMapper getMapper() {
+   public static ObjectMapper getMapper() {
       return mapper;
    }
 
+   public static JsonFactory getFactory() {
+      return mapper2.getFactory();
+   }
+
    public static JsonNode readTree(String json) {
+      return readTree(mapper, json);
+   }
+
+   public static JsonNode readTree(ObjectMapper mapper, String json) {
       try {
-         return getMapper().readTree(json);
+         return mapper.readTree(json);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
    public static String toJson(Object object) {
+      return toJson(mapper, object);
+   }
+
+   public static String toJson(ObjectMapper mapper, Object object) {
       try {
-         return getMapper().writeValueAsString(object);
-      } catch (IOException ex) {
+         return mapper.writeValueAsString(object);
+      } catch (JsonProcessingException ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
    public static <T> T readValue(String content, Class<T> valueType) {
+      return readValue(mapper, content, valueType);
+   }
+
+   public static <T> T readValue(ObjectMapper mapper, String content, Class<T> valueType) {
       try {
-         return getMapper().readValue(content, valueType);
+         return mapper.readValue(content, valueType);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
    }
 
-   private static synchronized ObjectMapper getMapperZ() {
-      return mapper2;
+   public static <T> T readValue(String json, TypeReference<Map<String, String>> typeReference) {
+      return readValue(mapper, json, typeReference);
    }
 
-   public static JsonFactory getFactory() {
-      return getMapperZ().getFactory();
+   public static <T> T readValue(ObjectMapper mapper, String json, TypeReference<Map<String, String>> typeReference) {
+      try {
+         return mapper.readValue(json, typeReference);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    /**
@@ -127,19 +145,44 @@ public class JsonUtil {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
-
    }
 
-   public static <T> T readValue(String json, TypeReference<Map<String, String>> typeReference) {
-      try {
-         return getMapper().readValue(json, typeReference);
-      } catch (IOException ex) {
-         throw OseeCoreException.wrap(ex);
+   public static boolean hasAnnotation(Class<? extends Annotation> toMatch, Annotation[] annotations) {
+      for (Annotation annotation : annotations) {
+         if (annotation.annotationType().isAssignableFrom(toMatch)) {
+            return true;
+         }
       }
+      return false;
    }
 
-   private static ObjectMapper createObjectMapper() {
+   public static ObjectMapper createStandardDateObjectMapper(Module module) {
+      return createObjectMapper(module).setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
+   }
+
+   public static SimpleModule createModule() {
+      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
+
+      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
+      module.addDeserializer(ArtifactToken.class,
+         new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
+      module.addDeserializer(ArtifactId.class, new IdDeserializer<@NonNull ArtifactId>(ArtifactId::valueOf));
+      module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
+      module.addDeserializer(UserToken.class, new UserTokenDeserializer());
+      module.addDeserializer(TransactionId.class, new IdDeserializer<@NonNull TransactionId>(TransactionId::valueOf));
+      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
+      module.addSerializer(UserToken.class, new UserTokenSerializer());
+      JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();
+      module.addSerializer(TransactionId.class, idSerializer);
+      module.addSerializer(BranchType.class, idSerializer);
+      module.addSerializer(BranchState.class, idSerializer);
+
+      return module;
+   }
+
+   private static ObjectMapper createObjectMapper(Module module) {
       ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(module);
 
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false);
@@ -163,33 +206,6 @@ public class JsonUtil {
       prettyPrinter.indentObjectsWith(new DefaultIndenter("  ", "\n"));
       objectMapper.setDefaultPrettyPrinter(prettyPrinter);
 
-      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
-
-      module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
-      module.addDeserializer(ArtifactToken.class,
-         new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
-      module.addDeserializer(ArtifactId.class, new IdDeserializer<@NonNull ArtifactId>(ArtifactId::valueOf));
-      module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
-      module.addDeserializer(UserToken.class, new UserTokenDeserializer());
-      module.addDeserializer(TransactionId.class, new IdDeserializer<@NonNull TransactionId>(TransactionId::valueOf));
-      module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
-      module.addSerializer(UserToken.class, new UserTokenSerializer());
-      JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();
-      module.addSerializer(TransactionId.class, idSerializer);
-      module.addSerializer(BranchType.class, idSerializer);
-      module.addSerializer(BranchState.class, idSerializer);
-
-      objectMapper.registerModule(module);
       return objectMapper;
    }
-
-   public static boolean hasAnnotation(Class<? extends Annotation> toMatch, Annotation[] annotations) {
-      for (Annotation annotation : annotations) {
-         if (annotation.annotationType().isAssignableFrom(toMatch)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

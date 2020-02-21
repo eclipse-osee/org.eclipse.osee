@@ -5,8 +5,15 @@ Bundle-SymbolicName: org.eclipse.osee.jaxrs.client;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: com.google.common.cache,
+Import-Package: com.fasterxml.jackson.core.type,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.module,
+ com.fasterxml.jackson.databind.type;version="2.9.2",
+ com.fasterxml.jackson.jaxrs.base,
+ com.fasterxml.jackson.jaxrs.json,
+ com.google.common.cache,
  javax.servlet,
  javax.ws.rs,
  javax.ws.rs.client,
@@ -29,8 +36,8 @@ Import-Package: com.google.common.cache,
  org.apache.cxf.transport.common.gzip,
  org.apache.cxf.transport.http,
  org.apache.cxf.transports.http.configuration,
- com.fasterxml.jackson.jaxrs.base,
- com.fasterxml.jackson.jaxrs.json,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs
