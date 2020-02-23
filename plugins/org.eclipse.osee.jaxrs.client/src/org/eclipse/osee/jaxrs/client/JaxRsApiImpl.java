@@ -22,12 +22,18 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import javax.ws.rs.client.WebTarget;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
+import org.eclipse.osee.jaxrs.client.internal.JaxRsClientRuntime;
 
 /**
  * @author Ryan D. Brooks
@@ -85,5 +91,30 @@ public final class JaxRsApiImpl implements JaxRsApi {
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public WebTarget newTarget(String path) {
+      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(mapper);
+      JaxRsClientConfig config = new JaxRsClientConfig();
+      config.setCreateThreadSafeProxyClients(true);
+      String baseUrl = System.getProperty("osee.application.server", "http://localhost:8089");
+      return factory.newWebTarget(config, baseUrl + "/" + path);
+   }
+
+   @Override
+   public <T> T newProxy(WebTarget target, Class<T> clazz) {
+      // This is here to force a webClient to store its configuration
+      target.request();
+
+      if (target instanceof WebTargetImpl) {
+         return JAXRSClientFactory.fromClient(((WebTargetImpl) target).getWebClient(), clazz);
+      }
+      throw new OseeStateException("%s is of type %s not WebTargetImpl", target, target.getClass());
+   }
+
+   @Override
+   public ObjectMapper getObjectMapper() {
+      return mapper;
    }
 }

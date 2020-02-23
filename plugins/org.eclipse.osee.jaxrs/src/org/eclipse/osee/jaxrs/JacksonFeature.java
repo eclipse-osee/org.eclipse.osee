@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
 import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
@@ -47,7 +48,7 @@ public class JacksonFeature implements Feature {
          context.property(propertyKey, JSON_FEATURE);
 
          if (!config.isRegistered(JacksonJaxbJsonProvider.class)) {
-            for (Object object : getProviders()) {
+            for (Object object : getProviders(JsonUtil.getMapper())) {
                context.register(object);
             }
          }
@@ -79,9 +80,9 @@ public class JacksonFeature implements Feature {
       return key;
    }
 
-   public static List<? extends Object> getProviders() {
+   public static List<? extends Object> getProviders(ObjectMapper mapper) {
       List<Object> providers = new ArrayList<>();
-      providers.add(new JacksonJaxbJsonProvider(JsonUtil.getMapper(), JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
+      providers.add(new JacksonJaxbJsonProvider(mapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
       providers.add(JsonParseExceptionMapper.class);
       providers.add(JsonMappingExceptionMapper.class);
       return providers;

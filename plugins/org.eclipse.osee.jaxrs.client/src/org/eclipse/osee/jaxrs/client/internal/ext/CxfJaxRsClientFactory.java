@@ -36,13 +36,18 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
 
    /**
     * Creates a JAX-RS WebTarget
-    * 
+    *
     * @param properties - configuration options
     * @param baseAddress - optional base target address
     * @return target
     */
    @Override
    public JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress) {
+      return new JaxRsWebTargetImpl(newWebTarget(config, serverAddress));
+   }
+
+   @Override
+   public WebTarget newWebTarget(JaxRsClientConfig config, String serverAddress) {
       ClientBuilder builder = ClientBuilder.newBuilder();
       configurator.configureClientBuilder(config, builder);
 
@@ -54,13 +59,13 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       target.request();
 
       configureConnection(config, target);
-      return new JaxRsWebTargetImpl(target);
+      return target;
    }
 
    /**
     * Proxy sub-resource methods returning Objects can not be invoked. Prefer to have sub-resource methods returning
     * typed classes: interfaces, abstract classes or concrete implementations.
-    * 
+    *
     * @param properties - configuration options
     * @param baseAddress - proxy base address
     * @param clazz - JAX-RS annotated class used to create the client interface

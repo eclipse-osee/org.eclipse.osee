@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * @author Ryan D. Brooks
@@ -37,4 +38,10 @@ public interface JaxRsApi {
    <T> T readValue(String json, Class<T> valueType);
 
    <T> T readValue(String json, Class<? extends Collection> collectionClass, Class<?> elementClass);
+
+   WebTarget newTarget(String uri);
+
+   <T> T newProxy(WebTarget target, Class<T> clazz);
+
+   ObjectMapper getObjectMapper();
 }

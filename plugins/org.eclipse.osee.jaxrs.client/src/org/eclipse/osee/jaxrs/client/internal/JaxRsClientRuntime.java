@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client.internal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.net.URI;
@@ -42,18 +43,18 @@ public final class JaxRsClientRuntime {
    public static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
    private static volatile JaxRsClientFactory instance;
 
-   public static JaxRsClientFactory getClientFactoryInstance() {
+   public static JaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper) {
       if (instance == null) {
-         instance = newClientFactory();
+         instance = newClientFactory(mapper);
       }
       return instance;
    }
 
-   private static JaxRsClientFactory newClientFactory() {
+   private static JaxRsClientFactory newClientFactory(ObjectMapper mapper) {
       OAuthFactory oauthFactory = newOAuthFactory();
       CxfJaxRsClientConfigurator configurator = new CxfJaxRsClientConfigurator(oauthFactory);
       configurator.configureJaxRsRuntime();
-      configurator.configureDefaults(Collections.<String, Object> emptyMap());
+      configurator.configureDefaults(Collections.<String, Object> emptyMap(), mapper);
       return new CxfJaxRsClientFactory(configurator);
    }
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util;
 
+import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
@@ -27,9 +28,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
 /**
@@ -37,7 +36,8 @@ import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
  */
 public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider {
 
-   private JaxRsWebTarget target;
+   private final JaxRsApi jaxRsApi;
+   private WebTarget target;
    private AtsTaskEndpointApi taskEp;
    private AtsConfigEndpointApi configEp;
    private AgileEndpointApi agileEp;
@@ -53,41 +53,37 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private InsertionEndpointApi insertionEp;
    private InsertionActivityEndpointApi insertionActivityEp;
    private AtsHealthEndpointApi healthEp;
-   private TupleEndpoint tupleEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
+      jaxRsApi = atsApi.jaxRsApi();
    }
 
-   public static JaxRsWebTarget getAtsTargetSt() {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      String atsUri = String.format("%s/ats", appServer);
-      JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-      JaxRsWebTarget target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
+   public static WebTarget createAtsTarget(JaxRsApi jaxRsApi) {
+      WebTarget target = jaxRsApi.newTarget("ats");
+      target.register(WorkItemJsonReader.class);
       target.register(WorkItemsJsonReader.class);
       return target;
    }
 
-   protected JaxRsWebTarget getAtsTarget() {
+   private WebTarget getAtsTarget() {
       if (target == null) {
-         target = getAtsTargetSt();
+         target = createAtsTarget(jaxRsApi);
       }
       return target;
    }
 
    @Override
    public TupleEndpoint getTupleEp() {
-      String appServer = OseeClientProperties.getOseeApplicationServer();
-      String commonTupleUrl = String.format("%s/orcs/branch/%s/tuples", appServer, atsApi.getAtsBranch().getIdString());
-      JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-      tupleEp = jaxRsClient.target(commonTupleUrl).newProxy(TupleEndpoint.class);
-      return tupleEp;
+      WebTarget target =
+         jaxRsApi.newTarget(String.format("orcs/branch/%s/tuples", atsApi.getAtsBranch().getIdString()));
+      return jaxRsApi.newProxy(target, TupleEndpoint.class);
    }
 
    @Override
    public AtsWorldEndpointApi getWorldEndpoint() {
       if (worldEp == null) {
-         worldEp = getAtsTarget().newProxy(AtsWorldEndpointApi.class);
+         worldEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorldEndpointApi.class);
       }
       return worldEp;
    }
@@ -95,7 +91,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsNotifyEndpointApi getNotifyEndpoint() {
       if (notifyEp == null) {
-         notifyEp = getAtsTarget().newProxy(AtsNotifyEndpointApi.class);
+         notifyEp = jaxRsApi.newProxy(getAtsTarget(), AtsNotifyEndpointApi.class);
       }
       return notifyEp;
    }
@@ -103,7 +99,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsTaskEndpointApi getTaskEp() {
       if (taskEp == null) {
-         taskEp = getAtsTarget().newProxy(AtsTaskEndpointApi.class);
+         taskEp = jaxRsApi.newProxy(getAtsTarget(), AtsTaskEndpointApi.class);
       }
       return taskEp;
    }
@@ -114,7 +110,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
-         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
+         configEp = jaxRsApi.newProxy(getAtsTarget(), AtsConfigEndpointApi.class);
       }
       return configEp;
    }
@@ -122,7 +118,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AgileEndpointApi getAgileEndpoint() {
       if (agileEp == null) {
-         agileEp = getAtsTarget().newProxy(AgileEndpointApi.class);
+         agileEp = jaxRsApi.newProxy(getAtsTarget(), AgileEndpointApi.class);
       }
       return agileEp;
    }
@@ -130,7 +126,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
       if (workPackageEp == null) {
-         workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
+         workPackageEp = jaxRsApi.newProxy(getAtsTarget(), AtsWorkPackageEndpointApi.class);
       }
       return workPackageEp;
    }
@@ -138,7 +134,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsActionEndpointApi getActionEndpoint() {
       if (actionEp == null) {
-         actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
+         actionEp = jaxRsApi.newProxy(getAtsTarget(), AtsActionEndpointApi.class);
       }
       return actionEp;
    }
@@ -146,7 +142,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsCpaEndpointApi getCpaEndpoint() {
       if (cpaEp == null) {
-         cpaEp = getAtsTarget().newProxy(AtsCpaEndpointApi.class);
+         cpaEp = jaxRsApi.newProxy(getAtsTarget(), AtsCpaEndpointApi.class);
       }
       return cpaEp;
    }
@@ -154,7 +150,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AgileEndpointApi getAgile() {
       if (agile == null) {
-         agile = getAtsTarget().newProxy(AgileEndpointApi.class);
+         agile = jaxRsApi.newProxy(getAtsTarget(), AgileEndpointApi.class);
       }
       return agile;
    }
@@ -162,7 +158,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public CountryEndpointApi getCountryEp() {
       if (countryEp == null) {
-         countryEp = getAtsTarget().newProxy(CountryEndpointApi.class);
+         countryEp = jaxRsApi.newProxy(getAtsTarget(), CountryEndpointApi.class);
       }
       return countryEp;
    }
@@ -170,7 +166,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public ProgramEndpointApi getProgramEp() {
       if (programEp == null) {
-         programEp = getAtsTarget().newProxy(ProgramEndpointApi.class);
+         programEp = jaxRsApi.newProxy(getAtsTarget(), ProgramEndpointApi.class);
       }
       return programEp;
    }
@@ -178,7 +174,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public InsertionEndpointApi getInsertionEp() {
       if (insertionEp == null) {
-         insertionEp = getAtsTarget().newProxy(InsertionEndpointApi.class);
+         insertionEp = jaxRsApi.newProxy(getAtsTarget(), InsertionEndpointApi.class);
       }
       return insertionEp;
    }
@@ -186,7 +182,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public InsertionActivityEndpointApi getInsertionActivityEp() {
       if (insertionActivityEp == null) {
-         insertionActivityEp = getAtsTarget().newProxy(InsertionActivityEndpointApi.class);
+         insertionActivityEp = jaxRsApi.newProxy(getAtsTarget(), InsertionActivityEndpointApi.class);
       }
       return insertionActivityEp;
    }
@@ -194,9 +190,8 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsHealthEndpointApi getHealthEndpoint() {
       if (healthEp == null) {
-         healthEp = getAtsTarget().newProxy(AtsHealthEndpointApi.class);
+         healthEp = jaxRsApi.newProxy(getAtsTarget(), AtsHealthEndpointApi.class);
       }
       return healthEp;
    }
-
 }

@@ -7,7 +7,9 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Osee-Template: OSEE-INF/templates/*.html
-Import-Package: com.google.common.cache,
+Import-Package: com.fasterxml.jackson.core,
+ com.fasterxml.jackson.databind,
+ com.google.common.cache,
  com.google.common.io,
  javax.annotation,
  javax.annotation.security,
@@ -64,6 +66,7 @@ Import-Package: com.google.common.cache,
  org.apache.cxf.transport.http,
  org.apache.cxf.transport.servlet,
  org.eclipse.osee.account.admin,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,

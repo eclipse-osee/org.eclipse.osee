@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.ext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -88,7 +89,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       providers.add(waem);
       providers.add(new GenericExceptionMapper(logger));
       providers.add(new OrcsParamConverterProvider(orcsApi.getOrcsTypes()));
-      providers.addAll(JacksonFeature.getProviders());
+      providers.addAll(JacksonFeature.getProviders(orcsApi.jaxRsApi().getObjectMapper()));
       this.providers = providers;
 
       List<Feature> features = new ArrayList<>();

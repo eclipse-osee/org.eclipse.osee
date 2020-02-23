@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client.internal.ext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -28,6 +29,7 @@ import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.JacksonFeature;
@@ -89,9 +91,14 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    @Override
    public void configureDefaults(Map<String, Object> properties) {
+      configureDefaults(properties, JsonUtil.getMapper());
+   }
+
+   @Override
+   public void configureDefaults(Map<String, Object> properties, ObjectMapper mapper) {
       List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
-      providers.addAll(JacksonFeature.getProviders());
+      providers.addAll(JacksonFeature.getProviders(mapper));
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider());
       providers.add(new OseeAccountClientRequestFilter());

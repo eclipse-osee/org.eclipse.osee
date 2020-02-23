@@ -412,5 +412,4 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    public boolean isIde() {
       return true;
    }
-
 }

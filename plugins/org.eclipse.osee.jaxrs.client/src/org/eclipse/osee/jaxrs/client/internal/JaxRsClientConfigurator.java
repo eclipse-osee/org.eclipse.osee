@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client.internal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import javax.ws.rs.client.ClientBuilder;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
@@ -22,6 +23,8 @@ import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 public interface JaxRsClientConfigurator {
 
    void configureDefaults(Map<String, Object> properties);
+
+   void configureDefaults(Map<String, Object> properties, ObjectMapper mapper);
 
    void configureBean(JaxRsClientConfig config, String serverAddress, JAXRSClientFactoryBean bean);
 
