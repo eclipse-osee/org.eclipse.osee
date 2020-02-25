@@ -83,7 +83,7 @@ public class AuthenticationManager implements IAuthenticationManager {
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);
          if (logged.compareAndSet(false, true)) {
-            XConsoleLogger.err("Authentication Provider [%s]-[%s]", key, provider.getClass().getSimpleName());
+            XConsoleLogger.err("Authentication Provider [%s]-[%s]\n", key, provider.getClass().getSimpleName());
          }
          if (provider != null) {
             return provider;
