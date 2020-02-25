@@ -126,7 +126,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       configs.setValidStateNames(update.getValidStateNames());
       // load users
       for (IAtsUser user : atsApi.getUserService().getUsersFromDb()) {
-         configs.getUsers().add((AtsUser) user);
+         configs.addUser((AtsUser) user);
       }
       // load admins
       ArtifactReadable atsAdminArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsUserGroups.AtsAdmin);

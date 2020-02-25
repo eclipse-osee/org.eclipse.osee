@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
@@ -87,24 +85,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       throw new UnsupportedOperationException();
    }
 
-   private Supplier<List<IAtsUser>> usersCache =
-      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
-
-   private Supplier<List<IAtsUser>> getConfigurationsSupplier() {
-      return new Supplier<List<IAtsUser>>() {
-         @Override
-         public List<IAtsUser> get() {
-            List<IAtsUser> users = new ArrayList<>();
-            for (IAtsUser atsUser : getUsersFromDb()) {
-               userIdToAtsUser.put(atsUser.getUserId(), atsUser);
-               nameToAtsUser.put(atsUser.getName(), atsUser);
-               users.add(atsUser);
-            }
-            return users;
-         }
-      };
-   }
-
    private AtsUser createFromArtifact(ArtifactReadable userArt) {
       AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());
@@ -117,8 +97,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public List<IAtsUser> getUsers() {
-      return usersCache.get();
+   public Collection<AtsUser> getUsers() {
+      return configurationService.getConfigurations().getUsers();
    }
 
    @Override
@@ -130,12 +110,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
          users.add(atsUser);
       }
       return users;
-   }
-
-   @Override
-   public void reloadCache() {
-      usersCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
-      super.reloadCache();
    }
 
    @Override

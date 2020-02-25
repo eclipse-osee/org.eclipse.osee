@@ -49,17 +49,11 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public void reloadCache() {
-      configurationService.getConfigurationsWithPend();
-      super.reloadCache();
-   }
-
-   @Override
    public IAtsUser getUserFromOseeUser(User user) {
-      IAtsUser atsUser = userIdToAtsUser.get(user.getUserId());
+      AtsUser atsUser = configurationService.getUserByUserId(user.getUserId());
       if (atsUser == null) {
          atsUser = createFromArtifact(user);
-         userIdToAtsUser.put(user.getUserId(), atsUser);
+         configurationService.getConfigurations().addUser(atsUser);
       }
       return atsUser;
    }
@@ -119,7 +113,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public List<User> getOseeUsersSorted(Active active) {
-      List<IAtsUser> activeUsers = getUsers(active);
+      Collection<IAtsUser> activeUsers = getUsers(active);
       List<User> oseeUsers = new ArrayList<>();
       oseeUsers.addAll(getOseeUsers(activeUsers));
       Collections.sort(oseeUsers);
@@ -169,7 +163,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public List<? extends IAtsUser> getUsers() {
+   public Collection<AtsUser> getUsers() {
       return configurationService.getConfigurations().getUsers();
    }
 

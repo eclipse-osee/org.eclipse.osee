@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +77,7 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
    public List<String> getValidValues(@PathParam("id") String id) {
       List<String> values = new LinkedList<>();
       if (id.equals(AttributeKey.Assignee.name()) || id.equals(AttributeKey.Originator.name())) {
-         List<IAtsUser> active = atsApi.getUserService().getUsers(Active.Active);
+         Collection<IAtsUser> active = atsApi.getUserService().getUsers(Active.Active);
          for (IAtsUser user : active) {
             values.add(user.getName());
          }

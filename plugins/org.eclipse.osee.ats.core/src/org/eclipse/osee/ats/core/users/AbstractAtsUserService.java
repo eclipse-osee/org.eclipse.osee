@@ -16,9 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -42,38 +40,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected final static Map<Long, IAtsUser> accountIdToAtsUser = new ConcurrentHashMap<>(300);
-   protected final static Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
-   protected final static Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
    protected IAtsConfigurationsService configurationService;
 
    @Override
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
       this.configurationService = configurationService;
-      Thread thread = new Thread(cacheLoader, "ATS User Loader");
-      thread.start();
    }
-
-   /**
-    * Pre-load caches from AtsConfigurations
-    */
-   private final Runnable cacheLoader = new Runnable() {
-
-      @Override
-      public void run() {
-         for (AtsUser user : configurationService.getConfigurations().getUsers()) {
-            accountIdToAtsUser.put(user.getId(), user);
-            userIdToAtsUser.put(user.getUserId(), user);
-            nameToAtsUser.put(user.getName(), user);
-         }
-      }
-   };
 
    @Override
    public IAtsUser getCurrentUser() {
       if (currentUser == null) {
-         currentUser = userIdToAtsUser.get(getCurrentUserId());
+         currentUser = configurationService.getUserByUserId(getCurrentUserId());
          if (currentUser == null) {
             for (IAtsUser user : getUsers(Active.Both)) {
                if (user.getUserId().equals(getCurrentUserId())) {
@@ -105,7 +83,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    public IAtsUser getUserById(String userId) {
       IAtsUser atsUser = null;
       if (Strings.isValid(userId)) {
-         atsUser = userIdToAtsUser.get(userId);
+         atsUser = configurationService.getUserByUserId(userId);
          if (atsUser == null && Strings.isValid(userId)) {
             atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
             if (atsUser == null) {
@@ -115,7 +93,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
                   // do nothing
                }
                if (atsUser != null) {
-                  userIdToAtsUser.put(userId, atsUser);
+                  configurationService.getConfigurations().addUser((AtsUser) atsUser);
                }
             }
          }
@@ -125,11 +103,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public IAtsUser getUserByAccountId(Long accountId) {
-      IAtsUser atsUser = accountIdToAtsUser.get(accountId);
+      IAtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(accountId);
       if (atsUser == null) {
          atsUser = loadUserByAccountId(accountId);
          if (atsUser != null) {
-            accountIdToAtsUser.put(accountId, atsUser);
+            configurationService.getConfigurations().addUser((AtsUser) atsUser);
          }
       }
       return atsUser;
@@ -141,11 +119,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public IAtsUser getUserByName(String name) {
-      IAtsUser atsUser = nameToAtsUser.get(name);
+      IAtsUser atsUser = configurationService.getUserByName(name);
       if (atsUser == null && Strings.isValid(name)) {
          atsUser = loadUserFromDbByUserName(name);
          if (atsUser != null) {
-            nameToAtsUser.put(name, atsUser);
+            configurationService.getConfigurations().addUser((AtsUser) atsUser);
          }
       }
       return atsUser;
@@ -164,8 +142,8 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public List<IAtsUser> getUsersSortedByName(Active active) {
-      List<IAtsUser> users = getUsers(active);
+   public Collection<IAtsUser> getUsersSortedByName(Active active) {
+      List<IAtsUser> users = new ArrayList<IAtsUser>(getUsers(active));
       Collections.sort(users, new AtsUserNameComparator(false));
       return users;
    }
@@ -180,7 +158,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public List<IAtsUser> getUsers(Active active) {
+   public Collection<IAtsUser> getUsers(Active active) {
       List<IAtsUser> users = new ArrayList<>();
       for (IAtsUser user : getUsers()) {
          if (active == Active.Both || active == Active.Active && user.isActive() || active == Active.InActive && !user.isActive()) {
@@ -192,13 +170,8 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public void reloadCache() {
-      userIdToAtsUser.clear();
-      nameToAtsUser.clear();
+      configurationService.getConfigurationsWithPend();
       currentUser = null;
-      for (IAtsUser user : getUsersFromDb()) {
-         userIdToAtsUser.put(user.getUserId(), user);
-         nameToAtsUser.put(user.getName(), user);
-      }
    }
 
    @Override

@@ -48,15 +48,15 @@ public interface IAtsUserService {
 
    boolean isAtsAdmin(IAtsUser user);
 
-   List<IAtsUser> getUsers(Active active);
+   Collection<IAtsUser> getUsers(Active active);
 
-   List<IAtsUser> getUsersSortedByName(Active active);
+   Collection<IAtsUser> getUsersSortedByName(Active active);
 
    void reloadCache();
 
    void releaseUser();
 
-   List<? extends IAtsUser> getUsers();
+   Collection<AtsUser> getUsers();
 
    List<? extends IAtsUser> getUsersFromDb();
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ public class AtsConfigurations {
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
-   List<AtsUser> users = new ArrayList<>();
    List<ArtifactId> atsAdmins = new ArrayList<>();
    ArtifactId topActionableItem;
    ArtifactId topTeamDefinition;
@@ -39,6 +39,9 @@ public class AtsConfigurations {
    private Map<Long, ActionableItem> idToAi = new HashMap<>();
    private Map<Long, TeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, Version> idToVersion = new HashMap<>();
+   private Map<Long, AtsUser> idToUser = new HashMap<>();
+   private Map<String, Long> userIdToUserArtId = new HashMap<>();
+   private Map<String, Long> userNameToUserArtId = new HashMap<>();
 
    public List<AtsConfiguration> getConfigs() {
       return configs;
@@ -60,12 +63,9 @@ public class AtsConfigurations {
       this.colorColumns = colorColumns;
    }
 
-   public List<AtsUser> getUsers() {
-      return users;
-   }
-
-   public void setUsers(List<AtsUser> users) {
-      this.users = users;
+   @JsonIgnore
+   public Collection<AtsUser> getUsers() {
+      return idToUser.values();
    }
 
    public Collection<String> getValidStateNames() {
@@ -145,6 +145,40 @@ public class AtsConfigurations {
          return (TeamDefinition) teamDef;
       }
       return idToTeamDef.get(teamDef.getId());
+   }
+
+   public Map<Long, AtsUser> getIdToUser() {
+      return idToUser;
+   }
+
+   public void setIdToUser(Map<Long, AtsUser> idToUser) {
+      this.idToUser = idToUser;
+   }
+
+   public void addUser(AtsUser user) {
+      idToUser.put(user.getId(), user);
+      userIdToUserArtId.put(user.getUserId(), user.getArtifactId().getId());
+      userNameToUserArtId.put(user.getName(), user.getArtifactId().getId());
+   }
+
+   public void setAtsAdmins(List<ArtifactId> atsAdmins) {
+      this.atsAdmins = atsAdmins;
+   }
+
+   public Map<String, Long> getUserIdToUserArtId() {
+      return userIdToUserArtId;
+   }
+
+   public void setUserIdToUserArtId(Map<String, Long> userIdToUserArtId) {
+      this.userIdToUserArtId = userIdToUserArtId;
+   }
+
+   public Map<String, Long> getUserNameToUserArtId() {
+      return userNameToUserArtId;
+   }
+
+   public void setUserNameToUserArtId(Map<String, Long> userNameToUserArtId) {
+      this.userNameToUserArtId = userNameToUserArtId;
    }
 
 }
