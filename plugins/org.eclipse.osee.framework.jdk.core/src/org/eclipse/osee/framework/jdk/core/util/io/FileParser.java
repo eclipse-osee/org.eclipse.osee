@@ -29,10 +29,11 @@ public class FileParser {
          while (scanner.hasNext()) {
             line = scanner.nextLine();
             if (line.startsWith(key)) {
-               value = line.split(": ")[1].replace(" ", "");
+               value = line.split(": ")[1].trim();
                break;
             }
          }
+         scanner.close();
       } catch (FileNotFoundException fnfe) {
          throw new IllegalArgumentException(filePath + " is not valid file path.");
       }
