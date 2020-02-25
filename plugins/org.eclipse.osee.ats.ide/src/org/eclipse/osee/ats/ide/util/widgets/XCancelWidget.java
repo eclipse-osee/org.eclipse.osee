@@ -118,11 +118,21 @@ public class XCancelWidget extends GenericXWidget implements IArtifactWidget {
 
    @Override
    public void revert() {
+      cancelledDetails.revert();
+      cancelledReason.revert();
    }
 
    @Override
    public Result isDirty() {
-      return Result.TrueResult;
+      Result result = cancelledDetails.isDirty();
+      if (result.isTrue()) {
+         return result;
+      }
+      result = cancelledReason.isDirty();
+      if (result.isTrue()) {
+         return result;
+      }
+      return Result.FalseResult;
    }
 
    @Override
