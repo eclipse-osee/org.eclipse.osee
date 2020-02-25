@@ -119,4 +119,11 @@ public class CommitConfigItem implements ICommitConfigItem {
       return true;
    }
 
+   @Override
+   public String toString() {
+      String teamOrVersion = (version == null ? "Team Def" : "Version");
+      String name = (version == null ? teamDef.getName() : version.getName());
+      return String.format("%s - %s", teamOrVersion, name);
+   }
+
 }
