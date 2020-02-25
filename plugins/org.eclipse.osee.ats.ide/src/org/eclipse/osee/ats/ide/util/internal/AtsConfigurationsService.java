@@ -38,7 +38,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    @Override
    public AtsConfigurations getConfigurations() {
-      if (configurationsCache == null) {
+      if (configurationsCache == null || configurationsCache.get().getUsers().isEmpty()) {
          invalidate();
       }
       return configurationsCache.get();
