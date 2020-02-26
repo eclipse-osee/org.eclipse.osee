@@ -14,24 +14,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheckProvider;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
+import org.eclipse.osee.ats.rest.internal.util.health.check.TestTaskParent;
+import org.eclipse.osee.ats.rest.internal.util.health.check.TestWorkflowVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -51,10 +47,6 @@ import org.eclipse.osee.mail.api.MailStatus;
  */
 public class AtsHealthCheckOperation {
 
-   private static String SELECT_INWORK_WORKFLOWS =
-      "SELECT distinct art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr " //
-         + "WHERE attr.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = 570 and " //
-         + "attr.ART_ID = art.ART_ID and attr.ATTR_TYPE_ID = 1152921504606847147 and attr.VALUE = 'Working'";
    private final AtsApi atsApi;
    private final JdbcService jdbcService;
    private final MailService mailService;
@@ -108,6 +100,11 @@ public class AtsHealthCheckOperation {
          vResults.log("testMap3", "blah blah");
       } else {
          List<IAtsHealthCheck> checks = getHealthChecks();
+
+         // Run single run health checks
+         for (IAtsHealthCheck check : checks) {
+            check.check(vResults, atsApi);
+         }
 
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
@@ -165,19 +162,6 @@ public class AtsHealthCheckOperation {
       return healthChecks;
    }
 
-   private static class TestTaskParent implements IAtsHealthCheck {
-
-      @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
-         if (workItem.isTask()) {
-            if (atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
-               AtsRelationTypes.TeamWfToTask_TeamWorkflow).isInvalid()) {
-               error(results, workItem, "Task has no parent");
-            }
-         }
-      }
-   }
-
    private static class TestWorkflowDefinition implements IAtsHealthCheck {
 
       @Override
@@ -202,50 +186,6 @@ public class AtsHealthCheckOperation {
       }
    }
 
-   private static class TestWorkflowVersions implements IAtsHealthCheck {
-
-      private final HashCollectionSet<IAtsTeamDefinition, IAtsVersion> teamDefToVersions =
-         new HashCollectionSet<>(HashSet::new);
-
-      /**
-       * Cache this cause it's expensive to do repeatedly for the same teamDef
-       */
-      private Collection<IAtsVersion> getTeamVersions(IAtsTeamDefinition teamDef, AtsApi atsApi) {
-         Set<IAtsVersion> teamDefVersions = teamDefToVersions.getValues(teamDef);
-         if (teamDefVersions == null) {
-            IAtsTeamDefinition teamDefHoldingVers =
-               atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
-            if (teamDefHoldingVers != null) {
-               teamDefVersions = new HashSet<>();
-               teamDefVersions.addAll(atsApi.getTeamDefinitionService().getVersions(teamDefHoldingVers));
-               teamDefToVersions.put(teamDef, teamDefVersions);
-            }
-         }
-         return teamDefVersions;
-      }
-
-      @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
-         if (workItem.isTeamWorkflow()) {
-            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-            Collection<IRelationLink> links = atsApi.getRelationResolver().getRelations(teamWf.getArtifactId(),
-               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-            if (links.size() > 1) {
-               error(results, workItem, "Team workflow has " + links.size() + " versions; should only be 0 or 1");
-            }
-            Collection<ArtifactToken> versions =
-               atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-            if (versions.size() == 1) {
-               IAtsVersion version = atsApi.getQueryService().getConfigItem(versions.iterator().next());
-               if (version != null && !getTeamVersions(teamWf.getTeamDefinition(), atsApi).contains(version)) {
-                  error(results, workItem,
-                     "Team workflow " + teamWf.getAtsId() + " has version" + version.toStringWithId() + " that does not belong to teamDefHoldingVersions ");
-               }
-            }
-         }
-      }
-   }
-
    private List<Collection<Long>> loadWorkingWorkItemIds(XResultData rd) {
       rd.log("testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       List<Long> artIds = getCommonArtifactIds(rd);
@@ -265,7 +205,7 @@ public class AtsHealthCheckOperation {
       rd.log("getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_INWORK_WORKFLOWS);
+         chStmt.runPreparedQuery(AtsHealthQueries.getWorkItemsInCurrentStateType(atsApi, StateType.Working));
          while (chStmt.next()) {
             artIds.add(Long.valueOf(chStmt.getInt(1)));
          }

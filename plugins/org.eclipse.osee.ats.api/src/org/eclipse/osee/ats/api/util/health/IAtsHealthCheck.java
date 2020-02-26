@@ -21,6 +21,14 @@ public interface IAtsHealthCheck {
 
    public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi);
 
+   /**
+    * Implement to make single check on whole database. These are good for queries on things other that Work Items and
+    * hard coded SQL queries.
+    */
+   default public void check(HealthCheckResults results, AtsApi atsApi) {
+      // do nothing
+   }
+
    public default String getName() {
       return getClass().getSimpleName();
    }
