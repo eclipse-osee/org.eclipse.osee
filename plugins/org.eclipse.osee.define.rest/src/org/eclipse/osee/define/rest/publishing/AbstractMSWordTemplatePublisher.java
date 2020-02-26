@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.define.rest.publishing;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HeadingMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ParagraphNumber;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PlainTextContent;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RendererOptions;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordOleData;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
@@ -27,22 +31,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
+import org.eclipse.osee.define.api.OseeHierarchyComparator;
 import org.eclipse.osee.define.api.PublishingErrorElement;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
+import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,6 +62,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,9 +74,9 @@ public abstract class AbstractMSWordTemplatePublisher {
 
    //Constants
    protected static final String ARTIFACT = "Artifact";
-   private static final Object ARTIFACT_ID = "Artifact Id";
-   private static final String ARTIFACT_TYPE = "Artifact Type";
-   private static final String APPLICABILITY = "Applicability";
+   protected static final Object ARTIFACT_ID = "Artifact Id";
+   protected static final String ARTIFACT_TYPE = "Artifact Type";
+   protected static final String APPLICABILITY = "Applicability";
    protected static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
    protected static final String INSERT_LINK = "INSERT_LINK_HERE";
    protected static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
@@ -85,12 +96,19 @@ public abstract class AbstractMSWordTemplatePublisher {
    protected String outlineNumber = "";
    protected boolean includeEmptyHeaders = false;
 
+   //DataRights
+   protected DataRightResult response = null;
+   protected DataRightsClassification overrideClassification;
+
    //Data Structures
    protected final PublishingOptions publishingOptions;
    protected final List<AttributeElement> attributeElements = new LinkedList<>();
    protected final List<MetadataElement> metadataElements = new LinkedList<>();
    protected final List<ArtifactReadable> nonTemplateArtifacts = new LinkedList<>();
    protected final Set<ArtifactReadable> processedArtifacts = new HashSet<>();
+   protected final Set<ArtifactId> emptyFolders = new HashSet<>();
+   protected final Map<ArtifactReadable, CharSequence> artParagraphNumbers = new HashMap<>();
+   protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
 
    //Error Variables
    protected final List<PublishingErrorElement> errorElements = new LinkedList<>();
@@ -112,7 +130,7 @@ public abstract class AbstractMSWordTemplatePublisher {
     * gathered, and the template options are set up. Other artifact gathering/template set up can be done here. If
     * everything is valid, move onto the next step for publishing.
     */
-   public abstract String publish(ArtifactId artifactId, ArtifactId templateArtId);
+   public abstract String publish(ArtifactId templateArtId, ArtifactId headArtId);
 
    /**
     * Second step of the publishing process. This method is where the WordMLProducer is set up and the word xml starts
@@ -276,20 +294,63 @@ public abstract class AbstractMSWordTemplatePublisher {
       }
    }
 
+   /**
+    * Takes a list of artifacts and loops through finding which headers should not be published. Takes an artifact and
+    * loops through its' children. On each set of grandchildren, the method is called recursively.<br/>
+    * <br/>
+    * case1: Any MS Word Header that has only excluded children is not published<br/>
+    * case2: Any MS Word Header that has only excluded children, but has included grandchildren, is published<br/>
+    * case3: Non MS Word Header artifacts are still published even if all children/grandchildren are excluded<br/>
+    * case4: Any MS Word Header that has no children is not published<br/>
+    * case5: Any MS Word Header with only excluded header children, should not be published<br/>
+    */
+   protected boolean populateEmptyHeaders(List<ArtifactReadable> artifacts) {
+      boolean hasIncludedChildren = false;
+      boolean includeParent = false;
+      List<ArtifactReadable> children = null;
+      for (ArtifactReadable artifact : artifacts) {
+         children = artifact.getChildren();
+         if (!children.isEmpty()) {
+            hasIncludedChildren = populateEmptyHeaders(children);
+            if (!hasIncludedChildren) {
+               if (artifact.isOfType(HeadingMsWord)) {
+                  emptyFolders.add(artifact);
+               }
+            }
+         } else if (children.isEmpty() && artifact.isOfType(HeadingMsWord)) {
+            emptyFolders.add(artifact);
+         }
+         if (!excludeArtifactTypes.contains(artifact.getArtifactType()) && !artifact.isOfType(HeadingMsWord)) {
+            includeParent = true;
+         }
+         if (hasIncludedChildren) {
+            includeParent = true;
+         }
+      }
+      return includeParent;
+   }
+
    //--- ApplyContentToTemplate Helper Methods ---//
 
    /**
     * This default version of the method cleans up some pieces of the render template's whole word content, and grabs
     * the paragraph number if needed.
     */
-   protected String setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, String templateContent) {
+   protected String setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, String templateContent, int maxOutline) {
       templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
       if (outlineNumber.equals("")) {
          outlineNumber = getParagraphNumber(artifact, templateContent);
       }
       templateContent = wordMl.setHeadingNumbers(outlineNumber, templateContent, null);
+      if (maxOutline != 9) {
+         wordMl.setMaxOutlineLevel(maxOutline);
+      }
 
       return templateContent;
+   }
+
+   protected String setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, String templateContent) {
+      return setUpTemplateContent(wordMl, artifact, templateContent, 9);
    }
 
    /**
@@ -304,12 +365,11 @@ public abstract class AbstractMSWordTemplatePublisher {
          String elementType = matcher.group(0);
 
          if (elementType != null && elementType.equals(INSERT_ARTIFACT_HERE)) {
-            if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
-               String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
-               if (Strings.isValid(paragraphNum)) {
-                  startParagraphNumber = paragraphNum;
-               }
+            String paragraphNum = artifact.getSoleAttributeValue(ParagraphNumber, "");
+            if (Strings.isValid(paragraphNum)) {
+               startParagraphNumber = paragraphNum;
             }
+
          }
       }
 
@@ -345,12 +405,78 @@ public abstract class AbstractMSWordTemplatePublisher {
       return endOfTemplate;
    }
 
+   /**
+    * DataRightsClassification override comes in as a publishing option string, compare string to all
+    * DataRightsClassifications, if they match, set override variable to that classification. This override makes it
+    * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
+    */
+   protected void getDataRightsOverride() {
+      overrideClassification = DataRightsClassification.noOverride;
+      for (DataRightsClassification classification : DataRightsClassification.values()) {
+         if (classification.getDataRightsClassification().equals(publishingOptions.overrideDataRights)) {
+            overrideClassification = classification;
+            break;
+         }
+      }
+   }
+
    //--- ProcessContent Helper Methods ---//
+
+   /**
+    * Starting from the head artifact, goes through all artifacts in the hierarchy to be published (if specified through
+    * recurseChildren) and sets their data rights.
+    */
+   protected void setDataRightResponse(ArtifactReadable artifact) {
+      List<ArtifactId> artifacts = new ArrayList<>();
+      artifacts.add(artifact);
+      if (recurseChildren) {
+         artifacts.addAll(artifact.getDescendants());
+      }
+      DataRightsOperationsImpl dataRightsOps = new DataRightsOperationsImpl(orcsApi);
+      response = dataRightsOps.getDataRights(artifacts, publishingOptions.branch, overrideClassification);
+   }
+
+   /**
+    * Goes through each artifact and reassigns its' paragraph number attribute to the paragraph number calculated on it
+    * during this publish.
+    */
+   protected void updateParagraphNumbers() {
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(publishingOptions.branch,
+         SystemUser.OseeSystem, "Update paragraph number on artifact");
+      int count = 0;
+
+      for (Map.Entry<ArtifactReadable, CharSequence> art : artParagraphNumbers.entrySet()) {
+         if (art.getKey().isAttributeTypeValid(ParagraphNumber)) {
+            transaction.setSoleAttributeValue(art.getKey(), ParagraphNumber, art.getValue());
+         }
+         if (count++ > 500) {
+            transaction.commit();
+            count = 0;
+         }
+      }
+      transaction.commit();
+      artParagraphNumbers.clear();
+   }
+
+   /**
+    * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
+    */
+   protected void sortQueryListByHierarchy(List<ArtifactReadable> artifacts) {
+      OseeHierarchyComparator comparator = new OseeHierarchyComparator(null);
+      artifacts.sort(comparator);
+
+      for (Map.Entry<ArtifactReadable, String> entry : comparator.errors.entrySet()) {
+         ArtifactReadable art = entry.getKey();
+         String description = entry.getValue();
+         errorElements.add(new PublishingErrorElement(art.getId(), art.getName(), art.getArtifactType(), description));
+      }
+   }
 
    //--- ProcessArtifact Helper Methods ---//
 
    /**
-    * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact.
+    * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact. Also
+    * puts the artifact and paragraph number into a hashmap together for potential updating of paragraph numbers
     */
    protected void setArtifactOutlining(ArtifactReadable artifact, WordMLProducer wordMl) {
       AttributeTypeToken attrToken = AttributeTypeToken.valueOf(headingAttributeType.getIdString());
@@ -361,6 +487,17 @@ public abstract class AbstractMSWordTemplatePublisher {
       if (paragraphNumber == null) {
          paragraphNumber = wordMl.startOutlineSubSection();
       }
+      if (publishingOptions.updateParagraphNumbers) {
+         artParagraphNumbers.put(artifact, paragraphNumber);
+      }
+   }
+
+   /**
+    * The default footer for artifacts is an empty string. If data rights/orientation are needed in the footer, this
+    * method should be overridden to support that.
+    */
+   protected String getArtifactFooter(ArtifactReadable artifact) {
+      return "";
    }
 
    /**
@@ -406,7 +543,7 @@ public abstract class AbstractMSWordTemplatePublisher {
     * Loops through each attribute element that is to be printed, if * (all attributes), it loops through every valid
     * attribute on that artifact. Also makes sure not to print the headingAttributeType if outlining is enabled.
     * Otherwise it only runs for the specific attribute element. In this default implementation the presentation type is
-    * preview and the footer is empty, assuming that the template will include its' own constant footer.
+    * preview.
     */
    protected void processAttributes(ArtifactReadable artifact, WordMLProducer wordMl) {
       for (AttributeElement attributeElement : attributeElements) {
@@ -414,13 +551,13 @@ public abstract class AbstractMSWordTemplatePublisher {
          if (publishingOptions.allAttributes || attributeName.equals("*")) {
             for (AttributeTypeToken attributeType : getOrderedAttributeTypes(artifact.getValidAttributeTypes())) {
                if (!outlining || attributeType.notEqual(headingAttributeType)) {
-                  processAttribute(artifact, wordMl, attributeElement, attributeType, true, PREVIEW, "");
+                  processAttribute(artifact, wordMl, attributeElement, attributeType, true, PREVIEW);
                }
             }
          } else {
             AttributeTypeToken attributeType = orcsApi.getOrcsTypes().getAttributeTypes().getByName(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
-               processAttribute(artifact, wordMl, attributeElement, attributeType, false, PREVIEW, "");
+               processAttribute(artifact, wordMl, attributeElement, attributeType, false, PREVIEW);
             }
          }
       }
@@ -453,20 +590,19 @@ public abstract class AbstractMSWordTemplatePublisher {
     * attributes and calls renderWordTemplateContent if of type Word Template Content, renderAttribute if any other
     * valid attribute
     */
-   protected void processAttribute(ArtifactReadable artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, String footer) {
+   protected void processAttribute(ArtifactReadable artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType) {
       //Do not publish OleData or RelationOrder
-      if (attributeType.equals(CoreAttributeTypes.WordOleData) || attributeType.equals(
-         CoreAttributeTypes.RelationOrder)) {
+      if (attributeType.equals(WordOleData) || attributeType.equals(RelationOrder)) {
          return;
       }
 
       List<Object> attributes = artifact.getAttributeValues(attributeType);
       if (attributeType.equals(WordTemplateContent)) {
          renderWordTemplateContent(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
-            attributeElement.getLabel(), footer);
+            attributeElement.getLabel());
       } else if (!attributes.isEmpty()) {
          renderAttribute(attributeType, artifact, presentationType, wordMl, attributeElement.getFormat(),
-            attributeElement.getLabel(), footer);
+            attributeElement.getLabel());
       }
    }
 
@@ -475,11 +611,12 @@ public abstract class AbstractMSWordTemplatePublisher {
     * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
     * artifacts that are linking to artifacts that aren't included in the publish.
     */
-   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label) {
       WordMLProducer wordMl = producer;
       String data = null;
 
       LinkType linkType = publishingOptions.linkType;
+      String footer = getArtifactFooter(artifact);
 
       if (label.length() > 0) {
          wordMl.addParagraph(label);
@@ -529,13 +666,13 @@ public abstract class AbstractMSWordTemplatePublisher {
    /**
     * For non word template content attributes, this method appends the attribute to the WordMLProducer.
     */
-   protected void renderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   protected void renderAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label) {
       WordMLProducer wordMl = producer;
 
       wordMl.startParagraph();
 
       if (publishingOptions.allAttributes) {
-         if (!attributeType.matches(CoreAttributeTypes.PlainTextContent)) {
+         if (!attributeType.matches(PlainTextContent)) {
             wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getName()) + ": </w:t></w:r>");
          } else {
             wordMl.addWordMl("<w:r><w:t> </w:t></w:r>");
@@ -561,6 +698,8 @@ public abstract class AbstractMSWordTemplatePublisher {
     * their own end section.
     */
    protected void addErrorLogToWordMl(WordMLProducer wordMl) {
+      addLinkNotInPublishErrors(wordMl);
+
       if (!errorElements.isEmpty()) {
          wordMl.startErrorLog();
          for (PublishingErrorElement error : errorElements) {
@@ -607,6 +746,18 @@ public abstract class AbstractMSWordTemplatePublisher {
                   }
                }
             }
+         }
+      }
+   }
+
+   protected void addLinkNotInPublishErrors(WordMLProducer wordMl) {
+      if (!hyperlinkedIds.isEmpty()) {
+         for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
+            ArtifactReadable artifact = link.getValue();
+            String description =
+               "Contains the following GUIDs that are not found in this published document: " + link.getKey();
+            errorElements.add(new PublishingErrorElement(artifact.getId(), artifact.getName(),
+               artifact.getArtifactType(), description));
          }
       }
    }

@@ -41,10 +41,16 @@ public interface MSWordEndpoint {
    Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
 
    @GET
-   @Path("publishWithNestedTemplates/{branch}/{master}/{slave}/{artifact}")
+   @Path("msWordTemplatePublish/{branch}/{template}/{artifact}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
-   Response publishWithNestedTemplates(@PathParam("branch") BranchId branch, @PathParam("master") ArtifactId masterTemplate, @PathParam("slave") ArtifactId slaveTemplate, @PathParam("artifact") ArtifactId headArtifact);
+   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact);
+
+   @GET
+   @Path("msWordTemplatePublishPreview/{branch}/{template}/{artifact}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_XML})
+   Response msWordTemplatePublishPreview(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact);
 
    @GET
    @Path("getDocumentNames/{branchId}")

@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.api;
 
 import java.util.Set;
-import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -27,6 +27,8 @@ public interface MSWordOperations {
 
    public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data);
 
-   public StreamingOutput publishWithNestedTemplates(BranchId branch, ArtifactId masterTemplate, ArtifactId slaveTemplate, ArtifactId headArtifact);
+   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact);
+
+   public Response msWordTemplatePublishPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact);
 
 }

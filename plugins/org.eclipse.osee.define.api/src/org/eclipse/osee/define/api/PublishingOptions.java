@@ -44,7 +44,6 @@ public class PublishingOptions {
    public boolean secondTime = false;
    public boolean templateOnly = false;
    public boolean inPublishMode = false;
-   public boolean publishEmptyHeaders = false;
 
    //BranchId
    public BranchId branch = BranchId.SENTINEL;
