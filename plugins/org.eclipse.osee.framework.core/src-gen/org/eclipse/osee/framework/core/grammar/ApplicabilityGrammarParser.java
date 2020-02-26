@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2017-08-14 12:13:17
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-03-03 12:17:20
 
 package org.eclipse.osee.framework.core.grammar;
 
@@ -554,11 +554,7 @@ public class ApplicabilityGrammarParser extends Parser {
             ID14_tree = (CommonTree) adaptor.create(ID14);
             adaptor.addChild(root_0, ID14_tree);
 
-            if (ID14 != null) {
-               id = ID14.getText().trim();
-            } else {
-               id = null;
-            }
+            id = (ID14 != null ? ID14.getText() : null).trim();
             id_values_map.put(id, new ArrayList<String>());
 
             // ApplicabilityGrammar.g:54:9: ( '=' temp= val )?
@@ -992,12 +988,7 @@ public class ApplicabilityGrammarParser extends Parser {
             if ((temp != null ? input.toString(temp.start, temp.stop) : null) != null) {
                id_values_map.get(id).add((temp != null ? input.toString(temp.start, temp.stop) : null));
             }
-
-            if (ID26 != null) {
-               id_values_map.get(id).add(ID26.getText().trim());
-            } else {
-               id_values_map.get(id).add(null);
-            }
+            id_values_map.get(id).add((ID26 != null ? ID26.getText() : null).trim());
 
          }
 
