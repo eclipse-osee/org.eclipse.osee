@@ -69,7 +69,6 @@ public class ArtifactValueProvider implements IValueProvider {
       return artifact.getName();
    }
 
-   @SuppressWarnings("deprecation")
    @Override
    public Collection<Date> getDateValues() {
       AttributeType attributeType = getAtributeType();

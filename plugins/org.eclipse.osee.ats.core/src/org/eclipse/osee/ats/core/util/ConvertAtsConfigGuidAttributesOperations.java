@@ -39,7 +39,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
          ArtifactToken ai = atsApi.getQueryService().getArtifactByGuidOrSentinel(aiArtGuid);
          if (ai.isInvalid()) {
             atsApi.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
-         } else if (!currentAiRefIds.contains(ai.getId())) {
+         } else if (!currentAiRefIds.contains(ai)) {
             neededAiRefIds.add(ai);
          }
       }

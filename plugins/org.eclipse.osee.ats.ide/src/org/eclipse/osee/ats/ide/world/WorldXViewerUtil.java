@@ -42,6 +42,7 @@ public class WorldXViewerUtil {
       registerConfigurationsColumns(factory);
    }
 
+   @SuppressWarnings("unchecked")
    public static void registerPluginColumns(OseeTargetXViewerFactory factory) {
       // Register any columns from other plugins
       try {
@@ -120,6 +121,7 @@ public class WorldXViewerUtil {
       }
    }
 
+   @SuppressWarnings("unchecked")
    private static boolean isInUserGroup(OseeTargetXViewerFactory factory) {
       return !Collections.setUnion(factory.getUserGroups(),
          AtsClientService.get().getUserGroupService().getMyUserGroups()).isEmpty();

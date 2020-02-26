@@ -78,8 +78,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             ai.setAtsApi(atsApi);
          }
          for (AtsUser user : configs.getUsers()) {
-            AtsUser jUser = (AtsUser) user;
-            jUser.setAtsApi(AtsClientService.get());
+            user.setAtsApi(AtsClientService.get());
          }
          return configs;
       }

@@ -97,8 +97,8 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
          for (RelationLink relation : ((Artifact) workItemArt.getParentAction()).getRelations(
             AtsRelationTypes.ActionToWorkflow_TeamWorkflow)) {
             if (!relation.getArtifactB().equals(workItemArt)) {
-               if (existingRels.contains(relation)) {
-                  existingRels.remove(relation);
+               if (existingRels.contains(relation.getId())) {
+                  existingRels.remove(relation.getId());
                } else {
                   createLink("This", workItemArt, " has sibling ", relation.getArtifactB(),
                      AtsRelationTypes.ActionToWorkflow_TeamWorkflow, relation);
@@ -181,8 +181,8 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
 
    private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationSide) {
       for (final RelationLink relation : thisArt.getRelations(relationSide)) {
-         if (existingRels.contains(relation)) {
-            existingRels.remove(relation);
+         if (existingRels.contains(relation.getId())) {
+            existingRels.remove(relation.getId());
          } else {
             Artifact thatArt = relation.getArtifactA();
             if (relation.getArtifactA().equals(thisArt)) {

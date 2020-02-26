@@ -108,6 +108,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       Set<ArtifactTypeToken> allArtTypes = getAllArtTypes();
 
       List<ArtifactTypeToken> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
+      @SuppressWarnings("unused")
       boolean teamsTypeDefOrAisOrVersionSearched = isTeamTypeDefAisOrVersionSearched(allArtTypes);
 
       /**

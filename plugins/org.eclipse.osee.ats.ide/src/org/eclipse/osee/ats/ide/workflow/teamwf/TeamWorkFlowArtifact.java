@@ -67,7 +67,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          artifacts.addAll(ReviewManager.getReviews(this));
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTask(this)) {
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(this)) {
             artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(task));
          }
       } catch (OseeCoreException ex) {

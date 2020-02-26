@@ -31,18 +31,15 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
 
-   public AtsTaskEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
+   public AtsTaskEndpointImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    @PUT

@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -76,7 +75,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final AtsApi atsApi;
-   private IAtsActionableItemService actionableItemService;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    private static Set<IAtsWorkflowHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();

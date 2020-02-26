@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class ConvertWorkDefinitionsToJavaOperation {
 
-   private final AtsApi atsApi;
+   //   private final AtsApi atsApi;
    Pattern idPattern = Pattern.compile("id \"(\\d+)\"");
    List<String> javaStates = new ArrayList<>();
    Set<String> stateNames = new HashSet<>();
 
    public ConvertWorkDefinitionsToJavaOperation(AtsApi atsApi) {
-      this.atsApi = atsApi;
+      //      this.atsApi = atsApi;
    }
 
    public XResultData convert(XResultData rd) {

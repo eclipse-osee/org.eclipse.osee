@@ -254,7 +254,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.State);
    }
 
-   @SuppressWarnings("deprecation")
    private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeId attrType) {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
@@ -523,8 +522,10 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamWf.reloadAttributesAndRelations();
       assignees = teamWf.getStateMgr().getAssignees();
       Assert.assertEquals(2, assignees.size());
-      Assert.assertTrue(assignees.contains(DemoUsers.Kay_Jones));
-      Assert.assertTrue(assignees.contains(DemoUsers.Joe_Smith));
+      Assert.assertTrue(
+         assignees.contains(AtsClientService.get().getUserService().getUserByAccountId(DemoUsers.Kay_Jones.getId())));
+      Assert.assertTrue(
+         assignees.contains(AtsClientService.get().getUserService().getUserByAccountId(DemoUsers.Joe_Smith.getId())));
 
       // reset back to Joe
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),

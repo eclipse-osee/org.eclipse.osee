@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class SubscribeManager {
 
    public static void addSubscribed(AbstractWorkflowArtifact workflow, AtsUser user, IAtsChangeSet changes) {
-      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user)) {
+      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user.getStoreObject())) {
          workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
          changes.add(workflow);
@@ -39,7 +39,7 @@ public class SubscribeManager {
    }
 
    public static boolean isSubscribed(AbstractWorkflowArtifact workflow, AtsUser user) {
-      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user);
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user.getStoreObject());
    }
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {

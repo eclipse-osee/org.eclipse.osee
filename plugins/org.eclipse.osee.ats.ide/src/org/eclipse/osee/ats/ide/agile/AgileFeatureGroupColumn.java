@@ -132,8 +132,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          return false;
       }
 
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Feature Group(s)",
+      FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
+         new FilteredCheckboxTreeDialog<JaxAgileFeatureGroup>("Select Feature Group(s)", "Select Feature Group(s)",
             new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(activeFeatureGroups);
       Collection<JaxAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);

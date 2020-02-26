@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
@@ -28,9 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Donald G. Dunne
  */
 public class ArtifactResolverImpl implements IArtifactResolver {
-
-   public ArtifactResolverImpl(AtsApi atsApi) {
-   }
 
    @Override
    public ArtifactId get(IAtsObject atsObject) {

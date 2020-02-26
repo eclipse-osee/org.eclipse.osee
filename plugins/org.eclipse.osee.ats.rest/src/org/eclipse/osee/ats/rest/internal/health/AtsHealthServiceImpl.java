@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.health;
 
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.health.AbstractAtsHealthServiceImpl;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -18,12 +17,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  * @author Donald G. Dunne
  */
 public class AtsHealthServiceImpl extends AbstractAtsHealthServiceImpl {
-
-   private final AtsApi atsApi;
-
-   public AtsHealthServiceImpl(AtsApi atsApi) {
-      this.atsApi = atsApi;
-   }
 
    @Override
    public XResultData validateAtsDatabase() {

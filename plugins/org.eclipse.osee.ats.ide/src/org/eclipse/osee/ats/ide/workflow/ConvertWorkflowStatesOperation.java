@@ -131,7 +131,6 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       }
    }
 
-   @SuppressWarnings("deprecation")
    private void convertStateAttributes(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) {
       for (Attribute<Object> attribute : awa.getAttributes(attrType)) {
          for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
@@ -162,7 +161,6 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    }
 
    private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) {
-      @SuppressWarnings("deprecation")
       List<Attribute<Object>> attributes = awa.getAttributes(attrType);
       if (attributes != null && !attributes.isEmpty()) {
          for (Attribute<Object> attribute : attributes) {

@@ -213,7 +213,7 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(hostTeamWf);
-      data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
+      data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
       return AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
    }
 
@@ -225,6 +225,12 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
    @Override
    public IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token) {
       return ChangeReportTaskNameProviderService.getChangeReportOptionNameProvider(token);
+   }
+
+   @Override
+   public IAtsTask getTask(ArtifactToken artifact) {
+      return new org.eclipse.osee.ats.core.workflow.Task(AtsClientService.get().getLogger(), AtsClientService.get(),
+         artifact);
    }
 
 }

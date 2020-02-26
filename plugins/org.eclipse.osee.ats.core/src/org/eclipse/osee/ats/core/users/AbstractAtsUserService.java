@@ -92,7 +92,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
                   // do nothing
                }
                if (atsUser != null) {
-                  configurationService.getConfigurations().addUser((AtsUser) atsUser);
+                  configurationService.getConfigurations().addUser(atsUser);
                }
             }
          }
@@ -106,7 +106,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       if (atsUser == null) {
          atsUser = loadUserByAccountId(accountId);
          if (atsUser != null) {
-            configurationService.getConfigurations().addUser((AtsUser) atsUser);
+            configurationService.getConfigurations().addUser(atsUser);
          }
       }
       return atsUser;
@@ -122,7 +122,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       if (atsUser == null && Strings.isValid(name)) {
          atsUser = loadUserFromDbByUserName(name);
          if (atsUser != null) {
-            configurationService.getConfigurations().addUser((AtsUser) atsUser);
+            configurationService.getConfigurations().addUser(atsUser);
          }
       }
       return atsUser;

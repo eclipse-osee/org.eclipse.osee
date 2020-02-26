@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -124,8 +123,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       Collection<AtsUser> users = AtsClientService.get().getUserService().getActiveAndAssignedInActive(workItems);
 
       // unassigned is not useful in the selection choice dialog
-      users.remove(SystemUser.UnAssigned);
-      users.remove(SystemUser.BootStrap);
+      users.remove(AtsCoreUsers.UNASSIGNED_USER);
+      users.remove(AtsCoreUsers.BOOTSTRAP_USER);
       UserCheckTreeDialog uld =
          new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", users);
       uld.setIncludeAutoSelectButtons(true);

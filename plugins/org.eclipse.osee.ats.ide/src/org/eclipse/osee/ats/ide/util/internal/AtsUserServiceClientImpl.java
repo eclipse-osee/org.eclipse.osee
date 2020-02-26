@@ -158,7 +158,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       if (AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember()) {
          return true;
       }
-      return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser());
+      return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser().getArtifactId());
    }
 
    @Override

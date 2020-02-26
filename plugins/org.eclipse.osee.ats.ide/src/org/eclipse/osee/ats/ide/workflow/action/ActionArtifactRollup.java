@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ActionArtifactRollup {
 
    private final ActionArtifact action;
-   private static AttributeTypeEnum priAttrToken;
+   private static AttributeTypeEnum<?> priAttrToken;
 
    public ActionArtifactRollup(ActionArtifact action) {
       this.action = action;
@@ -129,7 +129,7 @@ public class ActionArtifactRollup {
       }
    }
 
-   private AttributeTypeEnum getPrioirtyAttrToken() {
+   private AttributeTypeEnum<?> getPrioirtyAttrToken() {
       if (priAttrToken == null) {
          for (INewActionPageAttributeFactoryProvider provider : ActionFactory.getProviders()) {
             for (INewActionPageAttributeFactory factory : provider.getNewActionAttributeFactory()) {
@@ -145,7 +145,7 @@ public class ActionArtifactRollup {
    }
 
    private void resetPriorityOffChildren() {
-      AttributeTypeEnum priToken = getPrioirtyAttrToken();
+      AttributeTypeEnum<?> priToken = getPrioirtyAttrToken();
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {

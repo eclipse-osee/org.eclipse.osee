@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
+public class ActionableItemListDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
    public ActionableItemListDialog(Active active, String message) {
       super("Select Actionable Item(s)", "Select Actionable Item(s)", new AITreeContentProvider(active),

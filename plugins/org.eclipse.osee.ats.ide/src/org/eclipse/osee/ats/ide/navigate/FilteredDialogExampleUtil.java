@@ -33,11 +33,11 @@ public class FilteredDialogExampleUtil {
    private static MyTask child3;
    private static MyTask parent11;
 
-   protected static void openAndReport(FilteredCheckboxTreeDialog dialog, String title) {
+   protected static void openAndReport(FilteredCheckboxTreeDialog<?> dialog, String title) {
       int result = dialog.open();
       XResultData rd = new XResultData();
       rd.log("RESULT=" + (result == 0 ? "Ok" : "Cancel"));
-      Collection<Object> checked = dialog.getChecked();
+      Collection<?> checked = dialog.getChecked();
       for (Object obj : checked) {
          rd.log("SELECTED=" + obj.toString());
       }

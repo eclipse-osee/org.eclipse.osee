@@ -65,7 +65,6 @@ public class XFoundInVersionWidget extends XHyperlabelVersionSelection implement
       return true;
    }
 
-   @SuppressWarnings("cast")
    @Override
    public boolean handleSelection() {
       try {

@@ -31,7 +31,7 @@ public interface INewActionPageAttributeFactory {
 
    public AtsAttributeValueColumn getPrioirtyColumnToken();
 
-   public AttributeTypeEnum getPrioirtyAttrToken();
+   public AttributeTypeEnum<?> getPrioirtyAttrToken();
 
    public ChangeType[] getChangeTypeValues();
 

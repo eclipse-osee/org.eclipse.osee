@@ -34,9 +34,9 @@ public class FilteredCheckboxTreeDialogSelectAllExample extends XNavigateItemAct
       List<FilteredDialogExampleUtil.MyTask> initialSelection = new ArrayList<>();
       initialSelection.add(FilteredDialogExampleUtil.getChild3());
       initialSelection.add(FilteredDialogExampleUtil.getParent11());
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog("My Title", "Message", new FilteredDialogExampleUtil.MyTreeContentProvider(),
-            new FilteredDialogExampleUtil.FilterLabelProvider(), new FilteredDialogExampleUtil.MyViewSorter());
+      FilteredCheckboxTreeDialog<MyTask> dialog = new FilteredCheckboxTreeDialog<MyTask>("My Title", "Message",
+         new FilteredDialogExampleUtil.MyTreeContentProvider(), new FilteredDialogExampleUtil.FilterLabelProvider(),
+         new FilteredDialogExampleUtil.MyViewSorter());
       dialog.setInput(input);
       dialog.setShowSelectButtons(true);
       dialog.setExpandChecked(true);

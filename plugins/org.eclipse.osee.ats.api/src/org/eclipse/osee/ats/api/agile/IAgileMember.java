@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileMember extends IAgileObject, NamedId {
-
+public interface IAgileMember extends IAgileObject {
+   // do nothing
 }

@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDialog {
+public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Item Actions");
    boolean recurseChildren = false;
@@ -40,8 +40,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    Collection<IAtsActionableItem> actionableItems;
 
    public ActionableItemTreeWithChildrenDialog(Active active) {
-      this(active,
-         AtsClientService.get().getActionableItemService().getTopLevelActionableItems(active));
+      this(active, AtsClientService.get().getActionableItemService().getTopLevelActionableItems(active));
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {

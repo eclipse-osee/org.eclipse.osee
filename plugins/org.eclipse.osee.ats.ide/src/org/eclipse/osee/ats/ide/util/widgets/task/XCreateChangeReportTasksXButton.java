@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -79,7 +78,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                ChangeReportTaskData data = new ChangeReportTaskData();
                data.setTaskDefToken(taskDefToken);
                data.setHostTeamWf(hostTeamWf);
-               data.setAsUser((AtsUser) AtsClientService.get().getUserService().getCurrentUser());
+               data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
                data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
                XResultDataUI.report(data.getResults(), getName());
 

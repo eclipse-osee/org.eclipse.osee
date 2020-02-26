@@ -22,4 +22,5 @@ import org.junit.runners.Suite;
    DuplicateWorkflowAsIsOperationTest.class //
 })
 public class AtsTest_Workflow_Util_Suite {
+   // do nothing
 }

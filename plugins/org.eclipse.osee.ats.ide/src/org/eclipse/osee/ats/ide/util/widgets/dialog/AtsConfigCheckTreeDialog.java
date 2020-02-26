@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfigCheckTreeDialog<T> extends FilteredCheckboxTreeDialog {
+public class AtsConfigCheckTreeDialog<T> extends FilteredCheckboxTreeDialog<T> {
 
    private List<T> initialConfigObjects;
    private final boolean requiredSelection;
@@ -39,7 +39,6 @@ public class AtsConfigCheckTreeDialog<T> extends FilteredCheckboxTreeDialog {
       this.requiredSelection = requiredSelection;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<T> getChecked() {
       return super.getTreeViewer().getChecked();

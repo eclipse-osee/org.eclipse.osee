@@ -41,9 +41,9 @@ public class ClosureStateMultiChoiceSelect extends XSelectFromDialog<String> {
    }
 
    @Override
-   public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog(getLabel(), "Select from the Closure States below",
+   public FilteredCheckboxTreeDialog<String> createDialog() {
+      FilteredCheckboxTreeDialog<String> dialog =
+         new FilteredCheckboxTreeDialog<String>(getLabel(), "Select from the Closure States below",
             new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
       dialog.setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
       return dialog;

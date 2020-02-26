@@ -123,10 +123,12 @@ public interface IAtsTask extends IAtsWorkItem {
 
          @Override
          public void setStateMgr(IAtsStateManager stateMgr) {
+            // do nothing
          }
 
          @Override
          public void clearCaches() {
+            // do nothing
          }
 
          @Override

@@ -166,7 +166,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       getArtifact(workItem).addAttribute(attributeType, value);
    }
 
-   @SuppressWarnings({"unchecked", "deprecation"})
+   @SuppressWarnings({"unchecked"})
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
       List<IAttribute<T>> attrs = new ArrayList<>();
@@ -276,7 +276,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 
-   @SuppressWarnings({"unchecked", "deprecation"})
+   @SuppressWarnings({"unchecked"})
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeToken attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");

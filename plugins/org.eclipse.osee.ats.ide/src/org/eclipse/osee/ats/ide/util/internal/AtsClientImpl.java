@@ -113,7 +113,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
-      artifactResolver = new ArtifactResolverImpl(this);
+      artifactResolver = new ArtifactResolverImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
 
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
@@ -378,7 +378,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    @Override
    public IAtsHealthService getHealthService() {
-      return new AtsHealthServiceImpl(this);
+      return new AtsHealthServiceImpl();
    }
 
    @Override

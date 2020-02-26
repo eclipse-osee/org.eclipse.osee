@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
@@ -30,7 +31,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog {
+public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog<IAtsActionableItem> {
 
    XCheckBox recurseChildrenCheck = new XCheckBox("Include all children Actionable Items' Actions");
    boolean recurseChildren = false;

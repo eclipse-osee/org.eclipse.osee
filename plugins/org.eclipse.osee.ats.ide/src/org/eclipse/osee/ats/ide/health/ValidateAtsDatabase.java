@@ -425,7 +425,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                String currentStateName = currentStateStr.replaceAll(";.*$", "");
                stateNamesToStateStr.put(currentStateName, currentStateAttr);
 
-               @SuppressWarnings("deprecation")
                List<Attribute<String>> attributes = awa.getAttributes(AtsAttributeTypes.State);
                for (Attribute<String> stateAttr : attributes) {
                   String stateStr = stateAttr.getValue();
@@ -850,7 +849,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsAttributeValues");
    }
 
-   @SuppressWarnings("deprecation")
    private static void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, ValidateResults results, SkynetTransaction transaction) {
       for (AttributeType attrType : artifact.getAttributeTypesUsed()) {
          if (artifact.isDeleted()) {

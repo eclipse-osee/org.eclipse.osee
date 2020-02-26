@@ -17,8 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -58,8 +60,12 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             if (!view.isShowAll() && AtsClientService.get().getTaskService().getTasks(teamArt).size() > 8) {
                TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                objs.add(taskWrapper);
-               if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(view.getActiveAwa())) {
-                  view.setActiveGraphItem(taskWrapper);
+               AbstractWorkflowArtifact activeAwa = view.getActiveAwa();
+               if (activeAwa instanceof IAtsTask) {
+                  IAtsTask task = (IAtsTask) activeAwa;
+                  if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(task)) {
+                     view.setActiveGraphItem(taskWrapper);
+                  }
                }
             } else {
                objs.addAll(AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) entity));
@@ -119,8 +125,12 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                if (!view.isShowAll() && AtsClientService.get().getTaskService().getTasks(teamArt).size() > 8) {
                   TaskWrapper taskWrapper = new TaskWrapper(teamArt);
                   objs.add(taskWrapper);
-                  if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(view.getActiveAwa())) {
-                     view.setActiveGraphItem(taskWrapper);
+                  AbstractWorkflowArtifact activeAwa = view.getActiveAwa();
+                  if (activeAwa instanceof IAtsTask) {
+                     IAtsTask task = (IAtsTask) activeAwa;
+                     if (AtsClientService.get().getTaskService().getTasks(teamArt).contains(task)) {
+                        view.setActiveGraphItem(taskWrapper);
+                     }
                   }
                } else {
                   objs.addAll(AtsClientService.get().getTaskService().getTasks(teamArt));

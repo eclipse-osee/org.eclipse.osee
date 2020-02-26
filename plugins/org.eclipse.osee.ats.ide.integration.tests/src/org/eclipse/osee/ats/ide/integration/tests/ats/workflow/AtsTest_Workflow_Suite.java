@@ -39,4 +39,5 @@ import org.junit.runners.Suite;
    //
 })
 public class AtsTest_Workflow_Suite {
+   // do nothing
 }

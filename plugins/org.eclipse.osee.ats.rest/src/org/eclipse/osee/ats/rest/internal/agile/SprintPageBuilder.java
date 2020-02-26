@@ -149,7 +149,7 @@ public class SprintPageBuilder {
       FeatureGroupSum feature = featureSums.get(featureGroupName);
       if (feature == null) {
          feature = new FeatureGroupSum(featureGroupName,
-            featureGroup == null ? "" : featureGroup.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
+            featureGroup.isInvalid() ? "" : featureGroup.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
       }
       feature.addToSum(points);
       featureSums.put(featureGroupName, feature);

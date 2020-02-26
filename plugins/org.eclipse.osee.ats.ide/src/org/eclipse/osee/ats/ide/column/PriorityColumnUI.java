@@ -47,7 +47,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
    public static PriorityColumnUI instance = null;
    private final AtsAttributeValueColumn colToken;
-   private final AttributeTypeEnum attrToken;
+   private final AttributeTypeEnum<?> attrToken;
 
    public static PriorityColumnUI getInstance() {
       if (instance == null) {
@@ -64,7 +64,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   private PriorityColumnUI(AtsAttributeValueColumn priColToken, AttributeTypeEnum priAttrToken) {
+   private PriorityColumnUI(AtsAttributeValueColumn priColToken, AttributeTypeEnum<?> priAttrToken) {
       super(priColToken);
       this.colToken = priColToken;
       this.attrToken = priAttrToken;

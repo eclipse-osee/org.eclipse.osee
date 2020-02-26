@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Megumi Telles
  */
-public class VersionTreeDialog extends FilteredCheckboxTreeDialog {
+public class VersionTreeDialog extends FilteredCheckboxTreeDialog<IAtsVersion> {
 
    protected Composite dialogComp;
 

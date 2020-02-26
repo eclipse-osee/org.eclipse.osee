@@ -159,6 +159,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void setCustomizeData(CustomizeData customizeData) {
+      // do nothing
    }
 
    @Override

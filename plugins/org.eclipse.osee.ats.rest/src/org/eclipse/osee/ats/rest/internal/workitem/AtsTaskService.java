@@ -33,22 +33,20 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
+import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTaskService extends AbstractAtsTaskService {
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
 
-   public AtsTaskService(AtsApi atsApi, OrcsApi orcsApi) {
+   public AtsTaskService(AtsApi atsApi) {
       super(atsApi);
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -128,7 +126,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(hostTeamWf);
-      AtsUser atsUser = (AtsUser) atsApi.getUserService().getUserByAccountId(asUser.getId());
+      AtsUser atsUser = atsApi.getUserService().getUserByAccountId(asUser.getId());
       data.setAsUser(atsUser);
       return createTasks(data);
    }
@@ -136,6 +134,11 @@ public class AtsTaskService extends AbstractAtsTaskService {
    @Override
    public IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token) {
       return ChangeReportTaskNameProviderService.getChangeReportOptionNameProvider(token);
+   }
+
+   @Override
+   public IAtsTask getTask(ArtifactToken artifact) {
+      return new Task(atsApi.getLogger(), atsApi, artifact);
    }
 
 }

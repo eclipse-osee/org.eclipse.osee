@@ -92,4 +92,6 @@ public interface IAtsTaskService {
 
    IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token);
 
+   IAtsTask getTask(ArtifactToken artifact);
+
 }

@@ -108,7 +108,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
       notifyService = new AtsNotifierServiceImpl();
 
-      artifactResolver = new ArtifactResolverImpl(this, orcsApi);
+      artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
@@ -123,7 +123,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       actionFactory = new ActionFactory(attributeResolverService, this);
 
       agileService = new AgileService(logger, this);
-      taskService = new AtsTaskService(this, orcsApi);
+      taskService = new AtsTaskService(this);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
@@ -338,7 +338,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public IAtsHealthService getHealthService() {
       if (healthService == null) {
-         healthService = new AtsHealthServiceImpl(this);
+         healthService = new AtsHealthServiceImpl();
       }
       return healthService;
    }

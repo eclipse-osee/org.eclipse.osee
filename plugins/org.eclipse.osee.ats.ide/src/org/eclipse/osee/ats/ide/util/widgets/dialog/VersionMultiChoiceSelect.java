@@ -45,9 +45,10 @@ public class VersionMultiChoiceSelect extends XSelectFromDialog<IAtsVersion> {
    }
 
    @Override
-   public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the versions below",
-         new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
+   public FilteredCheckboxTreeDialog<IAtsVersion> createDialog() {
+      FilteredCheckboxTreeDialog<IAtsVersion> dialog =
+         new FilteredCheckboxTreeDialog<IAtsVersion>(getLabel(), "Select from the versions below",
+            new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
       dialog.setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
       dialog.setShowSelectButtons(true);
       return dialog;

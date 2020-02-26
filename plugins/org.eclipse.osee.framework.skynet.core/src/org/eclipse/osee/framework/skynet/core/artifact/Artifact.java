@@ -586,7 +586,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
-   @Deprecated
    public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
       return Collections.castAll(getAttributes(attributes.getValues(attributeType), false));

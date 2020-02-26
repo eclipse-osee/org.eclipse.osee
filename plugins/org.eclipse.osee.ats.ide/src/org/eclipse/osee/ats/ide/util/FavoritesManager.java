@@ -86,7 +86,7 @@ public class FavoritesManager {
    }
 
    public static void addFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
-      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user)) {
+      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user.getStoreObject())) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
          workflow.persist(transaction);
@@ -100,7 +100,7 @@ public class FavoritesManager {
    }
 
    public static boolean isFavorite(AbstractWorkflowArtifact workflow, AtsUser user) {
-      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user);
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user.getStoreObject());
    }
 
 }

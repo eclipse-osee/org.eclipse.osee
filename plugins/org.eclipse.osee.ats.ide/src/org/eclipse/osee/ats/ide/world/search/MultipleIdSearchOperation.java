@@ -151,9 +151,9 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                artDecorator.setShowArtBranch(true);
                artDecorator.setShowArtType(true);
                artDecorator.setShowRelations(false);
-               FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog("Select Available Change Reports",
-                  "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                  new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
+               FilteredCheckboxTreeDialog<Artifact> dialog = new FilteredCheckboxTreeDialog<Artifact>(
+                  "Select Available Change Reports", "Select available Change Reports to run.",
+                  new ArrayTreeContentProvider(), new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
                dialog.setInput(addedArts);
                if (dialog.open() == 0) {
                   if (dialog.getResult().length == 0) {

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -29,11 +28,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class ArtifactResolverImpl implements IArtifactResolver {
 
    private final AtsApi atsApi;
-   private final OrcsApi orcsApi;
 
-   public ArtifactResolverImpl(AtsApi atsApi, OrcsApi orcsApi) {
+   public ArtifactResolverImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
    }
 
    @Override

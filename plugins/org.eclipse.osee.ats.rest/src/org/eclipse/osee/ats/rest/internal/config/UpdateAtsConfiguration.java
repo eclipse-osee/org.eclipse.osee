@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -63,7 +62,6 @@ public class UpdateAtsConfiguration {
    public XResultData createUpdateConfig(XResultData rd) {
       UserId user = SystemUser.OseeSystem;
       ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(user, rd);
-      createRuleDefinitions(user, rd);
       createUpdateColorColumnAttributes();
       createUpdateConfigAttributes(atsConfigArt, user, rd);
       try {
@@ -72,26 +70,6 @@ public class UpdateAtsConfiguration {
          rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
       }
       return rd;
-   }
-
-   private void createRuleDefinitions(UserId userId, XResultData rd) {
-      try {
-         if ((ArtifactReadable) atsApi.getQueryService().getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
-            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userId,
-               "Add Rule Definitions Artifact");
-            ArtifactId headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
-            ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
-            String ruleDefs = OseeInf.getResourceContents("atsConfig/ruleDefinitions.ats", getClass());
-            if (rd.isErrors()) {
-               throw new OseeStateException(rd.toString());
-            }
-            tx.relate(headingArt, CoreRelationTypes.DefaultHierarchical_Child, ruleDefConfigArt);
-            tx.commit();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(UpdateAtsConfiguration.class, Level.SEVERE, ex);
-         rd.error("Error loading column ruleDefinitions.ats file (see log for details) " + ex.getLocalizedMessage());
-      }
    }
 
    private List<String> getViewsJsonStrings() throws Exception {
