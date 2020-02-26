@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
@@ -37,7 +37,7 @@ public class AtsNoteTest {
    @Mock private IAtsUserService userService;
    @Mock private AtsApi atsApi;
    // @formatter:on
-   List<IAtsUser> assignees = new ArrayList<>();
+   List<AtsUser> assignees = new ArrayList<>();
 
    @Before
    public void setup() {

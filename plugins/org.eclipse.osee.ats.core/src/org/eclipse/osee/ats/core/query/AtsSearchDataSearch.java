@@ -10,7 +10,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -27,7 +27,7 @@ public class AtsSearchDataSearch {
    private final AtsSearchData data;
    private final AtsApi atsApi;
    private final ISearchCriteriaProvider criteriaProvider;
-   private IAtsUser userById;
+   private AtsUser userById;
 
    public AtsSearchDataSearch(AtsSearchData data, AtsApi atsApi, ISearchCriteriaProvider criteriaProvider) {
       this.atsApi = atsApi;

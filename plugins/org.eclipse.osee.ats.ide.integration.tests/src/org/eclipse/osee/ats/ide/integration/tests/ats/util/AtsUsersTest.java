@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
+
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,7 +51,7 @@ public class AtsUsersTest {
 
       Assert.assertEquals(currentUser, AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
 
-      IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(currentUser.getUserId());
+      AtsUser atsUser = AtsClientService.get().getUserService().getUserById(currentUser.getUserId());
 
       Assert.assertEquals(currentUser.getUserId(), atsUser.getUserId());
       Assert.assertEquals(currentUser.getEmail(), atsUser.getEmail());

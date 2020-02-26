@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.api.config;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -28,7 +27,7 @@ public interface IAtsConfigurationsService {
     */
    AtsConfigurations getConfigurationsWithPend();
 
-   IAtsConfigTx createConfigTx(String string, IAtsUser asUser);
+   IAtsConfigTx createConfigTx(String string, AtsUser asUser);
 
    void setAtsApi(AtsApi atsApi);
 
@@ -38,6 +37,6 @@ public interface IAtsConfigurationsService {
 
    AtsUser getUserByUserId(String userId);
 
-   IAtsUser getUserByName(String name);
+   AtsUser getUserByName(String name);
 
 }

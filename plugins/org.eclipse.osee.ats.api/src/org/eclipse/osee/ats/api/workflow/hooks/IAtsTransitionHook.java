@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.hooks;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -28,7 +28,7 @@ public interface IAtsTransitionHook {
    /**
     * Allows subclass to add changes to transition before commit.
     */
-   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
+   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       // provided for subclass implementation
    }
 
@@ -39,7 +39,7 @@ public interface IAtsTransitionHook {
       // provided for subclass implementation
    }
 
-   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
+   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
       // provided for subclass implementation
    }
 

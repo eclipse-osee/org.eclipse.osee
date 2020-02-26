@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.internal.log;
 import static org.mockito.Mockito.when;
 import java.util.Calendar;
 import java.util.Date;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -31,7 +31,7 @@ import org.mockito.MockitoAnnotations;
 public class LogItemTest {
 
    // @formatter:off
-   @Mock IAtsUser user;
+   @Mock AtsUser user;
    // @formatter:on
 
    @Before
@@ -51,7 +51,7 @@ public class LogItemTest {
       validateItem(user, item, date);
    }
 
-   public static void validateItem(IAtsUser user, IAtsLogItem item, Date date) {
+   public static void validateItem(AtsUser user, IAtsLogItem item, Date date) {
       Assert.assertEquals(LogType.Error, item.getType());
       Assert.assertEquals(date, item.getDate());
       Assert.assertEquals(user.getUserId(), item.getUserId());
@@ -77,7 +77,7 @@ public class LogItemTest {
       validateItem(user, item, date);
    }
 
-   public static IAtsLogItem getTestLogItem(Date date, IAtsUser user) {
+   public static IAtsLogItem getTestLogItem(Date date, AtsUser user) {
       return new LogItem(LogType.Error, date, user.getUserId(), "Analyze", "my msg");
    }
 

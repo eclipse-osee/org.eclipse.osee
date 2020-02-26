@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -64,7 +64,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getAssignees() {
+   public List<AtsUser> getAssignees() {
       return getStateMgr().getAssignees();
    }
 
@@ -178,7 +178,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsUser getCreatedBy() {
+   public AtsUser getCreatedBy() {
       String userId = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
       return atsApi.getUserService().getUserById(userId);
    }
@@ -189,14 +189,14 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsUser getCompletedBy() {
+   public AtsUser getCompletedBy() {
       String userId =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedBy, null);
       return atsApi.getUserService().getUserById(userId);
    }
 
    @Override
-   public IAtsUser getCancelledBy() {
+   public AtsUser getCancelledBy() {
       String userId =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledBy, null);
       return atsApi.getUserService().getUserById(userId);
@@ -253,7 +253,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getImplementers() {
+   public List<AtsUser> getImplementers() {
       return atsApi.getImplementerService().getImplementers(this);
    }
 

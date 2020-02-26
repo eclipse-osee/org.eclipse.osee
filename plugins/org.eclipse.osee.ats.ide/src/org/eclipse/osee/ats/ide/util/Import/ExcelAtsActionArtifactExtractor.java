@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -164,7 +164,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  IAtsUser user = AtsClientService.get().getUserService().getUserByName(assignee);
+                  AtsUser user = AtsClientService.get().getUserService().getUserByName(assignee);
                   if (user == null) {
                      rd.error("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -215,7 +215,7 @@ public class ExcelAtsActionArtifactExtractor {
       Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
       Date createdDate = new Date();
       try {
-         IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+         AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
             ActionResult actionResult = actionNameToAction.get(aData.title);
             if (actionResult == null) {
@@ -459,8 +459,8 @@ public class ExcelAtsActionArtifactExtractor {
       protected String priorityStr = "";
       protected String changeType = "";
       protected Set<String> assigneeStrs = new HashSet<>();
-      protected List<IAtsUser> assignees = new LinkedList<>();
-      protected IAtsUser originator = null;
+      protected List<AtsUser> assignees = new LinkedList<>();
+      protected AtsUser originator = null;
       protected Set<String> actionableItems = new HashSet<>();
       protected String version = "";
       protected Double estimatedHours = null;
@@ -643,7 +643,7 @@ public class ExcelAtsActionArtifactExtractor {
       private void processOriginator(String[] cols, ActionData aData, int i) {
          String origStr = cols[i];
          if (Strings.isValid(origStr)) {
-            IAtsUser orig = AtsClientService.get().getUserService().getUserByName(origStr);
+            AtsUser orig = AtsClientService.get().getUserService().getUserByName(origStr);
             if (orig == null) {
                resultData.errorf("Invalid name for originator [%s] rown %s", origStr, i);
             } else {

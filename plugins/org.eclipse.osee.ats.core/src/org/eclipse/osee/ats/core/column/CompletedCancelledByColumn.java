@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -30,7 +30,7 @@ public class CompletedCancelledByColumn extends AbstractServicesColumn {
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
-         IAtsUser user = getCompletedCancelledBy(atsObject, atsApi);
+         AtsUser user = getCompletedCancelledBy(atsObject, atsApi);
          if (user != null) {
             return user.getName();
          }
@@ -38,7 +38,7 @@ public class CompletedCancelledByColumn extends AbstractServicesColumn {
       return null;
    }
 
-   public static IAtsUser getCompletedCancelledBy(Object obj, AtsApi atsApi) {
+   public static AtsUser getCompletedCancelledBy(Object obj, AtsApi atsApi) {
       String userId = null;
       if (obj instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) obj;

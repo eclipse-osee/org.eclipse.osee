@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -58,15 +58,15 @@ public interface IAtsTeamDefinitionService {
 
    boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
-   Collection<IAtsUser> getLeads(IAtsTeamDefinition teamDef);
+   Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef);
 
-   Collection<IAtsUser> getLeads(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems);
+   Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems);
 
-   Collection<IAtsUser> getMembers(IAtsTeamDefinition teamDef);
+   Collection<AtsUser> getMembers(IAtsTeamDefinition teamDef);
 
-   Collection<IAtsUser> getMembersAndLeads(IAtsTeamDefinition teamDef);
+   Collection<AtsUser> getMembersAndLeads(IAtsTeamDefinition teamDef);
 
-   Collection<IAtsUser> getSubscribed(IAtsTeamDefinition teamDef);
+   Collection<AtsUser> getSubscribed(IAtsTeamDefinition teamDef);
 
    boolean isAllowCommitBranch(IAtsTeamDefinition teamDef);
 

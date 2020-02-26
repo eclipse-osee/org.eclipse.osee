@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.workdef.builder;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.review.DecisionReviewOption;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
@@ -51,8 +51,8 @@ public class DecisionReviewOptionBuilder {
       return this;
    }
 
-   public DecisionReviewOptionBuilder andAssignees(IAtsUser... users) {
-      for (IAtsUser user : users) {
+   public DecisionReviewOptionBuilder andAssignees(AtsUser... users) {
+      for (AtsUser user : users) {
          decRevOpt.getUserIds().add(user.getUserId());
       }
       return this;

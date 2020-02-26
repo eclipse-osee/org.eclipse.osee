@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class XAssigneesListWidget extends AbstractXAssigneesListWidget {
 
    public static final String WIDGET_ID = XAssigneesListWidget.class.getSimpleName();
-   List<IAtsUser> assignees = new LinkedList<>();
+   List<AtsUser> assignees = new LinkedList<>();
    IAtsTeamDefinition teamDef = null;
 
    public XAssigneesListWidget() {
@@ -36,7 +36,7 @@ public class XAssigneesListWidget extends AbstractXAssigneesListWidget {
    }
 
    @Override
-   public List<IAtsUser> getCurrentAssignees() {
+   public List<AtsUser> getCurrentAssignees() {
       return assignees;
    }
 

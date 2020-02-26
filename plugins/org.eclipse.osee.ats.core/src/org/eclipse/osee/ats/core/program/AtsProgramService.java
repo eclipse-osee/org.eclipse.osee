@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -176,7 +176,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, IAtsUser asUser) {
+   public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, AtsUser asUser) {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Set Work Package", asUser);
       for (IAtsWorkItem workItem : workItems) {
          if (workPackage == null) {

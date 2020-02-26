@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -513,7 +513,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionAssigneesByKey() {
       AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      List<IAtsUser> assignees = teamWf.getStateMgr().getAssignees();
+      List<AtsUser> assignees = teamWf.getStateMgr().getAssignees();
       Assert.assertEquals(1, assignees.size());
       Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
 
@@ -539,7 +539,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionOriginatorByKey() {
       AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      IAtsUser createdBy = teamWf.getCreatedBy();
+      AtsUser createdBy = teamWf.getCreatedBy();
       Assert.assertEquals(DemoUsers.Joe_Smith, createdBy);
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Originator.name(),

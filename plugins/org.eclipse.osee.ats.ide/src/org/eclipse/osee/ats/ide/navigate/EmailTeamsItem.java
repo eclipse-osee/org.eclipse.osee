@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -63,14 +63,14 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (IAtsUser user : AtsClientService.get().getTeamDefinitionService().getMembers(teamDef)) {
+            for (AtsUser user : AtsClientService.get().getTeamDefinitionService().getMembers(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (IAtsUser user : AtsClientService.get().getTeamDefinitionService().getLeads(teamDef)) {
+            for (AtsUser user : AtsClientService.get().getTeamDefinitionService().getLeads(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -68,11 +68,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       this(comment, AtsClientService.get().getAtsBranch(), AtsClientService.get().getUserService().getCurrentUser());
    }
 
-   public AtsChangeSet(String comment, IAtsUser asUser) {
+   public AtsChangeSet(String comment, AtsUser asUser) {
       this(comment, AtsClientService.get().getAtsBranch(), asUser);
    }
 
-   public AtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+   public AtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       super(comment, branch, asUser);
    }
 

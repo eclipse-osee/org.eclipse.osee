@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
@@ -71,7 +71,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
                state.setPercentComplete(Integer.valueOf(m.group(4)).intValue());
             }
             String userStr = m.group(2);
-            List<IAtsUser> users = getUsers(userStr);
+            List<AtsUser> users = getUsers(userStr);
             state.setAssignees(users);
          } else {
             throw new OseeArgumentException("Can't unpack state data [%s]", storeStr);
@@ -81,17 +81,17 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public String getStorageString(Collection<IAtsUser> users) {
+   public String getStorageString(Collection<AtsUser> users) {
       StringBuffer sb = new StringBuffer();
-      for (IAtsUser u : users) {
+      for (AtsUser u : users) {
          sb.append("<" + u.getUserId() + ">");
       }
       return sb.toString();
    }
 
    @Override
-   public List<IAtsUser> getUsers(String sorageString) {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getUsers(String sorageString) {
+      List<AtsUser> users = new ArrayList<>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);
@@ -100,7 +100,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
          }
          try {
             String uId = m.group(1);
-            IAtsUser u = userService.getUserById(uId);
+            AtsUser u = userService.getUserById(uId);
             Conditions.checkNotNull(u, "userById " + uId);
             users.add(u);
          } catch (Exception ex) {

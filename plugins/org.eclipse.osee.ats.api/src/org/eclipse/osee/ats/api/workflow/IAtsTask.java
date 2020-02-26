@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -67,7 +67,7 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public IAtsUser getCreatedBy() {
+         public AtsUser getCreatedBy() {
             return null;
          }
 
@@ -77,12 +77,12 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public IAtsUser getCompletedBy() {
+         public AtsUser getCompletedBy() {
             return null;
          }
 
          @Override
-         public IAtsUser getCancelledBy() {
+         public AtsUser getCancelledBy() {
             return null;
          }
 
@@ -135,12 +135,12 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public List<IAtsUser> getAssignees() {
+         public List<AtsUser> getAssignees() {
             return null;
          }
 
          @Override
-         public List<IAtsUser> getImplementers() {
+         public List<AtsUser> getImplementers() {
             return null;
          }
 

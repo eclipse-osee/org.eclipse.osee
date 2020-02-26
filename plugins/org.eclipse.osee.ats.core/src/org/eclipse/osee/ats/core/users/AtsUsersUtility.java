@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -29,9 +29,9 @@ public final class AtsUsersUtility {
       // UtilityClass
    }
 
-   public static Collection<IAtsUser> getValidEmailUsers(Collection<? extends IAtsUser> users) {
-      Set<IAtsUser> validUsers = new HashSet<>();
-      for (IAtsUser user : users) {
+   public static Collection<AtsUser> getValidEmailUsers(Collection<? extends AtsUser> users) {
+      Set<AtsUser> validUsers = new HashSet<>();
+      for (AtsUser user : users) {
          if (isEmailValid(user.getEmail())) {
             validUsers.add(user);
          }
@@ -39,9 +39,9 @@ public final class AtsUsersUtility {
       return validUsers;
    }
 
-   public static Collection<IAtsUser> getActiveEmailUsers(Collection<? extends IAtsUser> users) {
-      Set<IAtsUser> activeUsers = new HashSet<>();
-      for (IAtsUser user : users) {
+   public static Collection<AtsUser> getActiveEmailUsers(Collection<? extends AtsUser> users) {
+      Set<AtsUser> activeUsers = new HashSet<>();
+      for (AtsUser user : users) {
          if (user.isActive()) {
             activeUsers.add(user);
          }
@@ -56,8 +56,8 @@ public final class AtsUsersUtility {
       return false;
    }
 
-   public static Collection<? extends IAtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
-      Set<IAtsUser> users = new HashSet<>();
+   public static Collection<? extends AtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
+      Set<AtsUser> users = new HashSet<>();
       for (String userId : userIds) {
          users.add(userService.getUserById(userId));
       }

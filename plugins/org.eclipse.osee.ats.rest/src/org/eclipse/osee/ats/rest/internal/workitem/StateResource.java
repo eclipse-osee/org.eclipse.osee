@@ -19,7 +19,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -77,7 +77,7 @@ public final class StateResource {
       if (!Strings.isValid(asUserId)) {
          return RestUtil.returnBadRequest("asUserId is not valid");
       }
-      IAtsUser transitionUser = atsApi.getUserService().getUserById(asUserId);
+      AtsUser transitionUser = atsApi.getUserService().getUserById(asUserId);
       if (transitionUser == null) {
          return RestUtil.returnBadRequest(String.format("User by id [%s] does not exist", asUserId));
       }

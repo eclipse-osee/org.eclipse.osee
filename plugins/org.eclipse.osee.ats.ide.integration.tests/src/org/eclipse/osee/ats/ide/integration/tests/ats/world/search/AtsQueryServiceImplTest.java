@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
 import java.util.ArrayList;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class AtsQueryServiceImplTest {
     */
    @Test
    public void testSaveSearchAndGetSavedSearchesAndRemoveSearch() {
-      IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       String namespace = AtsSearchUtil.ATS_QUERY_NAMESPACE;
       ArrayList<AtsSearchData> savedSearches =

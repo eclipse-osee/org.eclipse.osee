@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -88,8 +88,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public List<IAtsUser> getRoleUsers(Role role) {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getRoleUsers(Role role) {
+      List<AtsUser> users = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role && !users.contains(userService.getUserById(uRole.getUserId()))) {
             users.add(userService.getUserById(uRole.getUserId()));
@@ -99,8 +99,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public List<IAtsUser> getRoleUsers(Collection<UserRole> roles) {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getRoleUsers(Collection<UserRole> roles) {
+      List<AtsUser> users = new ArrayList<>();
       for (UserRole uRole : roles) {
          if (!users.contains(userService.getUserById(uRole.getUserId()))) {
             users.add(userService.getUserById(uRole.getUserId()));
@@ -221,7 +221,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       }
    }
 
-   public static IAtsUser getUser(UserRole item, AtsApi atsApi) {
+   public static AtsUser getUser(UserRole item, AtsApi atsApi) {
       return atsApi.getUserService().getUserById(item.getUserId());
    }
 

@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.config.tx.AtsConfigTxImpl;
 
 /**
@@ -33,7 +32,7 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    }
 
    @Override
-   public IAtsConfigTx createConfigTx(String name, IAtsUser asUser) {
+   public IAtsConfigTx createConfigTx(String name, AtsUser asUser) {
       return new AtsConfigTxImpl(name, atsApi, asUser);
    }
 
@@ -50,7 +49,7 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    }
 
    @Override
-   public IAtsUser getUserByName(String name) {
+   public AtsUser getUserByName(String name) {
       Long artId = getConfigurations().getUserNameToUserArtId().get(name);
       AtsUser user = getConfigurations().getIdToUser().get(artId);
       return user;

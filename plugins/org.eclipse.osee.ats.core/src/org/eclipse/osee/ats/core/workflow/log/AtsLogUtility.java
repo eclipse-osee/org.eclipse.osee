@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.log;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -36,12 +36,12 @@ public class AtsLogUtility {
    }
 
    public static String getToStringUser(IAtsLogItem item, IAtsUserService userService) {
-      IAtsUser user = userService.getUserById(item.getUserId());
+      AtsUser user = userService.getUserById(item.getUserId());
       return user == null ? "unknown" : user.getName();
    }
 
    public static String toString(IAtsLogItem item, IAtsUserService userService) {
-      IAtsUser user = userService.getUserById(item.getUserId());
+      AtsUser user = userService.getUserById(item.getUserId());
       return String.format("%s (%s)%s by %s on %s", getToStringMsg(item), item.getType(), getToStringState(item),
          user.getName(), DateUtil.getMMDDYYHHMM(item.getDate()));
    }
@@ -56,7 +56,7 @@ public class AtsLogUtility {
 
    public static String getUserName(String userId, IAtsUserService userService) {
       String name = "unknown (" + userId + ")";
-      IAtsUser user = userService.getUserById(userId);
+      AtsUser user = userService.getUserById(userId);
       if (user != null) {
          name = user.getName();
       }

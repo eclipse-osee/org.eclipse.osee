@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.AtsImage;
@@ -57,7 +57,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "ReviewParticipationReport";
 
-   private IAtsUser selectedUser = null;
+   private AtsUser selectedUser = null;
 
    public GenerateReviewParticipationReport(XNavigateItem parent) {
       super(parent, "Generate Review Participation Report", AtsImage.REPORT);
@@ -65,7 +65,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      IAtsUser useUser = null;
+      AtsUser useUser = null;
 
       IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
       UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User",
@@ -104,10 +104,10 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
     */
    private class ParticipationReportJob extends Job {
 
-      private final IAtsUser user;
+      private final AtsUser user;
       private final boolean forcePend;
 
-      public ParticipationReportJob(String title, IAtsUser user, boolean forcePend) {
+      public ParticipationReportJob(String title, AtsUser user, boolean forcePend) {
          super(title);
          this.user = user;
          this.forcePend = forcePend;
@@ -152,7 +152,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    public class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
-      public ReviewParticipationXViewerFactory(IAtsUser user) {
+      public ReviewParticipationXViewerFactory(AtsUser user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE,
             new OseeTreeReportAdapter("Table Report - Review Participation Report"));
          registerColumns(ArtifactTypeColumn.getInstance());
@@ -169,7 +169,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    }
 
-   public void setSelectedUser(IAtsUser selectedUser) {
+   public void setSelectedUser(AtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }
 }

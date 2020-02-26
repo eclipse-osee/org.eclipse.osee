@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -67,8 +67,8 @@ public class WorkItemNotificationProcessor {
     */
    public void run(AtsNotificationCollector notifications, AtsWorkItemNotificationEvent event) {
       Collection<AtsNotifyType> types = event.getNotifyTypes();
-      List<IAtsUser> notifyUsers = new ArrayList<>();
-      IAtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
+      List<AtsUser> notifyUsers = new ArrayList<>();
+      AtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
       if (Strings.isValid(event.getFromUserId())) {
          fromUser = userService.getUserById(event.getFromUserId());
       }
@@ -80,7 +80,7 @@ public class WorkItemNotificationProcessor {
 
          if (types.contains(AtsNotifyType.Originator)) {
             try {
-               IAtsUser originator = workItem.getCreatedBy();
+               AtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
@@ -102,7 +102,7 @@ public class WorkItemNotificationProcessor {
          }
          if (types.contains(AtsNotifyType.Assigned)) {
             try {
-               Collection<IAtsUser> assignees = new HashSet<>();
+               Collection<AtsUser> assignees = new HashSet<>();
                if (!notifyUsers.isEmpty()) {
                   assignees.addAll(notifyUsers);
                } else {
@@ -126,7 +126,7 @@ public class WorkItemNotificationProcessor {
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
             try {
-               Collection<IAtsUser> subscribed = new HashSet<>();
+               Collection<AtsUser> subscribed = new HashSet<>();
                subscribed.addAll(getSubscribed(workItem));
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
@@ -150,7 +150,7 @@ public class WorkItemNotificationProcessor {
                types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed);
             boolean stateTypeIsCompletedOrCancelled = stateType.isCompleted() || stateType.isCancelled();
             if (notificationTypeIsCompletedOrCancelled && !workItem.isTask() && stateTypeIsCompletedOrCancelled) {
-               IAtsUser originator = workItem.getCreatedBy();
+               AtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
@@ -183,7 +183,7 @@ public class WorkItemNotificationProcessor {
          if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsPeerToPeerReview) {
             try {
                IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
-               Collection<IAtsUser> authorModerator = new ArrayList<>();
+               Collection<AtsUser> authorModerator = new ArrayList<>();
                for (UserRole role : roleMgr.getUserRoles()) {
                   if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
                      authorModerator.add(userService.getUserById(role.getUserId()));
@@ -208,7 +208,7 @@ public class WorkItemNotificationProcessor {
             if (workItem.isTeamWorkflow()) {
                IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
                try {
-                  Collection<IAtsUser> subscribedUsers = new HashSet<>();
+                  Collection<AtsUser> subscribedUsers = new HashSet<>();
                   // Handle Team Definitions
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
                   subscribedUsers.addAll(atsApi.getTeamDefinitionService().getSubscribed(teamDef));
@@ -238,8 +238,8 @@ public class WorkItemNotificationProcessor {
       }
    }
 
-   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) {
-      ArrayList<IAtsUser> arts = new ArrayList<>();
+   public List<AtsUser> getSubscribed(IAtsWorkItem workItem) {
+      ArrayList<AtsUser> arts = new ArrayList<>();
       for (ArtifactId art : atsApi.getRelationResolver().getRelated(workItem.getStoreObject(),
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(userService.getUserById(
@@ -248,7 +248,7 @@ public class WorkItemNotificationProcessor {
       return arts;
    }
 
-   private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, IAtsUser fromUser, IAtsUser originator) {
+   private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, AtsUser fromUser, AtsUser originator) {
       boolean different = true;
       if (fromUser.equals(originator)) {
          different = false;
@@ -275,8 +275,8 @@ public class WorkItemNotificationProcessor {
       return url;
    }
 
-   private IAtsUser getFromUser(AtsWorkItemNotificationEvent event) {
-      IAtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
+   private AtsUser getFromUser(AtsWorkItemNotificationEvent event) {
+      AtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
       if (Strings.isValid(event.getFromUserId())) {
          fromUser = userService.getUserById(event.getFromUserId());
       }

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.workflow.review;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -42,7 +42,7 @@ public class DecisionReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes) {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.isInState(DecisionReviewState.Prepare)) {
@@ -88,7 +88,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, IAtsChangeSet changes) {
+   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, AtsUser user, IAtsChangeSet changes) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList(user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), null,

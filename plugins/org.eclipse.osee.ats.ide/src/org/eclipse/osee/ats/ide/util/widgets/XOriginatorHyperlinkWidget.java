@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
+
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
-   IAtsUser originator;
+   AtsUser originator;
 
    public XOriginatorHyperlinkWidget() {
       super("Originator", true, 50);
@@ -51,7 +52,7 @@ public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection
       return true;
    }
 
-   public IAtsUser getSelected() {
+   public AtsUser getSelected() {
       return originator;
    }
 

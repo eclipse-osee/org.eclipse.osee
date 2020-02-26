@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
@@ -36,14 +36,14 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private final Collection<IAtsWorkItem> workItems;
    private final String name;
    private TransitionOption[] transitionOption;
-   private final Collection<? extends IAtsUser> toAssignees;
+   private final Collection<? extends AtsUser> toAssignees;
    private String toStateName;
    private final IAtsChangeSet changes;
    private boolean executeChanges = false;
    private final IAtsWorkItemService workItemService;
    private final AtsApi atsApi;
 
-   public TransitionHelper(String name, Collection<IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
+   public TransitionHelper(String name, Collection<IAtsWorkItem> workItems, String toStateName, Collection<? extends AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
       super(atsApi);
       this.atsApi = atsApi;
       this.workItemService = atsApi.getWorkItemService();
@@ -95,7 +95,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
+   public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
       return toAssignees;
    }
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -64,7 +64,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> ResultSet<T> getResultsNew();
 
-   IAtsQuery andAssignee(IAtsUser... assignees);
+   IAtsQuery andAssignee(AtsUser... assignees);
 
    <T extends ArtifactToken> ResultSet<T> getResultArtifacts();
 
@@ -74,11 +74,11 @@ public interface IAtsQuery {
 
    IAtsQuery isOfType(WorkItemType... workItemType);
 
-   IAtsQuery andOriginator(IAtsUser atsUser);
+   IAtsQuery andOriginator(AtsUser atsUser);
 
-   IAtsQuery andSubscribed(IAtsUser atsUser);
+   IAtsQuery andSubscribed(AtsUser atsUser);
 
-   IAtsQuery andFavorite(IAtsUser atsUser);
+   IAtsQuery andFavorite(AtsUser atsUser);
 
    IAtsQuery andTeam(List<Long> teamDefIds);
 
@@ -102,7 +102,7 @@ public interface IAtsQuery {
 
    Collection<ArtifactId> getItemIds();
 
-   IAtsQuery andAssigneeWas(IAtsUser... assignees);
+   IAtsQuery andAssigneeWas(AtsUser... assignees);
 
    IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs);
 

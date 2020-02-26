@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -42,7 +42,7 @@ public class TransitionHelperTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem, workItem2;
    @Mock IAtsTeamWorkflow teamWf;
-   @Mock IAtsUser Joe, Kay;
+   @Mock AtsUser Joe, Kay;
    @Mock IAtsChangeSet changes;
    @Mock IAtsTransitionHook transListener1, transListener2;
    @Mock IAtsWorkItemService workItemService;
@@ -124,7 +124,7 @@ public class TransitionHelperTest {
 
    @Test
    public void testGetToAssignees() {
-      Collection<? extends IAtsUser> toAssignees = helper.getToAssignees(workItem);
+      Collection<? extends AtsUser> toAssignees = helper.getToAssignees(workItem);
       Assert.assertEquals(2, toAssignees.size());
       Assert.assertTrue(toAssignees.contains(Kay));
       Assert.assertTrue(toAssignees.contains(Joe));

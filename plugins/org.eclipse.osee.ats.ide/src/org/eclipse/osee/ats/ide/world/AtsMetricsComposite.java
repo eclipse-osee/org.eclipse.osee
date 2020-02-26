@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -267,7 +267,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
    public void createCompletedByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<>();
-      for (IAtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
+      for (AtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
             int numCompleted = sMet.getUserToCompletedSmas(user).size();
             double cummulativePercentComplete = numCompleted * 100;
@@ -324,11 +324,11 @@ public class AtsMetricsComposite extends ScrolledComposite {
       if (sMet.getEstRelDate() != null) {
          hoursRemain = sMet.getHoursTillRel();
       }
-      for (IAtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
+      for (AtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
             double userHoursRemain = 0;
             for (TeamWorkFlowArtifact team : sMet.getTeamArts()) {
-               Collection<IAtsUser> users = new HashSet<>();
+               Collection<AtsUser> users = new HashSet<>();
                users.addAll(team.getStateMgr().getAssignees());
                if (users.contains(user)) {
                   double hours = AtsClientService.get().getEarnedValueService().getRemainHoursTotal(team);

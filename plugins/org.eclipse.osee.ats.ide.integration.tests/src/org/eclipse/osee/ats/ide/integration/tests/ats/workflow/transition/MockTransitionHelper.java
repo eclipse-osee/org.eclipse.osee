@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -32,7 +32,7 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean systemUserAssigned = null;
    public Boolean overrideTransitionValidityCheck = null;
 
-   public MockTransitionHelper(String name, Collection<IAtsWorkItem> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+   public MockTransitionHelper(String name, Collection<IAtsWorkItem> awas, String toStateName, Collection<? extends AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
       super(name, awas, toStateName, toAssignees, cancellationReason, changes, AtsClientService.get().getServices(),
          transitionOption);
    }

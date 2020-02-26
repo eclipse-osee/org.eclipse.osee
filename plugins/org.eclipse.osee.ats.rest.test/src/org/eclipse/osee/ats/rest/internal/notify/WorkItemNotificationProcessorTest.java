@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -60,7 +59,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class WorkItemNotificationProcessorTest {
 
-   IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
+   AtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
    // @formatter:off
    @Mock ArtifactToken kayArtifact;
    @Mock IAtsTeamWorkflow teamWf;
@@ -82,8 +81,8 @@ public class WorkItemNotificationProcessorTest {
 
    // @formatter:on
 
-   private IAtsUser setupUser(UserToken userToken) {
-      IAtsUser user = new AtsUser(userToken);
+   private AtsUser setupUser(UserToken userToken) {
+      AtsUser user = new AtsUser(userToken);
       when(userService.getUserById(userToken.getUserId())).thenReturn(user);
       return user;
    }
@@ -99,7 +98,7 @@ public class WorkItemNotificationProcessorTest {
       inactiveSteve = setupUser(DemoUsers.Inactive_Steve);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
-      List<IAtsUser> assignees = new ArrayList<>();
+      List<AtsUser> assignees = new ArrayList<>();
       assignees.addAll(
          Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser));
       String atsId = "ATS003";
@@ -178,7 +177,7 @@ public class WorkItemNotificationProcessorTest {
       List<String> expectedUserIds = new ArrayList<>();
       expectedUserIds.add(jason_ValidEmail.getUserId());
       expectedUserIds.add(kay_ValidEmail.getUserId());
-      List<IAtsUser> users = new ArrayList<>();
+      List<AtsUser> users = new ArrayList<>();
       for (String userId : event.getUserIds()) {
          users.add(userService.getUserById(userId));
       }
@@ -331,18 +330,18 @@ public class WorkItemNotificationProcessorTest {
 
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
-      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<IAtsUser>());
-      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<IAtsUser>());
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<AtsUser>());
+      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<AtsUser>());
       Assert.assertEquals(0, notifications.getNotificationEvents().size());
 
       notifications = new AtsNotificationCollector();
       when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(Arrays.asList(kay_ValidEmail));
-      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<IAtsUser>());
+      when(actionableItemService.getSubscribed(ai)).thenReturn(new ArrayList<AtsUser>());
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
 
       notifications = new AtsNotificationCollector();
-      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<IAtsUser>());
+      when(teamDefinitionService.getSubscribed(teamDef)).thenReturn(new ArrayList<AtsUser>());
       when(actionableItemService.getSubscribed(ai)).thenReturn(Arrays.asList(kay_ValidEmail));
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());

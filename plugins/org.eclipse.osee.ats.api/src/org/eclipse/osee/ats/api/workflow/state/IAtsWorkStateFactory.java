@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.workflow.state;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 
 /**
@@ -24,8 +24,8 @@ public interface IAtsWorkStateFactory {
 
    WorkState fromStoreStr(String storeStr);
 
-   String getStorageString(Collection<IAtsUser> users);
+   String getStorageString(Collection<AtsUser> users);
 
-   List<IAtsUser> getUsers(String sorageString);
+   List<AtsUser> getUsers(String sorageString);
 
 }

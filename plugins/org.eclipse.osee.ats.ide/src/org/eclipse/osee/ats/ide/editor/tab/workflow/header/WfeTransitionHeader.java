@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -203,7 +203,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
+         public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
             AbstractWorkflowArtifact awa =
                (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
             return awa.getTransitionAssignees();
@@ -371,7 +371,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    }
 
    public void updateTransitionToAssignees() {
-      Collection<IAtsUser> assignees = null;
+      Collection<AtsUser> assignees = null;
       // Determine if the is an override set of assignees
       for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
          String decisionValueIfApplicable = "";
@@ -463,7 +463,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       if (uld.open() != 0) {
          return;
       }
-      Collection<IAtsUser> users = uld.getUsersSelected();
+      Collection<AtsUser> users = uld.getUsersSelected();
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

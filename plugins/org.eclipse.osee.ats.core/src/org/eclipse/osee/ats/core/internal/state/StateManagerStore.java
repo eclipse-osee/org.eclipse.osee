@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -30,15 +30,15 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class StateManagerStore {
 
-   public static void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory) {
+   public static void writeToStore(AtsUser asUser, IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory) {
       StateManagerWriter writer = new StateManagerWriter(workItem, stateMgr, attrResolver, changes, workStateFactory);
-      List<IAtsUser> assigneesAdded = stateMgr.getAssigneesAdded();
+      List<AtsUser> assigneesAdded = stateMgr.getAssigneesAdded();
       writer.writeToStore();
       changes.addExecuteListener(getPostPersistExecutionListener(asUser, workItem, stateMgr, assigneesAdded,
          attrResolver, workStateFactory, changes));
    }
 
-   protected static void postPersistNotifyReset(IAtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<IAtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes) {
+   protected static void postPersistNotifyReset(AtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<AtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes) {
       try {
          if (!assigneesAdded.isEmpty()) {
             changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser,
@@ -50,7 +50,7 @@ public class StateManagerStore {
       load(workItem, stateMgr, attrResolver, workStateFactory);
    }
 
-   protected static IExecuteListener getPostPersistExecutionListener(final IAtsUser asUser, final IAtsWorkItem workItem, final IAtsStateManager stateMgr, final List<IAtsUser> assigneesAdded, final IAttributeResolver attrResolver, final IAtsWorkStateFactory workStateFactory, final IAtsChangeSet changes) {
+   protected static IExecuteListener getPostPersistExecutionListener(final AtsUser asUser, final IAtsWorkItem workItem, final IAtsStateManager stateMgr, final List<AtsUser> assigneesAdded, final IAttributeResolver attrResolver, final IAtsWorkStateFactory workStateFactory, final IAtsChangeSet changes) {
       return new IExecuteListener() {
 
          @Override

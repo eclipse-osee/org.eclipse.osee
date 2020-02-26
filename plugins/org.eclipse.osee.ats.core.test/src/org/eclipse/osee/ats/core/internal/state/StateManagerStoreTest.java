@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -50,7 +50,7 @@ public class StateManagerStoreTest {
 
    // @formatter:off
    @Mock IAtsWorkItem workItem;
-   @Mock IAtsUser Joe, Kay, asUser;
+   @Mock AtsUser Joe, Kay, asUser;
    @Mock IAtsChangeSet changes;
    @Mock IAtsWorkDefinition workDef;
    @Mock IAtsStateDefinition analyzeState, completedState;

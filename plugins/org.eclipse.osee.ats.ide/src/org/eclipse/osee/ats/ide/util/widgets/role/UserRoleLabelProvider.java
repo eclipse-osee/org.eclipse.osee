@@ -16,7 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.AtsImage;
@@ -47,7 +47,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       UserRole roleItem = (UserRole) element;
       try {
-         IAtsUser user = UserRoleManager.getUser(roleItem, AtsClientService.get());
+         AtsUser user = UserRoleManager.getUser(roleItem, AtsClientService.get());
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
             return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(user));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
@@ -74,7 +74,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
 
       UserRole userRole = (UserRole) element;
-      IAtsUser user = UserRoleManager.getUser(userRole, AtsClientService.get());
+      AtsUser user = UserRoleManager.getUser(userRole, AtsClientService.get());
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
          return user.getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {

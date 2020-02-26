@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -260,13 +260,13 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public Collection<IAtsUser> getSubscribed(IAtsActionableItem ai) {
+   public Collection<AtsUser> getSubscribed(IAtsActionableItem ai) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getArtifactToken(),
          AtsRelationTypes.SubscribedUser_User);
    }
 
    @Override
-   public Collection<IAtsUser> getLeads(IAtsActionableItem ai) {
+   public Collection<AtsUser> getLeads(IAtsActionableItem ai) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, ai.getStoreObject(),
          AtsRelationTypes.TeamLead_Lead);
    }

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,7 +59,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
       ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,

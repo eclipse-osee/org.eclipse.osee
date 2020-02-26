@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -37,8 +37,8 @@ public class MockWorkItem implements IAtsWorkItem {
    private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
    private final IAtsWorkDefinition workDefinition;
-   private IAtsUser completedBy;
-   private IAtsUser cancelledBy;
+   private AtsUser completedBy;
+   private AtsUser cancelledBy;
    private String completeFromState;
    private String cancelledFromState;
 
@@ -60,20 +60,20 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getImplementers() {
+   public List<AtsUser> getImplementers() {
       return implementers.getUsers();
    }
 
-   public void setImplementers(List<? extends IAtsUser> implementers) {
+   public void setImplementers(List<? extends AtsUser> implementers) {
       this.implementers.setUsers(implementers);
    }
 
    @Override
-   public List<IAtsUser> getAssignees() {
+   public List<AtsUser> getAssignees() {
       return stateMgr.getAssignees();
    }
 
-   public void addImplementer(IAtsUser joe) {
+   public void addImplementer(AtsUser joe) {
       implementers.addUser(joe);
    }
 
@@ -113,7 +113,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsUser getCreatedBy() {
+   public AtsUser getCreatedBy() {
       return null;
    }
 
@@ -123,12 +123,12 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsUser getCompletedBy() {
+   public AtsUser getCompletedBy() {
       return completedBy;
    }
 
    @Override
-   public IAtsUser getCancelledBy() {
+   public AtsUser getCancelledBy() {
       return cancelledBy;
    }
 
@@ -152,11 +152,11 @@ public class MockWorkItem implements IAtsWorkItem {
       return null;
    }
 
-   public void setCompletedBy(IAtsUser user) {
+   public void setCompletedBy(AtsUser user) {
       this.completedBy = user;
    }
 
-   public void setCancelledBy(IAtsUser user) {
+   public void setCancelledBy(AtsUser user) {
       this.cancelledBy = user;
    }
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -42,7 +42,7 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, IAtsUser createdBy) {
+   public static IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
       String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamWf.getName());
@@ -63,7 +63,7 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       if (Strings.isValid(peerRevDef.getLocation())) {
          changes.setSoleAttributeFromString(peerRev, AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<IAtsUser> assignees =
+      Collection<AtsUser> assignees =
          AtsApiService.get().getUserService().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerRev.getStateMgr().setAssignees(assignees);
@@ -78,13 +78,13 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!workItem.isTeamWorkflow()) {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
+      AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
 
       for (IAtsPeerReviewDefinition peerRevDef : workItem.getStateDefinition().getPeerReviews()) {

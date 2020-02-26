@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -121,7 +121,7 @@ public class OpenOrphanedTasks extends Action {
                      if (fAi == null) {
                         AtsEditors.openInAtsWorldEditor("Orphaned Tasks", artifacts, data);
                      } else {
-                        IAtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
+                        AtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
                         IAtsChangeSet changes =
                            AtsClientService.get().getStoreService().createAtsChangeSet(getName(), asUser);
                         ActionResult results = AtsClientService.get().getActionFactory().createAction(asUser, getName(),

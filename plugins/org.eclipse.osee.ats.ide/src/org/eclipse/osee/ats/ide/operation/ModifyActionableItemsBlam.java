@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
@@ -297,7 +297,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
 
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
-         IAtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
+         AtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
 
          ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs,
             currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility(), AtsClientService.get());
@@ -362,7 +362,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          for (CreateTeamData data : job.getTeamDatas()) {
             IAtsTeamWorkflow newTeamWf =
                AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentActionArtifact(),
-                  data.getTeamDef(), data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes,
+                  data.getTeamDef(), data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes,
                   createdDate, data.getCreatedBy(), null, data.getCreateTeamOption());
             newTeamWfs.add(newTeamWf);
          }

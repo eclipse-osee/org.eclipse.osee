@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWorkflowOperation {
 
-   public DuplicateWorkflowAtStartStateOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, IAtsUser asUser, AtsApi atsApi) {
+   public DuplicateWorkflowAtStartStateOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, AtsUser asUser, AtsApi atsApi) {
       super(teamWfs, title, asUser, atsApi);
    }
 
@@ -49,15 +49,15 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
          atsApi.getStoreService().createAtsChangeSet("Duplicate Workflow - At Start State", asUser);
 
       Date createdDate = new Date();
-      IAtsUser createdBy = atsApi.getUserService().getCurrentUser();
+      AtsUser createdBy = atsApi.getUserService().getCurrentUser();
       for (IAtsTeamWorkflow teamWf : teamWfs) {
 
          // assignees == add in existing assignees, leads and originator (current user)
-         List<IAtsUser> assignees = new LinkedList<>();
+         List<AtsUser> assignees = new LinkedList<>();
          assignees.addAll(teamWf.getStateMgr().getAssignees());
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          assignees.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef));
-         IAtsUser user = atsApi.getUserService().getCurrentUser();
+         AtsUser user = atsApi.getUserService().getCurrentUser();
          if (!assignees.contains(user)) {
             assignees.add(user);
          }

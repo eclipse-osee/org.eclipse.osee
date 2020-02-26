@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -98,7 +98,7 @@ public class CreateTasksDefinitionTransitionToTest {
       String title = getClass().getSimpleName();
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_SW_Design_AI);
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
       ActionResult actionResult =

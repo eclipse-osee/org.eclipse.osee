@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -38,10 +38,10 @@ public class DecisionReviewOption implements IAtsDecisionReviewOption {
    }
 
    public DecisionReviewOption(String name) {
-      this(name, (IAtsUser) null, false);
+      this(name, (AtsUser) null, false);
    }
 
-   public DecisionReviewOption(String name, IAtsUser assignee, boolean followup) {
+   public DecisionReviewOption(String name, AtsUser assignee, boolean followup) {
       this(name, assignee == null ? Collections.emptyList() : Collections.singleton(assignee), followup);
    }
 
@@ -53,11 +53,11 @@ public class DecisionReviewOption implements IAtsDecisionReviewOption {
       }
    }
 
-   public DecisionReviewOption(String name, Collection<IAtsUser> assignees, boolean followup) {
+   public DecisionReviewOption(String name, Collection<AtsUser> assignees, boolean followup) {
       this.name = name;
       this.followupRequired = followup;
       if (assignees != null) {
-         for (IAtsUser user : assignees) {
+         for (AtsUser user : assignees) {
             this.assignees.add(user.getUserId());
          }
       }
@@ -87,10 +87,10 @@ public class DecisionReviewOption implements IAtsDecisionReviewOption {
    /**
     * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignees(Collection<IAtsUser> assignees) {
+   public void setAssignees(Collection<AtsUser> assignees) {
       this.assignees.clear();
       if (assignees != null) {
-         for (IAtsUser user : assignees) {
+         for (AtsUser user : assignees) {
             this.assignees.add(user.getUserId());
          }
       }
@@ -99,14 +99,14 @@ public class DecisionReviewOption implements IAtsDecisionReviewOption {
    /**
     * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
-   public void setAssignee(IAtsUser assignee) {
+   public void setAssignee(AtsUser assignee) {
       this.assignees.clear();
       if (assignee != null) {
          this.assignees.add(assignee.getUserId());
       }
    }
 
-   public void addAssignee(IAtsUser assignee) {
+   public void addAssignee(AtsUser assignee) {
       if (assignee != null) {
          this.assignees.add(assignee.getUserId());
       }

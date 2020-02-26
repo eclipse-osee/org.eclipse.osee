@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.util;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -50,7 +50,7 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       teamWf2.setName(teamWf2Name);
       teamWf2.persist(getClass().getSimpleName());
 
-      IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
 

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -36,12 +36,12 @@ public class NewDecisionReviewJob extends Job {
    private final String reviewTitle;
    private final String againstState;
    private final List<IAtsDecisionReviewOption> options;
-   private final List<? extends IAtsUser> assignees;
+   private final List<? extends AtsUser> assignees;
    private final String description;
    private final Date createdDate;
-   private final IAtsUser createdBy;
+   private final AtsUser createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;

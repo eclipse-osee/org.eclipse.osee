@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
@@ -321,7 +321,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       if (dialog.open() == Window.OK) {
          try {
             IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Roles");
-            for (IAtsUser user : dialog.getUsers()) {
+            for (AtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
                roleMgr.addOrUpdateUserRole(userRole);
                changes.add(reviewArt);
@@ -414,7 +414,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
          for (UserRole item : roleMgr.getUserRoles()) {
-            IAtsUser atsUser = UserRoleManager.getUser(item, AtsClientService.get());
+            AtsUser atsUser = UserRoleManager.getUser(item, AtsClientService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                atsUser.getName(),

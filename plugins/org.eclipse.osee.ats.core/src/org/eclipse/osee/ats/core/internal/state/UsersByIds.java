@@ -16,30 +16,30 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Pack and unpack userIds denoted by <userid><userid> string
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UsersByIds {
 
    public Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public String getStorageString(Collection<IAtsUser> users) {
+   public String getStorageString(Collection<AtsUser> users) {
       StringBuffer sb = new StringBuffer();
-      for (IAtsUser u : users) {
+      for (AtsUser u : users) {
          sb.append("<" + u.getUserId() + ">");
       }
       return sb.toString();
    }
 
-   public List<IAtsUser> getUsers(String sorageString, IAtsUserService userService) {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getUsers(String sorageString, IAtsUserService userService) {
+      List<AtsUser> users = new ArrayList<>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);
@@ -47,7 +47,7 @@ public class UsersByIds {
             throw new IllegalArgumentException("Blank userId specified.");
          }
          try {
-            IAtsUser u = userService.getUserById(m.group(1));
+            AtsUser u = userService.getUserById(m.group(1));
             users.add(u);
          } catch (Exception ex) {
             OseeLog.log(UsersByIds.class, Level.SEVERE, ex);

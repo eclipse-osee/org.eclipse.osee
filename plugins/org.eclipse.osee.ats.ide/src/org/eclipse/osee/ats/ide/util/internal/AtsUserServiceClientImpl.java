@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -49,7 +48,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public IAtsUser getUserFromOseeUser(User user) {
+   public AtsUser getUserFromOseeUser(User user) {
       AtsUser atsUser = configurationService.getUserByUserId(user.getUserId());
       if (atsUser == null) {
          atsUser = createFromArtifact(user);
@@ -59,7 +58,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public User getOseeUser(IAtsUser atsUser) {
+   public User getOseeUser(AtsUser atsUser) {
       User oseeUser = null;
       if (atsUser.getStoreObject() instanceof User) {
          oseeUser = (User) atsUser.getStoreObject();
@@ -71,26 +70,26 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public User getCurrentOseeUser() {
-      IAtsUser user = getCurrentUser();
+      AtsUser user = getCurrentUser();
       return getOseeUser(user);
    }
 
    @Override
-   public Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) {
+   public Collection<? extends User> toOseeUsers(Collection<? extends AtsUser> users) {
       List<User> results = new LinkedList<>();
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          results.add(getOseeUser(user));
       }
       return results;
    }
 
    @Override
-   public Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) {
-      List<IAtsUser> users = new LinkedList<>();
+   public Collection<AtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) {
+      List<AtsUser> users = new LinkedList<>();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof User) {
             User user = (User) artifact;
-            IAtsUser atsUser = getUserFromOseeUser(user);
+            AtsUser atsUser = getUserFromOseeUser(user);
             users.add(atsUser);
          }
       }
@@ -98,9 +97,9 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) {
+   public Collection<User> getOseeUsers(Collection<? extends AtsUser> users) {
       List<User> results = new LinkedList<>();
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          results.add(getOseeUser(user));
       }
       return results;
@@ -113,7 +112,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public List<User> getOseeUsersSorted(Active active) {
-      Collection<IAtsUser> activeUsers = getUsers(active);
+      Collection<AtsUser> activeUsers = getUsers(active);
       List<User> oseeUsers = new ArrayList<>();
       oseeUsers.addAll(getOseeUsers(activeUsers));
       Collections.sort(oseeUsers);
@@ -121,8 +120,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) {
-      ArrayList<IAtsUser> arts = new ArrayList<>();
+   public List<AtsUser> getSubscribed(IAtsWorkItem workItem) {
+      ArrayList<AtsUser> arts = new ArrayList<>();
       for (Artifact art : AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
@@ -131,7 +130,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public IAtsUser getUserById(long accountId) {
+   public AtsUser getUserById(long accountId) {
       return getUserFromOseeUser(UserManager.getUserByArtId(accountId));
    }
 
@@ -141,7 +140,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public boolean isAtsAdmin(IAtsUser user) {
+   public boolean isAtsAdmin(AtsUser user) {
       return configurationService.getConfigurations().getAtsAdmins().contains(user.getStoreObject());
    }
 
@@ -168,8 +167,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   protected IAtsUser loadUserFromDbByUserId(String userId) {
-      IAtsUser user = null;
+   protected AtsUser loadUserFromDbByUserId(String userId) {
+      AtsUser user = null;
       Artifact userArt = null;
       try {
          userArt = UserManager.getUserByUserId(userId);
@@ -202,19 +201,19 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   protected IAtsUser loadUserFromDbByUserName(String name) {
+   protected AtsUser loadUserFromDbByUserName(String name) {
       return createFromArtifact(ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.User, name,
          AtsClientService.get().getAtsBranch()));
    }
 
    @Override
-   public IAtsUser getUserByArtifactId(ArtifactId artifact) {
+   public AtsUser getUserByArtifactId(ArtifactId artifact) {
       return getUserFromOseeUser((User) artifact);
    }
 
    @Override
-   protected IAtsUser loadUserByAccountId(Long accountId) {
-      IAtsUser user = null;
+   protected AtsUser loadUserByAccountId(Long accountId) {
+      AtsUser user = null;
       ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId, AtsClientService.get().getAtsBranch());
       if (userArt != null) {
          user = createFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(userArt));
@@ -223,8 +222,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public List<IAtsUser> getUsersFromDb() {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getUsersFromDb() {
+      List<AtsUser> users = new ArrayList<>();
       for (ArtifactId userArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
          AtsUser atsUser = createFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(userArt));
          users.add(atsUser);
@@ -233,7 +232,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public IAtsUser getUserByAccountId(HttpHeaders httpHeaders) {
+   public AtsUser getUserByAccountId(HttpHeaders httpHeaders) {
       throw new UnsupportedOperationException();
    }
 

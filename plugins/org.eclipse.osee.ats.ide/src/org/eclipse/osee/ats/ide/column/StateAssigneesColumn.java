@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -58,11 +58,11 @@ public class StateAssigneesColumn extends XViewerAtsColumn implements IXViewerVa
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            Set<IAtsUser> users = new HashSet<>();
+            Set<AtsUser> users = new HashSet<>();
             users.addAll(awa.getStateMgr().getAssignees(stateName));
             return AtsObjects.toString(";", users);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<>();
+            Set<AtsUser> users = new HashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                users.addAll(team.getStateMgr().getAssignees(stateName));
             }

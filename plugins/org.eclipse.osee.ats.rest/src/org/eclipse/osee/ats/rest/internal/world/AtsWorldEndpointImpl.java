@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
@@ -91,7 +91,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsWorkItem> getMyWorld(@PathParam("id") int id) throws Exception {
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
-      IAtsUser userById =
+      AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
@@ -106,7 +106,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public String getMyWorldUI(@PathParam("id") int id) throws Exception {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
-      IAtsUser userById =
+      AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
@@ -122,7 +122,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public String getMyWorldUICustomized(@PathParam("id") int id, @PathParam("customize_guid") String customize_guid) throws Exception {
       ElapsedTime time = new ElapsedTime("start");
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(Long.valueOf(id));
-      IAtsUser userById =
+      AtsUser userById =
          atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Conditions.checkNotNull(userById, "User by Id " + id);
 

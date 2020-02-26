@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.validate.ArtifactValueProvider;
@@ -85,7 +85,7 @@ public class ReviewDefectManager {
       return defectItems;
    }
 
-   public int getNumMajor(IAtsUser user) {
+   public int getNumMajor(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Major && dItem.getUserId().equals(user.getUserId())) {
@@ -95,7 +95,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumMinor(IAtsUser user) {
+   public int getNumMinor(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Minor && dItem.getUserId().equals(user.getUserId())) {
@@ -105,7 +105,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumIssues(IAtsUser user) {
+   public int getNumIssues(AtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Issue && dItem.getUserId().equals(user.getUserId())) {
@@ -218,7 +218,7 @@ public class ReviewDefectManager {
          "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Id</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
          String userId = item.getUserId();
-         IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+         AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
          builder.append("<TR>");
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");

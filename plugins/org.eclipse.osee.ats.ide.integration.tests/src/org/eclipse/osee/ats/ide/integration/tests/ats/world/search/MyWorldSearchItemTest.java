@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -32,7 +32,7 @@ public class MyWorldSearchItemTest {
 
    @Test
    public void testMyWorldSearchItem() {
-      IAtsUser currentUser = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser currentUser = AtsClientService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
       DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);

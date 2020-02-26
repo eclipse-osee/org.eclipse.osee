@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -617,18 +617,18 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAssignee(IAtsUser... assignees) {
+   public IAtsQuery andAssignee(AtsUser... assignees) {
       List<String> userIds = new ArrayList<>();
-      for (IAtsUser user : assignees) {
+      for (AtsUser user : assignees) {
          userIds.add("<" + user.getUserId() + ">");
       }
       return andAttr(AtsAttributeTypes.CurrentState, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
    }
 
    @Override
-   public IAtsQuery andAssigneeWas(IAtsUser... assignees) {
+   public IAtsQuery andAssigneeWas(AtsUser... assignees) {
       List<String> userIds = new ArrayList<>();
-      for (IAtsUser user : assignees) {
+      for (AtsUser user : assignees) {
          userIds.add("<" + user.getUserId() + ">");
       }
       return andAttr(AtsAttributeTypes.State, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
@@ -693,17 +693,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andOriginator(IAtsUser atsUser) {
+   public IAtsQuery andOriginator(AtsUser atsUser) {
       return andAttr(AtsAttributeTypes.CreatedBy, atsUser.getUserId());
    }
 
    @Override
-   public IAtsQuery andSubscribed(IAtsUser atsUser) {
+   public IAtsQuery andSubscribed(AtsUser atsUser) {
       return andRelated(atsUser, AtsRelationTypes.SubscribedUser_User);
    }
 
    @Override
-   public IAtsQuery andFavorite(IAtsUser atsUser) {
+   public IAtsQuery andFavorite(AtsUser atsUser) {
       return andRelated(atsUser, AtsRelationTypes.FavoriteUser_User);
    }
 

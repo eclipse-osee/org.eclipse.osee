@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.state;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -31,57 +31,57 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    StateType getCurrentStateType();
 
-   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user);
+   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user);
 
-   void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date);
+   void setMetrics(double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
 
    /**
     * Set metrics and log if changed
     *
     * @param changes JavaTip
     */
-   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date);
+   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date);
 
    StateType getStateType();
 
-   void addAssignees(String stateName, Collection<? extends IAtsUser> assignees);
+   void addAssignees(String stateName, Collection<? extends AtsUser> assignees);
 
    String getHoursSpentStr(String stateName);
 
-   void setAssignee(IAtsUser assignee);
+   void setAssignee(AtsUser assignee);
 
-   void setAssignees(Collection<? extends IAtsUser> assignees);
+   void setAssignees(Collection<? extends AtsUser> assignees);
 
    /**
     * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
-   void setAssignees(String stateName, List<? extends IAtsUser> assignees);
+   void setAssignees(String stateName, List<? extends AtsUser> assignees);
 
-   void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason);
+   void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason);
 
    long getTimeInState();
 
    long getTimeInState(IStateToken state);
 
-   void addAssignee(String stateName, IAtsUser assignee);
+   void addAssignee(String stateName, AtsUser assignee);
 
-   void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
+   void addState(String stateName, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete);
 
    boolean isDirty();
 
-   List<IAtsUser> getAssignees(String stateName);
+   List<AtsUser> getAssignees(String stateName);
 
-   List<IAtsUser> getAssigneesForState(String fromStateName);
+   List<AtsUser> getAssigneesForState(String fromStateName);
 
-   List<IAtsUser> getAssignees();
+   List<AtsUser> getAssignees();
 
    void setCurrentStateName(String currentStateName);
 
-   void addAssignee(IAtsUser assignee);
+   void addAssignee(AtsUser assignee);
 
-   void addState(String stateName, List<? extends IAtsUser> assignees);
+   void addState(String stateName, List<? extends AtsUser> assignees);
 
-   void setAssignees(List<? extends IAtsUser> assignees);
+   void setAssignees(List<? extends AtsUser> assignees);
 
    void createState(String stateName);
 
@@ -95,9 +95,9 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    List<String> getVisitedStateNames();
 
-   void removeAssignee(String stateName, IAtsUser assignee);
+   void removeAssignee(String stateName, AtsUser assignee);
 
-   void setAssignee(IStateToken state, IAtsUser assignee);
+   void setAssignee(IStateToken state, AtsUser assignee);
 
    void createState(IStateToken state);
 
@@ -105,13 +105,13 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    String getAssigneesStr();
 
-   void removeAssignee(IAtsUser assignee);
+   void removeAssignee(AtsUser assignee);
 
    boolean isUnAssigned();
 
    void clearAssignees();
 
-   Collection<IAtsUser> getAssignees(IStateToken state);
+   Collection<AtsUser> getAssignees(IStateToken state);
 
    boolean isStateVisited(IStateToken state);
 
@@ -121,20 +121,20 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    String getAssigneesStr(String stateName);
 
-   void addAssignees(Collection<? extends IAtsUser> assignees);
+   void addAssignees(Collection<? extends AtsUser> assignees);
 
-   void setAssignee(String stateName, IAtsUser assignee);
+   void setAssignee(String stateName, AtsUser assignee);
 
    boolean isStateVisited(String stateName);
 
    @Override
-   WorkState createStateData(String name, List<? extends IAtsUser> assignees);
+   WorkState createStateData(String name, List<? extends AtsUser> assignees);
 
    @Override
    WorkState createStateData(String name);
 
    @Override
-   WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
+   WorkState createStateData(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete);
 
    void addState(WorkState workState);
 
@@ -147,7 +147,7 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    IAtsLogItem getStateStartedData(String stateName);
 
-   Collection<? extends IAtsUser> getAssigneesAdded();
+   Collection<? extends AtsUser> getAssigneesAdded();
 
    Integer getPercentCompleteValue();
 
@@ -157,10 +157,10 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    boolean isInState(IStateToken state);
 
-   void setAssignees(String stateName, StateType stateType, List<? extends IAtsUser> assignees);
+   void setAssignees(String stateName, StateType stateType, List<? extends AtsUser> assignees);
 
-   void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
+   void setCreatedBy(AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
 
-   void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes);
+   void internalSetCreatedBy(AtsUser user, IAtsChangeSet changes);
 
 }

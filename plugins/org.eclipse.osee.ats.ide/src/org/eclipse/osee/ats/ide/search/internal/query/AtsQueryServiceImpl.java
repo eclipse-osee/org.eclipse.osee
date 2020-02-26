@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
@@ -98,7 +98,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArrayList<AtsSearchData> getSavedSearches(IAtsUser atsUser, String namespace) {
+   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
       ArtifactId userArt = atsUser.getStoreObject();
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
@@ -119,7 +119,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public void saveSearch(IAtsUser atsUser, AtsSearchData data) {
+   public void saveSearch(AtsUser atsUser, AtsSearchData data) {
       ArtifactId userArt = atsUser.getStoreObject();
       IAtsChangeSet changes =
          atsClient.getStoreService().createAtsChangeSet("Save ATS Search", atsClient.getUserService().getCurrentUser());
@@ -157,7 +157,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public void removeSearch(IAtsUser atsUser, AtsSearchData data) {
+   public void removeSearch(AtsUser atsUser, AtsSearchData data) {
       ArtifactId userArt = atsUser.getStoreObject();
       IAtsChangeSet changes = atsClient.getStoreService().createAtsChangeSet("Remove ATS Search",
          atsClient.getUserService().getCurrentUser());
@@ -174,7 +174,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public AtsSearchData getSearch(IAtsUser atsUser, Long id) {
+   public AtsSearchData getSearch(AtsUser atsUser, Long id) {
       try {
          ArtifactId userArt = atsUser.getStoreObject();
          IAttribute<Object> attr = getAttrById(userArt, id);

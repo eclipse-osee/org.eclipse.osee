@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -360,7 +360,7 @@ public class DefectXViewerMenu {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUserId().equals(user.getUserId())) {
-            IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user);
+            AtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user);
             defectItem.setUser(atsUser);
             // at least one in the list has been changed.
             if (!modified) {

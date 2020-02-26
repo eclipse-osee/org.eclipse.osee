@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -55,7 +55,7 @@ public class AtsStateFactory implements IAtsStateFactory {
    }
 
    @Override
-   public void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) {
+   public void writeToStore(AtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) {
       StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(),
          atsApi.getAttributeResolver(), changes, workStateFactory);
    }

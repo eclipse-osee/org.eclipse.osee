@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -459,7 +459,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             try {
-               IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+               AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
                add(items, user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
@@ -468,7 +468,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               IAtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
+               AtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
                add(items, user);
             } catch (OseeCoreException ex) {
                items.add(

@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.IAtsClient;
@@ -93,19 +93,19 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
       return results;
    }
 
-   public Collection<IAtsUser> getLeads() {
+   public Collection<AtsUser> getLeads() {
       return getRelatedUsers(AtsRelationTypes.TeamLead_Lead);
    }
 
-   public Collection<IAtsUser> getSubscribed() {
+   public Collection<AtsUser> getSubscribed() {
       return getRelatedUsers(AtsRelationTypes.SubscribedUser_User);
    }
 
-   protected Collection<IAtsUser> getRelatedUsers(RelationTypeSide relation) {
-      Set<IAtsUser> results = new HashSet<>();
+   protected Collection<AtsUser> getRelatedUsers(RelationTypeSide relation) {
+      Set<AtsUser> results = new HashSet<>();
       try {
          for (Artifact userArt : artifact.getRelatedArtifacts(relation)) {
-            IAtsUser lead = getAtsClient().getUserService().getUserById(
+            AtsUser lead = getAtsClient().getUserService().getUserById(
                (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
             results.add(lead);
          }

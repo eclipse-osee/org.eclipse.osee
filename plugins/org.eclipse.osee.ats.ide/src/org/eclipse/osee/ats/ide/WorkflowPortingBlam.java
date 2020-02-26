@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -65,13 +65,13 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems) {
       IAtsTeamDefinition teamDefinition = actionableItems.get(0).getTeamDefinition();
       List<Artifact> destinationWorkflows = new ArrayList<>();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       Date createdDate = new Date();
 
       for (TeamWorkFlowArtifact sourceWorkflow : sourceWorkflows) {
          IAtsTeamWorkflow destinationWorkflow;
          if (sourceWorkflow.getRelatedArtifacts(AtsRelationTypes.Port_To).isEmpty()) {
-            List<IAtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
+            List<AtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
 
             destinationWorkflow = AtsClientService.get().getActionFactory().createTeamWorkflow(
                sourceWorkflow.getParentActionArtifact(), teamDefinition, actionableItems, assignees, changes,

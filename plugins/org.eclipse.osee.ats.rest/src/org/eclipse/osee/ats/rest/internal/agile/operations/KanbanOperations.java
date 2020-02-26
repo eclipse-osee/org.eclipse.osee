@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.agile.kanban.KanbanRowType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -156,9 +156,9 @@ public class KanbanOperations {
          assigneeNames = aItemToRowMap.get(aItem.getId());
       } else {
          @SuppressWarnings("unchecked")
-         Set<IAtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
+         Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
             atsApi.getImplementerService().getImplementers(workItem));
-         for (IAtsUser user : assigneeImplementers) {
+         for (AtsUser user : assigneeImplementers) {
             if (!AtsCoreUsers.isSystemUser(user)) {
                teamMembers.add(user.getStoreObject());
                String name = user.getName();
@@ -211,11 +211,11 @@ public class KanbanOperations {
       //   "jod6us" : "John Doe",
       //   "sam5us" : "Sam Smith"
       //  },
-      Set<IAtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
+      Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
          atsApi.getImplementerService().getImplementers(workItem));
       Set<String> assigneeNames = new HashSet<>(assigneeImplementers.size());
       Set<String> assigneeIds = new HashSet<>(assigneeImplementers.size());
-      for (IAtsUser user : assigneeImplementers) {
+      for (AtsUser user : assigneeImplementers) {
          if (!AtsCoreUsers.isSystemUser(user)) {
             teamMembers.add(user.getStoreObject());
             String name = user.getName();
@@ -259,10 +259,10 @@ public class KanbanOperations {
    }
 
    private Collection<String> getAssigneeUserIdsString(IAtsWorkItem workItem, AtsApi atsApi, Set<ArtifactToken> teamMembers) {
-      List<IAtsUser> assignees = workItem.getStateMgr().getAssignees();
+      List<AtsUser> assignees = workItem.getStateMgr().getAssignees();
       Set<String> ids = new HashSet<>();
       // Make sure team includes any assigned even if not configured as part of team
-      for (IAtsUser assignee : assignees) {
+      for (AtsUser assignee : assignees) {
          if (!AtsCoreUsers.isSystemUser(assignee)) {
             teamMembers.add(assignee.getStoreObject());
          } else {
@@ -277,10 +277,10 @@ public class KanbanOperations {
          return java.util.Collections.singleton(workItem.getCancelledBy().getStoreObject().getIdString());
       }
 
-      List<IAtsUser> implementers = atsApi.getImplementerService().getImplementers(workItem);
+      List<AtsUser> implementers = atsApi.getImplementerService().getImplementers(workItem);
       Set<String> ids = new HashSet<>();
       // Make sure team includes any assigned even if not configured as part of team
-      for (IAtsUser implementer : implementers) {
+      for (AtsUser implementer : implementers) {
          if (!AtsCoreUsers.isSystemUser(implementer)) {
             teamMembers.add(implementer.getStoreObject());
          }
@@ -289,7 +289,7 @@ public class KanbanOperations {
          implementers.remove(AtsCoreUsers.SYSTEM_USER);
       }
 
-      for (IAtsUser implementer : implementers) {
+      for (AtsUser implementer : implementers) {
          ids.add(implementer.getIdString());
       }
       return ids;

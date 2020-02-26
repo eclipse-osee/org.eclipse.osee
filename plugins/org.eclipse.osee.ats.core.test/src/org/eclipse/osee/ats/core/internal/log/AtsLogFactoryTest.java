@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -39,7 +39,7 @@ public class AtsLogFactoryTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    @Mock IAttributeResolver attrResolver;
-   @Mock IAtsUser Joe;
+   @Mock AtsUser Joe;
    @Mock IAtsChangeSet changes;
    @Mock IAtsLog log;
    // @formatter:on

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.notify;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -22,25 +22,25 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsNotificationEventFactory {
 
-   public static AtsNotificationEvent getNotificationEvent(IAtsUser fromUser, Collection<IAtsUser> users, String id, String type, String description) {
+   public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id, String type, String description) {
       AtsNotificationEvent event = new AtsNotificationEvent();
       event.setType(type);
       event.setId(id);
       event.setDescription(description);
       event.setFromUserId(fromUser.getUserId());
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          event.getUserIds().add(user.getUserId());
       }
       return event;
    }
 
-   public static AtsNotificationEvent getNotificationEvent(IAtsUser fromUser, Collection<IAtsUser> users, String id, String type, String url, String cancelUrl, String description) {
+   public static AtsNotificationEvent getNotificationEvent(AtsUser fromUser, Collection<AtsUser> users, String id, String type, String url, String cancelUrl, String description) {
       AtsNotificationEvent event = getNotificationEvent(fromUser, users, id, type, description);
       event.setUrl(url);
       return event;
    }
 
-   public static AtsNotificationEvent getNotificationEventByUserIds(IAtsUser fromUser, Collection<String> userIds, String id, String type, String description) {
+   public static AtsNotificationEvent getNotificationEventByUserIds(AtsUser fromUser, Collection<String> userIds, String id, String type, String description) {
       AtsNotificationEvent event = new AtsNotificationEvent();
       event.setType(type);
       event.setId(id);
@@ -50,21 +50,21 @@ public class AtsNotificationEventFactory {
       return event;
    }
 
-   public static AtsNotificationEvent getNotificationEventByUserIds(IAtsUser fromUser, Collection<String> userIds, String id, String type, String description, String url) {
+   public static AtsNotificationEvent getNotificationEventByUserIds(AtsUser fromUser, Collection<String> userIds, String id, String type, String description, String url) {
       AtsNotificationEvent event = getNotificationEventByUserIds(fromUser, userIds, id, type, description);
       event.setUrl(url);
       return event;
    }
 
-   public static AtsWorkItemNotificationEvent getWorkItemNotificationEvent(IAtsUser fromUser, IAtsWorkItem workItem, List<IAtsUser> users, AtsNotifyType... notifyType) {
+   public static AtsWorkItemNotificationEvent getWorkItemNotificationEvent(AtsUser fromUser, IAtsWorkItem workItem, List<AtsUser> users, AtsNotifyType... notifyType) {
       AtsWorkItemNotificationEvent event = getWorkItemNotificationEvent(fromUser, workItem, notifyType);
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          event.getUserIds().add(user.getUserId());
       }
       return event;
    }
 
-   public static AtsWorkItemNotificationEvent getWorkItemNotificationEvent(IAtsUser fromUser, IAtsWorkItem workItem, AtsNotifyType... notifyType) {
+   public static AtsWorkItemNotificationEvent getWorkItemNotificationEvent(AtsUser fromUser, IAtsWorkItem workItem, AtsNotifyType... notifyType) {
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(fromUser.getUserId());
       if (!Strings.isValid(workItem.getAtsId())) {

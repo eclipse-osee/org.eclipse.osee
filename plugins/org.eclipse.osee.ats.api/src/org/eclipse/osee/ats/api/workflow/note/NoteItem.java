@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.api.workflow.note;
 
 import java.util.Date;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -24,10 +24,10 @@ public class NoteItem {
    private Date date;
    private final String state;
    private String msg;
-   private IAtsUser user;
+   private AtsUser user;
    private NoteType type = NoteType.Other;
 
-   public NoteItem(NoteType type, String state, String date, IAtsUser user, String msg) {
+   public NoteItem(NoteType type, String state, String date, AtsUser user, String msg) {
       Long l = Long.valueOf(date);
       this.date = new Date(l.longValue());
       this.state = Strings.intern(state);
@@ -36,7 +36,7 @@ public class NoteItem {
       this.type = type;
    }
 
-   public NoteItem(String type, String state, String date, IAtsUser user, String msg) {
+   public NoteItem(String type, String state, String date, AtsUser user, String msg) {
       this(NoteType.getType(type), state, date, user, msg);
    }
 
@@ -66,7 +66,7 @@ public class NoteItem {
       return state.isEmpty() ? "" : " for \"" + state + "\"";
    }
 
-   public IAtsUser getUser() {
+   public AtsUser getUser() {
       return user;
    }
 
@@ -86,7 +86,7 @@ public class NoteItem {
       return state;
    }
 
-   public void setUser(IAtsUser user) {
+   public void setUser(AtsUser user) {
       this.user = user;
    }
 

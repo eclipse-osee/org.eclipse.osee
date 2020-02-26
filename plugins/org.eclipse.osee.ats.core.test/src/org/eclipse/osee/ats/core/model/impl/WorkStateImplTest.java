@@ -21,7 +21,7 @@ import org.junit.Test;
 public class WorkStateImplTest extends AbstractUserTest {
 
    @Test
-   public void testWorkStateImplStringListOfQextendsIAtsUser() {
+   public void testWorkStateImplStringListOfQextendsAtsUser() {
       WorkStateImpl state = new WorkStateImpl("Endorse", Arrays.asList(joe));
       Assert.assertEquals("Endorse", state.getName());
       Assert.assertEquals(0.0, state.getHoursSpent(), 0);

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -22,15 +22,15 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WorkStateImpl implements WorkState {
 
    private String name;
-   private final List<IAtsUser> assignees = new LinkedList<>();
+   private final List<AtsUser> assignees = new LinkedList<>();
    private double hoursSpent = 0;
    private int percentComplete = 0;
 
-   public WorkStateImpl(String name, List<? extends IAtsUser> assignees) {
+   public WorkStateImpl(String name, List<? extends AtsUser> assignees) {
       this(name, assignees, 0, 0);
    }
 
-   public WorkStateImpl(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) {
+   public WorkStateImpl(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
       this.name = name;
       this.assignees.addAll(assignees);
       this.hoursSpent = hoursSpent;
@@ -57,7 +57,7 @@ public class WorkStateImpl implements WorkState {
    }
 
    @Override
-   public List<IAtsUser> getAssignees() {
+   public List<AtsUser> getAssignees() {
       return assignees;
    }
 
@@ -72,7 +72,7 @@ public class WorkStateImpl implements WorkState {
    }
 
    @Override
-   public void addAssignee(IAtsUser user) {
+   public void addAssignee(AtsUser user) {
       Conditions.checkNotNull(user, "user");
       if (!assignees.contains(user)) {
          assignees.add(user);
@@ -80,9 +80,9 @@ public class WorkStateImpl implements WorkState {
    }
 
    @Override
-   public void setAssignees(List<? extends IAtsUser> users) {
+   public void setAssignees(List<? extends AtsUser> users) {
       assignees.clear();
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          addAssignee(user);
       }
    }
@@ -93,7 +93,7 @@ public class WorkStateImpl implements WorkState {
    }
 
    @Override
-   public void removeAssignee(IAtsUser assignee) {
+   public void removeAssignee(AtsUser assignee) {
       assignees.remove(assignee);
    }
 

@@ -15,7 +15,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
@@ -35,7 +35,7 @@ public class AtsWorkStateFactoryTest {
 
    // @formatter:off
    @Mock IAtsStateManager stateMgr;
-   @Mock IAtsUser Kay;
+   @Mock AtsUser Kay;
    @Mock IAtsUserService userService;
    // @formatter:on
 
@@ -51,7 +51,7 @@ public class AtsWorkStateFactoryTest {
       Assert.assertEquals("Implement;;;", xml);
 
       when(Kay.getUserId()).thenReturn("qwer");
-      List<IAtsUser> asList = Arrays.asList(joe, Kay);
+      List<AtsUser> asList = Arrays.asList(joe, Kay);
       when(stateMgr.getAssignees("Implement")).thenReturn(asList);
 
       xml = atsWorkStateFactory.toStoreStr(stateMgr, "Implement");

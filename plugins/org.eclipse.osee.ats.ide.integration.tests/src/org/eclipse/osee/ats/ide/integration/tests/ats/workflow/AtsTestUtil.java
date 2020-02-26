@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
@@ -541,11 +541,11 @@ public class AtsTestUtil {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       return transitionTo(teamWf, atsTestUtilState, user, changes, transitionOptions);
    }
 
-   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
+   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
@@ -578,7 +578,7 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
+   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf), toState.getName(),
             Arrays.asList(user), null, changes, AtsClientService.get().getServices(), transitionOptions);

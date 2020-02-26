@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -39,7 +39,7 @@ public interface IAtsStoreService {
    public static final String ART_TYPE_FROM_ID_QUERY =
       "select art_id, art_type_id from osee_artifact where art_id in (%s)";
 
-   IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user);
+   IAtsChangeSet createAtsChangeSet(String comment, AtsUser user);
 
    List<IAtsWorkItem> reload(Collection<IAtsWorkItem> workItems);
 
@@ -132,6 +132,6 @@ public interface IAtsStoreService {
 
    ArtifactTypeToken getArtifactType(ArtifactId artId, BranchId branch);
 
-   IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser);
+   IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser);
 
 }

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -43,7 +43,7 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsReviewServiceProvi
    AtsActionEndpointApi getActionEndpoint();
 
    @Override
-   IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
+   IAtsChangeSet createChangeSet(String string, AtsUser systemUser);
 
    @Override
    IAtsActionableItemService getActionableItemService();

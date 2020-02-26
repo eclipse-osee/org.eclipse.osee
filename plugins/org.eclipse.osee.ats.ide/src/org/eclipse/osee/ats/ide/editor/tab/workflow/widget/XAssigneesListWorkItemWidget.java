@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.widget;
 
 import java.util.List;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
@@ -37,7 +37,7 @@ public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget i
    }
 
    @Override
-   public List<IAtsUser> getCurrentAssignees() {
+   public List<AtsUser> getCurrentAssignees() {
       return awa.getAssignees();
    }
 

@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -53,7 +53,7 @@ public class AtsQueryImplTest {
       AtsApi atsApi = AtsClientService.get().getServices();
       IAtsQueryService queryService = atsApi.getQueryService();
 
-      IAtsUser joeSmith = atsApi.getUserService().getUserById("3333");
+      AtsUser joeSmith = atsApi.getUserService().getUserById("3333");
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);

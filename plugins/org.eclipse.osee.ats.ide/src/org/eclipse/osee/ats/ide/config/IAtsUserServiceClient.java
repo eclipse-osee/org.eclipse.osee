@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.config;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -25,26 +25,26 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsUserServiceClient extends IAtsUserService {
 
-   User getOseeUser(IAtsUser user);
+   User getOseeUser(AtsUser user);
 
    User getOseeUserById(String userId);
 
-   IAtsUser getUserFromOseeUser(User user);
+   AtsUser getUserFromOseeUser(User user);
 
    User getCurrentOseeUser();
 
-   Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users);
+   Collection<? extends User> toOseeUsers(Collection<? extends AtsUser> users);
 
-   Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts);
+   Collection<AtsUser> getAtsUsers(Collection<? extends Artifact> artifacts);
 
-   Collection<User> getOseeUsers(Collection<? extends IAtsUser> users);
+   Collection<User> getOseeUsers(Collection<? extends AtsUser> users);
 
-   IAtsUser getUserFromToken(UserToken userToken);
+   AtsUser getUserFromToken(UserToken userToken);
 
    List<User> getOseeUsersSorted(Active active);
 
-   List<IAtsUser> getSubscribed(IAtsWorkItem workItem);
+   List<AtsUser> getSubscribed(IAtsWorkItem workItem);
 
-   IAtsUser getUserById(long accountId);
+   AtsUser getUserById(long accountId);
 
 }

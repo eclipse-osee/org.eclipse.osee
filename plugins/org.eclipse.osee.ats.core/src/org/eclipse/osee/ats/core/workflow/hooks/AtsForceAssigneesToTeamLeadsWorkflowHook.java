@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -38,10 +38,10 @@ public class AtsForceAssigneesToTeamLeadsWorkflowHook implements IAtsTransitionH
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
          AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
-         Collection<IAtsUser> teamLeads =
+         Collection<AtsUser> teamLeads =
             AtsApiService.get().getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition());
          ;
          if (!teamLeads.isEmpty()) {

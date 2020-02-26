@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.NewAction;
@@ -204,7 +204,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       }
    }
 
-   private void createAdvancedSearchesSection(XNavigateItem parent, List<XNavigateItem> items, IAtsUser user) {
+   private void createAdvancedSearchesSection(XNavigateItem parent, List<XNavigateItem> items, AtsUser user) {
       XNavigateItem advancedSearchesItems = new XNavigateItemFolder(parent, "Advanced Searches");
       new SearchNavigateItem(advancedSearchesItems, new MyFavoritesSearchItem("My Favorites", null));
       new SearchNavigateItem(advancedSearchesItems, new MySubscribedSearchItem("My Subscribed", null));

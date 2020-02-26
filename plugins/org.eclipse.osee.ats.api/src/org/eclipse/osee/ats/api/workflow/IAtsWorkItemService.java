@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -70,7 +70,7 @@ public interface IAtsWorkItemService {
 
    void clearAssignees(IAtsWorkItem workItem, IAtsChangeSet changes);
 
-   void setAssignees(IAtsWorkItem workItem, Set<IAtsUser> assignees, IAtsChangeSet changes);
+   void setAssignees(IAtsWorkItem workItem, Set<AtsUser> assignees, IAtsChangeSet changes);
 
    IAtsWorkItem getWorkItem(ArtifactToken artifact);
 

@@ -36,7 +36,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -103,10 +103,10 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private final StringBuilder sumFormula = new StringBuilder(500);
    private HashCollectionSet<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<>();
-   private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<>();
+   private final HashCollection<String, AtsUser> legacyIdToImplementers = new HashCollection<>();
    private final HashMap<String, Artifact> testRunArtifacts = new HashMap<>();
    private final HashMap<String, String> scriptCategories = new HashMap<>();
-   private final HashSet<IAtsUser> testPocs = new HashSet<>();
+   private final HashSet<AtsUser> testPocs = new HashSet<>();
    private final HashSet<String> requirementPocs = new HashSet<>();
    private final ArrayList<String[]> statusLines = new ArrayList<>();
    private final ArrayList<RequirementStatus> statuses = new ArrayList<>(100);
@@ -405,9 +405,9 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
                statusLine[columnIndex++] = status.getPartitionStatuses();
 
-               Collection<IAtsUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
+               Collection<AtsUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
                if (implementers != null) {
-                  for (IAtsUser implementer : implementers) {
+                  for (AtsUser implementer : implementers) {
                      requirementPocs.add(implementer.getName());
                   }
                }
@@ -572,7 +572,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(workflow);
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
-      List<IAtsUser> implementers = workflow.getImplementers();
+      List<AtsUser> implementers = workflow.getImplementers();
       legacyIdToImplementers.put(legacyId, implementers);
 
       for (IAtsTask task : tasks) {

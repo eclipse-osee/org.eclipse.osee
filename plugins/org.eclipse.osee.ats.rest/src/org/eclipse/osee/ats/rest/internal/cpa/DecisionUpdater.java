@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -106,15 +106,15 @@ public class DecisionUpdater {
 
    private void updateAssignees(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       if (update.getAssignees() != null) {
-         List<IAtsUser> assignees = new ArrayList<>();
+         List<AtsUser> assignees = new ArrayList<>();
          for (String userId : update.getAssignees()) {
-            IAtsUser user = atsApi.getUserService().getUserById(userId);
+            AtsUser user = atsApi.getUserService().getUserById(userId);
             if (user == null) {
                rd.errorf("Invalid userId [%s]", userId);
             }
             assignees.add(user);
          }
-         List<IAtsUser> currentAssignees = teamWf.getAssignees();
+         List<AtsUser> currentAssignees = teamWf.getAssignees();
          if (assignees.isEmpty()) {
             assignees.add(AtsCoreUsers.UNASSIGNED_USER);
          } else if (assignees.size() > 1 && assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {

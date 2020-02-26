@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -305,7 +305,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                //Ignore transitions to the same state
                if (!fromState.equals(toState)) {
                   Date transitionDate = getTransitionOnDate();
-                  IAtsUser transitionUser = getTransitionAsUser();
+                  AtsUser transitionUser = getTransitionAsUser();
 
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
@@ -326,7 +326,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
                   // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
-                  List<? extends IAtsUser> updatedAssigees = getToAssignees(workItem, toState);
+                  List<? extends AtsUser> updatedAssigees = getToAssignees(workItem, toState);
 
                   workItem.getStateMgr().transitionHelper(updatedAssigees, fromState, toState,
                      completedCancellationReason);
@@ -481,7 +481,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       }
    }
 
-   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
       workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(), changes);
@@ -505,7 +505,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes) {
+   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes) {
       workItem.getLog().addLog(LogType.StateComplete, fromState.getName(), Strings.isValid(reason) ? reason : "",
          cancelDate, cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
@@ -541,12 +541,12 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       }
    }
 
-   private void logStateCompletedEvent(IAtsWorkItem workItem, String fromStateName, String reason, Date date, IAtsUser user) {
+   private void logStateCompletedEvent(IAtsWorkItem workItem, String fromStateName, String reason, Date date, AtsUser user) {
       workItem.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date,
          user.getUserId());
    }
 
-   public static void logStateStartedEvent(IAtsWorkItem workItem, IStateToken state, Date date, IAtsUser user) {
+   public static void logStateStartedEvent(IAtsWorkItem workItem, IStateToken state, Date date, AtsUser user) {
       workItem.getLog().addLog(LogType.StateEntered, state.getName(), "", date, user.getUserId());
    }
 
@@ -555,8 +555,8 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     * programatic transitions.
     */
    @Override
-   public IAtsUser getTransitionAsUser() {
-      IAtsUser user = helper.getTransitionUser();
+   public AtsUser getTransitionAsUser() {
+      AtsUser user = helper.getTransitionUser();
       if (user == null) {
          user = userService.getCurrentUser();
       }
@@ -585,12 +585,12 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
    @Override
-   public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) {
-      List<IAtsUser> toAssignees = new ArrayList<>();
+   public List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) {
+      List<AtsUser> toAssignees = new ArrayList<>();
       if (toState.getStateType().isWorkingState()) {
-         Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
+         Collection<? extends AtsUser> requestedAssignees = helper.getToAssignees(workItem);
          if (requestedAssignees != null) {
-            for (IAtsUser user : requestedAssignees) {
+            for (AtsUser user : requestedAssignees) {
                toAssignees.add(user);
             }
          }

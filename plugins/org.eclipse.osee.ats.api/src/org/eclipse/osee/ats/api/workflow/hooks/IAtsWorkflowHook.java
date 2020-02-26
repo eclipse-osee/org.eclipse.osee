@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.hooks;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -30,7 +30,7 @@ public interface IAtsWorkflowHook {
       return null;
    }
 
-   default public Collection<IAtsUser> getOverrideTransitionToAssignees(IAtsWorkItem workItem, String decision) {
+   default public Collection<AtsUser> getOverrideTransitionToAssignees(IAtsWorkItem workItem, String decision) {
       return null;
    }
 

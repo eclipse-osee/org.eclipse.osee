@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -31,7 +31,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AtsLogHtml}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsLogHtmlTest {
@@ -39,7 +39,7 @@ public class AtsLogHtmlTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    @Mock IAttributeResolver attrResolver;
-   @Mock IAtsUser Joe;
+   @Mock AtsUser Joe;
    @Mock IAtsChangeSet changes;
    @Mock ILogStorageProvider storeProvider;
    @Mock IAtsUserService atsUserService;

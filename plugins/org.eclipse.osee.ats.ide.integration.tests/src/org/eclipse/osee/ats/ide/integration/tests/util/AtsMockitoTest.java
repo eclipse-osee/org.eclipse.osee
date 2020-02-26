@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -55,7 +55,7 @@ import org.mockito.MockitoAnnotations;
 public class AtsMockitoTest {
 
    // @formatter:off
-   @Mock protected  IAtsUser currentUser;
+   @Mock protected  AtsUser currentUser;
    @Mock protected IAtsTeamWorkflow teamWf;
    @Mock protected IAtsTeamDefinition teamDef;
    @Mock protected IAtsVersion ver1, ver2, ver3, ver4;
@@ -256,7 +256,7 @@ public class AtsMockitoTest {
       return getTitle("");
    }
 
-   public IAtsUser getCurrentUser() {
+   public AtsUser getCurrentUser() {
       return currentUser;
    }
 

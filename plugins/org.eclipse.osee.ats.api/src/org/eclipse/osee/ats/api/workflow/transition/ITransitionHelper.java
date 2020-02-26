@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.transition;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
@@ -45,7 +45,7 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent(IAtsChangeSet changes);
 
-   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem);
+   public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem);
 
    public String getToStateName();
 
@@ -67,9 +67,9 @@ public interface ITransitionHelper {
 
    public Collection<IAtsTransitionHook> getTransitionListeners();
 
-   public IAtsUser getTransitionUser();
+   public AtsUser getTransitionUser();
 
-   public void setTransitionUser(IAtsUser user);
+   public void setTransitionUser(AtsUser user);
 
    public AtsApi getServices();
 

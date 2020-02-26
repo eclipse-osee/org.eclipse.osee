@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -113,9 +113,9 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public ActionResult createAction(NewActionData data, IAtsChangeSet changes) {
-      IAtsUser asUser = atsApi.getUserService().getUserById(data.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserById(data.getAsUserId());
       Conditions.assertNotNull(asUser, "As-User must be specified.");
-      IAtsUser createdBy = null;
+      AtsUser createdBy = null;
       if (Strings.isValid(data.getCreatedByUserId())) {
          createdBy = atsApi.getUserService().getUserById(data.getCreatedByUserId());
       }
@@ -255,7 +255,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       // set originator
       if (Strings.isNumeric(data.getOriginatorStr())) {
-         IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getOriginatorStr()));
+         AtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getOriginatorStr()));
          if (originator != null) {
             for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
                changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
@@ -265,9 +265,9 @@ public class ActionFactory implements IAtsActionFactory {
 
       // set assignee
       if (Strings.isValid(data.getAssigneeStr())) {
-         List<IAtsUser> assignees = new LinkedList<>();
+         List<AtsUser> assignees = new LinkedList<>();
          for (String id : data.getAssigneeStr().split(",")) {
-            IAtsUser user = atsApi.getUserService().getUserByAccountId(Long.valueOf(id));
+            AtsUser user = atsApi.getUserService().getUserByAccountId(Long.valueOf(id));
             if (user != null) {
                assignees.add(user);
             }
@@ -318,7 +318,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
+   public ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       Conditions.assertNotNullOrEmpty(title, "Title must be specified");
       // if "tt" is title, this is an action created for development. To
@@ -344,7 +344,7 @@ public class ActionFactory implements IAtsActionFactory {
       // Create team workflow artifacts
       List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
-         List<IAtsUser> leads =
+         List<AtsUser> leads =
             new LinkedList<>(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef, actionableItems));
          if (leads.isEmpty()) {
             leads.add(AtsCoreUsers.UNASSIGNED_USER);
@@ -375,7 +375,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
       ArtifactTypeToken teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
 
       // NOTE: The persist of the workflow will auto-email the assignees
@@ -414,7 +414,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -503,7 +503,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");
@@ -517,12 +517,12 @@ public class ActionFactory implements IAtsActionFactory {
       workItem.setStateMgr(stateMgr);
 
       StateManagerUtility.initializeStateMachine(stateMgr, startState, assignees, createdBy, changes);
-      IAtsUser user = createdBy;
+      AtsUser user = createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);
    }
 
-   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date, IAtsUser asUser) {
+   private void logCreatedByChange(IAtsWorkItem workItem, AtsUser user, Date date, AtsUser asUser) {
       if (attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
          workItem.getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
@@ -531,7 +531,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) {
+   public void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date, IAtsChangeSet changes) {
       if (logChange) {
          logCreatedByChange(workItem, user, date, changes.getAsUser());
       }

@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.api.util;
 
 import java.util.Comparator;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsUserNameComparator implements Comparator<IAtsUser> {
+public class AtsUserNameComparator implements Comparator<AtsUser> {
    private boolean descending = false;
 
    public AtsUserNameComparator() {
@@ -27,7 +27,7 @@ public class AtsUserNameComparator implements Comparator<IAtsUser> {
    }
 
    @Override
-   public int compare(IAtsUser user1, IAtsUser user2) {
+   public int compare(AtsUser user1, AtsUser user2) {
       String name1 = user1.getName();
       String name2 = user2.getName();
 

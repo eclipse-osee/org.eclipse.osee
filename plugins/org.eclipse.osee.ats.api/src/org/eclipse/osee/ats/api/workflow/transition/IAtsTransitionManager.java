@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.workflow.transition;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 
 /**
@@ -50,7 +50,7 @@ public interface IAtsTransitionManager {
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   IAtsUser getTransitionAsUser();
+   AtsUser getTransitionAsUser();
 
    /**
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
@@ -64,7 +64,7 @@ public interface IAtsTransitionManager {
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState);
+   List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState);
 
    TransitionResults handleAllAndPersist();
 

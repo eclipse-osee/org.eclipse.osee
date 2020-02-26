@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.review;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 
 /**
@@ -24,9 +24,9 @@ public interface IAtsPeerReviewRoleManager {
 
    List<UserRole> getUserRoles(Role role);
 
-   List<IAtsUser> getRoleUsers(Role role);
+   List<AtsUser> getRoleUsers(Role role);
 
-   List<IAtsUser> getRoleUsers(Collection<UserRole> roles);
+   List<AtsUser> getRoleUsers(Collection<UserRole> roles);
 
    void addOrUpdateUserRole(UserRole userRole);
 

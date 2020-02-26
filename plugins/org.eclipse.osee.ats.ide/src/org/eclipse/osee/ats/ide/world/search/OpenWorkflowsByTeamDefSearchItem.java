@@ -14,7 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
 
-   private final IAtsUser assignee;
+   private final AtsUser assignee;
    private final boolean includeCompletedCancelled;
    private ReleasedOption releasedOption;
    private final ILazyTeamDefinitionProvider teamDefProvider;
@@ -38,11 +38,11 @@ public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
       this(name, teamDefProvider, null);
    }
 
-   public OpenWorkflowsByTeamDefSearchItem(String name, ILazyTeamDefinitionProvider teamDefProvider, IAtsUser assignee) {
+   public OpenWorkflowsByTeamDefSearchItem(String name, ILazyTeamDefinitionProvider teamDefProvider, AtsUser assignee) {
       this(name, teamDefProvider, assignee, false);
    }
 
-   public OpenWorkflowsByTeamDefSearchItem(String name, ILazyTeamDefinitionProvider teamDefProvider, IAtsUser assignee, boolean includeCompletedCancelled) {
+   public OpenWorkflowsByTeamDefSearchItem(String name, ILazyTeamDefinitionProvider teamDefProvider, AtsUser assignee, boolean includeCompletedCancelled) {
       super(name);
       this.teamDefProvider = teamDefProvider;
       this.assignee = assignee;

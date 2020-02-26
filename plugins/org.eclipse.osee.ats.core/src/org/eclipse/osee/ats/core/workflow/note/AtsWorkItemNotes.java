@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
@@ -48,7 +48,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
    }
 
    @Override
-   public void addNote(NoteType type, String state, String msg, IAtsUser user) {
+   public void addNote(NoteType type, String state, String msg, AtsUser user) {
       addNote(type, state, msg, new Date(), user);
    }
 
@@ -58,7 +58,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
    }
 
    @Override
-   public void addNote(NoteType type, String state, String msg, Date date, IAtsUser user) {
+   public void addNote(NoteType type, String state, String msg, Date date, AtsUser user) {
       if (!enabled) {
          return;
       }
@@ -125,7 +125,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "State", "Message", "User", "Date")));
       DateFormat dateFormat = getDateFormat();
       for (NoteItem note : showNotes) {
-         IAtsUser user = note.getUser();
+         AtsUser user = note.getUser();
          String name = "";
          if (user != null) {
             name = user.getName();
@@ -161,7 +161,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  IAtsUser user = atsApi.getUserService().getUserById(element.getAttribute("userId"));
+                  AtsUser user = atsApi.getUserService().getUserById(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);

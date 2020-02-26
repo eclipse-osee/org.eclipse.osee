@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -40,7 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected IAtsUser currentUser = null;
+   protected AtsUser currentUser = null;
    protected IAtsConfigurationsService configurationService;
 
    @Override
@@ -49,11 +48,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public IAtsUser getCurrentUser() {
+   public AtsUser getCurrentUser() {
       if (currentUser == null) {
          currentUser = configurationService.getUserByUserId(getCurrentUserId());
          if (currentUser == null) {
-            for (IAtsUser user : getUsers(Active.Both)) {
+            for (AtsUser user : getUsers(Active.Both)) {
                if (user.getUserId().equals(getCurrentUserId())) {
                   currentUser = user;
                   break;
@@ -68,10 +67,10 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) {
-      List<IAtsUser> users = new LinkedList<>();
+   public Collection<AtsUser> getUsersByUserIds(Collection<String> userIds) {
+      List<AtsUser> users = new LinkedList<>();
       for (String userId : userIds) {
-         IAtsUser user = getUserById(userId);
+         AtsUser user = getUserById(userId);
          if (user != null) {
             users.add(user);
          }
@@ -80,8 +79,8 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public IAtsUser getUserById(String userId) {
-      IAtsUser atsUser = null;
+   public AtsUser getUserById(String userId) {
+      AtsUser atsUser = null;
       if (Strings.isValid(userId)) {
          atsUser = configurationService.getUserByUserId(userId);
          if (atsUser == null && Strings.isValid(userId)) {
@@ -102,8 +101,8 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public IAtsUser getUserByAccountId(Long accountId) {
-      IAtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(accountId);
+   public AtsUser getUserByAccountId(Long accountId) {
+      AtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(accountId);
       if (atsUser == null) {
          atsUser = loadUserByAccountId(accountId);
          if (atsUser != null) {
@@ -113,13 +112,13 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsUser;
    }
 
-   protected abstract IAtsUser loadUserByAccountId(Long accountId);
+   protected abstract AtsUser loadUserByAccountId(Long accountId);
 
-   protected abstract IAtsUser loadUserFromDbByUserId(String userId);
+   protected abstract AtsUser loadUserFromDbByUserId(String userId);
 
    @Override
-   public IAtsUser getUserByName(String name) {
-      IAtsUser atsUser = configurationService.getUserByName(name);
+   public AtsUser getUserByName(String name) {
+      AtsUser atsUser = configurationService.getUserByName(name);
       if (atsUser == null && Strings.isValid(name)) {
          atsUser = loadUserFromDbByUserName(name);
          if (atsUser != null) {
@@ -129,7 +128,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsUser;
    }
 
-   protected abstract IAtsUser loadUserFromDbByUserName(String name);
+   protected abstract AtsUser loadUserFromDbByUserName(String name);
 
    @Override
    public boolean isUserIdValid(String userId) {
@@ -142,13 +141,13 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getUsersSortedByName(Active active) {
-      List<IAtsUser> users = new ArrayList<IAtsUser>(getUsers(active));
+   public Collection<AtsUser> getUsersSortedByName(Active active) {
+      List<AtsUser> users = new ArrayList<AtsUser>(getUsers(active));
       Collections.sort(users, new AtsUserNameComparator(false));
       return users;
    }
 
-   public IAtsUser getUserFromToken(UserToken userToken) {
+   public AtsUser getUserFromToken(UserToken userToken) {
       return getUserById(userToken.getUserId());
    }
 
@@ -158,9 +157,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getUsers(Active active) {
-      List<IAtsUser> users = new ArrayList<>();
-      for (IAtsUser user : getUsers()) {
+   public Collection<AtsUser> getUsers(Active active) {
+      List<AtsUser> users = new ArrayList<>();
+      for (AtsUser user : getUsers()) {
          if (active == Active.Both || active == Active.Active && user.isActive() || active == Active.InActive && !user.isActive()) {
             users.add(user);
          }
@@ -180,12 +179,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems) {
-      Set<IAtsUser> users = new HashSet<>();
+   public Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems) {
+      Set<AtsUser> users = new HashSet<>();
       users.addAll(getUsers(Active.Active));
       // Include inactive assigned
       for (IAtsWorkItem workItem : workItems) {
-         for (IAtsUser user : workItem.getAssignees()) {
+         for (AtsUser user : workItem.getAssignees()) {
             if (!user.isActive()) {
                users.add(user);
             }
@@ -195,12 +194,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public void setCurrentUser(IAtsUser currentUser) {
+   public void setCurrentUser(AtsUser currentUser) {
       this.currentUser = currentUser;
    }
 
    @Override
-   public AtsUser getAtsUser(IAtsUser user) {
+   public AtsUser getAtsUser(AtsUser user) {
       AtsUser atsUser = new AtsUser();
       atsUser.setName(user.getName());
       atsUser.setUserId(user.getUserId());
@@ -211,12 +210,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation) {
-      Set<IAtsUser> results = new HashSet<>();
+   public Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation) {
+      Set<AtsUser> results = new HashSet<>();
       for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
          String userId = (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
             CoreAttributeTypes.UserId, null);
-         IAtsUser lead = atsApi.getUserService().getUserById(userId);
+         AtsUser lead = atsApi.getUserService().getUserById(userId);
          Conditions.assertNotNull(lead, "Lead can not be null with userArt %s", userArt);
          results.add(lead);
       }

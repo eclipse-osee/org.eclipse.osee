@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,16 +28,16 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class UserSearchItem extends WorldUISearchItem {
 
-   protected IAtsUser user;
-   protected IAtsUser selectedUser;
+   protected AtsUser user;
+   protected AtsUser selectedUser;
    private Active active = Active.Active;
 
-   public UserSearchItem(String name, IAtsUser user) {
+   public UserSearchItem(String name, AtsUser user) {
       super(name);
       this.user = user;
    }
 
-   public UserSearchItem(String name, IAtsUser user, KeyedImage oseeImage) {
+   public UserSearchItem(String name, AtsUser user, KeyedImage oseeImage) {
       super(name, oseeImage);
       this.user = user;
    }
@@ -52,7 +52,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this.selectedUser = userSearchItem.selectedUser;
    }
 
-   private IAtsUser getUser() {
+   private AtsUser getUser() {
       if (this.user == null) {
          this.user = AtsClientService.get().getUserService().getCurrentUser();
       }
@@ -85,7 +85,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
    }
 
-   protected Collection<Artifact> searchIt(IAtsUser user) {
+   protected Collection<Artifact> searchIt(AtsUser user) {
       return EMPTY_SET;
    }
 
@@ -118,11 +118,11 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       cancelled = true;
    }
 
-   public void setSelectedUser(IAtsUser selectedUser) {
+   public void setSelectedUser(AtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }
 
-   public IAtsUser getDefaultUser() {
+   public AtsUser getDefaultUser() {
       return getUser();
    }
 

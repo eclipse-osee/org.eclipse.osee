@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
@@ -56,7 +56,7 @@ public class AtsBranchUtil {
    /**
     * @return true if one or more reviews were created
     */
-   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       Conditions.checkNotNull(teamWf, "Team Workflow");
       boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {

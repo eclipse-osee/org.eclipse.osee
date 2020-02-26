@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
  */
 public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
-   Collection<IAtsUser> assignees = new HashSet<>();
+   Collection<AtsUser> assignees = new HashSet<>();
    private final IAtsTeamDefinition teamDef;
 
    public XAssigneesHyperlinkWidget(IAtsTeamDefinition teamDef) {
@@ -37,7 +37,7 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    @Override
    public String getCurrentValue() {
       Collection<String> assigneeNames = new HashSet<>();
-      for (IAtsUser singleAssignee : assignees) {
+      for (AtsUser singleAssignee : assignees) {
          assigneeNames.add(singleAssignee.getName());
       }
       return Collections.toString("; ", assigneeNames);
@@ -53,7 +53,7 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
          uld.setInitialSelections(assignees);
       }
       if (uld.open() == Window.OK) {
-         Collection<IAtsUser> users = uld.getUsersSelected();
+         Collection<AtsUser> users = uld.getUsersSelected();
          assignees.clear();
          assignees.addAll(users);
          return true;
@@ -67,7 +67,7 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
       return true;
    }
 
-   public Collection<IAtsUser> getSelected() {
+   public Collection<AtsUser> getSelected() {
       return assignees;
    }
 

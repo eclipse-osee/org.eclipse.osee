@@ -17,7 +17,6 @@ import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,7 +48,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public boolean isAtsAdmin(IAtsUser user) {
+   public boolean isAtsAdmin(AtsUser user) {
       if (atsAdminArt == null) {
          atsAdminArt = getArtifact(AtsUserGroups.AtsAdmin);
       }
@@ -102,8 +101,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public List<IAtsUser> getUsersFromDb() {
-      List<IAtsUser> users = new ArrayList<>();
+   public List<AtsUser> getUsersFromDb() {
+      List<AtsUser> users = new ArrayList<>();
       for (ArtifactId art : getQuery().andTypeEquals(CoreArtifactTypes.User).getResults()) {
          ArtifactReadable userArt = (ArtifactReadable) art;
          AtsUser atsUser = createFromArtifact(userArt);
@@ -113,7 +112,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   protected IAtsUser loadUserFromDbByUserId(String userId) {
+   protected AtsUser loadUserFromDbByUserId(String userId) {
       ArtifactReadable userArt =
          getQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.UserId,
             userId).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
@@ -124,7 +123,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   protected IAtsUser loadUserFromDbByUserName(String name) {
+   protected AtsUser loadUserFromDbByUserName(String name) {
       ArtifactReadable userArt =
          getQuery().andTypeEquals(CoreArtifactTypes.User).andNameEquals(name).getResults().getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
@@ -135,8 +134,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   protected IAtsUser loadUserByAccountId(Long accountId) {
-      IAtsUser user = null;
+   protected AtsUser loadUserByAccountId(Long accountId) {
+      AtsUser user = null;
       ArtifactId userArt = getArtifactOrSentinel(ArtifactId.valueOf(accountId));
       if (userArt.isValid()) {
          user = createFromArtifact((ArtifactReadable) userArt);
@@ -145,19 +144,19 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public IAtsUser getUserByArtifactId(ArtifactId id) {
+   public AtsUser getUserByArtifactId(ArtifactId id) {
       ArtifactReadable userArt = getQuery().andId(id).getResults().getExactlyOne();
       return createFromArtifact(userArt);
    }
 
    @Override
-   public IAtsUser getUserByAccountId(HttpHeaders httpHeaders) {
-      IAtsUser user = null;
+   public AtsUser getUserByAccountId(HttpHeaders httpHeaders) {
+      AtsUser user = null;
       String accountId = RestUtil.getAccountId(httpHeaders);
       if (Strings.isInValid(accountId)) {
          return null;
       }
-      IAtsUser userById = getUserByAccountId(Long.valueOf(accountId));
+      AtsUser userById = getUserByAccountId(Long.valueOf(accountId));
       if (userById != null) {
          user = userById;
       }

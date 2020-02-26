@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.search;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
 import org.eclipse.osee.ats.ide.navigate.NavigateViewItems;
@@ -48,7 +48,7 @@ public final class SaveSearchAction extends Action {
 
    @Override
    public void run() {
-      IAtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
       EntryDialog dialog = new EntryDialog("Save Search", "Save Search?\n\n(edit to change Search Name)");
       dialog.setEntry(searchItem.getSearchName());
       if (dialog.open() == 0) {

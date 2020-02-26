@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -132,7 +132,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");
          }
-         IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
+         AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create System Safety Workflow",
             atsApi.getUserService().getUserByArtifactId(userArt));
          IAtsAction action = atsApi.getActionFactory().getAction(teamWf);

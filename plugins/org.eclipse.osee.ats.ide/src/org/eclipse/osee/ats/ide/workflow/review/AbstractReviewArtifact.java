@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -40,18 +40,18 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       super(id, guid, branch, artifactType);
    }
 
-   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) {
-      List<IAtsUser> users = new ArrayList<>();
+   public static List<AtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) {
+      List<AtsUser> users = new ArrayList<>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
-         for (IAtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
+         for (AtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
             if (!users.contains(user)) {
                users.add(user);
             }
          }
          if (workflow.isCompleted()) {
-            IAtsUser user = workflow.getCompletedBy();
+            AtsUser user = workflow.getCompletedBy();
             if (user != null && !users.contains(user)) {
                users.add(user);
             }

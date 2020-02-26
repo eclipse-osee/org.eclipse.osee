@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements IAtsWorkItem, HasCmAccessControl, IGroupExplorerProvider {
 
-   private Collection<IAtsUser> transitionAssignees;
+   private Collection<AtsUser> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
@@ -76,7 +76,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public List<IAtsUser> getImplementers() {
+   public List<AtsUser> getImplementers() {
       return AtsClientService.get().getImplementerService().getImplementers(this);
    }
 
@@ -301,7 +301,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public IAtsUser getCreatedBy() {
+   public AtsUser getCreatedBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -314,7 +314,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public IAtsUser getCancelledBy() {
+   public AtsUser getCancelledBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -350,7 +350,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public IAtsUser getCompletedBy() {
+   public AtsUser getCompletedBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -383,7 +383,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return fromState;
    }
 
-   public void setTransitionAssignees(Collection<IAtsUser> assignees) {
+   public void setTransitionAssignees(Collection<AtsUser> assignees) {
       if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.ANONYMOUS_USER)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Anonymous");
       }
@@ -401,7 +401,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * getTransitionAssignees() is a method that is ONLY to be used in the WETransitionComposition class. Eventually this
     * method needs to be incorporated into WETransitionComposition.
     */
-   public Collection<IAtsUser> getTransitionAssignees() {
+   public Collection<AtsUser> getTransitionAssignees() {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
             transitionAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
@@ -454,7 +454,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public List<IAtsUser> getAssignees() {
+   public List<AtsUser> getAssignees() {
       return getStateMgr().getAssignees();
    }
 

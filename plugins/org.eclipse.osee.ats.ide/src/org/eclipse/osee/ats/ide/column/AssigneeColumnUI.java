@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -121,7 +121,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             return false;
          }
       }
-      Collection<IAtsUser> users = AtsClientService.get().getUserService().getActiveAndAssignedInActive(workItems);
+      Collection<AtsUser> users = AtsClientService.get().getUserService().getActiveAndAssignedInActive(workItems);
 
       // unassigned is not useful in the selection choice dialog
       users.remove(SystemUser.UnAssigned);
@@ -141,7 +141,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       if (uld.open() != 0) {
          return false;
       }
-      Collection<IAtsUser> selected = uld.getUsersSelected();
+      Collection<AtsUser> selected = uld.getUsersSelected();
       if (selected.isEmpty()) {
          selected.add(AtsCoreUsers.UNASSIGNED_USER);
       }

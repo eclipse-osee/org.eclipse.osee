@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -51,18 +51,18 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private final String comment;
    private final IDuplicateWorkflowListener duplicateListener;
 
-   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, AtsApi atsApi) {
+   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi) {
       this(teamWfs, duplicateTasks, title, asUser, atsApi, "", null);
    }
 
-   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, AtsApi atsApi, String comment, IDuplicateWorkflowListener duplicateListener) {
+   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi, String comment, IDuplicateWorkflowListener duplicateListener) {
       super(teamWfs, title, asUser, atsApi);
       this.duplicateTasks = duplicateTasks;
       this.comment = comment;
       this.duplicateListener = duplicateListener;
    }
 
-   public DuplicateWorkflowAsIsOperation(List<IAtsTeamWorkflow> asList, boolean b, String existingName, String newName, IAtsUser currentUser, AtsApi atsApi) {
+   public DuplicateWorkflowAsIsOperation(List<IAtsTeamWorkflow> asList, boolean b, String existingName, String newName, AtsUser currentUser, AtsApi atsApi) {
       this(asList, b, newName, currentUser, atsApi, "", null);
    }
 
@@ -117,7 +117,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       atsLog.addLog(LogType.Note, null, "Workflow duplicated from " + workItem.getAtsId(), asUser.getUserId());
 
       // assignees == add in existing assignees, leads and originator (current user)
-      List<IAtsUser> assignees = new LinkedList<>();
+      List<AtsUser> assignees = new LinkedList<>();
       assignees.addAll(workItem.getStateMgr().getAssignees());
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;

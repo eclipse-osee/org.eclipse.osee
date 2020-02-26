@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.workflow.state;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 
 /**
@@ -19,11 +19,11 @@ import org.eclipse.osee.ats.api.workflow.WorkState;
  */
 public interface WorkStateFactory {
 
-   WorkState createStateData(String name, List<? extends IAtsUser> assignees);
+   WorkState createStateData(String name, List<? extends AtsUser> assignees);
 
    WorkState createStateData(String name);
 
-   WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
+   WorkState createStateData(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete);
 
    String getId();
 

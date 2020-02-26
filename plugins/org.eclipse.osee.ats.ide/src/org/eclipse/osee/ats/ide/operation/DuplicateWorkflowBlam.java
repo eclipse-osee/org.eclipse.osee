@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IValidatingOperation;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
@@ -122,7 +122,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) {
-      IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
       for (TeamWorkFlowArtifact teamArt : getDefaultTeamWorkflows()) {
@@ -158,7 +158,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) {
-      IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
       for (TeamWorkFlowArtifact teamArt : getDefaultTeamWorkflows()) {

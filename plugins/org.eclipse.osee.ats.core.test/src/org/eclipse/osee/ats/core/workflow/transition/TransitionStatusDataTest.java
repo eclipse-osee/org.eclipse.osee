@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -33,7 +33,7 @@ public class TransitionStatusDataTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem, workItem2;
    @Mock IAtsTeamWorkflow teamWf;
-   @Mock IAtsUser Joe, Kay;
+   @Mock AtsUser Joe, Kay;
    @Mock IAtsUserService userService;
    @Mock IAtsBranchService branchService;
    // @formatter:on

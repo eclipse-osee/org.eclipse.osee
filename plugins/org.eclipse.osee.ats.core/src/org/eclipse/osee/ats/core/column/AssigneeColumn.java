@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
@@ -50,19 +50,19 @@ public class AssigneeColumn extends AbstractServicesColumn {
    public static String getAssigneeStrr(IAtsObject atsObject) {
       if (atsObject instanceof Action) {
          // ensure consistent order by using lists
-         List<IAtsUser> pocs = new ArrayList<>();
-         List<IAtsUser> implementers = new ArrayList<>();
+         List<AtsUser> pocs = new ArrayList<>();
+         List<AtsUser> implementers = new ArrayList<>();
          for (IAtsWorkItem workItem : ((Action) atsObject).getTeamWorkflows()) {
             StateType stateType = workItem.getStateMgr().getStateType();
             if (stateType != null) {
                if (stateType.isCompletedOrCancelled()) {
-                  for (IAtsUser user : workItem.getImplementers()) {
+                  for (AtsUser user : workItem.getImplementers()) {
                      if (!implementers.contains(user)) {
                         implementers.add(user);
                      }
                   }
                } else {
-                  for (IAtsUser user : workItem.getAssignees()) {
+                  for (AtsUser user : workItem.getAssignees()) {
                      if (!pocs.contains(user)) {
                         pocs.add(user);
                      }

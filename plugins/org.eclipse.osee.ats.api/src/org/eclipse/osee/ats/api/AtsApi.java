@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -126,7 +126,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
 
    IAtsChangeSet createChangeSet(String comment);
 
-   IAtsChangeSet createChangeSet(String comment, IAtsUser user);
+   IAtsChangeSet createChangeSet(String comment, AtsUser user);
 
    void storeAtsBranch(BranchId branch, String name);
 
@@ -192,7 +192,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
 
    IAtsChangeSet createChangeSet(String comment, Branch branch);
 
-   IAtsChangeSet createChangeSet(String comment, Branch branch, IAtsUser asUser);
+   IAtsChangeSet createChangeSet(String comment, Branch branch, AtsUser asUser);
 
    IAtsServerEndpointProvider getServerEndpoints();
 

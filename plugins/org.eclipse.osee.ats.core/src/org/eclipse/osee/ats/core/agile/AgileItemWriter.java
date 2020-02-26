@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -64,14 +64,14 @@ public class AgileItemWriter {
             for (IAtsWorkItem workItem : workItems) {
                // just assignee change
                if (workItem.getStateMgr().getCurrentStateName().equals(newItem.getToState())) {
-                  Collection<IAtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
+                  Collection<AtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
                   workItem.getStateMgr().setAssignees(toStateAssignees);
                   changes.add(workItem);
                }
                // transition change
                else {
-                  Collection<IAtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
+                  Collection<AtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
                   TransitionHelper helper = new TransitionHelper("Transition Agile Workflow", Arrays.asList(workItem),
                      newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban", changes, atsApi,
@@ -150,14 +150,14 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetAssignees()) {
-            Collection<IAtsUser> assignees = getAssignees(newItem.getAssigneesAccountIds());
+            Collection<AtsUser> assignees = getAssignees(newItem.getAssigneesAccountIds());
             for (IAtsWorkItem workItem : getWorkItems()) {
                workItem.getStateMgr().setAssignees(assignees);
                changes.add(workItem);
             }
             // set return assignees string
             List<String> assigneeNames = new LinkedList<>();
-            for (IAtsUser user : assignees) {
+            for (AtsUser user : assignees) {
                assigneeNames.add(user.getName());
             }
             String assigneesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", assigneeNames);
@@ -177,7 +177,7 @@ public class AgileItemWriter {
    /**
     * Ensure UnAssigned is not an assignee if another assignee exists. Ensure UnAssigned is assigned if non else.
     */
-   private void resolveAssignees(Collection<IAtsUser> toStateAssignees) {
+   private void resolveAssignees(Collection<AtsUser> toStateAssignees) {
       if (toStateAssignees.size() > 1 && toStateAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
          toStateAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
       }
@@ -197,8 +197,8 @@ public class AgileItemWriter {
       return workItems;
    }
 
-   private Collection<IAtsUser> getAssignees(List<String> usersAccountIds) {
-      List<IAtsUser> users = new ArrayList<>();
+   private Collection<AtsUser> getAssignees(List<String> usersAccountIds) {
+      List<AtsUser> users = new ArrayList<>();
       for (String userId : usersAccountIds) {
          users.add(atsApi.getUserService().getUserByAccountId(Long.valueOf(userId)));
       }

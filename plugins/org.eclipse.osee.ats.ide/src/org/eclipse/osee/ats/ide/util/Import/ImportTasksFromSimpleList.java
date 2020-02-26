@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -68,10 +68,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               final List<IAtsUser> assignees = new ArrayList<>();
+               final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art);
+                     AtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art);
                      assignees.add(atsUser);
                   }
                }

@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -43,13 +43,13 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, IAtsUser createdBy) {
+   public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
       if (Lib.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
       }
       // Add current user if no valid users specified
-      List<IAtsUser> users = new LinkedList<>();
+      List<AtsUser> users = new LinkedList<>();
       users.addAll(AtsApiService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
          users.add(AtsApiService.get().getUserService().getCurrentUser());
@@ -79,13 +79,13 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!(workItem instanceof IAtsTeamWorkflow)) {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
+      AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       IAtsTeamWorkflow teamArt = (IAtsTeamWorkflow) workItem;
 
       for (IAtsDecisionReviewDefinition decRevDef : workItem.getStateDefinition().getDecisionReviews()) {

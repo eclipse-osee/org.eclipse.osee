@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
@@ -121,16 +121,16 @@ public class EventColumn extends XViewerValueColumn {
             return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(
                is) + " hrs";
          }
-         Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
-         Collection<? extends IAtsUser> isAssignees = is.getAssignees();
-         Set<IAtsUser> assigned = new HashSet<>();
-         Set<IAtsUser> unAssigned = new HashSet<>();
-         for (IAtsUser isAssignee : isAssignees) {
+         Collection<? extends AtsUser> wasAssignees = was.getAssignees();
+         Collection<? extends AtsUser> isAssignees = is.getAssignees();
+         Set<AtsUser> assigned = new HashSet<>();
+         Set<AtsUser> unAssigned = new HashSet<>();
+         for (AtsUser isAssignee : isAssignees) {
             if (!wasAssignees.contains(isAssignee)) {
                assigned.add(isAssignee);
             }
          }
-         for (IAtsUser wasAssignee : wasAssignees) {
+         for (AtsUser wasAssignee : wasAssignees) {
             if (!isAssignees.contains(wasAssignee)) {
                unAssigned.add(wasAssignee);
             }

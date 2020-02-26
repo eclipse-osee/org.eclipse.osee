@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -125,7 +124,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       // load valid state names
       configs.setValidStateNames(update.getValidStateNames());
       // load users
-      for (IAtsUser user : atsApi.getUserService().getUsersFromDb()) {
+      for (AtsUser user : atsApi.getUserService().getUsersFromDb()) {
          configs.addUser((AtsUser) user);
       }
       // load admins

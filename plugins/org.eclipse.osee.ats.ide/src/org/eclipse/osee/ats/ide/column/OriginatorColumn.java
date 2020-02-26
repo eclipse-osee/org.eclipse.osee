@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -119,7 +119,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
       if (result == 0) {
-         IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
+         AtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
          for (IAtsWorkItem workItem : workItems) {
             workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
@@ -170,7 +170,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             return AtsEditors.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<>();
+            Set<AtsUser> users = new HashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                users.add(team.getCreatedBy());
             }

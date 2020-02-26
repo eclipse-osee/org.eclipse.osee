@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -60,8 +59,8 @@ public class StateManagerUtilityTest {
    @Mock IAtsLogFactory logFactory;
    @Mock AtsApi atsApi;
    // @formatter:on
-   private static final IAtsUser Joe = new AtsUser(DemoUsers.Joe_Smith);
-   private static final IAtsUser Kay = new AtsUser(DemoUsers.Kay_Jones);
+   private static final AtsUser Joe = new AtsUser(DemoUsers.Joe_Smith);
+   private static final AtsUser Kay = new AtsUser(DemoUsers.Kay_Jones);
 
    @Before
    public void setup() {

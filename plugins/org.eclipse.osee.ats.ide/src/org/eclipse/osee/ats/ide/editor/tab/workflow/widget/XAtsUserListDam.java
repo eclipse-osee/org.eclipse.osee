@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
@@ -58,7 +58,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
 
    private AbstractWorkflowArtifact awa;
    private AttributeTypeToken attributeType;
-   private final Collection<IAtsUser> selectedUsers = new LinkedList<>();
+   private final Collection<AtsUser> selectedUsers = new LinkedList<>();
 
    public XAtsUserListDam(String displayLabel) {
       super(displayLabel);
@@ -83,10 +83,10 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
 
    }
 
-   private Collection<IAtsUser> getStoredAtsUsers() {
-      List<IAtsUser> users = new LinkedList<>();
+   private Collection<AtsUser> getStoredAtsUsers() {
+      List<AtsUser> users = new LinkedList<>();
       for (String userId : awa.getAttributesToStringList(attributeType)) {
-         IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+         AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
          if (user != null && !AtsCoreUsers.isSystemUser(user)) {
             users.add(user);
          }
@@ -94,7 +94,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
       return users;
    }
 
-   private Collection<IAtsUser> getSelectedUsers() {
+   private Collection<AtsUser> getSelectedUsers() {
       return selectedUsers;
    }
 
@@ -132,7 +132,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
             try {
                ArtifactEmailWizard wizard = new ArtifactEmailWizard(awa);
                List<String> emails = new LinkedList<>();
-               for (IAtsUser user : isDirty().isTrue() ? getSelectedUsers() : getStoredAtsUsers()) {
+               for (AtsUser user : isDirty().isTrue() ? getSelectedUsers() : getStoredAtsUsers()) {
                   emails.add(user.getEmail());
                }
                if (!emails.isEmpty()) {
@@ -154,7 +154,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
       try {
          UserCheckTreeDialog uld = new UserCheckTreeDialog("Select User(s)", "Select Users.",
             AtsClientService.get().getUserService().getUsers(Active.Active));
-         Collection<IAtsUser> atsUsers = getStoredAtsUsers();
+         Collection<AtsUser> atsUsers = getStoredAtsUsers();
          if (!atsUsers.isEmpty()) {
             uld.setInitialSelections(atsUsers);
          }
@@ -162,7 +162,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
             selectedUsers.clear();
             for (Object obj : uld.getResult()) {
                User user = (User) obj;
-               IAtsUser atsUser = AtsClientService.get().getUserService().getUserByAccountId(user.getId());
+               AtsUser atsUser = AtsClientService.get().getUserService().getUserByAccountId(user.getId());
                if (!AtsCoreUsers.isUnAssignedUser(atsUser)) {
                   selectedUsers.add(atsUser);
                }
@@ -178,7 +178,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    @Override
    public void saveToArtifact() {
       List<String> userIds = new LinkedList<>();
-      for (IAtsUser user : getSelectedUsers()) {
+      for (AtsUser user : getSelectedUsers()) {
          if (!AtsCoreUsers.isUnAssignedUser(user)) {
             userIds.add(user.getUserId());
          }
@@ -201,8 +201,8 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    public Result isDirty() {
       Result result = Result.FalseResult;
       if (isEditable()) {
-         Collection<IAtsUser> selectedUsers2 = getSelectedUsers();
-         Collection<IAtsUser> storedAtsUsers = getStoredAtsUsers();
+         Collection<AtsUser> selectedUsers2 = getSelectedUsers();
+         Collection<AtsUser> storedAtsUsers = getStoredAtsUsers();
          if (!Collections.isEqual(selectedUsers2, storedAtsUsers)) {
             result = new Result(true, attributeType + " is dirty");
          }

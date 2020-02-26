@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -85,7 +85,7 @@ public class FavoritesManager {
       }
    }
 
-   public static void addFavorite(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) {
+   public static void addFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
       if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
@@ -93,13 +93,13 @@ public class FavoritesManager {
       }
    }
 
-   public static void removeFavorite(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) {
+   public static void removeFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
       workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User,
          AtsClientService.get().getUserServiceClient().getOseeUser(user));
       workflow.persist(transaction);
    }
 
-   public static boolean isFavorite(AbstractWorkflowArtifact workflow, IAtsUser user) {
+   public static boolean isFavorite(AbstractWorkflowArtifact workflow, AtsUser user) {
       return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user);
    }
 

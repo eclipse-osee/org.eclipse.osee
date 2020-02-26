@@ -23,7 +23,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributeEndpointApi;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributes;
@@ -77,8 +77,8 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
    public List<String> getValidValues(@PathParam("id") String id) {
       List<String> values = new LinkedList<>();
       if (id.equals(AttributeKey.Assignee.name()) || id.equals(AttributeKey.Originator.name())) {
-         Collection<IAtsUser> active = atsApi.getUserService().getUsers(Active.Active);
-         for (IAtsUser user : active) {
+         Collection<AtsUser> active = atsApi.getUserService().getUsers(Active.Active);
+         for (AtsUser user : active) {
             values.add(user.getName());
          }
       } else if (id.equals(AttributeKey.ColorTeam.name())) {

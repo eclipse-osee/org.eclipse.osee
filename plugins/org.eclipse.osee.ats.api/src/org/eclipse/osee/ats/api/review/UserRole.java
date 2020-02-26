@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.review;
 
 import java.text.NumberFormat;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -28,7 +28,7 @@ public class UserRole {
    private String guid = GUID.create();
    private Boolean completed = false;
 
-   public UserRole(Role role, IAtsUser user) {
+   public UserRole(Role role, AtsUser user) {
       this(role, user.getUserId());
    }
 
@@ -36,7 +36,7 @@ public class UserRole {
       this(role, userId, 0.0, false);
    }
 
-   public UserRole(Role role, IAtsUser user, Double hoursSpent, Boolean completed) {
+   public UserRole(Role role, AtsUser user, Double hoursSpent, Boolean completed) {
       this(role, user.getUserId(), hoursSpent, completed);
    }
 

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorTeam;
 import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -78,7 +78,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       if (workPackageArt == null) {
          rd.errorf("Work Package with id [%s] Not Found", workPackageId);
       }
-      IAtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
          rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
@@ -156,7 +156,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Override
    public XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
       XResultData rd = new XResultData();
-      IAtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
          rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }

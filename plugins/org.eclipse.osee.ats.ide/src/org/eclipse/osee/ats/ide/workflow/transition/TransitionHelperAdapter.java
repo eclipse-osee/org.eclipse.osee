@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.workflow.transition;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
  */
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
-   IAtsUser transitionUser;
+   AtsUser transitionUser;
 
    @Override
    public boolean isOverrideTransitionValidityCheck() {
@@ -56,8 +56,8 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public IAtsUser getTransitionUser() {
-      IAtsUser user = transitionUser;
+   public AtsUser getTransitionUser() {
+      AtsUser user = transitionUser;
       if (user == null) {
          user = AtsClientService.get().getUserService().getCurrentUser();
       }
@@ -65,7 +65,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public void setTransitionUser(IAtsUser user) {
+   public void setTransitionUser(AtsUser user) {
       transitionUser = user;
    }
 

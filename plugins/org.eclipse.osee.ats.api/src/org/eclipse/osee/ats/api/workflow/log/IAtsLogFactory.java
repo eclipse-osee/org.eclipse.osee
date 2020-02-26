@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.workflow.log;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 
@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
  */
 public interface IAtsLogFactory {
 
-   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg);
+   IAtsLogItem newLogItem(LogType type, Date date, AtsUser user, String state, String msg);
 
    IAtsLog getLogLoaded(IAtsWorkItem workItem, IAttributeResolver attrResolver);
 

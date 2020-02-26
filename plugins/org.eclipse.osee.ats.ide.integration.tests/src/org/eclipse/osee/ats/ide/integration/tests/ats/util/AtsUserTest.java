@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -27,7 +27,7 @@ import org.junit.BeforeClass;
  */
 public class AtsUserTest {
 
-   private static IAtsUser atsUser;
+   private static AtsUser atsUser;
    private static User user;
 
    @BeforeClass
@@ -53,7 +53,7 @@ public class AtsUserTest {
 
    @org.junit.Test
    public void testRemove() {
-      Collection<IAtsUser> assignees = new HashSet<>();
+      Collection<AtsUser> assignees = new HashSet<>();
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(assignees,

@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -30,7 +30,7 @@ public class MyWorldSearchItem extends UserSearchItem {
       this(name, null);
    }
 
-   public MyWorldSearchItem(String name, IAtsUser user) {
+   public MyWorldSearchItem(String name, AtsUser user) {
       super(name, user, AtsImage.GLOBE);
    }
 
@@ -39,7 +39,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    @Override
-   public Collection<Artifact> searchIt(IAtsUser user) {
+   public Collection<Artifact> searchIt(AtsUser user) {
       Set<Artifact> assigned = AtsEditors.getAssigned(user);
 
       Set<Artifact> results = new HashSet<>(assigned.size());

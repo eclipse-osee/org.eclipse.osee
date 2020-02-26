@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.task;
 
 import java.util.Date;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +22,7 @@ public class JaxAtsTaskFactory {
       // utility class
    }
 
-   public static JaxAtsTask get(String title, IAtsUser createdBy, Date createdDate) {
+   public static JaxAtsTask get(String title, AtsUser createdBy, Date createdDate) {
       JaxAtsTask task = new JaxAtsTask();
       task.setCreatedByUserId(createdBy.getUserId());
       task.setCreatedDate(createdDate);
@@ -30,7 +30,7 @@ public class JaxAtsTaskFactory {
       return task;
    }
 
-   public static JaxAtsTask get(NewTaskData newTaskData, String title, IAtsUser createdBy, Date createdDate) {
+   public static JaxAtsTask get(NewTaskData newTaskData, String title, AtsUser createdBy, Date createdDate) {
       JaxAtsTask task = get(title, createdBy, createdDate);
       newTaskData.getNewTasks().add(task);
       return task;

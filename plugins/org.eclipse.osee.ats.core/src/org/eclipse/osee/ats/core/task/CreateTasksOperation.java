@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.task.JaxRelation;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -58,7 +58,7 @@ public class CreateTasksOperation {
    private final NewTaskDatas newTaskDatas;
    private final AtsApi atsApi;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
-   private IAtsUser asUser;
+   private AtsUser asUser;
    private XResultData results;
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
@@ -114,7 +114,7 @@ public class CreateTasksOperation {
             if (!Strings.isValid(task.getName())) {
                results.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
             }
-            IAtsUser createdBy = atsApi.getUserService().getUserById(task.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserById(task.getCreatedByUserId());
             if (createdBy == null) {
                results.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
             }
@@ -131,7 +131,7 @@ public class CreateTasksOperation {
 
             List<String> assigneeUserIds = task.getAssigneeUserIds();
             if (!assigneeUserIds.isEmpty()) {
-               Collection<IAtsUser> assignees = atsApi.getUserService().getUsersByUserIds(assigneeUserIds);
+               Collection<AtsUser> assignees = atsApi.getUserService().getUsersByUserIds(assigneeUserIds);
                if (assigneeUserIds.size() != assignees.size()) {
                   results.errorf("Task Assignees [%s] not all valid in %s\n", String.valueOf(assigneeUserIds), task);
                }
@@ -264,7 +264,7 @@ public class CreateTasksOperation {
             atsApi.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), null, changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
-            List<IAtsUser> assignees = new ArrayList<>();
+            List<AtsUser> assignees = new ArrayList<>();
             if (jaxTask.getAssigneeUserIds() != null) {
                assignees.addAll(atsApi.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
             }
@@ -289,7 +289,7 @@ public class CreateTasksOperation {
             if (Strings.isValid(jaxTask.getDescription())) {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
             }
-            IAtsUser createdBy = atsApi.getUserService().getUserById(jaxTask.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserById(jaxTask.getCreatedByUserId());
             atsApi.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
                workDefinition, changes);
 
@@ -338,7 +338,7 @@ public class CreateTasksOperation {
          newJaxTask.setCreatedDate(taskArt.getSoleAttributeValue(AtsAttributeTypes.CreatedDate));
          newJaxTask.setRelatedToState(taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(taskArt);
-         for (IAtsUser user : workItem.getAssignees()) {
+         for (AtsUser user : workItem.getAssignees()) {
             newJaxTask.addAssigneeUserIds(user.getUserId());
          }
 

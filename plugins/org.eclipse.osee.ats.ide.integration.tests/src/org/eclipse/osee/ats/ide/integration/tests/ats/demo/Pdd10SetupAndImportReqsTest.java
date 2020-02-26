@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd10SetupAndImportReqs;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -41,7 +40,7 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
       Collection<AtsUser> users = AtsClientService.get().getUserService().getUsers();
       Assert.assertEquals(23, users.size());
 
-      Collection<IAtsUser> users2 = AtsClientService.get().getUserService().getUsers(Active.Active);
+      Collection<AtsUser> users2 = AtsClientService.get().getUserService().getUsers(Active.Active);
       Assert.assertEquals(20, users2.size());
 
       Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();

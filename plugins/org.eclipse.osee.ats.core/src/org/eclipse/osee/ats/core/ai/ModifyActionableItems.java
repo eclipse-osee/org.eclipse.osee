@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionUtility;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -41,7 +41,7 @@ public class ModifyActionableItems {
    private final Collection<IAtsActionableItem> currAIsForAllWfs;
    private final Collection<IAtsActionableItem> currWorkflowDesiredAIs;
    private final Collection<IAtsActionableItem> newAIs;
-   private final IAtsUser modifiedBy;
+   private final AtsUser modifiedBy;
    private final List<CreateTeamData> teamDatas = new ArrayList<>();
    private final List<IAtsActionableItem> addAis = new ArrayList<>();
    private final List<IAtsActionableItem> removeAis = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ModifyActionableItems {
    private final AtsApi atsApi;
 
    public ModifyActionableItems(XResultData results, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> currAIsForAllWfs, //
-      Collection<IAtsActionableItem> currWorkflowDesiredAIs, Collection<IAtsActionableItem> newAIs, IAtsUser modifiedBy, //
+      Collection<IAtsActionableItem> currWorkflowDesiredAIs, Collection<IAtsActionableItem> newAIs, AtsUser modifiedBy, //
       ITeamDefinitionUtility teamDefUtil, AtsApi atsApi) {
       this.results = results;
       this.teamWf = teamWf;

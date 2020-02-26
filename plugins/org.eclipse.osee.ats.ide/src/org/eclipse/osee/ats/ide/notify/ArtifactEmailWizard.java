@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.notify;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
@@ -40,7 +40,7 @@ public class ArtifactEmailWizard extends EmailWizard {
       groupNames.add(new EmailGroup("Originator", emails));
       if (workItem.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<>();
-         for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
+         for (AtsUser user : workItem.getStateMgr().getAssignees()) {
             if (user.isActive()) {
                emails.add(user.getEmail());
             }

@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -52,7 +52,7 @@ public class ReviewDefectItem {
 
    };
 
-   public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
+   public ReviewDefectItem(AtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
       this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date);
    }
 
@@ -273,7 +273,7 @@ public class ReviewDefectItem {
       this.id = id;
    }
 
-   public void setUser(IAtsUser user) {
+   public void setUser(AtsUser user) {
       this.userId = user.getUserId();
    }
 

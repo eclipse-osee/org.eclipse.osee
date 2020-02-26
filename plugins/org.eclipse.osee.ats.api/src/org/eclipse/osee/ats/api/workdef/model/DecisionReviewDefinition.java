@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
@@ -118,7 +118,7 @@ public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
       this.relatedToState = relatedToState;
    }
 
-   public void addAssignee(IAtsUser user) {
+   public void addAssignee(AtsUser user) {
       this.assignees.add(user.getUserId());
    }
 

@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class XViewerReviewRoleColumn extends XViewerValueColumn {
 
-   private final IAtsUser user;
+   private final AtsUser user;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -39,12 +39,12 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
          getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerReviewRoleColumn(IAtsUser user) {
+   public XViewerReviewRoleColumn(AtsUser user) {
       super("ats.column.role", "Role", 75, XViewerAlign.Left, true, SortDataType.String, false, null);
       this.user = user;
    }
 
-   public XViewerReviewRoleColumn(IAtsUser user, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerReviewRoleColumn(AtsUser user, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.user = user;
    }
@@ -61,7 +61,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       }
    }
 
-   private static String getRolesStr(AbstractReviewArtifact reviewArt, IAtsUser user) {
+   private static String getRolesStr(AbstractReviewArtifact reviewArt, AtsUser user) {
       StringBuilder builder = new StringBuilder();
       IAtsPeerReviewRoleManager roleMgr = ((PeerToPeerReviewArtifact) reviewArt).getRoleManager();
       for (UserRole role : roleMgr.getUserRoles()) {
@@ -74,7 +74,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       return builder.toString().replaceFirst(", $", "");
    }
 
-   public IAtsUser getUser() {
+   public AtsUser getUser() {
       return user;
    }
 

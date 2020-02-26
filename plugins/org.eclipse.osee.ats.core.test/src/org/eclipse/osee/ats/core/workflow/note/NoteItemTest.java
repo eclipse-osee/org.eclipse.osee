@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
@@ -37,7 +37,7 @@ public class NoteItemTest {
    @Mock private IAtsUserService userService;
    @Mock private AtsApi atsApi;
    // @formatter:on
-   List<IAtsUser> assignees = new ArrayList<>();
+   List<AtsUser> assignees = new ArrayList<>();
 
    @Before
    public void setup() {
@@ -54,14 +54,14 @@ public class NoteItemTest {
       validate(item, date, joe);
    }
 
-   public static void validate(NoteItem item, Date date, IAtsUser joe) {
+   public static void validate(NoteItem item, Date date, AtsUser joe) {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
       Assert.assertEquals(joe, item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
-   public static NoteItem getTestNoteItem(Date date, IAtsUser user) {
+   public static NoteItem getTestNoteItem(Date date, AtsUser user) {
       return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), user, "my msg");
    }
 

@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
@@ -41,11 +41,11 @@ public class AtsPeerToPeerReviewReviewWorkflowHook implements IAtsTransitionHook
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, IAtsChangeSet changes) {
       if (workItem instanceof IAtsPeerToPeerReview && toState.getName().equals(
          PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users
-         Set<IAtsUser> assignees = new HashSet<>();
+         Set<AtsUser> assignees = new HashSet<>();
          IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) workItem;
          for (UserRole uRole : peerRev.getRoleManager().getUserRoles()) {
             if (!uRole.isCompleted()) {

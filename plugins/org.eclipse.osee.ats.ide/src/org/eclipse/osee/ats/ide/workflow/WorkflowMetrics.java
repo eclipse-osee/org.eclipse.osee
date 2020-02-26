@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -58,12 +58,12 @@ public class WorkflowMetrics {
    Set<AbstractReviewArtifact> reviewArts = new HashSet<>();
    Set<GoalArtifact> goalArts = new HashSet<>();
    Set<AbstractWorkflowArtifact> awas = new HashSet<>();
-   Set<IAtsUser> assignees = new HashSet<>();
-   Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<>();
+   Set<AtsUser> assignees = new HashSet<>();
+   Set<AtsUser> assigneesAssignedOrCompleted = new HashSet<>();
 
-   private final HashCollectionSet<IAtsUser, Artifact> userToAssignedSmas =
+   private final HashCollectionSet<AtsUser, Artifact> userToAssignedSmas =
       new HashCollectionSet<>(false, 100, HashSet::new);
-   private final HashCollectionSet<IAtsUser, Artifact> userToCompletedSmas =
+   private final HashCollectionSet<AtsUser, Artifact> userToCompletedSmas =
       new HashCollectionSet<>(false, 100, HashSet::new);
    private final double manHoursPerDay;
 
@@ -88,17 +88,17 @@ public class WorkflowMetrics {
          }
          if (art instanceof AbstractWorkflowArtifact) {
             awas.add((AbstractWorkflowArtifact) art);
-            Collection<IAtsUser> users = new HashSet<>();
+            Collection<AtsUser> users = new HashSet<>();
             users.addAll(((AbstractWorkflowArtifact) art).getStateMgr().getAssignees());
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
-            for (IAtsUser user : users) {
+            for (AtsUser user : users) {
                userToAssignedSmas.put(user, art);
             }
             if (((AbstractWorkflowArtifact) art).isCompleted()) {
-               Collection<IAtsUser> implementers = ((AbstractWorkflowArtifact) art).getImplementers();
+               Collection<AtsUser> implementers = ((AbstractWorkflowArtifact) art).getImplementers();
                assigneesAssignedOrCompleted.addAll(implementers);
-               for (IAtsUser user : implementers) {
+               for (AtsUser user : implementers) {
                   userToCompletedSmas.put(user, art);
                }
             }
@@ -148,16 +148,16 @@ public class WorkflowMetrics {
             estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }
 
-   public HashCollectionSet<IAtsUser, Artifact> getUserToCompletedSmas() {
+   public HashCollectionSet<AtsUser, Artifact> getUserToCompletedSmas() {
       return userToCompletedSmas;
    }
 
-   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(IAtsUser user) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(AtsUser user) {
       return getUserToCompletedSmas(user, null);
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(IAtsUser user, Class<A> clazz) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(AtsUser user, Class<A> clazz) {
       if (!userToCompletedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
@@ -171,7 +171,7 @@ public class WorkflowMetrics {
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(IAtsUser user, Class<A> clazz) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(AtsUser user, Class<A> clazz) {
       if (!userToAssignedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
@@ -234,7 +234,7 @@ public class WorkflowMetrics {
       return new WorkflowMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
-   public Set<IAtsUser> getAssigneesAssignedOrCompleted() {
+   public Set<AtsUser> getAssigneesAssignedOrCompleted() {
       return assigneesAssignedOrCompleted;
    }
 
@@ -331,11 +331,11 @@ public class WorkflowMetrics {
       return taskArts;
    }
 
-   public HashCollectionSet<IAtsUser, Artifact> getUserToAssignedSmas() {
+   public HashCollectionSet<AtsUser, Artifact> getUserToAssignedSmas() {
       return userToAssignedSmas;
    }
 
-   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(IAtsUser user) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(AtsUser user) {
       return getUserToAssignedSmas(user, null);
    }
 

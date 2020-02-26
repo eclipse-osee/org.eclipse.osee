@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
@@ -58,7 +58,7 @@ public class Pdd92CreateDemoReviews {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
       // Create a Decision review and transition to ReWork
       IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(

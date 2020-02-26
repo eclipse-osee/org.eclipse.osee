@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -29,7 +29,7 @@ public class CompletedByColumn extends AbstractServicesColumn {
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
-         IAtsUser user = getCompletedBy(atsObject, atsApi);
+         AtsUser user = getCompletedBy(atsObject, atsApi);
          if (user != null) {
             return user.getName();
          }
@@ -37,7 +37,7 @@ public class CompletedByColumn extends AbstractServicesColumn {
       return null;
    }
 
-   public static IAtsUser getCompletedBy(Object obj, AtsApi atsApi) {
+   public static AtsUser getCompletedBy(Object obj, AtsApi atsApi) {
       String userId = null;
       if (obj instanceof IAtsWorkItem) {
          userId = atsApi.getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) obj, AtsAttributeTypes.CompletedBy,

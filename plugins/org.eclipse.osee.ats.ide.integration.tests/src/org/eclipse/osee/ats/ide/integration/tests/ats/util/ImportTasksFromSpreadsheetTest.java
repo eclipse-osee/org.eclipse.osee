@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -64,7 +64,7 @@ public class ImportTasksFromSpreadsheetTest {
          } else if (task.getName().equals("3rd Task")) {
             Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(), task.getCreatedBy().getUserId());
             Assert.assertEquals(2, task.getAssignees().size());
-            for (IAtsUser assignee : task.getAssignees()) {
+            for (AtsUser assignee : task.getAssignees()) {
                Assert.assertTrue(assignee.getUserId().equals(
                   DemoUsers.Joe_Smith.getUserId()) || assignee.getUserId().equals(DemoUsers.Kay_Jones.getUserId()));
             }

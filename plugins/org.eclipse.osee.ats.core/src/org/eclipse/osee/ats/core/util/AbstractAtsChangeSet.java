@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -50,13 +50,13 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<IAtsObject> deleteAtsObjects = new CopyOnWriteArraySet<>();
    protected final Set<ArtifactId> deleteArtifacts = new CopyOnWriteArraySet<>();
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
-   protected final IAtsUser asUser;
+   protected final AtsUser asUser;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
    protected boolean execptionIfEmpty = true;
    protected BranchId branch;
 
-   public AbstractAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+   public AbstractAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       this.comment = comment;
       this.branch = branch;
       this.asUser = asUser;
@@ -183,7 +183,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public IAtsUser getAsUser() {
+   public AtsUser getAsUser() {
       return asUser;
    }
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.builder;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.model.DecisionReviewDefinition;
@@ -53,8 +53,8 @@ public class DecisionReviewDefinitionBuilder {
       return this;
    }
 
-   public DecisionReviewDefinitionBuilder andAssignees(IAtsUser... assignees) {
-      for (IAtsUser assignee : assignees) {
+   public DecisionReviewDefinitionBuilder andAssignees(AtsUser... assignees) {
+      for (AtsUser assignee : assignees) {
          decRev.addAssignee(assignee);
       }
       return this;

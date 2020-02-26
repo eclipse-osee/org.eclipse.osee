@@ -29,7 +29,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -239,7 +239,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
+         public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
             return workItem.getAssignees();
          }
 

@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -28,10 +28,10 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class UserRelatedToAtsObjectSearch {
 
    private final boolean activeObjectsOnly;
-   private final IAtsUser atsUser;
+   private final AtsUser atsUser;
    private final AtsApi atsApi;
 
-   public UserRelatedToAtsObjectSearch(IAtsUser user, boolean activeObjectsOnly, AtsApi atsApi) {
+   public UserRelatedToAtsObjectSearch(AtsUser user, boolean activeObjectsOnly, AtsApi atsApi) {
       this.atsUser = user;
       this.activeObjectsOnly = activeObjectsOnly;
       this.atsApi = atsApi;

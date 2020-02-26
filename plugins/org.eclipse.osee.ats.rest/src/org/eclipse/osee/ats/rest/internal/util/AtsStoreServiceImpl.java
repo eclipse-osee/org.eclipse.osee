@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -75,13 +75,13 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
+   public IAtsChangeSet createAtsChangeSet(String comment, AtsUser asUser) {
       return createAtsChangeSet(comment, atsApi.getAtsBranch(), asUser);
 
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       return new AtsChangeSet(atsApi, attributeResolver, orcsApi, stateFactory, logFactory, comment, asUser, notifier,
          branch);
    }

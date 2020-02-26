@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.internal.log;
 import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
 import java.util.Calendar;
 import java.util.Date;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.junit.Assert;
@@ -26,11 +26,11 @@ import org.junit.Test;
  */
 public class AtsLogTest {
 
-   public static IAtsLogItem getAnalyzeTestLogItem(Date date, IAtsUser user) {
+   public static IAtsLogItem getAnalyzeTestLogItem(Date date, AtsUser user) {
       return new LogItem(LogType.Error, date, user.getUserId(), "Analyze", "my msg");
    }
 
-   public static IAtsLogItem getImplementTestLogItem(Date date, IAtsUser user) {
+   public static IAtsLogItem getImplementTestLogItem(Date date, AtsUser user) {
       return new LogItem(LogType.Error, date, user.getUserId(), "Implement", "my msg2");
    }
 

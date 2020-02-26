@@ -12,9 +12,11 @@ package org.eclipse.osee.ats.api.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -22,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  * @author Donald G. Dunne
  */
 @JsonSerialize(as = AtsUser.class)
-public class AtsUser extends JaxAtsObject implements IAtsUser {
+public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
 
    private String userId;
    private String email;
@@ -43,7 +45,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       setName(name);
    }
 
-   @Override
    public String getUserId() {
       return userId;
    }
@@ -52,7 +53,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       this.userId = userId;
    }
 
-   @Override
    public String getEmail() {
       return email;
    }
@@ -83,7 +83,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       return String.format("User [%s - %s - %s]", getName(), getUserId(), getEmail());
    }
 
-   @Override
    @JsonIgnore
    public Long getUuid() {
       return super.getId();

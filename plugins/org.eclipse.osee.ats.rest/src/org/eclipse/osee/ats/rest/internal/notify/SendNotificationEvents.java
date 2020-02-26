@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.util.Result;
@@ -59,7 +59,7 @@ public class SendNotificationEvents {
 
    public Result run() {
       try {
-         Set<IAtsUser> uniqueUusers = new HashSet<>();
+         Set<AtsUser> uniqueUusers = new HashSet<>();
          for (AtsNotificationEvent notificationEvent : notificationEvents) {
             uniqueUusers.addAll(AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService));
          }
@@ -70,7 +70,7 @@ public class SendNotificationEvents {
          }
 
          // Notify specified OSEE users; one email for all events that user was specified for
-         for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
+         for (AtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
             List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
             for (AtsNotificationEvent notificationEvent : notificationEvents) {
                if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(
@@ -155,7 +155,7 @@ public class SendNotificationEvents {
          "Cancel") : "";
    }
 
-   private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) {
+   private void notifyUser(AtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) {
       if (AtsCoreUsers.isAtsCoreUser(user)) {
          // do nothing
          return;

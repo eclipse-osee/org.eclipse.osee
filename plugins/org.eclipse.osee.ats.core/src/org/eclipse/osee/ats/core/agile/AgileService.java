@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.operations.AgileProgramOperations;
@@ -315,8 +315,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public Set<IAtsUser> getTeamMebers(IAgileTeam agileTeam) {
-      Set<IAtsUser> activeMembers = new HashSet<>();
+   public Set<AtsUser> getTeamMebers(IAgileTeam agileTeam) {
+      Set<AtsUser> activeMembers = new HashSet<>();
       // add users related to AgileTeam
       for (ArtifactToken user : atsApi.getRelationResolver().getRelated(agileTeam, CoreRelationTypes.Users_User)) {
          activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
@@ -789,11 +789,11 @@ public class AgileService implements IAgileService {
 
    @Override
    public List<ArtifactToken> getTeamMembersOrdered(IAgileTeam aTeam) {
-      Set<IAtsUser> activeTeamMembers = atsApi.getAgileService().getTeamMebers(aTeam);
+      Set<AtsUser> activeTeamMembers = atsApi.getAgileService().getTeamMebers(aTeam);
 
       // Construct list of users with team members sorted first and other users last
       List<ArtifactToken> results = new LinkedList<>();
-      for (IAtsUser user : activeTeamMembers) {
+      for (AtsUser user : activeTeamMembers) {
          results.add(ArtifactToken.valueOf(user.getStoreObject(), user.getName()));
       }
       Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
@@ -809,7 +809,7 @@ public class AgileService implements IAgileService {
    public List<ArtifactToken> getOtherMembersOrdered(IAgileTeam aTeam) {
       List<ArtifactToken> activeTeamMembers = getTeamMembersOrdered(aTeam);
       List<ArtifactToken> results = new LinkedList<>();
-      for (IAtsUser user : atsApi.getUserService().getUsers()) {
+      for (AtsUser user : atsApi.getUserService().getUsers()) {
          if (!user.equals(AtsCoreUsers.UNASSIGNED_USER) && user.isActive() && !activeTeamMembers.contains(
             user.getStoreObject())) {
             results.add(user.getStoreObject());

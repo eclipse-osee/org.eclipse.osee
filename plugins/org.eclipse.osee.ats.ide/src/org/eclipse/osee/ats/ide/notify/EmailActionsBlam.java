@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -114,15 +114,15 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem, AtsNotificationCollector notifications) {
-      Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), workItem);
-      Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
+      Collection<AtsUser> recipients = getRecipients(data.getEmailRecipient(), workItem);
+      Collection<AtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
       if (activeEmailUsers.isEmpty()) {
          logf("No active " + data.getEmailRecipient() + " for workflow [%s].", workItem.toStringWithId());
          return;
       }
 
       List<String> emailAddresses = new ArrayList<>();
-      for (IAtsUser basicUser : activeEmailUsers) {
+      for (AtsUser basicUser : activeEmailUsers) {
          if (EmailUtil.isEmailValid(basicUser.getEmail())) {
             emailAddresses.add(basicUser.getEmail());
          }
@@ -161,8 +161,8 @@ public class EmailActionsBlam extends AbstractBlam {
 
    }
 
-   private Collection<IAtsUser> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
-      List<IAtsUser> recipients = new ArrayList<>();
+   private Collection<AtsUser> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
+      List<AtsUser> recipients = new ArrayList<>();
       if (emailRecipient == EmailRecipient.Assignees) {
          try {
             recipients.addAll(awa.getAssignees());
@@ -171,7 +171,7 @@ public class EmailActionsBlam extends AbstractBlam {
          }
       } else if (emailRecipient == EmailRecipient.Originator) {
          try {
-            IAtsUser createdBy = awa.getCreatedBy();
+            AtsUser createdBy = awa.getCreatedBy();
             if (createdBy.isActive()) {
                recipients.add(awa.getCreatedBy());
             }

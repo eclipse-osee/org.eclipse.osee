@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
@@ -480,7 +480,7 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
-   public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
+   public IAtsChangeSet createChangeSet(String comment, AtsUser user) {
       return getStoreService().createAtsChangeSet(comment, user);
    }
 
@@ -558,7 +558,7 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
-   public IAtsChangeSet createChangeSet(String comment, Branch branch, IAtsUser asUser) {
+   public IAtsChangeSet createChangeSet(String comment, Branch branch, AtsUser asUser) {
       return storeService.createAtsChangeSet(comment, branch, asUser);
    }
 

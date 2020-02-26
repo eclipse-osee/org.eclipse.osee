@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -91,10 +91,10 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
    private CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap;
    private StringBuilder sumFormula;
-   private HashCollection<String, IAtsUser> legacyIdToImplementers;
+   private HashCollection<String, AtsUser> legacyIdToImplementers;
    private HashMap<String, Artifact> testRunArtifacts;
    private HashMap<String, String> scriptCategories;
-   private HashSet<IAtsUser> testPocs;
+   private HashSet<AtsUser> testPocs;
    private HashSet<String> requirementPocs;
    private ArrayList<String[]> statusLines;
    private ArrayList<RequirementStatus> statuses;
@@ -414,9 +414,9 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
                statusLine[columnIndex++] = status.getPartitionStatuses();
 
-               Collection<IAtsUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
+               Collection<AtsUser> implementers = legacyIdToImplementers.getValues(status.getLegacyId());
                if (implementers != null) {
-                  for (IAtsUser implementer : implementers) {
+                  for (AtsUser implementer : implementers) {
                      requirementPocs.add(implementer.getName());
                   }
                }
@@ -620,7 +620,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
-      List<IAtsUser> implementers = workflow.getImplementers();
+      List<AtsUser> implementers = workflow.getImplementers();
       legacyIdToImplementers.put(legacyId, implementers);
 
       for (IAtsTask task : tasks) {

@@ -19,7 +19,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -48,13 +48,13 @@ public interface IAtsQueryService {
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
 
-   ArrayList<AtsSearchData> getSavedSearches(IAtsUser atsUser, String namespace);
+   ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace);
 
-   void saveSearch(IAtsUser atsUser, AtsSearchData data);
+   void saveSearch(AtsUser atsUser, AtsSearchData data);
 
-   void removeSearch(IAtsUser atsUser, AtsSearchData data);
+   void removeSearch(AtsUser atsUser, AtsSearchData data);
 
-   AtsSearchData getSearch(IAtsUser atsUser, Long id);
+   AtsSearchData getSearch(AtsUser atsUser, Long id);
 
    AtsSearchData getSearch(String jsonStr);
 

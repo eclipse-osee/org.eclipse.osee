@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.internal;
 
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -70,7 +69,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
+   public IAtsChangeSet createAtsChangeSet(String comment, AtsUser asUser) {
       return new AtsChangeSet(comment, AtsClientService.get().getAtsBranch(), asUser);
    }
 
@@ -285,7 +284,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, IAtsUser asUser) {
+   public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       return new AtsChangeSet(comment, branch, asUser);
    }
 

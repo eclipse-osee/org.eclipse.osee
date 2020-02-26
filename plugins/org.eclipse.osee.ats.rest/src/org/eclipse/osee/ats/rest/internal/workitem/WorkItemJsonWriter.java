@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -135,7 +135,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
          if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
             writer.writeArrayFieldStart("AssigneesTokens");
-            for (IAtsUser assignee : workItem.getStateMgr().getAssignees()) {
+            for (AtsUser assignee : workItem.getStateMgr().getAssignees()) {
                writer.writeStartObject();
                writer.writeStringField("id", assignee.getIdString());
                writer.writeStringField("name", assignee.getName());
@@ -200,7 +200,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       AttributeReadable<Object> attr =
          action.getAttributeById(AttributeId.valueOf(action.getSoleAttributeId(AtsAttributeTypes.CurrentState)));
       writer.writeArrayFieldStart("AssigneesTokens");
-      for (IAtsUser assignee : workItem.getStateMgr().getAssignees()) {
+      for (AtsUser assignee : workItem.getStateMgr().getAssignees()) {
          writer.writeStartObject();
          writer.writeStringField("id", assignee.getIdString());
          writer.writeStringField("name", assignee.getName());

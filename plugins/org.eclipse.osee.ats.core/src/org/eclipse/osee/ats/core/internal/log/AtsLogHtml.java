@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.internal.log;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -67,7 +67,7 @@ public class AtsLogHtml {
    private String getUserName(String userId) {
       String name = userId;
       if (atsUserService != null) {
-         IAtsUser userById = atsUserService.getUserById(userId);
+         AtsUser userById = atsUserService.getUserById(userId);
          if (userById != null) {
             String userName = userById.getName();
             if (Strings.isValid(userName)) {

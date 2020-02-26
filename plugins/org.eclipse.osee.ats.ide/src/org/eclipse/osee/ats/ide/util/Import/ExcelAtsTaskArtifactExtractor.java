@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
 import org.eclipse.osee.ats.api.task.NewTaskData;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -113,7 +113,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private final IProgressMonitor monitor;
       private final AbstractWorkflowArtifact sma;
       private final Date createdDate;
-      private final IAtsUser createdBy;
+      private final AtsUser createdBy;
       private final NewTaskData newTaskData;
       private XResultData rd;
       private Integer badColumn;
@@ -345,7 +345,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private void processCreatedBy(String[] row, JaxAtsTask taskArt, int i) {
          String str = row[i];
          if (Strings.isValid(str)) {
-            IAtsUser user = null;
+            AtsUser user = null;
             try {
                user = AtsClientService.get().getUserService().getUserById(str);
             } catch (Exception ex) {
@@ -422,7 +422,7 @@ public class ExcelAtsTaskArtifactExtractor {
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");
-            IAtsUser user = null;
+            AtsUser user = null;
             if (!Strings.isValid(userName)) {
                user = AtsClientService.get().getUserService().getCurrentUser();
             } else {

@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IValidatingOperation;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -32,9 +32,9 @@ public abstract class AbstractDuplicateWorkflowOperation implements IValidatingO
    protected final String title;
    protected final AtsApi atsApi;
    protected Map<IAtsTeamWorkflow, IAtsTeamWorkflow> oldToNewMap;
-   protected final IAtsUser asUser;
+   protected final AtsUser asUser;
 
-   public AbstractDuplicateWorkflowOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, IAtsUser asUser, AtsApi atsApi) {
+   public AbstractDuplicateWorkflowOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, AtsUser asUser, AtsApi atsApi) {
       this.teamWfs = teamWfs;
       this.title = title;
       this.asUser = asUser;

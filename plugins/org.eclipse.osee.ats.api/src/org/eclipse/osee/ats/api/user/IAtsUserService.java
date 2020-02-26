@@ -28,29 +28,29 @@ import org.eclipse.osee.framework.core.enums.Active;
  */
 public interface IAtsUserService {
 
-   IAtsUser getCurrentUser();
+   AtsUser getCurrentUser();
 
    String getCurrentUserId();
 
-   IAtsUser getUserById(String userId);
+   AtsUser getUserById(String userId);
 
-   IAtsUser getUserByArtifactId(ArtifactId id);
+   AtsUser getUserByArtifactId(ArtifactId id);
 
    boolean isUserIdValid(String userId);
 
    boolean isUserNameValid(String name);
 
-   IAtsUser getUserByName(String name);
+   AtsUser getUserByName(String name);
 
-   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds);
+   Collection<AtsUser> getUsersByUserIds(Collection<String> userIds);
 
    boolean isAtsAdmin();
 
-   boolean isAtsAdmin(IAtsUser user);
+   boolean isAtsAdmin(AtsUser user);
 
-   Collection<IAtsUser> getUsers(Active active);
+   Collection<AtsUser> getUsers(Active active);
 
-   Collection<IAtsUser> getUsersSortedByName(Active active);
+   Collection<AtsUser> getUsersSortedByName(Active active);
 
    void reloadCache();
 
@@ -58,24 +58,24 @@ public interface IAtsUserService {
 
    Collection<AtsUser> getUsers();
 
-   List<? extends IAtsUser> getUsersFromDb();
+   List<? extends AtsUser> getUsersFromDb();
 
-   IAtsUser getUserByAccountId(Long accountId);
+   AtsUser getUserByAccountId(Long accountId);
 
    /**
     * @return user specified by osee.account_id or null
     */
-   IAtsUser getUserByAccountId(HttpHeaders httpHeaders);
+   AtsUser getUserByAccountId(HttpHeaders httpHeaders);
 
    boolean isAtsAdmin(boolean useCache);
 
-   Collection<IAtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
+   Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
 
-   void setCurrentUser(IAtsUser user);
+   void setCurrentUser(AtsUser user);
 
-   AtsUser getAtsUser(IAtsUser user);
+   AtsUser getAtsUser(AtsUser user);
 
-   Collection<IAtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
+   Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
 
    void setConfigurationService(IAtsConfigurationsService configurationService);
 

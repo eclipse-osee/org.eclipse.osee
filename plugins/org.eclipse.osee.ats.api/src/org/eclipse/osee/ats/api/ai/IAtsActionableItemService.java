@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -66,9 +66,9 @@ public interface IAtsActionableItemService {
 
    boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
-   Collection<IAtsUser> getSubscribed(IAtsActionableItem ai);
+   Collection<AtsUser> getSubscribed(IAtsActionableItem ai);
 
-   Collection<IAtsUser> getLeads(IAtsActionableItem ai);
+   Collection<AtsUser> getLeads(IAtsActionableItem ai);
 
    IAtsTeamDefinition getTeamDefinitionInherited(IAtsActionableItem ai);
 

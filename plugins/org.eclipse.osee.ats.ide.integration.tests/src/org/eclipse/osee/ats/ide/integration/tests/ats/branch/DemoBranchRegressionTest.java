@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -83,7 +83,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
       actionResult = AtsClientService.get().getActionFactory().createAction(null, getClass().getSimpleName(),

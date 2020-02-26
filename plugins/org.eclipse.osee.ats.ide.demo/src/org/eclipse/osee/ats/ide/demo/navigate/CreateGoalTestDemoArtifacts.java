@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private Date createdDate;
-   private IAtsUser createdBy;
+   private AtsUser createdBy;
 
    public CreateGoalTestDemoArtifacts(XNavigateItem parent) {
       super(parent, "Create Test Goal Artifacts - Demo", AtsImage.GOAL);

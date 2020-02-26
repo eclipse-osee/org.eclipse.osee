@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewOption;
 import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -109,7 +109,7 @@ public class AtsDecisionReviewDecisionWorkflowHookIde implements IAtsWorkflowHoo
    }
 
    @Override
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(IAtsWorkItem workItem, String decision) {
+   public Collection<AtsUser> getOverrideTransitionToAssignees(IAtsWorkItem workItem, String decision) {
       if (isApplicable(workItem)) {
          DecisionReviewArtifact decArt = (DecisionReviewArtifact) workItem;
          return getOverrideTransitionToAssignees(decArt, decision);
@@ -117,12 +117,12 @@ public class AtsDecisionReviewDecisionWorkflowHookIde implements IAtsWorkflowHoo
       return null;
    }
 
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) {
+   public Collection<AtsUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) {
       DecisionReviewOption decisionOption = getDecisionOption(decArt, decision);
       if (decisionOption == null) {
          return null;
       }
-      List<IAtsUser> assignees = new LinkedList<>();
+      List<AtsUser> assignees = new LinkedList<>();
       assignees.addAll(AtsClientService.get().getUserService().getUsersByUserIds(decisionOption.getAssignees()));
       return assignees;
    }

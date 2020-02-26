@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -132,7 +132,7 @@ public class NewRoleDialog extends MessageDialog {
       return role;
    }
 
-   public Collection<IAtsUser> getUsers() {
+   public Collection<AtsUser> getUsers() {
       return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
    }
 

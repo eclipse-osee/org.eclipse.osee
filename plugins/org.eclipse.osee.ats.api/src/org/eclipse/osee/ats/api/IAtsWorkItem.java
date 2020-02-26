@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
@@ -42,13 +42,13 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    IAtsStateDefinition getStateDefinition();
 
-   IAtsUser getCreatedBy();
+   AtsUser getCreatedBy();
 
    Date getCreatedDate();
 
-   IAtsUser getCompletedBy();
+   AtsUser getCompletedBy();
 
-   IAtsUser getCancelledBy();
+   AtsUser getCancelledBy();
 
    String getCompletedFromState();
 
@@ -125,12 +125,12 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          }
 
          @Override
-         public List<IAtsUser> getAssignees() {
+         public List<AtsUser> getAssignees() {
             return null;
          }
 
          @Override
-         public List<IAtsUser> getImplementers() {
+         public List<AtsUser> getImplementers() {
             return null;
          }
 
@@ -165,7 +165,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          }
 
          @Override
-         public IAtsUser getCreatedBy() {
+         public AtsUser getCreatedBy() {
             return null;
          }
 
@@ -175,12 +175,12 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          }
 
          @Override
-         public IAtsUser getCompletedBy() {
+         public AtsUser getCompletedBy() {
             return null;
          }
 
          @Override
-         public IAtsUser getCancelledBy() {
+         public AtsUser getCancelledBy() {
             return null;
          }
 

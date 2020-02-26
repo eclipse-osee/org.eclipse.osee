@@ -11,15 +11,15 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
  * @author Donald G. Dunne
  */
 public interface HasAssignees {
 
-   public List<IAtsUser> getAssignees();
+   public List<AtsUser> getAssignees();
 
-   public List<IAtsUser> getImplementers();
+   public List<AtsUser> getImplementers();
 
 }

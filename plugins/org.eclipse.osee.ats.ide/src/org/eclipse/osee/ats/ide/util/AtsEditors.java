@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -218,7 +218,7 @@ public final class AtsEditors {
    /**
     * return currently assigned state machine artifacts
     */
-   public static Set<Artifact> getAssigned(IAtsUser user) {
+   public static Set<Artifact> getAssigned(AtsUser user) {
       Set<Artifact> assigned = new HashSet<>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
          "<" + user.getUserId() + ">", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
@@ -227,9 +227,9 @@ public final class AtsEditors {
       return assigned;
    }
 
-   public static Image getImage(Collection<IAtsUser> atsUsers) {
+   public static Image getImage(Collection<AtsUser> atsUsers) {
       Set<User> users = new HashSet<>();
-      for (IAtsUser user : atsUsers) {
+      for (AtsUser user : atsUsers) {
          users.add((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
       }
       return FrameworkArtifactImageProvider.getUserImage(users);

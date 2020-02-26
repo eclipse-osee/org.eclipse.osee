@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -577,7 +577,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__AssigneesUpdate() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-E");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      List<IAtsUser> assigneesBefore = teamArt.getAssignees();
+      List<AtsUser> assigneesBefore = teamArt.getAssignees();
       Assert.assertTrue(assigneesBefore.size() > 0);
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(), teamArt.getAssignees(), null,
@@ -589,7 +589,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
       results01 = transMgr.handleAll();
       Assert.assertTrue(results01.isEmpty());
-      List<IAtsUser> assigneesAfter = teamArt.getAssignees();
+      List<AtsUser> assigneesAfter = teamArt.getAssignees();
       Assert.assertTrue(assigneesAfter.containsAll(assigneesBefore));
       Assert.assertTrue(assigneesBefore.containsAll(assigneesAfter));
    }
@@ -598,7 +598,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__AssigneesNull() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-F");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      List<IAtsUser> assigneesBefore = teamArt.getAssignees();
+      List<AtsUser> assigneesBefore = teamArt.getAssignees();
       Assert.assertTrue(assigneesBefore.size() > 0);
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(), null, null,
@@ -611,7 +611,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
       results01 = transMgr.handleAll();
       Assert.assertTrue(results01.isEmpty());
-      List<IAtsUser> assigneesAfter = teamArt.getAssignees();
+      List<AtsUser> assigneesAfter = teamArt.getAssignees();
       Assert.assertTrue(assigneesAfter.containsAll(assigneesBefore));
       Assert.assertTrue(assigneesBefore.containsAll(assigneesAfter));
    }
@@ -688,7 +688,7 @@ public class TransitionManagerTest {
       // transition workflow to cancelled - peer review not cancelled
       changes.clear();
       TransitionHelper transHelper = new TransitionHelper("Transition Team Workflow Review", Arrays.asList(teamArt),
-         "Cancelled", new ArrayList<IAtsUser>(), "", changes, AtsClientService.get().getServices(),
+         "Cancelled", new ArrayList<AtsUser>(), "", changes, AtsClientService.get().getServices(),
          TransitionOption.OverrideAssigneeCheck);
       transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
       TransitionManager mgr = new TransitionManager(transHelper);
@@ -700,7 +700,7 @@ public class TransitionManagerTest {
       results.clear();
       changes.clear();
       transHelper = new TransitionHelper("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
-         new ArrayList<IAtsUser>(), "", changes, AtsClientService.get().getServices(),
+         new ArrayList<AtsUser>(), "", changes, AtsClientService.get().getServices(),
          TransitionOption.OverrideAssigneeCheck);
       transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
       mgr = new TransitionManager(transHelper);

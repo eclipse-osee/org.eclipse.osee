@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsConfigCacheQueryImpl;
@@ -98,22 +98,22 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArrayList<AtsSearchData> getSavedSearches(IAtsUser atsUser, String namespace) {
+   public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public void saveSearch(IAtsUser atsUser, AtsSearchData data) {
+   public void saveSearch(AtsUser atsUser, AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public void removeSearch(IAtsUser atsUser, AtsSearchData data) {
+   public void removeSearch(AtsUser atsUser, AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public AtsSearchData getSearch(IAtsUser atsUser, Long id) {
+   public AtsSearchData getSearch(AtsUser atsUser, Long id) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 

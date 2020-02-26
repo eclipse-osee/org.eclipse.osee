@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
@@ -62,7 +62,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener1 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
             results.addResult(new TransitionResult(reason1));
          }
 
@@ -75,7 +75,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener2 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
@@ -88,7 +88,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener3 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
             // do nothing
          }
 
@@ -101,7 +101,7 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener4 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees) {
             throw new OseeCoreException(exceptionStr);
          }
 

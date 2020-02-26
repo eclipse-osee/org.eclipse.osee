@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -41,7 +41,7 @@ public class CreateTasksWorkflow {
    protected final XResultData resultData;
    protected final IAtsChangeSet changes;
    protected final Date createdDate;
-   protected final IAtsUser createdBy;
+   protected final AtsUser createdBy;
    protected final IAtsTeamWorkflow sourceTeamWf;
    protected final ICommitConfigItem commitConfigItem;
    protected final WorkType workType;
@@ -51,7 +51,7 @@ public class CreateTasksWorkflow {
    protected IAtsActionableItem actionableItem;
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
-      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
+      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
       ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this(pcrNumber, createTasksOptions,
          ((!taskNamesMissingTaskArtifact.isEmpty() || createTasksOptions.contains(
@@ -61,7 +61,7 @@ public class CreateTasksWorkflow {
    }
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, boolean createWorkflow, //
-      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
+      boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
       ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this.pcrNumber = pcrNumber;
       this.createTasksOptions = createTasksOptions;
@@ -109,7 +109,7 @@ public class CreateTasksWorkflow {
             IAtsAction action = sourceTeamWf.getParentAction();
             Set<IAtsActionableItem> actionableItems = new HashSet<>();
 
-            List<IAtsUser> assignees = getAssignees();
+            List<AtsUser> assignees = getAssignees();
 
             IAtsActionableItem aia = getActionableItem();
             if (aia != null) {
@@ -130,8 +130,8 @@ public class CreateTasksWorkflow {
       return destTeam;
    }
 
-   protected List<IAtsUser> getAssignees() {
-      List<IAtsUser> assignees = new LinkedList<>();
+   protected List<AtsUser> getAssignees() {
+      List<AtsUser> assignees = new LinkedList<>();
       assignees.add(AtsCoreUsers.UNASSIGNED_USER);
       return assignees;
    }

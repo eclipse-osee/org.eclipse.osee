@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -123,7 +123,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      IAtsUser user = atsApi.getUserService().getUserById(userId);
+      AtsUser user = atsApi.getUserService().getUserById(userId);
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }

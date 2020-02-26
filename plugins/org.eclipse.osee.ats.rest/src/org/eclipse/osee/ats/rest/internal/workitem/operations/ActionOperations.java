@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -47,10 +47,10 @@ public class ActionOperations {
 
    private final AtsApi atsApi;
    private IAtsWorkItem workItem;
-   private final IAtsUser asUser;
+   private final AtsUser asUser;
    private final OrcsApi orcsApi;
 
-   public ActionOperations(IAtsUser asUser, IAtsWorkItem workItem, AtsApi atsApi, OrcsApi orcsApi) {
+   public ActionOperations(AtsUser asUser, IAtsWorkItem workItem, AtsApi atsApi, OrcsApi orcsApi) {
       this.asUser = asUser;
       this.workItem = workItem;
       this.atsApi = atsApi;
@@ -76,7 +76,7 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
-            new ArrayList<IAtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+            new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
          helper.setTransitionUser(asUser);
          TransitionManager mgr = new TransitionManager(helper);
          TransitionResults results = new TransitionResults();
@@ -141,7 +141,7 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
          String accountId = values.iterator().next();
          if (!Strings.isNumeric(accountId)) {
-            IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            AtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
@@ -159,14 +159,14 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
          String accountIdOrName = values.iterator().next();
          if (Strings.isNumeric(accountIdOrName)) {
-            IAtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
+            AtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
             if (assignee == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
             }
             workItem.getStateMgr().addAssignee(assignee);
             changes.add(workItem);
          } else {
-            IAtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
+            AtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
             if (assignee == null) {
                throw new OseeArgumentException("No user with user name [%s]", accountIdOrName);
             }
@@ -214,9 +214,9 @@ public class ActionOperations {
             atsApi.getWorkItemService().clearAssignees(workItem, changes);
             changes.executeIfNeeded();
          } else {
-            Set<IAtsUser> assignees = new HashSet<>();
+            Set<AtsUser> assignees = new HashSet<>();
             for (ArtifactToken userArt : artifacts) {
-               IAtsUser user = atsApi.getUserService().getUserByArtifactId(userArt);
+               AtsUser user = atsApi.getUserService().getUserByArtifactId(userArt);
                Conditions.assertNotNull(user, "Artifact %s is not a User", userArt.toStringWithId());
                assignees.add(user);
             }

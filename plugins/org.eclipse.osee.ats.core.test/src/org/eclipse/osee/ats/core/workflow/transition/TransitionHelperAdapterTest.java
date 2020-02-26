@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -41,7 +41,7 @@ public class TransitionHelperAdapterTest {
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    @Mock IAtsStateManager stateMgr;
-   @Mock IAtsUser Joe, Kay;
+   @Mock AtsUser Joe, Kay;
    @Mock IAtsUserService userService;
    @Mock IAtsBranchService branchService;
    @Mock IAttributeResolver attrResolver;
@@ -74,7 +74,7 @@ public class TransitionHelperAdapterTest {
    @Test
    public void testIsSystemUserAssignee() {
       when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<IAtsUser> assignees = new ArrayList<>();
+      List<AtsUser> assignees = new ArrayList<>();
       when(stateMgr.getAssignees()).thenReturn(assignees);
 
       Assert.assertFalse(helper.isSystemUserAssingee(workItem));
@@ -117,7 +117,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
+      public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
          return null;
       }
 

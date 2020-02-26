@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -58,7 +58,7 @@ public class TaskTestUtil {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes) {
+   public static Result transitionToInWork(TaskArtifact taskArt, AtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes) {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }

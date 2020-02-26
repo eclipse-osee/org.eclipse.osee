@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
+
 
 /**
  * @author Ryan D. Brooks
@@ -25,7 +26,7 @@ public class RequirementStatus implements Comparable<RequirementStatus> {
    private final String swEnhancement;
    private final StringBuilder partitionStatuses;
    private final List<Integer> percents;
-   private final HashSet<IAtsUser> testPocs;
+   private final HashSet<AtsUser> testPocs;
 
    public RequirementStatus(String requirementName, String legacyId, String swEnhancement) {
       this.requirementName = requirementName;
@@ -60,11 +61,11 @@ public class RequirementStatus implements Comparable<RequirementStatus> {
       return total / percents.size();
    }
 
-   public void setTestPocs(Collection<IAtsUser> poc) {
+   public void setTestPocs(Collection<AtsUser> poc) {
       testPocs.addAll(poc);
    }
 
-   public HashSet<IAtsUser> getTestPocs() {
+   public HashSet<AtsUser> getTestPocs() {
       return testPocs;
    }
 

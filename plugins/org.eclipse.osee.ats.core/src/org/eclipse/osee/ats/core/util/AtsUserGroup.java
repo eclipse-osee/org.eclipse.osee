@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserGroup;
 
 /**
@@ -20,31 +20,31 @@ import org.eclipse.osee.ats.api.user.IAtsUserGroup;
  */
 public class AtsUserGroup implements IAtsUserGroup {
 
-   List<IAtsUser> users = new LinkedList<>();
+   List<AtsUser> users = new LinkedList<>();
 
    public AtsUserGroup() {
    }
 
    @Override
-   public List<IAtsUser> getUsers() {
+   public List<AtsUser> getUsers() {
       return users;
    }
 
    @Override
-   public void setUsers(List<? extends IAtsUser> users) {
+   public void setUsers(List<? extends AtsUser> users) {
       this.users.clear();
-      for (IAtsUser user : users) {
+      for (AtsUser user : users) {
          this.users.add(user);
       }
    }
 
    @Override
-   public void addUser(IAtsUser user) {
+   public void addUser(AtsUser user) {
       users.add(user);
    }
 
    @Override
-   public void removeUser(IAtsUser user) {
+   public void removeUser(AtsUser user) {
       users.remove(user);
    }
 

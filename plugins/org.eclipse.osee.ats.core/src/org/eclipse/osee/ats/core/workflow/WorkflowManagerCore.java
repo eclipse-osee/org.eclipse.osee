@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.workflow;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -23,16 +23,16 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class WorkflowManagerCore {
 
-   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUserService userService) {
+   public static boolean isEditable(AtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUserService userService) {
       return isEditable(workItem, stateDef, user, userService.isAtsAdmin());
    }
 
-   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUser currentUser, boolean isAtsAdmin) {
+   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, AtsUser currentUser, boolean isAtsAdmin) {
       WorkflowManagerCore wmc = new WorkflowManagerCore();
       return wmc.isWorkItemEditable(workItem, stateDef, currentUser, isAtsAdmin);
    }
 
-   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, IAtsUser currentUser, boolean isAtsAdmin) {
+   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, AtsUser currentUser, boolean isAtsAdmin) {
       // must be current state
       return (stateDef == null || workItem.getStateDefinition().getName().equals(stateDef.getName())) &&
       // and one of these

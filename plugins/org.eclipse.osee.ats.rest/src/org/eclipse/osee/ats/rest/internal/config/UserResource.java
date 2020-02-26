@@ -15,7 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,7 +42,7 @@ public final class UserResource {
          active = Active.valueOf(activeStr);
       }
       JSONArray arr = new JSONArray();
-      for (IAtsUser user : userService.getUsers(active)) {
+      for (AtsUser user : userService.getUsers(active)) {
          JSONObject obj = new JSONObject();
          obj.put("id", user.getUserId());
          obj.put("name", user.getName());

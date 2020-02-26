@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
@@ -194,17 +194,17 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public Collection<IAtsUser> getLeads(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
-      Set<IAtsUser> leads = new HashSet<>();
+   public Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
+      Set<AtsUser> leads = new HashSet<>();
       for (IAtsActionableItem aia : actionableItems) {
          if (teamDef.equals(aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia))) {
             // If leads are specified for this aia, add them
-            Collection<IAtsUser> leads2 = atsApi.getActionableItemService().getLeads(aia);
+            Collection<AtsUser> leads2 = atsApi.getActionableItemService().getLeads(aia);
             if (leads2.size() > 0) {
                leads.addAll(leads2);
             } else {
                if (aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia) != null) {
-                  Collection<IAtsUser> leads3 =
+                  Collection<AtsUser> leads3 =
                      getLeads(aia.getAtsApi().getActionableItemService().getTeamDefinitionInherited(aia));
                   leads.addAll(leads3);
                }
@@ -212,33 +212,33 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          }
       }
       if (leads.isEmpty()) {
-         Collection<IAtsUser> leads2 = getLeads(teamDef);
+         Collection<AtsUser> leads2 = getLeads(teamDef);
          leads.addAll(leads2);
       }
       return leads;
    }
 
    @Override
-   public Collection<IAtsUser> getLeads(IAtsTeamDefinition teamDef) {
+   public Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getStoreObject(),
          AtsRelationTypes.TeamLead_Lead);
    }
 
    @Override
-   public Collection<IAtsUser> getMembers(IAtsTeamDefinition teamDef) {
+   public Collection<AtsUser> getMembers(IAtsTeamDefinition teamDef) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
          AtsRelationTypes.TeamMember_Member);
    }
 
    @Override
-   public Collection<IAtsUser> getSubscribed(IAtsTeamDefinition teamDef) {
+   public Collection<AtsUser> getSubscribed(IAtsTeamDefinition teamDef) {
       return AtsApiService.get().getUserService().getRelatedUsers(atsApi, teamDef.getArtifactToken(),
          AtsRelationTypes.SubscribedUser_User);
    }
 
    @Override
-   public Collection<IAtsUser> getMembersAndLeads(IAtsTeamDefinition teamDef) {
-      Set<IAtsUser> results = new HashSet<>();
+   public Collection<AtsUser> getMembersAndLeads(IAtsTeamDefinition teamDef) {
+      Set<AtsUser> results = new HashSet<>();
       results.addAll(getLeads(teamDef));
       results.addAll(getMembers(teamDef));
       return results;

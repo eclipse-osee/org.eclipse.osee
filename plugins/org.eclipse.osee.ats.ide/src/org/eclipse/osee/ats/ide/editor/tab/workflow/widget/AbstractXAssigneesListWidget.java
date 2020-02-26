@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.widget;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.util.AtsUserLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListViewer;
@@ -44,7 +44,7 @@ public abstract class AbstractXAssigneesListWidget extends XListViewer {
 
       setVerticalLabel(true);
 
-      List<IAtsUser> assignees = getCurrentAssignees();
+      List<AtsUser> assignees = getCurrentAssignees();
       assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
       setInput(assignees);
 
@@ -56,7 +56,7 @@ public abstract class AbstractXAssigneesListWidget extends XListViewer {
 
    }
 
-   public abstract List<IAtsUser> getCurrentAssignees();
+   public abstract List<AtsUser> getCurrentAssignees();
 
    public abstract void handleModifySelection();
 

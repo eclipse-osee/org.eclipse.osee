@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -89,7 +89,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, IAtsUser transitionUser, IAtsChangeSet changes) {
+   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, AtsUser transitionUser, IAtsChangeSet changes) {
       // If not validate page, don't do anything
       if (!force && !isValidatePage(teamWf.getStateDefinition())) {
          return null;
@@ -132,7 +132,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    public String getValidateReviewFollowupUsersStr(IAtsTeamWorkflow teamWf) {
       try {
-         Collection<IAtsUser> users = getValidateReviewFollowupUsers(teamWf);
+         Collection<AtsUser> users = getValidateReviewFollowupUsers(teamWf);
          return atsApi.getWorkStateFactory().getStorageString(users);
       } catch (Exception ex) {
          OseeLog.log(AtsReviewServiceImpl.class, Level.SEVERE, ex);
@@ -144,8 +144,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
    }
 
-   public Collection<IAtsUser> getValidateReviewFollowupUsers(IAtsTeamWorkflow teamWf) {
-      Collection<IAtsUser> users = new HashSet<>();
+   public Collection<AtsUser> getValidateReviewFollowupUsers(IAtsTeamWorkflow teamWf) {
+      Collection<AtsUser> users = new HashSet<>();
       users.addAll(teamWf.getStateMgr().getAssignees(TeamState.Implement));
       if (users.size() > 0) {
          return users;
@@ -157,7 +157,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
@@ -180,7 +180,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return createNewDecisionReview(teamWf, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
          againstCurrentState ? teamWf.getStateMgr().getCurrentStateName() : null,
@@ -189,7 +189,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
       IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 
@@ -323,14 +323,14 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWF, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWF, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(
          atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWF), teamWF,
          teamWF.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsTeamDefinition teamDef =
          actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem);
       IAtsWorkDefinition workDefinition =
@@ -343,7 +343,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return peerArt;
    }
 
-   private IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   private IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(AtsArtifactTypes.PeerToPeerReview,
          reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 

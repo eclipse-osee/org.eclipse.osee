@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -73,8 +73,8 @@ public class CpaDuplicator {
                   if (duplicate.isCompleteCpa()) {
                      TransitionHelper helper =
                         new TransitionHelper("Complete Applicability Workflow", Arrays.asList(cpaWf), "Completed",
-                           new ArrayList<IAtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-                     IAtsUser asUser = atsApi.getUserService().getUserById(duplicate.getUserId());
+                           new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+                     AtsUser asUser = atsApi.getUserService().getUserById(duplicate.getUserId());
                      if (asUser == null) {
                         rd.errorf("Invalid userId [%s].  Skipping.", asUser);
                      }

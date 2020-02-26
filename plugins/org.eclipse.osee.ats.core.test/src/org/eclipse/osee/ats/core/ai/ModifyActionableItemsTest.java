@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionUtility;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -38,7 +38,7 @@ public class ModifyActionableItemsTest {
 
    // @formatter:off
    @Mock private IAtsTeamWorkflow teamWf;
-   @Mock private IAtsUser modifiedBy;
+   @Mock private AtsUser modifiedBy;
    @Mock private IAtsActionableItem ai1, ai2, ai3;
    @Mock private ITeamDefinitionUtility teamDefUtil;
    @Mock private IAtsTeamDefinition teamDef;

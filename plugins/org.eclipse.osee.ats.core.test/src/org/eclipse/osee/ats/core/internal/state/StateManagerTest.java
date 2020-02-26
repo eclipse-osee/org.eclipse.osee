@@ -22,7 +22,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -91,7 +91,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.addAssignees("endorse", null);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
-      List<IAtsUser> users = new ArrayList<>();
+      List<AtsUser> users = new ArrayList<>();
       stateMgr.addAssignees("endorse", users);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
@@ -123,7 +123,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.setAssignee(null);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
-      List<IAtsUser> users = new ArrayList<>();
+      List<AtsUser> users = new ArrayList<>();
       stateMgr.setAssignees("endorse", users);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
@@ -157,7 +157,7 @@ public class StateManagerTest extends AbstractUserTest {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
-      List<IAtsUser> currentAssignees = Arrays.asList(joe, steve);
+      List<AtsUser> currentAssignees = Arrays.asList(joe, steve);
       stateMgr.setAssignees(currentAssignees);
       stateMgr.getInitialAssignees().addAll(currentAssignees);
 
@@ -175,11 +175,11 @@ public class StateManagerTest extends AbstractUserTest {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
-      List<IAtsUser> currentAssignees = Arrays.asList(joe);
+      List<AtsUser> currentAssignees = Arrays.asList(joe);
       stateMgr.setAssignees(currentAssignees);
       stateMgr.getInitialAssignees().addAll(currentAssignees);
 
-      List<IAtsUser> newAssignees = Arrays.asList(joe, steve);
+      List<AtsUser> newAssignees = Arrays.asList(joe, steve);
       stateMgr.setAssignees("endorse", newAssignees);
       Assert.assertTrue(stateMgr.getAssignees().contains(joe));
       Assert.assertTrue(stateMgr.getAssignees().contains(steve));
@@ -197,7 +197,7 @@ public class StateManagerTest extends AbstractUserTest {
    public void testAddState_exception2() {
       stateMgr.addState(new WorkStateImpl("endorse"));
 
-      stateMgr.addState("endorse", new LinkedList<IAtsUser>(), 34, 23, false);
+      stateMgr.addState("endorse", new LinkedList<AtsUser>(), 34, 23, false);
    }
 
    @Test(expected = OseeArgumentException.class)
@@ -260,7 +260,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesIAtsUser() {
+   public void testSetAssigneesAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee(joe);
@@ -270,7 +270,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneeStringIAtsUser() {
+   public void testSetAssigneeStringAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -280,7 +280,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesListOfQextendsIAtsUser() {
+   public void testSetAssigneesListOfQextendsAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees(Arrays.asList(joe, alice));
@@ -290,7 +290,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesStringListOfQextendsIAtsUser() {
+   public void testSetAssigneesStringListOfQextendsAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -300,7 +300,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testRemoveAssigneeIAtsUser() {
+   public void testRemoveAssigneeAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignees("endorse", Arrays.asList(joe, alice));
@@ -339,7 +339,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddStateStringListOfQextendsIAtsUserDoubleInt() {
+   public void testAddStateStringListOfQextendsAtsUserDoubleInt() {
       stateMgr.addState("endorse", Arrays.asList(joe), 4.2, 4);
       Assert.assertTrue(stateMgr.isStateVisited("endorse"));
       Assert.assertEquals(1, stateMgr.getVisitedStateNames().size());
@@ -430,7 +430,7 @@ public class StateManagerTest extends AbstractUserTest {
       IAtsStateDefinition state = mock(IAtsStateDefinition.class);
       when(state.getName()).thenReturn("Endorse");
 
-      List<IAtsUser> assignees = Collections.emptyList();
+      List<AtsUser> assignees = Collections.emptyList();
       mgr.addState("Endorse", assignees);
       mgr.setHoursSpent("Endorse", 1.0);
       mgr.setPercentComplete("Endorse", 46);

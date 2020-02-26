@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.users;
 
+
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractUserTest {
-   public static final IAtsUser joe = new AtsUser(123456L, "joe", "joe", "b@b.com", true);
-   public static final IAtsUser steve = new AtsUser(234567L, "steve", "steve", "asdf", false);
-   public static final IAtsUser alice = new AtsUser(345678L, "alice", "alice", null, true);
+   public static final AtsUser joe = new AtsUser(123456L, "joe", "joe", "b@b.com", true);
+   public static final AtsUser steve = new AtsUser(234567L, "steve", "steve", "asdf", false);
+   public static final AtsUser alice = new AtsUser(345678L, "alice", "alice", null, true);
 }

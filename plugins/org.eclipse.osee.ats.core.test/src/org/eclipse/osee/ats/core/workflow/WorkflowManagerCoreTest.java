@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -39,11 +39,11 @@ public class WorkflowManagerCoreTest {
    @Mock private IAtsTeamDefinition teamDef;
    @Mock private IAtsStateDefinition analyzeState, implementState;
    @Mock private IAtsTask task;
-   @Mock private IAtsUser Joe, Mary;
+   @Mock private AtsUser Joe, Mary;
    @Mock private AtsApi atsApi;
    @Mock private IAtsTeamDefinitionService teamDefinitionService;
    // @formatter:on
-   List<IAtsUser> assignees = new ArrayList<>();
+   List<AtsUser> assignees = new ArrayList<>();
 
    @Before
    public void setup() {

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -58,7 +58,7 @@ public class PeerToPeerReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, IAtsChangeSet changes) {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes) {
       Result result = setPrepareStateData(popup, reviewArt, roles, "DoThis.java", 100, .2, changes);
       if (result.isFalse()) {
          return result;
@@ -149,12 +149,12 @@ public class PeerToPeerReviewManager {
          workDefinition, teamWf, reviewTitle, againstState, changes);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamWf, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamWf, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamWf,
          reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(
          actionableItem, reviewTitle, againstState, createdDate, createdBy, changes);
    }

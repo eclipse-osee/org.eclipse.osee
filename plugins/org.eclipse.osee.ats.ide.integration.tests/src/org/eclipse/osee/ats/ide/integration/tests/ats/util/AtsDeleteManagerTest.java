@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -186,7 +186,7 @@ public class AtsDeleteManagerTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Manager Test - testActionPurge");
 
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null, testName.name(), "Description",
          ChangeType.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
 
@@ -208,7 +208,7 @@ public class AtsDeleteManagerTest {
       changes.execute();
 
       AtsClientService.get().getTaskService().createTasks(teamWf,
-         Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), (List<IAtsUser>) null, createdDate,
+         Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), (List<AtsUser>) null, createdDate,
          createdBy, null, null, null, getClass().getSimpleName());
 
       return teamWf;

@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -39,12 +39,12 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
+public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
 
-   private Collection<IAtsUser> teamMembers;
+   private Collection<AtsUser> teamMembers;
    private boolean includeAutoSelectButtons = false;
 
-   public UserCheckTreeDialog(Collection<IAtsUser> users) {
+   public UserCheckTreeDialog(Collection<AtsUser> users) {
       this("Select Users", "Select Users", users);
    }
 
@@ -53,11 +53,11 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
          AtsClientService.get().getUserService().getUsers(Active.Active));
    }
 
-   public UserCheckTreeDialog(String title, String message, Collection<IAtsUser> users) {
+   public UserCheckTreeDialog(String title, String message, Collection<AtsUser> users) {
       super(title, message, users, new ArrayTreeContentProvider(), new UserCheckTreeLabelProvider(), null);
    }
 
-   public Collection<IAtsUser> getUsersSelected() {
+   public Collection<AtsUser> getUsersSelected() {
       return getChecked();
    }
 
@@ -98,7 +98,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               List<IAtsUser> users = new LinkedList<>(fUld.getChecked());
+               List<AtsUser> users = new LinkedList<>(fUld.getChecked());
                users.add(AtsClientService.get().getUserService().getCurrentUser());
                fUld.setInitialSelections(users);
                okPressed();
@@ -120,14 +120,14 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
       return c;
    }
 
-   public Collection<IAtsUser> getTeamMembers() {
+   public Collection<AtsUser> getTeamMembers() {
       return teamMembers;
    }
 
    /**
     * If set, team members will be shown prior to rest of un-checked users
     */
-   public void setTeamMembers(Collection<IAtsUser> teamMembers) {
+   public void setTeamMembers(Collection<AtsUser> teamMembers) {
       if (this.teamMembers == null) {
          this.teamMembers = new HashSet<>();
       }
@@ -135,7 +135,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
    }
 
    public static class UserCheckTreeLabelProvider implements ILabelProvider {
-      private Collection<IAtsUser> teamMembers;
+      private Collection<AtsUser> teamMembers;
 
       @Override
       public Image getImage(Object arg0) {
@@ -145,9 +145,9 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
       @Override
       public String getText(Object arg0) {
          if (teamMembers != null && teamMembers.contains(arg0)) {
-            return ((IAtsUser) arg0).getName() + " (Team)";
+            return ((AtsUser) arg0).getName() + " (Team)";
          }
-         return ((IAtsUser) arg0).getName();
+         return ((AtsUser) arg0).getName();
       }
 
       @Override
@@ -170,7 +170,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsUser> {
          // do nothing
       }
 
-      public void setTeamMembers(Collection<IAtsUser> teamMembers) {
+      public void setTeamMembers(Collection<AtsUser> teamMembers) {
          this.teamMembers = teamMembers;
       }
 

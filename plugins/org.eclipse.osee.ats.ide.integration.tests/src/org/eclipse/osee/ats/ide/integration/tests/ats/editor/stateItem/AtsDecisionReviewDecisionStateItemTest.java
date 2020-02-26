@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -97,7 +97,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       decisionComboDam.set(1);
 
       AtsDecisionReviewDecisionWorkflowHookIde stateItem = new AtsDecisionReviewDecisionWorkflowHookIde();
-      Collection<IAtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
+      Collection<AtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
       Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(), users.iterator().next());
 

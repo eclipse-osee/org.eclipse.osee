@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
  * @author Donald G. Dunne
@@ -24,18 +24,18 @@ public interface WorkState {
 
    String getName();
 
-   List<IAtsUser> getAssignees();
+   List<AtsUser> getAssignees();
 
    double getHoursSpent();
 
    int getPercentComplete();
 
-   void addAssignee(IAtsUser steve);
+   void addAssignee(AtsUser steve);
 
-   void setAssignees(List<? extends IAtsUser> users);
+   void setAssignees(List<? extends AtsUser> users);
 
    void setName(String name);
 
-   void removeAssignee(IAtsUser assignee);
+   void removeAssignee(AtsUser assignee);
 
 }

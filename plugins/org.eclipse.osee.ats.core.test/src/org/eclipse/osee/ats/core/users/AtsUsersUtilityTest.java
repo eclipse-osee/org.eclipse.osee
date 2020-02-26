@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.users;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
 
    @Test
    public void testGetValidEmailUsers() {
-      Set<IAtsUser> users = new HashSet<>();
+      Set<AtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);
       users.add(alice);
@@ -42,12 +42,12 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
 
    @Test
    public void testGetActiveEmailUsers() {
-      Set<IAtsUser> users = new HashSet<>();
+      Set<AtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);
       users.add(alice);
 
-      Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(users);
+      Collection<AtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(users);
       Assert.assertEquals(2, activeEmailUsers.size());
       Assert.assertTrue(activeEmailUsers.contains(joe));
       Assert.assertTrue(activeEmailUsers.contains(alice));

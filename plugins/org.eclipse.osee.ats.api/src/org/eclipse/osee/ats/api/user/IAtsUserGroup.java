@@ -17,11 +17,11 @@ import java.util.List;
  */
 public interface IAtsUserGroup {
 
-   public List<IAtsUser> getUsers();
+   public List<AtsUser> getUsers();
 
-   public void setUsers(List<? extends IAtsUser> users);
+   public void setUsers(List<? extends AtsUser> users);
 
-   public void addUser(IAtsUser user);
+   public void addUser(AtsUser user);
 
-   public void removeUser(IAtsUser user);
+   public void removeUser(AtsUser user);
 }

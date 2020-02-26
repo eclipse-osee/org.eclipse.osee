@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.users;
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
@@ -110,9 +109,9 @@ public class CoreAtsUsersTest {
       TestUser user2MapToPi = new TestUser();
       user2MapToPi.setUserId(SystemUser.OseeSystem.getUserId());
 
-      IAtsUser user3MapToPi = AtsCoreUsers.SYSTEM_USER;
+      AtsUser user3MapToPi = AtsCoreUsers.SYSTEM_USER;
 
-      HashMap<IAtsUser, Double> hash = new HashMap<>();
+      HashMap<AtsUser, Double> hash = new HashMap<>();
       hash.put(user1MapToE, Math.E);
       hash.put(user2MapToPi, Math.E);
       hash.put(user3MapToPi, Math.PI);

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -103,7 +103,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       // Joe and Alex should have been added to assignees
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
       boolean joeFound = false, alexFound = false;
-      for (IAtsUser user : peerRevArt.getStateMgr().getAssignees()) {
+      for (AtsUser user : peerRevArt.getStateMgr().getAssignees()) {
          if (user.getName().equals(DemoUsers.Joe_Smith.getName())) {
             joeFound = true;
          }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
@@ -30,7 +30,7 @@ public class NewTaskDataFactory {
       return newTaskData;
    }
 
-   public static NewTaskData get(String comment, IAtsUser atsUser, IAtsTeamWorkflow teamWf) {
+   public static NewTaskData get(String comment, AtsUser atsUser, IAtsTeamWorkflow teamWf) {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setAsUserId(atsUser.getUserId());
       newTaskData.setCommitComment(comment);

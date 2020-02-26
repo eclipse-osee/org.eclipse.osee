@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -129,7 +129,7 @@ public interface IAtsChangeSet {
    /**
     * User making these changes
     */
-   IAtsUser getAsUser();
+   AtsUser getAsUser();
 
    void unrelate(ArtifactId artifact, RelationTypeSide relationSide, ArtifactId artifact2);
 
