@@ -27,11 +27,13 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -39,14 +41,17 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
+import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -721,5 +726,45 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private void validateResponse(Response response, String errorMessage) throws IOException {
       Assert.assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
       Assert.assertEquals(errorMessage, Lib.inputStreamToString((InputStream) response.getEntity()));
+   }
+
+   @Test
+   public void testJournal() {
+      AtsApi atsApi = AtsApiService.get();
+      AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+      IAtsTeamWorkflow codeWf = (IAtsTeamWorkflow) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      String atsId = codeWf.getAtsId();
+
+      JournalData jd = actionEp.getJournalData(atsId);
+      Assert.assertTrue(jd.getResults().isSuccess());
+      Assert.assertTrue(jd.getSubscribed().isEmpty());
+      Assert.assertTrue(jd.getTransaction().isInvalid());
+
+      jd = new JournalData();
+      String addMsg = "My Journal Entry";
+      jd.setAddMsg(addMsg);
+      jd.setUser(atsApi.getUserService().getCurrentUser());
+      jd = actionEp.addJournal(atsId, jd);
+      Assert.assertTrue(jd.getResults().isSuccess());
+      Assert.assertTrue(jd.getSubscribed().size() == 1);
+      // Transaction comes back with valid add
+      Assert.assertTrue(jd.getTransaction().isValid());
+      Assert.assertTrue(jd.getCurrentMsg().contains(addMsg));
+
+      jd = actionEp.getJournalData(atsId);
+      Assert.assertTrue(jd.getResults().isSuccess());
+      Assert.assertTrue(jd.getSubscribed().size() == 1);
+      // No transaction comes back with just getJournalData
+      Assert.assertTrue(jd.getTransaction().isInvalid());
+      Assert.assertTrue(jd.getCurrentMsg().contains(addMsg));
+
+      String html = actionEp.getJournalText(atsId);
+      Assert.assertTrue(html.contains(addMsg));
+
+      AtsActionUiEndpointApi actionUiEp = atsApi.getServerEndpoints().getActionUiEndpoint();
+      html = actionUiEp.getJournal(atsId, atsApi.getUserService().getCurrentUser().getIdString());
+      Assert.assertTrue(html.contains(addMsg));
+      Assert.assertTrue(html.contains(atsApi.getUserService().getCurrentUser().getName()));
+
    }
 }

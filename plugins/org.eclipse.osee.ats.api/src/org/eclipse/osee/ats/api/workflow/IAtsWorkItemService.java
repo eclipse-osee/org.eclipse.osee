@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -145,5 +146,11 @@ public interface IAtsWorkItemService {
    List<IAtsStateDefinition> getAllToStates(IAtsWorkItem workItem);
 
    IAtsStateDefinition getDefaultToState(IAtsWorkItem workItem);
+
+   JournalData getJournalData(IAtsWorkItem workItem, JournalData journalData);
+
+   JournalData getJournalData(String atsId);
+
+   JournalData getJournalSubscribed(IAtsWorkItem workItem, JournalData journalData);
 
 }

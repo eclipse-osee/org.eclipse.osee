@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.core.notify.AbstractAtsNotificationService;
@@ -31,7 +32,8 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
  */
 public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
 
-   public AtsNotificationServiceImpl() {
+   public AtsNotificationServiceImpl(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
+import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -258,5 +259,26 @@ public interface AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    JiraByEpicData reportEpicDiffs(JiraByEpicData data);
+
+   @Path("journal")
+   @POST
+   @Consumes("application/x-www-form-urlencoded")
+   Response journal(MultivaluedMap<String, String> form);
+
+   @Path("{atsId}/journal/text")
+   @GET
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getJournalText(@PathParam("atsId") String atsId);
+
+   @Path("{atsId}/journal")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public JournalData addJournal(@PathParam("atsId") String atsId, JournalData journalData);
+
+   @Path("{atsId}/journal")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public JournalData getJournalData(@PathParam("atsId") String atsId);
 
 }

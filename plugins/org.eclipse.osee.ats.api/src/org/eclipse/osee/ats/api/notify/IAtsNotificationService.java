@@ -14,6 +14,8 @@
 package org.eclipse.osee.ats.api.notify;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**
  * @author Donald G. Dunne
@@ -27,5 +29,9 @@ public interface IAtsNotificationService {
    boolean isNotificationsEnabled();
 
    void setNotificationsEnabled(boolean enabled);
+
+   Collection<AtsUser> getJournalSubscribedUsers(IAtsWorkItem workItem);
+
+   void setJournalSubscribedUsers(IAtsWorkItem workItem, Collection<AtsUser> users);
 
 }

@@ -141,7 +141,10 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    default String toStringWithId(int nameTruncateLength) {
       return String.format("[%s]-[%s]-[%s]", Strings.truncate(getName(), nameTruncateLength, true), getAtsId(),
          getIdString());
+   }
 
+   default String toStringWithAtsId() {
+      return String.format("[%s]-[%s]", getName(), getAtsId());
    }
 
    default boolean isChangeRequest() {

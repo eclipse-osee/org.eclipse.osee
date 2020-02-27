@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2010 Boeing
+ * Copyright (c) 2020 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,24 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+package org.eclipse.osee.ats.ide.editor.tab.journal;
 
-package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
-
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
+import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -37,17 +43,19 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class WfeAssigneesHeader extends Composite {
+public class WfeJournalSubscribersComp extends Composite {
 
-   private final static String LABEL = "Assignee(s):";
+   private final static String LABEL = "Journal Subscriber(s):";
    Label valueLabel;
    private final IAtsWorkItem workItem;
 
-   public WfeAssigneesHeader(Composite parent, int style, final IAtsWorkItem workItem, final boolean isEditable, final WorkflowEditor editor) {
+   public WfeJournalSubscribersComp(Composite parent, int style, final IAtsWorkItem workItem, final boolean isEditable, final WorkflowEditor editor) {
       super(parent, style);
       this.workItem = workItem;
-      setLayoutData(new GridData());
-      setLayout(ALayout.getZeroMarginLayout(2, false));
+      setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
+      GridLayout layout = new GridLayout(2, false);
+      layout.marginLeft = 0;
+      setLayout(layout);
       editor.getToolkit().adapt(this);
 
       if (!workItem.isCancelled() && !workItem.isCompleted()) {
@@ -76,9 +84,8 @@ public class WfeAssigneesHeader extends Composite {
                      AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;
                   }
-                  if (AssigneeColumnUI.promptChangeAssignees(workItem, false)) {
-                     editor.doSave(null);
-                  }
+                  promptChangeJournalSubscribers(workItem);
+                  refresh();
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -97,21 +104,57 @@ public class WfeAssigneesHeader extends Composite {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "";
          try {
-            if (workItem.getStateMgr().getAssignees().isEmpty()) {
-               value = "Error: State has no assignees";
-            } else {
-               valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
-               value = workItem.getStateMgr().getAssigneesStr();
-            }
+            value = AtsObjects.toString("; ",
+               AtsApiService.get().getNotificationService().getJournalSubscribedUsers(workItem));
+            valueLabel.setToolTipText(value);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             value = ex.getLocalizedMessage();
             valueLabel.setToolTipText(value);
          }
-         valueLabel.setText(Strings.truncate(value, 150, true));
-         valueLabel.getParent().layout(true);
-         valueLabel.getParent().getParent().layout(true);
+         valueLabel.setText(Strings.truncate(value, 300, true));
+         layout(true);
+         getParent().layout(true);
       }
+   }
+
+   private boolean promptChangeJournalSubscribers(final IAtsWorkItem workItem) {
+      if (workItem.isCompleted()) {
+         AWorkbench.popup("ERROR",
+            "Can't subscribe to completed " + workItem.getArtifactTypeName() + " (" + workItem.getAtsId() + ")");
+         return false;
+      } else if (workItem.isCancelled()) {
+         AWorkbench.popup("ERROR",
+            "Can't subscribe to cancelled " + workItem.getArtifactTypeName() + " (" + workItem.getAtsId() + ")");
+         return false;
+      }
+      Set<AtsUser> users = new HashSet<>();
+      users.addAll(AtsApiService.get().getUserService().getUsers(Active.Active));
+      Collection<AtsUser> subscribedUsers =
+         AtsApiService.get().getNotificationService().getJournalSubscribedUsers(workItem);
+      users.addAll(subscribedUsers);
+
+      // unassigned is not useful in the selection choice dialog
+      users.remove(AtsCoreUsers.UNASSIGNED_USER);
+      users.remove(AtsCoreUsers.BOOTSTRAP_USER);
+      UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Journal Subscribers",
+         "Select to subscribe.\nDeSelect to un-subscribe.", users);
+      uld.setIncludeAutoSelectButtons(false);
+
+      IAtsTeamWorkflow parentWorklfow = workItem.getParentTeamWorkflow();
+      if (parentWorklfow != null) {
+         uld.setTeamMembers(
+            AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(parentWorklfow.getTeamDefinition()));
+      }
+      uld.setInitialSelections(subscribedUsers);
+
+      if (uld.open() != 0) {
+         return false;
+      }
+      Collection<AtsUser> selected = uld.getUsersSelected();
+      AtsApiService.get().getNotificationService().setJournalSubscribedUsers(workItem, selected);
+
+      return true;
    }
 
 }

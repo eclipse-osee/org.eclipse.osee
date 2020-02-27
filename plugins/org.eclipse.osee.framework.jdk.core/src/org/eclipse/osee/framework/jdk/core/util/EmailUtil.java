@@ -23,7 +23,7 @@ public class EmailUtil {
    private static Pattern addressPattern = Pattern.compile(".+?@.+?\\.[a-z]+");
 
    public static boolean isEmailValid(String email) {
-      return addressPattern.matcher(email).matches();
+      return email != null && addressPattern.matcher(email).matches();
    }
 
 }

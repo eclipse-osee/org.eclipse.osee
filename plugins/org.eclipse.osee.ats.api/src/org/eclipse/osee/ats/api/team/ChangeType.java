@@ -39,9 +39,9 @@ public enum ChangeType {
 
    public static ChangeType getChangeType(Object changeType) {
       String changeTypeName = "";
-      try {
+      if (changeType instanceof ChangeTypeEnum) {
          changeTypeName = ((ChangeTypeEnum) changeType).getName();
-      } catch (Exception e) {
+      } else if (changeType instanceof String) {
          changeTypeName = (String) changeType;
       }
       for (ChangeType type : values()) {

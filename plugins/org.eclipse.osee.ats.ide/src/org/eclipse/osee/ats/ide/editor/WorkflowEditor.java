@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
 import org.eclipse.osee.ats.ide.editor.tab.attributes.WfeAttributesTab;
 import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
+import org.eclipse.osee.ats.ide.editor.tab.journal.WfeJournalTab;
 import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
 import org.eclipse.osee.ats.ide.editor.tab.metrics.WfeMetricsTab;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
@@ -107,10 +109,19 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
    private WfeAttributesTab attrTab;
+   private WfeJournalTab journalTab;
+   int attrPageIndex = 0;
+   private final AtsApi atsApi;
+
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
    private WfeMetricsTab metricsTab;
+   private Boolean showJournalTab = null;
+
+   public WorkflowEditor() {
+      atsApi = AtsApiService.get();
+   }
 
    public void loadPages() {
       addPages();
@@ -147,6 +158,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
             createMembersTab();
             createWorkflowTab();
             createTaskTab();
+            createJournalTab();
             createDefectsTab();
             createAttributesTab();
             createMetricsTab();
@@ -221,6 +233,21 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          addPage(taskTab);
          taskTab.refreshTabName();
       }
+   }
+
+   private void createJournalTab() throws PartInitException {
+      if (isShowJournalTab()) {
+         journalTab = new WfeJournalTab(this, workItem, AtsApiService.get());
+         addPage(journalTab);
+      }
+   }
+
+   private boolean isShowJournalTab() {
+      if (showJournalTab == null) {
+         String configValue = atsApi.getConfigValue("ShowJournalTab");
+         showJournalTab = !"false".equals(configValue);
+      }
+      return showJournalTab;
    }
 
    private void createDefectsTab() throws PartInitException {
@@ -333,6 +360,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       if (membersTab != null) {
          removePage(membersTab.getIndex());
       }
+      if (journalTab != null) {
+         removePage(journalTab.getIndex());
+      }
       if (reloadTab != null) {
          removePage(reloadTab.getIndex());
          reloadTab = null;
@@ -419,6 +449,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
          }
          if (workFlowTab != null) {
             workFlowTab.refresh();
+         }
+         if (journalTab != null) {
+            journalTab.refresh();
          }
          if (membersTab != null) {
             membersTab.refresh();

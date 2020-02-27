@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -70,5 +71,13 @@ public interface AtsActionUiEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    ViewModel getTransition(String id) throws Exception;
+
+   /**
+    * @return Web Journal UI and Journal contents
+    */
+   @Path("{atsId}/journal/{useraid}")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   String getJournal(@PathParam("atsId") String atsId, @PathParam("useraid") String useraid);
 
 }

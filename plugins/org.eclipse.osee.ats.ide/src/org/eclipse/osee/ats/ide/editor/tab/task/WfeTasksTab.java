@@ -136,6 +136,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       this.client = client;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
       teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+      refreshTabName();
    }
 
    @Override
@@ -372,7 +373,9 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
                @Override
                public void run() {
                   if (Widgets.isAccessible(taskComposite)) {
-                     taskComposite.getXViewer().setInput(getTaskArts());
+                     Collection<TaskArtifact> tasks = getTaskArts();
+                     taskComposite.getXViewer().setInput(tasks);
+                     refreshTabName();
                   }
                }
             });
@@ -682,24 +685,22 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (editor.isDisposed()) {
-               return;
-            }
-            String tabName = "Tasks";
-            try {
-               tabName = String.format("Tasks (%d)", getTasks().size());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-            // Because of reload page, tasks tab moves around; find real page/index
-            int index = 0;
-            for (Object obj : editor.getPages()) {
-               if (obj instanceof WfeTasksTab) {
-                  break;
-               }
-               index++;
-            }
-            editor.setTabName(index, tabName);
+            //            if (editor.isDisposed()) {
+            //               return;
+            //            }
+            //            String tabName = "Tasks";
+            //            try {
+            //               tabName = String.format("Tasks (%d)", getTasks().size());
+            //            } catch (OseeCoreException ex) {
+            //               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            //            }
+            //            int x = 1;
+            //            for (Object page : editor.getPages()) {
+            //               if (page instanceof WfeTasksTab) {
+            //                  x++;
+            //                  editor.setTabName(x, tabName);
+            //               }
+            //            }
          }
       });
    }
@@ -740,7 +741,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      refreshTabName();
+      refresh();
    }
 
    @Override

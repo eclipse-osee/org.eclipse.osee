@@ -1,0 +1,22 @@
+<div>
+   <form id="oseeAppForm" class="well">      
+      <input type="hidden" id="atsid" name="custId" value="PUT_ATS_ID_HERE">
+      <input type="hidden" id="useraid" name="custId" value="PUT_USER_AID_HERE">
+      <label>User: PUT_USER_NAME_HERE</label><br/>
+      <label>New Comment</label><br/>
+      <textarea name="textarea" id="desc" style="width:100%;height:100px;"></textarea><br/>
+      <br/><br/>
+      <input type="button" id="postButton" value="Post" class="btn btn-primary"/>
+   </form>
+</div>
+
+<script src="/ats/lib/atsJournal.js"></script>
+<script>
+   function postAction() {
+      post_with_parms("/ats/action/journal", getParams());
+   }
+
+   var button = document.getElementById("postButton");
+   button.addEventListener("click", postAction);
+</script>
+

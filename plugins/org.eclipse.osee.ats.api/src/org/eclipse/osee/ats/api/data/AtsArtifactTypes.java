@@ -148,6 +148,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Priority, null)
       .zeroOrOne(ValidationRequired));
    ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.State Machine", true, AtsArtifact)
+      .any(JournalSubscriber)
       .exactlyOne(AtsId, "0")
       .zeroOrOne(Assumptions)
       .zeroOrOne(BlockedReason)
@@ -161,6 +162,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Category1)
       .zeroOrOne(Category2)
       .zeroOrOne(Category3)
+      .zeroOrOne(Journal)
       .zeroOrOne(CompletedBy)
       .zeroOrOne(CompletedDate)
       .zeroOrOne(CompletedFromState)

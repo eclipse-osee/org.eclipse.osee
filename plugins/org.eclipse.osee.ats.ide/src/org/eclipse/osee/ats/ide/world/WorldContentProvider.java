@@ -75,6 +75,7 @@ public class WorldContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
+
       if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       }

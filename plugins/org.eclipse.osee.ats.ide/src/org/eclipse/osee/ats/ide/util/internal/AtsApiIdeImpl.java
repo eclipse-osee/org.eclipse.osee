@@ -129,8 +129,28 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       taskService = new AtsTaskService(this);
 
       agileService = new AgileService(logger, this);
-      notificationService = new AtsNotificationServiceImpl();
+      notificationService = new AtsNotificationServiceImpl(this);
 
+      startAccessControlLoading();
+
+   }
+
+   private void startAccessControlLoading() {
+      // Start loading access control
+      Thread loadAccessControl = new Thread(new Runnable() {
+
+         @Override
+         public void run() {
+            try {
+               OseeApiService.get().getAccessControlService().ensurePopulated();
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }, "Load Access Control");
+      loadAccessControl.start();
+
+      notificationService = new AtsNotificationServiceImpl(this);
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {

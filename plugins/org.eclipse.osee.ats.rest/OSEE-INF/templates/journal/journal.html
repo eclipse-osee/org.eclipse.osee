@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+
+<title>ATS - <?atsId?> - <?title?></title>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+	<div class="container">
+		<div>
+			<h4>Journal for PUT_TITLE_HERE</h4>
+		</div>
+
+		<div>PUT_ACTION_DETAILS_HERE</div>
+
+		<div>PUT_FORM_HERE</div>
+
+		<div><pre>PUT_COMMENTS_HERE</pre></div>
+
+	</div>
+
+	<script src="/ats/lib/atsJournal.js"></script>
+	<script>
+		function createAction() {
+			 post_with_parms("/ats/action/journal", getParams());
+		}
+		var button = document.getElementById("postAction");
+		button.addEventListener("click", createAction);}
+   </script>
+
+</body>
+</html>

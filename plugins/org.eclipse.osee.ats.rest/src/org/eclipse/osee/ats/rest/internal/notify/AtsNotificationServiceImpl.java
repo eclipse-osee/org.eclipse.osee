@@ -30,15 +30,13 @@ public class AtsNotificationServiceImpl extends AbstractAtsNotificationService {
    private AtsNotificationEventProcessor notificationEventProcessor;
    private boolean loggedNotificationDisabled = false;
    private static final List<IAtsEmailService> notifiers = new CopyOnWriteArrayList<>();
-   private AtsApi atsApi;
 
    public AtsNotificationServiceImpl() {
       // for jax-rs
    }
 
    public AtsNotificationServiceImpl(AtsApi atsApi) {
-      this.atsApi = atsApi;
-      // for jax-rs
+      super(atsApi);
    }
 
    public void addMailService(IAtsEmailService notifier) {

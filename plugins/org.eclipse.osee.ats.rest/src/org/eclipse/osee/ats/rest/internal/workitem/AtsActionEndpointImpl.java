@@ -24,9 +24,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -52,6 +60,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -59,6 +68,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
+import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
@@ -732,6 +742,80 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       JiraReportEpicDiffsOperation op = new JiraReportEpicDiffsOperation(data, atsApi);
       op.run();
       return data;
+   }
+
+   @Path("journal")
+   @POST
+   @Override
+   @Consumes("application/x-www-form-urlencoded")
+   public Response journal(MultivaluedMap<String, String> form) {
+      String atsId = form.getFirst("atsid");
+      if (Strings.isInValid(atsId)) {
+         return Response.notModified(String.format("Inavlid ATS Id [%s]", atsId)).build();
+      }
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemByAtsId(atsId);
+      if (workItem == null) {
+         return Response.notModified(String.format("Inavlid ATS Id [%s]", atsId)).build();
+      }
+      String comment = form.getFirst("desc");
+      if (Strings.isInValid(comment)) {
+         return Response.notModified(String.format("Inavlid Comment [%s]", comment)).build();
+      }
+      String useraid = form.getFirst("useraid");
+      if (Strings.isInValid(useraid)) {
+         return Response.notModified(String.format("Inavlid ATS Art Id [%s]", useraid)).build();
+      }
+      AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(useraid));
+      if (user == null) {
+         return Response.notModified(String.format("Inavlid ATS User Art Id [%s]", useraid)).build();
+      }
+      JournalData jData = new JournalData();
+      jData.setAddMsg(comment);
+      jData.setResults(new XResultData());
+      jData.setUser(user);
+      JournalOperations journalOp = new JournalOperations(jData, atsId, atsApi);
+      journalOp.addJournal();
+
+      workItem = atsApi.getQueryService().getWorkItem(workItem.getIdString());
+
+      String actionUrl = String.format("ui/action/%s/journal/%s", workItem.getAtsId(), user.getIdString());
+      URI uri = UriBuilder.fromUri(actionUrl).build();
+      return Response.seeOther(uri).build();
+   }
+
+   /**
+    * @return html5 journal comments
+    */
+   @Override
+   @Path("{atsId}/journal/text")
+   @GET
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getJournalText(@PathParam("atsId") String atsId) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
+      if (workItem == null) {
+         return String.format("Invalid ATS Id [%s]", atsId);
+      }
+      return atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.Journal, "");
+   }
+
+   @Override
+   @Path("{atsId}/journal")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public JournalData addJournal(@PathParam("atsId") String atsId, JournalData journalData) {
+      JournalOperations journalOp = new JournalOperations(journalData, atsId, atsApi);
+      journalOp.addJournal();
+      return journalData;
+   }
+
+   @Override
+   @Path("{atsId}/journal")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public JournalData getJournalData(@PathParam("atsId") String atsId) {
+      JournalData journalData = atsApi.getWorkItemService().getJournalData(atsId);
+      return journalData;
    }
 
 }

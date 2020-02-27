@@ -107,6 +107,8 @@ public interface AtsAttributeTypes {
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
+   AttributeTypeString Journal = ats.createString(4323598592300832478L, "ats.Journal", MediaType.TEXT_PLAIN, "");
+   AttributeTypeArtifactId JournalSubscriber = ats.createArtifactId(42051756273953L, "ats.Journal Subscriber",MediaType.TEXT_PLAIN,  "Artifact Id of User Subscribed to Journal Notifications");
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
    AttributeTypeString KanbanStoryName = ats.createString(72645877009467643L, "ats.kb.Story Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LegacyPcrId = ats.createString(1152921504606847219L, "ats.Legacy PCR Id", MediaType.TEXT_PLAIN, "Field to register problem change report id from legacy items imported into ATS.");

@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -563,6 +564,41 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          return states.iterator().next();
       }
       return null;
+   }
+
+   @Override
+   public JournalData getJournalData(String atsId) {
+      JournalData journalData = new JournalData();
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
+      if (workItem == null) {
+         journalData.getResults().errorf("Invalid ATS Id [%s]", atsId);
+         return journalData;
+      }
+      getJournalData(workItem, journalData);
+      return journalData;
+   }
+
+   @Override
+   public JournalData getJournalData(IAtsWorkItem workItem, JournalData journalData) {
+      String journalStr =
+         atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.Journal, "");
+      journalData.setCurrentMsg(journalStr);
+      getJournalSubscribed(workItem, journalData);
+      return journalData;
+   }
+
+   @Override
+   public JournalData getJournalSubscribed(IAtsWorkItem workItem, JournalData journalData) {
+      journalData.getSubscribed().clear();
+      Collection<ArtifactId> userArts =
+         atsApi.getAttributeResolver().getAttributeValues(workItem, AtsAttributeTypes.JournalSubscriber);
+      for (ArtifactId userArt : userArts) {
+         AtsUser user = atsApi.getConfigService().getUser(userArt);
+         if (user != null) {
+            journalData.getSubscribed().add(user);
+         }
+      }
+      return journalData;
    }
 
 }

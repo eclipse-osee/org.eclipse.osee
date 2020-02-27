@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.config.tx.AtsConfigTxImpl;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -55,6 +56,12 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
    public AtsUser getUserByName(String name) {
       Long artId = getConfigurations().getUserNameToUserArtId().get(name);
       AtsUser user = getConfigurations().getIdToUser().get(artId);
+      return user;
+   }
+
+   @Override
+   public AtsUser getUser(ArtifactId userArt) {
+      AtsUser user = getConfigurations().getIdToUser().get(userArt.getId());
       return user;
    }
 

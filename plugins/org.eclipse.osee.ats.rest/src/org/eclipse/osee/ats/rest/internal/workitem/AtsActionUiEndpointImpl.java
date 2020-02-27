@@ -25,12 +25,16 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.rest.internal.workitem.journal.JournalWebOperations;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -53,6 +57,32 @@ public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
    @Produces(MediaType.TEXT_HTML)
    public String get() {
       return AHTML.simplePage("ATS UI Endpoint");
+   }
+
+   /**
+    * @return html5 journal entry/comments page
+    */
+   @Override
+   @Path("{atsId}/journal/{aid}")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getJournal(@PathParam("atsId") String atsId, @PathParam("aid") String useraid) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
+      if (workItem == null) {
+         return AHTML.simplePage(String.format("Invalid ATS Id [%s]", atsId));
+      }
+      AtsUser user = null;
+      if (Strings.isNumeric(useraid)) {
+         user = atsApi.getUserService().getUserById(ArtifactId.valueOf(Long.valueOf(useraid)));
+         if (user == null) {
+            return AHTML.simplePage(String.format("Invalid ATS User Art Id [%s]", useraid));
+         }
+      } else {
+         return AHTML.simplePage(String.format("Invalid ATS User Art Id [%s]", useraid));
+      }
+
+      JournalWebOperations op = new JournalWebOperations(workItem, user, atsApi);
+      return op.getHtml();
    }
 
    /**
