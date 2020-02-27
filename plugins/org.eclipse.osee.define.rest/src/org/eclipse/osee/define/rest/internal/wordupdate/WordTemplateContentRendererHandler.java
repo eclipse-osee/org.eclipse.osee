@@ -89,6 +89,7 @@ public class WordTemplateContentRendererHandler {
             // if no extra paragraphs have been added this will replace the normal footer
             data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
             data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
+            data = data.replaceAll(ReportConstants.EMPTY_SECTION_BREAK, ReportConstants.PAGE_BREAK);
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
 
             if (wtcData.getIsEdit() && !data.contains("<w:tbl>")) {

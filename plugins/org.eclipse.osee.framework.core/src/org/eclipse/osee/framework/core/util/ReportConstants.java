@@ -23,12 +23,13 @@ public class ReportConstants {
    public static final String FTR = "<w:ftr[\\s\\S]+?</w:ftr>";
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
    public static final String ENTIRE_FTR_EXTRA_PARA =
-      "<w:p[^>]*><w:pPr><w:spacing w:after=\"[\\d]*\"[^>]*>(</w:spacing>)*<w:sectPr[^>]*>(<w:r><w:t>)?<w:ftr[^>]*>[\\s\\S]+</w:ftr>[\\s\\S]+</w:sectPr></w:pPr></w:p>";
-   public static final String ENTIRE_FTR =
-      "<w:p[^>]*><w:pPr><w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr></w:pPr></w:p>";
+      "<w:p[^>]*><w:pPr>(<w:spacing w:after=\"[\\d]*\"[^>]*>)*(</w:spacing>)*<w:sectPr[^>]*>(<w:r><w:t>)?<w:ftr[^>]*>[\\s\\S]+</w:ftr>[\\s\\S]+</w:sectPr></w:pPr></w:p>";
+   public static final String ENTIRE_FTR = "<w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
    public static final String FULL_PARA_END = "</w:pPr></w:p>";
    public static final String NO_DATA_RIGHTS =
       "<w:p>[\\s||\\S]+?<w:r><w:t>NO DATA RIGHTS ARTIFACT FOUND</w:t></w:r>[\\s\\S]+?</w:p>";
+   public static final String EMPTY_SECTION_BREAK =
+      "<w:sectPr[^>]*><w:pgSz[^>]*></w:pgSz><w:pgMar[^>]*></w:pgMar><w:cols[^>]*></w:cols></w:sectPr>";
 
    //wordml
    public static final String PG_SZ = "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/>";
@@ -55,6 +56,7 @@ public class ReportConstants {
    public static final String BULLETSYM = "<w:t></w:t>";
    public static final String OLD_BULLET_STYLE = "bullettight1";
    public static final String NEW_BULLET_STYLE = "bulletlvl2";
+   public static final String PAGE_BREAK = "<w:r><w:br w:type=\"page\"/></w:r>";
    public static final String PARA_REGEX = "<w:p(.*?)>";
    public static final String PARA_PROP_START = "<w:pPr>";
    public static final String PARA_PROP_REGEX = PARA_PROP_START + "(.*?)</w:pPr>";
