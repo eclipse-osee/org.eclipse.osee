@@ -185,19 +185,14 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    public void addActions(IMenuManager manager, IBranchProvider provider) {
       checkActionsCreated(provider);
 
-      if (showArtIds != null && isAdmin()) {
-         if (manager != null) {
-            manager.add(showArtIds);
-         }
-         showArtIds.updateText();
-      }
-
       if (manager != null) {
+         manager.add(showArtIds);
          manager.add(showArtVersion);
          manager.add(showArtType);
          manager.add(showArtBranch);
          manager.add(showRelations);
       }
+      showArtIds.updateText();
       showArtType.updateText();
       showArtVersion.updateText();
       showArtBranch.updateText();
