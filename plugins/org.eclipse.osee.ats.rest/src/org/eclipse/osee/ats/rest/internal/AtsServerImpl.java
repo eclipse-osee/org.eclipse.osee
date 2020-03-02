@@ -269,7 +269,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private void addCustomizationsFromArts(String namespace, List<CustomizeData> customizations, ArtifactId customizationArt) {
       for (String custXml : getAttributeResolver().getAttributesToStringList(customizationArt,
          CoreAttributeTypes.XViewerCustomization)) {
-         if (custXml.contains("\"" + namespace + "\"")) {
+         if (custXml.contains("\"" + namespace + "\"") || custXml.contains("." + namespace + "\"")) {
             CustomizeData data = new CustomizeData(custXml);
             customizations.add(data);
          }

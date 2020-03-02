@@ -41,34 +41,34 @@ public interface AtsWorldEndpointApi {
    Collection<CustomizeData> getCustomizations();
 
    @GET
-   @Path("my/{id}")
+   @Path("my/{userArtId}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<IAtsWorkItem> getMyWorld(@PathParam("id") ArtifactId userArtId);
+   Collection<IAtsWorkItem> getMyWorld(@PathParam("userArtId") ArtifactId userArtId);
 
    @GET
-   @Path("my/{id}/ui")
+   @Path("my/{userArtId}/ui")
    @Produces(MediaType.TEXT_HTML)
-   String getMyWorldUI(@PathParam("id") ArtifactId userArtId);
+   String getMyWorldUI(@PathParam("userArtId") ArtifactId userArtId);
 
    @GET
-   @Path("my/{id}/ui/{customize_guid}")
+   @Path("my/{userArtId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   String getMyWorldUICustomized(@PathParam("id") ArtifactId userArtId, @PathParam("customize_guid") String customize_guid);
+   String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId, @PathParam("customizeGuid") String customizeGuid);
 
    @GET
-   @Path("coll/{id}")
+   @Path("coll/{collectorId}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<IAtsWorkItem> getCollection(@PathParam("id") ArtifactId userArtId);
+   Collection<IAtsWorkItem> getCollection(@PathParam("collectorId") ArtifactId collectorId);
 
    @GET
-   @Path("coll/ui")
+   @Path("coll/{collectorId}/ui")
    @Produces(MediaType.TEXT_HTML)
-   String getCollectionUI(ArtifactId collectorArtId);
+   String getCollectionUI(@PathParam("collectorId") ArtifactId collectorId);
 
    @GET
-   @Path("coll/{id}/ui/{customize_guid}")
+   @Path("coll/{collectorId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   String getCollectionUICustomized(@PathParam("id") ArtifactId collectorArtId, @PathParam("customize_guid") String customize_guid);
+   String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId, @PathParam("customizeGuid") String customizeGuid);
 
    @PUT
    @Path("search")

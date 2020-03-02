@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class AtsSearchData {
 
    @JsonSerialize(using = ToStringSerializer.class)
-   private Long id;
+   private Long id; // id of this AtsSearchData, not id of something to search
    private String searchName = "";
    private String userId = "";
    private String title = "";
@@ -121,6 +121,7 @@ public class AtsSearchData {
       return id;
    }
 
+   // id of this AtsSearchData, not id of something to search
    public void setId(long id) {
       Conditions.checkExpressionFailOnTrue(id <= 0, "Can't set id to 0");
       this.id = id;

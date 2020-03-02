@@ -39,6 +39,9 @@ public class AtsWorldResultRowOperation {
 
    public ResultRows run() {
       ResultRows rows = new ResultRows();
+      if (atsSearchData.getCustomizeData() == null || atsSearchData.getCustomizeData().getColumnData().getColumns().isEmpty()) {
+         rows.getRd().error("CustomizeData can not be null or empty.");
+      }
 
       Collection<ArtifactToken> artifacts = atsApi.getQueryService().getArtifacts(atsSearchData, null);
       List<XViewerColumn> showCols = new ArrayList<>();

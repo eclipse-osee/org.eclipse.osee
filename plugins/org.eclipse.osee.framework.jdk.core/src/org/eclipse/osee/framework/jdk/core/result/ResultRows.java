@@ -20,6 +20,7 @@ public class ResultRows {
 
    List<String> headers = new ArrayList<>();
    List<ResultRow> results = new ArrayList<>();
+   XResultData rd = new XResultData();
 
    public List<ResultRow> getResults() {
       return results;
@@ -39,6 +40,14 @@ public class ResultRows {
 
    public void setHeaders(List<String> headers) {
       this.headers = headers;
+   }
+
+   public XResultData getRd() {
+      return rd;
+   }
+
+   public void setRd(XResultData rd) {
+      this.rd = rd;
    }
 
 }

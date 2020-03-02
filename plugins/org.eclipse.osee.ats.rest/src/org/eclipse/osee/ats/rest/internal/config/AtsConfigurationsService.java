@@ -107,8 +107,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       AtsConfigurations configs = new AtsConfigurations();
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
-      ElapsedTime time = new ElapsedTime("Server ACS - getAtsConfigurationsFromDb.loadTeamDefsOld", true);
-      time.off(); // Turn on to debug
+      ElapsedTime time = new ElapsedTime("Server ACS - getAtsConfigurationsFromDb.loadTeamDefsOld", false);
+      time.off(); // Turn on to debug (change above to false so doesn't log begin)
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
       for (ArtifactReadable art : query.andTypeEquals(TeamDefinition, ActionableItem, Version,
          CoreArtifactTypes.User).getResults()) {
