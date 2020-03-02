@@ -28,7 +28,9 @@ public class TraceabilityFactory {
       STP_Test_to_CSCI,
       STP_CSCI_to_Test,
       STD_Test_to_CSCI,
-      STD_CSCI_to_Test;
+      STD_CSCI_to_Test,
+      STD_Test_to_CSCI_One_Per_Row,
+      STD_CSCI_to_Test_One_Per_Row;
 
       @Override
       public String toString() {
@@ -52,10 +54,16 @@ public class TraceabilityFactory {
             simpleTable = new StpCsciToTestTable(sourceData);
             break;
          case STD_Test_to_CSCI:
-            simpleTable = new StdTestToCsciTable(sourceData);
+            simpleTable = new StdTestToCsciTable(sourceData, false);
             break;
          case STD_CSCI_to_Test:
-            simpleTable = new StdCsciToTestTable(sourceData);
+            simpleTable = new StdCsciToTestTable(sourceData, false);
+            break;
+         case STD_Test_to_CSCI_One_Per_Row:
+            simpleTable = new StdTestToCsciTable(sourceData, true);
+            break;
+         case STD_CSCI_to_Test_One_Per_Row:
+            simpleTable = new StdCsciToTestTable(sourceData, true);
             break;
          default:
             throw new OseeArgumentException("Unsupported Style [%s]", style);

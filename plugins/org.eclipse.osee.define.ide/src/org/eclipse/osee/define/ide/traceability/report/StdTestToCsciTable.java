@@ -34,9 +34,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class StdTestToCsciTable implements ISimpleTable {
 
    private final RequirementTraceabilityData source;
+   boolean onePerRow = false;
 
-   public StdTestToCsciTable(RequirementTraceabilityData source) {
+   public StdTestToCsciTable(RequirementTraceabilityData source, boolean onePerRow) {
       this.source = source;
+      this.onePerRow = onePerRow;
    }
 
    @Override
@@ -154,7 +156,11 @@ public class StdTestToCsciTable implements ISimpleTable {
                   artifacts.add(req);
                }
             }
-            processRow(sheetWriter, partition, codeUnit, ArtifactOperations.sortByParagraphNumbers(artifacts));
+            if (onePerRow) {
+               processSingleRow(sheetWriter, partition, codeUnit, ArtifactOperations.sortByParagraphNumbers(artifacts));
+            } else {
+               processRow(sheetWriter, partition, codeUnit, ArtifactOperations.sortByParagraphNumbers(artifacts));
+            }
          }
       }
    }
@@ -194,5 +200,14 @@ public class StdTestToCsciTable implements ISimpleTable {
       String paragraphNumber = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", paragraphNumbers);
       String artifactType = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", artifactTypes);
       sheetWriter.writeRow(partition, codeUnit, paragraphNumber, paragraphTitle, artifactType);
+   }
+
+   private void processSingleRow(ISheetWriter sheetWriter, String partition, String codeUnit, Collection<Artifact> artifacts) throws Exception {
+      for (Artifact artifact : artifacts) {
+         ArtifactOperations operator = new ArtifactOperations(artifact);
+         String name = operator.getName();
+         String number = operator.getParagraphNumber();
+         sheetWriter.writeRow(partition, codeUnit, number, name, artifact.getArtifactTypeName());
+      }
    }
 }

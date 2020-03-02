@@ -11,8 +11,8 @@
 package org.eclipse.osee.define.ide.traceability.report;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.define.ide.traceability.ArtifactOperations;
 import org.eclipse.osee.define.ide.traceability.RequirementTraceabilityData;
@@ -27,9 +27,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class StdCsciToTestTable implements ISimpleTable {
 
    private final RequirementTraceabilityData source;
+   boolean onePerRow = false;
 
-   public StdCsciToTestTable(RequirementTraceabilityData source) {
+   public StdCsciToTestTable(RequirementTraceabilityData source, boolean onePerRow) {
       this.source = source;
+      this.onePerRow = onePerRow;
    }
 
    @Override
@@ -120,8 +122,15 @@ public class StdCsciToTestTable implements ISimpleTable {
          String partition =
             org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", operations.getPartitions());
 
-         String qualificationLine = getQualificationMethod(source, artifact);
-         sheetWriter.writeRow(paragraphNumber, paragraphTitle, artifactType, partition, qualificationLine);
+         if (onePerRow) {
+            List<String> qualificationLines = getQualificationMethodList(source, artifact);
+            for (String qualificationLine : qualificationLines) {
+               sheetWriter.writeRow(paragraphNumber, paragraphTitle, artifactType, partition, qualificationLine);
+            }
+         } else {
+            sheetWriter.writeRow(paragraphNumber, paragraphTitle, artifactType, partition,
+               getQualificationMethod(source, artifact));
+         }
       }
    }
 
@@ -134,23 +143,43 @@ public class StdCsciToTestTable implements ISimpleTable {
       }
 
       if (builder.length() == 0) {
-         List<String> qualMethod = artifact.getAttributeValues(CoreAttributeTypes.QualificationMethod);
-         if (qualMethod.contains("Inspection") || qualMethod.contains("Analysis")) {
-            builder.append("INSPECTION");
-         } else if (qualMethod.contains("Special Qualification") || qualMethod.contains("Demonstration")) {
-            builder.append("MANUAL");
-         } else {
-            builder.append("None");
-         }
+         builder.append(getValueByQualMethod(artifact));
       }
       return builder.toString();
    }
 
+   private List<String> getQualificationMethodList(RequirementTraceabilityData source, Artifact artifact) {
+      List<String> scripts = getCodeUnitArray(source, artifact);
+      if (scripts.isEmpty()) {
+         scripts.add(getValueByQualMethod(artifact));
+      }
+      return scripts;
+   }
+
+   private String getValueByQualMethod(Artifact artifact) {
+      List<String> qualMethod = artifact.getAttributeValues(CoreAttributeTypes.QualificationMethod);
+      if (qualMethod.contains("Inspection") || qualMethod.contains("Analysis")) {
+         return "INSPECTION";
+      } else if (qualMethod.contains("Special Qualification") || qualMethod.contains("Demonstration")) {
+         return "MANUAL";
+      } else {
+         return "None";
+      }
+   }
+
    private String getCodeUnitLine(RequirementTraceabilityData source, Artifact artifact) {
       String toReturn = "";
+      Collection<String> units = getCodeUnitArray(source, artifact);
+      if (!units.isEmpty()) {
+         toReturn = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", units);
+      }
+      return toReturn;
+   }
+
+   private List<String> getCodeUnitArray(RequirementTraceabilityData source, Artifact artifact) {
+      List<String> units = new LinkedList<>();
       Collection<String> codeUnits = source.getRequirementsToCodeUnits().getValues(artifact);
       if (codeUnits != null) {
-         List<String> units = new ArrayList<>();
          for (String codeUnit : codeUnits) {
             if (Strings.isValid(codeUnit)) {
                int index = codeUnit.lastIndexOf(File.separator);
@@ -158,9 +187,8 @@ public class StdCsciToTestTable implements ISimpleTable {
             }
             units.add(codeUnit);
          }
-         toReturn = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", units);
       }
-      return toReturn;
+      return units;
    }
 
 }

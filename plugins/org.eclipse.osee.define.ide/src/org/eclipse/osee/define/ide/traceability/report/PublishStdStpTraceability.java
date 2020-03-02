@@ -113,6 +113,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
       builder.append(includeImpd);
       availableTraceHandlers = new LinkedList<>();
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
+
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
       for (String handler : traceHandlers) {
          builder.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
