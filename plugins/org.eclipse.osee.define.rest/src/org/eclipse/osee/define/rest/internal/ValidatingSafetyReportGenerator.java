@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -116,19 +117,17 @@ public class ValidatingSafetyReportGenerator {
       String[] currentRowValues = new String[columnHeadings.length];
 
       for (ArtifactReadable systemFunction : functionsFolder.getDescendants()) {
-         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunctionMsWord)) {
+         String sevCat = getSeverityCategory(systemFunction);
+         boolean isNHSeverity = false;
+         if (Strings.isValid(sevCat) && "NH".equals(sevCat)) {
+            isNHSeverity = true;
+         }
+         if (systemFunction.isOfType(CoreArtifactTypes.SystemFunctionMsWord) && !isNHSeverity) {
             clearRowValues(currentRowValues);
             writeCell(systemFunction.getName(), currentRowValues, 0);
             accumulator.reset(systemFunction);
             accumulator.buildSubsystemsRequirementsMap(systemFunction);
-            String sevCat;
-            if (systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory).size() != 1) {
-               activityLog.createEntry(OSEE_ERROR, "found too many attributes on " + systemFunction.toString());
-               sevCat = systemFunction.getAttributes(
-                  CoreAttributeTypes.SeverityCategory).iterator().next().getDisplayableString();
-            } else {
-               sevCat = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
-            }
+
             writeCell(sevCat, currentRowValues, 1);
             writeSFHAInfo(systemFunction, sevCat, writer, currentRowValues, 2);
 
@@ -141,8 +140,7 @@ public class ValidatingSafetyReportGenerator {
             StringBuilder paraNums = new StringBuilder();
             StringBuilder reqNames = new StringBuilder();
             boolean firstTime = true;
-            for (ArtifactReadable systemRequirement : systemFunction.getRelated(
-               CoreRelationTypes.Design_Requirement)) {
+            for (ArtifactReadable systemRequirement : systemFunction.getRelated(CoreRelationTypes.Design_Requirement)) {
                if (!firstTime) {
                   paraNums.append(", ");
                   reqNames.append(", ");
@@ -160,6 +158,21 @@ public class ValidatingSafetyReportGenerator {
          }
       }
       writer.endSheet();
+   }
+
+   private String getSeverityCategory(ArtifactReadable systemFunction) {
+      ResultSet<? extends AttributeReadable<Object>> results =
+         systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory);
+      if (results.isEmpty()) {
+         activityLog.createEntry(OSEE_ERROR, "found no sevCat attribute on " + systemFunction.toString());
+      } else if (systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory).size() > 1) {
+         activityLog.createEntry(OSEE_ERROR, "found too many sevCat attributes on " + systemFunction.toString());
+         return systemFunction.getAttributes(
+            CoreAttributeTypes.SeverityCategory).iterator().next().getDisplayableString();
+      } else {
+         return systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
+      }
+      return "";
    }
 
    private void clearRowValues(String[] toClear) {

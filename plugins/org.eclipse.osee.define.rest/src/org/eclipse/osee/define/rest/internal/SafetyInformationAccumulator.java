@@ -15,7 +15,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,11 +25,9 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author David W. Miller
@@ -112,8 +109,8 @@ public final class SafetyInformationAccumulator {
       Iterator<ArtifactReadable> ssrIter = localSubsystemRequirements.iterator();
       while (ssrIter.hasNext()) {
          ArtifactReadable subsystemRequirement = ssrIter.next();
-         List<ArtifactReadable> localSoftwareRequirements =
-            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
+         List<ArtifactReadable> localSoftwareRequirements = Lists.newArrayList(
+            subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
 
          // test software requirements for suitability - is it a subclass of software requirement?
          Iterables.removeIf(localSoftwareRequirements, notSoftwareRequirement);
@@ -129,10 +126,9 @@ public final class SafetyInformationAccumulator {
       return localSubsystemRequirements;
    }
 
-   public void output() throws IOException {
+   public void output(String[] currentRowValues) throws IOException {
       for (ArtifactReadable subsystemFunction : subsystemFunctions) {
-         processSubsystemFunction(subsystemFunction);
-         writer.endRow();
+         processSubsystemFunction(subsystemFunction, currentRowValues);
       }
    }
 
@@ -151,74 +147,75 @@ public final class SafetyInformationAccumulator {
       return SafetyCriticalityLookup.getDALLevelFromSeverityCategory(inputSafetyCriticality);
    }
 
-   private void processSubsystemFunction(ArtifactReadable subsystemFunction) throws IOException {
-      writer.writeCell(subsystemFunction.getName(), SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
+   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues) throws IOException {
+      writeCell(subsystemFunction.getName(), currentRowValues, SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
-      writer.writeCell(sevCat);
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FDAL, ""));
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FdalRationale, ""));
+      writeCell(sevCat, currentRowValues, SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 1);
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
-         processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat));
+         processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat), currentRowValues);
       }
-      writer.endRow();
+      writer.writeRow((Object[]) currentRowValues);
    }
 
-   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality) throws IOException {
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""),
+   private void writeCell(String value, String[] currentRow, int col) {
+      currentRow[col] = value;
+   }
+
+   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality, String[] currentRowValues) throws IOException {
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""), currentRowValues,
          SafetyReportGenerator.SUBSYSTEM_INDEX);
-      writer.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-      writer.writeCell(subsystemRequirement.getName());
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IDAL, ""));
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""));
-
+      writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), currentRowValues,
+         SafetyReportGenerator.SUBSYSTEM_INDEX + 1);
+      writeCell(subsystemRequirement.getName(), currentRowValues, SafetyReportGenerator.SUBSYSTEM_INDEX + 2);
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.LegacyDal, ""), currentRowValues,
+         SafetyReportGenerator.SUBSYSTEM_INDEX + 3);
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
-         processSoftwareRequirement(softwareRequirement);
+         processSoftwareRequirement(softwareRequirement, currentRowValues);
       }
-      writer.endRow();
+      writer.writeRow((Object[]) currentRowValues);
    }
 
-   private String writeCriticality(ArtifactReadable art, AttributeTypeToken thisType) throws IOException {
+   private String writeCriticality(ArtifactReadable art, AttributeTypeToken thisType, String[] currentRowValues, int col) {
       String current = art.getSoleAttributeAsString(thisType, "Error");
+      if ("Error".equals(current)) {
+         writeCell("Error: invalid content", currentRowValues, col);
+         return "Error";
+      }
 
       if (AttributeId.UNSPECIFIED.equals(current)) {
-         writer.writeCell(AttributeId.UNSPECIFIED);
+         writeCell(AttributeId.UNSPECIFIED, currentRowValues, col);
+         return AttributeId.UNSPECIFIED;
       }
-      writer.writeCell(current);
+      writeCell(current, currentRowValues, col);
       return current;
    }
 
-   private void processSoftwareRequirement(ArtifactReadable softwareRequirement) throws IOException {
-      writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
-      String softwareRequirementDAL = writeCriticality(softwareRequirement, CoreAttributeTypes.IDAL);
-      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""));
+   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String[] currentRowValues) throws IOException {
+      writeCell(softwareRequirement.getName(), currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
+      String softwareRequirementDAL = writeCriticality(softwareRequirement, CoreAttributeTypes.LegacyDal,
+         currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
 
-      writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
-         softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));
-      writer.writeCell(functionalCategory);
+      writeCell(
+         calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
+            softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)),
+         currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);
+      writeCell(functionalCategory, currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 3);
+      writeCell(softwareRequirement.getAttributeValuesAsString(CoreAttributeTypes.Partition), currentRowValues,
+         SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 4);
 
-      writer.writeCell(
-         Collections.toString(",", getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)));
-
-      writer.writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement));
+      writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement), currentRowValues,
+         SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 5);
       Collection<String> codeUnits = safetyReport.getRequirementToCodeUnitsValues(softwareRequirement);
 
       if (Conditions.hasValues(codeUnits)) {
          for (String codeUnit : codeUnits) {
-            writer.writeCell(codeUnit, SafetyReportGenerator.CODE_UNIT_INDEX);
-            writer.endRow();
+            writeCell(codeUnit, currentRowValues, SafetyReportGenerator.CODE_UNIT_INDEX);
+            writer.writeRow((Object[]) currentRowValues);
          }
       } else {
-         writer.endRow();
+         writer.writeRow((Object[]) currentRowValues);
       }
-   }
-
-   public List<String> getAttributesToStringList(ArtifactReadable artifact, AttributeTypeToken attributeType) {
-      List<String> items = new ArrayList<>();
-      for (AttributeReadable<?> attribute : artifact.getAttributes(attributeType)) {
-         items.add(attribute.getDisplayableString());
-      }
-      return items;
    }
 }
