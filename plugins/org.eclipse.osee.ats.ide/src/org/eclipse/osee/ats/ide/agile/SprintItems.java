@@ -54,7 +54,10 @@ public class SprintItems {
             try {
                ArtifactId backlogArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(workItem,
                   AtsRelationTypes.AgileBacklog_AgileBacklog);
-               Artifact relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlogArt);
+               Artifact relatedBacklogArt = null;
+               if (backlogArt != null && backlogArt.isValid()) {
+                  relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlogArt);
+               }
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {
