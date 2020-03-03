@@ -187,6 +187,11 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
 
    public void handleTransitionButtonSelection() {
       final IAtsStateDefinition toStateDef = getToState();
+      if (toStateDef == null) {
+         AWorkbench.popup("Must select state to transition.");
+         refresh();
+         return;
+      }
       handleTransitionButtonSelection(awa, isEditable, toStateDef);
    }
 
