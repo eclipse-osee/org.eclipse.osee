@@ -105,7 +105,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public List<FeatureDefinition> getFeatureDefinitionData() {
-      return applicabilityQuery.getFeatureDefinitionData(branch);
+      return ops.getFeatureDefinitionData(branch);
    }
 
    @Override

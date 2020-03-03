@@ -59,4 +59,6 @@ public interface OrcsApplicability {
 
    XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability, UserId account);
 
+   List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
+
 }

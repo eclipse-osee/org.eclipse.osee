@@ -601,4 +601,18 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
+   @Override
+   public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch) {
+      ApplicabilityBranchConfig apps = getConfig(branch, true);
+      List<FeatureDefinition> features = apps.getFeatures();
+      /**
+       * This for loop can be removed in coordination with build script current json they receive has valueType set as
+       * single/multiple should be the data type e.g. String
+       */
+      for (FeatureDefinition ft : features) {
+         ft.setType(ft.getValueType());
+         ft.setValueType((ft.isMultiValued()) ? "multiple" : "single");
+      }
+      return features;
+   }
 }
