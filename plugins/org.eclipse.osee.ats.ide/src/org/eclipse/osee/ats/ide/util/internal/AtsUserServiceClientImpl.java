@@ -43,8 +43,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsUserServiceClientImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
 
+   Boolean atsAdmin = null;
+   private AtsUser currentUser;
+
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
+   }
+
+   @Override
+   public void setCurrentUser(AtsUser currentUser) {
+      this.currentUser = currentUser;
+   }
+
+   @Override
+   public void clearCaches() {
+      currentUser = null;
    }
 
    @Override
@@ -172,10 +185,10 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin() {
-      if (getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin)) {
-         return true;
+      if (atsAdmin == null) {
+         atsAdmin = getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
       }
-      return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser().getArtifactId());
+      return atsAdmin;
    }
 
    @Override

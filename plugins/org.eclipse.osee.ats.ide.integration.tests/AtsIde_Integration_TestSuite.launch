@@ -5,7 +5,7 @@
 <setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
 <setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
 <setEntry value="org.hamcrest.core:1.3.0.v20180420-1519:default:true"/>
-<setEntry value="rest.assured:3.0.2.v201909032047-DEV:default:true"/>
+<setEntry value="rest.assured:3.0.2.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="false"/>
@@ -38,7 +38,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -nosplash"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.ats.ide.integration.tests"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-DeventDebug=log&#13;&#10;-DeventSystem=new&#13;&#10;-Dosee.is.in.db.init=true&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-DeventDebug=log&#13;&#10;-DeventSystem=new&#13;&#10;-Dosee.is.in.db.init=true&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Duser.name=3333"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>

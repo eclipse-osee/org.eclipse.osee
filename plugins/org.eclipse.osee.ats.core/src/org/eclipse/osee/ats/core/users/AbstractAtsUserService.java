@@ -26,10 +26,13 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
    protected IAtsConfigurationsService configurationService;
-   protected AtsUser currentUser;
 
    @Override
    public void setConfigurationService(IAtsConfigurationsService configurationService) {
@@ -138,6 +140,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
+   public boolean isOseeAdmin() {
+      return getCurrentUser().getUserGroups().contains(CoreUserGroups.OseeAdmin);
+   }
+
+   @Override
    public Collection<AtsUser> getUsers(Active active) {
       List<AtsUser> users = new ArrayList<>();
       for (AtsUser user : getUsers()) {
@@ -151,12 +158,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    @Override
    public void reloadCache() {
       configurationService.getConfigurationsWithPend();
-      currentUser = null;
+      setCurrentUser(null);
    }
 
    @Override
    public void releaseUser() {
-      currentUser = null;
+      setCurrentUser(null);
    }
 
    @Override
@@ -172,11 +179,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
          }
       }
       return users;
-   }
-
-   @Override
-   public void setCurrentUser(AtsUser currentUser) {
-      this.currentUser = currentUser;
    }
 
    @Override
@@ -212,8 +214,17 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public void clearCaches() {
-      currentUser = null;
+   public Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId userId) {
+      AtsUser user = getUserByAccountId(userId.getId());
+      if (user != null) {
+         return user.getUserGroups().contains(userGroup);
+      }
+      return false;
+   }
+
+   @Override
+   public Boolean isUserMember(IUserGroupArtifactToken userGroup) {
+      return isUserMember(userGroup, getCurrentUser());
    }
 
 }

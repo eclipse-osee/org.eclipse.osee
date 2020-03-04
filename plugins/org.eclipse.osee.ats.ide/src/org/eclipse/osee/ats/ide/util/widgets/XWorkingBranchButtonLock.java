@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
@@ -121,8 +122,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             if (isLocked) {
                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
             } else {
-               IUserGroup everyoneGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.Everyone);
+               IUserGroup everyoneGroup = UserGroupService.get(CoreUserGroups.Everyone);
                Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
                AccessControlManager.setPermission((Artifact) everyoneGroup.getArtifact(), branch, PermissionEnum.READ);
             }

@@ -79,11 +79,13 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    }
 
    public void removeAccessProvider(ServiceReference<IAccessProvider> reference) {
-      if (isReady()) {
-         deregister(reference);
-         registered.remove(reference);
-      } else {
-         pendingProviders.remove(reference);
+      if (reference != null) {
+         if (isReady()) {
+            deregister(reference);
+            registered.remove(reference);
+         } else {
+            pendingProviders.remove(reference);
+         }
       }
    }
 

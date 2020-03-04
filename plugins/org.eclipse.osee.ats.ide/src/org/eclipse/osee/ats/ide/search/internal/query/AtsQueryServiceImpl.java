@@ -105,7 +105,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
       // Reload if current user
-      if (atsApi.getUserService().getCurrentUser().equals(atsUser) && AtsUtil.isInTest()) {
+      if (atsApi.getUserService().getCurrentUser().equals(atsUser) || AtsUtil.isInTest()) {
          atsUser = atsApi.getUserService().getCurrentUserNoCache();
       }
       for (String jsonValue : atsUser.getSavedSearches()) {

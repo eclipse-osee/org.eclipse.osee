@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
-import org.eclipse.osee.ats.core.access.UserGroupService;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -48,8 +48,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
 
    public static void run() {
       try {
-         if (!AtsClientService.get().getUserGroupService().getUserGroup(
-            AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
+         if (!UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
@@ -57,7 +56,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle Admin", message)) {
             if (!isAdmin) {
-               IUserGroup atsAdminGroup = UserGroupService.getAtsAdmin();
+               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
                if (!atsAdminGroup.isCurrentUserMember()) {
                   atsAdminGroup.addMember(UserManager.getUser());
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
@@ -72,16 +71,14 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }
             } else {
-               IUserGroup atsAdminGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin);
+               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
                   atsAdminGroup.removeMember(UserManager.getUser());
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
                }
 
-               IUserGroup oseeAdminGroup =
-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.OseeAdmin);
+               IUserGroup oseeAdminGroup = UserGroupService.get(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
                   oseeAdminGroup.removeMember(UserManager.getUser());
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");

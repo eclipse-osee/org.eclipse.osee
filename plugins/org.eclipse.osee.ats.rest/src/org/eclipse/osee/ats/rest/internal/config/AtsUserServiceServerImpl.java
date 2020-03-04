@@ -50,10 +50,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    public AtsUser getCurrentUser() {
-      if (currentUser == null) {
-         currentUser = AtsCoreUsers.SYSTEM_USER;
-      }
-      return currentUser;
+      return AtsCoreUsers.SYSTEM_USER;
    }
 
    @Override
@@ -182,4 +179,15 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       }
       return user;
    }
+
+   @Override
+   public void setCurrentUser(AtsUser user) {
+      // TBD
+   }
+
+   @Override
+   public void clearCaches() {
+      // do nothing
+   }
+
 }

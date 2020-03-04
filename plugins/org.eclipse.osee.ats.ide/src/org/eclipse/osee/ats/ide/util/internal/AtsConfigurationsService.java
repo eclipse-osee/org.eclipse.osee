@@ -101,6 +101,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    public AtsUser getUserByLoginId(String loginId) {
       AtsUser user = AtsClientService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin(loginId);
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
+      user.setAtsApi(atsApi);
       return user;
    }
 

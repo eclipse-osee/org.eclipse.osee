@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.osgi.service.event.EventAdmin;
@@ -168,8 +167,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
    boolean isWorkDefAsName();
 
    IAtsTaskRelatedService getTaskRelatedService();
-
-   IUserGroupService getUserGroupService();
 
    IAtsHealthService getHealthService();
 

@@ -18,7 +18,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -84,5 +86,11 @@ public interface IAtsUserService {
    void clearCaches();
 
    AtsUser getCurrentUserNoCache();
+
+   boolean isOseeAdmin();
+
+   Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId user);
+
+   Boolean isUserMember(IUserGroupArtifactToken userGroup);
 
 }

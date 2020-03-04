@@ -42,7 +42,7 @@ public class UserGroupService implements IUserGroupService {
       return get(CoreUserGroups.OseeAccessAdmin);
    }
 
-   private static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
+   public static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
       return getUserGroupService().getUserGroup(userGroupArtToken);
    }
 

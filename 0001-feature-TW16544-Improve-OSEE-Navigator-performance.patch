@@ -1,0 +1,772 @@
+From dcc1cbaffc2130a624ac2fa86adbd121096b6b49 Mon Sep 17 00:00:00 2001
+From: "donald.g.dunne" <donald.g.dunne@boeing.com>
+Date: Tue, 3 Mar 2020 21:10:36 -0700
+Subject: [PATCH] feature[TW16544]: Improve OSEE Navigator performance
+
+Change-Id: I515ab5937cb191c25140c59c7ea4e7e8459d0db0
+---
+ .../src/org/eclipse/osee/ats/api/AtsApi.java  |  3 --
+ .../osee/ats/api/user/IAtsUserService.java    |  8 ++++
+ .../OSGI-INF/user.group.service.ref.xml       |  5 ---
+ .../ats/core/access/UserGroupService.java     | 40 -------------------
+ .../core/users/AbstractAtsUserService.java    | 31 +++++++++-----
+ .../osee/ats/core/util/AtsApiImpl.java        |  6 ---
+ .../AtsIde_Integration_TestSuite.launch       |  4 +-
+ .../META-INF/MANIFEST.MF                      |  1 +
+ .../tests/ats/access/UserGroupImplTest.java   | 10 ++---
+ .../world/search/AtsQueryServiceImplTest.java | 14 ++++---
+ .../ats/ide/config/AtsCurrentUserService.java | 10 ++++-
+ .../osee/ats/ide/internal/Activator.java      |  2 +
+ .../ats/ide/navigate/NavigateViewItems.java   |  5 +--
+ .../RecentlyVisitedNavigateItems.java         | 31 ++++++++------
+ .../osee/ats/ide/navigate/ToggleAtsAdmin.java | 13 +++---
+ .../internal/query/AtsQueryServiceImpl.java   |  2 +-
+ .../internal/AtsUserServiceClientImpl.java    | 27 +++++++++++--
+ .../widgets/XWorkingBranchButtonLock.java     |  4 +-
+ .../osee/ats/ide/world/WorldXViewerUtil.java  | 25 +++++++++---
+ .../config/AtsUserServiceServerImpl.java      | 15 +++++--
+ .../skynet/core/access/UserGroupService.java  |  2 +-
+ 21 files changed, 138 insertions(+), 120 deletions(-)
+ delete mode 100644 plugins/org.eclipse.osee.ats.core/OSGI-INF/user.group.service.ref.xml
+ delete mode 100644 plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/access/UserGroupService.java
+
+diff --git a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/AtsApi.java b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/AtsApi.java
+index 963b3744da..e8bedeac10 100644
+--- a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/AtsApi.java
++++ b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/AtsApi.java
+@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+ import org.eclipse.osee.framework.core.data.Branch;
+ import org.eclipse.osee.framework.core.data.BranchId;
+ import org.eclipse.osee.framework.core.data.IOseeBranch;
+-import org.eclipse.osee.framework.core.data.IUserGroupService;
+ import org.eclipse.osee.jdbc.JdbcService;
+ import org.eclipse.osee.logger.Log;
+ import org.osgi.service.event.EventAdmin;
+@@ -169,8 +168,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
+ 
+    IAtsTaskRelatedService getTaskRelatedService();
+ 
+-   IUserGroupService getUserGroupService();
+-
+    IAtsHealthService getHealthService();
+ 
+    IAtsWorkDefinitionProviderService getWorkDefinitionProviderService();
+diff --git a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/user/IAtsUserService.java b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/user/IAtsUserService.java
+index 06e79f9ad7..9f93ddaf58 100644
+--- a/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/user/IAtsUserService.java
++++ b/plugins/org.eclipse.osee.ats.api/src/org/eclipse/osee/ats/api/user/IAtsUserService.java
+@@ -18,7 +18,9 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
+ import org.eclipse.osee.framework.core.data.ArtifactId;
+ import org.eclipse.osee.framework.core.data.ArtifactToken;
++import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+ import org.eclipse.osee.framework.core.data.RelationTypeSide;
++import org.eclipse.osee.framework.core.data.UserId;
+ import org.eclipse.osee.framework.core.enums.Active;
+ 
+ /**
+@@ -85,4 +87,10 @@ public interface IAtsUserService {
+ 
+    AtsUser getCurrentUserNoCache();
+ 
++   boolean isOseeAdmin();
++
++   Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId user);
++
++   Boolean isUserMember(IUserGroupArtifactToken userGroup);
++
+ }
+diff --git a/plugins/org.eclipse.osee.ats.core/OSGI-INF/user.group.service.ref.xml b/plugins/org.eclipse.osee.ats.core/OSGI-INF/user.group.service.ref.xml
+deleted file mode 100644
+index 062f721a5f..0000000000
+--- a/plugins/org.eclipse.osee.ats.core/OSGI-INF/user.group.service.ref.xml
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+-   <implementation class="org.eclipse.osee.ats.core.access.UserGroupService"/>
+-   <reference bind="setUserGroupService" cardinality="1..1" interface="org.eclipse.osee.framework.core.data.IUserGroupService" name="IUserGroupService" policy="static"/>
+-</scr:component>
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/access/UserGroupService.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/access/UserGroupService.java
+deleted file mode 100644
+index a4153f97ef..0000000000
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/access/UserGroupService.java
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/*******************************************************************************
+- * Copyright (c) 2019 Boeing.
+- * All rights reserved. This program and the accompanying materials
+- * are made available under the terms of the Eclipse Public License v1.0
+- * which accompanies this distribution, and is available at
+- * http://www.eclipse.org/legal/epl-v10.html
+- *
+- * Contributors:
+- *     Boeing - initial API and implementation
+- *******************************************************************************/
+-package org.eclipse.osee.ats.core.access;
+-
+-import org.eclipse.osee.ats.api.data.AtsUserGroups;
+-import org.eclipse.osee.framework.core.data.IUserGroup;
+-import org.eclipse.osee.framework.core.data.IUserGroupService;
+-
+-/**
+- * @author Donald G. Dunne
+- */
+-public class UserGroupService {
+-
+-   private static IUserGroupService userGroupService;
+-
+-   public static IUserGroupService get() {
+-      return userGroupService;
+-   }
+-
+-   public void setUserGroupService(IUserGroupService userGroupService) {
+-      UserGroupService.userGroupService = userGroupService;
+-   }
+-
+-   public static IUserGroup getAtsAdmin() {
+-      return userGroupService.getUserGroup(AtsUserGroups.AtsAdmin);
+-   }
+-
+-   public static IUserGroup getAtsTemmpAdmin() {
+-      return userGroupService.getUserGroup(AtsUserGroups.AtsTempAdmin);
+-   }
+-
+-}
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/users/AbstractAtsUserService.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/users/AbstractAtsUserService.java
+index 993bb8f188..c099af2e30 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/users/AbstractAtsUserService.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/users/AbstractAtsUserService.java
+@@ -26,10 +26,13 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
+ import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
+ import org.eclipse.osee.framework.core.data.ArtifactId;
+ import org.eclipse.osee.framework.core.data.ArtifactToken;
++import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+ import org.eclipse.osee.framework.core.data.RelationTypeSide;
++import org.eclipse.osee.framework.core.data.UserId;
+ import org.eclipse.osee.framework.core.data.UserToken;
+ import org.eclipse.osee.framework.core.enums.Active;
+ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
++import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+ import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+ import org.eclipse.osee.framework.jdk.core.util.Conditions;
+ import org.eclipse.osee.framework.jdk.core.util.Strings;
+@@ -40,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
+ public abstract class AbstractAtsUserService implements IAtsUserService {
+ 
+    protected IAtsConfigurationsService configurationService;
+-   protected AtsUser currentUser;
+ 
+    @Override
+    public void setConfigurationService(IAtsConfigurationsService configurationService) {
+@@ -137,6 +139,11 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
+       return isAtsAdmin(getCurrentUser());
+    }
+ 
++   @Override
++   public boolean isOseeAdmin() {
++      return getCurrentUser().getUserGroups().contains(CoreUserGroups.OseeAdmin);
++   }
++
+    @Override
+    public Collection<AtsUser> getUsers(Active active) {
+       List<AtsUser> users = new ArrayList<>();
+@@ -151,12 +158,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
+    @Override
+    public void reloadCache() {
+       configurationService.getConfigurationsWithPend();
+-      currentUser = null;
++      setCurrentUser(null);
+    }
+ 
+    @Override
+    public void releaseUser() {
+-      currentUser = null;
++      setCurrentUser(null);
+    }
+ 
+    @Override
+@@ -174,11 +181,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
+       return users;
+    }
+ 
+-   @Override
+-   public void setCurrentUser(AtsUser currentUser) {
+-      this.currentUser = currentUser;
+-   }
+-
+    @Override
+    public AtsUser getAtsUser(AtsUser user) {
+       AtsUser atsUser = new AtsUser();
+@@ -212,8 +214,17 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
+    }
+ 
+    @Override
+-   public void clearCaches() {
+-      currentUser = null;
++   public Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId userId) {
++      AtsUser user = getUserByAccountId(userId.getId());
++      if (user != null) {
++         return user.getUserGroups().contains(userGroup);
++      }
++      return false;
++   }
++
++   @Override
++   public Boolean isUserMember(IUserGroupArtifactToken userGroup) {
++      return isUserMember(userGroup, getCurrentUser());
+    }
+ 
+ }
+\ No newline at end of file
+diff --git a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/AtsApiImpl.java b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/AtsApiImpl.java
+index 46db813eea..de0bc0fa23 100644
+--- a/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/AtsApiImpl.java
++++ b/plugins/org.eclipse.osee.ats.core/src/org/eclipse/osee/ats/core/util/AtsApiImpl.java
+@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.core.data.Branch;
+ import org.eclipse.osee.framework.core.data.BranchId;
+ import org.eclipse.osee.framework.core.data.IAttribute;
+ import org.eclipse.osee.framework.core.data.IOseeBranch;
+-import org.eclipse.osee.framework.core.data.IUserGroupService;
+ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+ import org.eclipse.osee.framework.core.enums.CoreBranches;
+ import org.eclipse.osee.framework.jdk.core.util.Conditions;
+@@ -504,11 +503,6 @@ public abstract class AtsApiImpl implements AtsApi {
+       return configurationsService;
+    }
+ 
+-   @Override
+-   public IUserGroupService getUserGroupService() {
+-      return org.eclipse.osee.ats.core.access.UserGroupService.get();
+-   }
+-
+    @Override
+    public IAtsWorkDefinitionProviderService getWorkDefinitionProviderService() {
+       return workDefinitionProviderService;
+diff --git a/plugins/org.eclipse.osee.ats.ide.integration.tests/AtsIde_Integration_TestSuite.launch b/plugins/org.eclipse.osee.ats.ide.integration.tests/AtsIde_Integration_TestSuite.launch
+index e01d647434..9ff5fce9d2 100644
+--- a/plugins/org.eclipse.osee.ats.ide.integration.tests/AtsIde_Integration_TestSuite.launch
++++ b/plugins/org.eclipse.osee.ats.ide.integration.tests/AtsIde_Integration_TestSuite.launch
+@@ -5,7 +5,7 @@
+ <setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
+ <setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
+ <setEntry value="org.hamcrest.core:1.3.0.v20180420-1519:default:true"/>
+-<setEntry value="rest.assured:3.0.2.v201909032047-DEV:default:true"/>
++<setEntry value="rest.assured:3.0.2.qualifier:default:true"/>
+ </setAttribute>
+ <booleanAttribute key="append.args" value="true"/>
+ <booleanAttribute key="askclear" value="false"/>
+@@ -38,7 +38,7 @@
+ <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -nosplash"/>
+ <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.ats.ide.integration.tests"/>
+ <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-DeventDebug=log&#13;&#10;-DeventSystem=new&#13;&#10;-Dosee.is.in.db.init=true&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml"/>
++<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-DeventDebug=log&#13;&#10;-DeventSystem=new&#13;&#10;-Dosee.is.in.db.init=true&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Duser.name=3333"/>
+ <stringAttribute key="pde.version" value="3.3"/>
+ <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
+ <booleanAttribute key="run_in_ui_thread" value="true"/>
+diff --git a/plugins/org.eclipse.osee.ats.ide.integration.tests/META-INF/MANIFEST.MF b/plugins/org.eclipse.osee.ats.ide.integration.tests/META-INF/MANIFEST.MF
+index d9437fd543..283e9a7b0d 100644
+--- a/plugins/org.eclipse.osee.ats.ide.integration.tests/META-INF/MANIFEST.MF
++++ b/plugins/org.eclipse.osee.ats.ide.integration.tests/META-INF/MANIFEST.MF
+@@ -114,6 +114,7 @@ Import-Package: com.fasterxml.jackson.core,
+  org.eclipse.osee.framework.server.ide.api.client.model,
+  org.eclipse.osee.framework.server.ide.api.model,
+  org.eclipse.osee.framework.skynet.core,
++ org.eclipse.osee.framework.skynet.core.access,
+  org.eclipse.osee.framework.skynet.core.artifact,
+  org.eclipse.osee.framework.skynet.core.artifact.search,
+  org.eclipse.osee.framework.skynet.core.attribute,
+diff --git a/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/access/UserGroupImplTest.java b/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/access/UserGroupImplTest.java
+index 245054fd18..1732c43c8d 100644
+--- a/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/access/UserGroupImplTest.java
++++ b/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/access/UserGroupImplTest.java
+@@ -11,8 +11,7 @@
+ package org.eclipse.osee.ats.ide.integration.tests.ats.access;
+ 
+ import org.eclipse.osee.ats.api.data.AtsUserGroups;
+-import org.eclipse.osee.ats.core.access.UserGroupService;
+-import org.eclipse.osee.framework.core.data.IUserGroupService;
++import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+ import org.junit.Assert;
+ import org.junit.Test;
+ 
+@@ -25,12 +24,9 @@ public class UserGroupImplTest {
+ 
+    @Test
+    public void test() {
+-      IUserGroupService svc = UserGroupService.get();
+-      Assert.assertNotNull(svc);
+-
+       // Joe Smith is no admin by default, but is temp admin
+-      Assert.assertFalse(svc.getUserGroup(AtsUserGroups.AtsAdmin).isCurrentUserMember());
+-      Assert.assertTrue(svc.getUserGroup(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
++      Assert.assertFalse(UserGroupService.get(AtsUserGroups.AtsAdmin).isCurrentUserMember());
++      Assert.assertTrue(UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
+    }
+ 
+ }
+diff --git a/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/world/search/AtsQueryServiceImplTest.java b/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/world/search/AtsQueryServiceImplTest.java
+index ad73b847a7..f0fedfc0ad 100644
+--- a/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/world/search/AtsQueryServiceImplTest.java
++++ b/plugins/org.eclipse.osee.ats.ide.integration.tests/src/org/eclipse/osee/ats/ide/integration/tests/ats/world/search/AtsQueryServiceImplTest.java
+@@ -14,6 +14,7 @@ import java.util.ArrayList;
+ import org.eclipse.osee.ats.api.query.AtsSearchData;
+ import org.eclipse.osee.ats.api.query.AtsSearchUtil;
+ import org.eclipse.osee.ats.api.user.AtsUser;
++import org.eclipse.osee.ats.api.util.AtsUtil;
+ import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+ import org.junit.Assert;
+ import org.junit.Test;
+@@ -47,12 +48,13 @@ public class AtsQueryServiceImplTest {
+     */
+    @Test
+    public void testSaveSearchAndGetSavedSearchesAndRemoveSearch() {
+-      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
++      AtsUser user = AtsClientService.get().getUserService().getCurrentUserNoCache();
++      AtsUtil.setIsInText(true);
+ 
+       String namespace = AtsSearchUtil.ATS_QUERY_NAMESPACE;
+       ArrayList<AtsSearchData> savedSearches =
+          AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+-      Assert.assertEquals(0, savedSearches.size());
++      Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
+ 
+       AtsSearchData data = new AtsSearchData("my search");
+       data.setColorTeam("blue");
+@@ -60,7 +62,7 @@ public class AtsQueryServiceImplTest {
+       AtsClientService.get().getQueryService().saveSearch(user, data);
+ 
+       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+-      Assert.assertEquals(1, savedSearches.size());
++      Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
+ 
+       AtsSearchData data2 = new AtsSearchData("my search 2");
+       data2.setColorTeam("green");
+@@ -68,7 +70,7 @@ public class AtsQueryServiceImplTest {
+       AtsClientService.get().getQueryService().saveSearch(user, data2);
+ 
+       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+-      Assert.assertEquals(2, savedSearches.size());
++      Assert.assertEquals(savedSearches.toString(), 2, savedSearches.size());
+ 
+       String namespace2 = AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE;
+       data = new AtsSearchData("my search 3");
+@@ -77,7 +79,7 @@ public class AtsQueryServiceImplTest {
+       AtsClientService.get().getQueryService().saveSearch(user, data);
+ 
+       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
+-      Assert.assertEquals(1, savedSearches.size());
++      Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
+ 
+       // retrieve the saved search cause it has the search it
+       data = savedSearches.iterator().next();
+@@ -85,7 +87,7 @@ public class AtsQueryServiceImplTest {
+       AtsClientService.get().getQueryService().removeSearch(user, data);
+ 
+       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
+-      Assert.assertEquals(0, savedSearches.size());
++      Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
+ 
+    }
+ 
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/config/AtsCurrentUserService.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/config/AtsCurrentUserService.java
+index f4bdbc3513..41012cde99 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/config/AtsCurrentUserService.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/config/AtsCurrentUserService.java
+@@ -21,13 +21,17 @@ import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+  */
+ public class AtsCurrentUserService implements IAtsCurrentUserService {
+ 
+-   private AtsUser currentUser;
++   private static AtsUser currentUser;
+    private AtsConfigEndpointApi configEp;
+ 
+    public AtsCurrentUserService() {
+       // for jax-rs
+    }
+ 
++   public static AtsUser getUser() {
++      return currentUser;
++   }
++
+    @Override
+    public AtsUser getCurrentUser() {
+       if (currentUser == null) {
+@@ -45,4 +49,8 @@ public class AtsCurrentUserService implements IAtsCurrentUserService {
+       return configEp;
+    }
+ 
++   public static void clearCaches() {
++      currentUser = null;
++   }
++
+ }
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/internal/Activator.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/internal/Activator.java
+index 3abc8bb80d..fb48f65b1e 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/internal/Activator.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/internal/Activator.java
+@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ide.internal;
+ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+ import org.eclipse.osee.ats.api.util.AtsUtil;
+ import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
++import org.eclipse.osee.ats.ide.config.AtsCurrentUserService;
+ import org.eclipse.osee.ats.ide.navigate.SavedSearchesNavigateItem;
+ import org.eclipse.osee.ats.ide.workflow.AtsWorkItemEventHandler;
+ import org.eclipse.osee.framework.plugin.core.OseeActivator;
+@@ -38,6 +39,7 @@ public class Activator extends OseeActivator {
+          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, FrameworkEvents.NAVIGATE_VIEW_LOADED));
+       context.registerService(EventHandler.class.getName(), new SavedSearchesNavigateItem(),
+          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.SAVED_SEARCHES_MODIFIED));
++      (new AtsCurrentUserService()).getCurrentUser();
+    }
+ 
+ }
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/NavigateViewItems.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/NavigateViewItems.java
+index 787e3e68ae..e629a6f0af 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/NavigateViewItems.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/NavigateViewItems.java
+@@ -87,7 +87,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
+ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+ import org.eclipse.osee.framework.logging.OseeLevel;
+ import org.eclipse.osee.framework.logging.OseeLog;
+-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+ import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
+ import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
+@@ -311,8 +310,8 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
+    }
+ 
+    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
+-      if (UserGroupService.getOseeAdmin().isCurrentUserMember() || AtsClientService.get().getUserGroupService().isInUserGroup(
+-         CoreUserGroups.Everyone)) {
++      if (AtsClientService.get().getUserService().isUserMember(
++         CoreUserGroups.OseeAdmin) || AtsClientService.get().getUserService().isUserMember(CoreUserGroups.Everyone)) {
+          XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
+ 
+          new ResultsEditorExample(exampleItems);
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/RecentlyVisitedNavigateItems.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/RecentlyVisitedNavigateItems.java
+index dc4e8c53bf..d0060b64f2 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/RecentlyVisitedNavigateItems.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/RecentlyVisitedNavigateItems.java
+@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import java.util.ArrayList;
+ import java.util.List;
++import java.util.logging.Level;
+ import org.eclipse.osee.ats.api.IAtsWorkItem;
+ import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
+ import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
+@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
+ import org.eclipse.osee.framework.core.util.JsonUtil;
+ import org.eclipse.osee.framework.jdk.core.util.Lib;
+ import org.eclipse.osee.framework.jdk.core.util.Strings;
++import org.eclipse.osee.framework.logging.OseeLog;
+ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+@@ -99,21 +101,26 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
+    }
+ 
+    private static void ensureLoaded() {
+-      if (visitedItems == null) {
+-         try {
+-            String recentlyVisistedTokensJson = AtsClientService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
+-            if (Strings.isValid(recentlyVisistedTokensJson)) {
+-               ObjectMapper mapper = JsonUtil.getMapper();
+-               visitedItems = mapper.readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
+-            } else {
++      try {
++         if (visitedItems == null) {
++            try {
++               String recentlyVisistedTokensJson = AtsClientService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
++               if (Strings.isValid(recentlyVisistedTokensJson)) {
++                  ObjectMapper mapper = JsonUtil.getMapper();
++                  visitedItems = mapper.readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
++               } else {
++                  visitedItems = new RecentlyVisitedItems();
++               }
++            } catch (Exception ex) {
++               AtsClientService.get().getLogger().error(
++                  "Unable to read visited items from Ats Config attribute on user artifact %s",
++                  AtsClientService.get().getUserService().getCurrentUser());
+                visitedItems = new RecentlyVisitedItems();
+             }
+-         } catch (Exception ex) {
+-            AtsClientService.get().getLogger().error(
+-               "Unable to read visited items from Ats Config attribute on user artifact %s",
+-               AtsClientService.get().getUserService().getCurrentUser());
+-            visitedItems = new RecentlyVisitedItems();
+          }
++      } catch (Exception ex) {
++         OseeLog.log(RecentlyVisitedNavigateItems.class, Level.SEVERE, Lib.exceptionToString(ex));
++         visitedItems = new RecentlyVisitedItems();
+       }
+    }
+ 
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/ToggleAtsAdmin.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/ToggleAtsAdmin.java
+index 9684987788..07b0a2e74b 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/ToggleAtsAdmin.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/navigate/ToggleAtsAdmin.java
+@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.navigate;
+ 
+ import org.eclipse.jface.dialogs.MessageDialog;
+ import org.eclipse.osee.ats.api.data.AtsUserGroups;
+-import org.eclipse.osee.ats.core.access.UserGroupService;
+ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+ import org.eclipse.osee.ats.ide.internal.Activator;
+ import org.eclipse.osee.ats.ide.internal.AtsClientService;
+@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
+ import org.eclipse.osee.framework.logging.OseeLevel;
+ import org.eclipse.osee.framework.logging.OseeLog;
+ import org.eclipse.osee.framework.skynet.core.UserManager;
++import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+@@ -48,8 +48,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
+ 
+    public static void run() {
+       try {
+-         if (!AtsClientService.get().getUserGroupService().getUserGroup(
+-            AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
++         if (!UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember()) {
+             AWorkbench.popup("Current User not configured for Temporary Admin");
+             return;
+          }
+@@ -57,7 +56,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
+          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
+          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle Admin", message)) {
+             if (!isAdmin) {
+-               IUserGroup atsAdminGroup = UserGroupService.getAtsAdmin();
++               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
+                if (!atsAdminGroup.isCurrentUserMember()) {
+                   atsAdminGroup.addMember(UserManager.getUser());
+                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
+@@ -72,16 +71,14 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
+                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
+                }
+             } else {
+-               IUserGroup atsAdminGroup =
+-                  AtsClientService.get().getUserGroupService().getUserGroup(AtsUserGroups.AtsAdmin);
++               IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
+                if (atsAdminGroup.isCurrentUserMember()) {
+                   atsAdminGroup.removeMember(UserManager.getUser());
+                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
+                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
+                }
+ 
+-               IUserGroup oseeAdminGroup =
+-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.OseeAdmin);
++               IUserGroup oseeAdminGroup = UserGroupService.get(CoreUserGroups.OseeAdmin);
+                if (oseeAdminGroup.isCurrentUserMember()) {
+                   oseeAdminGroup.removeMember(UserManager.getUser());
+                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/search/internal/query/AtsQueryServiceImpl.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/search/internal/query/AtsQueryServiceImpl.java
+index 33aff3961c..3c22e81160 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/search/internal/query/AtsQueryServiceImpl.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/search/internal/query/AtsQueryServiceImpl.java
+@@ -102,7 +102,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
+    public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
+       ArrayList<AtsSearchData> searches = new ArrayList<>();
+       // Reload if current user
+-      if (atsApi.getUserService().getCurrentUser().equals(atsUser) && AtsUtil.isInTest()) {
++      if (atsApi.getUserService().getCurrentUser().equals(atsUser) || AtsUtil.isInTest()) {
+          atsUser = atsApi.getUserService().getCurrentUserNoCache();
+       }
+       for (String jsonValue : atsUser.getSavedSearches()) {
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/internal/AtsUserServiceClientImpl.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/internal/AtsUserServiceClientImpl.java
+index 3f0f5c1bb0..bd7fc3f3b9 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/internal/AtsUserServiceClientImpl.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/internal/AtsUserServiceClientImpl.java
+@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsUserGroups;
+ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+ import org.eclipse.osee.ats.api.user.AtsUser;
+ import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
++import org.eclipse.osee.ats.ide.config.AtsCurrentUserService;
+ import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
+ import org.eclipse.osee.ats.ide.internal.AtsClientService;
+ import org.eclipse.osee.framework.core.data.ArtifactId;
+@@ -43,15 +44,30 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+  */
+ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
+ 
++   Boolean atsAdmin = null;
++   private AtsUser currentUser;
++
+    public AtsUserServiceClientImpl() {
+       // For OSGI Instantiation
+    }
+ 
++   @Override
++   public void setCurrentUser(AtsUser currentUser) {
++      this.currentUser = currentUser;
++   }
++
++   @Override
++   public void clearCaches() {
++      AtsCurrentUserService.clearCaches();
++   }
++
+    @Override
+    public AtsUser getCurrentUser() {
+       if (currentUser == null) {
+          if (UserManager.isBootstrap()) {
+             currentUser = configurationService.getUserByUserId(AtsCoreUsers.BOOTSTRAP_USER.getUserId());
++         } else if (AtsCurrentUserService.getUser() != null) {
++            currentUser = AtsCurrentUserService.getUser();
+          } else {
+             currentUser = configurationService.getUserByLoginId(System.getProperty("user.name"));
+          }
+@@ -172,10 +188,15 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements
+ 
+    @Override
+    public boolean isAtsAdmin() {
+-      if (getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin)) {
+-         return true;
++      if (atsAdmin == null) {
++         if (AtsCurrentUserService.getUser() != null) {
++            atsAdmin = AtsCurrentUserService.getUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
++         } else if (getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin)) {
++            atsAdmin = true;
++         }
++         atsAdmin = configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser().getArtifactId());
+       }
+-      return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser().getArtifactId());
++      return atsAdmin;
+    }
+ 
+    @Override
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/widgets/XWorkingBranchButtonLock.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/widgets/XWorkingBranchButtonLock.java
+index 2100807f0a..24af790e4f 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/widgets/XWorkingBranchButtonLock.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/util/widgets/XWorkingBranchButtonLock.java
+@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
+ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+ import org.eclipse.osee.framework.jdk.core.util.Conditions;
+ import org.eclipse.osee.framework.logging.OseeLog;
++import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+ import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+ import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+@@ -121,8 +122,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
+             if (isLocked) {
+                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
+             } else {
+-               IUserGroup everyoneGroup =
+-                  AtsClientService.get().getUserGroupService().getUserGroup(CoreUserGroups.Everyone);
++               IUserGroup everyoneGroup = UserGroupService.get(CoreUserGroups.Everyone);
+                Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
+                AccessControlManager.setPermission((Artifact) everyoneGroup.getArtifact(), branch, PermissionEnum.READ);
+             }
+diff --git a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/world/WorldXViewerUtil.java b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/world/WorldXViewerUtil.java
+index 0a222aa26c..ce7449bfa1 100644
+--- a/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/world/WorldXViewerUtil.java
++++ b/plugins/org.eclipse.osee.ats.ide/src/org/eclipse/osee/ats/ide/world/WorldXViewerUtil.java
+@@ -11,6 +11,7 @@
+ package org.eclipse.osee.ats.ide.world;
+ 
+ import java.util.ArrayList;
++import java.util.Collection;
+ import java.util.List;
+ import java.util.logging.Level;
+ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+@@ -22,9 +23,10 @@ import org.eclipse.osee.ats.ide.internal.Activator;
+ import org.eclipse.osee.ats.ide.internal.AtsClientService;
+ import org.eclipse.osee.ats.ide.util.AtsEditors;
+ import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
++import org.eclipse.osee.framework.core.data.ArtifactId;
++import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+ import org.eclipse.osee.framework.core.model.type.AttributeType;
+-import org.eclipse.osee.framework.jdk.core.util.Collections;
+ import org.eclipse.osee.framework.logging.OseeLog;
+ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTargetXViewerFactory;
+@@ -42,13 +44,19 @@ public class WorldXViewerUtil {
+       registerConfigurationsColumns(factory);
+    }
+ 
+-   @SuppressWarnings("unchecked")
+    public static void registerPluginColumns(OseeTargetXViewerFactory factory) {
+       // Register any columns from other plugins
+       try {
+          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+-            if (!Collections.setUnion(item.getUserGroups(),
+-               AtsClientService.get().getUserGroupService().getMyUserGroups()).isEmpty()) {
++            boolean found = false;
++            Collection<IUserGroupArtifactToken> userGroups = item.getUserGroups();
++            for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
++               if (userGroups.contains(myUserGroup)) {
++                  found = true;
++                  break;
++               }
++            }
++            if (found) {
+                for (XViewerColumn xCol : item.getXViewerColumns()) {
+                   factory.registerColumns(xCol);
+                }
+@@ -123,8 +131,13 @@ public class WorldXViewerUtil {
+ 
+    @SuppressWarnings("unchecked")
+    private static boolean isInUserGroup(OseeTargetXViewerFactory factory) {
+-      return !Collections.setUnion(factory.getUserGroups(),
+-         AtsClientService.get().getUserGroupService().getMyUserGroups()).isEmpty();
++      Collection<IUserGroupArtifactToken> userGroups = factory.getUserGroups();
++      for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
++         if (userGroups.contains(myUserGroup)) {
++            return true;
++         }
++      }
++      return false;
+    }
+ 
+    public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttributeValueColumn> configCols) {
+diff --git a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/AtsUserServiceServerImpl.java b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/AtsUserServiceServerImpl.java
+index 3ade0e7ca8..b938f64956 100644
+--- a/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/AtsUserServiceServerImpl.java
++++ b/plugins/org.eclipse.osee.ats.rest/src/org/eclipse/osee/ats/rest/internal/config/AtsUserServiceServerImpl.java
+@@ -50,10 +50,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
+ 
+    @Override
+    public AtsUser getCurrentUser() {
+-      if (currentUser == null) {
+-         currentUser = AtsCoreUsers.SYSTEM_USER;
+-      }
+-      return currentUser;
++      return AtsCoreUsers.SYSTEM_USER;
+    }
+ 
+    @Override
+@@ -185,4 +182,14 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
+       }
+       return user;
+    }
++
++   @Override
++   public void setCurrentUser(AtsUser user) {
++      // TBD
++   }
++
++   @Override
++   public void clearCaches() {
++      // do nothing
++   }
+ }
+\ No newline at end of file
+diff --git a/plugins/org.eclipse.osee.framework.skynet.core/src/org/eclipse/osee/framework/skynet/core/access/UserGroupService.java b/plugins/org.eclipse.osee.framework.skynet.core/src/org/eclipse/osee/framework/skynet/core/access/UserGroupService.java
+index 442d9074af..e397384420 100644
+--- a/plugins/org.eclipse.osee.framework.skynet.core/src/org/eclipse/osee/framework/skynet/core/access/UserGroupService.java
++++ b/plugins/org.eclipse.osee.framework.skynet.core/src/org/eclipse/osee/framework/skynet/core/access/UserGroupService.java
+@@ -42,7 +42,7 @@ public class UserGroupService implements IUserGroupService {
+       return get(CoreUserGroups.OseeAccessAdmin);
+    }
+ 
+-   private static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
++   public static IUserGroup get(IUserGroupArtifactToken userGroupArtToken) {
+       return getUserGroupService().getUserGroup(userGroupArtToken);
+    }
+ 
+-- 
+2.19.1.windows.1
+

@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -502,11 +501,6 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsConfigurationsService getConfigService() {
       return configurationsService;
-   }
-
-   @Override
-   public IUserGroupService getUserGroupService() {
-      return org.eclipse.osee.ats.core.access.UserGroupService.get();
    }
 
    @Override

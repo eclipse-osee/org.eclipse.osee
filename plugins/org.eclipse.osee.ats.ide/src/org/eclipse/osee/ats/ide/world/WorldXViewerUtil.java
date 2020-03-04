@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
@@ -22,9 +23,10 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTargetXViewerFactory;
@@ -42,13 +44,19 @@ public class WorldXViewerUtil {
       registerConfigurationsColumns(factory);
    }
 
-   @SuppressWarnings("unchecked")
    public static void registerPluginColumns(OseeTargetXViewerFactory factory) {
       // Register any columns from other plugins
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            if (!Collections.setUnion(item.getUserGroups(),
-               AtsClientService.get().getUserGroupService().getMyUserGroups()).isEmpty()) {
+            boolean found = false;
+            Collection<IUserGroupArtifactToken> userGroups = item.getUserGroups();
+            for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
+               if (userGroups.contains(myUserGroup)) {
+                  found = true;
+                  break;
+               }
+            }
+            if (found) {
                for (XViewerColumn xCol : item.getXViewerColumns()) {
                   factory.registerColumns(xCol);
                }
@@ -123,8 +131,13 @@ public class WorldXViewerUtil {
 
    @SuppressWarnings("unchecked")
    private static boolean isInUserGroup(OseeTargetXViewerFactory factory) {
-      return !Collections.setUnion(factory.getUserGroups(),
-         AtsClientService.get().getUserGroupService().getMyUserGroups()).isEmpty();
+      Collection<IUserGroupArtifactToken> userGroups = factory.getUserGroups();
+      for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
+         if (userGroups.contains(myUserGroup)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttributeValueColumn> configCols) {
