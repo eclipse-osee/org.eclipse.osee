@@ -39,14 +39,14 @@ import org.junit.runners.Suite;
    FrameworkUiSkynetTest_Dialog_Suite.class,
    ClientEndpointTest.class,
    DirtyArtifactCacheTest.class})
-public class AtsClientIntegrationTestSuite {
+public class AtsIdeIntegrationTestSuite {
    // Test Suite
 
    private static ElapsedTime time;
 
    @BeforeClass
    public static void setup() {
-      time = new ElapsedTime("AtsClientIntegrationTestSuite", true);
+      time = new ElapsedTime("AtsIdeIntegrationTestSuite", true);
       OseeProperties.setIsInTest(true);
    }
 

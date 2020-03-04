@@ -22,7 +22,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.ats.ide.integration.tests</testSuite>
-					<testClass>org.eclipse.osee.ats.ide.integration.AtsClientIntegrationTestSuite</testClass>
+					<testClass>org.eclipse.osee.ats.ide.integration.AtsIdeIntegrationTestSuite</testClass>
 					<useUIHarness>true</useUIHarness>
 					<useUIThread>true</useUIThread>
 					<showEclipseLog>true</showEclipseLog>
