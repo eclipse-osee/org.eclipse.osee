@@ -23,9 +23,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -115,12 +117,14 @@ import org.eclipse.osee.orcs.search.TxQueryBuilder;
 public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
    private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final IExpressionResolver resolver;
    private final IFieldResolver fieldResolver;
 
-   public OrcsScriptInterpreterImpl(OrcsTypes orcsTypes, IExpressionResolver resolver, IFieldResolver fieldResolver) {
+   public OrcsScriptInterpreterImpl(OrcsTokenService tokenService, OrcsTypes orcsTypes, IExpressionResolver resolver, IFieldResolver fieldResolver) {
       super();
       this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
       this.resolver = resolver;
       this.fieldResolver = fieldResolver;
    }
@@ -156,6 +160,17 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
    private ArtifactTypeToken getArtifactType(String name) {
       ArtifactTypeToken toReturn = null;
       for (ArtifactTypeToken type : orcsTypes.getArtifactTypes().getAll()) {
+         if (type.getName().equals(name)) {
+            toReturn = type;
+            break;
+         }
+      }
+      return toReturn;
+   }
+
+   private AttributeTypeToken getAttributeType(String name) {
+      AttributeTypeToken toReturn = null;
+      for (AttributeTypeToken type : orcsTypes.getAttributeTypes().getAll()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;
@@ -643,7 +658,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                toReturn.add(getArtifactType(name));
             } else {
                long typeId = resolver.resolveSingle(Long.class, expression);
-               toReturn.add(orcsTypes.getArtifactTypes().get(typeId));
+               toReturn.add(tokenService.getArtifactType(typeId));
             }
          }
          return toReturn;
@@ -657,10 +672,10 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
             OsExpression expression = expressions.get(index);
             if (clazz.isAssignableFrom(String.class)) {
                String name = resolver.resolveSingle(String.class, expression);
-               toReturn.add(orcsTypes.getAttributeTypes().getByName(name));
+               toReturn.add(getAttributeType(name));
             } else {
                long typeId = resolver.resolveSingle(Long.class, expression);
-               toReturn.add(orcsTypes.getAttributeTypes().get(typeId));
+               toReturn.add(tokenService.getAttributeType(typeId));
             }
          }
          return toReturn;
@@ -674,7 +689,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
             toReturn = getRelationType(name);
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
-            toReturn = orcsTypes.getRelationTypes().get(typeId);
+            toReturn = tokenService.getRelationType(typeId);
          }
          return toReturn;
       }

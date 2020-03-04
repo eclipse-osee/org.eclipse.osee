@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -35,11 +36,13 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
    private final Log logger;
    private final AttributeTypes attributeTypes;
+   private final OrcsTokenService tokenService;
 
-   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory, AttributeTypes attributeTypes) {
+   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory, AttributeTypes attributeTypes, OrcsTokenService tokenService) {
       super(factory);
       this.logger = logger;
       this.attributeTypes = attributeTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -66,7 +69,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         AttributeTypeToken attributeType = attributeTypes.get(chStmt.getLong("attr_type_id"));
+         AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
 
          String baseAttributeType = attributeTypes.getBaseAttributeTypeId(attributeType);
          Object value = null;

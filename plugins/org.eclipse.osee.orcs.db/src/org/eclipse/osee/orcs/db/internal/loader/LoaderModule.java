@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
@@ -43,25 +44,25 @@ public class LoaderModule {
       this.resourceManager = resourceManager;
    }
 
-   public AttributeDataProxyFactory createProxyDataFactory(AttributeTypes attributeTypes) {
-      return new AttributeDataProxyFactory(attributeTypes, resourceManager, logger);
+   public AttributeDataProxyFactory createProxyDataFactory(AttributeTypes attributeTypes, OrcsTokenService tokenService) {
+      return new AttributeDataProxyFactory(attributeTypes, tokenService, resourceManager, logger);
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory) {
       return new DataFactoryImpl(idFactory, factory);
    }
 
-   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTypes orcsTypes, AttributeDataProxyFactory proxyFactory) {
-      return new DynamicLoadProcessor(logger, orcsTypes, proxyFactory);
+   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTokenService tokenService, AttributeDataProxyFactory proxyFactory) {
+      return new DynamicLoadProcessor(logger, tokenService, proxyFactory);
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
       return new DataLoaderFactoryImpl(logger, jdbcClient, sqlObjectLoader, joinFactory);
    }
 
-   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, OrcsTypes orcsTypes) {
+   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory();
       return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor,
-         orcsTypes);
+         orcsTypes, tokenService);
    }
 }

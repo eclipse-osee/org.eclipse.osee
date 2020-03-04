@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import java.util.ArrayList;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -33,33 +35,42 @@ public class SearchCriteriaTest {
 
    @Mock
    private AttributeTypes cache;
+   @Mock
+   private OrcsTokenService tokenService;
 
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(cache.get(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name);
-      when(cache.get(CoreAttributeTypes.Active)).thenReturn(CoreAttributeTypes.Active);
-      when(cache.get(CoreAttributeTypes.FavoriteBranch)).thenReturn(CoreAttributeTypes.FavoriteBranch);
+      doReturn(CoreAttributeTypes.Name).when(tokenService).getAttributeType(CoreAttributeTypes.Name.getId());
+      assertEquals(CoreAttributeTypes.Name, tokenService.getAttributeType(CoreAttributeTypes.Name.getId()));
+      doReturn(CoreAttributeTypes.Developmental).when(tokenService).getAttributeType(
+         CoreAttributeTypes.Developmental.getId());
+      assertEquals(CoreAttributeTypes.Developmental,
+         tokenService.getAttributeType(CoreAttributeTypes.Developmental.getId()));
+      doReturn(CoreAttributeTypes.FavoriteBranch).when(tokenService).getAttributeType(
+         CoreAttributeTypes.FavoriteBranch.getId());
+      assertEquals(CoreAttributeTypes.FavoriteBranch,
+         tokenService.getAttributeType(CoreAttributeTypes.FavoriteBranch.getId()));
+
    }
 
    @Test
    public void isTagged() {
-      when(cache.isTaggable(CoreAttributeTypes.Name)).thenReturn(true);
+      assertEquals(true, tokenService.getAttributeType(CoreAttributeTypes.Name.getId()).isTaggable());
 
       CriteriaAttributeKeywords keyword =
-         new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Name), cache, "");
+         new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Name), tokenService, "");
       keyword.checkNotTaggable();
       Assert.assertTrue("Attribute type is taggable", true);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void notTagged() {
+      assertEquals(false, tokenService.getAttributeType(CoreAttributeTypes.Developmental.getId()).isTaggable());
 
-      when(cache.isTaggable(CoreAttributeTypes.Active)).thenReturn(false);
-
-      CriteriaAttributeKeywords keyword =
-         new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Active), cache, "");
+      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(false,
+         Collections.singletonList(CoreAttributeTypes.Developmental), tokenService, "");
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");
 
@@ -67,14 +78,13 @@ public class SearchCriteriaTest {
 
    @Test(expected = OseeArgumentException.class)
    public void notTaggedList() {
-
-      when(cache.isTaggable(CoreAttributeTypes.FavoriteBranch)).thenReturn(false);
+      assertEquals(false, tokenService.getAttributeType(CoreAttributeTypes.FavoriteBranch.getId()).isTaggable());
 
       ArrayList<AttributeTypeId> types = new ArrayList<>();
-      types.add(CoreAttributeTypes.Active);
+      types.add(CoreAttributeTypes.Developmental);
       types.add(CoreAttributeTypes.FavoriteBranch);
 
-      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(false, types, cache, "");
+      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(false, types, tokenService, "");
 
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");

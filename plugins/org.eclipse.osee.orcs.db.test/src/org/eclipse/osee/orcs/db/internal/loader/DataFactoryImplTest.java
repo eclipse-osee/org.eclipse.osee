@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -41,7 +42,6 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
@@ -76,7 +76,7 @@ public class DataFactoryImplTest {
    @Mock private IdentityManager idFactory;
    @Mock private AttributeDataProxyFactory proxyFactory;
    @Mock private ArtifactTypes artifactCache;
-   @Mock private RelationTypes relationTypes;
+   @Mock private OrcsTokenService tokenService;
    @Mock private AttributeData attrData;
    @Mock private VersionData verData;
    @Mock private DataProxy<Integer> dataProxy;
@@ -98,7 +98,7 @@ public class DataFactoryImplTest {
 
       guid = GUID.create();
 
-      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactCache);
+      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, tokenService);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory);
       when(idFactory.getNextArtifactId()).thenReturn(ART_ID.intValue());
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);

@@ -26,6 +26,11 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    }
 
    @Override
+   public boolean isEnumerated() {
+      return true;
+   }
+
+   @Override
    public T valueFromStorageString(String storedValue) {
       for (T enumToken : enumTokens) {
          if (enumToken != null && enumToken.getName().equals(storedValue)) {

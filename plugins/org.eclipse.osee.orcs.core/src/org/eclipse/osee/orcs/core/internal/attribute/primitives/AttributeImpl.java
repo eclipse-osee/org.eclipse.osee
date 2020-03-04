@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -40,13 +41,15 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    }
 
    private AttributeTypes attributeTypeCache;
+   private OrcsTokenService tokenService;
    private Reference<AttributeContainer> containerReference;
    private final Log logger = null;
    private AttributeData<T> attributeData;
 
    @Override
-   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
+   public void internalInitialize(AttributeTypes attributeTypeCache, OrcsTokenService tokenService, Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
       this.attributeTypeCache = attributeTypeCache;
+      this.tokenService = tokenService;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -43,10 +44,12 @@ public class AttributeFactory {
 
    private final AttributeDataFactory dataFactory;
    private final AttributeTypes cache;
+   private final OrcsTokenService tokenService;
 
-   public AttributeFactory(AttributeDataFactory dataFactory, AttributeTypes cache) {
+   public AttributeFactory(AttributeDataFactory dataFactory, AttributeTypes cache, OrcsTokenService tokenService) {
       this.dataFactory = dataFactory;
       this.cache = cache;
+      this.tokenService = tokenService;
    }
 
    public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeToken attributeType) {
@@ -68,7 +71,7 @@ public class AttributeFactory {
 
       Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
-      attribute.internalInitialize(cache, artifactRef, data, isDirty, createWithDefaults);
+      attribute.internalInitialize(cache, tokenService, artifactRef, data, isDirty, createWithDefaults);
       container.add(data.getType(), attribute);
 
       return attribute;
@@ -126,7 +129,7 @@ public class AttributeFactory {
          try {
             destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
             Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
-            destinationAttribute.internalInitialize(cache, artifactRef, attributeData, true, false);
+            destinationAttribute.internalInitialize(cache, tokenService, artifactRef, attributeData, true, false);
          } catch (AttributeDoesNotExist ex) {
             destinationAttribute = createAttribute(destination, attributeData);
          }

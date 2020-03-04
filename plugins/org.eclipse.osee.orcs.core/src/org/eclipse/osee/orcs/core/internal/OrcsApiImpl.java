@@ -153,7 +153,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       module = dataStore.createDataModule(orcsTypes, tokenService());
 
-      AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes());
+      AttributeFactory attributeFactory =
+         new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes(), tokenService());
 
       ArtifactFactory artifactFactory =
          new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes());
@@ -185,8 +186,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
          }
       };
 
-      proxyManager = new ExternalArtifactManagerImpl(relationManager, orcsTypes.getArtifactTypes());
-
+      proxyManager = new ExternalArtifactManagerImpl(relationManager, tokenService());
       TransactionProvider txProvider = new TransactionProvider() {
 
          @Override
@@ -202,13 +202,14 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
          new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
-      queryModule =
-         new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider, orcsTypes, proxyManager);
+      queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider, tokenService(),
+         proxyManager);
 
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
 
-      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes, queryModule);
+      OrcsScriptCompiler compiler =
+         new OrcsScriptCompilerImpl(getSystemSession(), module, tokenService(), orcsTypes, queryModule);
       manager = ScriptEngines.newScriptEngineManager(compiler);
 
       applicability = new OrcsApplicabilityOps(this);

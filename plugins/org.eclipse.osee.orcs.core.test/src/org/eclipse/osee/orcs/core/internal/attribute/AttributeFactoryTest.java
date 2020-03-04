@@ -14,10 +14,12 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -49,6 +51,7 @@ public class AttributeFactoryTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
+   @Mock private OrcsTokenService tokenService;
    @Mock private AttributeTypes cache;
    @Mock private AttributeDataFactory dataFactory;
 
@@ -69,10 +72,11 @@ public class AttributeFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      factory = new AttributeFactory(dataFactory, cache);
+      factory = new AttributeFactory(dataFactory, cache, tokenService);
 
       when(attributeData.getType()).thenReturn(attributeType);
-      when(cache.get(attributeType.getId())).thenReturn(attributeType);
+      doReturn(attributeType).when(tokenService).getAttributeType(attributeType.getId());
+      assertEquals(attributeType, tokenService.getAttributeType(attributeType.getId()));
       when(cache.getBaseAttributeTypeId(attributeType)).thenReturn("StringAttribute");
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }

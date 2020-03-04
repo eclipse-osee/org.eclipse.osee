@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
@@ -37,13 +37,13 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
    }
 
-   public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTypes orcsTypes, ExternalArtifactManager proxyManager) {
+   public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
       this.queryEngine = queryEngine;
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       artQueryFactory =
@@ -52,12 +52,12 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
       applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
       return new QueryFactoryImpl(artQueryFactory, branchCriteriaFactory, txCriteriaFactory, tupleQuery,
-         applicabilityDsQuery, queryEngine, orcsTypes);
+         applicabilityDsQuery, queryEngine, tokenService);
    }
 
    public CallableQueryFactory getArtQueryFactory() {

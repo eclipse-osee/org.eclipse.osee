@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -34,8 +35,6 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.ds.VersionDataImpl;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 
@@ -44,13 +43,11 @@ import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
  */
 public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    private final AttributeDataProxyFactory proxyFactory;
-   private final RelationTypes relationTypes;
-   private final ArtifactTypes artifactTypes;
+   private final OrcsTokenService tokenService;
 
-   public OrcsObjectFactoryImpl(AttributeDataProxyFactory proxyFactory, RelationTypes relationTypes, ArtifactTypes artifactTypes) {
+   public OrcsObjectFactoryImpl(AttributeDataProxyFactory proxyFactory, OrcsTokenService tokenService) {
       this.proxyFactory = proxyFactory;
-      this.relationTypes = relationTypes;
-      this.artifactTypes = artifactTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -220,6 +217,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public ArtifactData createArtifactData(VersionData version, Integer generateArtId, long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
-      return createArtifactData(version, generateArtId, artifactTypes.get(artifactType), modType, guidToSet, applicId);
+      return createArtifactData(version, generateArtId, tokenService.getArtifactType(artifactType), modType, guidToSet,
+         applicId);
    }
 }

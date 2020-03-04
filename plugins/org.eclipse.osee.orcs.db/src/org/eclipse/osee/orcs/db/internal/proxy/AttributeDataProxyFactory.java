@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -22,11 +23,13 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 public class AttributeDataProxyFactory {
    private final AttributeTypes attributeTypeCache;
+   private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
    private final Log logger;
 
-   public AttributeDataProxyFactory(AttributeTypes attributeTypes, IResourceManager resourceManager, Log logger) {
+   public AttributeDataProxyFactory(AttributeTypes attributeTypes, OrcsTokenService tokenService, IResourceManager resourceManager, Log logger) {
       this.attributeTypeCache = attributeTypes;
+      this.tokenService = tokenService;
       this.resourceManager = resourceManager;
       this.logger = logger;
    }
@@ -50,7 +53,7 @@ public class AttributeDataProxyFactory {
 
    private Object intern(AttributeTypeId attributeType, Object original) {
       Object value = original;
-      if (attributeTypeCache.isEnumerated(attributeType) && value instanceof String) {
+      if (tokenService.getAttributeType(attributeType.getId()).isEnumerated() && value instanceof String) {
          value = Strings.intern((String) value);
       }
       return value;

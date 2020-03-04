@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -69,19 +70,20 @@ public class SqlObjectLoader {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final SqlHandlerFactory handlerFactory;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
-   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, OrcsTypes orcsTypes) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.handlerFactory = handlerFactory;
       this.dynamicProcessor = dynamicProcessor;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
-      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, orcsTypes.getAttributeTypes());
-      relationProcessor = new RelationLoadProcessor(logger, objectFactory, orcsTypes.getRelationTypes());
+      attributeProcessor =
+         new AttributeLoadProcessor(logger, objectFactory, orcsTypes.getAttributeTypes(), tokenService);
+      relationProcessor = new RelationLoadProcessor(logger, objectFactory, tokenService);
    }
 
    public SqlHandlerFactory getFactory() {
@@ -109,7 +111,7 @@ public class SqlObjectLoader {
    private void writeSql(Criteria criteria, LoadSqlContext context) {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter writer = new LoadSqlWriter(joinFactory, jdbcClient, context, orcsTypes);
+      AbstractSqlWriter writer = new LoadSqlWriter(joinFactory, jdbcClient, context, tokenService);
       writer.build(handler);
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getObjectField;
 import java.sql.Timestamp;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicDataHandler;
@@ -38,18 +38,18 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
 public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandler> {
 
    private final Log logger;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final AttributeDataProxyFactory proxyFactory;
 
-   public DynamicLoadProcessor(Log logger, OrcsTypes orcsTypes, AttributeDataProxyFactory proxyFactory) {
+   public DynamicLoadProcessor(Log logger, OrcsTokenService tokenService, AttributeDataProxyFactory proxyFactory) {
       this.logger = logger;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
       this.proxyFactory = proxyFactory;
    }
 
    @Override
    protected Object createPreConditions(Options options) {
-      return new DynamicObjectBuilder(logger, orcsTypes, options);
+      return new DynamicObjectBuilder(logger, tokenService, options);
    }
 
    private DynamicObjectBuilder getBuilder(DynamicDataHandler handler, Object conditions) {
@@ -162,7 +162,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
             valueColumnName = id;
          }
       }
-      AttributeTypeToken attributeType = orcsTypes.getAttributeTypes().get(chStmt.getLong(typeColumnName));
+      AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong(typeColumnName));
       String value = chStmt.getString(valueColumnName);
       String uri = chStmt.getString(uriColumnName);
       return proxyFactory.createProxy(attributeType, value, uri);

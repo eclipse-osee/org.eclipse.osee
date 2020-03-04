@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicDataHandler;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -42,7 +42,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
 public class DynamicObjectBuilder {
 
    private final Log logger;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final Options options;
    private final Stack<ObjectMap> stack = new Stack<>();
 
@@ -51,10 +51,10 @@ public class DynamicObjectBuilder {
    private Boolean showHidden;
    private ObjectMap rootObject;
 
-   public DynamicObjectBuilder(Log logger, OrcsTypes orcsTypes, Options options) {
+   public DynamicObjectBuilder(Log logger, OrcsTokenService tokenService, Options options) {
       super();
       this.logger = logger;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
       this.options = options;
    }
 
@@ -230,7 +230,10 @@ public class DynamicObjectBuilder {
       private Map<String, Object> groupByTypeName(ObjectType objectType, Collection<ObjectMap> values) {
          SetMultimap<String, Map<String, Object>> byTypeName = newSetMultimap();
          for (ObjectMap child : values) {
-            String typeName = resolveTypeName(objectType, child.getType());
+            String typeName = "DOES NOT EXIST";
+            if (child.getType() != null) {
+               typeName = resolveTypeName(objectType, child.getType());
+            }
             byTypeName.put(typeName, child.asMap());
          }
 
@@ -270,28 +273,21 @@ public class DynamicObjectBuilder {
       }
 
       public String resolveTypeName(ObjectType parentType, Long type) {
-         String typeName;
-         Named typeObject = null;
+         NamedId typeObject = NamedId.SENTINEL;
          switch (parentType) {
             case ARTIFACT:
-               typeObject = orcsTypes.getArtifactTypes().get(type);
+               typeObject = tokenService.getArtifactType(type);
                break;
             case ATTRIBUTE:
-               typeObject = orcsTypes.getAttributeTypes().get(type);
+               typeObject = tokenService.getAttributeType(type);
                break;
             case RELATION:
-               typeObject = orcsTypes.getRelationTypes().get(type);
+               typeObject = tokenService.getRelationType(type);
                break;
             default:
                break;
          }
-
-         if (typeObject != null) {
-            typeName = typeObject.getName();
-         } else {
-            typeName = String.valueOf(type);
-         }
-         return typeName;
+         return typeObject.getName();
       }
 
       @Override

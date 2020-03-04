@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -34,38 +34,38 @@ public class QueryFactoryImpl implements QueryFactory {
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
-   public QueryFactoryImpl(CallableQueryFactory artQueryFactory, BranchCriteriaFactory branchCriteriaFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine, OrcsTypes orcsTypes) {
+   public QueryFactoryImpl(CallableQueryFactory artQueryFactory, BranchCriteriaFactory branchCriteriaFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine, OrcsTokenService tokenService) {
       this.artQueryFactory = artQueryFactory;
       this.branchCriteriaFactory = branchCriteriaFactory;
       this.txCriteriaFactory = txCriteriaFactory;
       this.tupleQuery = tupleQuery;
       this.applicabilityDsQuery = applicabilityDsQuery;
       this.queryEngine = queryEngine;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
    public BranchQuery branchQuery() {
       return new BranchQueryImpl(queryEngine, branchCriteriaFactory,
-         new QueryData(this, queryEngine, artQueryFactory, orcsTypes));
+         new QueryData(this, queryEngine, artQueryFactory, tokenService));
    }
 
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
-      return new QueryData(this, queryEngine, artQueryFactory, orcsTypes, branch);
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch);
    }
 
    @Override
    public QueryBuilder fromBranch(BranchId branch, ArtifactId view) {
-      return new QueryData(this, queryEngine, artQueryFactory, orcsTypes, branch, view);
+      return new QueryData(this, queryEngine, artQueryFactory, tokenService, branch, view);
    }
 
    @Override
    public TransactionQuery transactionQuery() {
       return new TransactionQueryImpl(queryEngine, txCriteriaFactory,
-         new QueryData(this, queryEngine, artQueryFactory, orcsTypes));
+         new QueryData(this, queryEngine, artQueryFactory, tokenService));
    }
 
    @Override

@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -58,19 +58,19 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    private final DataModule dataModule;
    private final OrcsScriptOutputHandler output;
    private final CallableQueryFactory artQueryFactory;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final QueryFactory queryFactory;
 
    private boolean errorDetected;
 
-   public OrcsScriptAssemblerImpl(DataModule dataModule, OrcsTypes orcsTypes, OrcsScriptOutputHandler output, QueryModule queryModule) {
+   public OrcsScriptAssemblerImpl(DataModule dataModule, OrcsTokenService tokenService, OrcsScriptOutputHandler output, QueryModule queryModule) {
       this.dataModule = dataModule;
       this.output = output;
       this.artQueryFactory = queryModule.getArtQueryFactory();
       queryFactory = queryModule.createQueryFactory(null);
       factory1 = new TransactionCriteriaFactory();
       factory2 = new BranchCriteriaFactory();
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
    }
 
    private void reset() {
@@ -125,7 +125,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
 
    @Override
    public QueryData newArtifactQuery() {
-      return this.artQuery = new QueryData(queryFactory, dataModule.getQueryEngine(), artQueryFactory, orcsTypes);
+      return this.artQuery = new QueryData(queryFactory, dataModule.getQueryEngine(), artQueryFactory, tokenService);
    }
 
    @Override

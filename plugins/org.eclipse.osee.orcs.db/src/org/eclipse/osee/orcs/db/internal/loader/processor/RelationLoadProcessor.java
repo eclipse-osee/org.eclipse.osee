@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -23,7 +24,6 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationObjectFactory;
 
 /**
@@ -32,12 +32,12 @@ import org.eclipse.osee.orcs.db.internal.loader.data.RelationObjectFactory;
 public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationObjectFactory> {
 
    private final Log logger;
-   private final RelationTypes relationTypes;
+   private final OrcsTokenService tokenService;
 
-   public RelationLoadProcessor(Log logger, RelationObjectFactory factory, RelationTypes relationTypes) {
+   public RelationLoadProcessor(Log logger, RelationObjectFactory factory, OrcsTokenService tokenService) {
       super(factory);
       this.logger = logger;
-      this.relationTypes = relationTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -47,7 +47,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
-      RelationTypeToken relationType = relationTypes.get(chStmt.getLong("rel_link_type_id"));
+      RelationTypeToken relationType = tokenService.getRelationTypeOrCreate(chStmt.getLong("rel_link_type_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -20,7 +21,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -28,15 +28,15 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    private final RelationManager relationManager;
-   private final ArtifactTypes artifactTypeCache;
+   private final OrcsTokenService tokenService;
 
    public static interface ProxyProvider {
       Artifact getInternalArtifact(ArtifactReadable external);
    }
 
-   public ExternalArtifactManagerImpl(RelationManager relationManager, ArtifactTypes artifactTypeCache) {
+   public ExternalArtifactManagerImpl(RelationManager relationManager, OrcsTokenService tokenService) {
       this.relationManager = relationManager;
-      this.artifactTypeCache = artifactTypeCache;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -47,7 +47,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    @Override
    public ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) {
       return artifact == null ? null : new ArtifactReadOnlyImpl(this, relationManager, session, artifact,
-         artifactTypeCache.get(artifact.getArtifactType()));
+         artifact.getArtifactType());
    }
 
    @Override

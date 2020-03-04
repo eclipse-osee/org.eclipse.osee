@@ -104,13 +104,15 @@ public class DataLoaderFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, joinFactory, null);
-      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null, orcsApi.getOrcsTypes());
+      SqlObjectLoader loader =
+         module.createSqlObjectLoader(rowDataFactory, null, orcsApi.getOrcsTypes(), orcsApi.tokenService());
 
       spyLoader = spy(loader);
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
+      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(
+         EXPECTED_HEAD_TX);
       when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
       when(jdbcClient.getOrderedHint()).thenReturn("");
    }
@@ -535,16 +537,14 @@ public class DataLoaderFactoryImplTest {
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
 
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child,
-         CoreRelationTypes.Dependency_Artifact);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child, CoreRelationTypes.Dependency_Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
-         list(data(CoreRelationTypes.DefaultHierarchical_Child.getGuid(),
-            CoreRelationTypes.Dependency_Artifact.getGuid())));
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID), list(
+         data(CoreRelationTypes.DefaultHierarchical_Child.getGuid(), CoreRelationTypes.Dependency_Artifact.getGuid())));
    }
 
    @Test
@@ -608,8 +608,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45, 55);
-      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child,
-         CoreRelationTypes.Dependency_Artifact);
+      dataLoader.withRelationTypes(CoreRelationTypes.DefaultHierarchical_Child, CoreRelationTypes.Dependency_Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 

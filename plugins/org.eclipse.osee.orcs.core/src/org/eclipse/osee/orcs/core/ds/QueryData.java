@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -60,10 +60,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
-import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -84,13 +82,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final CallableQueryFactory artQueryFactory;
    private final QueryFactory queryFactory;
    private final QueryEngine queryEngine;
-   private final OrcsTypes orcsTypes;
-   private final AttributeTypes attributeTypeCache;
+   private final OrcsTokenService tokenService;
    private final HashMap<TableEnum, String> mainAliases = new HashMap<>(4);
    private QueryType queryType;
    private boolean followCausesChild = true;
 
-   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch, ArtifactId view) {
+   public QueryData(QueryData parentQueryData, QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchId branch, ArtifactId view) {
       this.parentQueryData = parentQueryData;
       this.queryFactory = queryFactory;
       this.queryEngine = queryEngine;
@@ -101,34 +98,33 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.branch = branch;
       this.view = view;
       criterias.add(new ArrayList<>());
-      this.orcsTypes = orcsTypes;
-      this.attributeTypeCache = orcsTypes.getAttributeTypes();
+      this.tokenService = tokenService;
    }
 
-   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch, ArtifactId view) {
-      this(null, queryFactory, queryEngine, artQueryFactory, orcsTypes, branch, view);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchId branch, ArtifactId view) {
+      this(null, queryFactory, queryEngine, artQueryFactory, tokenService, branch, view);
    }
 
    public QueryData(QueryData parentQueryData) {
       this(parentQueryData, parentQueryData.queryFactory, parentQueryData.queryEngine, parentQueryData.artQueryFactory,
-         parentQueryData.orcsTypes, parentQueryData.branch, parentQueryData.view);
+         parentQueryData.tokenService, parentQueryData.branch, parentQueryData.view);
    }
 
-   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes, BranchId branch) {
-      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, branch, ArtifactId.SENTINEL);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService, BranchId branch) {
+      this(queryFactory, queryEngine, artQueryFactory, tokenService, branch, ArtifactId.SENTINEL);
    }
 
-   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTypes orcsTypes) {
-      this(queryFactory, queryEngine, artQueryFactory, orcsTypes, BranchId.SENTINEL, ArtifactId.SENTINEL);
+   public QueryData(QueryFactory queryFactory, QueryEngine queryEngine, CallableQueryFactory artQueryFactory, OrcsTokenService tokenService) {
+      this(queryFactory, queryEngine, artQueryFactory, tokenService, BranchId.SENTINEL, ArtifactId.SENTINEL);
    }
 
-   public QueryData(QueryType queryType, OrcsTypes orcsTypes) {
-      this(null, null, null, orcsTypes);
+   public QueryData(QueryType queryType, OrcsTokenService tokenService) {
+      this(null, null, null, tokenService);
       setQueryType(queryType);
    }
 
    public static QueryData mock() {
-      return new QueryData(null, null, null, new OrcsTypesImpl(null, null, null, null, null), BranchId.SENTINEL);
+      return new QueryData(null, null, null, null, BranchId.SENTINEL);
    }
 
    public ArtifactId getView() {
@@ -490,7 +486,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return addAndCheck(
-         new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, attributeTypeCache, values, options));
+         new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
    }
 
    @Override

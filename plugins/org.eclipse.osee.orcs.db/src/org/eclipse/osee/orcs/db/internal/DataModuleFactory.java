@@ -23,9 +23,7 @@ import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
@@ -64,16 +62,15 @@ public class DataModuleFactory {
    public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       logger.debug("Creating DataModule");
 
-      ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
       AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-      RelationTypes relationTypes = orcsTypes.getRelationTypes();
 
       final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
-      final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes);
-      final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, relationTypes, artifactTypes);
+      final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes, tokenService);
+      final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, tokenService);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory);
-      final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
-      SqlObjectLoader sqlObjectLoader = loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, orcsTypes);
+      final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(tokenService, proxyFactory);
+      SqlObjectLoader sqlObjectLoader =
+         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, orcsTypes, tokenService);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService,

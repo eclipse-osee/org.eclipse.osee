@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -45,14 +46,16 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
    private final OrcsSession session;
    private final DataModule dataModule;
+   private final OrcsTokenService tokenService;
    private final OrcsTypes orcsTypes;
    private final QueryModule queryModule;
 
    private OrcsScriptInterpreter interpreter;
 
-   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTypes orcsTypes, QueryModule queryModule) {
+   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTokenService tokenService, OrcsTypes orcsTypes, QueryModule queryModule) {
       this.session = session;
       this.dataModule = dataModule;
+      this.tokenService = tokenService;
       this.orcsTypes = orcsTypes;
       this.queryModule = queryModule;
    }
@@ -61,7 +64,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
       if (interpreter == null) {
          IExpressionResolver resolver = OrcsScriptUtil.getExpressionResolver();
          IFieldResolver fieldResolver = OrcsScriptUtil.getFieldResolver();
-         interpreter = new OrcsScriptInterpreterImpl(orcsTypes, resolver, fieldResolver);
+         interpreter = new OrcsScriptInterpreterImpl(tokenService, orcsTypes, resolver, fieldResolver);
       }
       return interpreter;
    }
@@ -78,7 +81,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
    }
 
    private OrcsScriptAssembler getAssembler(OrcsScriptOutputHandler output) {
-      return new OrcsScriptAssemblerImpl(dataModule, orcsTypes, output, queryModule);
+      return new OrcsScriptAssemblerImpl(dataModule, tokenService, output, queryModule);
    }
 
    private OrcsScriptExecutor getExecutor(OrcsScriptAssembler assembler) {

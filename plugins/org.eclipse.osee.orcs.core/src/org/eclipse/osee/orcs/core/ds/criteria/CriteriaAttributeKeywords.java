@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -20,30 +21,29 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaAttributeKeywords extends Criteria {
 
-   private final AttributeTypes attributeTypeCache;
+   private final OrcsTokenService tokenService;
    private final Collection<AttributeTypeId> attributeTypes;
    private final Collection<String> values;
    private final QueryOption[] options;
    private final boolean includeAllTypes;
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, AttributeTypes attributeTypeCache, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, OrcsTokenService tokenService, Collection<String> values, QueryOption... options) {
       super();
       this.includeAllTypes = includeAllTypes;
-      this.attributeTypeCache = attributeTypeCache;
+      this.tokenService = tokenService;
       this.attributeTypes = attributeTypes;
       this.values = values;
       this.options = options;
    }
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, AttributeTypes attributeTypeCache, String value, QueryOption... options) {
-      this(includeAllTypes, attributeTypes, attributeTypeCache, java.util.Collections.singleton(value), options);
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, OrcsTokenService tokenService, String value, QueryOption... options) {
+      this(includeAllTypes, attributeTypes, tokenService, java.util.Collections.singleton(value), options);
    }
 
    public boolean isIncludeAllTypes() {
@@ -85,9 +85,9 @@ public class CriteriaAttributeKeywords extends Criteria {
    public void checkNotTaggable() {
       if (!includeAllTypes) {
          ArrayList<String> notTaggable = new ArrayList<>();
-         if (attributeTypeCache != null) {
+         if (tokenService != null) {
             for (AttributeTypeId type : attributeTypes) {
-               if (!attributeTypeCache.isTaggable(type)) {
+               if (!tokenService.getAttributeType(type.getId()).isTaggable()) {
                   notTaggable.add(type.toString());
                }
             }

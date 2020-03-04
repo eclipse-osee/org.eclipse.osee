@@ -19,6 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -27,7 +28,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,8 +45,8 @@ public class ExternalArtifactManagerTest {
 
    // @formatter:off
    @Mock private RelationManager relationManager;
-   @Mock private ArtifactTypes artifactTypeCache;
    @Mock private OrcsSession session;
+   @Mock private OrcsTokenService tokenService;
 
    @Mock private Artifact artifact1;
    @Mock private Artifact artifact2;
@@ -70,7 +70,7 @@ public class ExternalArtifactManagerTest {
    public void setUp() throws Exception {
       initMocks(this);
 
-      proxyManager = new ExternalArtifactManagerImpl(relationManager, artifactTypeCache);
+      proxyManager = new ExternalArtifactManagerImpl(relationManager, tokenService);
 
       when(artifact1.getLocalId()).thenReturn(1);
       when(artifact2.getLocalId()).thenReturn(2);
@@ -145,7 +145,6 @@ public class ExternalArtifactManagerTest {
       ResultSet<ArtifactReadable> actuals = proxyManager.asExternalArtifacts(session, expected);
       assertFalse(actuals.isEmpty());
       assertEquals(3, actuals.size());
-
       Iterator<ArtifactReadable> iterator = actuals.iterator();
       for (int index = 0; index < expected.size(); index++) {
          checkProxied(expected.get(index), iterator.next());

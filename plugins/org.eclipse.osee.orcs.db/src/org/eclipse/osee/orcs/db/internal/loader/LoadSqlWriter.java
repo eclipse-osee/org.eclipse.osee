@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -30,8 +30,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class LoadSqlWriter extends AbstractSqlWriter {
 
-   public LoadSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, OrcsTypes orcsTypes) {
-      super(joinFactory, jdbcClient, context, new QueryData(QueryType.SELECT, orcsTypes));
+   public LoadSqlWriter(SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, OrcsTokenService tokenService) {
+      super(joinFactory, jdbcClient, context, new QueryData(QueryType.SELECT, tokenService));
    }
 
    @Override

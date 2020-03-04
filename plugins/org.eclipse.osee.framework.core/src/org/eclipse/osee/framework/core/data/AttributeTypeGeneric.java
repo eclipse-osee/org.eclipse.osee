@@ -64,4 +64,9 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    public NamespaceToken getNamespace() {
       return namespace;
    }
+
+   @Override
+   public boolean isTaggable() {
+      return taggerType.isValid();
+   }
 }

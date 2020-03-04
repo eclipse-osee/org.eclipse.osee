@@ -41,6 +41,14 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return TaggerTypeToken.SENTINEL;
    }
 
+   default boolean isTaggable() {
+      return false;
+   }
+
+   default boolean isEnumerated() {
+      return false;
+   }
+
    public static AttributeTypeToken valueOf(String id) {
       return valueOf(Long.valueOf(id), Named.SENTINEL);
    }
