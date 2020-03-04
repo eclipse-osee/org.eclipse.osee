@@ -57,7 +57,6 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
    }
 
    public void setAtsCurrentUserService(IAtsCurrentUserService currentUserService) {
-      System.err.println(getClass().getSimpleName() + " - setAtsCurrentUserService");
       SavedSearchesNavigateItem.currentUserService = currentUserService;
    }
 

@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:21.0.0.v20170206-1425:default:false"/>
+<setEntry value="org.eclipse.osgi.services:3.7.0.v20180223-1712:default:false"/>
 <setEntry value="org.eclipse.ui.views.log:1.2.200.v20180512-1206:default:true"/>
 <setEntry value="org.eclipse.ui.workbench:3.111.0.v20180524-1156:default:true"/>
-<setEntry value="org.eclipse.osgi.services:3.7.0.v20180223-1712:default:false"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="true"/>
@@ -29,14 +29,14 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -debug -perspective org.eclipse.osee.OseePerspective -console"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dlogback.configurationFile=C:\UserData\logback-dev.xml&#13;&#10;-Duser.name=3333"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="restart" value="false"/>
 <setAttribute key="selected_features">
 <setEntry value="org.eclipse.cvs:default"/>
-<setEntry value="org.eclipse.e4.rcp.source:default"/>
 <setEntry value="org.eclipse.e4.core.tools.feature:default"/>
+<setEntry value="org.eclipse.e4.rcp.source:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore:default"/>
@@ -57,7 +57,6 @@
 <setEntry value="org.eclipse.emf.mapping.ecore:default"/>
 <setEntry value="org.eclipse.emf.mapping.ui:default"/>
 <setEntry value="org.eclipse.emf.mapping:default"/>
-<setEntry value="org.eclipse.emf.sdk:default"/>
 <setEntry value="org.eclipse.emf:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature.source:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
@@ -79,10 +78,9 @@
 <setEntry value="org.eclipse.osee.client.feature:default"/>
 <setEntry value="org.eclipse.osee.core.feature:default"/>
 <setEntry value="org.eclipse.osee.core.plugin.feature:default"/>
-<setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
+<setEntry value="org.eclipse.osee.core.server.external.feature:default"/>
 <setEntry value="org.eclipse.osee.core.ui.feature:default"/>
-<setEntry value="org.eclipse.osee.define.ide:default"/>
 <setEntry value="org.eclipse.osee.doors.feature:default"/>
 <setEntry value="org.eclipse.osee.external.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.feature:default"/>
