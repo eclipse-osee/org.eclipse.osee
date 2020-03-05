@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWord
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
-import org.eclipse.osee.define.api.PublishingErrorElement;
+import org.eclipse.osee.define.api.PublishingArtifactError;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -130,7 +130,7 @@ public class MSWordTemplatePublisher extends AbstractMSWordTemplatePublisher {
             processedArtifacts.add(artifact);
          }
       } else {
-         errorElements.add(new PublishingErrorElement(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
+         errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
             "Only artifacts of type Word Template Content are supported in this case"));
       }
    }

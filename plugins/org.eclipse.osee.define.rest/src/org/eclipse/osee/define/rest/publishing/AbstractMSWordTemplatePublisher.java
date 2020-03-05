@@ -39,7 +39,7 @@ import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
 import org.eclipse.osee.define.api.OseeHierarchyComparator;
-import org.eclipse.osee.define.api.PublishingErrorElement;
+import org.eclipse.osee.define.api.PublishingArtifactError;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
@@ -111,7 +111,7 @@ public abstract class AbstractMSWordTemplatePublisher {
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
 
    //Error Variables
-   protected final List<PublishingErrorElement> errorElements = new LinkedList<>();
+   protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
    protected Set<String> bookmarkedIds = new HashSet<>();
    protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
@@ -468,7 +468,7 @@ public abstract class AbstractMSWordTemplatePublisher {
       for (Map.Entry<ArtifactReadable, String> entry : comparator.errors.entrySet()) {
          ArtifactReadable art = entry.getKey();
          String description = entry.getValue();
-         errorElements.add(new PublishingErrorElement(art.getId(), art.getName(), art.getArtifactType(), description));
+         errorLog.add(new PublishingArtifactError(art.getId(), art.getName(), art.getArtifactType(), description));
       }
    }
 
@@ -645,7 +645,7 @@ public abstract class AbstractMSWordTemplatePublisher {
          WordTemplateContentRendererHandler rendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
          content = rendererHandler.renderWordML(wtcData);
       } catch (Exception ex) {
-         errorElements.add(new PublishingErrorElement(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
+         errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
             ex.toString()));
       }
 
@@ -700,9 +700,9 @@ public abstract class AbstractMSWordTemplatePublisher {
    protected void addErrorLogToWordMl(WordMLProducer wordMl) {
       addLinkNotInPublishErrors(wordMl);
 
-      if (!errorElements.isEmpty()) {
+      if (!errorLog.isEmpty()) {
          wordMl.startErrorLog();
-         for (PublishingErrorElement error : errorElements) {
+         for (PublishingArtifactError error : errorLog) {
             wordMl.addErrorRow(error.getArtId().toString(), error.getArtName(), error.getArtType().getName(),
                error.getErrorDescription());
          }
@@ -725,8 +725,8 @@ public abstract class AbstractMSWordTemplatePublisher {
 
       if (!unknownIds.isEmpty()) {
          String description = "Contains the following unknown GUIDs: " + unknownIds;
-         errorElements.add(
-            new PublishingErrorElement(artifact.getId(), artifact.getName(), artifact.getArtifactType(), description));
+         errorLog.add(
+            new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(), description));
       }
 
       while (match.find()) {
@@ -756,7 +756,7 @@ public abstract class AbstractMSWordTemplatePublisher {
             ArtifactReadable artifact = link.getValue();
             String description =
                "Contains the following GUIDs that are not found in this published document: " + link.getKey();
-            errorElements.add(new PublishingErrorElement(artifact.getId(), artifact.getName(),
+            errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(),
                artifact.getArtifactType(), description));
          }
       }

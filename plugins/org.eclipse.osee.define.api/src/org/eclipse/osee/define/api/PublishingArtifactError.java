@@ -15,13 +15,13 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 /**
  * @author Branden W. Phillips
  */
-public class PublishingErrorElement {
+public class PublishingArtifactError {
    private final Long artId;
    private final String artName;
    private final ArtifactTypeToken artType;
    private final String errorDescription;
 
-   public PublishingErrorElement(Long artId, String artName, ArtifactTypeToken artType, String errorDescription) {
+   public PublishingArtifactError(Long artId, String artName, ArtifactTypeToken artType, String errorDescription) {
       this.artId = artId;
       this.artName = artName;
       this.artType = artType;
