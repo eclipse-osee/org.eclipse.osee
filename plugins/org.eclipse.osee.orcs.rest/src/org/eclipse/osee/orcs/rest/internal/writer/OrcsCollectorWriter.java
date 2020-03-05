@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -405,8 +406,10 @@ public class OrcsCollectorWriter {
                         throw new OseeArgumentException("Unexpected date format [%s]", value);
                      }
                   } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
+
                      if (!valueOf.contains("<w:p><w:r><w:t>")) {
-                        valueOf = "<w:p><w:r><w:t>" + valueOf + "</w:t></w:r></w:p>";
+
+                        valueOf = "<w:p><w:r><w:t>" + AXml.textToXml(valueOf) + "</w:t></w:r></w:p>";
                      }
                      getTransaction().createAttribute(artifact, attrType, valueOf);
 
