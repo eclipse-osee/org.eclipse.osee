@@ -10,21 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.navigate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.ide.AtsImage;
+import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -129,7 +130,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
    @Override
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
-      if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
+      if (!forced && visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
          ObjectMapper mapper = JsonUtil.getMapper();
          try {
             String toStoreJson = mapper.writeValueAsString(visitedItems);
@@ -137,13 +138,11 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
             if (!toStoreJson.equals(fromStoreJson)) {
                AtsClientService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);
             }
-         } catch (JsonProcessingException ex) {
-            AtsClientService.get().getLogger().error(
-               "Unable to write visited items from Ats Config attribute on user artifact %s; %s",
-               AtsClientService.get().getUserService().getCurrentUser(), Lib.exceptionToString(ex));
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE,
+               "Unable to write visited items from Ats Config attribute on user artifact");
          }
       }
       return true;
    }
-
 }
