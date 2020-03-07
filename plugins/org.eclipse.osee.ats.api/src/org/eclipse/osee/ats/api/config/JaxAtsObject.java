@@ -41,11 +41,6 @@ public class JaxAtsObject extends NamedIdBase {
       super(id, name);
    }
 
-   @Override
-   public String toString() {
-      return getName();
-   }
-
    public boolean isActive() {
       return active;
    }

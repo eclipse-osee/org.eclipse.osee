@@ -73,11 +73,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    }
 
    @Override
-   public Long getId() {
-      return super.getId();
-   }
-
-   @Override
    @JsonIgnore
    public ArtifactTypeToken getArtifactType() {
       return CoreArtifactTypes.User;
@@ -86,18 +81,6 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    @Override
    public String toString() {
       return getName();
-   }
-
-   @Override
-   @JsonIgnore
-   public Long getUuid() {
-      return super.getId();
-   }
-
-   @Override
-   @JsonIgnore
-   public ArtifactId getArtifactId() {
-      return ArtifactId.valueOf(getId());
    }
 
    public List<String> getLoginIds() {
@@ -123,5 +106,4 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
    public void setUserGroups(List<ArtifactId> userGroups) {
       this.userGroups = userGroups;
    }
-
 }

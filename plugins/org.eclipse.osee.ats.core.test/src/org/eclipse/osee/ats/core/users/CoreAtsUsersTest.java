@@ -71,11 +71,6 @@ public class CoreAtsUsersTest {
    }
 
    @Test
-   public void testToString() {
-      Assert.assertEquals("User [Anonymous - 99999998 - ]", AtsCoreUsers.ANONYMOUS_USER.toString());
-   }
-
-   @Test
    public void testHashCode() {
       TestUser user = new TestUser();
       user.setUserId(null);
