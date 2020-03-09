@@ -56,8 +56,6 @@ public final class DeleteSearchAction extends Action {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
          AtsClientService.get().getQueryService().removeSearch(AtsClientService.get().getUserService().getCurrentUser(),
             selected);
-         AtsClientService.get().getQueryServiceClient().getArtifact(
-            AtsClientService.get().getUserService().getCurrentUser()).reloadAttributesAndRelations();
 
          TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
          OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);

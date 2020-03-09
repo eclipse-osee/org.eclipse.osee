@@ -132,7 +132,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
-            changes.addAttribute((IAtsObject) atsUser, AtsAttributeTypes.AtsQuickSearch, jaxRsApi.toJson(data));
+            changes.addAttribute(userArt, AtsAttributeTypes.AtsQuickSearch, jaxRsApi.toJson(data));
          } else {
             changes.setAttribute(userArt, attr, jaxRsApi.toJson(data));
          }

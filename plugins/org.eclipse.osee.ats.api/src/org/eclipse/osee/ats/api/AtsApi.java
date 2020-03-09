@@ -201,7 +201,9 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServ
 
    default ArtifactId getStoreObject(IAtsObject atsObject) {
       if (atsObject.getStoreObject() != null) {
-         return atsObject.getStoreObject();
+         if (!(atsObject instanceof AtsUser)) {
+            return atsObject.getStoreObject();
+         }
       }
       ArtifactToken obj = getQueryService().getArtifact(atsObject);
       atsObject.setStoreObject(obj);

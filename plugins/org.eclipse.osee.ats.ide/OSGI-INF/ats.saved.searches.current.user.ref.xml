@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.ats.ide.navigate.SavedSearchesNavigateItem"/>
-   <reference bind="setAtsCurrentUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsCurrentUserService" name="IAtsCurrentUserService" policy="static"/>
-</scr:component>

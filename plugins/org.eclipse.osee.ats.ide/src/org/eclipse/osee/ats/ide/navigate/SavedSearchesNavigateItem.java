@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,7 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.user.IAtsCurrentUserService;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
@@ -35,15 +37,14 @@ import org.osgi.service.event.EventHandler;
 
 /**
  * Create Saved Searches navigate item.</br>
- * Refresh on events:</br>
- * FrameworkEvents.NAVIGATE_VIEW_LOADED</br>
- * AtsTopicEvents.SAVED_SEARCHES_MODIFIED
+ * Load/Refresh on events:</br>
+ * - FrameworkEvents.NAVIGATE_VIEW_LOADED</br>
+ * - AtsTopicEvents.SAVED_SEARCHES_MODIFIED
  *
  * @author Donald G. Dunne
  */
 public class SavedSearchesNavigateItem extends XNavigateItem implements EventHandler {
 
-   private static IAtsCurrentUserService currentUserService;
    private static long SAVED_SEARCH_ID = 824378923L;
 
    public SavedSearchesNavigateItem() {
@@ -56,10 +57,6 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
       setId(SAVED_SEARCH_ID);
    }
 
-   public void setAtsCurrentUserService(IAtsCurrentUserService currentUserService) {
-      SavedSearchesNavigateItem.currentUserService = currentUserService;
-   }
-
    protected void populateSavedSearchesItem(final SavedSearchesNavigateItem topSearchItem, final AtsUser currentUser, final AtsApi atsApi) {
 
       Job populateSavedSearchesJob = new Job("Populate Saved Searches") {
@@ -67,26 +64,36 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
          @Override
          protected IStatus run(IProgressMonitor monitor) {
 
-            topSearchItem.getChildren().clear();
-            for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
-               for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-                  ArrayList<AtsSearchData> savedSearches =
-                     atsApi.getQueryService().getSavedSearches(currentUser, item.getNamespace());
-                  for (AtsSearchData data : savedSearches) {
-                     AtsSearchWorkflowSearchItem searchItem = item.copy();
-                     searchItem.setSavedData(data);
-                     SearchNavigateItem navItem = new SearchNavigateItem(topSearchItem, searchItem);
-                     navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+            try {
+               if (topSearchItem.getChildren() != null) {
+                  topSearchItem.getChildren().clear();
+               }
+               Set<Long> ids = new HashSet<Long>();
+               for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
+                  for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
+                     ArrayList<AtsSearchData> savedSearches =
+                        atsApi.getQueryService().getSavedSearches(currentUser, item.getNamespace());
+                     for (AtsSearchData data : savedSearches) {
+                        if (!ids.contains(data.getId())) {
+                           AtsSearchWorkflowSearchItem searchItem = item.copy();
+                           searchItem.setSavedData(data);
+                           SearchNavigateItem navItem = new SearchNavigateItem(topSearchItem, searchItem);
+                           navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+                           ids.add(data.getId());
+                        }
+                     }
                   }
                }
-            }
-            Displays.ensureInDisplayThread(new Runnable() {
+               Displays.ensureInDisplayThread(new Runnable() {
 
-               @Override
-               public void run() {
-                  NavigateView.getNavigateView().refresh(topSearchItem);
-               }
-            });
+                  @Override
+                  public void run() {
+                     NavigateView.getNavigateView().refresh(topSearchItem);
+                  }
+               });
+            } catch (Exception ex) {
+               OseeLog.log(NavigateViewLinksTopicEventHandler.class, Level.WARNING, "Error populating searches", ex);
+            }
             return Status.OK_STATUS;
          }
 
@@ -101,7 +108,10 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
          public void run() {
             SavedSearchesNavigateItem topSearchItem =
                (SavedSearchesNavigateItem) NavigateView.getNavigateView().getItem(SAVED_SEARCH_ID, true);
-            populateSavedSearchesItem(topSearchItem, currentUserService.getCurrentUser(), AtsClientService.get());
+            AtsUser currentUser = AtsClientService.get().getUserService().getCurrentUserNoCache();
+            if (topSearchItem != null) {
+               populateSavedSearchesItem(topSearchItem, currentUser, AtsClientService.get());
+            }
          }
       });
    }
@@ -117,7 +127,8 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
 
    @Override
    public String toString() {
-      return String.format("%s for %s ", getClass().getSimpleName(), FrameworkEvents.NAVIGATE_VIEW_LOADED);
+      return String.format("%s for %s and %s ", getClass().getSimpleName(), FrameworkEvents.NAVIGATE_VIEW_LOADED,
+         AtsTopicEvent.SAVED_SEARCHES_MODIFIED);
    }
 
 }

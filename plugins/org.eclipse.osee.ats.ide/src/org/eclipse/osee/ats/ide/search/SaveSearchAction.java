@@ -68,7 +68,6 @@ public final class SaveSearchAction extends Action {
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
          AtsClientService.get().getQueryService().saveSearch(asUser, data);
-         AtsClientService.get().getQueryServiceClient().getArtifact(asUser).reloadAttributesAndRelations();
 
          TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
          OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
