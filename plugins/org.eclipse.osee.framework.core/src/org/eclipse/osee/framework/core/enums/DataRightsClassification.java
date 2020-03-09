@@ -20,8 +20,7 @@ public enum DataRightsClassification {
    proprietary("Proprietary"),
    restrictedRights("Restricted Rights"),
    exportControlledItar("Export Controlled ITAR"),
-   Unspecified("Unspecified"),
-   noOverride("No Override");
+   Unspecified("Unspecified");
 
    String dataRightsClassification;
 
@@ -33,9 +32,9 @@ public enum DataRightsClassification {
       return dataRightsClassification;
    }
 
-   public static boolean isValid(DataRightsClassification check) {
+   public static boolean isValid(String check) {
       for (DataRightsClassification classification : DataRightsClassification.values()) {
-         if (!classification.equals(noOverride) && classification.equals(check)) {
+         if (classification.getDataRightsClassification().equals(check)) {
             return true;
          }
       }

@@ -124,8 +124,8 @@ public class WholeWordRenderer extends WordRenderer {
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
             WordUiUtil.getStoredResultData();
 
-            DataRightsClassification classification = artifact.getSoleAttributeValue(
-               CoreAttributeTypes.DataRightsClassification, DataRightsClassification.noOverride);
+            String classification =
+               artifact.getSoleAttributeValue(CoreAttributeTypes.DataRightsClassification, "invalid");
 
             if (DataRightsClassification.isValid(classification)) {
                content = addDataRights(content, classification, artifact);
@@ -156,7 +156,7 @@ public class WholeWordRenderer extends WordRenderer {
       }
    }
 
-   private String addDataRights(String content, DataRightsClassification classification, Artifact artifact) {
+   private String addDataRights(String content, String classification, Artifact artifact) {
       String toReturn = content;
       PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
 

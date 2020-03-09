@@ -20,7 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
@@ -37,7 +36,7 @@ public interface DataRightsEndpoint {
    @Path("artifacts/branch/{branch}/classification/{classification}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, @PathParam("classification") @DefaultValue("No Override") DataRightsClassification overrideClassification, List<ArtifactId> artifacts);
+   public DataRightResult getDataRights(@PathParam("branch") BranchId branch, @PathParam("classification") @DefaultValue("invalid") String overrideClassification, List<ArtifactId> artifacts);
 
    @POST
    @Path("artifacts/branch/{branch}")

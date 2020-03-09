@@ -98,7 +98,7 @@ public abstract class AbstractMSWordTemplatePublisher {
 
    //DataRights
    protected DataRightResult response = null;
-   protected DataRightsClassification overrideClassification;
+   protected String overrideClassification;
 
    //Data Structures
    protected final PublishingOptions publishingOptions;
@@ -411,12 +411,9 @@ public abstract class AbstractMSWordTemplatePublisher {
     * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
     */
    protected void getDataRightsOverride() {
-      overrideClassification = DataRightsClassification.noOverride;
-      for (DataRightsClassification classification : DataRightsClassification.values()) {
-         if (classification.getDataRightsClassification().equals(publishingOptions.overrideDataRights)) {
-            overrideClassification = classification;
-            break;
-         }
+      overrideClassification = "invalid";
+      if (DataRightsClassification.isValid(publishingOptions.overrideDataRights)) {
+         overrideClassification = publishingOptions.overrideDataRights;
       }
    }
 
@@ -756,8 +753,8 @@ public abstract class AbstractMSWordTemplatePublisher {
             ArtifactReadable artifact = link.getValue();
             String description =
                "Contains the following GUIDs that are not found in this published document: " + link.getKey();
-            errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(),
-               artifact.getArtifactType(), description));
+            errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
+               description));
          }
       }
    }

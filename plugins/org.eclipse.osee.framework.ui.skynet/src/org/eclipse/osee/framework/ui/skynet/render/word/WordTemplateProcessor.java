@@ -116,7 +116,7 @@ public class WordTemplateProcessor {
    private String slaveTemplateStyles;
 
    private String elementType;
-   private DataRightsClassification overrideClassification;
+   private String overrideClassification;
    private BranchId branch;
 
    //Outlining Options
@@ -318,11 +318,9 @@ public class WordTemplateProcessor {
    public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) {
 
       String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
-      overrideClassification = DataRightsClassification.noOverride;
-      for (DataRightsClassification classification : DataRightsClassification.values()) {
-         if (classification.getDataRightsClassification().equals(overrideDataRights)) {
-            overrideClassification = classification;
-         }
+      overrideClassification = "invalid";
+      if (DataRightsClassification.isValid(overrideDataRights)) {
+         overrideClassification = overrideDataRights;
       }
 
       excludeFolders = (boolean) renderer.getRendererOptionValue(RendererOption.EXCLUDE_FOLDERS);
