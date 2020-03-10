@@ -133,7 +133,7 @@ public class IndexerCommand implements ConsoleCommand {
                }
                break;
             case MISSING_ITEMS_ONLY:
-               indexer.indexMissing();
+               indexer.indexMissing(orcsApi.tokenService().getTaggedAttrs());
                break;
             case ALL:
                IndexStatusDisplayCollector collector = new IndexStatusDisplayCollector(console, startTime, false);

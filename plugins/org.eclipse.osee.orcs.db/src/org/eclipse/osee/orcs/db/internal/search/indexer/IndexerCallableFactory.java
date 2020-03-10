@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -20,6 +20,6 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public interface IndexerCallableFactory {
 
-   Callable<?> createIndexerTaskCallable(OrcsSession session, AttributeTypes types, IndexerCollector collector, int queryId);
+   Callable<?> createIndexerTaskCallable(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, int queryId);
 
 }

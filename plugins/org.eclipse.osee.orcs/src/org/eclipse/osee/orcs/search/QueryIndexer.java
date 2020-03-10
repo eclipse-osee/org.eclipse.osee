@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 
@@ -32,7 +33,7 @@ public interface QueryIndexer {
 
    void indexMissingByAttrTypeIds(Iterable<Long> attrTypeIds);
 
-   void indexMissing();
+   void indexMissing(Iterable<AttributeTypeGeneric<?>> attrTypes);
 
    CancellableCallable<Integer> deleteIndexByQueryId(int queueId);
 

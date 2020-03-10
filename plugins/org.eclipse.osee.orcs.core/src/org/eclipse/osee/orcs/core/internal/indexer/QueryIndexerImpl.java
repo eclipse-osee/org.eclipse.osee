@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 
@@ -30,17 +30,17 @@ public class QueryIndexerImpl implements QueryIndexer {
 
    private final OrcsSession session;
    private final QueryEngineIndexer engineIndexer;
-   private final AttributeTypes attributeTypes;
+   private final OrcsTokenService tokenService;
 
-   public QueryIndexerImpl(OrcsSession session, QueryEngineIndexer engineIndexer, AttributeTypes attributeTypes) {
+   public QueryIndexerImpl(OrcsSession session, QueryEngineIndexer engineIndexer, OrcsTokenService tokenService) {
       this.session = session;
       this.engineIndexer = engineIndexer;
-      this.attributeTypes = attributeTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
    public CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector) {
-      return engineIndexer.indexAllFromQueue(session, attributeTypes, collector);
+      return engineIndexer.indexAllFromQueue(session, tokenService, collector);
    }
 
    @Override
@@ -48,32 +48,31 @@ public class QueryIndexerImpl implements QueryIndexer {
       return new CancellableCallable<Integer>() {
          @Override
          public Integer call() throws Exception {
-            return engineIndexer.indexBranches(session, attributeTypes, attributeTypes.getAllTaggable(), branches,
-               indexOnlyMissing, collector).call();
+            return engineIndexer.indexBranches(session, tokenService, branches, indexOnlyMissing, collector).call();
          }
       };
    }
 
    @Override
    public CancellableCallable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector) {
-      return engineIndexer.indexResources(session, attributeTypes, gammaIds, collector);
+      return engineIndexer.indexResources(session, tokenService, gammaIds, collector);
    }
 
    @Override
    public void indexAttrTypeIds(Iterable<Long> attrTypeIds) {
-      engineIndexer.indexAttrTypeIds(session, attributeTypes, attrTypeIds);
+      engineIndexer.indexAttrTypeIds(session, tokenService, attrTypeIds);
    }
 
    @Override
    public void indexMissingByAttrTypeIds(Iterable<Long> attrTypeIds) {
-      engineIndexer.indexAttrTypeMissingOnly(attributeTypes, attrTypeIds);
+      engineIndexer.indexAttrTypeMissingOnly(tokenService, attrTypeIds);
    }
 
    @Override
-   public void indexMissing() {
+   public void indexMissing(Iterable<AttributeTypeGeneric<?>> attrTypes) {
       List<Long> attrTypeIds = new ArrayList<>(1000);
-      for (AttributeTypeId attType : attributeTypes.getAllTaggable()) {
-         attrTypeIds.add(attType.getId());
+      for (AttributeTypeGeneric<?> attrType : attrTypes) {
+         attrTypeIds.add(attrType.getId());
       }
       indexMissingByAttrTypeIds(attrTypeIds);
    }

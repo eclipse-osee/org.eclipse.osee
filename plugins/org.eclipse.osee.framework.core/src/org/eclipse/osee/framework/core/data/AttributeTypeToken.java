@@ -82,6 +82,8 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
          case "application/msword":
          case MediaType.TEXT_HTML:
             return TaggerTypeToken.XmlTagger;
+         case Named.SENTINEL:
+            return TaggerTypeToken.SENTINEL;
          default:
             return TaggerTypeToken.PlainTextTagger;
       }

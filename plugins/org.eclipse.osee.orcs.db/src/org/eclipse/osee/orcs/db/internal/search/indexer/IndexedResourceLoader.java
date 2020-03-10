@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IndexedResourceLoader {
 
-   void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, AttributeTypes attributeTypes);
+   void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService);
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -23,7 +24,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeUnusedBackingDataAndTransactions;
@@ -50,10 +50,10 @@ public class TxModule {
       this.idManager = identityService;
    }
 
-   public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, AttributeTypes types) {
+   public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, OrcsTokenService tokenService) {
       final TransactionProcessorProviderImpl processors = new TransactionProcessorProviderImpl();
       processors.add(TxWritePhaseEnum.BEFORE_TX_WRITE, new ComodificationCheck(dataLoaderFactory));
-      processors.add(TxWritePhaseEnum.AFTER_TX_WRITE, new TransactionIndexer(logger, indexer, types));
+      processors.add(TxWritePhaseEnum.AFTER_TX_WRITE, new TransactionIndexer(logger, indexer, tokenService));
       return new TxDataStore() {
 
          @Override

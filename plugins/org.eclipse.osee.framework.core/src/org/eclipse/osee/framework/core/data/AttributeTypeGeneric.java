@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
  */
 public abstract class AttributeTypeGeneric<T> extends NamedIdDescription implements AttributeTypeToken {
    public static final AttributeTypeString SENTINEL =
-      AttributeTypeToken.createString(Id.SENTINEL, NamespaceToken.OSEE, Named.SENTINEL, "", "");
+      AttributeTypeToken.createString(Id.SENTINEL, NamespaceToken.OSEE, Named.SENTINEL, Named.SENTINEL, "");
 
    private final String mediaType;
    private final TaggerTypeToken taggerType;

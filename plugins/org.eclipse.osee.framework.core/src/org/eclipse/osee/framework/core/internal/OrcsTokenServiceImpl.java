@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -151,6 +153,18 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          throw new OseeArgumentException("The relation type %s with the same id as %s has already been registered.",
             existingType, relationType);
       }
+   }
+
+   @Override
+   public Iterable<AttributeTypeGeneric<?>> getTaggedAttrs() {
+      Set<AttributeTypeGeneric<?>> attrTypeIds = new HashSet<>();
+      for (Map.Entry<Long, AttributeTypeGeneric<?>> entry : attributeTypes.entrySet()) {
+         AttributeTypeGeneric<?> attrType = entry.getValue();
+         if (attrType.isTaggable()) {
+            attrTypeIds.add(attrType);
+         }
+      }
+      return attrTypeIds;
    }
 
    public void start() {

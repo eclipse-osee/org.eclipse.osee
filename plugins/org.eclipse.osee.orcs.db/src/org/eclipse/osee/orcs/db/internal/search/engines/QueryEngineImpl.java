@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -51,8 +50,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactReadableImpl;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
@@ -75,14 +72,12 @@ public class QueryEngineImpl implements QueryEngine {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final SqlObjectLoader sqlObjectLoader;
-   private final ArtifactTypes artifactTypes;
-   private final RelationTypes relationTypes;
    private final KeyValueStore keyValue;
    private final SqlHandlerFactory handlerFactory;
    private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTypes orcsTypes, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, SqlHandlerFactory handlerFactory, SqlObjectLoader sqlObjectLoader, OrcsTokenService tokenService, KeyValueStore keyValue, IResourceManager resourceManager) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
       this.txSqlContextFactory = txSqlContextFactory;
@@ -90,8 +85,6 @@ public class QueryEngineImpl implements QueryEngine {
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.sqlObjectLoader = sqlObjectLoader;
-      this.artifactTypes = orcsTypes.getArtifactTypes();
-      this.relationTypes = orcsTypes.getRelationTypes();
       this.tokenService = tokenService;
       this.keyValue = keyValue;
       this.handlerFactory = handlerFactory;
@@ -161,8 +154,9 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public List<ArtifactToken> asArtifactTokens(QueryData queryData) {
       List<ArtifactToken> tokens = new ArrayList<>(100);
-      selectiveArtifactLoad(queryData, stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
-         stmt.getString("value"), queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")))));
+      selectiveArtifactLoad(queryData,
+         stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
+            queryData.getBranch(), tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id")))));
       return tokens;
    }
 
@@ -215,7 +209,7 @@ public class QueryEngineImpl implements QueryEngine {
                artifactMap.put(otherArtifact, otherArtifact);
             }
 
-            artifact.putRelation(relationTypes.get(typeId), side, otherArtifact);
+            artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
          }
       };
 
@@ -225,7 +219,7 @@ public class QueryEngineImpl implements QueryEngine {
    private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData, QueryFactory queryFactory) {
       TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
       ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
-      ArtifactTypeToken artifactType = artifactTypes.get(artifactTypeId);
+      ArtifactTypeToken artifactType = tokenService.getArtifactTypeOrCreate(artifactTypeId);
       ApplicabilityId applic = ApplicabilityId.valueOf(stmt.getLong("app_id"));
       return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
          modType, queryFactory);
@@ -287,7 +281,7 @@ public class QueryEngineImpl implements QueryEngine {
       Map<ArtifactId, ArtifactToken> tokens = new HashMap<>(10000);
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactToken token = ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
-            queryData.getBranch(), artifactTypes.get(stmt.getLong("art_type_id")));
+            queryData.getBranch(), tokenService.getArtifactTypeOrCreate(stmt.getLong("art_type_id")));
          tokens.put(token, token);
       };
 

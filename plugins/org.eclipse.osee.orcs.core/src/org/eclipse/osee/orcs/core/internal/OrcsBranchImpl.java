@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -57,15 +58,17 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchDataStore branchStore;
    private final BranchDataFactory branchDataFactory;
    private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final QueryFactory queryFactory;
 
-   public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, OrcsTypes orcsTypes) {
+   public OrcsBranchImpl(OrcsApi orcsApi, Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;
       branchDataFactory = new BranchDataFactory(queryFactory);
       this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
       this.queryFactory = queryFactory;
    }
 
@@ -144,12 +147,12 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination) {
       return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination,
-         orcsTypes);
+         tokenService);
    }
 
    @Override
    public List<ChangeItem> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
-      return branchStore.compareBranch(session, orcsTypes, sourceTx, destinationTx, queryFactory);
+      return branchStore.compareBranch(session, tokenService, sourceTx, destinationTx, queryFactory);
    }
 
    @Override
@@ -158,7 +161,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaselineTx();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
-      return branchStore.compareBranch(session, orcsTypes, fromTx, toTx, queryFactory);
+      return branchStore.compareBranch(session, tokenService, fromTx, toTx, queryFactory);
    }
 
    @Override
@@ -261,7 +264,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          "Applicability Tests"}) {
          tx.createArtifact(DefaultHierarchyRoot, Folder, name);
 
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
+         tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
 
       }
       tx.createArtifact(CoreArtifactTokens.CustomerReqFolder);

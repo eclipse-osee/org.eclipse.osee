@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,7 +26,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.DeleteTagSetDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.IndexerDatabaseStatisticsCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.PurgeAllTagsDatabaseCallable;
@@ -73,24 +71,25 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends AttributeTypeId> typeToTag, Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
-      return new IndexBranchesDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer,
-         merge(collector), typeToTag, branches, indexOnlyMissing);
+   public CancellableCallable<Integer> indexBranches(OrcsSession session, OrcsTokenService tokenService, Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
+      return new IndexBranchesDatabaseCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
+         merge(collector), branches, indexOnlyMissing);
    }
 
    @Override
-   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector) {
-      return new IndexAllInQueueCallable(logger, session, jdbcClient, joinFactory, types, consumer, merge(collector));
+   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, OrcsTokenService tokenService, IndexerCollector... collector) {
+      return new IndexAllInQueueCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
+         merge(collector));
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<Long> datas, IndexerCollector... collector) {
-      return new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer, merge(collector),
-         IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
+   public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> datas, IndexerCollector... collector) {
+      return new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
+         merge(collector), IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
    }
 
    @Override
-   public void indexAttrTypeIds(OrcsSession session, AttributeTypes types, Iterable<Long> attrTypeIds) {
+   public void indexAttrTypeIds(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> attrTypeIds) {
       String GAMMAS_BY_TYPE = "select gamma_id from osee_attribute where attr_type_id = ?";
       List<Long> gammaIds = new LinkedList<>();
       for (Long attributeType : attrTypeIds) {
@@ -101,7 +100,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
             }
          }
          try {
-            new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer, null,
+            new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer, null,
                IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
@@ -112,7 +111,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public void indexAttrTypeMissingOnly(AttributeTypes types, Iterable<Long> attrTypeIds) {
+   public void indexAttrTypeMissingOnly(OrcsTokenService tokenService, Iterable<Long> attrTypeIds) {
       String MISSING_GAMMAS_BY_TYPE =
          "SELECT DISTINCT att.gamma_id FROM OSEE_ATTRIBUTE att, osee_txs txs WHERE attr_type_id IN (" + Collections.toString(
             ",",
@@ -126,7 +125,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
       }
       System.out.println("Found gammas to tag: " + gammaIds.size());
       try {
-         new IndexerDatabaseCallable(logger, null, jdbcClient, joinFactory, types, consumer, null,
+         new IndexerDatabaseCallable(logger, null, jdbcClient, joinFactory, tokenService, consumer, null,
             IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

@@ -85,4 +85,9 @@ public interface OrcsTokenService {
     */
    void registerRelationType(RelationTypeToken relationType);
 
+   /**
+    * @return Iterable List of ids of Attributes that are taggable
+    */
+   Iterable<AttributeTypeGeneric<?>> getTaggedAttrs();
+
 }

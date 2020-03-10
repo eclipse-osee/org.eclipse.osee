@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastoreTxCallable<List<Future<?>>> {
 
    private final SqlJoinFactory joinFactory;
-   private final AttributeTypes types;
+   private final OrcsTokenService tokenService;
    private final IndexerCollector collector;
    private final int cacheLimit;
    private final boolean isCacheAll;
@@ -44,10 +44,10 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    private long totalGammas;
    private List<Future<?>> futures;
 
-   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
+   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
-      this.types = types;
+      this.tokenService = tokenService;
       this.consumer = consumer;
       this.collector = collector;
       this.cacheLimit = cacheLimit;
@@ -95,7 +95,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       if (isOkToDispatch && !queryIds.isEmpty()) {
          for (int queryId : queryIds) {
             try {
-               Future<?> future = consumer.submitTaskId(getSession(), types, collector, queryId);
+               Future<?> future = consumer.submitTaskId(getSession(), tokenService, collector, queryId);
                futures.add(future);
             } catch (Exception ex) {
                OseeCoreException.wrapAndThrow(ex);

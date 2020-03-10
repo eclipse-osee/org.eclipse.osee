@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutionCallback;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -57,8 +57,8 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public Future<?> submitTaskId(OrcsSession session, AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception {
-      Callable<?> callable = factory.createIndexerTaskCallable(session, types, collector, queryId);
+   public Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final int queryId) throws Exception {
+      Callable<?> callable = factory.createIndexerTaskCallable(session, tokenService, collector, queryId);
       if (collector != null) {
          collector.onIndexTaskSubmit(queryId);
       }

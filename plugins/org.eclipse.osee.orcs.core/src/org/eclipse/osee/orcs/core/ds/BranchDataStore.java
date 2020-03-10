@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -43,9 +44,9 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTypes orcsTypes, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
+   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, QueryFactory queryFactory);
 
-   List<ChangeItem> compareBranch(OrcsSession session, OrcsTypes orcsTypes, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
+   List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
 
    Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName);
 

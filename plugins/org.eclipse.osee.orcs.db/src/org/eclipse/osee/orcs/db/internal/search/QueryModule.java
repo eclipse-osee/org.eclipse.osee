@@ -83,7 +83,7 @@ public class QueryModule {
       QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, jdbcClient, taggingEngine, executorAdmin,
          loaderFactory, attributeTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
-         sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, orcsTypes, tokenService,
-         keyValue, resourceManager);
+         sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, tokenService, keyValue,
+         resourceManager);
    }
 }

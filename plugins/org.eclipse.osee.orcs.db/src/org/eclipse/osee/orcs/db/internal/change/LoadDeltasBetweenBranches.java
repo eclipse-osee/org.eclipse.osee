@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -75,7 +75,7 @@ public class LoadDeltasBetweenBranches {
    private static final String SELECT_BASE_TX = "select baseline_transaction_id from osee_branch where branch_id = ?";
 
    private final JdbcClient jdbcClient;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
    private final BranchId sourceBranch, destinationBranch;
    private final BranchId mergeBranch;
    private final TransactionId mergeTxId;
@@ -87,10 +87,10 @@ public class LoadDeltasBetweenBranches {
    private final MissingChangeItemFactory missingChangeItemFactory;
    private final QueryFactory queryFactory;
 
-   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTypes orcsTypes, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
+   public LoadDeltasBetweenBranches(JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, BranchId sourceBranch, BranchId destinationBranch, TransactionToken sourceTx, TransactionToken destinationTx, BranchId mergeBranch, QueryFactory queryFactory, MissingChangeItemFactory missingChangeItemFactory) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.sourceTx = sourceTx;
@@ -169,13 +169,13 @@ public class LoadDeltasBetweenBranches {
                String value = stmt.getString("item_value");
                hashChangeData.put(1, itemId,
                   ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
-                     orcsTypes.getAttributeTypes().get(itemTypeId), artId, gammaId, modType, value,
+                     tokenService.getAttributeTypeOrCreate(itemTypeId), artId, gammaId, modType, value,
                      getApplicabilityToken(appId)));
                break;
 
             case 2: {
                hashChangeData.put(2, itemId, ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(itemId),
-                  orcsTypes.getArtifactTypes().get(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
+                  tokenService.getArtifactTypeOrCreate(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
                break;
             }
             case 3: {
@@ -184,7 +184,7 @@ public class LoadDeltasBetweenBranches {
                String rationale = stmt.getString("item_value");
                hashChangeData.put(3, itemId,
                   ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId),
-                     orcsTypes.getRelationTypes().get(itemTypeId), gammaId, modType, aArtId, bArtId, rationale,
+                     tokenService.getRelationTypeOrCreate(itemTypeId), gammaId, modType, aArtId, bArtId, rationale,
                      getApplicabilityToken(appId)));
                break;
             }

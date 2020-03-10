@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -28,15 +28,15 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
    private final BranchId source;
    private final BranchId destination;
    private final QueryFactory queryFactory;
-   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
-   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactId committer, BranchId source, BranchId destination, OrcsTypes orcsTypes) {
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactId committer, BranchId source, BranchId destination, OrcsTokenService tokenService) {
       super(logger, session, branchStore);
       this.committer = committer;
       this.source = source;
       this.destination = destination;
       this.queryFactory = queryFactory;
-      this.orcsTypes = orcsTypes;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -53,8 +53,8 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(sourceBranch, "sourceBranch");
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
-      TransactionId newTx = getBranchStore().commitBranch(getSession(), committer, orcsTypes, sourceBranch, sourceHead,
-         destinationBranch, destinationHead, queryFactory);
+      TransactionId newTx = getBranchStore().commitBranch(getSession(), committer, tokenService, sourceBranch,
+         sourceHead, destinationBranch, destinationHead, queryFactory);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.indexer;
 
 import java.util.concurrent.Future;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -21,7 +22,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsCollectorImpl;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsImpl;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
@@ -48,12 +48,12 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       this.systemCollector = new IndexerStatisticsCollectorImpl(statistics);
    }
 
-   public void start(OrcsSession systemSession, AttributeTypes attributeTypes) {
+   public void start(OrcsSession systemSession, OrcsTokenService tokenService) {
       queryIndexer.addCollector(systemCollector);
       try {
          if (properties.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
             task =
-               executorAdmin.submit("Attribute Indexer", queryIndexer.indexAllFromQueue(systemSession, attributeTypes));
+               executorAdmin.submit("Attribute Indexer", queryIndexer.indexAllFromQueue(systemSession, tokenService));
          } else {
             logger.info("Indexer was not executed on Server Startup.");
          }
@@ -86,7 +86,7 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       statistics.clear();
    }
 
-   public QueryIndexer createQueryIndexer(OrcsSession session, AttributeTypes attributeTypes) {
-      return new QueryIndexerImpl(session, queryIndexer, attributeTypes);
+   public QueryIndexer createQueryIndexer(OrcsSession session, OrcsTokenService tokenService) {
+      return new QueryIndexerImpl(session, queryIndexer, tokenService);
    }
 }

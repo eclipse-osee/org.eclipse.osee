@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -21,7 +22,6 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.util.AttributeDataUtil;
@@ -44,11 +44,11 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       this.resourceManager = resourceManager;
    }
 
-   private int loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, AttributeTypes attributeTypes) {
+   private int loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService) {
       Collection<AttributeData> attrData = new HashSet<>();
       Consumer<JdbcStatement> consumer = stmt -> {
          int itemId = stmt.getInt("attr_id");
-         AttributeTypeId attributeType = attributeTypes.get(stmt.getLong("attr_type_id"));
+         AttributeTypeId attributeType = tokenService.getAttributeTypeOrCreate(stmt.getLong("attr_type_id"));
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          String uri = stmt.getString("uri");
          String value = stmt.getString("value");
@@ -69,8 +69,8 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
    }
 
    @Override
-   public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, AttributeTypes attributeTypes) {
-      int count = loadData(handler, tagQueueQueryId, attributeTypes);
+   public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId, OrcsTokenService tokenService) {
+      int count = loadData(handler, tagQueueQueryId, tokenService);
       // Re-try in case query id hasn't been committed to the database
       int retry = 0;
       while (count == 0 && retry < IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES) {
@@ -81,7 +81,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          }
          logger.debug("Retrying attribute load from gammas - queryId[%s] attempt[%s of %s]", tagQueueQueryId, retry,
             IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES);
-         loadData(handler, tagQueueQueryId, attributeTypes);
+         loadData(handler, tagQueueQueryId, tokenService);
          retry++;
       }
    }

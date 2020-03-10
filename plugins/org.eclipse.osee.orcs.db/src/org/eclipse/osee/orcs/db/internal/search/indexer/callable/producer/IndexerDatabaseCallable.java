@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -26,8 +26,8 @@ public class IndexerDatabaseCallable extends AbstractIndexerTxDatabaseCallable {
 
    private final Iterable<Long> datas;
 
-   public IndexerDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<Long> datas) {
-      super(logger, session, jdbcClient, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
+   public IndexerDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsTokenService tokenService, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<Long> datas) {
+      super(logger, session, jdbcClient, joinFactory, tokenService, consumer, listener, isCacheAll, cacheLimit);
       this.datas = datas;
    }
 

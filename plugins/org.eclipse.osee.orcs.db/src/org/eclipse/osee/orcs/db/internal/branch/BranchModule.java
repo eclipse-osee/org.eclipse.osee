@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.branch;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -117,11 +118,11 @@ public class BranchModule {
          }
 
          @Override
-         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTypes orcsTypes, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
+         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch = getMergeBranchId(queryFactory.branchQuery(), source, destination);
 
             try {
-               return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, orcsTypes,
+               return new CommitBranchDatabaseTxCallable(idManager, committer, jdbcClient, joinFactory, tokenService,
                   source, destination, sourceTx, destinationTx, mergeBranch, queryFactory,
                   missingChangeItemFactory).call();
             } catch (Exception ex) {
@@ -135,11 +136,11 @@ public class BranchModule {
          }
 
          @Override
-         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTypes orcsTypes, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
+         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory) {
             BranchId mergeBranch =
                getMergeBranchId(queryFactory.branchQuery(), sourceTx.getBranch(), destinationTx.getBranch());
-            return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, orcsTypes, sourceTx, destinationTx,
-               mergeBranch, queryFactory, missingChangeItemFactory).compareTransactions();
+            return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, tokenService, sourceTx,
+               destinationTx, mergeBranch, queryFactory, missingChangeItemFactory).compareTransactions();
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {

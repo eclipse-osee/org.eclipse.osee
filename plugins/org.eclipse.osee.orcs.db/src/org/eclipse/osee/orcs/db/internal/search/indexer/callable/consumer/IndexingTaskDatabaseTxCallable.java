@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.JoinItem;
@@ -29,7 +30,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
@@ -53,13 +53,13 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private final int tagQueueQueryId;
    private final boolean isCacheAll;
    private final int cacheLimit;
-   private final AttributeTypes attributeTypes;
+   private final OrcsTokenService tokenService;
 
    private final long waitStartTime;
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
+   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, OrcsTokenService tokenService) {
       super(logger, session, jdbcClient);
       waitStartTime = System.currentTimeMillis();
 
@@ -69,7 +69,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       this.tagQueueQueryId = tagQueueQueryId;
       this.cacheLimit = cacheLimit;
       this.isCacheAll = isCacheAll;
-      this.attributeTypes = attributeTypes;
+      this.tokenService = tokenService;
    }
 
    public int getTagQueueQueryId() {
@@ -93,7 +93,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       try {
          Collection<IndexedResource> sources = new LinkedHashSet<>();
          OrcsDataHandler<IndexedResource> handler = createCollector(sources);
-         loader.loadSource(handler, getTagQueueQueryId(), attributeTypes);
+         loader.loadSource(handler, getTagQueueQueryId(), tokenService);
 
          if (!sources.isEmpty()) {
             try {
@@ -126,7 +126,8 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             toStore.put(gamma.getId(), tags);
             tagCollector.setCurrentTag(gamma.getId(), tags);
             try {
-               TaggerTypeToken taggerType = attributeTypes.getTaggerId(source.getAttributeType());
+               TaggerTypeToken taggerType =
+                  tokenService.getAttributeTypeOrSentinel(source.getAttributeType().getId()).getTaggerType();
                if (taggerType.isValid()) {
                   Tagger tagger = taggingEngine.getTagger(taggerType);
                   tagger.tagIt(source.getResourceInput(), tagCollector);

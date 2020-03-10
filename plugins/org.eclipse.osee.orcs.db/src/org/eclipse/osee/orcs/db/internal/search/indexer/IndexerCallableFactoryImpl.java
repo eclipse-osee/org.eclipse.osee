@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer.IndexingTaskDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -38,9 +38,9 @@ public class IndexerCallableFactoryImpl implements IndexerCallableFactory {
    }
 
    @Override
-   public Callable<?> createIndexerTaskCallable(OrcsSession session, AttributeTypes types, IndexerCollector collector, int queueId) {
+   public Callable<?> createIndexerTaskCallable(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, int queueId) {
       return new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, taggingEngine, collector, queueId,
-         IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, types);
+         IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, tokenService);
    }
 
 }

@@ -12,7 +12,8 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.Collection;
 import java.util.function.Consumer;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -21,7 +22,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -59,20 +59,18 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
    private final SqlJoinFactory joinFactory;
-   private final AttributeTypes types;
+   private final OrcsTokenService tokenService;
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
    private final Collection<Branch> branches;
-   private final Collection<? extends AttributeTypeId> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends AttributeTypeId> typesToTag, Collection<Branch> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, OrcsTokenService tokenService, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<Branch> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
-      this.types = types;
+      this.tokenService = tokenService;
       this.consumer = consumer;
       this.collector = collector;
-      this.typesToTag = typesToTag;
       this.branches = branches;
       this.tagOnlyMissingGammas = tagOnlyMissingGammas;
    }
@@ -88,10 +86,8 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          String searchQuery = data.getSecond();
          Object[] params = data.getThird();
 
-         for (AttributeTypeId attributeType : typesToTag) {
-            if (types.isTaggable(attributeType)) {
-               typeJoin.add(attributeType);
-            }
+         for (AttributeTypeGeneric<?> attrType : tokenService.getTaggedAttrs()) {
+            typeJoin.add(attrType.getId());
          }
 
          typeJoin.store();
@@ -111,7 +107,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       try {
          if (!joinQuery.isEmpty()) {
             joinQuery.store();
-            consumer.submitTaskId(getSession(), types, collector, joinQuery.getQueryId());
+            consumer.submitTaskId(getSession(), tokenService, collector, joinQuery.getQueryId());
          }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

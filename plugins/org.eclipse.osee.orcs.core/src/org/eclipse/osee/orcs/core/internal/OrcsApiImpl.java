@@ -206,7 +206,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
          proxyManager);
 
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
-      indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
+      indexerModule.start(getSystemSession(), tokenService());
 
       OrcsScriptCompiler compiler =
          new OrcsScriptCompilerImpl(getSystemSession(), module, tokenService(), orcsTypes, queryModule);
@@ -245,7 +245,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public OrcsBranch getBranchOps() {
       OrcsSession session = getSession();
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes());
+      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes(),
+         tokenService());
    }
 
    @Override
@@ -275,7 +276,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public QueryIndexer getQueryIndexer() {
       OrcsSession session = getSession();
-      return indexerModule.createQueryIndexer(session, getOrcsTypes().getAttributeTypes());
+      return indexerModule.createQueryIndexer(session, tokenService());
    }
 
    private OrcsSession getSystemSession() {
