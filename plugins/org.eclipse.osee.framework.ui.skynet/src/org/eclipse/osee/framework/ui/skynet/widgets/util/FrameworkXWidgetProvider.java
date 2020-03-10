@@ -111,8 +111,7 @@ public final class FrameworkXWidgetProvider {
       return reference;
    }
 
-   private String getXWidgetNameBasedOnAttribute(String attributeTypeName) {
-      AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
+   private String getXWidgetNameBasedOnAttribute(AttributeTypeToken attributeType) {
       if (attributeType != null) {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
          List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
@@ -128,8 +127,16 @@ public final class FrameworkXWidgetProvider {
       try {
 
          // Set xWidgetName from attribute type if not already set
-         if (!Strings.isValid(xWidgetName) && Strings.isValid(xWidgetLayoutData.getStoreName())) {
-            xWidgetName = getXWidgetNameBasedOnAttribute(xWidgetLayoutData.getStoreName());
+         if (!Strings.isValid(xWidgetName)) {
+            AttributeTypeToken attributeType = null;
+            if (!Strings.isValid(xWidgetName) && xWidgetLayoutData.getStoreId() > 0) {
+               attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+            }
+            if (attributeType == null && !Strings.isValid(xWidgetName) && Strings.isValid(
+               xWidgetLayoutData.getStoreName())) {
+               attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            }
+            xWidgetName = getXWidgetNameBasedOnAttribute(attributeType);
          }
 
          // Look for widget provider to create widget

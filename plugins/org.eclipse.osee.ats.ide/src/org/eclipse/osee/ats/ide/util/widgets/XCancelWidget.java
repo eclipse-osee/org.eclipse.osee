@@ -57,7 +57,7 @@ public class XCancelWidget extends GenericXWidget implements IArtifactWidget {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.CancelReason.getName());
+      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.CancelReason.getId());
       String[] values = valuesSet.toArray(new String[valuesSet.size()]);
       Arrays.sort(values);
       return values;

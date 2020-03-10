@@ -124,7 +124,7 @@ public class AttributeTypeManager {
    }
 
    private static Set<String> getEnumerationValues(AttributeType attributeType) {
-      if (attributeType.getOseeEnumType() != null) {
+      if (attributeType.isEnumerated() && attributeType.getOseeEnumType() != null) {
          return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
       }
       return Collections.emptySet();
@@ -148,6 +148,12 @@ public class AttributeTypeManager {
 
    public static int getMaxOccurrences(AttributeTypeId attributeType) {
       return getType(attributeType).getMaxOccurrences();
+   }
+
+   public static Set<String> getEnumerationValues(Long id) {
+      AttributeType type = getTypeById(id);
+      Conditions.checkNotNull(type, "Attribute Type");
+      return getEnumerationValues(type);
    }
 
    public static Set<String> getEnumerationValues(String attributeName) {

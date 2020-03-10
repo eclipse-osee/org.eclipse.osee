@@ -768,7 +768,7 @@ public class WordTemplateProcessor {
                      publishInLine, footer);
                }
             }
-         } else {
+         } else {            
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,

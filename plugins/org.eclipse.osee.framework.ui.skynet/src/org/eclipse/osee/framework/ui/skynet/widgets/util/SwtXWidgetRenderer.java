@@ -293,10 +293,10 @@ public class SwtXWidgetRenderer {
             AttributeTypeToken type = null;
             if (layoutData.getStoreId() > 0) {
                type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
-            } else {
+            }
+            if (type == null && Strings.isValid(layoutData.getStoreName())) {
                type = AttributeTypeManager.getType(layoutData.getStoreName());
             }
-
             if (type != null && Strings.isValid(type.getDescription())) {
                description = type.getDescription();
             }
@@ -317,8 +317,14 @@ public class SwtXWidgetRenderer {
          return;
       }
       if (xWidget instanceof IAttributeWidget) {
+         AttributeTypeToken attributeType = null;
+         if (xWidgetLayoutData.getStoreId() > 0) {
+            attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+         }
+         if (attributeType == null && Strings.isValid(xWidgetLayoutData.getStoreName())) {
+            attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+         }
          try {
-            AttributeTypeToken attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
             ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

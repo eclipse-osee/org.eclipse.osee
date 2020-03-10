@@ -41,9 +41,14 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
          Set<String> options = null;
          try {
             String storeName = xWidgetData.getStoreName();
-            if (Strings.isValid(storeName)) {
+            Long storeId = xWidgetData.getStoreId();
+            if (storeId > 0) {
+               options = AttributeTypeManager.getEnumerationValues(storeId);
+            }
+            if (options == null && Strings.isValid(storeName)) {
                options = AttributeTypeManager.getEnumerationValues(storeName);
-            } else {
+            }
+            if (options == null) {
                String displayName = xWidgetData.getName();
                if (Strings.isValid(displayName)) {
                   options = AttributeTypeManager.getEnumerationValues(displayName);

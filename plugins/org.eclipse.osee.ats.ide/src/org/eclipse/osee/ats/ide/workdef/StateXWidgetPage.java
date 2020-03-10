@@ -222,15 +222,9 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
             AttributeTypeToken type = null;
             if (layoutData.getStoreId() > 0) {
                type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
-            } else {
-               type = AttributeTypeManager.getType(layoutData.getStoreName());
             }
-            if (type == null) {
-               if (layoutData.getStoreId() > 0) {
-                  type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
-               } else {
-                  type = AttributeTypeManager.getType(layoutData.getStoreName());
-               }
+            if (type == null && Strings.isValid(layoutData.getStoreName())) {
+               type = AttributeTypeManager.getType(layoutData.getStoreName());
             }
             if (type != null && Strings.isValid(type.getDescription())) {
                description = type.getDescription();

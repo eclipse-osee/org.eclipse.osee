@@ -87,7 +87,13 @@ public class WidgetPageUtil {
          if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
             description = XCommitManager.DESCRIPTION;
          }
-         AttributeTypeToken type = AttributeTypeManager.getType(layoutData.getStoreName());
+         AttributeTypeToken type = null;
+         if (layoutData.getStoreId() > 0) {
+            type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
+         }
+         if (type == null && Strings.isValid(layoutData.getStoreName())) {
+            type = AttributeTypeManager.getType(layoutData.getStoreName());
+         }
          if (type != null && Strings.isValid(type.getDescription())) {
             description = type.getDescription();
          }

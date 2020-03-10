@@ -55,11 +55,15 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Set<String> names = new HashSet<>();
+      Set<AttributeTypeId> requiredTypes = new HashSet<>();
       for (RoughArtifact artifact : collector.getRoughArtifacts()) {
-         names.addAll(artifact.getAttributeTypeNames());
+         if (artifact.getPrimaryArtifactType() != null && artifact.getPrimaryArtifactType().getValidAttributeTypes() != null) {
+            requiredTypes.addAll(artifact.getPrimaryArtifactType().getValidAttributeTypes());
+         } else {
+            names.addAll(artifact.getAttributeTypeNames());
+         }
       }
       selectedArtifactTypes.clear();
-      Set<AttributeTypeId> requiredTypes = new HashSet<>();
       for (String name : names) {
          requiredTypes.add(AttributeTypeManager.getType(name));
       }
