@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider"/>
    </service>
-   <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.jaxrs.JaxRsApi" name="jaxRsApi" policy="static"/>
+   <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
 </scr:component>

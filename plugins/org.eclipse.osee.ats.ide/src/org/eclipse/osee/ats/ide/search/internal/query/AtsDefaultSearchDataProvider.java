@@ -14,8 +14,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.jaxrs.JaxRsApi;
 
 /**
  * @author Donald G. Dunne

@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.annotation,
  javax.ws.rs.core,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.applicability,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

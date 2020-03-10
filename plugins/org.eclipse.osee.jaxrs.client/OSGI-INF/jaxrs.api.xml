@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start">
 	<implementation class="org.eclipse.osee.jaxrs.client.JaxRsApiImpl"/>
  	<service>
-  		  <provide interface="org.eclipse.osee.jaxrs.JaxRsApi"/>
+  		  <provide interface="org.eclipse.osee.framework.core.JaxRsApi"/>
  	</service>
  	<reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.data.OrcsTokenService" name="OrcsTokenService" policy="static"/>
 </scr:component>
