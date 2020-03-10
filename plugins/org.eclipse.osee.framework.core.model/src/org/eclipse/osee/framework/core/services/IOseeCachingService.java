@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.services;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;

@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.databind.annotation,
  org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

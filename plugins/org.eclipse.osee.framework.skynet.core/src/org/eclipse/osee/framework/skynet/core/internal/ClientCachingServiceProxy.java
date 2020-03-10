@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;

@@ -4,5 +4,5 @@
  	<service>
   		  <provide interface="org.eclipse.osee.framework.core.JaxRsApi"/>
  	</service>
- 	<reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.data.OrcsTokenService" name="OrcsTokenService" policy="static"/>
+ 	<reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
 </scr:component>

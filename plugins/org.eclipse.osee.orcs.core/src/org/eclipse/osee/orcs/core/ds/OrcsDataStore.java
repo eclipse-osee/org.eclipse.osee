@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.orcs.OrcsTypes;
 
 /**

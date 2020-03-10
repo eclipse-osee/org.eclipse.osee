@@ -14,7 +14,7 @@ import static org.eclipse.osee.orcs.db.internal.search.Engines.newArtifactQueryE
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newIndexingEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
-import org.eclipse.osee.framework.core.data.OrcsTokenService;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;

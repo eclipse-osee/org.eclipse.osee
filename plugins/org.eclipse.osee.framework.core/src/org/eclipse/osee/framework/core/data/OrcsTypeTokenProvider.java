@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
+
 /**
  * This interface is used to cause its implementations to be class loaded by OSGi before the start of the
  * OrcsTokenService.
