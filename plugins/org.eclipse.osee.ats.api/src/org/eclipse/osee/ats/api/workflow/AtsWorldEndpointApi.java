@@ -75,4 +75,13 @@ public interface AtsWorldEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    ResultRows search(AtsSearchData atsSearchData);
+
+   /**
+    * New search that, at this time, only supports teams and current state type. To be replaced by full / fast search
+    */
+   @PUT
+   @Path("teamWfsInState")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   ResultRows searchNew(AtsSearchData atsSearchData);
 }

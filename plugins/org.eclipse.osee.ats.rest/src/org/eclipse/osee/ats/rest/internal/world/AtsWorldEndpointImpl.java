@@ -271,4 +271,12 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       ResultRows rows = op.run();
       return rows;
    }
+
+   @Override
+   public ResultRows searchNew(AtsSearchData atsSearchData) {
+      AtsWorldResultRowOperation op = new AtsWorldResultRowOperation(atsApi, atsSearchData);
+      op.setNew(true);
+      ResultRows rows = op.run();
+      return rows;
+   }
 }
