@@ -230,7 +230,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    @Override
    public AtsUser getUserByLoginId(String loginId) {
-      System.err.println(getClass().getSimpleName() + " getUserByLoginId " + loginId);
       AtsUser user = null;
       // Don't use cache if not loaded
       if (isConfigLoaded()) {
