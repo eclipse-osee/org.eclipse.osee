@@ -67,6 +67,7 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
+import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -85,7 +86,7 @@ import org.osgi.service.event.EventAdmin;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AtsApiImpl implements AtsApi {
+public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;

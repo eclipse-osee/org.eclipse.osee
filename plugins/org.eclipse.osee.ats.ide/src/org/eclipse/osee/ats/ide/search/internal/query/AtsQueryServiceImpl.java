@@ -70,10 +70,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    private final AtsApi atsApi;
    private final JaxRsApi jaxRsApi;
 
-   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService, JaxRsApi jaxRsApi) {
+   public AtsQueryServiceImpl(AtsApi atsApi, JdbcService jdbcService) {
       super(jdbcService, atsApi);
       this.atsApi = atsApi;
-      this.jaxRsApi = jaxRsApi;
+      this.jaxRsApi = atsApi.jaxRsApi();
    }
 
    @Override

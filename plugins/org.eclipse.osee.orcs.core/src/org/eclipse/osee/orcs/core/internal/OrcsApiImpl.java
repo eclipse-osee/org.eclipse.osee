@@ -15,8 +15,7 @@ import java.util.Collections;
 import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -75,15 +74,13 @@ import org.osgi.service.event.EventAdmin;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsApiImpl implements OrcsApi {
+public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    private Log logger;
    private OrcsDataStore dataStore;
    private ExecutorAdmin executorAdmin;
    private SystemProperties properties;
    private EventAdmin eventAdmin;
-   private OrcsTokenService tokenService;
-   private JaxRsApi jaxRsApi;
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -120,14 +117,6 @@ public class OrcsApiImpl implements OrcsApi {
       this.eventAdmin = eventAdmin;
    }
 
-   public void setOrcsTokenService(OrcsTokenService tokenService) {
-      this.tokenService = tokenService;
-   }
-
-   public void setJaxRsApi(JaxRsApi jaxRsApi) {
-      this.jaxRsApi = jaxRsApi;
-   }
-
    public void start() {
       systemSession = createSession();
 
@@ -162,7 +151,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
 
-      module = dataStore.createDataModule(orcsTypes, tokenService);
+      module = dataStore.createDataModule(orcsTypes, tokenService());
 
       AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes());
 
@@ -335,15 +324,5 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
-   }
-
-   @Override
-   public JaxRsApi jaxRsApi() {
-      return jaxRsApi;
-   }
-
-   @Override
-   public OrcsTokenService getTokenService() {
-      return tokenService;
    }
 }

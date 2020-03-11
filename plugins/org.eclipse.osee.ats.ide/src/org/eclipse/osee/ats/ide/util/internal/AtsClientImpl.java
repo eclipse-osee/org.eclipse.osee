@@ -69,7 +69,6 @@ import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
-import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -96,7 +95,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private AtsQueryServiceClient queryServiceClient;
    private IAtsWorkItemServiceClient workItemServiceClient;
    private IAtsServerEndpointProvider serverEndpoints;
-   private JaxRsApi jaxRsApi;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -110,10 +108,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          }
       };
       Jobs.startJob(loadAtsConfig);
-   }
-
-   public void setJaxRsApi(JaxRsApi jaxRsApi) {
-      this.jaxRsApi = jaxRsApi;
    }
 
    @Override
@@ -131,7 +125,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
 
-      queryService = new AtsQueryServiceImpl(this, jdbcService, jaxRsApi);
+      queryService = new AtsQueryServiceImpl(this, jdbcService);
       queryServiceClient = new AtsQueryServiceClient(this);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 

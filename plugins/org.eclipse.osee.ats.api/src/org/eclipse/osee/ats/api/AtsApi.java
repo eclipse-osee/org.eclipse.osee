@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -64,7 +65,7 @@ import org.osgi.service.event.EventAdmin;
 /**
  * @author Donald G. Dunne
  */
-public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkItemServiceProvider {
+public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 

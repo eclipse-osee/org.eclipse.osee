@@ -11,8 +11,7 @@
 package org.eclipse.osee.orcs;
 
 import javax.script.ScriptEngine;
-import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -23,7 +22,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  * @author Andrew M. Finkbeiner
  * @author Roberto E. Escobar
  */
-public interface OrcsApi {
+public interface OrcsApi extends OseeApi {
 
    QueryIndexer getQueryIndexer();
 
@@ -53,7 +52,4 @@ public interface OrcsApi {
 
    boolean isTypesValid();
 
-   JaxRsApi jaxRsApi();
-
-   OrcsTokenService getTokenService();
 }

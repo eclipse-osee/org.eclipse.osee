@@ -352,5 +352,4 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    public boolean isIde() {
       return false;
    }
-
 }
