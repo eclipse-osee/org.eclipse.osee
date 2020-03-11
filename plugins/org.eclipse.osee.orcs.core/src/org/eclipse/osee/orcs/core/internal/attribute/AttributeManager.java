@@ -14,8 +14,10 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -47,6 +49,11 @@ public interface AttributeManager extends AttributeContainer {
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType);
 
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
+
+   default <T extends EnumToken> boolean attributeMatches(AttributeTypeEnum<T> attributeType, T... values) {
+      T enumValue = getSoleAttributeValue(attributeType);
+      return enumValue.matches(values);
+   }
 
    <T> void setSoleAttributeValue(AttributeTypeToken attributeType, T value);
 

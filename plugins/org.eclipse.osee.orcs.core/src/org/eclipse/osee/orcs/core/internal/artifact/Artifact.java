@@ -34,4 +34,5 @@ public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisi
    void setNotDirty();
 
    Integer getLocalId();
+
 }

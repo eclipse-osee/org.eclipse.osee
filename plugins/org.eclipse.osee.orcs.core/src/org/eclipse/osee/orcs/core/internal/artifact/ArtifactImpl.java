@@ -219,4 +219,5 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
       return null;
    }
+
 }
