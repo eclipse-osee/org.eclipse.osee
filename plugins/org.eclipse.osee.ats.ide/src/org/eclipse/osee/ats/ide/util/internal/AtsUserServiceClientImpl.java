@@ -25,10 +25,12 @@ import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -227,6 +229,9 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       atsUser.setEmail(userArt.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
+      for (ArtifactToken userGroup : userArt.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
+         atsUser.getUserGroups().add(userGroup);
+      }
       return atsUser;
    }
 

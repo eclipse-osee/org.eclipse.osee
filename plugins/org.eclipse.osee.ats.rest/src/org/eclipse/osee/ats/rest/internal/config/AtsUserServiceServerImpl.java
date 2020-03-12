@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -104,6 +105,9 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
       atsUser.getLoginIds().addAll(userArt.getAttributeValues(CoreAttributeTypes.LoginId));
+      for (ArtifactToken userGroup : userArt.getRelated(CoreRelationTypes.Users_Artifact)) {
+         atsUser.getUserGroups().add(userGroup);
+      }
       return atsUser;
    }
 
