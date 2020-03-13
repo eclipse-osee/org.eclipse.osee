@@ -16,6 +16,7 @@ import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.GitOperations;
 import org.eclipse.osee.define.api.ImportOperations;
 import org.eclipse.osee.define.api.MSWordOperations;
+import org.eclipse.osee.define.api.RenderOperations;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -31,6 +32,7 @@ public class DefineApiImpl implements DefineApi {
    private Log logger;
    private ActivityLog activityLog;
    private EventAdmin eventAdmin;
+   private RenderOperations renderOperations;
    private MSWordOperations wordOperations;
    private DataRightsOperations dataRightsOperations;
    private TraceabilityOperations traceabilityOperations;
@@ -54,11 +56,17 @@ public class DefineApiImpl implements DefineApi {
    }
 
    public void start() {
+      renderOperations = new RenderOperationsImpl(orcsApi, logger, eventAdmin);
       wordOperations = new MSWordOperationsImpl(orcsApi, logger, eventAdmin);
       dataRightsOperations = new DataRightsOperationsImpl(orcsApi);
       gitOperations = new GitOperationsImpl(orcsApi, orcsApi.getSystemProperties());
       traceabilityOperations = new TraceabilityOperationsImpl(orcsApi, gitOperations);
       importOperations = new ImportOperationsImpl(orcsApi, activityLog);
+   }
+
+   @Override
+   public RenderOperations renderOperations() {
+      return renderOperations;
    }
 
    @Override

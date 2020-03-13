@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.DirtyArtifactCacheTest;
-import org.eclipse.osee.define.api.MSWordEndpoint;
+import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordArtifactChange;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
@@ -40,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test unit for {@link MSWordEndpoint}
+ * Test unit for {@link RenderEndpoint}
  *
  * @author David W. Miller
  */

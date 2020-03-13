@@ -13,7 +13,7 @@ package org.eclipse.osee.define.rest;
 import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.DefineApi;
-import org.eclipse.osee.define.api.MSWordEndpoint;
+import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
@@ -24,11 +24,11 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 /**
  * @author David W. Miller
  */
-public final class MSWordEndpointImpl implements MSWordEndpoint {
+public final class RenderEndpointImpl implements RenderEndpoint {
 
    private final DefineApi defineApi;
 
-   public MSWordEndpointImpl(DefineApi defineApi) {
+   public RenderEndpointImpl(DefineApi defineApi) {
       this.defineApi = defineApi;
    }
 

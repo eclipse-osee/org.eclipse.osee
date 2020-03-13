@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
-import org.eclipse.osee.define.api.MSWordEndpoint;
+import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -58,7 +58,7 @@ public interface OseeClient {
 
    DatastoreEndpoint getDatastoreEndpoint();
 
-   MSWordEndpoint getWordUpdateEndpoint();
+   RenderEndpoint getRenderEndpoint();
 
    DataRightsEndpoint getDataRightsEndpoint();
 

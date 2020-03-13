@@ -24,7 +24,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
-import org.eclipse.osee.define.api.MSWordEndpoint;
+import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -214,8 +214,8 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public MSWordEndpoint getWordUpdateEndpoint() {
-      return client.targetProxy(defineUri, MSWordEndpoint.class);
+   public RenderEndpoint getRenderEndpoint() {
+      return client.targetProxy(defineUri, RenderEndpoint.class);
    }
 
    @Override

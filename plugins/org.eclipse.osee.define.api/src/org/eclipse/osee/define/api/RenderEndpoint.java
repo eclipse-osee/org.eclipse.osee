@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  * @author David W. Miller
  */
 @Path("word")
-public interface MSWordEndpoint {
+public interface RenderEndpoint {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})

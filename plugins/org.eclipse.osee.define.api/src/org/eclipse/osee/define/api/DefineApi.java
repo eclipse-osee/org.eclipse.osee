@@ -21,6 +21,9 @@ public interface DefineApi {
    //Traceability
    TraceabilityOperations getTraceabilityOperations();
 
+   //Rendering
+   RenderOperations renderOperations();
+
    //MS Word
    MSWordOperations getMSWordOperations();
 

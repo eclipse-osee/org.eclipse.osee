@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
-import org.eclipse.osee.define.api.MSWordEndpoint;
+import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
@@ -25,7 +25,7 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
  */
 public class HttpWordUpdateRequest {
    public static WordUpdateChange updateWordArtifacts(WordUpdateData wud) {
-      MSWordEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
+      RenderEndpoint endpoint = ServiceUtil.getOseeClient().getRenderEndpoint();
       try {
          return endpoint.updateWordArtifacts(wud);
       } catch (Exception ex) {
@@ -34,7 +34,7 @@ public class HttpWordUpdateRequest {
    }
 
    public static Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) {
-      MSWordEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
+      RenderEndpoint endpoint = ServiceUtil.getOseeClient().getRenderEndpoint();
       return endpoint.renderWordTemplateContent(data);
    }
 
