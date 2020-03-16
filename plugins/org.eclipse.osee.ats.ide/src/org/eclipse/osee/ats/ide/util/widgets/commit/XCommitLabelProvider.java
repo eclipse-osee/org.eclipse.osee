@@ -14,12 +14,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -155,15 +153,15 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleVersionColumn(Object element) {
       if (element instanceof ICommitConfigItem) {
-         return ((ICommitConfigItem) element).getName();
+         return ((ICommitConfigItem) element).getConfigObject().getName();
       } else {
          return "";
       }
    }
 
    private String handleArtifactTypeNameColumn(Object element) {
-      if (element instanceof IAtsObject) {
-         return ((IAtsObject) element).getArtifactToken().getName();
+      if (element instanceof ICommitConfigItem) {
+         return ((ICommitConfigItem) element).getName();
       }
       return "";
    }
@@ -193,10 +191,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleDestBranchColumn(Object element, BranchId branchToken) {
       IOseeBranch branch = BranchManager.getBranchToken(branchToken);
-      if (element instanceof IAtsVersion) {
-         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
-      } else if (element instanceof IAtsTeamDefinition) {
-         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
+      if (element instanceof CommitConfigItem) {
+         CommitConfigItem configItem = (CommitConfigItem) element;
+         return branch == null ? String.format("Parent Branch Not Configured for %s [%s]",
+            configItem.getConfigObject().getArtifactType(), configItem.getConfigObject()) : branch.getShortName();
       } else if (element instanceof TransactionRecord) {
          return branch.getShortName();
       }
@@ -204,10 +202,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchCreationDateColumn(Object element, BranchId branch) {
-      if (element instanceof IAtsVersion) {
-         return getColumnText("Version", element, branch);
-      } else if (element instanceof IAtsTeamDefinition) {
-         return getColumnText("Team Definition", element, branch);
+      if (element instanceof CommitConfigItem) {
+         CommitConfigItem configItem = (CommitConfigItem) element;
+         String configType = configItem.getConfigObject().getArtifactType().getName();
+         return getColumnText(configType, element, branch);
       } else if (element instanceof TransactionRecord) {
          return getColumnText(null, element, branch);
       }
