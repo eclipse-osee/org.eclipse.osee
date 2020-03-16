@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class BacklogXViewerFactory extends SkynetXViewerFactory {
 
-   public final static String NAMESPACE = "BacklogXViewerFactory";
+   public final static String NAMESPACE = "BacklogXViewer";
 
    public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
