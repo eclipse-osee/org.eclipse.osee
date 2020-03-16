@@ -183,7 +183,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    @Override
-   public int getExpectedBranchConfigArts() {
+   public int getExpectedBranchConfigItems() {
       return 3;
    }
 

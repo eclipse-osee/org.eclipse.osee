@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
@@ -80,7 +80,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) {
       Set<BranchId> branches = new HashSet<>();
-      for (ICommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamWf)) {
+      for (CommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamWf)) {
          if (isBranchValid(obj)) {
             branches.add(getBranch(obj));
          }
@@ -152,7 +152,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
+   public CommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
             return new CommitConfigItem(atsApi.getVersionService().getTargetedVersion(teamWf), atsApi);
@@ -218,8 +218,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, ICommitConfigItem configArt) {
-      return getCommitStatus((IAtsTeamWorkflow) teamWf.getStoreObject(), getBranch(configArt), null);
+   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, CommitConfigItem configItem) {
+      return getCommitStatus((IAtsTeamWorkflow) teamWf.getStoreObject(), getBranch(configItem), null);
    }
 
    @Override
@@ -231,20 +231,20 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
-      Set<ICommitConfigItem> configObjects = new HashSet<>();
+   public Collection<CommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
+      Set<CommitConfigItem> configItems = new HashSet<>();
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
             atsApi.getVersionService().getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf),
-               configObjects);
+               configItems);
          }
       } else {
          CommitConfigItem item = new CommitConfigItem(teamWf.getTeamDefinition(), atsApi);
          if (teamWf.isTeamWorkflow() && atsApi.getBranchService().isBranchValid(item)) {
-            configObjects.add(item);
+            configItems.add(item);
          }
       }
-      return configObjects;
+      return configItems;
    }
 
    @Override
@@ -305,8 +305,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     */
    @Override
    public boolean isAllObjectsToCommitToConfigured(IAtsTeamWorkflow teamWf) {
-      Collection<ICommitConfigItem> configs = getConfigArtifactsConfiguredToCommitTo(teamWf);
-      for (ICommitConfigItem config : configs) {
+      Collection<CommitConfigItem> configItems = getConfigArtifactsConfiguredToCommitTo(teamWf);
+      for (CommitConfigItem config : configItems) {
          if (!isBranchValid(config)) {
             return false;
          }
@@ -318,7 +318,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public String getBranchShortName(ICommitConfigItem commitConfigItem) {
+   public String getBranchShortName(CommitConfigItem commitConfigItem) {
       return Strings.truncate(commitConfigItem.getName(), SHORT_NAME_LIMIT);
    }
 
@@ -360,14 +360,14 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getBranch(ICommitConfigItem configItem) {
+   public BranchId getBranch(CommitConfigItem configItem) {
       return getBranch(configItem.getConfigObject());
    }
 
    @Override
-   public boolean isBranchValid(ICommitConfigItem configObject) {
+   public boolean isBranchValid(CommitConfigItem configItem) {
       boolean validBranch = false;
-      if (configObject.getBaselineBranchId().isValid()) {
+      if (configItem.getBaselineBranchId().isValid()) {
          validBranch = true;
       }
       return validBranch;
@@ -377,21 +377,21 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * This method was refactored from above so it could be tested independently
     */
    @Override
-   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionRecord> commitTxs) {
+   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> configItems, Collection<TransactionRecord> commitTxs) {
       // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.
       // - first, we addAll configArtSet
       // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
       //    in configArtSet we do NOT add it to commitMgrInputObjs.
       Collection<Object> commitMgrInputObjs = new HashSet<>();
-      commitMgrInputObjs.addAll(configArtSet);
+      commitMgrInputObjs.addAll(configItems);
       //for each tx commit...
       for (TransactionToken txRecord : commitTxs) {
          boolean isCommitAlreadyPresent = false;
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
-         for (ICommitConfigItem configArt : configArtSet) {
-            BranchId configArtBranch = getBranch(configArt);
-            if (txRecord.isOnBranch(configArtBranch)) {
+         for (CommitConfigItem configItem : configItems) {
+            BranchId configItemBranch = getBranch(configItem);
+            if (txRecord.isOnBranch(configItemBranch)) {
                isCommitAlreadyPresent = true;
                break;
             }
@@ -412,9 +412,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     */
    @Override
    public Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf) {
-      Collection<ICommitConfigItem> configArtSet = getConfigArtifactsConfiguredToCommitTo(teamWf);
+      Collection<CommitConfigItem> configItems = getConfigArtifactsConfiguredToCommitTo(teamWf);
       Collection<TransactionRecord> commitTxs = getCommitTransactionsToUnarchivedBaselineBranchs(teamWf);
-      Collection<Object> commitMgrInputObjs = combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
+      Collection<Object> commitMgrInputObjs = combineCommitTransactionsAndConfigItems(configItems, commitTxs);
       return commitMgrInputObjs;
    }
 
@@ -498,7 +498,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, ICommitConfigItem configArt) {
+   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, CommitConfigItem configItem) {
       BranchId workingBranch = getWorkingBranch(teamWf);
       if (workingBranch.isValid()) {
          if (getBranchState(workingBranch).isRebaselineInProgress()) {
@@ -534,10 +534,10 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
 
       Result result = new Result(false);
-      if (configArt == null) {
+      if (configItem == null) {
          result = isCommitBranchAllowed(teamWf);
       } else {
-         result = configArt.isAllowCommitBranchInherited();
+         result = configItem.isAllowCommitBranchInherited();
       }
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;

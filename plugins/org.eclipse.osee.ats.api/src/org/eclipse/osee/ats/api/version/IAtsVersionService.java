@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -100,7 +100,7 @@ public interface IAtsVersionService {
 
    List<IAtsVersion> getParallelVersions(IAtsVersion version);
 
-   void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts);
+   void getParallelVersions(IAtsVersion version, Set<CommitConfigItem> commitConfigItems);
 
    Version getVersionById(IAtsVersion versionId);
 

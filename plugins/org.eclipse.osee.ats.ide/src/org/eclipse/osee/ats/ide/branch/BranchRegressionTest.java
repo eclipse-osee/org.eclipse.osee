@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.branch.BranchStatus;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.AtsUtil;
@@ -356,8 +356,8 @@ public abstract class BranchRegressionTest {
 
    public void testXCommitManagerAfterDeleteBranch() throws Exception {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
-      Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
-      for (ICommitConfigItem configArt : configArtSet) {
+      Collection<CommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      for (CommitConfigItem configArt : configArtSet) {
          CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configArt);
          Assert.assertTrue(
             "XCommitManager Status not as expected: " + CommitStatus.Working_Branch_Not_Created.name() + " [" + configArt.getCommitFullDisplayName() + "]",
@@ -385,12 +385,12 @@ public abstract class BranchRegressionTest {
 
    public void testBranchesListedInXCommitManager() throws Exception {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
-      Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Verify the Parallel Branches listed in the XCommitManager
-      Assert.assertTrue("parallel workingBranch check failed => " + configArtSet.size(),
-         configArtSet.size() == getBranchNames().size());
-      for (ICommitConfigItem configArt : configArtSet) {
-         BranchId branch = branchService.getBranch(configArt);
+      Assert.assertTrue("parallel workingBranch check failed => " + configItems.size(),
+         configItems.size() == getBranchNames().size());
+      for (CommitConfigItem configItem : configItems) {
+         BranchId branch = branchService.getBranch(configItem);
          Assert.assertTrue("Missing parallel workingBranch => " + branchService.getBranchName(branch),
             getBranchNames().contains(branchService.getBranchName(branch)));
       }
@@ -493,19 +493,19 @@ public abstract class BranchRegressionTest {
 
    public void testWorkingBranchCommit() throws Exception {
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
-      Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Since commit workingBranch is a separate job, a callback will resume this thread
       // commit all of the branches
       Assert.assertTrue(
-         "Epected " + getExpectedBranchConfigArts() + " artifacts configured to commit to;  Actual " + configArtSet.size(),
-         configArtSet.size() == getExpectedBranchConfigArts());
+         "Epected " + getExpectedBranchConfigItems() + " artifacts configured to commit to;  Actual " + configItems.size(),
+         configItems.size() == getExpectedBranchConfigItems());
 
       // Commit parent workingBranch first
       boolean committed = false;
-      for (ICommitConfigItem configArt : configArtSet) {
-         if (branchService.isBranchValid(configArt) && BranchManager.getParentBranch(workingBranch).equals(
-            configArt.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configArt);
+      for (CommitConfigItem configItem : configItems) {
+         if (branchService.isBranchValid(configItem) && BranchManager.getParentBranch(workingBranch).equals(
+            configItem.getBaselineBranchId())) {
+            BranchId branch = branchService.getBranch(configItem);
 
             IOperation op = AtsBranchManager.commitWorkingBranch(reqTeam, false, true, branch,
                branchService.isBranchesAllCommittedExcept(reqTeam, branch));
@@ -517,10 +517,10 @@ public abstract class BranchRegressionTest {
 
       // Then commit rest
       int commitCount = 0;
-      for (ICommitConfigItem configArt : configArtSet) {
+      for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(
-            configArt) && !BranchManager.getParentBranch(workingBranch).equals(configArt.getBaselineBranchId())) {
-            BranchId branch = branchService.getBranch(configArt);
+            configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
+            BranchId branch = branchService.getBranch(configItem);
             IOperation op = AtsBranchManager.commitWorkingBranch(reqTeam, false, true, branch,
                branchService.isBranchesAllCommittedExcept(reqTeam, branch));
             Operations.executeWorkAndCheckStatus(op);
@@ -528,8 +528,8 @@ public abstract class BranchRegressionTest {
          }
       }
       Assert.assertTrue(
-         "Expected to commit " + (getExpectedBranchConfigArts() - 1) + " other branches;  only committed " + commitCount,
-         commitCount == getExpectedBranchConfigArts() - 1);
+         "Expected to commit " + (getExpectedBranchConfigItems() - 1) + " other branches;  only committed " + commitCount,
+         commitCount == getExpectedBranchConfigItems() - 1);
    }
 
    public void testXWorkingBranchAfterBranchCommit() throws Exception {
@@ -546,11 +546,11 @@ public abstract class BranchRegressionTest {
 
       // Verify the XCommitManager's status; All branches should be CommitStatus.Committed
       IAtsBranchService branchService = AtsClientService.get().getBranchService();
-      Collection<ICommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
-      for (ICommitConfigItem configArt : configArtSet) {
-         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configArt);
+      Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
+      for (CommitConfigItem configItem : configItems) {
+         CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configItem);
          Assert.assertTrue(
-            "XCommitManager Status not as expected: " + CommitStatus.Committed.name() + " [" + configArt.getCommitFullDisplayName() + "]",
+            "XCommitManager Status not as expected: " + CommitStatus.Committed.name() + " [" + configItem.getCommitFullDisplayName() + "]",
             xCommitStatus.equals(CommitStatus.Committed));
       }
    }
@@ -807,7 +807,7 @@ public abstract class BranchRegressionTest {
    }
 
    // Override to provide additional checks
-   protected int getExpectedBranchConfigArts() {
+   protected int getExpectedBranchConfigItems() {
       return 1;
    }
 

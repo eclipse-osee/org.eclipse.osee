@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -43,7 +43,7 @@ public class CreateTasksWorkflow {
    protected final Date createdDate;
    protected final AtsUser createdBy;
    protected final IAtsTeamWorkflow sourceTeamWf;
-   protected final ICommitConfigItem commitConfigItem;
+   protected final CommitConfigItem commitConfigItem;
    protected final WorkType workType;
    protected IAtsTeamWorkflow destTeam;
    protected final String pcrNumber;
@@ -52,7 +52,7 @@ public class CreateTasksWorkflow {
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, Collection<String> taskNamesMissingTaskArtifact, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
-      ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
+      CommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this(pcrNumber, createTasksOptions,
          ((!taskNamesMissingTaskArtifact.isEmpty() || createTasksOptions.contains(
             CreateTasksOption.WorkflowsOnly)) && destTeam == null),
@@ -62,7 +62,7 @@ public class CreateTasksWorkflow {
 
    public CreateTasksWorkflow(String pcrNumber, Collection<CreateTasksOption> createTasksOptions, boolean createWorkflow, //
       boolean reportOnly, XResultData resultData, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, IAtsTeamWorkflow sourceTeamWf, //
-      ICommitConfigItem commitConfigArt, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
+      CommitConfigItem commitConfigItem, WorkType workType, IAtsTeamWorkflow destTeam, IAtsProgram program) {
       this.pcrNumber = pcrNumber;
       this.createTasksOptions = createTasksOptions;
       this.createWorkflow = createWorkflow;
@@ -72,7 +72,7 @@ public class CreateTasksWorkflow {
       this.createdDate = createdDate;
       this.createdBy = createdBy;
       this.sourceTeamWf = sourceTeamWf;
-      this.commitConfigItem = commitConfigArt;
+      this.commitConfigItem = commitConfigItem;
       this.workType = workType;
       this.destTeam = destTeam;
       this.atsApi = AtsApiService.get();

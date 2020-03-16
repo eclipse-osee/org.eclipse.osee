@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -44,11 +44,11 @@ public interface IAtsBranchService {
 
    BranchId getBranch(IAtsConfigObject configObject);
 
-   BranchId getBranch(ICommitConfigItem configObject);
+   BranchId getBranch(CommitConfigItem configObject);
 
-   String getBranchShortName(ICommitConfigItem commitConfigArt);
+   String getBranchShortName(CommitConfigItem commitConfigArt);
 
-   boolean isBranchValid(ICommitConfigItem configArt);
+   boolean isBranchValid(CommitConfigItem configArt);
 
    boolean isAllObjectsToCommitToConfigured(IAtsTeamWorkflow teamWf);
 
@@ -60,7 +60,7 @@ public interface IAtsBranchService {
 
    IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf);
 
-   Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
+   Collection<CommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
    TransactionToken getEarliestTransactionId(IAtsTeamWorkflow teamWf);
 
@@ -72,11 +72,11 @@ public interface IAtsBranchService {
 
    Collection<BranchId> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, ICommitConfigItem configArt);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, CommitConfigItem configArt);
 
-   ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
+   CommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, ICommitConfigItem configArt);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, CommitConfigItem configArt);
 
    IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates);
 
@@ -99,7 +99,7 @@ public interface IAtsBranchService {
 
    boolean isWorkingBranchEverCommitted(IAtsTeamWorkflow teamWf);
 
-   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionRecord> commitTxs);
+   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> commitConfigItems, Collection<TransactionRecord> commitTxs);
 
    Collection<TransactionRecord> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf);
 
@@ -155,7 +155,7 @@ public interface IAtsBranchService {
 
    CommitOverrideOperations getCommitOverrideOps();
 
-   boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt);
+   boolean isBaselinBranchConfigured(CommitConfigItem commitConfigArt);
 
    void setWorkingBranchCreationInProgress(IAtsTeamWorkflow teamWf, boolean inProgress);
 

@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -480,11 +480,11 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts) {
-      configArts.add(new CommitConfigItem(version, atsApi));
-      for (IAtsVersion childArt : getParallelVersions(version)) {
-         if (!configArts.contains(new CommitConfigItem(childArt, atsApi))) {
-            getParallelVersions(childArt, configArts);
+   public void getParallelVersions(IAtsVersion version, Set<CommitConfigItem> configItems) {
+      configItems.add(new CommitConfigItem(version, atsApi));
+      for (IAtsVersion pVersion : getParallelVersions(version)) {
+         if (!configItems.contains(new CommitConfigItem(pVersion, atsApi))) {
+            getParallelVersions(pVersion, configItems);
          }
       }
    }

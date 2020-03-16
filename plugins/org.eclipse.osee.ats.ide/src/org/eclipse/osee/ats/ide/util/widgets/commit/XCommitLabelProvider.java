@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -51,9 +50,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       BranchId branch = null;
-      if (element instanceof ICommitConfigItem) {
-         ICommitConfigItem configArt = (ICommitConfigItem) element;
-         branch = AtsClientService.get().getBranchService().getBranch(configArt);
+      if (element instanceof CommitConfigItem) {
+         CommitConfigItem configItem = (CommitConfigItem) element;
+         branch = AtsClientService.get().getBranchService().getBranch(configItem);
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
          branch = txRecord.getBranch();
@@ -106,12 +105,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       BranchId branch;
-      if (element instanceof ICommitConfigItem) {
-         ICommitConfigItem configArt = (ICommitConfigItem) element;
-         if (!AtsClientService.get().getBranchService().isBranchValid(configArt)) {
+      if (element instanceof CommitConfigItem) {
+         CommitConfigItem configItem = (CommitConfigItem) element;
+         if (!AtsClientService.get().getBranchService().isBranchValid(configItem)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = configArt.getBaselineBranchId();
+            branch = configItem.getBaselineBranchId();
          }
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
@@ -152,16 +151,16 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleVersionColumn(Object element) {
-      if (element instanceof ICommitConfigItem) {
-         return ((ICommitConfigItem) element).getConfigObject().getName();
+      if (element instanceof CommitConfigItem) {
+         return ((CommitConfigItem) element).getConfigObject().getName();
       } else {
          return "";
       }
    }
 
    private String handleArtifactTypeNameColumn(Object element) {
-      if (element instanceof ICommitConfigItem) {
-         return ((ICommitConfigItem) element).getName();
+      if (element instanceof CommitConfigItem) {
+         return ((CommitConfigItem) element).getName();
       }
       return "";
    }

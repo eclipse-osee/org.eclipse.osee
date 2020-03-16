@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.branch.internal;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -188,7 +188,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt) {
+   public boolean isBaselinBranchConfigured(CommitConfigItem commitConfigItem) {
       return false;
    }
 

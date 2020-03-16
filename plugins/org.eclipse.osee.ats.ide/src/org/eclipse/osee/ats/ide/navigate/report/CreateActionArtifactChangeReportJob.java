@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
@@ -112,19 +112,19 @@ public class CreateActionArtifactChangeReportJob extends Job {
             teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (ICommitConfigItem commitConfigArt : AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
+         for (CommitConfigItem commitConfigItem : AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
             teamArt)) {
-            processTeam(teamArt, AtsClientService.get().getBranchService().getBranchShortName(commitConfigArt),
-               attributeType, commitConfigArt, rd);
+            processTeam(teamArt, AtsClientService.get().getBranchService().getBranchShortName(commitConfigItem),
+               attributeType, commitConfigItem, rd);
          }
          x++;
       }
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, ICommitConfigItem commitConfigArt, XResultData rd) {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, CommitConfigItem commitConfigItem, XResultData rd) {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-      ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
+      ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigItem);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,
          ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);

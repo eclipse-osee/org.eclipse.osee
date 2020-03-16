@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -78,7 +78,7 @@ public class AtsBranchServiceImplTest {
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       org.junit.Assert.assertEquals("commitObjs has wrong size", 1, commitObjs.size());
       assertTrue("commitObjs is missing teamDef",
-         ((ICommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
+         ((CommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
    }
 
    @Test
@@ -130,19 +130,19 @@ public class AtsBranchServiceImplTest {
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, 0L);
       Collection<TransactionRecord> commitTxs = new ArrayList<>();
-      Collection<ICommitConfigItem> configArtSet = new HashSet<>();
+      Collection<CommitConfigItem> configItems = new HashSet<>();
       commitTxs.add(txRecord);
       Collection<Object> commitObjs =
-         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
+         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
 
-      Collection<ICommitConfigItem> configArtifactsConfiguredToCommitTo =
+      Collection<CommitConfigItem> configItemsConfiguredToCommitTo =
          AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(teamArt);
-      configArtSet.add(configArtifactsConfiguredToCommitTo.iterator().next());
+      configItems.add(configItemsConfiguredToCommitTo.iterator().next());
       commitObjs =
-         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
+         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
       assertTrue("commitObjs has wrong object",
-         ((ICommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
+         ((CommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
    }
 }

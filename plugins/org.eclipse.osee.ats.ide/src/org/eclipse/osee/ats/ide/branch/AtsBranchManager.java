@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchCommitOperation;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -287,11 +287,11 @@ public final class AtsBranchManager {
    /**
     * Return ChangeItemData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
     *
-    * @param commitConfigArt that configures commit or null
+    * @param commitConfigItem that configures commit or null
     */
-   public static ChangeData getChangeData(IAtsTeamWorkflow teamWf, ICommitConfigItem commitConfigArt) {
-      if (commitConfigArt != null && !isBaselinBranchConfigured(commitConfigArt)) {
-         throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
+   public static ChangeData getChangeData(IAtsTeamWorkflow teamWf, CommitConfigItem commitConfigItem) {
+      if (commitConfigItem != null && !isBaselinBranchConfigured(commitConfigItem)) {
+         throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigItem);
       }
       Collection<Change> changes = new ArrayList<>();
 
@@ -303,7 +303,7 @@ public final class AtsBranchManager {
       } else {
          if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
             TransactionToken transactionId = null;
-            if (commitConfigArt == null) {
+            if (commitConfigItem == null) {
                transactionId = AtsClientService.get().getBranchService().getEarliestTransactionId(teamWf);
             } else {
                Collection<TransactionRecord> transIds =
@@ -316,7 +316,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.isOnBranch(commitConfigArt.getBaselineBranchId())) {
+                     if (transId.isOnBranch(commitConfigItem.getBaselineBranchId())) {
                         transactionId = transId;
                      }
                   }
@@ -337,7 +337,7 @@ public final class AtsBranchManager {
                }
             }
             if (transactionId == null) {
-               throw new OseeStateException("Unable to determine transaction id for [%s]", commitConfigArt);
+               throw new OseeStateException("Unable to determine transaction id for [%s]", commitConfigItem);
             }
             operation = ChangeManager.comparedToPreviousTx(transactionId, changes);
             Operations.executeWorkAndCheckStatus(operation);
@@ -346,7 +346,7 @@ public final class AtsBranchManager {
       return new ChangeData(changes);
    }
 
-   private static boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt) {
-      return commitConfigArt.getBaselineBranchId().isValid();
+   private static boolean isBaselinBranchConfigured(CommitConfigItem commitConfigItem) {
+      return commitConfigItem.getBaselineBranchId().isValid();
    }
 }

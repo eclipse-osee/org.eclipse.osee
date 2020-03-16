@@ -16,11 +16,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Donald G. Dunne
  */
-public class CommitConfigItem implements ICommitConfigItem {
+public class CommitConfigItem implements Named {
 
    private IAtsTeamDefinition teamDef = null;
    private final AtsApi atsApi;
@@ -36,7 +37,6 @@ public class CommitConfigItem implements ICommitConfigItem {
       this.atsApi = atsApi;
    }
 
-   @Override
    public BranchId getBaselineBranchId() {
       if (teamDef == null) {
          return version.getBaselineBranch();
@@ -45,7 +45,6 @@ public class CommitConfigItem implements ICommitConfigItem {
       }
    }
 
-   @Override
    public Result isAllowCommitBranchInherited() {
       if (teamDef == null) {
          return atsApi.getVersionService().isAllowCommitBranchInherited(version);
@@ -54,7 +53,6 @@ public class CommitConfigItem implements ICommitConfigItem {
       }
    }
 
-   @Override
    public Result isAllowCreateBranchInherited() {
       if (teamDef == null) {
          return atsApi.getVersionService().isAllowCreateBranchInherited(version);
@@ -63,7 +61,6 @@ public class CommitConfigItem implements ICommitConfigItem {
       }
    }
 
-   @Override
    public IAtsConfigObject getConfigObject() {
       if (teamDef == null) {
          return version;
@@ -72,7 +69,6 @@ public class CommitConfigItem implements ICommitConfigItem {
       }
    }
 
-   @Override
    public String getCommitFullDisplayName() {
       if (teamDef == null) {
          return version.getName();
