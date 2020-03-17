@@ -66,7 +66,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchOptionsEnum.SHOW_ARCHIVED_BRANCHES.origKeyName, false);
+            BranchOptionsEnum.SHOW_ARCHIVED_BRANCHES.name(), false);
       element.setChecked(itemChk);
    }
 

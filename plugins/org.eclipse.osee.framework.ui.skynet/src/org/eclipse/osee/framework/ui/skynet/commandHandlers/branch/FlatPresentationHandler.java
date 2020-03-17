@@ -38,7 +38,7 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FLAT_KEY, true);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FLAT, true);
       return null;
    }
 
@@ -47,7 +47,7 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    public void updateElement(UIElement element, Map parameters) {
       element.setChecked(
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchOptionsEnum.FLAT_KEY.origKeyName, true));
+            BranchOptionsEnum.FLAT.name(), true));
    }
 
    @Override

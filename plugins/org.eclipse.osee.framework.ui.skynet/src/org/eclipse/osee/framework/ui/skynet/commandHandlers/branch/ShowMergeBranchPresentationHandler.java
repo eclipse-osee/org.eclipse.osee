@@ -56,7 +56,7 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchOptionsEnum.SHOW_MERGE_BRANCHES.origKeyName, false);
+            BranchOptionsEnum.SHOW_MERGE_BRANCHES.name(), false);
       element.setChecked(itemChk);
    }
 

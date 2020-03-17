@@ -108,7 +108,7 @@ public abstract class CommitHandler extends CommandHandler {
             if (useParentBranch) {
                destinationBranch = BranchManager.getParentBranch(sourceBranch);
             } else {
-               destinationBranch = BranchId.valueOf(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName));
+               destinationBranch = BranchId.valueOf(event.getParameter(BranchOptionsEnum.BRANCH_ID.name()));
             }
             Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
                Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));

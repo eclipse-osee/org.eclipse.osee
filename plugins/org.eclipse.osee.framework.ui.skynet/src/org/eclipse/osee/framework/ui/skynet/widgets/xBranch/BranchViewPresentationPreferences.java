@@ -94,12 +94,16 @@ public class BranchViewPresentationPreferences {
                if (disposed) {
                   ((IEclipsePreferences) event.getNode()).removePreferenceChangeListener(this);
                } else {
-                  BranchOptionsEnum presEnum = BranchOptionsEnum.fromInitValue(event.getKey());
+                  try {
+                     BranchOptionsEnum presEnum = BranchOptionsEnum.valueOf(event.getKey());
 
-                  refreshCommands();
+                     refreshCommands();
 
-                  branchView.getXBranchWidget().setBranchOptions(getViewPreference().getBoolean(presEnum.origKeyName,
-                     presEnum == BranchOptionsEnum.FAVORITE_KEY ? false : true), presEnum);
+                     branchView.getXBranchWidget().setBranchOptions(getViewPreference().getBoolean(presEnum.name(),
+                        presEnum == BranchOptionsEnum.FAVORITE_FIRST ? false : true), presEnum);
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
                }
             }
          };
@@ -121,13 +125,8 @@ public class BranchViewPresentationPreferences {
       for (BranchOptionsEnum keyEnum : BranchOptionsEnum.values()) {
          XBranchWidget branchWidget = branchView.getXBranchWidget();
          switch (keyEnum) {
-            case FLAT_KEY:
-               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
-               break;
-            case SHOW_MERGE_BRANCHES:
-            case SHOW_ARCHIVED_BRANCHES:
-            case FAVORITE_KEY:
-               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
+            default:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.name(), true), keyEnum);
                break;
          }
       }

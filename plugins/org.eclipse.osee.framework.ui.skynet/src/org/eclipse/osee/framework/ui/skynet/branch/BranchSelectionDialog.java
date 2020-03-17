@@ -79,7 +79,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       branchWidget = new XBranchWidget(true, true, defaultSelected, this);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
-      branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_KEY, BranchOptionsEnum.FLAT_KEY);
+      branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_FIRST, BranchOptionsEnum.FLAT);
       branchWidget.setBranchOptions(allowOnlyWorkingBranches, BranchOptionsEnum.SHOW_WORKING_BRANCHES_ONLY);
       branchWidget.addBranchSelectedListener(new BranchSelectedListener() {
 

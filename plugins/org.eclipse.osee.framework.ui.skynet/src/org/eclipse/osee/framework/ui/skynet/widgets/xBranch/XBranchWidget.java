@@ -98,10 +98,11 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       for (BranchOptionsEnum option : options) {
          if (branchContentProvider != null) {
             switch (option) {
-               case FAVORITE_KEY:
+               case FAVORITE_FIRST:
                   sorter.setFavoritesFirst(state);
                   break;
-               case FLAT_KEY:
+               case FLAT:
+               case HIERARCHY:
                   branchContentProvider.setPresentation(state);
                   break;
                case SHOW_MERGE_BRANCHES:
@@ -112,6 +113,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                   break;
                case SHOW_WORKING_BRANCHES_ONLY:
                   branchContentProvider.setShowOnlyWorkingBranches(state);
+                  break;
+               case BRANCH_ID:
                   break;
             }
          }

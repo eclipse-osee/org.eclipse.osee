@@ -40,7 +40,7 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FAVORITE_KEY,
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FAVORITE_FIRST,
          !itemChk);
       return null;
    }
@@ -50,7 +50,7 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchOptionsEnum.FAVORITE_KEY.origKeyName, false);
+            BranchOptionsEnum.FAVORITE_FIRST.name(), false);
       element.setChecked(itemChk);
    }
 

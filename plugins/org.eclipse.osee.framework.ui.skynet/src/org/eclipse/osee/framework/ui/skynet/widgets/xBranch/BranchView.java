@@ -221,7 +221,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    public void changePresentation(BranchOptionsEnum branchViewPresKey, boolean state) {
       if (isInitialized()) {
          Preferences pref = branchViewPresentationPreferences.getViewPreference();
-         pref.putBoolean(branchViewPresKey.origKeyName, state);
+         pref.putBoolean(branchViewPresKey.name(), state);
       }
    }
 
