@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -43,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
 /**
  * @author Donald G. Dunne
  */
-public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
+public abstract class SkynetXViewerFactory extends XViewerFactory {
 
    private IOseeTreeReportProvider reportProvider;
    private final List<XViewerColumn> attrColumns = new ArrayList<>();
@@ -86,7 +87,6 @@ public class SkynetXViewerFactory extends OseeTargetXViewerFactory {
          XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
 
-   @Override
    public Collection<IUserGroupArtifactToken> getUserGroups() {
       List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
       for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
