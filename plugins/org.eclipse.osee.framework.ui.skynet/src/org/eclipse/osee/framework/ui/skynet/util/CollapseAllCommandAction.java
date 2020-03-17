@@ -25,6 +25,7 @@ import org.eclipse.ui.IViewPart;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("restriction")
 public class CollapseAllCommandAction extends DebugCommandAction implements IViewActionDelegate {
 
    private IViewPart viewPart;
@@ -79,7 +80,6 @@ public class CollapseAllCommandAction extends DebugCommandAction implements IVie
    }
 
    @Override
-   @SuppressWarnings("restriction")
    public void run(IAction arg0) {
       if (viewPart != null) {
          LaunchView view = (LaunchView) viewPart;

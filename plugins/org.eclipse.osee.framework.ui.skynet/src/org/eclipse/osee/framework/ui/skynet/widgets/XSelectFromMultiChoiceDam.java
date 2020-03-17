@@ -61,9 +61,9 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below",
-         new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
+   public FilteredCheckboxTreeDialog<String> createDialog() {
+      FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>(getLabel(),
+         "Select from the items below", new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
       return dialog;
    }
 

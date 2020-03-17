@@ -144,7 +144,6 @@ public class HTMLRenderer extends FileSystemRenderer {
       return comparator;
    }
 
-   @SuppressWarnings("deprecation")
    private void renderHtmlArtifact(StringBuilder output, IOseeBranch branch, Artifact artifact) throws Exception {
       Map<String, String> fileNameReplace = new HashMap<>();
       String htmlContent = "";

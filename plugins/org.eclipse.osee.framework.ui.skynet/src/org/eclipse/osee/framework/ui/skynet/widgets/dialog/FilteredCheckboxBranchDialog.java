@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog {
+public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog<BranchId> {
 
    private Collection<? extends BranchId> selectable;
 
@@ -51,7 +51,6 @@ public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog {
       this(title, title, selectable, new BranchLabelProvider());
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<BranchId> getChecked() {
       if (super.getTreeViewer() == null) {

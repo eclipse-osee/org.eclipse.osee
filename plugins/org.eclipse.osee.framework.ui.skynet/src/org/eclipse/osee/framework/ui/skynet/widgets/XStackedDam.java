@@ -102,7 +102,6 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       OseeEventManager.addListener(this);
    }
 
-   @SuppressWarnings("deprecation")
    @Override
    protected void createPages(Composite parent, int horizontalSpan) {
       try {
@@ -145,7 +144,6 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       }
    }
 
-   @SuppressWarnings("deprecation")
    public Attribute<?> getStored(int attrId) {
       for (Attribute<?> attribute : artifact.getAttributes(getAttributeType())) {
          if (attribute.getId() == attrId) {
@@ -155,7 +153,6 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       return null;
    }
 
-   @SuppressWarnings("deprecation")
    @Override
    public Result isDirty() {
       if (isEditable()) {

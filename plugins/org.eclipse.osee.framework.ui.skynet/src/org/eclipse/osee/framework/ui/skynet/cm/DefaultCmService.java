@@ -14,4 +14,5 @@ package org.eclipse.osee.framework.ui.skynet.cm;
  * @author Ryan D. Brooks
  */
 public class DefaultCmService implements IOseeCmService {
+   // do nothing
 }

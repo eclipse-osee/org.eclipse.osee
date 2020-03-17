@@ -79,7 +79,6 @@ public class ArtifactEditorReloadTab extends FormPage {
          Button reloadButton = new Button(bodyComp, SWT.PUSH);
          reloadButton.setText("Reload");
          reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-         final FormPage page = this;
          reloadButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -174,9 +173,6 @@ public class ArtifactEditorReloadTab extends FormPage {
          return Status.OK_STATUS;
       }
 
-      public Artifact getArtifact() {
-         return artifact;
-      }
    };
 
 }

@@ -256,7 +256,6 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
       replaceWithMenu.addSelectionListener(new SelectionAdapter() {
 
-         @SuppressWarnings("deprecation")
          @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) xHistoryWidget.getXViewer().getSelection();

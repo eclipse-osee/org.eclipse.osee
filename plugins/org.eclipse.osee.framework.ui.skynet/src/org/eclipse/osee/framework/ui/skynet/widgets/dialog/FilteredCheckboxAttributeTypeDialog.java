@@ -54,7 +54,6 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
       this(title, title, selectable, new AttributeTypeLabelProvider());
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<AttributeTypeToken> getChecked() {
       if (super.getTreeViewer() == null) {

@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDialog {
+public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDialog<ArtifactTypeToken> {
 
    private Collection<? extends ArtifactTypeToken> selectable;
 
@@ -58,7 +58,6 @@ public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDial
       this(title, title, selectable, new ArtifactLabelProvider());
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Collection<ArtifactTypeToken> getChecked() {
       if (super.getTreeViewer() == null) {

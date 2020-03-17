@@ -47,7 +47,6 @@ public final class ServiceUtil {
       return getService(IOseeCachingService.class);
    }
 
-   @SuppressWarnings("deprecation")
    public static PackageAdmin getPackageAdmin() {
       return getService(PackageAdmin.class);
    }

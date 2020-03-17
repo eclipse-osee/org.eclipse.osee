@@ -29,7 +29,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -167,19 +165,6 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       if (saveSettingsAction == null) {
          saveSettingsAction = new SetSettingsAsDefault();
       }
-   }
-
-   private boolean isAdmin() {
-      boolean result = false;
-      try {
-         if (AccessControlManager.isOseeAdmin()) {
-            result = true;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         result = false;
-      }
-      return result;
    }
 
    public void addActions(IMenuManager manager, IBranchProvider provider) {

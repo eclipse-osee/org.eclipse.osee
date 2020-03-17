@@ -33,6 +33,7 @@ public class UserIdSorter extends ViewerSorter {
       this.teamMembers = teamMembers;
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
       Named named1 = (Named) e1;

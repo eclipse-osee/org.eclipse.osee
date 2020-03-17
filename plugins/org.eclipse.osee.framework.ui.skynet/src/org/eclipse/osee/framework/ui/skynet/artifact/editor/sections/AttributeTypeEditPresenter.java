@@ -72,7 +72,6 @@ public class AttributeTypeEditPresenter {
       }
    }
 
-   @SuppressWarnings("deprecation")
    public void onRemoveAttributeType() {
       Artifact artifact = model.getArtifact();
       Collection<AttributeTypeToken> validTypesPerBranch = artifact.getAttributeTypes();

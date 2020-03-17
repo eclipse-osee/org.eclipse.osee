@@ -92,7 +92,6 @@ public class DeleteMultipleAttributesBlam extends AbstractBlam {
       for (Artifact art : query.getResults()) {
          for (AttributeType type : attributeTypes) {
             // get attributes of this type
-            @SuppressWarnings("deprecation")
             List<Attribute<Object>> attributes = art.getAttributes(type);
             // if there are more than 1
             if (attributes.size() > 1) {

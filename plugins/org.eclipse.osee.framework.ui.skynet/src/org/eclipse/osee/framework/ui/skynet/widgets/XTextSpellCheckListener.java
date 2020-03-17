@@ -75,6 +75,7 @@ public class XTextSpellCheckListener implements ModifyListener {
    }
 
    private final MouseListener mouseListener = new MouseListener() {
+      @SuppressWarnings("deprecation")
       @Override
       public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
          StyledText styledText = (StyledText) e.widget;

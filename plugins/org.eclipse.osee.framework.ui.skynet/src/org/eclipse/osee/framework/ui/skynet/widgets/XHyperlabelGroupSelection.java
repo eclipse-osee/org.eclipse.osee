@@ -62,7 +62,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    @Override
    public boolean handleSelection() {
       try {
-         FilteredCheckboxTreeDialog dialog =
+         FilteredCheckboxTreeDialog<Artifact> dialog =
             new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", getGroups());
          int result = dialog.open();
          if (result == 0) {

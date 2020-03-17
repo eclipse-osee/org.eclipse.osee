@@ -35,6 +35,7 @@ public class BaseImage implements KeyedImage {
       this.imageData = imageData;
    }
 
+   @SuppressWarnings("deprecation")
    @Override
    public ImageDescriptor createImageDescriptor() {
       return ImageDescriptor.createFromImageData(new ImageData(new ByteArrayInputStream(imageData)));

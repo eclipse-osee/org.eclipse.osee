@@ -154,7 +154,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       return new ArrayList<>(selected);
    }
 
-   public abstract FilteredCheckboxTreeDialog createDialog();
+   public abstract FilteredCheckboxTreeDialog<T> createDialog();
 
    @SuppressWarnings("unchecked")
    protected boolean openSelectionDialog() {
@@ -164,7 +164,7 @@ public abstract class XSelectFromDialog<T> extends XText {
             "Could not find items available to select from.");
       } else {
          try {
-            FilteredCheckboxTreeDialog dialog = createDialog();
+            FilteredCheckboxTreeDialog<T> dialog = createDialog();
             Set<T> choices = new HashSet<>(selected);
             choices.addAll(input);
             dialog.setInput(choices);

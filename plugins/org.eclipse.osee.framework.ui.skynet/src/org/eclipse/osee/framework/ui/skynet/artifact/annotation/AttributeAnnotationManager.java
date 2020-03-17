@@ -31,8 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeAnnotationManager {
    private final Artifact artifact;
-   private static Map<String, AttributeAnnotationManager> guidToManager =
-      new HashMap<>(50);
+   private static Map<String, AttributeAnnotationManager> guidToManager = new HashMap<>(50);
 
    public static AttributeAnnotationManager get(Artifact artifact) {
       if (!guidToManager.containsKey(artifact.getGuid())) {
@@ -45,13 +44,13 @@ public class AttributeAnnotationManager {
       this.artifact = artifact;
    }
 
-   @SuppressWarnings("deprecation")
    private Collection<Attribute<String>> getAttributes() {
       return artifact.getAttributes(CoreAttributeTypes.Annotation);
    }
 
    public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact) {
-      if (!guidToManager.containsKey(artifact) && artifact.getAttributeCount(CoreAttributeTypes.Annotation) == 0) {
+      if (!guidToManager.containsKey(artifact.getGuid()) && artifact.getAttributeCount(
+         CoreAttributeTypes.Annotation) == 0) {
          return Collections.emptySet();
       }
       ensureLoaded();

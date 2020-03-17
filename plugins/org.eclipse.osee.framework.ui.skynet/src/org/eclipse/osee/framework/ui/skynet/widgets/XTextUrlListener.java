@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * PaintListener that will turn any http://[^ ] into selectable hyperlink.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XTextUrlListener implements ModifyListener {
@@ -105,6 +105,7 @@ public class XTextUrlListener implements ModifyListener {
    }
 
    private final MouseListener mouseListener = new MouseListener() {
+      @SuppressWarnings("deprecation")
       @Override
       public void mouseUp(org.eclipse.swt.events.MouseEvent e) {
 

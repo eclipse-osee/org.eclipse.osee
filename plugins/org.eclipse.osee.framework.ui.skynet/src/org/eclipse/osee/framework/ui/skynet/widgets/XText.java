@@ -51,7 +51,6 @@ public class XText extends XWidget {
 
    private boolean dragableArtifact = false;
    private boolean spellCheck = true;
-   private final boolean debug = false;
    private int width = 0;
    private int height = 0;
    private XTextSpellCheckListener spellPaintListener;
@@ -564,9 +563,6 @@ public class XText extends XWidget {
       return font;
    }
 
-   /**
-    * @param font the font to set
-    */
    public void setFont(Font font) {
       this.font = font;
       if (sText != null) {

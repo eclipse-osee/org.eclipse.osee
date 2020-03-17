@@ -45,7 +45,6 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          templateMap = new HashMap<>();
          templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplateWholeWord, COMMON);
          for (Artifact art : templates) {
-            @SuppressWarnings("deprecation")
             Collection<Attribute<String>> attrs = art.getAttributes(CoreAttributeTypes.TemplateMatchCriteria);
             for (Attribute<String> attr : attrs) {
                String matchCriteria = attr.getValue();

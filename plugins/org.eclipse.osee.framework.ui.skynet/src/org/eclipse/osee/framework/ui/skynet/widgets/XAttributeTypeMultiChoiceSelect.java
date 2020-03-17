@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 
 /**
  * Multi selection of attribute types with checkbox dialog and filtering
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<AttributeType> {
@@ -40,9 +40,9 @@ public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<Attribute
    }
 
    @Override
-   public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below",
-         new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
+   public FilteredCheckboxTreeDialog<AttributeType> createDialog() {
+      FilteredCheckboxTreeDialog<AttributeType> dialog = new FilteredCheckboxTreeDialog<AttributeType>(getLabel(),
+         "Select from the items below", new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
       dialog.setInput(AttributeTypeManager.getAllTypes());
       return dialog;
    }

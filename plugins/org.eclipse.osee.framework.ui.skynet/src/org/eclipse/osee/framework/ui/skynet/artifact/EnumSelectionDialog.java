@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
+public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
 
    private final XRadioButton addSelectedRadioButton =
       new XRadioButton("Add selected item(s) to existing if not already chosen.");

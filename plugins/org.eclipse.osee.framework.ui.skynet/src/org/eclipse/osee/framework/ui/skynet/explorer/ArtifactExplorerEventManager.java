@@ -103,7 +103,6 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
       EventUtil.eventLog("ArtifacExplorer: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
-      Collection<Artifact> relCacheArtifacts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
 
