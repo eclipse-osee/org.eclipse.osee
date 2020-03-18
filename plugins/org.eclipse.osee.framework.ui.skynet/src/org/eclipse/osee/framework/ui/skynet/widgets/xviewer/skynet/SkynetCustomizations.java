@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,9 +86,8 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       boolean found = false;
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
-         if (attribute.getDisplayableString().contains(
-            "NAMESPACE=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
-               "name=\"" + custData.getName() + "\"")) {
+         CustomizeData cd = new CustomizeData(attribute.getValue());
+         if (custData.getGuid().equals(cd.getGuid())) {
             attribute.setValue(custData.getXml(true));
             found = true;
             break;
@@ -120,13 +121,30 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
             custDatas.clear();
          }
          User user = UserManager.getUser();
+         Set<String> guids = new HashSet<>();
          if (user != null) {
             for (CustomizeData custData : getArtifactCustomizations(user)) {
-               custData.setPersonal(true);
-               custDatas.add(custData);
+               if (guids.contains(custData.getGuid())) {
+                  OseeLog.logf(SkynetCustomizations.class, Level.SEVERE,
+                     "Duplicate Personal XViewer Customization with name [%s] guid [%s]; skipping...",
+                     custData.getName(), custData.getGuid());
+               } else {
+                  custData.setPersonal(true);
+                  custDatas.add(custData);
+                  guids.add(custData.getGuid());
+               }
             }
          }
-         custDatas.addAll(getArtifactCustomizations(getGlobalCustomizationsArtifact()));
+         for (CustomizeData custData : getArtifactCustomizations(getGlobalCustomizationsArtifact())) {
+            if (guids.contains(custData.getGuid())) {
+               OseeLog.logf(SkynetCustomizations.class, Level.SEVERE,
+                  "Duplicate Global XViewer Customization with name [%s] guid [%s]; skipping...", custData.getName(),
+                  custData.getGuid());
+            } else {
+               custDatas.add(custData);
+               guids.add(custData.getGuid());
+            }
+         }
       }
    }
 
