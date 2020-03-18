@@ -98,9 +98,13 @@ public final class TransactionManager {
       "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
-   // The commitArtifactIdMap is protected from concurrent access via synchronizing all methods of this class that use it
+   /**
+    * The commitArtifactIdMap and processedCommitArtifactId are protected from concurrent access via synchronizing all
+    * methods of this class that use it
+    */
    private static final HashCollectionSet<ArtifactId, TransactionRecord> commitArtifactIdMap =
       new HashCollectionSet<>(HashSet::new);
+   private static final Set<ArtifactId> processedCommitArtifactId = new HashSet<>();
 
    public static SkynetTransaction createTransaction(BranchId branch, String comment) {
       SkynetTransaction tx = new SkynetTransaction(txMonitor, branch, comment);
@@ -132,9 +136,12 @@ public final class TransactionManager {
    }
 
    public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(ArtifactId artifact) {
-      if (!commitArtifactIdMap.containsKey(artifact)) {
-         ConnectionHandler.getJdbcClient().runQuery(stmt -> commitArtifactIdMap.put(artifact, loadTransaction(stmt)),
-            SELECT_COMMIT_TRANSACTIONS, artifact);
+      if (!processedCommitArtifactId.contains(artifact)) {
+         if (!commitArtifactIdMap.containsKey(artifact)) {
+            ConnectionHandler.getJdbcClient().runQuery(stmt -> commitArtifactIdMap.put(artifact, loadTransaction(stmt)),
+               SELECT_COMMIT_TRANSACTIONS, artifact);
+            processedCommitArtifactId.add(artifact);
+         }
       }
       return commitArtifactIdMap.safeGetValues(artifact);
    }
@@ -146,10 +153,12 @@ public final class TransactionManager {
     */
    public synchronized static void clearCommitArtifactCacheForAssociatedArtifact(ArtifactId associatedArtifact) {
       commitArtifactIdMap.removeValues(associatedArtifact);
+      processedCommitArtifactId.remove(associatedArtifact);
    }
 
    public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact, TransactionToken transactionId) {
       commitArtifactIdMap.put(artifact, getTransactionRecord(transactionId.getId()));
+      processedCommitArtifactId.add(artifact);
    }
 
    /**

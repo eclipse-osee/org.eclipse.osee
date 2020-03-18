@@ -33,8 +33,18 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
    private AtsWorkDefinitionProvider atsWorkDefProv;
 
    @Override
-   public void addWorkDefinitionProvider(IAtsWorkDefinitionProvider workDefProvider) {
+   public void addWorkDefinitionProvider(final IAtsWorkDefinitionProvider workDefProvider) {
       this.workDefProviders.add(workDefProvider);
+
+      Thread load = new Thread("Load Work Defs") {
+
+         @Override
+         public void run() {
+            handleProvider(workDefProvider);
+         }
+
+      };
+      load.start();
    }
 
    public void ensureLoaded() {
@@ -45,12 +55,16 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
       }
       // Add any not processed
       for (IAtsWorkDefinitionProvider workDefProvider : workDefProviders) {
-         if (!workDefProviderProcessed.contains(workDefProvider)) {
-            for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
-               idToWorkDef.put(workDef.getId(), workDef);
-            }
-            workDefProviderProcessed.add(workDefProvider);
+         handleProvider(workDefProvider);
+      }
+   }
+
+   private void handleProvider(IAtsWorkDefinitionProvider workDefProvider) {
+      if (!workDefProviderProcessed.contains(workDefProvider)) {
+         for (IAtsWorkDefinition workDef : workDefProvider.getWorkDefinitions()) {
+            idToWorkDef.put(workDef.getId(), workDef);
          }
+         workDefProviderProcessed.add(workDefProvider);
       }
    }
 
