@@ -21,7 +21,6 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.AtsConfiguredBranc
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.Default;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Users_User;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
@@ -176,16 +174,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       configs.setColorColumns(update.getColorColumns());
       // load valid state names
       configs.setValidStateNames(update.getValidStateNames());
-      time.end();
-
-      time.start("Server ACS - getAtsConfigurationsFromDb.admins");
-      // load admins
-      ArtifactReadable atsAdminArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(AtsUserGroups.AtsAdmin);
-      if (atsAdminArt != null) {
-         for (ArtifactReadable member : atsAdminArt.getRelated(Users_User)) {
-            configs.getAtsAdmins().add(member);
-         }
-      }
       time.end();
 
       return configs;

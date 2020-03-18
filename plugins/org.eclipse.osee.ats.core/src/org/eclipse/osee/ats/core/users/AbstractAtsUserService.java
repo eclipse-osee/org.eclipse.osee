@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -157,7 +158,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public boolean isAtsAdmin() {
-      return isAtsAdmin(getCurrentUser());
+      return getCurrentUser().getUserGroups().contains(AtsUserGroups.AtsAdmin);
+   }
+
+   @Override
+   public boolean isAtsAdmin(AtsUser user) {
+      return user.getUserGroups().contains(AtsUserGroups.AtsAdmin);
    }
 
    @Override

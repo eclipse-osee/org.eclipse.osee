@@ -14,15 +14,12 @@
 package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
-import java.util.List;
-import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -74,6 +71,7 @@ public interface IAtsUserService {
    boolean isAtsAdmin(boolean useCache);
 
    Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
+
    void setCurrentUser(AtsUser user);
 
    Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);

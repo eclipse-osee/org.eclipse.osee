@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +34,6 @@ public class AtsConfigurations {
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
-   List<ArtifactId> atsAdmins = new ArrayList<>();
    ArtifactId topActionableItem;
    ArtifactId topTeamDefinition;
    private Collection<String> validStateNames = new ArrayList<>();
@@ -81,14 +79,6 @@ public class AtsConfigurations {
 
    public void setValidStateNames(Collection<String> validStateNames) {
       this.validStateNames = validStateNames;
-   }
-
-   public List<ArtifactId> getAtsAdmins() {
-      return atsAdmins;
-   }
-
-   public void setAtsAdminsStr(String atsAdmins) {
-      this.atsAdmins = Collections.fromString(atsAdmins, ArtifactId::valueOf);
    }
 
    public Map<Long, ActionableItem> getIdToAi() {
@@ -162,10 +152,6 @@ public class AtsConfigurations {
       idToUser.put(user.getId(), user);
       userIdToUserArtId.put(user.getUserId(), user.getArtifactId().getId());
       userNameToUserArtId.put(user.getName(), user.getArtifactId().getId());
-   }
-
-   public void setAtsAdmins(List<ArtifactId> atsAdmins) {
-      this.atsAdmins = atsAdmins;
    }
 
    public Map<String, Long> getUserIdToUserArtId() {

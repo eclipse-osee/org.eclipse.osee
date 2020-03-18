@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -36,7 +35,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    private OrcsApi orcsApi;
-   ArtifactReadable atsAdminArt;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -55,14 +53,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public AtsUser getCurrentUserNoCache() {
       return getCurrentUser();
-   }
-
-   @Override
-   public boolean isAtsAdmin(AtsUser user) {
-      if (atsAdminArt == null) {
-         atsAdminArt = getArtifact(AtsUserGroups.AtsAdmin);
-      }
-      return atsAdminArt.areRelated(CoreRelationTypes.Users_User, getArtifact((IAtsObject) user));
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
