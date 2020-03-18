@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
@@ -40,11 +40,8 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHandle {
 
    private final IAtsWorkItem workItem;
-   private Hyperlink blockedStatusLink;
-   private String blockedText;
+   private Hyperlink blockedLabelLink;
    private Hyperlink blockedReasonLink;
-   private String blockedReason;
-   private final static Color BLOCKED_COLOR = new Color(null, 244, 80, 66);
 
    WfeBlockedWorkflowHeader(Composite parent, int style, final IAtsWorkItem workItem, final WorkflowEditor editor) {
       super(parent, style);
@@ -54,17 +51,8 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
       editor.getToolkit().adapt(this);
 
       try {
-         blockedReason = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
-            AtsAttributeTypes.BlockedReason, "");
-
-         if (Strings.isValid(blockedReason)) {
-            blockedText = "Set Workflow to Unblocked:";
-         } else {
-            blockedText = "Set Workflow to Blocked";
-         }
-
-         blockedStatusLink = editor.getToolkit().createHyperlink(this, blockedText, SWT.NONE);
-         blockedStatusLink.addHyperlinkListener(new IHyperlinkListener() {
+         blockedLabelLink = editor.getToolkit().createHyperlink(this, "", SWT.NONE);
+         blockedLabelLink.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
             public void linkEntered(HyperlinkEvent e) {
@@ -89,9 +77,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
             }
          });
 
-         blockedReasonLink = editor.getToolkit().createHyperlink(this, blockedReason, SWT.NONE);
-         blockedReasonLink.setForeground(BLOCKED_COLOR);
-         blockedReasonLink.setVisible(Strings.isValid(blockedReason));
+         blockedReasonLink = editor.getToolkit().createHyperlink(this, "", SWT.NONE);
          blockedReasonLink.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -120,18 +106,55 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
          });
 
       } catch (OseeCoreException ex) {
-         blockedStatusLink.setText("Error: " + ex.getLocalizedMessage());
+         blockedLabelLink.setText("Error: " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      refresh();
+      editor.registerEvent(this, AtsAttributeTypes.BlockedReason);
+   }
 
+   @Override
+   public void refresh() {
+      String blockedReason = "";
+      String blockedLabel = "";
+      try {
+         blockedReason = getBlockedReason();
+         if (isBlocked()) {
+            blockedLabel = "Set Workflow to Unblocked";
+         } else {
+            blockedLabel = "Set Workflow to Blocked";
+         }
+      } catch (OseeCoreException ex) {
+         blockedReason = "Error: " + ex.getLocalizedMessage();
+      }
+
+      blockedLabelLink.setText(blockedLabel);
+      blockedLabelLink.setLayoutData(new GridData());
+
+      blockedReasonLink.setText("Reason: " + blockedReason);
+      boolean showBlockedReason = Strings.isValid(blockedReason);
+      blockedReasonLink.setVisible(showBlockedReason);
+      if (showBlockedReason) {
+         blockedReasonLink.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else {
+         blockedReasonLink.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+      }
+      blockedReasonLink.setLayoutData(new GridData());
+
+      layout();
+   }
+
+   private String getBlockedReason() {
+      return AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.BlockedReason, "");
+   }
+
+   private boolean isBlocked() {
+      return Strings.isValid(getBlockedReason());
    }
 
    private void handleBlockedButtonSelection() {
-      if (!Strings.isValid(blockedReason)) {
-         EntryDialog ed =
-            new EntryDialog("Setting Workflow to Blocked", "Enter the reason for this workflow being blocked");
-         setBlockedReason(ed);
-      } else {
+      if (isBlocked()) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set blocked status");
          boolean unblock = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
             "Unblock Workflow", "Are you sure you wish to set this workflow to unblocked?");
@@ -139,6 +162,10 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
             changes.deleteSoleAttribute(workItem, AtsAttributeTypes.BlockedReason);
          }
          changes.executeIfNeeded();
+      } else {
+         EntryDialog ed =
+            new EntryDialog("Setting Workflow to Blocked", "Enter the reason for this workflow being blocked");
+         setBlockedReason(ed);
       }
    }
 
@@ -150,18 +177,13 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
          if (!Strings.isValid(blockedReason)) {
             blockedReason = "No reason given, please enter one";
          }
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.BlockedReason, "Blocked - " + blockedReason);
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.BlockedReason, blockedReason);
       }
       changes.executeIfNeeded();
    }
 
    @Override
-   public void refresh() {
-      //do nothing
-   }
-
-   @Override
    public IAtsWorkItem getWorkItem() {
-      return null;
+      return workItem;
    }
 }
