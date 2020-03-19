@@ -65,4 +65,11 @@ public class ReportConstants {
    public static final String LISTNUM_FIELD_TAIL =
       "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText>LISTNUM\"listreset\"\\l1\\s0</w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\"1.\"/></w:r>";
    public static final String LISTNUM_FIELD = LISTNUM_FIELD_HEAD + LISTNUM_FIELD_TAIL;
+   public static final String WORD_COMMENT_START =
+      "<aml:annotation[^>]*w:type=\"Word.Comment.Start\"/?>(</aml:annotation>)?";
+   public static final String WORD_COMMENT_END =
+      "<aml:annotation[^>]*w:type=\"Word.Comment.End\"/?>(</aml:annotation>)?";
+   public static final String WORD_COMMENT =
+      "<w:r[^>]*><w:rPr><w:rStyle w:val=\"CommentReference\"/?>(</w:rStyle>)?</w:rPr><aml:annotation[^>]*w:type=\"Word.Comment\"[^>]*><aml:content>[\\s\\S]+?</aml:content></aml:annotation></w:r>";
+
 }

@@ -152,6 +152,84 @@ public class WordMlLinkHandler {
       return modified;
    }
 
+   public static String renderPlainTextWithoutLinks(QueryFactory queryFactory, BranchId branch, String content) {
+      String modified = content;
+
+      // Detect legacy links
+      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
+
+      // Detect new style link marker
+      Matcher oseeMatcher = OSEE_LINK_PATTERN.matcher(content);
+      while (oseeMatcher.find()) {
+         String guid = oseeMatcher.group(1);
+         if (Strings.isValid(guid)) {
+            matchMap.put(guid, new MatchRange(oseeMatcher.start(), oseeMatcher.end()));
+         }
+      }
+
+      if (!matchMap.isEmpty()) {
+
+         ChangeSet changeSet = new ChangeSet(content);
+         List<ArtifactReadable> artifactsFromSearch = null;
+         List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
+
+         artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks, TransactionId.SENTINEL);
+         boolean isMergeBranch = queryFactory.branchQuery().andId(branch).andIsOfType(BranchType.MERGE).exists();
+         if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
+            Branch branchReadable = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne();
+            List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
+
+            List<ArtifactReadable> union = new ArrayList<>();
+            union.addAll(
+               findArtifacts(queryFactory, branchReadable.getParentBranch(), unknownGuids, TransactionId.SENTINEL));
+            union.addAll(artifactsFromSearch);
+            artifactsFromSearch = union;
+         }
+
+         if (guidsFromLinks.size() != artifactsFromSearch.size()) {
+            List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
+
+            // Items not found
+            if (!unknownGuids.isEmpty()) {
+               for (String guid : unknownGuids) {
+                  for (MatchRange match : matchMap.getValues(guid)) {
+                     String link = linkBuilder.getUnknownArtifactLink(guid, branch);
+                     changeSet.replace(match.start(), match.end(), link);
+                  }
+               }
+            }
+
+         }
+         // Items found in branch
+         Matcher matcher = IS_GUID.matcher(matchMap.keySet().iterator().next());
+         if (matcher.find()) {
+            for (ArtifactReadable artifact : artifactsFromSearch) {
+               for (MatchRange match : matchMap.getValues(artifact.getGuid())) {
+                  String replaceWith = null;
+
+                  replaceWith = artifact.getName();
+
+                  changeSet.replace(match.start(), match.end(), replaceWith);
+               }
+            }
+         } else {
+            for (ArtifactReadable artifact : artifactsFromSearch) {
+               for (MatchRange match : matchMap.getValues(artifact.getIdString())) {
+                  String replaceWith = null;
+
+                  replaceWith = artifact.getName();
+
+                  changeSet.replace(match.start(), match.end(), replaceWith);
+               }
+            }
+         }
+
+         return changeSet.applyChangesToSelf().toString();
+      }
+
+      return modified;
+   }
+
    /**
     * Find WordML links locations in content grouped by GUID
     *
