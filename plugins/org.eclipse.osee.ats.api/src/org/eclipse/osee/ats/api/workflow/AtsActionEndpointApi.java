@@ -27,6 +27,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -209,4 +211,17 @@ public interface AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> getTransactionChangeData(@PathParam("transactionId") TransactionId transactionId);
+
+   @Path("transition")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   TransitionResults transition(TransitionData transData);
+
+   @Path("transitionValidate")
+   @POST
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   TransitionResults transitionValidate(TransitionData transData);
+
 }

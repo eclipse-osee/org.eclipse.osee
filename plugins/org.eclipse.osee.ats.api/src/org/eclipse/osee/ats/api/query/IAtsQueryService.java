@@ -63,7 +63,7 @@ public interface IAtsQueryService {
    @NonNull
    IAtsConfigQuery createQuery(ArtifactTypeToken... artifactType);
 
-   Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch);
+   Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> collection, BranchId branch);
 
    void runUpdate(String query, Object... data);
 

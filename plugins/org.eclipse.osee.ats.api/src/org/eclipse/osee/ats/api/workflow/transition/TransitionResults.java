@@ -28,8 +28,7 @@ public class TransitionResults {
 
    private final List<ITransitionResult> results = new ArrayList<>();
 
-   private final Map<IAtsWorkItem, List<ITransitionResult>> workItemToResults =
-      new HashMap<>();
+   private final Map<IAtsWorkItem, List<ITransitionResult>> workItemToResults = new HashMap<>();
 
    public void addResult(IAtsWorkItem workItem, ITransitionResult result) {
       List<ITransitionResult> results = workItemToResults.get(workItem);
@@ -83,6 +82,14 @@ public class TransitionResults {
          return false;
       }
       return workItemResults.contains(transitionResult);
+   }
+
+   public boolean isErrors() {
+      return !isEmpty();
+   }
+
+   public boolean isSuccess() {
+      return isEmpty();
    }
 
    public String getResultString() {

@@ -32,7 +32,7 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean systemUserAssigned = null;
    public Boolean overrideTransitionValidityCheck = null;
 
-   public MockTransitionHelper(String name, Collection<IAtsWorkItem> awas, String toStateName, Collection<? extends AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+   public MockTransitionHelper(String name, Collection<IAtsWorkItem> awas, String toStateName, Collection<AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
       super(name, awas, toStateName, toAssignees, cancellationReason, changes, AtsClientService.get().getServices(),
          transitionOption);
    }

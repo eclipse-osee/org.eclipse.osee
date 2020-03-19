@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
 
+import java.util.Arrays;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamAtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -84,13 +88,11 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf2().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf2());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
-      Set<IAtsActionableItem> actionableItems = AtsClientService.get().getActionableItemService().getActionableItems(
-         AtsTestUtil.getTeamWf());
-      Set<IAtsActionableItem> actionableItems2 = AtsClientService.get().getActionableItemService().getActionableItems(
-         AtsTestUtil.getTeamWf2());
-      Assert.assertNotSame(
-         actionableItems.iterator().next(),
-         actionableItems2.iterator().next());
+      Set<IAtsActionableItem> actionableItems =
+         AtsClientService.get().getActionableItemService().getActionableItems(AtsTestUtil.getTeamWf());
+      Set<IAtsActionableItem> actionableItems2 =
+         AtsClientService.get().getActionableItemService().getActionableItems(AtsTestUtil.getTeamWf2());
+      Assert.assertNotSame(actionableItems.iterator().next(), actionableItems2.iterator().next());
    }
 
    public void testGetTeamWf4() {
@@ -128,37 +130,16 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("test");
+      for (IStateToken toState : Arrays.asList(TeamState.Implement, TeamState.Completed, TeamState.Implement,
+         TeamState.Cancelled, TeamState.Implement)) {
+         TransitionHelper helper = new TransitionHelper("test", Arrays.asList(teamArt), toState.getName(),
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), "", null, null,
+            TransitionOption.OverrideTransitionValidityCheck);
+         TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+         Assert.assertTrue(results.isSuccess());
+         Assert.assertEquals(toState.getName(), teamArt.getCurrentStateName());
+      }
 
-      Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
-            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(TeamState.Implement.getName(), teamArt.getCurrentStateName());
-
-      result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser(),
-            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(TeamState.Completed.getName(), teamArt.getCurrentStateName());
-
-      result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
-            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(TeamState.Implement.getName(), teamArt.getCurrentStateName());
-
-      result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserService().getCurrentUser(),
-            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(TeamState.Cancelled.getName(), teamArt.getCurrentStateName());
-
-      result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
-            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(TeamState.Implement.getName(), teamArt.getCurrentStateName());
    }
 
    public void testCreateAndCleanupWithBranch() {

@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.ActionFactory;
@@ -723,6 +724,24 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public List<ChangeItem> getTransactionChangeData(TransactionId transactionId) {
       return atsApi.getBranchService().getChangeData(transactionId);
+   }
+
+   @Path("transition")
+   @POST
+   @Override
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public TransitionResults transition(TransitionData transData) {
+      return atsApi.getWorkItemService().transition(transData);
+   }
+
+   @Path("transitionValidate")
+   @POST
+   @Override
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public TransitionResults transitionValidate(TransitionData transData) {
+      return atsApi.getWorkItemService().transitionValidate(transData);
    }
 
 }

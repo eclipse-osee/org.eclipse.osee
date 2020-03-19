@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -48,22 +47,17 @@ public class TransitionToOperation extends AbstractOperation {
                changes.add(awa);
             }
          }
-         if (!changes.isEmpty()) {
-            changes.execute();
-         }
+         changes.executeIfNeeded();
 
-         TransitionManager transitionMgr = new TransitionManager(helper);
-         results = transitionMgr.handleAllAndPersist();
-         if (results.isCancelled()) {
-            return;
+         results = AtsClientService.get().getWorkItemService().transition(helper);
+         if (!results.isEmpty()) {
+            TransitionResultsUi.report("Transition", results);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         if (results != null) {
-            results.addResult(
-               new TransitionResult(String.format("Exception [%s] transitioning to [%s].  See error log for details.",
-                  ex.getLocalizedMessage(), helper.getToStateName())));
-         }
+         results.addResult(
+            new TransitionResult(String.format("Exception [%s] transitioning to [%s].  See error log for details.",
+               ex.getLocalizedMessage(), helper.getToStateName())));
       }
    }
 

@@ -77,4 +77,8 @@ public interface ITransitionHelper {
 
    public boolean isReload();
 
+   public TransitionData getTransData();
+
+   public void setAtsApi(AtsApi atsApi);
+
 }

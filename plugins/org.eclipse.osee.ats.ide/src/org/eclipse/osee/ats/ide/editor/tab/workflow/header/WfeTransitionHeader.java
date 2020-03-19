@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
@@ -211,7 +211,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          }
 
          @Override
-         public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
+         public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
             AbstractWorkflowArtifact awa =
                (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
             return awa.getTransitionAssignees();
@@ -328,10 +328,9 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          @Override
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
-            if (!results.isEmpty()) {
-               String resultStr = results.getResultString();
+            if (results.isErrors()) {
+               TransitionResultsUi.report("Transition Failed", results);
                AtsUtilClient.logExceptions(results);
-               AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
             }
          }
 

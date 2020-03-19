@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionJob;
@@ -183,8 +182,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
          null, changes, AtsClientService.get().getServices(), TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAllAndPersist();
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());
       }

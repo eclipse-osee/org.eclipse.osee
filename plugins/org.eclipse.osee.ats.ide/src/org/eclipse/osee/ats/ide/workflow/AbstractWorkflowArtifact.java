@@ -121,6 +121,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getStateMgr().getCurrentStateName();
    }
 
+   @Override
    public boolean isInState(IStateToken state) {
       return getStateMgr().getCurrentStateName().equals(state.getName());
    }

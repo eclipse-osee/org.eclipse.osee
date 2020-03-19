@@ -131,7 +131,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(Collection<ArtifactId> ids, BranchId branch) {
       return Collections.castAll(query.fromBranch(branch).andIds(ids).getResults().getList());
    }
 

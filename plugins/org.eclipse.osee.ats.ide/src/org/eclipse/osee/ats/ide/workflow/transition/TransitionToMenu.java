@@ -49,13 +49,11 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -239,7 +237,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
+         public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
             return workItem.getAssignees();
          }
 
@@ -334,14 +332,13 @@ public class TransitionToMenu {
          @Override
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
-            if (!results.isEmpty()) {
+            if (results.isErrors()) {
                AtsUtilClient.logExceptions(results);
                if (helper.getWorkItems().size() == 1) {
                   String resultStr = results.getResultString();
                   AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
                } else {
-                  XResultData resultData = results.getResultXResultData();
-                  XResultDataUI.report(resultData, "Transition Failed");
+                  TransitionResultsUi.report("Transition Failed", results);
                }
             }
          }

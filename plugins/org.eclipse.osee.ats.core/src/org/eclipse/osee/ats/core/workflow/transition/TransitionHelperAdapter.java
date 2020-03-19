@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 
@@ -27,12 +28,17 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
  */
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
-   private final AtsApi atsApi;
-   private AtsUser transitionUser;
-   private boolean workflowsReloaded = false;
+   protected AtsApi atsApi;
+   protected final TransitionData transData;
 
    public TransitionHelperAdapter(AtsApi atsApi) {
       this.atsApi = atsApi;
+      transData = new TransitionData();
+   }
+
+   public TransitionHelperAdapter(AtsApi atsApi, TransitionData transData) {
+      this.atsApi = atsApi;
+      this.transData = transData;
    }
 
    @Override
@@ -83,7 +89,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public AtsUser getTransitionUser() {
-      AtsUser user = transitionUser;
+      AtsUser user = transData.getTransitionUser();
       if (user == null) {
          user = atsApi.getUserService().getCurrentUser();
       }
@@ -92,7 +98,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public void setTransitionUser(AtsUser user) {
-      transitionUser = user;
+      transData.setTransitionUser(user);
    }
 
    @Override
@@ -100,7 +106,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public void handleWorkflowReload(TransitionResults results) {
-      if (!workflowsReloaded) {
+      if (!transData.isWorkflowsReloaded()) {
          // Only reload work items that have been changed in the database and not updated locally
          List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
          for (IAtsWorkItem workItem : getWorkItems()) {
@@ -117,8 +123,23 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
                results.addResult(workItem, TransitionResult.WORKITEM_DELETED);
             }
          }
-         workflowsReloaded = true;
+         transData.setWorkflowsReloaded(true);
       }
+   }
+
+   @Override
+   public TransitionData getTransData() {
+      return transData;
+   }
+
+   @Override
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
+   }
+
+   @Override
+   public AtsApi getServices() {
+      return atsApi;
    }
 
 }

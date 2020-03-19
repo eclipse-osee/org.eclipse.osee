@@ -162,7 +162,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);

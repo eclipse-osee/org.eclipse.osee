@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,6 +59,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * This class should NOT be used on client. Use AtsClientService.get().getWorkItemService().transition() instead.
+ *
  * @author Donald G. Dunne
  */
 public class TransitionManager implements IExecuteListener {
@@ -84,13 +87,19 @@ public class TransitionManager implements IExecuteListener {
       this.taskService = helper.getServices().getTaskService();
       this.storeService = helper.getServices().getStoreService();
       this.workItemFromStateMap = new HashMap<>();
+      //      if (helper.getServices().isIde()) {
+      //         OseeLog.log(TransitionManager.class, Level.WARNING,
+      //            "TransitionManager should NOT be used on client.  Use AtsClientService.get().getWorkItemServiceClient().transition() instead.");
+      //      }
    }
 
    public TransitionResults handleAll() {
+      loadWorkItems();
+
       IAtsWorkItem workItem = helper.getWorkItems().iterator().next();
 
       TransitionResults results = new TransitionResults();
-      if (storeService.isInDb(workItem)) {
+      if (storeService.isInDb(workItem) && storeService.isIdeClient()) {
          handleWorkflowReload(results);
          if (results.isCancelled() || !results.isEmpty()) {
             return results;
@@ -111,6 +120,15 @@ public class TransitionManager implements IExecuteListener {
       return results;
    }
 
+   private void loadWorkItems() {
+      if (helper.getTransData().getWorkItems().isEmpty()) {
+         for (ArtifactToken art : helper.getServices().getQueryService().getArtifacts(
+            helper.getTransData().getWorkItemIds(), helper.getServices().getAtsBranch())) {
+            helper.getTransData().getWorkItems().add(helper.getServices().getWorkItemService().getWorkItem(art));
+         }
+      }
+   }
+
    private void handleWorkflowReload(TransitionResults results) {
       if (helper.isReload()) {
          helper.handleWorkflowReload(results);
@@ -123,6 +141,7 @@ public class TransitionManager implements IExecuteListener {
     * @return Result.isFalse if failure
     */
    public void handleTransitionValidation(TransitionResults results) {
+      loadWorkItems();
       boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
       try {
          if (helper.getWorkItems().isEmpty()) {
@@ -263,7 +282,7 @@ public class TransitionManager implements IExecuteListener {
    /**
     * Request extra information if transition requires hours spent prompt, cancellation reason, etc.
     *
-    * @return Result.isFalse if failure or Result.isCancelled if canceled
+    * @return results. if failure or TransitionResults.isCancelled if canceled
     */
    public void handleTransitionUi(TransitionResults results) {
       Result result = helper.getCompleteOrCancellationReason();
@@ -284,8 +303,6 @@ public class TransitionManager implements IExecuteListener {
 
    /**
     * Process transition and persist changes to given skynet transaction
-    *
-    * @return Result.isFalse if failure
     */
    public void handleTransition(TransitionResults results) {
       try {
@@ -604,11 +621,15 @@ public class TransitionManager implements IExecuteListener {
       if (result.isEmpty()) {
          helper.getChangeSet().execute();
 
-         helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-            helper.getWorkItems());
+         if (helper.getServices().getEventService() != null) {
+            helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+               helper.getWorkItems());
+         }
       } else {
-         helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
-            helper.getWorkItems());
+         if (helper.getServices().getEventService() != null) {
+            helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
+               helper.getWorkItems());
+         }
       }
       return result;
    }

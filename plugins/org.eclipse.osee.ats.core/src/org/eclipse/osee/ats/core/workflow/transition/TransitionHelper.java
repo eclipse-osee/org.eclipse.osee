@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -21,6 +18,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,71 +30,70 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class TransitionHelper extends TransitionHelperAdapter {
 
-   private final String cancellationReason;
-   private final Collection<IAtsWorkItem> workItems;
-   private final String name;
-   private TransitionOption[] transitionOption;
-   private final Collection<? extends AtsUser> toAssignees;
-   private String toStateName;
-   private final IAtsChangeSet changes;
-   private boolean executeChanges = false;
-   private final IAtsWorkItemService workItemService;
-   private final AtsApi atsApi;
+   private IAtsChangeSet changes;
+   private IAtsWorkItemService workItemService;
 
-   public TransitionHelper(String name, Collection<IAtsWorkItem> workItems, String toStateName, Collection<? extends AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
-      super(atsApi);
-      this.atsApi = atsApi;
-      this.workItemService = atsApi.getWorkItemService();
-      this.name = name;
-      this.workItems = workItems;
-      this.toStateName = toStateName;
-      this.toAssignees = toAssignees;
-      this.cancellationReason = cancellationReason;
+   public TransitionHelper(TransitionData transData, IAtsChangeSet changes, AtsApi atsApi) {
+      super(atsApi, transData);
       this.changes = changes;
-      this.transitionOption = transitionOption;
+      this.workItemService = atsApi.getWorkItemService();
+   }
+
+   public TransitionHelper(String name, Collection<IAtsWorkItem> workItems, String toStateName, Collection<AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
+      super(atsApi, new TransitionData());
+      transData.setName(name);
+      transData.setWorkItems(workItems);
+      transData.setToStateName(toStateName);
+      transData.setCancellationReason(cancellationReason);
+      transData.setToAssignees(toAssignees);
+      for (TransitionOption opt : transitionOption) {
+         transData.getTransitionOptions().add(opt);
+      }
+      this.changes = changes;
+      handleSetAtsApi(atsApi);
    }
 
    @Override
    public boolean isOverrideAssigneeCheck() {
-      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideAssigneeCheck);
+      return getTransitionOptions().contains(TransitionOption.OverrideAssigneeCheck);
    }
 
    @Override
    public boolean isOverrideWorkingBranchCheck() {
-      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideWorkingBranchCheck);
+      return transData.getTransitionOptions().contains(TransitionOption.OverrideWorkingBranchCheck);
    }
 
    @Override
    public boolean isReload() {
-      return !Arrays.asList(transitionOption).contains(TransitionOption.OverrideReload);
+      return !transData.getTransitionOptions().contains(TransitionOption.OverrideReload);
    }
 
    @Override
    public boolean isOverrideTransitionValidityCheck() {
-      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideTransitionValidityCheck);
+      return transData.getTransitionOptions().contains(TransitionOption.OverrideTransitionValidityCheck);
    }
 
    @Override
    public Collection<IAtsWorkItem> getWorkItems() {
-      return workItems;
+      return transData.getWorkItems();
    }
 
    @Override
    public Result getCompleteOrCancellationReason() {
-      if (Strings.isValid(cancellationReason)) {
-         return new Result(true, cancellationReason);
+      if (Strings.isValid(transData.getCancellationReason())) {
+         return new Result(true, transData.getCancellationReason());
       }
       return Result.FalseResult;
    }
 
    @Override
    public String getName() {
-      return name;
+      return transData.getName();
    }
 
    @Override
-   public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem) {
-      return toAssignees;
+   public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
+      return transData.getToAssignees();
    }
 
    @Override
@@ -106,41 +103,36 @@ public class TransitionHelper extends TransitionHelperAdapter {
 
    @Override
    public String getToStateName() {
-      return toStateName;
+      return transData.getToStateName();
    }
 
    public void addTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = new ArrayList<>(Arrays.asList(this.transitionOption));
-      if (!options.contains(transitionOption)) {
-         options.add(transitionOption);
-      }
-      this.transitionOption = options.toArray(new TransitionOption[options.size()]);
+      transData.getTransitionOptions().add(transitionOption);
    }
 
    public void removeTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = new ArrayList<>(Arrays.asList(this.transitionOption));
-      if (options.contains(transitionOption)) {
-         options.remove(transitionOption);
-      }
-      this.transitionOption = options.toArray(new TransitionOption[options.size()]);
+      transData.getTransitionOptions().remove(transitionOption);
    }
 
    public void setToStateName(String toStateName) {
-      this.toStateName = toStateName;
+      transData.setToStateName(toStateName);
    }
 
    @Override
    public IAtsChangeSet getChangeSet() {
+      if (changes == null) {
+         changes = atsApi.createChangeSet(getName(), getTransitionUser());
+      }
       return changes;
    }
 
    @Override
    public boolean isExecuteChanges() {
-      return executeChanges;
+      return transData.isExecuteChanges();
    }
 
    public void setExecuteChanges(boolean executeChanges) {
-      this.executeChanges = executeChanges;
+      transData.setExecuteChanges(executeChanges);
    }
 
    @Override
@@ -158,8 +150,25 @@ public class TransitionHelper extends TransitionHelperAdapter {
       return atsApi;
    }
 
-   public TransitionOption[] getTransitionOptions() {
-      return transitionOption;
+   public Collection<TransitionOption> getTransitionOptions() {
+      return transData.getTransitionOptions();
+   }
+
+   @Override
+   public void setAtsApi(AtsApi atsApi) {
+      handleSetAtsApi(atsApi);
+   }
+
+   private void handleSetAtsApi(AtsApi atsApi) {
+      if (atsApi != null) {
+         this.atsApi = atsApi;
+         this.workItemService = atsApi.getWorkItemService();
+         if (transData.getTransitionUser() == null) {
+            transData.setTransitionUser(atsApi.getUserService().getCurrentUser());
+         }
+      } else {
+         this.workItemService = null;
+      }
    }
 
 }

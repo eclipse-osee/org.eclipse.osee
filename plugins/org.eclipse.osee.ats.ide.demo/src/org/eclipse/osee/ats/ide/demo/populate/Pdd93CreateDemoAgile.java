@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.demo.SprintItemData;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -353,27 +352,23 @@ public class Pdd93CreateDemoAgile {
          RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
       sprint2Art.persist("Set sort order for Sprint 2");
 
-      // Transition First Sprint to completed
-      IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-         DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
-      changes.reset("Transition Agile Sprint");
-      TransitionHelper helper =
-         new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
-
       /**
        * Setup Agile Team Story Names (this maps an assignee name to a story name for Agile Teams using stories instead
        * of assignees in kanban
        */
       changes.addAttribute(agileTeam, AtsAttributeTypes.KanbanStoryName,
          DemoUsers.Jason_Michael.getName() + ":Jason Rockstar Michael");
+      changes.execute();
 
-      if (results.isEmpty()) {
-         changes.execute();
-      } else {
-         throw new OseeStateException("Can't transition sprint to completed [%s]", results.toString());
+      // Transition First Sprint to completed
+      IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+         DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
+      TransitionHelper helper =
+         new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
+            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+      if (results.isErrors()) {
+         throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
       }
 
       // Create Feature Groups

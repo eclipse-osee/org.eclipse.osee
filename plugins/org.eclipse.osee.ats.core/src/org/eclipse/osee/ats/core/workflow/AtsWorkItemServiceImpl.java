@@ -45,6 +45,9 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.review.DecisionReview;
@@ -59,6 +62,8 @@ import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWork
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkflowHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -74,7 +79,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
-   private final AtsApi atsApi;
+   protected final AtsApi atsApi;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
    private static Set<IAtsWorkflowHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
@@ -477,6 +482,30 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
       return getWorkTypes(workItem).contains(workType);
+   }
+
+   @Override
+   public TransitionResults transition(TransitionData transData) {
+      IAtsChangeSet changes = atsApi.createChangeSet(transData.getName());
+      TransitionHelper helper = new TransitionHelper(transData, changes, atsApi);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAllAndPersist();
+      return results;
+   }
+
+   @Override
+   public TransitionResults transitionValidate(TransitionData transData) {
+      TransitionHelper helper = new TransitionHelper(transData, null, atsApi);
+      TransitionResults results = transition(helper);
+      return results;
+   }
+
+   @Override
+   public TransitionResults transition(ITransitionHelper helper) {
+      helper.setAtsApi(atsApi);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAllAndPersist();
+      return results;
    }
 
 }
