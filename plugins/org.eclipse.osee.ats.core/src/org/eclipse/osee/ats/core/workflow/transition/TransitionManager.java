@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -61,7 +60,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class TransitionManager implements IAtsTransitionManager, IExecuteListener {
+public class TransitionManager implements IExecuteListener {
 
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
@@ -87,7 +86,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       this.workItemFromStateMap = new HashMap<>();
    }
 
-   @Override
    public TransitionResults handleAll() {
       IAtsWorkItem workItem = helper.getWorkItems().iterator().next();
 
@@ -124,7 +122,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     *
     * @return Result.isFalse if failure
     */
-   @Override
    public void handleTransitionValidation(TransitionResults results) {
       boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
       try {
@@ -228,7 +225,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       }
    }
 
-   @Override
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       // Check extension points for valid transition
       for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
@@ -269,7 +265,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     *
     * @return Result.isFalse if failure or Result.isCancelled if canceled
     */
-   @Override
    public void handleTransitionUi(TransitionResults results) {
       Result result = helper.getCompleteOrCancellationReason();
       if (result.isCancelled()) {
@@ -292,7 +287,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     *
     * @return Result.isFalse if failure
     */
-   @Override
    public void handleTransition(TransitionResults results) {
       try {
          helper.getChangeSet().addExecuteListener(this);
@@ -554,7 +548,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   @Override
    public AtsUser getTransitionAsUser() {
       AtsUser user = helper.getTransitionUser();
       if (user == null) {
@@ -567,7 +560,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   @Override
    public Date getTransitionOnDate() {
       if (transitionOnDate == null) {
          return new Date();
@@ -575,7 +567,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       return transitionOnDate;
    }
 
-   @Override
    public void setTransitionOnDate(Date transitionOnDate) {
       this.transitionOnDate = transitionOnDate;
    }
@@ -584,7 +575,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   @Override
    public List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) {
       List<AtsUser> toAssignees = new ArrayList<>();
       if (toState.getStateType().isWorkingState()) {
@@ -609,7 +599,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       return toAssignees;
    }
 
-   @Override
    public TransitionResults handleAllAndPersist() {
       TransitionResults result = handleAll();
       if (result.isEmpty()) {

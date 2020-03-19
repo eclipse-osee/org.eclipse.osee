@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -616,7 +615,7 @@ public abstract class BranchRegressionTest {
       TransitionHelper helper =
          new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam), TeamState.Completed.getName(), null,
             null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       if (!results.isEmpty()) {
          Assert.fail("Complete Requirements Failed " + results.toString());

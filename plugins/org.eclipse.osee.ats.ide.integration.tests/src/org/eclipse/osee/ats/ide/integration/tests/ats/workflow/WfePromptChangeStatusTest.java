@@ -19,7 +19,6 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkState;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
@@ -119,7 +118,7 @@ public class WfePromptChangeStatusTest {
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
             null, null, changes, AtsClientService.get().getServices(), TransitionOption.None);
-      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       assertEquals("Transition should have no errors", true, results.isEmpty());
 

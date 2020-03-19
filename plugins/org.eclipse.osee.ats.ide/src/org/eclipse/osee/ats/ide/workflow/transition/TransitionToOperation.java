@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -53,7 +52,7 @@ public class TransitionToOperation extends AbstractOperation {
             changes.execute();
          }
 
-         IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+         TransitionManager transitionMgr = new TransitionManager(helper);
          results = transitionMgr.handleAllAndPersist();
          if (results.isCancelled()) {
             return;

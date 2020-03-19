@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.CancelledDateColumn;
@@ -64,7 +63,7 @@ public class CancelledDateColumnTest {
       TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(teamArt),
          TeamState.Cancelled.getName(), null, "reason", changes, AtsClientService.get().getServices(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
 

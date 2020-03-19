@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -82,7 +81,7 @@ public class DecisionUpdater {
                TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsApi,
                TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
-            IAtsTransitionManager mgr = new TransitionManager(helper);
+            TransitionManager mgr = new TransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
                rd.error(results.toString());
@@ -95,7 +94,7 @@ public class DecisionUpdater {
             TransitionHelper helper = new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
                TeamState.Completed.getName(), null, "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
-            IAtsTransitionManager mgr = new TransitionManager(helper);
+            TransitionManager mgr = new TransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
                rd.error(results.toString());

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
@@ -49,7 +48,7 @@ public class StateManagerTest {
       ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getImplementStateDef().getName(),
          Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
-      IAtsTransitionManager manager = new TransitionManager(helper);
+      TransitionManager manager = new TransitionManager(helper);
       TransitionResults results = manager.handleAllAndPersist();
       Assert.assertTrue(results.isEmpty());
 

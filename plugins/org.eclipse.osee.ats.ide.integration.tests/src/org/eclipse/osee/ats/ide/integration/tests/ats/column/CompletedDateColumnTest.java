@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
@@ -64,7 +63,7 @@ public class CompletedDateColumnTest {
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
          TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
 

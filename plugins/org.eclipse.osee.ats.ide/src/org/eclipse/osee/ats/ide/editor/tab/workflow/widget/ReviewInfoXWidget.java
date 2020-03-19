@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -321,7 +320,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
                         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+                     TransitionManager transitionMgr = new TransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));

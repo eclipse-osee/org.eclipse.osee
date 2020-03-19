@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
@@ -157,7 +156,7 @@ public class TeamWorkFlowManager {
    public Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<AtsUser> transitionToAssignees, IAtsChangeSet changes, AtsApi atsApi) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
          toState.getName(), transitionToAssignees, null, changes, atsApi, transitionOptions);
-      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;
