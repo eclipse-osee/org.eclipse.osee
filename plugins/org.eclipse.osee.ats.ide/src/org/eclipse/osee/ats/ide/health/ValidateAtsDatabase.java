@@ -33,15 +33,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -196,7 +190,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             count += artifacts.size();
 
             testAtsAttributevaluesWithPersist(artifacts);
-            testCompletedCancelledStateAttributesSetWithPersist(artifacts);
             testCompletedCancelledPercentComplete(artifacts);
             testStateAttributeDuplications(artifacts);
             testArtifactIds(artifacts);
@@ -247,79 +240,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return xResultData;
    }
 
-   public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {
-      try {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Validate ATS Database");
-         testCompletedCancelledStateAttributesSet(artifacts, transaction, results);
-         transaction.execute();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         results.log("testCompletedCancelledStateAttributesSet", "Error: Exception: " + ex.getLocalizedMessage());
-      }
-   }
-
-   public static void testCompletedCancelledStateAttributesSet(Collection<Artifact> artifacts, SkynetTransaction transaction, ValidateResults results) {
-      Date date = new Date();
-      for (Artifact artifact : artifacts) {
-         try {
-            if (artifact instanceof AbstractWorkflowArtifact) {
-               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               if (awa.isCompleted()) {
-                  IAtsStateDefinition stateDef = awa.getStateDefinition();
-                  if (stateDef == null) {
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet",
-                        String.format("Error: State Definition null for state [%s] for [%s]", awa.getCurrentStateName(),
-                           XResultDataUI.getHyperlink(artifact)));
-                  } else if (stateDef.getStateType() != StateType.Completed) {
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet",
-                        String.format("Error: awa.isCompleted()==true but State [%s] not Completed state for [%s]",
-                           stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
-                     if (stateDef.getStateType() == StateType.Working) {
-                        awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
-                        IAtsChangeSet changes =
-                           AtsClientService.get().createChangeSet(ValidateAtsDatabase.class.getSimpleName());
-                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes,
-                           AtsClientService.get().getAttributeResolver());
-                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes,
-                           AtsClientService.get().getAttributeResolver());
-                        awa.persist(transaction);
-                        results.log(artifact, "testCompletedCancelledStateAttributesSet", "FIXED");
-                     } else {
-                        results.log(artifact, "testCompletedCancelledStateAttributesSet", "MANUAL FIX REQUIRED");
-                     }
-                  } else if (awa.getCompletedBy() == null || awa.getCompletedDate() == null || !Strings.isValid(
-                     awa.getCompletedFromState())) {
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet",
-                        String.format("Error: Completed [%s] missing one or more Completed attributes for [%s]",
-                           awa.getArtifactTypeName(), XResultDataUI.getHyperlink(artifact)));
-                     fixCompletedByAttributes(transaction, awa, results);
-                  }
-               }
-               if (awa.isCancelled()) {
-                  IAtsStateDefinition stateDef = awa.getStateDefinition();
-                  if (stateDef.getStateType() != StateType.Cancelled) {
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet",
-                        String.format("Error: awa.isCancelled()==true but State [%s] not Cancelled state for [%s]",
-                           stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet", "MANUAL FIX REQUIRED");
-                  } else if (awa.getCancelledBy() == null || awa.getCancelledDate() == null || !Strings.isValid(
-                     awa.getCancelledFromState())) {
-                     results.log(artifact, "testCompletedCancelledStateAttributesSet",
-                        String.format("Error: Cancelled missing Cancelled By attribute for [%s]",
-                           XResultDataUI.getHyperlink(artifact)));
-                     fixCancelledByAttributes(transaction, awa, results);
-                  }
-               }
-            }
-         } catch (Exception ex) {
-            results.log(artifact, "testCompletedCancelledStateAttributesSet",
-               "Error: on [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
-         }
-      }
-      results.logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet");
-   }
-
    private void testCompletedCancelledPercentComplete(Collection<Artifact> artifacts) {
       Date date = new Date();
       try {
@@ -351,64 +271,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
 
       results.logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet");
-   }
-
-   private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results) {
-      IAtsLogItem cancelledItem = getCancelledLogItem(awa);
-      if (cancelledItem != null) {
-         results.log(awa, "testCompletedCancelledStateAttributesSet",
-            String.format("   FIXED to By [%s] From State [%s] Date [%s] Reason [%s]", cancelledItem.getUserId(),
-               cancelledItem.getDate(), cancelledItem.getState(), cancelledItem.getMsg()));
-         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, cancelledItem.getUserId());
-         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, cancelledItem.getDate());
-         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState, cancelledItem.getState());
-         if (Strings.isValid(cancelledItem.getMsg())) {
-            awa.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, cancelledItem.getMsg());
-         }
-         awa.persist(transaction);
-      }
-   }
-
-   private static void fixCompletedByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results) {
-      IAtsLogItem completedItem = getPreviousStateLogItem(awa);
-      if (completedItem != null) {
-         results.log(awa, "testCompletedCancelledStateAttributesSet",
-            String.format("   FIXED to By [%s] From State [%s] Date [%s]", completedItem.getUserId(),
-               completedItem.getDate(), completedItem.getState()));
-         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, completedItem.getUserId());
-         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, completedItem.getDate());
-         awa.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState, completedItem.getState());
-         awa.persist(transaction);
-      }
-   }
-
-   private static IAtsLogItem getCancelledLogItem(AbstractWorkflowArtifact awa) {
-      String currentStateName = awa.getCurrentStateName();
-      IAtsLogItem fromItem = null;
-      for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
-         if (item.getType() == LogType.StateCancelled && Strings.isValid(item.getState()) && !currentStateName.equals(
-            item.getState())) {
-            fromItem = item;
-            break;
-         }
-      }
-      if (fromItem == null) {
-         fromItem = getPreviousStateLogItem(awa);
-      }
-      return fromItem;
-   }
-
-   private static IAtsLogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa) {
-      String currentStateName = awa.getCurrentStateName();
-      IAtsLogItem fromItem = null;
-      for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
-         if (item.getType() == LogType.StateComplete && Strings.isValid(item.getState()) && !currentStateName.equals(
-            item.getState())) {
-            fromItem = item;
-            break;
-         }
-      }
-      return fromItem;
    }
 
    private void testStateAttributeDuplications(Collection<Artifact> artifacts) {
