@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -321,7 +321,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
                         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+                     IAtsTransitionManager transitionMgr = new TransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));

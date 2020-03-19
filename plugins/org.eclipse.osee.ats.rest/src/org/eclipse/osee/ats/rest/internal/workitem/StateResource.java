@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -99,7 +99,7 @@ public final class StateResource {
          TransitionHelper helper = new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState,
             workItem.getAssignees(), reason, changes, atsApi, TransitionOption.None);
          helper.setTransitionUser(transitionUser);
-         IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
+         IAtsTransitionManager mgr = new TransitionManager(helper);
          TransitionResults results = mgr.handleAll();
          if (!results.isEmpty()) {
             return RestUtil.returnInternalServerError("Transition Failed: " + results.toString());

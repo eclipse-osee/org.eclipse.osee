@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -77,7 +77,7 @@ public class AgileItemWriter {
                      newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban", changes, atsApi,
                      TransitionOption.OverrideAssigneeCheck);
                   helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
-                  IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
+                  IAtsTransitionManager mgr = new TransitionManager(helper);
                   TransitionResults results = new TransitionResults();
                   mgr.handleTransitionValidation(results);
 

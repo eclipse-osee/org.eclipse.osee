@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
@@ -194,7 +194,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                  Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, changes,
                                  AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
                                  TransitionOption.None);
-                              IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+                              IAtsTransitionManager transitionMgr = new TransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();
                               if (!results.isEmpty()) {
                                  AWorkbench.popup(String.format("Transition Error %s", results.toString()));

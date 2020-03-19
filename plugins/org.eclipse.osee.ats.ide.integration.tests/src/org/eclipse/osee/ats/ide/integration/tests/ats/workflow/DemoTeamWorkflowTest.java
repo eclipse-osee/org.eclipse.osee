@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -73,7 +73,7 @@ public class DemoTeamWorkflowTest {
       TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
@@ -82,7 +82,7 @@ public class DemoTeamWorkflowTest {
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
          AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck,
          TransitionOption.OverrideTransitionValidityCheck);
-      transitionMgr = TransitionFactory.getTransitionManager(helper);
+      transitionMgr = new TransitionManager(helper);
       results = transitionMgr.handleAllAndPersist();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 

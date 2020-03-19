@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -49,7 +49,7 @@ public class StateManagerTest {
       ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getImplementStateDef().getName(),
          Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
-      IAtsTransitionManager manager = TransitionFactory.getTransitionManager(helper);
+      IAtsTransitionManager manager = new TransitionManager(helper);
       TransitionResults results = manager.handleAllAndPersist();
       Assert.assertTrue(results.isEmpty());
 
@@ -59,7 +59,7 @@ public class StateManagerTest {
       helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getCompletedStateDef().getName(),
          Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
-      manager = TransitionFactory.getTransitionManager(helper);
+      manager = new TransitionManager(helper);
       results = manager.handleAllAndPersist();
 
       Assert.assertTrue(results.toString(), results.isEmpty());

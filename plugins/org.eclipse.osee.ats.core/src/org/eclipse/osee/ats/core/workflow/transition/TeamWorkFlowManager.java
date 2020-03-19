@@ -157,7 +157,7 @@ public class TeamWorkFlowManager {
    public Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<AtsUser> transitionToAssignees, IAtsChangeSet changes, AtsApi atsApi) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
          toState.getName(), transitionToAssignees, null, changes, atsApi, transitionOptions);
-      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;

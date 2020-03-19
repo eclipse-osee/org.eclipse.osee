@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -64,7 +64,7 @@ public class CompletedDateColumnTest {
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
          TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
 
@@ -79,7 +79,7 @@ public class CompletedDateColumnTest {
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
          AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
-      transitionMgr = TransitionFactory.getTransitionManager(helper);
+      transitionMgr = new TransitionManager(helper);
       results = transitionMgr.handleAll();
       Assert.assertTrue(results.toString(), results.isEmpty());
       changes.execute();

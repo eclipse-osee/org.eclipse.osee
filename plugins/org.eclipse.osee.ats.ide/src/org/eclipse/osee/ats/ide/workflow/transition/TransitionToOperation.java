@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -53,7 +53,7 @@ public class TransitionToOperation extends AbstractOperation {
             changes.execute();
          }
 
-         IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+         IAtsTransitionManager transitionMgr = new TransitionManager(helper);
          results = transitionMgr.handleAllAndPersist();
          if (results.isCancelled()) {
             return;

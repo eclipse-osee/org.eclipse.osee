@@ -47,8 +47,8 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -115,7 +115,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          TransitionHelper helper = new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
             DecisionReviewState.Decision.getName(), Arrays.asList(teamWf.getCreatedBy()), null, changes, atsApi,
             TransitionOption.None);
-         IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+         IAtsTransitionManager transitionMgr = new TransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {
             OseeLog.logf(AtsReviewServiceImpl.class, OseeLevel.SEVERE_POPUP,
@@ -166,7 +166,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       TransitionHelper helper =
          new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
             assignees, null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
+      IAtsTransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
 
       if (!results.isEmpty()) {
