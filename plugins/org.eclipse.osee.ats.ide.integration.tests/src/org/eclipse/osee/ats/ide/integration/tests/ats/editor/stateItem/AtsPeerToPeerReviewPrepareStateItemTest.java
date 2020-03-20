@@ -14,15 +14,15 @@ import static org.junit.Assert.assertFalse;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkflowHookIde;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -41,21 +41,21 @@ import org.junit.Test;
  */
 public class AtsPeerToPeerReviewPrepareStateItemTest {
 
-   public static PeerToPeerReviewArtifact peerRevArt;
+   public static IAtsPeerToPeerReview peerRev;
 
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
 
-      if (peerRevArt == null) {
+      if (peerRev == null) {
          IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
             AtsClientService.get().getUserService().getCurrentUser());
-         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
+         peerRev = AtsClientService.get().getReviewService().createNewPeerToPeerReview(
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), getClass().getSimpleName(), null, new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), changes);
          // Setup actionable item so don't get error that there is no parent team workflow
-         AtsClientService.get().getActionableItemService().addActionableItem(peerRevArt,
+         AtsClientService.get().getActionableItemService().addActionableItem(peerRev,
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), changes);
          changes.execute();
       }
@@ -69,7 +69,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
 
    @Test
    public void testTransitioning() {
-      Assert.assertNotNull(peerRevArt);
+      Assert.assertNotNull(peerRev);
 
       // setup fake combo that will hold values
       XComboDam decisionComboDam = new XComboDam(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName());
@@ -81,16 +81,16 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       decisionComboDam.setRequiredEntry(true);
 
       // verify enabled and required (Default)
-      Assert.assertNull(peerRevArt.getParentAWA()); // condition that causes combo to disable
+      Assert.assertNull(peerRev.getParentTeamWorkflow()); // condition that causes combo to disable
       Assert.assertTrue(decisionComboDam.getComboBox().isEnabled());
       Assert.assertTrue(decisionComboDam.isRequiredEntry());
 
       IAtsStateDefinition reviewStateDef =
-         peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
+         peerRev.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
 
       // make call to state item that should
       AtsPeerToPeerReviewPrepareWorkflowHookIde stateItem = new AtsPeerToPeerReviewPrepareWorkflowHookIde();
-      stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, peerRevArt, true);
+      stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, (Artifact) peerRev, true);
 
       // verify the decision combo has been disabled
       Assert.assertFalse(decisionComboDam.getComboBox().isEnabled());

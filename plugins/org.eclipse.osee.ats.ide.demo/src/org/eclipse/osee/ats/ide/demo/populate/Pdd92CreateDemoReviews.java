@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
@@ -28,8 +29,6 @@ import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -97,12 +96,14 @@ public class Pdd92CreateDemoReviews {
       TeamWorkFlowArtifact secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
 
       // Create a PeerToPeer review and leave in Prepare state
-      PeerToPeerReviewArtifact reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt,
-         "Peer Review first set of code changes", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
+      PeerToPeerReviewArtifact reviewArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
+            "Peer Review first set of code changes", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
 
       // Create a PeerToPeer review and transition to Review state
-      reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
-         firstCodeArt.getStateMgr().getCurrentStateName(), changes);
+      reviewArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
+            "Peer Review algorithm used in code", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
@@ -112,18 +113,19 @@ public class Pdd92CreateDemoReviews {
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay), 2.0, true));
-      Result result = PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Review, roles, null,
-         AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      Result result = AtsClientService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Review,
+         roles, null, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
       changes.add(reviewArt);
 
       // Create a PeerToPeer review and transition to Completed
-      reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
-         secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
-         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(UserManager.getUser(DemoUsers.Kay_Jones)),
-         changes);
+      reviewArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,
+            "Review new logic", secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
+            AtsClientService.get().getUserServiceClient().getUserFromOseeUser(UserManager.getUser(DemoUsers.Kay_Jones)),
+            changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
@@ -158,11 +160,11 @@ public class Pdd92CreateDemoReviews {
       changes.execute();
 
       changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
-      PeerToPeerReviewManager.setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
+      AtsClientService.get().getReviewService().setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
       changes.execute();
 
-      result = PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
-         AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      result = AtsClientService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles,
+         defects, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isTrue()) {
          changes.add(reviewArt);
       }

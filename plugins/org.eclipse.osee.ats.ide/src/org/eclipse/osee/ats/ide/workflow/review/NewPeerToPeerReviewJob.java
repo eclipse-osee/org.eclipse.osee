@@ -67,10 +67,12 @@ public class NewPeerToPeerReviewJob extends Job {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("New Peer To Peer Review");
          PeerToPeerReviewArtifact peerArt = null;
          if (teamParent != null) {
-            peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, changes);
+            peerArt = (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(
+               teamParent, reviewTitle, againstState, changes);
          } else {
-            peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(actionableItem, reviewTitle, null, new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), changes);
+            peerArt = (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(
+               actionableItem, reviewTitle, null, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
+               changes);
          }
          if (blockType != null) {
             changes.setSoleAttributeValue((ArtifactId) peerArt, AtsAttributeTypes.ReviewBlocks, blockType.name());

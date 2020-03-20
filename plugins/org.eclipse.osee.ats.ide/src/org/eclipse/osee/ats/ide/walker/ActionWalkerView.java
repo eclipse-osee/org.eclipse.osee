@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.ide.walker.action.ActionWalkerRefreshAction;
 import org.eclipse.osee.ats.ide.walker.action.ActionWalkerShowAllAction;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -157,7 +156,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          } else if (art.isOfType(AtsArtifactTypes.AgileSprint)) {
             artifact = art;
          } else if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            if (!PeerToPeerReviewManager.isStandAlongReview(art)) {
+            if (!AtsClientService.get().getReviewService().isStandAloneReview(art)) {
                Artifact parentArtifact = ((AbstractWorkflowArtifact) art).getParentAWA();
                if (parentArtifact != null && parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
@@ -186,7 +185,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    private void setTooltips() {
       try {
-         if (!activeAwa.isOfType(AtsArtifactTypes.Goal) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
+         if (!activeAwa.isOfType(
+            AtsArtifactTypes.Goal) && !AtsClientService.get().getReviewService().isStandAloneReview(activeAwa)) {
             ActionArtifact actionArt = activeAwa.getParentActionArtifact();
             if (actionArt != null) {
                for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {

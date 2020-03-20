@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectSeverityToImage;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -84,13 +84,16 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
          return String.valueOf(userRole.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
-         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         ReviewDefectManager defectMgr =
+            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsClientService.get());
          return defectMgr.getNumMajor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
-         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         ReviewDefectManager defectMgr =
+            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsClientService.get());
          return defectMgr.getNumMinor(user) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
-         ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
+         ReviewDefectManager defectMgr =
+            new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt(), AtsClientService.get());
          return defectMgr.getNumIssues(user) + "";
       }
       return "unhandled column";

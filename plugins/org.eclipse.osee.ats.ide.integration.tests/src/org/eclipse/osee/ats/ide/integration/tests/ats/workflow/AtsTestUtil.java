@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -57,8 +58,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinition
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
@@ -95,7 +94,7 @@ public class AtsTestUtil {
    private static TeamDefinition teamDef = null;
    private static Version verArt1 = null, verArt2 = null, verArt3 = null, verArt4 = null;
    private static DecisionReviewArtifact decRevArt = null;
-   private static PeerToPeerReviewArtifact peerRevArt = null;
+   private static IAtsPeerToPeerReview peerRev = null;
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
    private static ActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
@@ -127,7 +126,7 @@ public class AtsTestUtil {
       validateObjectsNull("verArt3", verArt3);
       validateObjectsNull("verArt4", verArt4);
       validateObjectsNull("decRevArt", decRevArt);
-      validateObjectsNull("peerRevArt", peerRevArt);
+      validateObjectsNull("peerRevArt", peerRev);
       validateObjectsNull("taskArt1", taskArtWf1);
       validateObjectsNull("taskArt2", taskArtWf2);
       validateObjectsNull("testAi", testAi);
@@ -243,7 +242,7 @@ public class AtsTestUtil {
       verArt3 = null;
       verArt4 = null;
       decRevArt = null;
-      peerRevArt = null;
+      peerRev = null;
    }
 
    private static String getTitle(String objectName, String postFixName) {
@@ -458,7 +457,7 @@ public class AtsTestUtil {
 
       IAtsChangeSet changes =
          AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
-      delete(changes, peerRevArt);
+      delete(changes, (Artifact) peerRev);
       delete(changes, decRevArt);
       delete(changes, taskArtWf1);
       delete(changes, taskArtWf2);
@@ -608,19 +607,19 @@ public class AtsTestUtil {
       }
    }
 
-   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
+   public static IAtsPeerToPeerReview getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
       ensureLoaded();
       try {
-         if (peerRevArt == null) {
-            peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
+         if (peerRev == null) {
+            peerRev = AtsClientService.get().getReviewService().createNewPeerToPeerReview(
                AtsClientService.get().getWorkDefinitionService().getDefaultPeerToPeerWorkflowDefinition(), teamWf,
                AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
-            peerRevArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
+            changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
       } catch (OseeCoreException ex) {
          throw new OseeWrappedException(ex);
       }
-      return peerRevArt;
+      return peerRev;
    }
 
    public static TeamWorkFlowArtifact getTeamWf2() {

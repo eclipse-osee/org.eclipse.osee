@@ -509,8 +509,8 @@ public class TransitionManagerTest {
 
       // validate that can transition cause review completed
       changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      Result result = AtsClientService.get().getReviewService().transitionDecisionTo(decArt, DecisionReviewState.Completed,
-         AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      Result result = AtsClientService.get().getReviewService().transitionDecisionTo(decArt,
+         DecisionReviewState.Completed, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       Assert.assertTrue(result.getText(), result.isTrue());
       changes.execute();
       results.clear();
@@ -678,7 +678,8 @@ public class TransitionManagerTest {
       // create a peer to peer review
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       PeerToPeerReviewArtifact peerReview =
-         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Transition, AtsTestUtilState.Analyze, changes);
+         (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Transition,
+            AtsTestUtilState.Analyze, changes);
       changes.relate(teamArt, AtsRelationTypes.TeamWorkflowToReview_Review, peerReview);
       changes.execute();
 

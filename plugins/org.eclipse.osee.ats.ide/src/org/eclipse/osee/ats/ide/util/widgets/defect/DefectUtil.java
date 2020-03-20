@@ -14,16 +14,13 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -50,8 +47,8 @@ public class DefectUtil {
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add Review Defect");
+
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Defect");
             ReviewDefectItem item = new ReviewDefectItem();
             item.setUserId(AtsClientService.get().getUserService().getCurrentUserId());
             item.setDescription(ed.getEntry());
@@ -63,9 +60,7 @@ public class DefectUtil {
             }
             ReviewDefectManager defectManager = getDefectManager();
             defectManager.addOrUpdateDefectItem(item);
-            defectManager.saveToArtifact(getArtifact());
-            transaction.addArtifact(getArtifact());
-            transaction.execute();
+            defectManager.saveToArtifact(review, changes);
             refreshActionHandler.refreshActionHandler();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -74,11 +69,7 @@ public class DefectUtil {
    }
 
    private ReviewDefectManager getDefectManager() {
-      return new ReviewDefectManager((PeerToPeerReviewArtifact) review.getStoreObject());
-   }
-
-   private Artifact getArtifact() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(review);
+      return new ReviewDefectManager(review.getStoreObject(), AtsClientService.get());
    }
 
    public void handleDeleteDefect(boolean persist) {
@@ -96,15 +87,13 @@ public class DefectUtil {
          "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Delete Review Defects");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Review Defects");
             ReviewDefectManager defectManager = getDefectManager();
             for (ReviewDefectItem defectItem : items) {
-               defectManager.removeDefectItem(defectItem, persist, transaction);
-               defectManager.saveToArtifact(getArtifact());
+               defectManager.removeDefectItem(defectItem);
+               defectManager.saveToArtifact(review, changes);
             }
-            transaction.addArtifact(getArtifact());
-            transaction.execute();
+            changes.executeIfNeeded();
             refreshActionHandler.refreshActionHandler();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -118,17 +107,15 @@ public class DefectUtil {
             "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Import Review Defects");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import Review Defects");
             ReviewDefectManager defectManager = getDefectManager();
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (Strings.isValid(str)) {
-                  defectManager.addDefectItem(str, false, transaction);
+                  defectManager.addDefectItem(str);
                }
             }
-            transaction.addArtifact(getArtifact());
-            transaction.execute();
+            changes.execute();
             refreshActionHandler.refreshActionHandler();
          }
       } catch (Exception ex) {

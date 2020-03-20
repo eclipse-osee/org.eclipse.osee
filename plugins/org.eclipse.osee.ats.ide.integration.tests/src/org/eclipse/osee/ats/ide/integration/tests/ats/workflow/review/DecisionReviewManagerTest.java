@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -33,7 +34,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Test for {@link DecisionReviewManager}
+ * Test for {@link AtsReviewServiceImpl}
  *
  * @author Donald G. Dunne
  */

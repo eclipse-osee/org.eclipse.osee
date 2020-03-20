@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.workflow.review.defect;
+package org.eclipse.osee.ats.core.review;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,20 +16,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IValueProvider;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.validate.ArtifactValueProvider;
+import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -44,9 +45,11 @@ public class ReviewDefectManager {
          Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private final IValueProvider valueProvider;
    private Set<ReviewDefectItem> defectItems = null;
+   private AtsApi atsApi;
 
-   public ReviewDefectManager(Artifact artifact) {
-      this.valueProvider = new ArtifactValueProvider(artifact, REVIEW_STORAGE_TYPE);
+   public ReviewDefectManager(ArtifactToken artifact, AtsApi atsApi) {
+      this.atsApi = atsApi;
+      this.valueProvider = new ArtifactValueProvider(artifact, REVIEW_STORAGE_TYPE, atsApi);
    }
 
    public ReviewDefectManager(IValueProvider valueProvider) {
@@ -63,8 +66,8 @@ public class ReviewDefectManager {
       return sb.toString();
    }
 
-   public static Set<ReviewDefectItem> getDefectItems(Artifact artifact) {
-      return new ReviewDefectManager(artifact).getDefectItems();
+   public static Set<ReviewDefectItem> getDefectItems(ArtifactToken artifact, AtsApi atsApi) {
+      return new ReviewDefectManager(artifact, atsApi).getDefectItems();
    }
 
    public void ensureLoaded() {
@@ -145,42 +148,42 @@ public class ReviewDefectManager {
       return x;
    }
 
-   private List<ReviewDefectItem> getStoredDefectItems(Artifact artifact) {
+   private List<ReviewDefectItem> getStoredDefectItems(IAtsPeerToPeerReview peerRev) {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<ReviewDefectItem> storedDefectItems = new ArrayList<>();
-      for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
          ReviewDefectItem storedRole = new ReviewDefectItem((String) attr.getValue());
          storedDefectItems.add(storedRole);
       }
       return storedDefectItems;
    }
 
-   public void saveToArtifact(Artifact artifact) {
+   public void saveToArtifact(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
       // Change existing ones
-      for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
          ReviewDefectItem storedDefect = new ReviewDefectItem((String) attr.getValue());
          for (ReviewDefectItem defectItem : getDefectItems()) {
             if (defectItem.equals(storedDefect)) {
-               attr.setFromString(AXml.addTagData(DEFECT_ITEM_TAG, defectItem.toXml()));
+               changes.setAttribute(peerRev, attr, AXml.addTagData(DEFECT_ITEM_TAG, defectItem.toXml()));
             }
          }
       }
-      List<ReviewDefectItem> storedDefectITems = getStoredDefectItems(artifact);
+      List<ReviewDefectItem> storedDefectItems = getStoredDefectItems(peerRev);
 
       // Remove deleted ones; items in dbdefectItems that are not in defectItems
       for (ReviewDefectItem delItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-         storedDefectITems, getDefectItems())) {
-         for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
+         storedDefectItems, getDefectItems())) {
+         for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
             ReviewDefectItem storedItem = new ReviewDefectItem((String) attr.getValue());
             if (storedItem.equals(delItem)) {
-               attr.delete();
+               changes.deleteAttribute(peerRev, attr);
             }
          }
       }
       // Add new ones: items in defectItems that are not in dbdefectItems
       for (ReviewDefectItem newDefect : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
-         getDefectItems(), storedDefectITems)) {
-         artifact.addAttributeFromString(REVIEW_STORAGE_TYPE, AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml()));
+         getDefectItems(), storedDefectItems)) {
+         changes.addAttribute(peerRev, REVIEW_STORAGE_TYPE, AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml()));
       }
    }
 
@@ -198,14 +201,14 @@ public class ReviewDefectManager {
       }
    }
 
-   public void removeDefectItem(ReviewDefectItem defectItem, boolean persist, SkynetTransaction transaction) {
+   public void removeDefectItem(ReviewDefectItem defectItem) {
       Set<ReviewDefectItem> defectItems = getDefectItems();
       defectItems.remove(defectItem);
    }
 
-   public void addDefectItem(String description, boolean persist, SkynetTransaction transaction) {
+   public void addDefectItem(String description) {
       ReviewDefectItem item = new ReviewDefectItem();
-      item.setUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      item.setUserId(atsApi.getUserService().getCurrentUserId());
       item.setDescription(description);
       addOrUpdateDefectItem(item);
    }
@@ -216,12 +219,12 @@ public class ReviewDefectManager {
          "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Id</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
          String userId = item.getUserId();
-         AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+         AtsUser user = atsApi.getUserService().getUserById(userId);
          builder.append("<TR>");
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user != null && user.equals(AtsClientService.get().getUserService().getCurrentUser())) {
+         if (user != null && user.equals(atsApi.getUserService().getCurrentUser())) {
             builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
          } else {
             builder.append("<TD>NONE</TD>");

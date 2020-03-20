@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -50,7 +50,8 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
          // setup fake review artifact with decision options set
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-         peerRevArt = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
+         peerRevArt = (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
+            AtsTestUtilState.Analyze, changes);
          changes.execute();
       }
    }

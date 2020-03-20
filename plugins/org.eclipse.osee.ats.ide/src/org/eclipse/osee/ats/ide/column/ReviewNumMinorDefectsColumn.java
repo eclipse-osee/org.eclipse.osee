@@ -14,9 +14,10 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -52,7 +53,8 @@ public class ReviewNumMinorDefectsColumn extends XViewerAtsColumn implements IXV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof PeerToPeerReviewArtifact) {
-            return String.valueOf(new ReviewDefectManager((PeerToPeerReviewArtifact) element).getNumMinor());
+            return String.valueOf(
+               new ReviewDefectManager((PeerToPeerReviewArtifact) element, AtsClientService.get()).getNumMinor());
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);

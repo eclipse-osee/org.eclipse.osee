@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+AtsClientService.get().getReviewService() * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.column.ReviewAuthorColumn;
 import org.eclipse.osee.ats.ide.column.ReviewModeratorColumn;
 import org.eclipse.osee.ats.ide.column.ReviewNumIssuesColumn;
@@ -32,8 +33,6 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -62,8 +61,9 @@ public class PeerToPeerReviewColumnsTest {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(),
             changes).getStoreObject();
-      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
-         getClass().getSimpleName(), teamArt.getStateMgr().getCurrentStateName(), changes);
+      PeerToPeerReviewArtifact peerArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+            getClass().getSimpleName(), teamArt.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
 
@@ -77,7 +77,7 @@ public class PeerToPeerReviewColumnsTest {
       changes.clear();
       ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(),
          Severity.Issue, Disposition.None, InjectionActivity.Code, "description", "resolution", "location", new Date());
-      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt);
+      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt, AtsClientService.get());
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Issue,
          Disposition.None, InjectionActivity.Code, "description 2", "resolution", "location", new Date());
@@ -100,7 +100,7 @@ public class PeerToPeerReviewColumnsTest {
       item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Minor,
          Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      defectManager.saveToArtifact(peerArt);
+      defectManager.saveToArtifact(peerArt, changes);
 
       UserRole role =
          new UserRole(Role.Author, AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
@@ -29,8 +30,6 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -105,8 +104,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal) {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add the Improvement",
          "Description", ChangeType.Improvement, "4", false, null,
-         AtsClientService.get().getActionableItemService().getActionableItems(Arrays.asList("Network")),
-         createdDate, createdBy, null, changes);
+         AtsClientService.get().getActionableItemService().getActionableItems(Arrays.asList("Network")), createdDate,
+         createdBy, null, changes);
       facilitiesGoal.addMember(action.getActionArt());
       changes.add(facilitiesGoal);
    }
@@ -117,8 +116,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
          ActionResult action = AtsClientService.get().getActionFactory().createAction(null,
             "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4", false, null,
-            AtsClientService.get().getActionableItemService().getActionableItems(Arrays.asList(msaTool)),
-            createdDate, createdBy, null, changes);
+            AtsClientService.get().getActionableItemService().getActionableItems(Arrays.asList(msaTool)), createdDate,
+            createdBy, null, changes);
          facilitiesGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
          teamArt = AtsClientService.get().getWorkItemService().getFirstTeam(action);
          NewTaskData newTaskData = NewTaskDataFactory.get("createAction456", createdBy, teamArt);
@@ -144,36 +143,35 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
-      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Remove Workflow button",
-         "Description", ChangeType.Problem, "4", false, null,
-         AtsClientService.get().getActionableItemService().getActionableItems(
-            Arrays.asList("SAW Code", "CIS Requirements")),
-         createdDate, createdBy, null, changes);
+      ActionResult action =
+         AtsClientService.get().getActionFactory().createAction(null, "Remove Workflow button", "Description",
+            ChangeType.Problem, "4", false, null, AtsClientService.get().getActionableItemService().getActionableItems(
+               Arrays.asList("SAW Code", "CIS Requirements")),
+            createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
       cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
-      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add CDB Check Signals",
-         "Description", ChangeType.Problem, "4", false, null,
-         AtsClientService.get().getActionableItemService().getActionableItems(
-            Arrays.asList("SAW Code", "CIS Requirements")),
-         createdDate, createdBy, null, changes);
+      ActionResult action =
+         AtsClientService.get().getActionFactory().createAction(null, "Add CDB Check Signals", "Description",
+            ChangeType.Problem, "4", false, null, AtsClientService.get().getActionableItemService().getActionableItems(
+               Arrays.asList("SAW Code", "CIS Requirements")),
+            createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
       cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
    private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) {
-      ActionResult action =
-         AtsClientService.get().getActionFactory().createAction(null, "Fix this model", "Description",
-            ChangeType.Problem, "2", false, null, AtsClientService.get().getActionableItemService().getActionableItems(
-               Arrays.asList("SAW Code")),
-            createdDate, createdBy, null, changes);
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Fix this model",
+         "Description", ChangeType.Problem, "2", false, null,
+         AtsClientService.get().getActionableItemService().getActionableItems(Arrays.asList("SAW Code")), createdDate,
+         createdBy, null, changes);
       sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
       IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getFirstTeam(action);
-      PeerToPeerReviewArtifact peerReviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
+      IAtsPeerToPeerReview peerReviewArt = AtsClientService.get().getReviewService().createNewPeerToPeerReview(
          (TeamWorkFlowArtifact) teamWf.getStoreObject(), "New Review", "Implement", changes);
-      sawCodeGoal.addMember(peerReviewArt);
+      sawCodeGoal.addMember(peerReviewArt.getStoreObject());
       return teamWf;
    }
 }

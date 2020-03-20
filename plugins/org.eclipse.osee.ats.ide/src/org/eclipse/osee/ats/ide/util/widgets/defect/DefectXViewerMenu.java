@@ -27,16 +27,14 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -325,20 +323,15 @@ public class DefectXViewerMenu {
    }
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
-      Artifact revewArt = AtsClientService.get().getQueryServiceClient().getArtifact(review);
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(revewArt.getBranch(), "Modify Review Defects");
-      ReviewDefectManager defectManager =
-         new ReviewDefectManager(AtsClientService.get().getQueryServiceClient().getArtifact(review));
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Defects");
+      ReviewDefectManager defectManager = new ReviewDefectManager(
+         AtsClientService.get().getQueryServiceClient().getArtifact(review), AtsClientService.get());
       for (ReviewDefectItem defectItem : defectItems) {
          defectManager.addOrUpdateDefectItem(defectItem);
          defectXViewer.update(defectItem, null);
       }
-      defectManager.saveToArtifact(revewArt);
-      if (revewArt.isDirty()) {
-         transaction.addArtifact(revewArt);
-         transaction.execute();
-      }
+      defectManager.saveToArtifact(review, changes);
+      changes.executeIfNeeded();
       return true;
    }
 

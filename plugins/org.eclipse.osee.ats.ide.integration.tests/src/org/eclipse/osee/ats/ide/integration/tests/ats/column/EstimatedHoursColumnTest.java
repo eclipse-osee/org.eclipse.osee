@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,8 +54,9 @@ public class EstimatedHoursColumnTest {
       IAtsAction action = teamArt1.getParentAction();
       TeamWorkFlowArtifact teamArt2 = (TeamWorkFlowArtifact) DemoTestUtil.addTeamWorkflow(action,
          EstimatedHoursColumnTest.class.getSimpleName(), changes).getStoreObject();
-      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1,
-         getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
+      PeerToPeerReviewArtifact peerArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt1,
+            getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
 

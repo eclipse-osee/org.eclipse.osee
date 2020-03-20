@@ -59,8 +59,6 @@ public interface IAtsReviewService {
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
 
-   boolean isStandAloneReview(IAtsPeerToPeerReview peerRev);
-
    IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
    IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
@@ -76,5 +74,15 @@ public interface IAtsReviewService {
    Collection<IAtsReviewHook> getReviewHooks();
 
    Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes);
+
+   String getDefaultReviewTitle(IAtsTeamWorkflow teamWf);
+
+   Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes);
+
+   Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
+
+   Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
+
+   boolean isStandAloneReview(Object object);
 
 }

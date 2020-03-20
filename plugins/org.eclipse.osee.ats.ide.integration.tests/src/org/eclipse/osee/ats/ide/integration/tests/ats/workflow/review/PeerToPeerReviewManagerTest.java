@@ -14,12 +14,12 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -33,11 +33,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
- * Test unit for {@link PeerToPeerReviewManager}
+ * Test unit for {@link AtsReviewServiceImpl}
  *
  * @author Donald G. Dunne
  */
-public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
+public class PeerToPeerReviewManagerTest {
 
    @BeforeClass
    @AfterClass
@@ -63,9 +63,10 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
-      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-         AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), changes);
+      PeerToPeerReviewArtifact peerArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+            reviewTitle, AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -89,8 +90,9 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
-      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-         AtsTestUtil.getAnalyzeStateDef().getName(), changes);
+      PeerToPeerReviewArtifact peerArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+            reviewTitle, AtsTestUtil.getAnalyzeStateDef().getName(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -113,8 +115,9 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + testAi;
 
-      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(testAi, reviewTitle, null,
-         new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+      PeerToPeerReviewArtifact peerArt =
+         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(testAi,
+            reviewTitle, null, new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);

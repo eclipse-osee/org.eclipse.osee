@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.core.review.ReviewDefectError;
 import org.eclipse.osee.ats.ide.workflow.review.defect.AtsXDefectValidator;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectError;
 import org.junit.Assert;
 import org.mockito.Mock;
 

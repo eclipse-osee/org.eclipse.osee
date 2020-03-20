@@ -30,6 +30,10 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -269,8 +273,12 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public boolean isStandAloneReview(IAtsPeerToPeerReview peerRev) {
-      return atsApi.getAttributeResolver().getAttributeCount(peerRev, AtsAttributeTypes.ActionableItemReference) > 0;
+   public boolean isStandAloneReview(Object obj) {
+      if (obj instanceof IAtsPeerToPeerReview) {
+         return atsApi.getAttributeResolver().getAttributeCount((IAtsPeerToPeerReview) obj,
+            AtsAttributeTypes.ActionableItemReference) > 0;
+      }
+      return false;
    }
 
    @Override
@@ -392,7 +400,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          if (result.isFalse()) {
             return result;
          }
-         result = transitionDecisionToState(toState.getStateType(), popup, DecisionReviewState.Decision, decRev, user, changes);
+         result = transitionDecisionToState(toState.getStateType(), popup, DecisionReviewState.Decision, decRev, user,
+            changes);
          if (result.isFalse()) {
             return result;
          }
@@ -451,6 +460,101 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       changes.setSoleAttributeValue(decRev, AtsAttributeTypes.Decision, decision ? "Yes" : "No");
 
       decRev.getStateMgr().updateMetrics(decRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         atsApi.getUserService().getCurrentUser());
+      return Result.TrueResult;
+   }
+
+   @Override
+   public String getDefaultReviewTitle(IAtsTeamWorkflow teamWf) {
+      return atsApi.getReviewService().getDefaultPeerReviewTitle(teamWf);
+   }
+
+   /**
+    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
+    * for things such as developmental testing and demos.
+    *
+    * @param user User to transition to OR null if should use user of current state
+    */
+   @Override
+   public Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes) {
+      Result result = setPrepareStateData(popup, peerRev, roles, "DoThis.java", 100, .2, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+      result = transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, peerRev,
+         PeerToPeerReviewState.Review, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+      if (toState == PeerToPeerReviewState.Review) {
+         return Result.TrueResult;
+      }
+
+      result = setReviewStateData(peerRev, roles, defects, 100, .2, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+
+      result = transitionToState(PeerToPeerReviewState.Completed.getStateType(), popup, peerRev,
+         PeerToPeerReviewState.Completed, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+      return Result.TrueResult;
+   }
+
+   private Result transitionToState(StateType StateType, boolean popup, IAtsPeerToPeerReview peerRev, IStateToken toState, IAtsChangeSet changes) {
+      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(peerRev),
+         toState.getName(), Arrays.asList(peerRev.getStateMgr().getAssignees().iterator().next()), null, changes,
+         atsApi, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAll();
+      if (results.isEmpty()) {
+         return Result.TrueResult;
+      }
+      return new Result("Error transitioning [%s]", results);
+   }
+
+   @Override
+   public Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+      if (!peerRev.isInState(PeerToPeerReviewState.Prepare)) {
+         Result result = new Result("Action not in Prepare state");
+         if (result.isFalse() && popup) {
+            return result;
+         }
+
+      }
+      if (roles != null) {
+         IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
+         for (UserRole role : roles) {
+            roleMgr.addOrUpdateUserRole(role);
+         }
+         roleMgr.saveToArtifact(changes);
+      }
+      changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.Location, reviewMaterials);
+      changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
+      peerRev.getStateMgr().updateMetrics(peerRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         atsApi.getUserService().getCurrentUser());
+      return Result.TrueResult;
+   }
+
+   @Override
+   public Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+      if (roles != null) {
+         IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
+         for (UserRole role : roles) {
+            roleMgr.addOrUpdateUserRole(role);
+         }
+         roleMgr.saveToArtifact(changes);
+      }
+      if (defects != null) {
+         ReviewDefectManager defectManager = new ReviewDefectManager(peerRev.getArtifactToken(), atsApi);
+         for (ReviewDefectItem defect : defects) {
+            defectManager.addOrUpdateDefectItem(defect);
+         }
+         defectManager.saveToArtifact(peerRev, changes);
+      }
+      peerRev.getStateMgr().updateMetrics(peerRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
          atsApi.getUserService().getCurrentUser());
       return Result.TrueResult;
    }

@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.NewDecisionReviewJob;
 import org.eclipse.osee.ats.ide.workflow.review.NewPeerReviewDialog;
 import org.eclipse.osee.ats.ide.workflow.review.NewPeerToPeerReviewJob;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -176,7 +175,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      new NewPeerReviewDialog("Add Peer to Peer Review", "Enter Title and Select Review Type.",
                         AtsClientService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()),
                         forState.getName(), null);
-                  dialog.setReviewTitle(PeerToPeerReviewManager.getDefaultReviewTitle(teamArt));
+                  dialog.setReviewTitle(AtsClientService.get().getReviewService().getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");

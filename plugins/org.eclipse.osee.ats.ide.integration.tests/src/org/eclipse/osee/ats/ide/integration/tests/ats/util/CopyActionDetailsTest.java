@@ -72,8 +72,9 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test04GetDetailsStringForPeerReview() {
-      PeerToPeerReviewArtifact review = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
-         AtsTestUtilState.Analyze, AtsClientService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
+      PeerToPeerReviewArtifact review =
+         (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze,
+            AtsClientService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review, AtsClientService.get()).getDetailsString();
       assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());

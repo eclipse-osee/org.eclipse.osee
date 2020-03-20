@@ -12,7 +12,8 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+
 
 /**
  * @author Donald G. Dunne
