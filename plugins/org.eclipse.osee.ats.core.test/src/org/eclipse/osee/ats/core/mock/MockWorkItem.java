@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -256,5 +257,10 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public AtsApi getAtsApi() {
       return null;
+   }
+
+   @Override
+   public boolean isInState(IStateToken state) {
+      return false;
    }
 }

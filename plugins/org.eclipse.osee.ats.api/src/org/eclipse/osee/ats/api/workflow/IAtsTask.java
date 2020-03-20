@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -149,6 +150,11 @@ public interface IAtsTask extends IAtsWorkItem {
          @Override
          public AtsApi getAtsApi() {
             return null;
+         }
+
+         @Override
+         public boolean isInState(IStateToken state) {
+            return false;
          }
 
       }

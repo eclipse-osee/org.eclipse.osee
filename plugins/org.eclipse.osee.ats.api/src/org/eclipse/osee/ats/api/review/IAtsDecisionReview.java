@@ -14,5 +14,6 @@ package org.eclipse.osee.ats.api.review;
  * @author Donald G. Dunne
  */
 public interface IAtsDecisionReview extends IAtsAbstractReview {
+
    // do nothing
 }

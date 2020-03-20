@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -44,8 +45,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransit
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -510,7 +509,7 @@ public class TransitionManagerTest {
 
       // validate that can transition cause review completed
       changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      Result result = DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed,
+      Result result = AtsClientService.get().getReviewService().transitionDecisionTo(decArt, DecisionReviewState.Completed,
          AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       Assert.assertTrue(result.getText(), result.isTrue());
       changes.execute();

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
+import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -73,5 +74,7 @@ public interface IAtsReviewService {
    ReviewBlockType getReviewBlockType(IAtsAbstractReview review);
 
    Collection<IAtsReviewHook> getReviewHooks();
+
+   Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes);
 
 }

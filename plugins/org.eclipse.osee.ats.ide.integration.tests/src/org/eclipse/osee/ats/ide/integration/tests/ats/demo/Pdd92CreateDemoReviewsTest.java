@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd92CreateDemoReviews;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -20,7 +21,6 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;

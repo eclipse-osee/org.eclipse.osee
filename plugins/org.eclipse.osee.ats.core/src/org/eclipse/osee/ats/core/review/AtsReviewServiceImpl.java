@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -374,6 +375,84 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public Set<IAtsReviewHook> getReviewHooks() {
       return reviewHooks;
+   }
+
+   /**
+    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
+    * transitioning for things such as developmental testing and demos.
+    *
+    * @param user User to transition to OR null if should use user of current state
+    */
+   @Override
+   public Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes) {
+      Result result = Result.TrueResult;
+      // If in Prepare state, set data and transition to Decision
+      if (decRev.isInState(DecisionReviewState.Prepare)) {
+         result = setDecisionPrepareStateData(popup, decRev, 100, 3, .2, changes);
+         if (result.isFalse()) {
+            return result;
+         }
+         result = transitionDecisionToState(toState.getStateType(), popup, DecisionReviewState.Decision, decRev, user, changes);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+      if (toState == DecisionReviewState.Decision) {
+         return Result.TrueResult;
+      }
+
+      // If desired to transition to follow-up, then decision is false
+      boolean decision = toState != DecisionReviewState.Followup;
+
+      result = setDecisionStateData(popup, decRev, decision, 100, .2, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+
+      result = transitionDecisionToState(toState.getStateType(), popup, toState, decRev, user, changes);
+      if (result.isFalse()) {
+         return result;
+      }
+      return Result.TrueResult;
+   }
+
+   public Result setDecisionPrepareStateData(boolean popup, IAtsDecisionReview decRev, int statePercentComplete, double estimateHours, double stateHoursSpent, IAtsChangeSet changes) {
+      if (!decRev.isInState(DecisionReviewState.Prepare)) {
+         Result result = new Result("Action not in Prepare state");
+         if (result.isFalse() && popup) {
+            return result;
+         }
+      }
+      changes.setSoleAttributeValue(decRev, AtsAttributeTypes.EstimatedHours, estimateHours);
+      decRev.getStateMgr().updateMetrics(decRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         atsApi.getUserService().getCurrentUser());
+      return Result.TrueResult;
+   }
+
+   public Result transitionDecisionToState(StateType StateType, boolean popup, IStateToken toState, IAtsDecisionReview decRev, AtsUser user, IAtsChangeSet changes) {
+      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(decRev),
+         toState.getName(), Arrays.asList(user == null ? decRev.getStateMgr().getAssignees().iterator().next() : user),
+         null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleAll();
+      if (results.isEmpty()) {
+         return Result.TrueResult;
+      }
+      return new Result("Transition Error %s", results.toString());
+   }
+
+   public Result setDecisionStateData(boolean popup, IAtsDecisionReview decRev, boolean decision, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+      if (!decRev.isInState(DecisionReviewState.Decision)) {
+         Result result = new Result("Action not in Decision state");
+         if (result.isFalse() && popup) {
+            return result;
+         }
+      }
+      changes.setSoleAttributeValue(decRev, AtsAttributeTypes.Decision, decision ? "Yes" : "No");
+
+      decRev.getStateMgr().updateMetrics(decRev.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         atsApi.getUserService().getCurrentUser());
+      return Result.TrueResult;
    }
 
 }

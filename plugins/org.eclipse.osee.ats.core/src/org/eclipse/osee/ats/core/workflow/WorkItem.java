@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -279,4 +280,10 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       atsLog = null;
       atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
    }
+
+   @Override
+   public boolean isInState(IStateToken state) {
+      return getStateMgr().getCurrentState().getName().equals(state.getName());
+   }
+
 }

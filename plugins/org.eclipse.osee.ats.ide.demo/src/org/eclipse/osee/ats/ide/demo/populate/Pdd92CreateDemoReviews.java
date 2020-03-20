@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
@@ -26,8 +27,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewManager;
-import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewState;
@@ -63,8 +62,8 @@ public class Pdd92CreateDemoReviews {
       // Create a Decision review and transition to ReWork
       IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(
          DemoUtil.getButtonWDoesntWorkOnSituationPageWf(), true, createdDate, createdBy, changes);
-      Result result = DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
-         DecisionReviewState.Followup, createdBy, false, changes);
+      Result result = AtsClientService.get().getReviewService().transitionDecisionTo(
+         (DecisionReviewArtifact) review.getStoreObject(), DecisionReviewState.Followup, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
@@ -73,7 +72,7 @@ public class Pdd92CreateDemoReviews {
       // Create a Decision review and transition to Completed
       review = AtsClientService.get().getReviewService().createValidateReview(
          DemoUtil.getProblemInDiagramTree_TeamWfWf(), true, createdDate, createdBy, changes);
-      DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
+      AtsClientService.get().getReviewService().transitionDecisionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
