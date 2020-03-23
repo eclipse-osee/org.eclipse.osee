@@ -295,7 +295,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                   // Save widget data to artifact
                   workFlowTab.saveXWidgetToArtifact();
                   workItem.save(changes);
-                  changes.execute();
+                  changes.executeIfNeeded();
                   if (saveListener != null) {
                      saveListener.saved(workItem, changes);
                   }

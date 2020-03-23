@@ -192,6 +192,9 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          refresh();
          return;
       }
+      if (editor.isDirty()) {
+         editor.doSave(null);
+      }
       handleTransitionButtonSelection(awa, isEditable, toStateDef);
    }
 
