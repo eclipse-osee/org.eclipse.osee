@@ -1,0 +1,33 @@
+= Design
+David Miller <david.w.miller6@boeing.com>
+
+== Notes on interaction between OSEE and Cameo
+
+Cameo Enterprise Architecture ships with a complete Java API to program interactions with Cameo.
+https://docs.nomagic.com/display/PLE190/OpenAPI[Cameo OpenAPI]
+
+== Current content:
+
+Cameo supports modeling system and subsystem functions in the the Systems Modeling Language (SysML) standard.
+
+Systems and Subsystems Requirements can be imported from DOORs into the model and modeled as SysML requirements, read only, synchronized with DOORs using a DOORs connectivity module.
+
+Changes to the requirements are accomplished through the normal DOORs engineering change process.
+
+== The goal for OSEE:
+
+For OSEE to support integration with Cameo through the Cameo OpenAPI.
+
+Develop a Cameo Java plugin that makes REST calls to the OSEE server to do the following:
+
+Maintain a reference artifact in OSEE that will be used to represent important Cameo objects in OSEE.
+The Cameo module will be able to:
+
+* Allow linking/unlinking Cameo objects from their associated OSEE objects
+* Cameo plugin will obtain a unique artifact id for each Cameo object from the OSEE server
+
+== OSEE References
+
+* OSEE reference artifacts will model the chosen Cameo objects.
+* OSEE will make it possible to mark referenced objects with PL applicability.
+* OSEE will provide relations to allow additional traceability to support reports like the system safety report.
