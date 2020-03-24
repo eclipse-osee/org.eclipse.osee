@@ -15,13 +15,13 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 
 /**

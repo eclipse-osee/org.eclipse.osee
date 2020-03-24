@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.review;
+package org.eclipse.osee.ats.api.review;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
