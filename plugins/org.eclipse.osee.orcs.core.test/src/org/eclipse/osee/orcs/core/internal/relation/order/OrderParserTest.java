@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,7 +84,7 @@ public class OrderParserTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private RelationTypes relationTypeCache;
+   @Mock private OrcsTokenService tokenService;
    @Mock private HasOrderData hasOrderData;
 
    @Captor private ArgumentCaptor<RelationTypeSide> typeSideCaptor;
@@ -101,7 +100,7 @@ public class OrderParserTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      parser = new OrderParser(relationTypeCache);
+      parser = new OrderParser(tokenService);
 
       when(relationType1.getName()).thenReturn(REL_TYPE_1_NAME);
       when(relationType1.getId()).thenReturn(REL_TYPE_1_ID);
@@ -111,7 +110,7 @@ public class OrderParserTest {
 
       final Collection<? extends RelationTypeToken> types = Arrays.asList(relationType1, relationType2);
 
-      when(relationTypeCache.getAll()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
+      when(tokenService.getRelationTypes()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
 
          @Override
          public Collection<? extends RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {

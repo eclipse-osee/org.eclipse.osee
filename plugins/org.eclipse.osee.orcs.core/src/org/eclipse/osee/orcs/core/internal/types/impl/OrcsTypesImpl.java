@@ -18,8 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,7 +35,6 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.EnumTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -51,7 +50,6 @@ public class OrcsTypesImpl implements OrcsTypes {
 
    private final ArtifactTypes artifactTypes;
    private final AttributeTypes attributeTypes;
-   private final RelationTypes relationTypes;
    private final EnumTypes enumTypes;
 
    public OrcsTypesImpl(Log logger, OrcsSession session, OrcsTypesDataStore dataStore, OrcsTypesLoaderFactory loaderFactory, OrcsTypesIndexProvider indexProvider) {
@@ -64,7 +62,6 @@ public class OrcsTypesImpl implements OrcsTypes {
 
       this.artifactTypes = new ArtifactTypesImpl(indexProvider);
       this.attributeTypes = new AttributeTypesImpl(indexProvider, indexProvider);
-      this.relationTypes = new RelationTypesImpl(indexProvider);
       this.enumTypes = new EnumTypesImpl(indexProvider);
    }
 
@@ -76,11 +73,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    @Override
    public AttributeTypes getAttributeTypes() {
       return attributeTypes;
-   }
-
-   @Override
-   public RelationTypes getRelationTypes() {
-      return relationTypes;
    }
 
    @Override

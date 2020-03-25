@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -73,4 +75,35 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public Long getGuid() {
       return getId();
    }
+
+   @Override
+   public RelationTypeMultiplicity getMultiplicity() {
+      return type.getMultiplicity();
+   }
+
+   @Override
+   public RelationSorter getOrder() {
+      return type.getOrder();
+   }
+
+   @Override
+   public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
+      return type.getArtifactType(relationSide);
+   }
+
+   @Override
+   public String getSideName(RelationSide relationSide) {
+      return type.getSideName(relationSide);
+   }
+
+   @Override
+   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
+      return type.isArtifactTypeAllowed(relationSide, artifactType);
+   }
+
+   @Override
+   public boolean isOrdered() {
+      return type.isOrdered();
+   }
+
 }

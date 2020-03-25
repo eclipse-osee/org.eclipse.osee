@@ -13,9 +13,8 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -32,11 +30,11 @@ import org.eclipse.osee.orcs.data.RelationTypes;
  */
 public class RelationTypeValidity {
 
-   private final RelationTypes relationTypes;
+   private final OrcsTokenService tokenService;
 
-   public RelationTypeValidity(RelationTypes relationTypes) {
+   public RelationTypeValidity(OrcsTokenService tokenService) {
       super();
-      this.relationTypes = relationTypes;
+      this.tokenService = tokenService;
    }
 
    public void checkRelationTypeMultiplicity(RelationTypeToken type, Artifact node, RelationSide side, int count) {
@@ -63,8 +61,7 @@ public class RelationTypeValidity {
       if (!isValid) {
          throw new OseeArgumentException(
             "Relation validity error for [%s] - ArtifactType [%s] does not belong on side [%s] of relation [%s] - only items of type [%s] are allowed",
-            node.getExceptionString(), artifactType, side.name(), type.getName(),
-            relationTypes.getArtifactType(type, side));
+            node.getExceptionString(), artifactType, side.name(), type.getName(), type.getArtifactType(side));
       }
    }
 
@@ -72,11 +69,10 @@ public class RelationTypeValidity {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(side, "relationSide");
-      checkTypeExists(type);
 
       int toReturn = 0;
-      if (relationTypes.isArtifactTypeAllowed(type, side, artifactType)) {
-         toReturn = relationTypes.getMultiplicity(type).getLimit(side);
+      if (type.isArtifactTypeAllowed(side, artifactType)) {
+         toReturn = type.getMultiplicity().getLimit(side);
       }
       return toReturn;
    }
@@ -84,9 +80,9 @@ public class RelationTypeValidity {
    public MultiplicityState getRelationMultiplicityState(RelationTypeToken type, RelationSide side, int count) {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(side, "relationSide");
-      checkTypeExists(type);
+      //checkTypeExists(type);
 
-      RelationTypeMultiplicity multiplicity = relationTypes.getMultiplicity(type);
+      RelationTypeMultiplicity multiplicity = type.getMultiplicity();
 
       MultiplicityState toReturn = MultiplicityState.IS_VALID;
       int limit = multiplicity.getLimit(side);
@@ -97,7 +93,6 @@ public class RelationTypeValidity {
    }
 
    public boolean isRelationTypeValid(RelationTypeToken relationType, ArtifactTypeToken artifactType, RelationSide relationSide) {
-      checkTypeExists(relationType);
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return getRelationSideMax(relationType, artifactType, relationSide) > 0;
@@ -105,7 +100,7 @@ public class RelationTypeValidity {
 
    public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Conditions.checkNotNull(artifactType, "artifactType");
-      Collection<? extends RelationTypeToken> types = relationTypes.getAll();
+      Collection<? extends RelationTypeToken> types = tokenService.getRelationTypes();
       List<RelationTypeToken> toReturn = new ArrayList<>();
       for (RelationTypeToken relationType : types) {
          if (isTypeAllowed(artifactType, relationType)) {
@@ -127,15 +122,10 @@ public class RelationTypeValidity {
       return result;
    }
 
-   private void checkTypeExists(RelationTypeToken type) {
-      boolean exists = relationTypes.exists(type);
-      Conditions.checkExpressionFailOnTrue(!exists, "relationType [%s] does not exist", type);
-   }
-
    private int getRelationSideMax(RelationTypeToken relationType, ArtifactTypeToken artifactType, RelationSide relationSide) {
       int toReturn = 0;
-      if (relationTypes.isArtifactTypeAllowed(relationType, relationSide, artifactType)) {
-         toReturn = relationTypes.getMultiplicity(relationType).getLimit(relationSide);
+      if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
+         toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;
    }

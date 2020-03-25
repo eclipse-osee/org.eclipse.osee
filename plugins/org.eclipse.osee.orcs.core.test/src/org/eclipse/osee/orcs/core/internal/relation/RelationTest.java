@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,7 +37,6 @@ import org.mockito.MockitoAnnotations;
 public class RelationTest {
 
    // @formatter:off
-   @Mock private RelationTypes relationTypes;
    @Mock RelationData data;
    // @formatter:on
 

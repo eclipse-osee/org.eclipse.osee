@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwApplicability;
@@ -74,7 +75,7 @@ public class OwFactory {
    }
 
    public static OwRelationType createRelationType(OrcsApi orcsApi, RelationTypeSide type) {
-      String sideAName = orcsApi.getOrcsTypes().getRelationTypes().getSideAName(type);
+      String sideAName = orcsApi.tokenService().getRelationType(type.getId()).getSideName(RelationSide.SIDE_A);
       OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
       return owType;
    }

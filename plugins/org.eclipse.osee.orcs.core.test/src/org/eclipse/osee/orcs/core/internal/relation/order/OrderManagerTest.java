@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterProvider;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,7 +52,6 @@ public class OrderManagerTest {
 
    // @formatter:off
    @Mock private OrderAccessor accessor;
-   @Mock private RelationTypes relationTypeCache;
 
    @Mock private RelationTypeSide typeSide1;
    @Mock private RelationTypeSide typeSide2;
@@ -75,7 +73,7 @@ public class OrderManagerTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      orderManager = new OrderManager(new SorterProvider(relationTypeCache), accessor);
+      orderManager = new OrderManager(new SorterProvider(), accessor);
 
       items = new ArrayList<>();
       items.add(mock1);
@@ -90,9 +88,9 @@ public class OrderManagerTest {
       when(typeSide2.getSide()).thenReturn(RelationSide.SIDE_B);
       when(typeSide3.getSide()).thenReturn(RelationSide.SIDE_A);
 
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide1)).thenReturn(USER_DEFINED);
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide2)).thenReturn(UNORDERED);
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide3)).thenReturn(LEXICOGRAPHICAL_ASC);
+      when(typeSide1.getOrder()).thenReturn(USER_DEFINED);
+      when(typeSide2.getOrder()).thenReturn(UNORDERED);
+      when(typeSide3.getOrder()).thenReturn(LEXICOGRAPHICAL_ASC);
    }
 
    @Test

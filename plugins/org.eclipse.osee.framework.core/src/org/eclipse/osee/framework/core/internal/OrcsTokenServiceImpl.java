@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -165,6 +167,11 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          }
       }
       return attrTypeIds;
+   }
+
+   @Override
+   public Collection<RelationTypeToken> getRelationTypes() {
+      return Collections.unmodifiableCollection(relationTypes.values());
    }
 
    public void start() {

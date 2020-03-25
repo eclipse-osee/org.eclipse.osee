@@ -46,11 +46,6 @@ public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex> imple
    }
 
    @Override
-   public RelationTypeIndex getRelationTypeIndex() {
-      return get().getRelationTypeIndex();
-   }
-
-   @Override
    public IResource getOrcsTypesResource() {
       try {
          return get().getOrcsTypesResource();

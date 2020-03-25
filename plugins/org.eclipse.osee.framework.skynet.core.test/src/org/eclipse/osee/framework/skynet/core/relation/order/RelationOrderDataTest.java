@@ -119,11 +119,11 @@ public class RelationOrderDataTest {
 
       // Pair does not exist
       actualGuid = data.getCurrentSorterGuid(relationType2, RelationSide.SIDE_A);
-      Assert.assertEquals(relationType2.getDefaultOrderTypeGuid(), actualGuid);
+      Assert.assertEquals(relationType2.getOrder(), actualGuid);
 
       // Pair does not exist
       actualGuid = data.getCurrentSorterGuid(relationType3, RelationSide.SIDE_B);
-      Assert.assertEquals(relationType3.getDefaultOrderTypeGuid(), actualGuid);
+      Assert.assertEquals(relationType3.getOrder(), actualGuid);
    }
 
    @Test
@@ -184,7 +184,7 @@ public class RelationOrderDataTest {
 
       // Store
       accessor.clearStoreCalled();
-      data.store(relationType1, RelationSide.SIDE_A, relationType1.getDefaultOrderTypeGuid(), emptyList);
+      data.store(relationType1, RelationSide.SIDE_A, relationType1.getOrder(), emptyList);
       Assert.assertTrue(accessor.wasStoreCalled());
 
       // Store

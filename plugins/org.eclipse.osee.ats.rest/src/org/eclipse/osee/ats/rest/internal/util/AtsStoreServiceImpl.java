@@ -273,7 +273,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public Collection<RelationTypeToken> getRelationTypes() {
-      return orcsApi.getOrcsTypes().getRelationTypes().getAll();
+      return orcsApi.tokenService().getRelationTypes();
    }
 
    @Override

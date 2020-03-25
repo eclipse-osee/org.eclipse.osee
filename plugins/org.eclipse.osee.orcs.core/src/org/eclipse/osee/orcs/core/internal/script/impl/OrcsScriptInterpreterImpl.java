@@ -148,7 +148,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
    private RelationTypeToken getRelationType(String name) {
       RelationTypeToken toReturn = null;
-      for (RelationTypeToken type : orcsTypes.getRelationTypes().getAll()) {
+      for (RelationTypeToken type : tokenService.getRelationTypes()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;

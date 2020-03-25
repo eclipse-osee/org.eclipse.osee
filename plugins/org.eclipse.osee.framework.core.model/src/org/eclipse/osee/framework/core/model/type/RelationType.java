@@ -59,6 +59,7 @@ public final class RelationType extends AbstractOseeType implements RelationType
       setFieldLogException(RELATION_MULTIPLICITY_FIELD_KEY, multiplicity);
    }
 
+   @Override
    public RelationTypeMultiplicity getMultiplicity() {
       return getFieldValueLogException(null, RELATION_MULTIPLICITY_FIELD_KEY);
    }
@@ -71,14 +72,17 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
    }
 
+   @Override
    public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
       return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
    }
 
+   @Override
    public String getSideName(RelationSide relationSide) {
       return relationSide == RelationSide.SIDE_A ? getSideAName() : getSideBName();
    }
 
+   @Override
    public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
       ArtifactTypeToken allowedType = getArtifactType(relationSide);
       return artifactType.inheritsFrom(allowedType);
@@ -104,11 +108,14 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return String.format("[%s]<-[%s]->[%s]", getSideAName(), getName(), getSideBName());
    }
 
+   @Override
    public boolean isOrdered() {
-      return !UNORDERED.equals(getDefaultOrderTypeGuid());
+      return !UNORDERED.equals(getOrder());
    }
 
-   public RelationSorter getDefaultOrderTypeGuid() {
+   @Override
+   public RelationSorter getOrder() {
       return getFieldValueLogException(null, RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
    }
+
 }

@@ -230,7 +230,7 @@ public class RoughToRealArtifactOperation {
    }
 
    private RelationTypeToken getRelationType(String relationName) {
-      for (RelationTypeToken type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
+      for (RelationTypeToken type : orcsApi.tokenService().getRelationTypes()) {
          if (type.getName().equals(relationName)) {
             return type;
          }

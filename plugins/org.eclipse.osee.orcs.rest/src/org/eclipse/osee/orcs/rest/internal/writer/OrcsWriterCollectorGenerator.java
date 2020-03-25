@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -244,7 +245,7 @@ public class OrcsWriterCollectorGenerator {
    private void createRelationTypeSheet() {
       Map<String, RelationTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (RelationTypeToken type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
+         for (RelationTypeToken type : orcsApi.tokenService().getRelationTypes()) {
             types.put(type.getName(), type);
          }
       } else {
@@ -267,10 +268,10 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void writeRelationType(RelationTypeToken type) {
-      String sideAName = orcsApi.getOrcsTypes().getRelationTypes().getSideAName(type);
+      String sideAName = type.getSideName(RelationSide.SIDE_A);
       OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
       collector.getRelTypes().add(owType);
-      String sideBName = orcsApi.getOrcsTypes().getRelationTypes().getSideBName(type);
+      String sideBName = type.getSideName(RelationSide.SIDE_B);
       owType = OwFactory.createRelationType(type, sideBName, false);
       collector.getRelTypes().add(owType);
    }

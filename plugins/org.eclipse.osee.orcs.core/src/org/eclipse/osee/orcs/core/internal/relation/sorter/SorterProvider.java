@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -27,10 +26,7 @@ public class SorterProvider {
 
    private final Map<RelationSorter, Sorter> orderMap = new HashMap<>();
 
-   private final RelationTypes typeCache;
-
-   public SorterProvider(RelationTypes typeCache) {
-      this.typeCache = typeCache;
+   public SorterProvider() {
 
       registerOrderType(new LexicographicalSorter(SortOrder.ASCENDING));
       registerOrderType(new LexicographicalSorter(SortOrder.DESCENDING));
@@ -44,7 +40,7 @@ public class SorterProvider {
 
    public RelationSorter getDefaultSorterId(RelationTypeToken relationType) {
       Conditions.checkNotNull(relationType, "type");
-      return typeCache.getDefaultOrderTypeGuid(relationType);
+      return relationType.getOrder();
    }
 
    public boolean exists(RelationSorter sorterId) {

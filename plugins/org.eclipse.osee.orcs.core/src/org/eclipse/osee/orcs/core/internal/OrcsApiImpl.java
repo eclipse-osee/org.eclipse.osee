@@ -176,8 +176,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       };
 
       RelationNodeLoader nodeLoader = new RelationNodeLoaderImpl(module.getDataLoaderFactory(), graphBuilderFactory);
-      RelationManager relationManager = RelationManagerFactory.createRelationManager(logger,
-         orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider);
+      RelationManager relationManager = RelationManagerFactory.createRelationManager(logger, tokenService(),
+         relationFactory, nodeLoader, queryModuleProvider);
 
       GraphProvider graphProvider = new GraphProvider() {
 

@@ -77,7 +77,7 @@ public class RelationOrderData {
 
    public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side) {
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
-      return currentOrder != null ? currentOrder.getFirst() : type.getDefaultOrderTypeGuid();
+      return currentOrder != null ? currentOrder.getFirst() : type.getOrder();
    }
 
    private Pair<RelationSorter, List<String>> getTypeSideEntry(RelationTypeToken type, RelationSide side) {
@@ -127,7 +127,7 @@ public class RelationOrderData {
    }
 
    protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId) {
-      return sorterId.equals(type.getDefaultOrderTypeGuid()) && isDifferentSorterId(type, side, sorterId);
+      return sorterId.equals(type.getOrder()) && isDifferentSorterId(type, side, sorterId);
    }
 
    protected boolean isRelativeOrderChange(RelationTypeToken type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) {

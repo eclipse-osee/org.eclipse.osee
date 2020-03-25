@@ -36,7 +36,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -61,7 +60,6 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -74,15 +72,13 @@ public class RelationManagerImpl implements RelationManager {
    private final RelationResolver resolver;
    private final RelationFactory relationFactory;
    private final OrderManagerFactory orderFactory;
-   private final RelationTypes relationTypes;
 
-   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider, RelationTypes relationTypes) {
+   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider) {
       this.logger = logger;
       this.validity = validity;
       this.resolver = resolver;
       this.relationFactory = relationFactory;
       this.orderFactory = orderFactory;
-      this.relationTypes = relationTypes;
    }
 
    @Override
@@ -176,7 +172,7 @@ public class RelationManagerImpl implements RelationManager {
          result = resolver.resolve(session, graph, links, otherSide);
          if (result.size() > 1) {
             OrderManager orderManager = orderFactory.createOrderManager(node);
-            RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), otherSide);
+            RelationTypeSide key = RelationTypeSide.create(type, otherSide);
             orderManager.sort(key, result);
          }
       }
@@ -347,7 +343,7 @@ public class RelationManagerImpl implements RelationManager {
                      List<Relation> sideLinks = getRelations(type, node, side, EXCLUDE_DELETED);
                      List<Artifact> nodes = resolver.resolve(session, graph, sideLinks, side);
 
-                     RelationTypeSide asTypeSide = RelationTypeSide.create(relationTypes.get(type), side);
+                     RelationTypeSide asTypeSide = RelationTypeSide.create(type, side);
                      orderManager.setOrder(asTypeSide, nodes);
                   }
                }
@@ -422,7 +418,7 @@ public class RelationManagerImpl implements RelationManager {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
-      RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), orderSide);
+      RelationTypeSide key = RelationTypeSide.create(type, orderSide);
       RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);
@@ -446,7 +442,7 @@ public class RelationManagerImpl implements RelationManager {
    @Override
    public void order(Artifact node1, RelationTypeToken type, RelationSide side, List<? extends Artifact> node2) {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
-      RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), side);
+      RelationTypeSide key = RelationTypeSide.create(type, side);
       orderManager.setOrder(key, RelationSorter.USER_DEFINED, node2);
    }
 

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
@@ -363,11 +362,6 @@ public class OrcsTypesIndexer {
       @Override
       public AttributeTypeIndex getAttributeTypeIndex() {
          return attributeTypeIndex;
-      }
-
-      @Override
-      public RelationTypeIndex getRelationTypeIndex() {
-         return relationTypeIndex;
       }
 
       @Override

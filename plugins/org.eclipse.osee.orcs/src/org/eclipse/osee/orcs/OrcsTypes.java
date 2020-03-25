@@ -13,14 +13,13 @@ package org.eclipse.osee.orcs;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.EnumTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -39,8 +38,6 @@ public interface OrcsTypes {
    ArtifactTypes getArtifactTypes();
 
    AttributeTypes getAttributeTypes();
-
-   RelationTypes getRelationTypes();
 
    EnumTypes getEnumTypes();
 

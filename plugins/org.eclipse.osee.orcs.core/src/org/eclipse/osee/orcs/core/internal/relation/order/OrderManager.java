@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.Sorter;
@@ -61,8 +61,7 @@ public class OrderManager implements HasOrderData {
 
    @Override
    public Iterator<Entry<RelationTypeSide, OrderData>> iterator() {
-      List<Entry<RelationTypeSide, OrderData>> entries =
-         new ArrayList<>(orderDataMap.entrySet());
+      List<Entry<RelationTypeSide, OrderData>> entries = new ArrayList<>(orderDataMap.entrySet());
       Collections.sort(entries, ENTRY_COMPARATOR);
       return entries.iterator();
    }

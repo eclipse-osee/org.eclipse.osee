@@ -10,20 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -36,31 +33,22 @@ public class SorterProviderTest {
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
-   // @formatter:off
-   @Mock private RelationTypes relationTypeCache;
-   // @formatter:on
-
    private SorterProvider provider;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      provider = new SorterProvider(relationTypeCache);
+      provider = new SorterProvider();
    }
 
    @Test
    public void testGetDefaultSorterId() {
-      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.DefaultHierarchical_Child)).thenReturn(
-         USER_DEFINED);
-
       RelationSorter actual1 = provider.getDefaultSorterId(CoreRelationTypes.DefaultHierarchical_Child);
-      assertEquals(USER_DEFINED, actual1);
-
-      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Users_User)).thenReturn(LEXICOGRAPHICAL_DESC);
+      assertEquals(LEXICOGRAPHICAL_ASC, actual1);
 
       RelationSorter actual2 = provider.getDefaultSorterId(CoreRelationTypes.Users_User);
-      assertEquals(LEXICOGRAPHICAL_DESC, actual2);
+      assertEquals(UNORDERED, actual2);
    }
 
    @Test

@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -64,10 +64,10 @@ public class OrderParser {
       }
    };
 
-   private final RelationTypes relationCache;
+   private final OrcsTokenService tokenService;
 
-   public OrderParser(RelationTypes relationCache) {
-      this.relationCache = relationCache;
+   public OrderParser(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
    }
 
    public void loadFromXml(HasOrderData hasOrderData, String rawData) {
@@ -110,12 +110,13 @@ public class OrderParser {
                   }
 
                   // TODO don't store relation type by name - use type UUID
-                  RelationTypeToken type = Iterables.find(relationCache.getAll(), new Predicate<RelationTypeToken>() {
-                     @Override
-                     public boolean apply(RelationTypeToken type) {
-                        return type.getName().equalsIgnoreCase(relationTypeName);
-                     }
-                  });
+                  RelationTypeToken type =
+                     Iterables.find(tokenService.getRelationTypes(), new Predicate<RelationTypeToken>() {
+                        @Override
+                        public boolean apply(RelationTypeToken type) {
+                           return type.getName().equalsIgnoreCase(relationTypeName);
+                        }
+                     });
 
                   RelationSide side = RelationSide.fromString(relationSide);
                   RelationTypeSide typeSide = RelationTypeSide.create(type, side);

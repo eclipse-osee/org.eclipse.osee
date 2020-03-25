@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HI
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,15 +30,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -52,7 +49,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -60,7 +56,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -78,11 +73,11 @@ public class RelationManagerTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private RelationTypes types;
    @Mock private RelationFactory relationFactory;
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private QueryFactory factory;
    @Mock private QueryModuleProvider provider;
+   @Mock private OrcsTokenService tokenService;
 
    @Mock private RelationNodeLoader loader;
    @Mock private OrcsSession session;
@@ -128,7 +123,7 @@ public class RelationManagerTest {
       node5 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 55L, "v");
       node6 = OrcsMockUtility.createTestArtifact(graph, COMMON, SoftwareRequirementMsWord, 66L, "u");
 
-      manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider);
+      manager = RelationManagerFactory.createRelationManager(logger, tokenService, relationFactory, loader, provider);
 
       when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
@@ -187,11 +182,8 @@ public class RelationManagerTest {
       setupAdjacencies(node5, relation4);
       setupAdjacencies(node6);
 
-      when(types.getDefaultOrderTypeGuid(Matchers.any())).thenReturn(LEXICOGRAPHICAL_DESC);
-      when(types.getAll()).thenReturn(new ArrayList(
+      when(tokenService.getRelationTypes()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child, CoreRelationTypes.DefaultHierarchical_Parent)));
-
-      when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.DefaultHierarchical_Child);
    }
 
    private void setupAdjacencies(Artifact node, Relation... relations) {
@@ -217,9 +209,9 @@ public class RelationManagerTest {
 
       assertEquals(3, nodes.size());
       Iterator<Artifact> iterator2 = nodes.iterator();
-      assertEquals(node2, iterator2.next());
-      assertEquals(node3, iterator2.next());
       assertEquals(node5, iterator2.next());
+      assertEquals(node3, iterator2.next());
+      assertEquals(node2, iterator2.next());
    }
 
    @Test
@@ -250,9 +242,9 @@ public class RelationManagerTest {
 
       assertEquals(3, actual.size());
       Iterator<Artifact> iterator = actual.iterator();
-      assertEquals(node2, iterator.next());
-      assertEquals(node3, iterator.next());
       assertEquals(node5, iterator.next());
+      assertEquals(node3, iterator.next());
+      assertEquals(node2, iterator.next());
    }
 
    @Test
@@ -296,10 +288,6 @@ public class RelationManagerTest {
 
    @Test
    public void testIntroduce() {
-      when(types.isArtifactTypeAllowed(CoreRelationTypes.DefaultHierarchical_Parent, RelationSide.SIDE_A,
-         CoreArtifactTypes.SoftwareRequirementMsWord)).thenReturn(true);
-      when(types.getMultiplicity(CoreRelationTypes.DefaultHierarchical_Parent)).thenReturn(
-         RelationTypeMultiplicity.ONE_TO_MANY);
       when(relationFactory.introduce(COMMON, data1)).thenReturn(relation1);
 
       manager.introduce(COMMON, node2, node3);

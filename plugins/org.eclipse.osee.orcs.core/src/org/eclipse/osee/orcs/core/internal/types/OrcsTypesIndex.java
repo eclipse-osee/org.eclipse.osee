@@ -13,11 +13,10 @@ package org.eclipse.osee.orcs.core.internal.types;
 import org.eclipse.osee.orcs.core.internal.types.impl.ArtifactTypesImpl.ArtifactTypeIndexProvider;
 import org.eclipse.osee.orcs.core.internal.types.impl.AttributeTypesImpl.AttributeTypeIndexProvider;
 import org.eclipse.osee.orcs.core.internal.types.impl.AttributeTypesImpl.EnumTypeIndexProvider;
-import org.eclipse.osee.orcs.core.internal.types.impl.RelationTypesImpl.RelationTypeIndexProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsTypesIndex extends ArtifactTypeIndexProvider, AttributeTypeIndexProvider, EnumTypeIndexProvider, RelationTypeIndexProvider, OrcsTypesResourceProvider {
+public interface OrcsTypesIndex extends ArtifactTypeIndexProvider, AttributeTypeIndexProvider, EnumTypeIndexProvider, OrcsTypesResourceProvider {
    //
 }

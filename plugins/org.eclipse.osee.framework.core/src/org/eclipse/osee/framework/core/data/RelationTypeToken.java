@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -34,6 +35,37 @@ public interface RelationTypeToken extends NamedId {
          public RelationTypeTokenImpl(Long id, String name) {
             super(id, name);
          }
+
+         @Override
+         public RelationTypeMultiplicity getMultiplicity() {
+            return null;
+         }
+
+         @Override
+         public RelationSorter getOrder() {
+            return null;
+         }
+
+         @Override
+         public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
+            return null;
+         }
+
+         @Override
+         public String getSideName(RelationSide relationSide) {
+            return null;
+         }
+
+         @Override
+         public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
+            return false;
+         }
+
+         @Override
+         public boolean isOrdered() {
+            return false;
+         }
+
       }
       return new RelationTypeTokenImpl(id, name);
    }
@@ -56,8 +88,70 @@ public interface RelationTypeToken extends NamedId {
             this.sideAName = sideAName;
             this.sideBName = sideBName;
          }
+
+         @Override
+         public RelationTypeMultiplicity getMultiplicity() {
+            return relationTypeMultiplicity;
+         }
+
+         @Override
+         public RelationSorter getOrder() {
+            return order;
+         }
+
+         @Override
+         public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
+            ArtifactTypeToken artifactType = null;
+            if (relationSide.equals(RelationSide.SIDE_A)) {
+               artifactType = artifactTypeA;
+            } else if (relationSide.equals(RelationSide.SIDE_B)) {
+               artifactType = artifactTypeB;
+            }
+            return artifactType;
+         }
+
+         @Override
+         public String getSideName(RelationSide relationSide) {
+            String sideName = null;
+            if (relationSide.equals(RelationSide.SIDE_A)) {
+               sideName = sideAName;
+            } else if (relationSide.equals(RelationSide.SIDE_B)) {
+               sideName = sideBName;
+            }
+            return sideName;
+         }
+
+         @Override
+         public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
+            boolean isAllowed = false;
+            if (relationSide.equals(RelationSide.SIDE_A)) {
+               isAllowed = artifactType.inheritsFrom(artifactTypeA);
+            } else if (relationSide.equals(RelationSide.SIDE_B)) {
+               isAllowed = artifactType.inheritsFrom(artifactTypeB);
+            }
+            return isAllowed;
+         }
+
+         @Override
+         public boolean isOrdered() {
+            return !RelationSorter.UNORDERED.equals(order);
+         }
+
       }
       return new RelationTypeTokenImpl(id, name, relationTypeMultiplicity, order, artifactTypeA, sideAName,
          artifactTypeB, sideBName);
    }
+
+   public RelationTypeMultiplicity getMultiplicity();
+
+   public RelationSorter getOrder();
+
+   public ArtifactTypeToken getArtifactType(RelationSide relationSide);
+
+   public String getSideName(RelationSide relationSide);
+
+   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType);
+
+   public boolean isOrdered();
+
 }

@@ -55,9 +55,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.OrcsMockUtility;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
@@ -68,16 +70,14 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
-import org.eclipse.osee.orcs.core.internal.types.impl.RelationTypesImpl;
-import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Matchers;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -100,11 +100,15 @@ public class RelationManagerImplTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
+
+   @Mock private OrcsApi orcsApi;
+
    @Mock private Log logger;
    @Mock private RelationTypeValidity validity;
    @Mock private RelationResolver resolver;
    @Mock private OrderManagerFactory orderFactory;
 
+   @Mock private ArtifactFactory artifactFactory;
    @Mock private RelationFactory relationFactory;
    @Mock private OrcsSession session;
    @Mock private QueryModuleProvider provider;
@@ -131,7 +135,6 @@ public class RelationManagerImplTest {
    @Captor private ArgumentCaptor<List<? extends ArtifactToken>> sortedListCaptor;
    // @formatter:on
 
-   private final RelationTypes relationTypes = new RelationTypesImpl(null);
    private RelationManager manager;
    private Artifact node1;
    private Artifact node2;
@@ -145,8 +148,7 @@ public class RelationManagerImplTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      manager =
-         new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider, relationTypes);
+      manager = new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider);
 
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
@@ -630,9 +632,8 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(
-         relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2), Matchers.anyString())).thenReturn(
-            relation1);
+      when(relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2),
+         Matchers.anyString())).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
