@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -30,20 +31,18 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
-   private final ArtifactTypes artifactTypeCache;
-
+   private final OrcsTokenService tokenService;
    private EditState objectEditState;
    private ArtifactData artifactData;
    private GraphData graph;
 
-   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory) {
+   public ArtifactImpl(OrcsTokenService tokenService, ArtifactData artifactData, AttributeFactory attributeFactory) {
       super(artifactData, attributeFactory);
-      this.artifactTypeCache = artifactTypeCache;
+      this.tokenService = tokenService;
       this.artifactData = artifactData;
       this.objectEditState = EditState.NO_CHANGE;
    }
@@ -144,12 +143,13 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
-      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
+      return artifactData.getType().isValidAttributeType(attributeType);
+      //return tokenService.getArtifactTypeOrSentinel(getArtifactType().getId()).isValidAttributeType(attributeType);
    }
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
-      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
+      return tokenService.getArtifactTypeOrSentinel(getArtifactType().getId()).getValidAttributeTypes();
    }
 
    @Override

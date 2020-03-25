@@ -90,8 +90,7 @@ public class OrcsTypesIndexer {
       AttributeTypeIndex attributeTypeIndex = new AttributeTypeIndex();
       EnumTypeIndex enumTypeIndex = new EnumTypeIndex();
       RelationTypeIndex relationTypeIndex = new RelationTypeIndex(artifactTypeIndex);
-      OrcsIndeces index =
-         new OrcsIndeces(source, artifactTypeIndex, attributeTypeIndex, enumTypeIndex, relationTypeIndex);
+      OrcsIndeces index = new OrcsIndeces(source, attributeTypeIndex, enumTypeIndex, relationTypeIndex);
 
       for (XOseeArtifactTypeOverride xArtifactTypeOverride : model.getArtifactTypeOverrides()) {
          applyArtifactTypeOverrides(xArtifactTypeOverride);
@@ -340,23 +339,16 @@ public class OrcsTypesIndexer {
    private static final class OrcsIndeces implements OrcsTypesIndex {
 
       private final IResource resource;
-      private final ArtifactTypeIndex artifactTypeIndex;
       private final AttributeTypeIndex attributeTypeIndex;
       private final EnumTypeIndex enumTypeIndex;
       private final RelationTypeIndex relationTypeIndex;
 
-      public OrcsIndeces(IResource resource, ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, EnumTypeIndex enumTypeIndex, RelationTypeIndex relationTypeIndex) {
+      public OrcsIndeces(IResource resource, AttributeTypeIndex attributeTypeIndex, EnumTypeIndex enumTypeIndex, RelationTypeIndex relationTypeIndex) {
          super();
          this.resource = resource;
-         this.artifactTypeIndex = artifactTypeIndex;
          this.attributeTypeIndex = attributeTypeIndex;
          this.enumTypeIndex = enumTypeIndex;
          this.relationTypeIndex = relationTypeIndex;
-      }
-
-      @Override
-      public ArtifactTypeIndex getArtifactTypeIndex() {
-         return artifactTypeIndex;
       }
 
       @Override

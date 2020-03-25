@@ -170,10 +170,15 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public Collection<ArtifactTypeToken> getArtifactTypes() {
+      return Collections.unmodifiableCollection(artifactTypes.values());
+   }
+
+   @Override
    public Collection<RelationTypeToken> getRelationTypes() {
       return Collections.unmodifiableCollection(relationTypes.values());
    }
-
+   
    public void start() {
    }
 }

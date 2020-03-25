@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.internal.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -34,7 +35,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -64,7 +64,6 @@ public class ArtifactFactoryTest {
    @Mock private ArtifactDataFactory dataFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
-   @Mock private ArtifactTypes artifactTypeCache;
 
    @Mock private Attribute<Object> attribute;
    @Mock private AttributeData<Object> attributeData;
@@ -83,7 +82,7 @@ public class ArtifactFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache);
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, new OrcsTokenServiceImpl());
 
       guid = GUID.create();
 
@@ -145,8 +144,7 @@ public class ArtifactFactoryTest {
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
-      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(), eq(CoreAttributeTypes.Annotation))).thenReturn(
-         true);
+      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
@@ -168,7 +166,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(Artifact, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
+      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
       when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
       when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
@@ -185,8 +183,8 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(), eq(CoreAttributeTypes.Annotation))).thenReturn(
-         true);
+
+      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 

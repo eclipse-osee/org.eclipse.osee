@@ -154,6 +154,40 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       return false;
    }
 
+   private AttributeType getValidAttributeType(AttributeTypeToken attributeType) {
+      Map<BranchId, Collection<AttributeType>> validityMap = getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+
+      for (Collection<AttributeType> types : validityMap.values()) {
+         if (types.contains(attributeType)) {
+            for (AttributeType type : types) {
+               if (type.getId() == attributeType.getId()) {
+                  return type;
+               }
+            }
+         }
+      }
+      for (ArtifactType superType : getSuperArtifactTypes()) {
+         return superType.getValidAttributeType(attributeType);
+      }
+      return null;
+   }
+
+   @Override
+   public int getMin(AttributeTypeToken attributeType) {
+      if (isValidAttributeType(attributeType)) {
+         return getValidAttributeType(attributeType).getMinOccurrences();
+      }
+      return -1;
+   }
+
+   @Override
+   public int getMax(AttributeTypeToken attributeType) {
+      if (isValidAttributeType(attributeType)) {
+         return getValidAttributeType(attributeType).getMaxOccurrences();
+      }
+      return -1;
+   }
+
    @Override
    public List<AttributeTypeToken> getValidAttributeTypes() {
       List<AttributeTypeToken> attributeTypes = new ArrayList<>(100);

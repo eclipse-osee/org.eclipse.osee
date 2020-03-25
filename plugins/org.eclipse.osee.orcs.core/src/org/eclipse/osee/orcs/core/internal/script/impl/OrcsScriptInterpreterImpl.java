@@ -159,7 +159,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
    private ArtifactTypeToken getArtifactType(String name) {
       ArtifactTypeToken toReturn = null;
-      for (ArtifactTypeToken type : orcsTypes.getArtifactTypes().getAll()) {
+      for (ArtifactTypeToken type : tokenService.getArtifactTypes()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;

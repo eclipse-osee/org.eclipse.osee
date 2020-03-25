@@ -114,7 +114,7 @@ public class TypeCountWriter {
    private List<ArtifactTypeToken> getTypes(List<Long> typeIds) {
       List<ArtifactTypeToken> toReturn = new ArrayList<>();
 
-      Collection<? extends ArtifactTypeToken> allTypes = orcsApi.getOrcsTypes().getArtifactTypes().getAll();
+      Collection<? extends ArtifactTypeToken> allTypes = orcsApi.tokenService().getArtifactTypes();
       for (ArtifactTypeToken type : allTypes) {
          if (typeIds.contains(type.getId())) {
             toReturn.add(type);
@@ -136,7 +136,6 @@ public class TypeCountWriter {
    }
 
    private String[] getHeaders(List<AttributeTypeToken> types) {
-      orcsApi.getOrcsTypes().getArtifactTypes().getAll();
       String[] toReturn = new String[types.size() + 3];
       int index = 0;
       toReturn[index++] = "Name";

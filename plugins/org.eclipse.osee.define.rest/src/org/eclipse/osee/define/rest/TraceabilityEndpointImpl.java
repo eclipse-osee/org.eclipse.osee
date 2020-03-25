@@ -36,9 +36,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.template.engine.ArtifactTypeOptionsRule;
 
@@ -91,11 +89,9 @@ public final class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    }
 
    private Set<String> getTypes() {
-      OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
-      ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
       Set<String> toReturn = new HashSet<>();
 
-      for (ArtifactTypeToken type : artifactTypes.getAll()) {
+      for (ArtifactTypeToken type : orcsApi.tokenService().getArtifactTypes()) {
          toReturn.add(type.getName());
       }
       return toReturn;

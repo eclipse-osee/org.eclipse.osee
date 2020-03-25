@@ -179,7 +179,7 @@ public class OrcsWriterCollectorGenerator {
    private void createArtifactTypeSheet() {
       Map<String, ArtifactTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (ArtifactTypeToken type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
+         for (ArtifactTypeToken type : orcsApi.tokenService().getArtifactTypes()) {
             types.put(type.getName(), type);
          }
       } else {

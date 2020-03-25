@@ -32,7 +32,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndexProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.EnumTypes;
 
@@ -48,7 +47,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    private final OrcsTypesDataStore dataStore;
    private final OrcsTypesLoaderFactory loaderFactory;
 
-   private final ArtifactTypes artifactTypes;
    private final AttributeTypes attributeTypes;
    private final EnumTypes enumTypes;
 
@@ -60,14 +58,8 @@ public class OrcsTypesImpl implements OrcsTypes {
 
       this.indexProvider = indexProvider;
 
-      this.artifactTypes = new ArtifactTypesImpl(indexProvider);
       this.attributeTypes = new AttributeTypesImpl(indexProvider, indexProvider);
       this.enumTypes = new EnumTypesImpl(indexProvider);
-   }
-
-   @Override
-   public ArtifactTypes getArtifactTypes() {
-      return artifactTypes;
    }
 
    @Override

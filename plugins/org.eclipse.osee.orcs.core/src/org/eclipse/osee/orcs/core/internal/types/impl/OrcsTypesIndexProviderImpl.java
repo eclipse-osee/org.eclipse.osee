@@ -31,11 +31,6 @@ public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex> imple
    }
 
    @Override
-   public ArtifactTypeIndex getArtifactTypeIndex() {
-      return get().getArtifactTypeIndex();
-   }
-
-   @Override
    public AttributeTypeIndex getAttributeTypeIndex() {
       return get().getAttributeTypeIndex();
    }

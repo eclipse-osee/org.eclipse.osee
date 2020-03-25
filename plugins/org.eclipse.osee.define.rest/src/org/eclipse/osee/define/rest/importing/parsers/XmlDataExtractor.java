@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -32,9 +31,8 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
    @Override
    protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       ArtifactTypeToken primaryArtifactType = null;
-      ArtifactTypes artTypes = orcsApi.getOrcsTypes().getArtifactTypes();
 
-      for (ArtifactTypeToken type : artTypes.getAll()) {
+      for (ArtifactTypeToken type : orcsApi.tokenService().getArtifactTypes()) {
          if (type.getName().equals(Lib.removeExtension(new File(source).getName()))) {
             primaryArtifactType = type;
          }

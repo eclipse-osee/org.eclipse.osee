@@ -27,8 +27,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.ParagraphNumberComparator;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -36,9 +37,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -49,7 +48,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 
 public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final QueryFactory queryApi;
-   private final OrcsTypes types;
+   private final OrcsTokenService tokenService;
    private final IOseeBranch branch;
    private final ActivityLog activityLog;
    private final Map<String, Integer> summarySubsystemCounter = new HashMap<>();
@@ -66,7 +65,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       this.queryApi = orcsApi.getQueryFactory();
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       this.branch = query.andId(branch).getResultsAsId().getExactlyOne();
-      this.types = orcsApi.getOrcsTypes();
+      this.tokenService = orcsApi.tokenService();
       includeOnlyArtifactTypes = convertStringTypes(selectedTypes);
    }
 
@@ -348,8 +347,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
 
    private Collection<ArtifactTypeToken> convertStringTypes(String csvTypes) {
       if (allTypesMap.isEmpty()) {
-         ArtifactTypes artifactTypes = types.getArtifactTypes();
-         for (ArtifactTypeToken type : artifactTypes.getAll()) {
+         for (ArtifactTypeToken type : tokenService.getArtifactTypes()) {
             allTypesMap.put(type.getName(), type);
          }
       }

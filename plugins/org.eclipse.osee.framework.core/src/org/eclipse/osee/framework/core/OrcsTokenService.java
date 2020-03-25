@@ -93,6 +93,11 @@ public interface OrcsTokenService {
 
 
    /**
+    * Get unmodifiable list of ArtifactTypes.
+    */
+   Collection<ArtifactTypeToken> getArtifactTypes();
+
+    /**
     * Get unmodifiable list of RelationTypes.
     */
    Collection<RelationTypeToken> getRelationTypes();

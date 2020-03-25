@@ -27,12 +27,12 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.core.internal.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -42,7 +42,6 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,7 +61,6 @@ public class ArtifactTest {
    // @formatter:off
    @Mock private ArtifactData artifactData;
    @Mock private AttributeFactory attributeFactory;
-   @Mock private ArtifactTypes types;
 
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
@@ -89,10 +87,10 @@ public class ArtifactTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      artifact = new ArtifactImpl(types, artifactData, attributeFactory);
+      artifact = new ArtifactImpl(new OrcsTokenServiceImpl(), artifactData, attributeFactory);
       artifact.setGraph(graph);
 
-      when(types.isValidAttributeType(any(), any(), any())).thenReturn(true);
+      Assert.assertTrue(CoreArtifactTypes.Artifact.isValidAttributeType(attributeType));
       when(attributeFactory.getMaxOccurrenceLimit(any())).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(), any())).thenReturn(attribute);
@@ -112,9 +110,6 @@ public class ArtifactTest {
       when(deleted.getOrcsData()).thenReturn(attributeData);
       when(differentType.getOrcsData()).thenReturn(attributeData);
       when(differentType.getModificationType()).thenReturn(ModificationType.NEW);
-
-      when(types.get(CoreArtifactTypes.GeneralData.getId())).thenReturn(CoreArtifactTypes.GeneralData);
-      when(types.get(CoreArtifactTypes.CodeUnit.getId())).thenReturn(CoreArtifactTypes.CodeUnit);
    }
 
    @Test
@@ -123,7 +118,7 @@ public class ArtifactTest {
       Attribute<Object> attribute = mock(Attribute.class);
       when(attribute.getOrcsData()).thenReturn(attributeData);
       Assert.assertEquals(0, artifact.getAttributes().size());
-      artifact.add(CoreAttributeTypes.City, attribute);
+      artifact.add(CoreAttributeTypes.GeneralStringData, attribute);
       Assert.assertTrue(artifact.getAttributes().contains(attribute));
       Assert.assertEquals(1, artifact.getAttributes().size());
    }
@@ -147,7 +142,7 @@ public class ArtifactTest {
    public void testAreAttributesDirty() {
       Attribute<Object> attribute = mock(Attribute.class);
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      artifact.add(CoreAttributeTypes.City, attribute);
+      artifact.add(CoreAttributeTypes.GeneralStringData, attribute);
       Assert.assertFalse(artifact.areAttributesDirty());
       when(attribute.isDirty()).thenReturn(true);
       Assert.assertTrue(artifact.areAttributesDirty());
@@ -155,8 +150,9 @@ public class ArtifactTest {
 
    @Test
    public void testCreateAttribute() {
-      artifact.createAttribute(CoreAttributeTypes.City);
-      verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData, CoreAttributeTypes.City);
+      artifact.createAttribute(CoreAttributeTypes.GeneralStringData);
+      verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData,
+         CoreAttributeTypes.GeneralStringData);
    }
 
    @Test
@@ -254,13 +250,15 @@ public class ArtifactTest {
    @Test
    public void testIsAttributeTypeValid() {
       artifact.isAttributeTypeValid(CoreAttributeTypes.AFHA);
-      verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.AFHA));
+      Assert.assertTrue(CoreArtifactTypes.GeneralData.isValidAttributeType(CoreAttributeTypes.GeneralStringData));
    }
 
    @Test
    public void testGetValidAttributeTypes() {
       artifact.getValidAttributeTypes();
-      verify(types).getAttributeTypes(eq(artifactType), any());
+      Assert.assertTrue(CoreArtifactTypes.GeneralData.getValidAttributeTypes().size() > 1);
+      Assert.assertTrue(
+         CoreArtifactTypes.GeneralData.getValidAttributeTypes().contains(CoreAttributeTypes.GeneralStringData));
    }
 
    @Test

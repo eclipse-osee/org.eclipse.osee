@@ -217,7 +217,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public Collection<ArtifactTypeToken> getArtifactTypes() {
       List<ArtifactTypeToken> types = new ArrayList<>();
-      types.addAll(orcsApi.getOrcsTypes().getArtifactTypes().getAll());
+      types.addAll(orcsApi.tokenService().getArtifactTypes());
       return types;
    }
 

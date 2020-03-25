@@ -41,7 +41,6 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
@@ -75,7 +74,6 @@ public class DataFactoryImplTest {
    //@formatter:off
    @Mock private IdentityManager idFactory;
    @Mock private AttributeDataProxyFactory proxyFactory;
-   @Mock private ArtifactTypes artifactCache;
    @Mock private OrcsTokenService tokenService;
    @Mock private AttributeData attrData;
    @Mock private VersionData verData;

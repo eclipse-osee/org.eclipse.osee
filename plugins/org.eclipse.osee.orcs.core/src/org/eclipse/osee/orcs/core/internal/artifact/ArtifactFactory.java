@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationO
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -26,7 +27,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -36,16 +36,16 @@ public class ArtifactFactory {
 
    private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
-   private final ArtifactTypes artifactTypeCache;
+   private final OrcsTokenService tokenService;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, ArtifactTypes artifactTypeCache) {
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, OrcsTokenService tokenService) {
       this.factory = factory;
       this.attributeFactory = attributeFactory;
-      this.artifactTypeCache = artifactTypeCache;
+      this.tokenService = tokenService;
    }
 
    public Artifact createArtifact(final OrcsSession session, ArtifactData artifactData) {
-      return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory);
+      return new ArtifactImpl(tokenService, artifactData, attributeFactory);
    }
 
    public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid) {

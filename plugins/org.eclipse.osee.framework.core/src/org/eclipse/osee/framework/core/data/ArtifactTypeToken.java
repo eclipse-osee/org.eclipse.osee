@@ -93,6 +93,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public boolean isValidAttributeType(AttributeTypeId attributeType);
 
+   public int getMin(AttributeTypeToken attributeType);
+
+   public int getMax(AttributeTypeToken attributeType);
+
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
@@ -147,6 +151,23 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          public boolean isValidAttributeType(AttributeTypeId attributeType) {
             return attributeTypes.containsKey(attributeType);
          }
+
+         @Override
+         public int getMin(AttributeTypeToken attributeType) {
+            if (isValidAttributeType(attributeType)) {
+               return attributeTypes.getMinimum(attributeType);
+            }
+            return -1;
+         }
+
+         @Override
+         public int getMax(AttributeTypeToken attributeType) {
+            if (isValidAttributeType(attributeType)) {
+               return attributeTypes.getMaximum(attributeType);
+            }
+            return -1;
+         }
+
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);
    }

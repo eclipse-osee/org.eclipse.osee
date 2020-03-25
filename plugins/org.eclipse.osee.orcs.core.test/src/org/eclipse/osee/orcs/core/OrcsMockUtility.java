@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -29,7 +30,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.mockito.Matchers;
 
 /**
@@ -45,7 +45,7 @@ public class OrcsMockUtility {
 
    public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
-      ArtifactTypes artifactTypeCache = mock(ArtifactTypes.class);
+      OrcsTokenService tokenService = mock(OrcsTokenService.class);
 
       VersionData version = new VersionDataImpl();
       version.setBranch(branch);
@@ -55,8 +55,8 @@ public class OrcsMockUtility {
       artifactData.setLocalId(artifactId.intValue());
       artifactData.setModType(ModificationType.NEW);
 
-      when(artifactTypeCache.get(artifactType.getId())).thenReturn(artifactType);
-      Artifact artifact = new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory);
+      when(tokenService.getArtifactType(artifactType.getId())).thenReturn(artifactType);
+      Artifact artifact = new ArtifactImpl(tokenService, artifactData, attributeFactory);
 
       when(attributeFactory.getMaxOccurrenceLimit(Matchers.any(AttributeTypeId.class))).thenReturn(1);
 

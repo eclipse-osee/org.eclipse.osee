@@ -56,14 +56,17 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    private final HashCollection<AttributeTypeToken, Attribute<?>> attributes;
    private final String guid;
    private boolean isLoaded;
+   private final ArtifactData artifactData;
 
    private final AttributeFactory attributeFactory;
 
    protected AttributeManagerImpl(ArtifactData artifactData, AttributeFactory attributeFactory) {
       super(artifactData.getId());
+      this.artifactData = artifactData;
       this.attributeFactory = attributeFactory;
       this.attributes = new HashCollection<>(true);
       guid = artifactData.getGuid();
+
    }
 
    private <T> List<Attribute<T>> filterAttributes(List<Attribute<?>> attributes, DeletionFlag deletionFlag) {
@@ -555,7 +558,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    private final <T> int getRemainingAttributeCount(AttributeTypeToken attributeType) {
-      int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
+      int minLimit = artifactData.getType().getMin(attributeType);
       return minLimit - getAttributeCount(attributeType);
    }
 

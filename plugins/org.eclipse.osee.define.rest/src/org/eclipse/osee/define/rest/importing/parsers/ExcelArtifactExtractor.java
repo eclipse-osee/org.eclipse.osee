@@ -145,7 +145,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       private ArtifactTypeToken getArtifactTypeFromName(String name) {
-         for (ArtifactTypeToken type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
+         for (ArtifactTypeToken type : orcsApi.tokenService().getArtifactTypes()) {
             if (name.equals(type.getName())) {
                return type;
             }
