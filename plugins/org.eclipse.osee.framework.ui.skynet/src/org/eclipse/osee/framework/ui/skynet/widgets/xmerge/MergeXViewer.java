@@ -10,28 +10,42 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
+import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.relation.order.ArtifactRelationOrderAccessor;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderParser;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
+import org.eclipse.osee.framework.ui.skynet.compare.RelationOrderCompareHandler;
+import org.eclipse.osee.framework.ui.skynet.compare.RelationOrderCompareItem;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -171,11 +185,11 @@ public class MergeXViewer extends XViewer {
 
    private CompareHandler getCompareHandler(AttributeConflict attributeConflict) {
 
-      Artifact sourceArtifact = attributeConflict.getArtifact();
-      String leftName = sourceArtifact.getName() + " on Branch: " + attributeConflict.getSourceBranch().getName();
+      Artifact mergeArtifact = attributeConflict.getArtifact();
+      String leftName = mergeArtifact.getName() + " on Branch: " + attributeConflict.getSourceBranch().getName();
       String leftContents =
-         RendererManager.getBestRenderer(RENDER_AS_HUMAN_READABLE_TEXT, sourceArtifact).renderAttributeAsString(
-            attributeConflict.getAttributeType(), sourceArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
+         RendererManager.getBestRenderer(RENDER_AS_HUMAN_READABLE_TEXT, mergeArtifact).renderAttributeAsString(
+            attributeConflict.getAttributeType(), mergeArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
 
       Artifact destArtifact = attributeConflict.getDestArtifact();
       String rightName = destArtifact.getName() + " on Branch: " + attributeConflict.getDestBranch().getName();
@@ -183,13 +197,75 @@ public class MergeXViewer extends XViewer {
          RendererManager.getBestRenderer(RENDER_AS_HUMAN_READABLE_TEXT, destArtifact).renderAttributeAsString(
             attributeConflict.getAttributeType(), destArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
 
-      Image image = ArtifactImageManager.getImage(sourceArtifact);
-      AttributeCompareItem leftCompareItem = new AttributeCompareItem(attributeConflict, leftName, leftContents, true,
-         image, CompareItem.generateDiffFile("source"));
-      AttributeCompareItem rightCompareItem = new AttributeCompareItem(attributeConflict, rightName, rightContents,
-         false, image, CompareItem.generateDiffFile("dest"));
+      Image image = ArtifactImageManager.getImage(mergeArtifact);
 
-      return new CompareHandler(null, leftCompareItem, rightCompareItem, null);
+      if (attributeConflict.getAttributeType().equals(RelationOrder)) {
+         return getRelationOrderCompareHandler(attributeConflict, leftName, rightName, leftContents, rightContents,
+            image);
+      } else {
+         AttributeCompareItem leftCompareItem = new AttributeCompareItem(attributeConflict, leftName, leftContents,
+            true, image, CompareItem.generateDiffFile("source"));
+         AttributeCompareItem rightCompareItem = new AttributeCompareItem(attributeConflict, rightName, rightContents,
+            false, image, CompareItem.generateDiffFile("dest"));
+
+         return new CompareHandler(null, leftCompareItem, rightCompareItem, null);
+      }
+
+   }
+
+   private CompareHandler getRelationOrderCompareHandler(AttributeConflict attributeConflict, String leftName, String rightName, String leftContents, String rightContents, Image image) {
+      RelationOrderCompareItem leftCompareItem =
+         getRelationOrderCompareItem(attributeConflict, attributeConflict.getSourceArtifact(), leftName, leftContents,
+            true, image, CompareItem.generateDiffFile("source"));
+      RelationOrderCompareItem rightCompareItem =
+         getRelationOrderCompareItem(attributeConflict, attributeConflict.getDestArtifact(), rightName, rightContents,
+            false, image, CompareItem.generateDiffFile("dest"));
+
+      return new RelationOrderCompareHandler(null, leftCompareItem, rightCompareItem, null);
+   }
+
+   /**
+    * Takes the attributeConflict artifact and creates a string to display to the user for them to edit. Source artifact
+    * has edit tags and instructions, while the destination artifact has compare tags to signify the comparable area,
+    * and no instructions.
+    */
+   private RelationOrderCompareItem getRelationOrderCompareItem(AttributeConflict attributeConflict, Artifact artifact, String name, String contents, boolean isEditable, Image image, String diffFile) {
+      BranchId branch = artifact.getBranch();
+      StringBuilder content = new StringBuilder();
+
+      if (isEditable) {
+         content.append("Instructions\n");
+         content.append("Use this left side to modify the Relation Orders\n");
+         content.append("Only edit BETWEEN  the start and end edit tags\n");
+         content.append("DO NOT Add/Remove/Change the Relation Types, ONLY edit each artifact order\n");
+         content.append("Make sure each entry is in the form ARTIFACT '#ArtId' - 'ArtName'\n");
+      } else {
+         content.append("This side is not for editing\n\n\n\n\n");
+      }
+
+      RelationOrderParser parser = new RelationOrderParser();
+      ArtifactRelationOrderAccessor accessor = new ArtifactRelationOrderAccessor(parser);
+      RelationOrderData relationData = new RelationOrderData(accessor, artifact);
+      relationData.load();
+
+      for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : relationData.getOrderedEntrySet()) {
+         content.append(
+            "Relation Type: " + entry.getKey().getFirst().getName() + " - " + entry.getKey().getSecond().name());
+         content.append(isEditable ? "\nEDIT START\n" : "\nCOMPARE START\n");
+         List<String> guids = entry.getValue().getSecond();
+         for (String guid : guids) {
+            Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
+            if (art.isValid()) {
+               // Builds a string looking like "ARTIFACT '#ArtId' - 'ArtName'
+               String artifactString = "ARTIFACT '" + art.getArtId() + "' - '" + art.getName() + "'\n";
+               content.append(artifactString);
+            }
+         }
+         content.append(isEditable ? "EDIT END\n" : "COMPARE END\n");
+      }
+
+      return new RelationOrderCompareItem(attributeConflict, relationData, name, content.toString(), isEditable, image,
+         diffFile);
    }
 
    private static void nativeContentAlert(Shell shell) {

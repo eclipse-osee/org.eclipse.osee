@@ -31,10 +31,10 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class CompareHandler {
-   private final CompareItem leftCompareItem;
-   private final CompareItem rightCompareItem;
-   private final CompareItem parentCompareItem;
-   private String title;
+   protected final CompareItem leftCompareItem;
+   protected final CompareItem rightCompareItem;
+   protected final CompareItem parentCompareItem;
+   protected String title;
 
    /**
     * The left string is the 'Was' content and the right is the 'Is" content
