@@ -58,12 +58,12 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
                   if (changesExistToCommit) {
                      boolean allObjectsToCommitToConfigured = branchService.isAllObjectsToCommitToConfigured(teamWf);
                      if (!allObjectsToCommitToConfigured) {
-                        return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
+                        return new WidgetResult(WidgetStatus.Invalid_Incompleted,
                            TransitionResult.NOT_ALL_BRANCHES_COMMITTED.toString());
                      }
                      if (!transitionToWithWorkingBranchRuleExists(toStateDef) && !branchService.isBranchesAllCommitted(
                         teamWf)) {
-                        return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
+                        return new WidgetResult(WidgetStatus.Invalid_Incompleted,
                            TransitionResult.NOT_ALL_BRANCHES_COMMITTED.toString());
                      }
                   }
@@ -71,7 +71,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-            return new WidgetResult(WidgetStatus.Exception, widgetDef, ex,
+            return new WidgetResult(WidgetStatus.Exception, ex,
                "Exception validating Commits for transition validation [%s]; see error log", ex.getLocalizedMessage());
          }
       }

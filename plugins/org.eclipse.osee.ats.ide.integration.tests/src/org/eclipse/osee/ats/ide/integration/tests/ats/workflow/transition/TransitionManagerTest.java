@@ -619,51 +619,37 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // Setup - Transition to Implement
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("create");
       Result result = AtsTestUtil.transitionTo(AtsTestUtilState.Implement,
-         AtsClientService.get().getUserService().getCurrentUser(), changes, TransitionOption.OverrideAssigneeCheck);
-      changes.execute();
+         AtsClientService.get().getUserService().getCurrentUser(), TransitionOption.OverrideAssigneeCheck);
+
       Assert.assertTrue("Transition Error: " + result.getText(), result.isTrue());
       Assert.assertEquals("Implement", teamArt.getCurrentStateName());
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to completed should set percent to 100
-      changes.clear();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getCompletedStateDef().getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
-      TransitionResults results = new TransitionResults();
-      transMgr.handleTransition(results);
-      changes.execute();
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Completed", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
 
       // Transition to Implement should set percent to 0
-      changes.clear();
       helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
-      transMgr = new TransitionManager(helper);
-      results = new TransitionResults();
-      transMgr.handleTransition(results);
-      changes.execute();
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      AtsClientService.get().getWorkItemService().transition(helper);
 
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Implement", teamArt.getCurrentStateName());
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to Cancelled should set percent to 0
-      changes.clear();
       helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getCancelledStateDef().getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
-      transMgr = new TransitionManager(helper);
-      results = new TransitionResults();
-      transMgr.handleTransition(results);
-      changes.execute();
-
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      AtsClientService.get().getWorkItemService().transition(helper);
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());

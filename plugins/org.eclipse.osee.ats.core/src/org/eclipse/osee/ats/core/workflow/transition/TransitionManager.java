@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -52,14 +53,17 @@ import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
- * This class should NOT be used on client. Use AtsClientService.get().getWorkItemService().transition() instead.
+ * This class should NOT be used on the IDE client except in integration tests. Use
+ * AtsClientService.get().getWorkItemServiceClient().transition() instead.
  *
  * @author Donald G. Dunne
  */
@@ -87,10 +91,10 @@ public class TransitionManager implements IExecuteListener {
       this.taskService = helper.getServices().getTaskService();
       this.storeService = helper.getServices().getStoreService();
       this.workItemFromStateMap = new HashMap<>();
-      //      if (helper.getServices().isIde()) {
-      //         OseeLog.log(TransitionManager.class, Level.WARNING,
-      //            "TransitionManager should NOT be used on client.  Use AtsClientService.get().getWorkItemServiceClient().transition() instead.");
-      //      }
+      if (helper.getServices().isIde() && !AtsUtil.isInTest()) {
+         OseeLog.log(TransitionManager.class, Level.WARNING,
+            "TransitionManager should NOT be used on client.  Use AtsClientService.get().getWorkItemServiceClient().transition() instead.");
+      }
    }
 
    public TransitionResults handleAll() {
@@ -123,7 +127,7 @@ public class TransitionManager implements IExecuteListener {
    private void loadWorkItems() {
       if (helper.getTransData().getWorkItems().isEmpty()) {
          for (ArtifactToken art : helper.getServices().getQueryService().getArtifacts(
-            helper.getTransData().getWorkItemIds(), helper.getServices().getAtsBranch())) {
+            Collections.castAll(helper.getTransData().getWorkItemIds()), helper.getServices().getAtsBranch())) {
             helper.getTransData().getWorkItems().add(helper.getServices().getWorkItemService().getWorkItem(art));
          }
       }
@@ -383,6 +387,8 @@ public class TransitionManager implements IExecuteListener {
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
             }
+            results.getWorkItemIds().add(ArtifactToken.valueOf(workItem.getId(), workItem.getName(),
+               BranchId.valueOf(helper.getServices().getAtsBranch().getId())));
          }
       } catch (Exception ex) {
          results.addResult(

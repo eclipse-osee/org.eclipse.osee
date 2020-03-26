@@ -40,8 +40,7 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
             if (impact.equals("Yes")) {
                String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
                if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "Must enter [%s]",
-                     widgetDef.getName());
+                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]", widgetDef.getName());
                }
             }
          }

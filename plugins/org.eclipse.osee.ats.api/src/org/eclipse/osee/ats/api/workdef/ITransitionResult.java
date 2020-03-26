@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+
 /**
  * @author Donald G. Dunne
  */
+@JsonSerialize(as = TransitionResult.class)
+@JsonDeserialize(as = TransitionResult.class)
 public interface ITransitionResult {
 
    public String getDetails();
 
-   public Exception getException();
+   public String getException();
 
 }

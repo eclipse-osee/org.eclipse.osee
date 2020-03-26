@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -65,27 +64,27 @@ public class DemoTeamWorkflowTest {
       ActionResult result =
          AtsClientService.get().getActionFactory().createAction(null, title, title, ChangeType.Improvement, "1", false,
             null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      changes.execute();
 
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       //*** Transition Action to Analyze
       TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+         null, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       //*** Transition Action to Implement
       helper = new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null,
          AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck,
          TransitionOption.OverrideTransitionValidityCheck);
-      transitionMgr = new TransitionManager(helper);
-      results = transitionMgr.handleAllAndPersist();
+      results = AtsClientService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
-      IAtsVersion sawBuild2Version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion sawBuild2Version =
+         AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
       assertNotNull(sawBuild2Version);
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
       changes.execute();

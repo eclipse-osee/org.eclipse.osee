@@ -249,7 +249,7 @@ public abstract class BranchRegressionTest {
 
    public void testSetupInitialConditions() {
       AtsUtilClient.setEmailEnabled(false);
-      AtsUtil.setIsInText(true);
+      AtsUtil.setIsInTest(true);
       monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
    }

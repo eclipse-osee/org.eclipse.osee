@@ -40,8 +40,8 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
          }
          for (String value : provider.getValues()) {
             if (!isValid(value)) {
-               return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be true or false",
-                  provider.getName(), value);
+               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be true or false", provider.getName(),
+                  value);
             }
          }
       }

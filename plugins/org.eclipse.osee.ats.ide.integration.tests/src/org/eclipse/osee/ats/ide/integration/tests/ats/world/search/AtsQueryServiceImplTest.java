@@ -49,7 +49,7 @@ public class AtsQueryServiceImplTest {
    @Test
    public void testSaveSearchAndGetSavedSearchesAndRemoveSearch() {
       AtsUser user = AtsClientService.get().getUserService().getCurrentUserNoCache();
-      AtsUtil.setIsInText(true);
+      AtsUtil.setIsInTest(true);
 
       String namespace = AtsSearchUtil.ATS_QUERY_NAMESPACE;
       ArrayList<AtsSearchData> savedSearches =

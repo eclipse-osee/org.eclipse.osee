@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -53,7 +52,6 @@ public class CompletedDateColumnTest {
             changes).getStoreObject();
       changes.execute();
 
-      changes.clear();
       Assert.assertEquals("",
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
       Date date = CompletedDateColumn.getCompletedDate(teamArt);
@@ -61,13 +59,11 @@ public class CompletedDateColumnTest {
       Assert.assertEquals("", CompletedDateColumn.getCompletedDateStr(teamArt));
 
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
-         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
+         TeamState.Completed.getName(), null, null, null, AtsClientService.get().getServices(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAllAndPersist();
+      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      changes.clear();
       date = CompletedDateColumn.getCompletedDate(teamArt);
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CompletedDateColumn.getCompletedDateStr(teamArt));
@@ -75,13 +71,11 @@ public class CompletedDateColumnTest {
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
 
       helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null,
          AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
-      transitionMgr = new TransitionManager(helper);
-      results = transitionMgr.handleAll();
+      results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
-      changes.execute();
 
       Assert.assertEquals("Cancelled date should be blank again", "",
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));

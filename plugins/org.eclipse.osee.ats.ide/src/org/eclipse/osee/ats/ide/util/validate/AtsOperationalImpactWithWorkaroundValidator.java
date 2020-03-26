@@ -39,8 +39,7 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
             if (impact.equals("Yes")) {
                String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
                if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "Must enter [%s]",
-                     AtsAttributeTypes.OperationalImpactDescription.getName());
+                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]", AtsAttributeTypes.OperationalImpactDescription.getName());
                }
             }
             String workaroundChecked =
@@ -49,8 +48,7 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
                String desc =
                   teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
                if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "Must enter [%s]",
-                     AtsAttributeTypes.OperationalImpactWorkaroundDescription.getName());
+                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]", AtsAttributeTypes.OperationalImpactWorkaroundDescription.getName());
                }
             }
 

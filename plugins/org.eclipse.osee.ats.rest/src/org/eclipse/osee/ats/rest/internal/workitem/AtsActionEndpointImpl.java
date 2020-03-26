@@ -732,7 +732,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transition(TransitionData transData) {
-      return atsApi.getWorkItemService().transition(transData);
+      TransitionResults results = atsApi.getWorkItemService().transition(transData);
+      return results;
    }
 
    @Path("transitionValidate")

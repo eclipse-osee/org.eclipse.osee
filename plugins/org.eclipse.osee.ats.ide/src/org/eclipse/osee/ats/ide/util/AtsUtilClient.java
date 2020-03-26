@@ -12,15 +12,15 @@ package org.eclipse.osee.ats.ide.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionWorkItemResult;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
@@ -88,17 +88,17 @@ public class AtsUtilClient {
     */
    public static void logExceptions(TransitionResults transResult) {
       for (ITransitionResult result : transResult.getResults()) {
-         Exception ex = result.getException();
-         if (ex != null) {
-            OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails(), ex);
+         String ex = result.getException();
+         if (Strings.isValid(ex)) {
+            OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails() + "\n\n" + ex);
          }
       }
-      for (Entry<IAtsWorkItem, List<ITransitionResult>> entry : transResult.getWorkItemToResults().entrySet()) {
-         for (ITransitionResult result : entry.getValue()) {
-            Exception ex = result.getException();
-            if (ex != null) {
-               String message = entry.getKey().toStringWithId() + " - " + result.getDetails();
-               OseeLog.log(TransitionResults.class, Level.SEVERE, message, ex);
+      for (TransitionWorkItemResult transitionWorkItemResult : transResult.getTransitionWorkItems()) {
+         for (ITransitionResult result : transitionWorkItemResult.getResults()) {
+            String ex = result.getException();
+            if (Strings.isValid(ex)) {
+               String message = transitionWorkItemResult.getWorkItem().toStringWithId() + " - " + result.getDetails();
+               OseeLog.log(TransitionResults.class, Level.SEVERE, message + "\n\n" + ex);
             }
          }
       }

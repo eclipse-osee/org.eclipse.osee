@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskStates;
@@ -33,7 +31,7 @@ public class TaskTestUtil {
       // utility class
    }
 
-   public static Result transitionToCompleted(TaskArtifact taskArt, double estimatedHours, double additionalHours, IAtsChangeSet changes) {
+   public static Result transitionToCompleted(TaskArtifact taskArt, double estimatedHours, double additionalHours) {
       if (taskArt.isInState(TeamState.Completed)) {
          return Result.TrueResult;
       }
@@ -47,9 +45,8 @@ public class TaskTestUtil {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
       }
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-         TaskStates.Completed.getName(), null, null, changes, AtsClientService.get().getServices());
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+         TaskStates.Completed.getName(), null, null, null, AtsClientService.get().getServices());
+      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
 
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -57,15 +54,14 @@ public class TaskTestUtil {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, AtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes) {
+   public static Result transitionToInWork(TaskArtifact taskArt, AtsUser toUser, int percentComplete, double additionalHours) {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
       TransitionHelper helper = new TransitionHelper("Transition to InWork", Arrays.asList(taskArt),
-         TaskStates.InWork.getName(), Arrays.asList(toUser), null, changes, AtsClientService.get().getServices(),
+         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsClientService.get().getServices(),
          TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
       }
@@ -73,9 +69,6 @@ public class TaskTestUtil {
          taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true,
             AtsClientService.get().getUserService().getCurrentUser());
-      }
-      if (changes != null) {
-         taskArt.save(changes);
       }
       return Result.TrueResult;
    }

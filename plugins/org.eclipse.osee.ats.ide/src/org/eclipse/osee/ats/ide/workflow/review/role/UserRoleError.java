@@ -46,7 +46,7 @@ public enum UserRoleError {
       if (this == None) {
          return WidgetResult.Valid;
       }
-      return new WidgetResult(widgetStatus, widgetDef, getError());
+      return new WidgetResult(widgetStatus, getError());
    }
 
 }

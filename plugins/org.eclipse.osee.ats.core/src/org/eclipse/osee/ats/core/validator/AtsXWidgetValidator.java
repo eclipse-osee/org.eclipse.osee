@@ -47,11 +47,10 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
    public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition",
-            widgetDef.getName());
+         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition", widgetDef.getName());
       } else if (isTransitionToComplete(toStateDef) && isRequiredForCompletion(widgetDef) && isEmptyValue(provider)) {
-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition to [%s]",
-            widgetDef.getName(), toStateDef.getName());
+         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]", widgetDef.getName(),
+            toStateDef.getName());
       }
       return WidgetResult.Valid;
    }
@@ -63,8 +62,8 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
-               return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be in future",
-                  valueProvider.getName(), DateUtil.get(date, DateUtil.MMDDYYHHMM));
+               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be in future", valueProvider.getName(),
+                  DateUtil.get(date, DateUtil.MMDDYYHHMM));
             }
          }
       }
@@ -84,8 +83,8 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
                   return result;
                }
             } else {
-               return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid float",
-                  valueProvider.getName(), attrStr);
+               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid float", valueProvider.getName(),
+                  attrStr);
             }
          }
       }
@@ -105,8 +104,8 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
                   return result;
                }
             } else {
-               return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid integer",
-                  valueProvider.getName(), attrStr);
+               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid integer", valueProvider.getName(),
+                  attrStr);
             }
          }
       }
@@ -118,11 +117,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       Double maxValue = widgetDef.getMax();
 
       if (minValue != null && Lib.lessThan(value, minValue)) {
-         return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be >= [%s]",
-            valueProviderName, value, minValue);
+         return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be >= [%s]", valueProviderName,
+            value, minValue);
       } else if (maxValue != null && Lib.greaterThan(value, maxValue)) {
-         return new WidgetResult(WidgetStatus.Invalid_Range, widgetDef, "[%s] value [%s] must be <= [%s]",
-            valueProviderName, value, minValue, maxValue);
+         return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be <= [%s]", valueProviderName,
+            value, minValue, maxValue);
       }
 
       return WidgetResult.Valid;

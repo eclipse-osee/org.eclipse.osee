@@ -10,34 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+
 /**
  * @author Donald G. Dunne
  */
 public class WidgetResult implements ITransitionResult {
 
    private final WidgetStatus status;
-   private final IAtsWidgetDefinition widgetDef;
    private final String message;
-   public static WidgetResult Valid = new WidgetResult(WidgetStatus.Valid, null, "");
-   private final Exception exception;
+   public static WidgetResult Valid = new WidgetResult(WidgetStatus.Valid, "");
+   private String exception = "";
 
-   public WidgetResult(WidgetStatus status, IAtsWidgetDefinition widgetDef, String message) {
-      this(status, widgetDef, null, message);
+   public WidgetResult(WidgetStatus status, String format, Object... object) {
+      this(status, null, format, object);
    }
 
-   public WidgetResult(WidgetStatus status, IAtsWidgetDefinition widgetDef, String format, Object... object) {
-      this(status, widgetDef, null, format, object);
-   }
-
-   public WidgetResult(WidgetStatus status, IAtsWidgetDefinition widgetDef, Exception exception, String message) {
+   public WidgetResult(WidgetStatus status, Exception exception, String format, Object... objects) {
       this.status = status;
-      this.widgetDef = widgetDef;
-      this.exception = exception;
-      this.message = message;
-   }
-
-   public WidgetResult(WidgetStatus status, IAtsWidgetDefinition widgetDef, Exception exception, String format, Object... object) {
-      this(status, widgetDef, exception, String.format(format, object));
+      if (exception != null) {
+         this.exception = Lib.exceptionToString(exception);
+      }
+      this.message = String.format(format, objects);
    }
 
    public boolean isValid() {
@@ -46,10 +40,6 @@ public class WidgetResult implements ITransitionResult {
 
    public WidgetStatus getStatus() {
       return status;
-   }
-
-   public IAtsWidgetDefinition getWidgetDef() {
-      return widgetDef;
    }
 
    @Override
@@ -62,11 +52,11 @@ public class WidgetResult implements ITransitionResult {
 
    @Override
    public String toString() {
-      return String.format("%s - %s - %s", status, widgetDef.getName(), message);
+      return String.format("%s - %s", status, message);
    }
 
    @Override
-   public Exception getException() {
+   public String getException() {
       return exception;
    }
 }

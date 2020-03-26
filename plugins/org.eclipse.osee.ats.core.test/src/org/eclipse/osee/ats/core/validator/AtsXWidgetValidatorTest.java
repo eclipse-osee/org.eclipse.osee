@@ -92,7 +92,6 @@ public class AtsXWidgetValidatorTest {
       WidgetResult result =
          validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
 
       toStateDef.setName("completed");
@@ -102,7 +101,6 @@ public class AtsXWidgetValidatorTest {
       result =
          validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
 
       // change widget to required_for_completed, turn off required_for_transition
@@ -124,7 +122,6 @@ public class AtsXWidgetValidatorTest {
       result =
          validator.validateWidgetIsRequired(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
       Assert.assertTrue(Strings.isValid(result.getDetails()));
    }
 

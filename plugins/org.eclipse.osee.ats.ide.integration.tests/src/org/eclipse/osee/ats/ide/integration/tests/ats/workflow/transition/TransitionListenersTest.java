@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -116,6 +117,7 @@ public class TransitionListenersTest {
          AtsClientService.get().getWorkItemService().addTransitionHook(listener3);
          AtsClientService.get().getWorkItemService().addTransitionHook(listener4);
 
+         AtsUtil.setIsInTest(true);
          transMgr.handleTransitionValidation(results);
          Assert.assertTrue(results.contains(reason1));
          Assert.assertTrue(results.contains(reason2));

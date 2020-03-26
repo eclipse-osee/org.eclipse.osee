@@ -25,7 +25,6 @@ public class ValidatorTestUtil {
 
    public static void assertValidResult(WidgetResult result) {
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
-      Assert.assertNull(result.getWidgetDef());
       Assert.assertEquals(WidgetStatus.Valid.name(), result.getDetails());
    }
 

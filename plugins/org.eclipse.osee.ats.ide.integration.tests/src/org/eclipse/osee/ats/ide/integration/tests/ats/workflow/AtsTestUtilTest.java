@@ -133,10 +133,10 @@ public class AtsTestUtilTest extends AtsTestUtil {
       for (IStateToken toState : Arrays.asList(TeamState.Implement, TeamState.Completed, TeamState.Implement,
          TeamState.Cancelled, TeamState.Implement)) {
          TransitionHelper helper = new TransitionHelper("test", Arrays.asList(teamArt), toState.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), "", null, null,
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), "cancelled", null, null,
             TransitionOption.OverrideTransitionValidityCheck);
          TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
-         Assert.assertTrue(results.isSuccess());
+         Assert.assertTrue(results.toString(), results.isSuccess());
          Assert.assertEquals(toState.getName(), teamArt.getCurrentStateName());
       }
 

@@ -50,7 +50,7 @@ public class AtsXWidgetValidateManager {
                   results.add(status);
                }
             } catch (Exception ex) {
-               results.add(new WidgetResult(WidgetStatus.Exception, widgetDef, ex,
+               results.add(new WidgetResult(WidgetStatus.Exception, ex,
                   String.format("Exception retrieving validation for widget [%s] Exception [%s]",
                      validator.getClass().getSimpleName(), ex.getLocalizedMessage()),
                   ex));

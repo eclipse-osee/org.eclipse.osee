@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workflow.transition;
 
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -49,12 +50,18 @@ public class TransitionResult implements ITransitionResult {
    public static TransitionResult WORKITEM_DELETED =
       new TransitionResult("Work Item has been deleted.  Transition is invalid.");
 
-   private final String details;
-   private final Exception exception;
+   private String details;
+   private String exception;
+
+   public TransitionResult() {
+      // for jax-rs
+   }
 
    public TransitionResult(String details, Exception ex) {
       this.details = details;
-      this.exception = ex;
+      if (ex != null) {
+         this.exception = Lib.exceptionToString(ex);
+      }
    }
 
    public TransitionResult(String details) {
@@ -72,8 +79,16 @@ public class TransitionResult implements ITransitionResult {
    }
 
    @Override
-   public Exception getException() {
+   public String getException() {
       return exception;
+   }
+
+   public void setDetails(String details) {
+      this.details = details;
+   }
+
+   public void setException(String exception) {
+      this.exception = exception;
    }
 
 }

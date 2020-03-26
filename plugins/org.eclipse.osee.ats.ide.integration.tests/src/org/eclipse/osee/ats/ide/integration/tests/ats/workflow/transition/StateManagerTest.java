@@ -11,11 +11,9 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Collections;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -43,24 +41,22 @@ public class StateManagerTest {
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getAnalyzeStateDef(), 1.1, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      teamWf.persist(getClass().getSimpleName());
 
       ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getImplementStateDef().getName(),
-         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
-      TransitionManager manager = new TransitionManager(helper);
-      TransitionResults results = manager.handleAllAndPersist();
+         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, null);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       Assert.assertTrue(results.isEmpty());
 
-      changes.clear();
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getImplementStateDef(), 2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
+      teamWf.persist(getClass().getSimpleName());
+
       helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getCompletedStateDef().getName(),
-         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
-      manager = new TransitionManager(helper);
-      results = manager.handleAllAndPersist();
-
+         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, null);
+      results = AtsClientService.get().getWorkItemService().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       Assert.assertEquals(3.3, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);

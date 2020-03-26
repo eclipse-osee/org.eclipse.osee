@@ -18,11 +18,14 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * All client transitions should go through this service which handles transitioning on server, reloading client work
@@ -48,12 +51,14 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       return workflowHooksIde;
    }
 
-   //   @Override
-   //   public TransitionResults transition(TransitionData transData) {
-   //      populateTransitionData(transData);
-   //      TransitionResults results = atsApi.getServerEndpoints().getActionEndpoint().transition(transData);
-   //      return postEventAndReturn(transData, results);
-   //   }
+   @Override
+   public TransitionResults transition(TransitionData transData) {
+      populateTransitionData(transData);
+      TransitionResults results = atsApi.getServerEndpoints().getActionEndpoint().transition(transData);
+      results.setAtsApi(atsApi);
+      results = postEventAndReturn(transData, results);
+      return results;
+   }
 
    private void populateTransitionData(TransitionData transData) {
       for (IAtsWorkItem workItem : transData.getWorkItems()) {
@@ -64,23 +69,29 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       }
    }
 
-   //   @Override
-   //   public TransitionResults transition(ITransitionHelper helper) {
-   //      return transition(helper.getTransData());
-   //   }
-   //
-   //   @Override
-   //   public TransitionResults transitionValidate(TransitionData transData) {
-   //      populateTransitionData(transData);
-   //      TransitionResults results = atsApi.getServerEndpoints().getActionEndpoint().transitionValidate(transData);
-   //      return postEventAndReturn(transData, results);
-   //   }
+   @Override
+   public TransitionResults transition(ITransitionHelper helper) {
+      TransitionResults results = transition(helper.getTransData());
+      results.setAtsApi(atsApi);
+      return results;
+   }
+
+   @Override
+   public TransitionResults transitionValidate(TransitionData transData) {
+      populateTransitionData(transData);
+      TransitionResults results = atsApi.getServerEndpoints().getActionEndpoint().transitionValidate(transData);
+      results.setAtsApi(atsApi);
+      results = postEventAndReturn(transData, results);
+      return results;
+   }
 
    /**
     * Since transition on server, reload and post transition event for listeners to refresh. TransitionManager should
     * NOT be used on client.
     */
    private TransitionResults postEventAndReturn(TransitionData transData, TransitionResults results) {
+      Conditions.assertNotNullOrEmpty(results.getWorkItemIds(), "workItemIds");
+      ArtifactQuery.reloadArtifacts(transData.getWorkItemIds());
       if (results.isSuccess()) {
          reload(results);
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
@@ -94,7 +105,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
 
    private void reload(TransitionResults transResults) {
       List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
-      for (IAtsWorkItem workItem : transResults.getWorkItemToResults().keySet()) {
+      for (IAtsWorkItem workItem : transResults.getWorkItems()) {
          boolean changed = AtsClientService.get().getStoreService().isChangedInDb(workItem);
          if (changed) {
             workItemsToReload.add(workItem);

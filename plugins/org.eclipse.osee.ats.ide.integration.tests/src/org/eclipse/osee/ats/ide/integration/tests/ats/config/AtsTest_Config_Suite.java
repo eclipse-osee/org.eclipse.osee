@@ -39,6 +39,6 @@ public class AtsTest_Config_Suite {
 
    @BeforeClass
    public static void setup() {
-      AtsUtil.setIsInText(true);
+      AtsUtil.setIsInTest(true);
    }
 }

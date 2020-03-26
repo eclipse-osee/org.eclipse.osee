@@ -90,9 +90,9 @@ public class AtsXWidgetValidateManagerTest {
       Assert.assertFalse(results.isEmpty());
       Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);
       Assert.assertEquals(
-         "Exception - Widget Name - Exception retrieving validation for widget [AtsExceptionValidator] Exception [problem]",
+         "Exception - Exception retrieving validation for widget [AtsExceptionValidator] Exception [problem]",
          results.iterator().next().toString());
-      Assert.assertTrue(results.iterator().next().getException() instanceof OseeStateException);
+      Assert.assertTrue(results.iterator().next().getException().contains("OseeStateException"));
       manager.removeWidgetValidatorProvider(provider);
    }
 
@@ -100,7 +100,7 @@ public class AtsXWidgetValidateManagerTest {
 
       @Override
       public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-         return new WidgetResult(WidgetStatus.Valid, null, "Here it is");
+         return new WidgetResult(WidgetStatus.Valid, "Here it is");
       }
 
    }
@@ -108,7 +108,7 @@ public class AtsXWidgetValidateManagerTest {
 
       @Override
       public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, null, "Here it is");
+         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Here it is");
       }
 
    }

@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -539,24 +538,24 @@ public class AtsTestUtil {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
-      return transitionTo(teamWf, atsTestUtilState, user, changes, transitionOptions);
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user, TransitionOption... transitionOptions) {
+      return transitionTo(teamWf, atsTestUtilState, user, transitionOptions);
    }
 
-   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
+   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user, TransitionOption... transitionOptions) {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
 
       if (atsTestUtilState == AtsTestUtilState.Cancelled) {
-         Result result = transitionToState(teamWf, AtsTestUtilState.Cancelled, user, changes, transitionOptions);
+         Result result = transitionToState(teamWf, AtsTestUtilState.Cancelled, user, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
          return Result.TrueResult;
       }
 
-      Result result = transitionToState(teamWf, AtsTestUtilState.Implement, user, changes, transitionOptions);
+      Result result = transitionToState(teamWf, AtsTestUtilState.Implement, user, transitionOptions);
       if (result.isFalse()) {
          return result;
       }
@@ -566,7 +565,7 @@ public class AtsTestUtil {
       }
 
       if (atsTestUtilState == AtsTestUtilState.Completed) {
-         result = transitionToState(teamWf, AtsTestUtilState.Completed, user, changes, transitionOptions);
+         result = transitionToState(teamWf, AtsTestUtilState.Completed, user, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
@@ -576,12 +575,10 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
-      TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf), toState.getName(),
-            Arrays.asList(user), null, changes, AtsClientService.get().getServices(), transitionOptions);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, TransitionOption... transitionOptions) {
+      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
+         toState.getName(), Arrays.asList(user), null, null, AtsClientService.get().getServices(), transitionOptions);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       if (results.isEmpty()) {
          return Result.TrueResult;
       }

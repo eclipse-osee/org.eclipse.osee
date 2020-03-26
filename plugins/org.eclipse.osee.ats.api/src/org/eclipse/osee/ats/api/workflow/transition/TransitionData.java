@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 public class TransitionData {
 
    private String cancellationReason;
-   private Collection<ArtifactId> workItemIds = new HashSet<>();
+   private Collection<ArtifactToken> workItemIds = new HashSet<>();
    private String name;
    private Collection<TransitionOption> transitionOptions = new HashSet<>();
    private Collection<AtsUser> toAssignees = new HashSet<>();
@@ -46,11 +46,11 @@ public class TransitionData {
       this.cancellationReason = cancellationReason;
    }
 
-   public Collection<ArtifactId> getWorkItemIds() {
+   public Collection<ArtifactToken> getWorkItemIds() {
       return workItemIds;
    }
 
-   public void setWorkItemIds(Collection<ArtifactId> workItemIds) {
+   public void setWorkItemIds(Collection<ArtifactToken> workItemIds) {
       this.workItemIds = workItemIds;
    }
 

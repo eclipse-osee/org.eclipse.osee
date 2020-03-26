@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
@@ -63,12 +62,10 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHoo
          teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf),
-         TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         changes, TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAllAndPersist();
+      MockTransitionHelper helper =
+         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf), TeamState.Implement.getName(),
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 
