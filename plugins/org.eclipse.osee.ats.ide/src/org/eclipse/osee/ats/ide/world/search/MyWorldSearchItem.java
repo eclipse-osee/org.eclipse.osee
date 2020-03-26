@@ -26,8 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class MyWorldSearchItem extends UserSearchItem {
 
-   public MyWorldSearchItem(String name) {
+   public MyWorldSearchItem(String name, boolean currentUser) {
       this(name, null);
+      setUseCurrentUser(currentUser);
    }
 
    public MyWorldSearchItem(String name, AtsUser user) {

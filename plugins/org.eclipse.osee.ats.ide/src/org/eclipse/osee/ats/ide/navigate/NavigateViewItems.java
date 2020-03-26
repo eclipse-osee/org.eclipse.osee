@@ -163,7 +163,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
 
-         items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", null)));
+         items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", true)));
          items.add(new RecentlyVisitedNavigateItems(item));
          items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
 
@@ -204,7 +204,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       new SearchNavigateItem(advancedSearchesItems, new MySubscribedSearchItem("My Subscribed", null));
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchTeamWorkflowSearchItem());
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchTaskSearchItem());
-      new SearchNavigateItem(advancedSearchesItems, new MyWorldSearchItem("User's World"));
+      new SearchNavigateItem(advancedSearchesItems, new MyWorldSearchItem("User's World", false));
       new ArtifactImpactToActionSearchItem(advancedSearchesItems);
       new SearchNavigateItem(advancedSearchesItems, new AtsSearchGoalSearchItem());
 

@@ -31,6 +31,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    protected AtsUser user;
    protected AtsUser selectedUser;
    private Active active = Active.Active;
+   private boolean useCurrentUser = true;
 
    public UserSearchItem(String name, AtsUser user) {
       super(name);
@@ -50,10 +51,11 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       super(userSearchItem, oseeImage);
       this.user = userSearchItem.user;
       this.selectedUser = userSearchItem.selectedUser;
+      this.useCurrentUser = userSearchItem.useCurrentUser;
    }
 
-   private AtsUser getUser() {
-      if (this.user == null) {
+   protected AtsUser getUser() {
+      if (this.user == null && useCurrentUser) {
          this.user = AtsClientService.get().getUserService().getCurrentUser();
       }
       return this.user;
@@ -172,6 +174,10 @@ public abstract class UserSearchItem extends WorldUISearchItem {
 
    public void setActive(Active active) {
       this.active = active;
+   }
+
+   public void setUseCurrentUser(boolean useCurrentUser) {
+      this.useCurrentUser = useCurrentUser;
    }
 
 }
