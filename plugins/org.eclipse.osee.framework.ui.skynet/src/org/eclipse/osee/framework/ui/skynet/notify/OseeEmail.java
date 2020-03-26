@@ -30,8 +30,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.apache.commons.lang.RandomStringUtils;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
@@ -39,6 +42,8 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Michael A. Winston
@@ -67,7 +72,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Constructs an AEmail with the given arguments
-    * 
+    *
     * @param toAddresses - a list of valid addresses to send the message TO
     * @param fromAddress - the sender of the message
     * @param replyToAddress - a valid address of who the message should reply to
@@ -97,7 +102,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Constructs an AEmail with the given arguments
-    * 
+    *
     * @param subject - the subject of the message
     * @param body - the text/html of the body
     * @param bodyType - Html or Text
@@ -109,7 +114,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds a single address to the recipient list
-    * 
+    *
     * @param addresses - a valid address to send the message TO
     */
    public void addRecipients(String addresses) throws MessagingException {
@@ -118,7 +123,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds a list of addresses to the recipient list
-    * 
+    *
     * @param addresses - a list of valid addresses to send the message TO
     */
    public void addRecipients(String[] addresses) throws MessagingException {
@@ -127,7 +132,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds a list of addresses to the corresponding recipient list
-    * 
+    *
     * @param type - specifies which field the address should be put in
     * @param addresses - a list of valid addresses to send the message
     */
@@ -146,7 +151,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets the recipient TO field
-    * 
+    *
     * @param addresses - a valid address to send the message TO
     */
    public void setRecipients(String addresses) throws MessagingException {
@@ -155,7 +160,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets a list of addresses to the recipient list
-    * 
+    *
     * @param addresses - a list of valid addresses to send the message TO
     */
    public void setRecipients(String[] addresses) throws MessagingException {
@@ -164,7 +169,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets a list of addresses to the corresponding recipient list
-    * 
+    *
     * @param type - specifies which field the address should be put in
     * @param addresses - a list of valid addresses to send the message
     */
@@ -183,7 +188,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets the from address
-    * 
+    *
     * @param address - the user name the message is from
     */
    // Set all the From Values
@@ -193,7 +198,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets the address to reply to (if different than the from addresss)
-    * 
+    *
     * @param address - a valid address to reply to
     */
    public void setReplyTo(String address) throws MessagingException {
@@ -204,7 +209,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Gets the current Body Type of the message. NULL if one is not selected yet.
-    * 
+    *
     * @return A String representation of the current Body Type
     */
    public String getBodyType() {
@@ -213,7 +218,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Sets the text in the body of the message.
-    * 
+    *
     * @param text - the text to for the body of the message
     */
    public void setBody(String text) {
@@ -223,7 +228,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds text to the body if the Body Type is "plain". If the body doesn't exist yet, then calls setBody.
-    * 
+    *
     * @param text - the text to add to the body
     */
    public void addBody(String text) {
@@ -237,7 +242,7 @@ public class OseeEmail extends MimeMessage {
    /**
     * Sets the text in the body of the HTML message. This will already add the &lthtml&gt&ltbody&gt and
     * &lt/body&gt&lt/html&gt tags.
-    * 
+    *
     * @param htmlText - the text for the body of the HTML message
     */
    public void setHTMLBody(String htmlText) {
@@ -247,7 +252,7 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds text to the HTML body if the Body Type is "html". If the body doesn't exist yet, then calls setHTMLBody.
-    * 
+    *
     * @param htmlText - the text to add to the HTML body
     */
    public void addHTMLBody(String htmlText) {
@@ -276,17 +281,15 @@ public class OseeEmail extends MimeMessage {
 
       @Override
       public void run() {
-         try {
-            email.sendLocalThread();
-         } catch (MessagingException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         XResultData results = email.sendLocalThread();
+         if (results.isFailed()) {
+            XResultDataUI.report(results, "Email Send Failed");
          }
       }
    }
 
-   public void sendLocalThread() throws MessagingException {
+   public XResultData sendLocalThread() {
+      XResultData results = new XResultData();
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {
@@ -311,14 +314,25 @@ public class OseeEmail extends MimeMessage {
          mainMessage.addBodyPart(messageBodyPart, 0);
          setContent(mainMessage);
          Transport.send(this);
+      } catch (Exception ex) {
+         String extension = ".txt";
+         if (body.startsWith("<html>")) {
+            extension = ".html";
+         }
+         String filename = "osee_email_backup_" + RandomStringUtils.randomAlphanumeric(8) + extension;
+         File file = OseeData.writeToFile(filename, body);
+         results.errorf("Exception sending message [%s] contents stored in [%s]", Lib.exceptionToString(ex),
+            file.getAbsolutePath());
+         Program.launch(file.getAbsolutePath());
       } finally {
          Thread.currentThread().setContextClassLoader(original);
       }
+      return results;
    }
 
    /**
     * Gets the current session
-    * 
+    *
     * @return the Current SMTP Session
     */
    private static Session getSession() {

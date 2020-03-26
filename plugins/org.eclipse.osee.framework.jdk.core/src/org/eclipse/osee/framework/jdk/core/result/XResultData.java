@@ -308,4 +308,8 @@ public class XResultData {
    public void setLogToSysErr(boolean logToSysErr) {
       this.logToSysErr = logToSysErr;
    }
+
+   public boolean isFailed() {
+      return !isSuccess();
+   }
 }

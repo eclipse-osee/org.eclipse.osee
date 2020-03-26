@@ -11,8 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.concurrent.Callable;
-import javax.mail.MessagingException;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 public final class SendEmailCall implements Callable<String> {
    private final OseeEmail emailMessage;
@@ -24,12 +25,10 @@ public final class SendEmailCall implements Callable<String> {
    }
 
    @Override
-   public String call() throws Exception {
-      try {
-         emailMessage.sendLocalThread();
-      } catch (MessagingException ex) {
-         return String.format("An exception occured with sending the email [%s].  %s", description, ex);
-      }
-      return String.format("Sucess for [%s]", description);
+   public String call() {
+      XResultData results = emailMessage.sendLocalThread();
+      results.log(description);
+      XResultDataUI.report(results, description);
+      return results.toString();
    }
 }
