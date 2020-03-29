@@ -30,12 +30,15 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
 
       RelationTypeSide relationType = criteria.getType();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      String relAlias = writer.writeTable(OseeDb.RELATION_TABLE);
+      String relAlias = writer.writeTable(criteria.getType());
       writer.write(", ");
       String txsAlias = writer.writeTable(OseeDb.TXS_TABLE);
       writer.write(" WHERE ");
-      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", relationType);
-
+      if (criteria.getType().isNewRelationTable()) {
+         writer.writeEqualsParameterAnd(relAlias, "rel_type", relationType);
+      } else {
+         writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", relationType);
+      }
       List<String> aliases = writer.getAliases(OseeDb.ARTIFACT_TABLE);
       String side = relationType.getSide().isSideA() ? "a" : "b";
       int aSize = aliases.size();

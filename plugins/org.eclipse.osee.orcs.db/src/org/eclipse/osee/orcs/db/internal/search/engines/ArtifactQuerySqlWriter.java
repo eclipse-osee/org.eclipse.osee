@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -41,7 +42,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder() {
+   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
       if (rootQueryData.isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");

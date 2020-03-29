@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -88,7 +89,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          context.getJoins().clear();
          context.getParameters().clear();
       }
-      tableEntries.clear();
+      getTableEntries().clear();
       aliasManager.reset();
       level = 0;
       firstCte = true;
@@ -118,7 +119,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
       removeDanglingSeparator("\n WHERE ");
 
-      writeGroupAndOrder();
+      writeGroupAndOrder(handlers);
       return cteAlias;
    }
 
@@ -226,8 +227,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeTxBranchFilter(String txsAlias) {
       boolean allowDeleted =
-         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(getOptions())
-            || OptionsUtil.areDeletedRelationsIncluded(getOptions());
+         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
+            getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
       writeTxBranchFilter(txsAlias, allowDeleted);
    }
 
@@ -274,11 +275,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected abstract void writeGroupAndOrder();
+   protected abstract void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers);
 
    protected void writeTables() {
       boolean first = true;
-      for (String tableEntry : tableEntries) {
+      for (String tableEntry : getTableEntries()) {
          if (first) {
             first = false;
          } else {
@@ -286,7 +287,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          }
          write(tableEntry);
       }
-      tableEntries.clear();
+      getTableEntries().clear();
    }
 
    protected void computeTables(Iterable<SqlHandler<?>> handlers) {
@@ -404,13 +405,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return addTable(table, table.getObjectType());
    }
 
+   public String addTable(RelationTypeToken relationType) {
+      return addTable(getRelationTable(relationType));
+   }
+
    public void addTable(String tableName) {
-      tableEntries.add(tableName);
+      getTableEntries().add(tableName);
    }
 
    public String addTable(SqlTable table, ObjectType objectType) {
       String alias = getNextAlias(table.getPrefix(), objectType);
-      tableEntries.add(String.format("%s %s", table.getName(), alias));
+      getTableEntries().add(String.format("%s %s", table.getName(), alias));
       if (multiTableHintParameter.length() > 0) {
          multiTableHintParameter = multiTableHintParameter + " " + alias;
       } else {
@@ -435,6 +440,14 @@ public abstract class AbstractSqlWriter implements HasOptions {
       String alias = getNextAlias(table);
       write("%s %s", table.getName(), alias);
       return alias;
+   }
+
+   public String writeTable(RelationTypeToken relationType) {
+      return writeTable(getRelationTable(relationType));
+   }
+
+   private SqlTable getRelationTable(RelationTypeToken relationType) {
+      return relationType.isNewRelationTable() ? OseeDb.RELATION_TABLE2 : OseeDb.RELATION_TABLE;
    }
 
    public void write(String format, Object... params) {
@@ -550,5 +563,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public JdbcClient getJdbcClient() {
       return jdbcClient;
+   }
+
+   public List<String> getTableEntries() {
+      return tableEntries;
    }
 }

@@ -24,8 +24,10 @@ import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.db.internal.loader.handlers.RelationSqlHandler2;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -52,7 +54,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder() {
+   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
       String artAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
       String txAlias = getLastAlias(OseeDb.TXS_TABLE);
 
@@ -60,8 +62,13 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (hasAlias(OseeDb.ATTRIBUTE_TABLE)) {
          write(", %s.attr_id", getLastAlias(OseeDb.ATTRIBUTE_TABLE));
       }
+
       if (hasAlias(OseeDb.RELATION_TABLE)) {
-         write(", %s.rel_link_id", getLastAlias(OseeDb.RELATION_TABLE));
+         if (((List) handlers).get(0).getClass().equals(RelationSqlHandler2.class)) {
+            write(", %s.rel_order", getLastAlias(OseeDb.RELATION_TABLE2));
+         } else {
+            write(", %s.rel_link_id", getLastAlias(OseeDb.RELATION_TABLE));
+         }
       }
       write(", %s.transaction_id desc", txAlias);
    }
