@@ -54,7 +54,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       } else {
          artAlias0 = artAliases.iterator().next();
       }
-      relAlias1 = writer.addTable(OseeDb.RELATION_TABLE);
+      relAlias1 = writer.addTable(criteria.getType());
       txsAlias1 = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
 
       String branchAlias = writer.getFirstAlias(OseeDb.BRANCH_TABLE);

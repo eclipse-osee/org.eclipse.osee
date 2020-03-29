@@ -52,7 +52,7 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       if (sourceArtTable != null) {
          writer.addTable(sourceArtTable);
       }
-      relAlias = writer.addTable(OseeDb.RELATION_TABLE);
+      relAlias = writer.addTable(criteria.getType());
       relTxsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
@@ -79,7 +79,11 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       }
 
       writer.writeEqualsAnd(sourceArtTable, sourceArtColumn, relAlias, fromArtField);
-      writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", typeSide.getRelationType());
+      if (criteria.getType().isNewRelationTable()) {
+         writer.writeEqualsParameterAnd(relAlias, "rel_type", typeSide.getRelationType());
+      } else {
+         writer.writeEqualsParameterAnd(relAlias, "rel_link_type_id", typeSide.getRelationType());
+      }
       writer.writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
       if (criteria.isTerminalFollow()) {

@@ -40,7 +40,11 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          cteAlias = writer.startCommonTableExpression("relTo");
 
          writer.write("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
-         writer.write(" FROM osee_txs txs, osee_relation_link rel");
+         if (criteria.getType().isNewRelationTable()) {
+            writer.write(" from osee txs, osee_relation rel");
+         } else {
+            writer.write(" FROM osee_txs txs, osee_relation_link rel");
+         }
          if (criteria.hasMultipleIds()) {
             writer.write(", ");
             writer.write(OseeDb.OSEE_JOIN_ID_TABLE.getName());
@@ -79,14 +83,18 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(OseeDb.OSEE_JOIN_ID_TABLE);
       }
-      relAlias = writer.addTable(OseeDb.RELATION_TABLE);
+      relAlias = writer.addTable(criteria.getType());
       txsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
    private void writePredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
       RelationTypeSide typeSide = criteria.getType();
       writer.write(relAliasName);
-      writer.write(".rel_link_type_id = ?");
+      if (criteria.getType().isNewRelationTable()) {
+         writer.write(".rel_type = ?");
+      } else {
+         writer.write(".rel_link_type_id = ?");
+      }
       writer.addParameter(typeSide.getGuid());
 
       writer.write(" AND ");
@@ -153,4 +161,10 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    public int getPriority() {
       return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
    }
+
+   @Override
+   public void writeSelectFields(AbstractSqlWriter writer) {
+      // Do Nothing
+   }
+
 }

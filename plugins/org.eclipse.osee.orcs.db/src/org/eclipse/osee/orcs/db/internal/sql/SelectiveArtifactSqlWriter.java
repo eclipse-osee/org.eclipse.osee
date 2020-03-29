@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -25,6 +26,7 @@ import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
@@ -40,6 +42,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private final List<Object> parameters = new ArrayList<>();
    private String fieldAlias;
    private String relsAlias;
+   private String rels2Alias;
 
    private SelectiveArtifactSqlWriter(AbstractSqlWriter parentWriter, SqlJoinFactory sqlJoinFactory, JdbcClient jdbcClient, QueryData rootQueryData) {
       super(sqlJoinFactory, jdbcClient, rootQueryData);
@@ -167,6 +170,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             fieldAlias = attsAlias;
          } else {
             writeRelsCommonTableExpression(artWithAlias);
+
+            if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+               CoreBranchCategoryTokens.MIM)) {
+               writeRelsCommonTableExpression2(artWithAlias);
+            }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
       }
@@ -181,6 +189,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       if (parentWriter == null && !rootQueryData.isCountQueryType() && !rootQueryData.isSelectQueryType()) {
          write(" ORDER BY art_id");
+
+      } else if (this.rels2Alias != null) {
+         if (this.rootQueryData.hasCriteriaType(CriteriaRelatedTo.class)) {
+            List<CriteriaRelatedTo> crt = this.rootQueryData.getCriteriaByType(CriteriaRelatedTo.class);
+            if (crt.stream().anyMatch(a -> a.getType().isNewRelationTable())) {
+               write(" ORDER BY top_rel_type, top_rel_order, rel_order");
+            } else {
+               write(" ORDER BY rel_order");
+            }
+         } else {
+            write(" ORDER BY rel_order");
+         }
       }
    }
 
@@ -189,7 +209,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
-      write(", 0 AS other_art_type_id FROM ");
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
+         write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
+      } else {
+         write(", 0 AS other_art_type_id FROM ");
+      }
       write(attsAlias);
 
       write("\n UNION ALL\n ");
@@ -218,6 +243,37 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       });
       relWriter.write(handlers);
       write(relWriter.toSql());
+
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
+         write("\n UNION ALL\n ");
+
+         SelectiveArtifactSqlWriter relWriter2 = new SelectiveArtifactSqlWriter(this);
+         relWriter2.rels2Alias = rels2Alias;
+
+         List<SqlHandler<?>> handlers2 = new ArrayList<SqlHandler<?>>();
+         handlers2.add(new SqlHandler<Criteria>() {
+            private String artAlias;
+
+            @Override
+            public void addTables(AbstractSqlWriter writer) {
+               writer.addTable(rels2Alias);
+               artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+            }
+
+            @Override
+            public void addPredicates(AbstractSqlWriter writer) {
+               writer.writeEquals(rels2Alias, "other_art_id", artAlias, "art_id");
+            }
+
+            @Override
+            public int getPriority() {
+               return SqlHandlerPriority.RELATED_TO_ART_IDS.ordinal();
+            }
+         });
+         relWriter2.write(handlers2);
+         write(relWriter2.toSql());
+      }
    }
 
    private String writeAttsCommonTableExpression(String artWithAlias) {
@@ -247,9 +303,31 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String relTxsAlias = "txs";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
-      write(
-         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id");
+      if (!rootQueryData.getBranchCategories().isEmpty() && rootQueryData.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
+         write(
+            ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
+      } else {
+         write(
+            ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id");
+      }
       write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
+      write("\n WHERE ");
+      write(artWithAlias);
+      write(".art_id IN (a_art_id, b_art_id) AND ");
+      writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
+      writeTxBranchFilter(relTxsAlias);
+   }
+
+   private void writeRelsCommonTableExpression2(String artWithAlias) {
+      rels2Alias = startCommonTableExpression("rels");
+      String relAlias = "rel";
+      String relTxsAlias = "txs";
+      writeUseNlTableHint(relAlias + " " + relTxsAlias);
+      writeSelectFields(artWithAlias, "*", relAlias, "rel_type AS type_id");
+      write(
+         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, rel_type, rel_order");
+      write("\n FROM %s, osee_relation rel, osee_txs txs", artWithAlias);
       write("\n WHERE ");
       write(artWithAlias);
       write(".art_id IN (a_art_id, b_art_id) AND ");
@@ -261,16 +339,26 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    protected void writeSelectFields() {
       String artAlias = getMainTableAlias(OseeDb.ARTIFACT_TABLE);
       String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
-      if (relsAlias == null) {
+
+      if (relsAlias == null && rels2Alias == null) {
+
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
-      } else {
+         if (getTableEntries().stream().anyMatch(
+            a -> a.contains(OseeDb.RELATION_TABLE2.getName().toLowerCase() + " "))) {
+            write(", rel_type as top_rel_type, rel_order as top_rel_order");
+         }
+      } else if (relsAlias != null) {
          writeSelectFields(relsAlias, "*", artAlias, "art_type_id");
          write(" AS other_art_type_id");
+      } else if (rels2Alias != null) {
+         writeSelectFields(rels2Alias, "*", artAlias, "art_type_id");
+         write(" AS other_art_type_id");
       }
+
    }
 
    @Override
@@ -292,7 +380,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder() {
+   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
       // only add ordering on the outer query in build()
    }
 

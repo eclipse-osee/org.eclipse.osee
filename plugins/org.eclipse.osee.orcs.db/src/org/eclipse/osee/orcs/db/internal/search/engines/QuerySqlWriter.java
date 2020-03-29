@@ -19,6 +19,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -44,7 +45,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder() {
+   public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
       if (!rootQueryData.isCountQueryType()) {
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
