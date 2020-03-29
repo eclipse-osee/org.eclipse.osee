@@ -30,6 +30,8 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken>
    private ArtifactId artIdB = ArtifactId.SENTINEL;
    private String rationale = RelationalConstants.DEFAULT_RATIONALE;
    private boolean useBackingData = false;
+   private ArtifactId relationArtifact = ArtifactId.SENTINEL;
+   private int relOrder = 0;
 
    public RelationDataImpl(VersionData version) {
       super(version);
@@ -93,4 +95,25 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl<RelationTypeToken>
    public Long getId() {
       return getLocalId().getId();
    }
+
+   @Override
+   public ArtifactId getRelationArtifact() {
+      return relationArtifact;
+   }
+
+   @Override
+   public void setRelationArtifact(ArtifactId relationArtifact) {
+      this.relationArtifact = relationArtifact;
+   }
+
+   @Override
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   @Override
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
+   }
+
 }

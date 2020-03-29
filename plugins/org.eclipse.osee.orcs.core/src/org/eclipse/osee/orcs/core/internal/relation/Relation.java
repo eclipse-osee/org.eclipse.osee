@@ -85,6 +85,14 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
       return getRelationType().equals(oseeType);
    }
 
+   public void setRelOrder(int order) {
+      getOrcsData().setRelOrder(order);
+   }
+
+   public int getRelOrder() {
+      return getOrcsData().getRelOrder();
+   }
+
    public void setRationale(String rationale) {
       String toSet = rationale;
       if (toSet == null) {

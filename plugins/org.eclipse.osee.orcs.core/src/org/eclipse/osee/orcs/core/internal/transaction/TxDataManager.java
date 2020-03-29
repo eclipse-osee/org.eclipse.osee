@@ -430,6 +430,13 @@ public class TxDataManager {
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);
    }
 
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, ArtifactId relatedArtifact, int relOrder, RelationSorter sortType) {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, Strings.EMPTY_STRING, sortType,
+         relOrder, relatedArtifact, null);
+   }
+
    public void setRelations(TxData txData, ArtifactId artA, RelationTypeToken type, Iterable<? extends ArtifactId> artBs) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Set<Artifact> asArtifactBs = Sets.newLinkedHashSet(getForWrite(txData, artBs));

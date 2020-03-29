@@ -27,8 +27,9 @@ public final class RelationRow {
    private final BranchId branch;
    private RelationId rel_id;
    private RelationTypeToken relationType;
-   private ArtifactId a_art_id, b_art_id;
+   private ArtifactId a_art_id, b_art_id, rel_art_id;
    private String rationale;
+   private int rel_order;
    private GammaId gamma_id;
 
    public RelationRow(BranchId branch, RelationId rel_id, RelationTypeToken relationType, ArtifactId a_art_id, ArtifactId b_art_id, String rationale, GammaId gamma_id) {
@@ -40,6 +41,21 @@ public final class RelationRow {
       this.b_art_id = b_art_id;
       this.rationale = rationale;
       this.gamma_id = gamma_id;
+      this.rel_order = 0;
+      this.rel_art_id = ArtifactId.SENTINEL;
+   }
+
+   public RelationRow(BranchId branch, RelationTypeToken relationType, ArtifactId a_art_id, ArtifactId b_art_id, ArtifactId rel_art_id, int rel_order, GammaId gamma_id) {
+      super();
+      this.branch = branch;
+      this.rel_id = RelationId.SENTINEL;
+      this.relationType = relationType;
+      this.a_art_id = a_art_id;
+      this.b_art_id = b_art_id;
+      this.rationale = "";
+      this.gamma_id = gamma_id;
+      this.rel_order = 0;
+      this.rel_art_id = ArtifactId.SENTINEL;
    }
 
    public ArtifactId getA_art_id() {
@@ -92,6 +108,22 @@ public final class RelationRow {
 
    public void setRelationType(RelationTypeToken relationType) {
       this.relationType = relationType;
+   }
+
+   public int getRel_order() {
+      return rel_order;
+   }
+
+   public void setRel_order(int rel_order) {
+      this.rel_order = rel_order;
+   }
+
+   public ArtifactId getRel_art_id() {
+      return rel_art_id;
+   }
+
+   public void setRel_art_id(ArtifactId rel_art_id) {
+      this.rel_art_id = rel_art_id;
    }
 
 }

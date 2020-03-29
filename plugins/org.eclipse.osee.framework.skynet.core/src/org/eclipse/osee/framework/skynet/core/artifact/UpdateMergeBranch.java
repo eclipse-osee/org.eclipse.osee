@@ -55,6 +55,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
    private static final String PURGE_RELATION_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
+   private static final String PURGE_RELATION2_FROM_MERGE_BRANCH =
+      "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
    private static final String PURGE_ARTIFACT_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id AND txs.branch_id = ? AND art.art_id = ?)";
 
@@ -185,6 +187,10 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
          artSet.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
       }, ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch);
 
+      getJdbcClient().runQuery(stmt -> {
+         artSet.add(ArtifactId.valueOf(stmt.getLong("a_art_id")));
+         artSet.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
+      }, ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH2), branch);
       return artSet;
    }
 
@@ -197,6 +203,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       //Remove from Baseline
       getJdbcClient().runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branch, artId);
       getJdbcClient().runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branch, artId, artId);
+      getJdbcClient().runPreparedUpdate(connection, PURGE_RELATION2_FROM_MERGE_BRANCH, branch, artId, artId);
       getJdbcClient().runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branch, artId);
    }
 }

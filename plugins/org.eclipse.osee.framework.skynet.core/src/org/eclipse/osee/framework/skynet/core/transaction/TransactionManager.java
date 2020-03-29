@@ -99,6 +99,9 @@ public final class TransactionManager {
    private static final String SELECT_RELATIONS_FROM_ART_IN_TRANS_ID =
       "select * from osee_relation_link rel, osee_txs txs where txs.branch_id = ? and (rel.a_art_id = ? or rel.b_art_id = ?) and txs.TRANSACTION_ID = ? and rel.gamma_id = txs.GAMMA_ID";
 
+   private static final String SELECT_RELATIONS2_FROM_ART_IN_TRANS_ID =
+      "select * from osee_relation rel, osee_txs txs where txs.branch_id = ? and (rel.a_art_id = ? or rel.b_art_id = ?) and txs.TRANSACTION_ID = ? and rel.gamma_id = txs.GAMMA_ID";
+
    private static final String SELECT_ART_TRANSACTION_IDS =
       "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
@@ -377,6 +380,21 @@ public final class TransactionManager {
 
    }
 
+   private static List<RelationRow> getRelations2FromArtifactAndTransaction(Artifact art, TransactionId trans) {
+      List<RelationRow> relationChanges = new LinkedList<>();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_RELATIONS2_FROM_ART_IN_TRANS_ID, art.getBranch(), art, art, trans);
+         while (chStmt.next()) {
+            relationChanges.add(loadRelation2Change(chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return relationChanges;
+
+   }
+
    public static List<AttributeRow> getAttributesFromArtifactAndTransaction(Artifact art, TransactionId trans) {
       List<AttributeRow> attributeChanges = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -402,6 +420,19 @@ public final class TransactionManager {
       RelationId relId = RelationId.valueOf(chStmt.getLong("rel_link_id"));
       String rationale = chStmt.getString("rationale");
       return new RelationRow(branch, relId, relationType, aArtId, bArtId, rationale, gammaId);
+   }
+
+   private static RelationRow loadRelation2Change(JdbcStatement chStmt) {
+      OrcsTokenService tokenService = OsgiUtil.getService(TransactionManager.class, OrcsTokenService.class);
+      RelationTypeToken relationType = tokenService.getRelationType(chStmt.getLong("rel_type"));
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
+      ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
+      ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
+      ArtifactId relArtId = ArtifactId.valueOf(chStmt.getLong("rel_art_id"));
+      int relOrder = chStmt.getInt("rel_order");
+
+      return new RelationRow(branch, relationType, aArtId, bArtId, relArtId, relOrder, gammaId);
    }
 
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {

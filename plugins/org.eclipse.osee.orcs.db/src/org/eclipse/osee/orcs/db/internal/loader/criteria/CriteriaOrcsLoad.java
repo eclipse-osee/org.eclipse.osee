@@ -23,18 +23,21 @@ public class CriteriaOrcsLoad extends Criteria {
    private final CriteriaArtifact artifactCriteria;
    private final CriteriaAttribute attributeCriteria;
    private final CriteriaRelation relationCriteria;
+   private final CriteriaRelation2 relationCriteria2;
 
-   public CriteriaOrcsLoad(CriteriaArtifact artifactCriteria, CriteriaAttribute attributeCriteria, CriteriaRelation relationCriteria) {
+   public CriteriaOrcsLoad(CriteriaArtifact artifactCriteria, CriteriaAttribute attributeCriteria, CriteriaRelation relationCriteria, CriteriaRelation2 relationCriteria2) {
       super();
       this.artifactCriteria = artifactCriteria;
       this.attributeCriteria = attributeCriteria;
       this.relationCriteria = relationCriteria;
+      this.relationCriteria2 = relationCriteria2;
    }
 
    public void setQueryId(Long id) {
       artifactCriteria.setQueryId(id);
       attributeCriteria.setQueryId(id);
       relationCriteria.setQueryId(id);
+      relationCriteria2.setQueryId(id);
    }
 
    public Criteria getArtifactCriteria() {
@@ -49,8 +52,12 @@ public class CriteriaOrcsLoad extends Criteria {
       return relationCriteria;
    }
 
+   public Criteria getRelationCriteria2() {
+      return relationCriteria2;
+   }
+
    @Override
    public String toString() {
-      return "CriteriaOrcsLoad [artifactCriteria=" + artifactCriteria + ", attributeCriteria=" + attributeCriteria + ", relationCriteria=" + relationCriteria + "]";
+      return "CriteriaOrcsLoad [artifactCriteria=" + artifactCriteria + ", attributeCriteria=" + attributeCriteria + ", relationCriteria=" + relationCriteria + ", relationCriteria2=" + relationCriteria2 + "]";
    }
 }

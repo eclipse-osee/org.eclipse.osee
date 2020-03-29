@@ -19,12 +19,14 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -71,6 +73,34 @@ public class LoadDeltasBetweenBranches {
          "UNION ALL\n" +
          "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
          "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id";
+
+   private static final String SELECT_ALL_SOURCE_ADDRESSING2 =
+      "with\n" + "txsOuter as (select transaction_id, gamma_id, mod_type, app_id from %s txs where \n" +
+         "branch_id = ? and txs.tx_current <> ? and transaction_id <> ? AND \n" +
+         "NOT EXISTS (SELECT 1 FROM %s txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? \n" +
+         "AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type and txs1.app_id = txs.app_id)) \n" +
+         "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "FROM osee_artifact item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "FROM osee_relation_link item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "from osee_tuple2 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "UNION ALL\n" +
+         "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id,  a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "FROM osee_relation item, txsOuter where txsOuter.gamma_id = item.gamma_id";
+         ;
+
 
    // @formatter:on
    private static final String SELECT_BASE_TX = "select baseline_transaction_id from osee_branch where branch_id = ?";
@@ -216,13 +246,26 @@ public class LoadDeltasBetweenBranches {
                   gammaId, getApplicabilityToken(appId), modType, txToken, e1, e2, e3, e4));
                break;
             }
+            case 7: {
+               ArtifactId aArtId = ArtifactId.valueOf(stmt.getLong("item_first"));
+               ArtifactId bArtId = ArtifactId.valueOf(stmt.getLong("item_second"));
+               ArtifactId relArtId = ArtifactId.valueOf(stmt.getLong("item_third"));
+               int relOrder = stmt.getInt("item_fourth");
+               hashChangeData.put(7, gammaId.getId(),
+                  ChangeItemUtil.newRelationChange2(tokenService.getRelationTypeOrCreate(itemTypeId), gammaId, modType,
+                     aArtId, bArtId, relArtId, relOrder, getApplicabilityToken(appId), txToken));
+               break;
+            }
 
          }
       };
       SqlTable txsTable = OseeDb.getTxsTable(queryFactory.branchQuery().isArchived(sourceBranch));
-
       String sql = String.format(SELECT_ALL_SOURCE_ADDRESSING, txsTable, txsTable);
 
+      if (!queryFactory.branchQuery().getBranchCategoryGammaId(destinationBranch,
+         CoreBranchCategoryTokens.MIM).isEmpty()) {
+         sql = String.format(SELECT_ALL_SOURCE_ADDRESSING2, txsTable, txsTable);
+      }
       jdbcClient.runQueryWithMaxFetchSize(consumer, sql, sourceBranch, TxCurrent.NOT_CURRENT, sourceBaselineTxId,
          sourceBranch, sourceBaselineTxId);
 
@@ -270,11 +313,45 @@ public class LoadDeltasBetweenBranches {
             " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-      jdbcClient.runQueryWithMaxFetchSize(consumer, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
-         idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
-         txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
-         TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId);
+      String query2 =
+         "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 7 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_relation item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 4 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 5 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
+            " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
+      List<BranchCategoryToken> branchCategories = queryFactory.branchQuery().getBranchCategories(txBranchId);
+      if (branchCategories.isEmpty() || !queryFactory.branchQuery().getBranchCategories(txBranchId).contains(
+         CoreBranchCategoryTokens.MIM)) {
+         jdbcClient.runQueryWithMaxFetchSize(consumer, query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId,
+            txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
+            TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
+            idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+            txBranchId, txId);
+      } else {
+         jdbcClient.runQueryWithMaxFetchSize(consumer, query2, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId,
+            txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(),
+            TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId,
+            idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+            txBranchId, txId, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, txBranchId, txId);
+
+      }
    }
 
    private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId) {
@@ -300,10 +377,43 @@ public class LoadDeltasBetweenBranches {
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                ") t order by t.id2, t.transaction_id asc";
 
-         chStmt.runPreparedQueryWithMaxFetchSize(query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
-            idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
-            sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
-            TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch);
+         String query2 =
+            "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type from osee_join_export_import idj, " + //
+               "osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select item.value as value, item.attr_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 1 as table_type from osee_join_export_import idj, " + //
+               "osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
+               "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
+               "osee_relation item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 4 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 4 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 5 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 5 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 6 as table_type from osee_join_export_import idj, " + //
+               "osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+               ") t order by t.id2, t.transaction_id asc";
+         List<BranchCategoryToken> branchCategories = queryFactory.branchQuery().getBranchCategories(sourceBranch);
+         if (branchCategories.isEmpty() || !queryFactory.branchQuery().getBranchCategories(sourceBranch).contains(
+            CoreBranchCategoryTokens.MIM)) {
+            chStmt.runPreparedQueryWithMaxFetchSize(query, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
+               idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+               sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
+               TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch);
+         } else {
+            chStmt.runPreparedQueryWithMaxFetchSize(query2, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
+               idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT,
+               sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
+               TxCurrent.NOT_CURRENT, sourceBranch, idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch,
+               idJoin.getQueryId(), TxCurrent.NOT_CURRENT, sourceBranch);
+         }
 
          Long previousItemId = -1L;
          boolean isFirstSet = false;

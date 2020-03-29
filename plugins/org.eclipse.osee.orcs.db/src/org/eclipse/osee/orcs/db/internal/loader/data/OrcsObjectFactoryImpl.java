@@ -136,8 +136,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
-      return createRelationData(version, id, relationType, modType, relationType, modType, aArtId, bArtId, rationale,
-         applicId);
+      return createRelationData(version, id, relationType, modType, relationType, modType, aArtId, bArtId,
+         ArtifactId.SENTINEL, 0, rationale, applicId);
+   }
+
+   @Override
+   public RelationData createRelationData(VersionData version, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityId applicId) {
+      return createRelationData(version, RelationId.SENTINEL, relationType, modType, relationType, modType, aArtId,
+         bArtId, relArtId, relOrder, "", applicId);
    }
 
    private ArtifactData createArtifactFromRow(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
@@ -165,7 +171,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+   private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(id);
       data.setType(relationType);
@@ -185,8 +191,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public RelationData createCopy(RelationData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createRelationData(newVersion, source, source.getType(), source.getModType(), source.getBaseType(),
-         source.getBaseModType(), source.getArtifactIdA(), source.getArtifactIdB(), source.getRationale(),
-         source.getApplicabilityId());
+         source.getBaseModType(), source.getArtifactIdA(), source.getArtifactIdB(), source.getRelationArtifact(),
+         source.getRelOrder(), source.getRationale(), source.getApplicabilityId());
    }
 
    @Override

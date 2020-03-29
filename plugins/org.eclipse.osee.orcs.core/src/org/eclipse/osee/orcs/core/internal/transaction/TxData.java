@@ -22,11 +22,14 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
+import org.eclipse.osee.orcs.core.ds.RelationDataSideA;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -46,7 +49,7 @@ public class TxData implements HasSession, HasBranchId {
       COMMITTED,
       COMMIT_FAILED;
    }
-
+   private static final long SPACING = (long) Math.pow(2.0, 18.0);
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
@@ -56,6 +59,8 @@ public class TxData implements HasSession, HasBranchId {
    private final HashMap<Long, Artifact> writeables = new HashMap<>();
    private final HashMap<Long, ArtifactReadable> readables = new HashMap<>();
    private final Set<Relation> relations = new HashSet<>();
+   private final CompositeKeyHashMap<RelationTypeToken, ArtifactId, RelationDataSideA> newRelations =
+      new CompositeKeyHashMap<>();
 
    private UserToken author;
    private String comment;
@@ -184,5 +189,37 @@ public class TxData implements HasSession, HasBranchId {
 
    public void addRelation(Relation relation) {
       relations.add(relation);
+   }
+
+   public CompositeKeyHashMap<RelationTypeToken, ArtifactId, RelationDataSideA> getNewRelations() {
+      return newRelations;
+   }
+
+   public boolean relationSideAExists(RelationTypeToken relType, ArtifactId artA) {
+      return newRelations.containsKey(relType, artA);
+   }
+
+   public void addRelationSideA(RelationTypeToken relType, ArtifactId artA, int minOrder, int maxOrder) {
+      newRelations.put(relType, artA, new RelationDataSideA(artA, relType, minOrder, maxOrder));
+   }
+
+   public int calculateHeadInsertionOrderIndex(int currentHeadIndex) {
+      long idealIndex = currentHeadIndex - SPACING;
+      if (idealIndex > Integer.MIN_VALUE) {
+         return (int) idealIndex;
+      }
+      return calculateInsertionOrderIndex(Integer.MIN_VALUE, currentHeadIndex);
+   }
+
+   public int calculateEndInsertionOrderIndex(int currentEndIndex) {
+      long idealIndex = currentEndIndex + SPACING;
+      if (idealIndex < Integer.MAX_VALUE) {
+         return (int) idealIndex;
+      }
+      return calculateInsertionOrderIndex(currentEndIndex, Integer.MAX_VALUE);
+   }
+
+   public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
+      return (int) ((long) (afterIndex) + beforeIndex) / 2;
    }
 }

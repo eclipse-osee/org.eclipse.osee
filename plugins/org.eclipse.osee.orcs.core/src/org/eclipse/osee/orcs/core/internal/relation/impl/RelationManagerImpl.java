@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -211,7 +212,7 @@ public class RelationManagerImpl implements RelationManager {
 
    @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, TxData txData) {
-      relate(session, aNode, type, bNode, emptyString(), PREEXISTING, txData);
+      relate(session, aNode, type, bNode, emptyString(), PREEXISTING, 0, ArtifactId.SENTINEL, txData);
    }
 
    @Override
@@ -226,11 +227,11 @@ public class RelationManagerImpl implements RelationManager {
 
    @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType) {
-      relate(session, aNode, type, bNode, rationale, sortType, null);
+      relate(session, aNode, type, bNode, rationale, sortType, 0, null, null);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, TxData txData) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData) {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);
@@ -255,7 +256,11 @@ public class RelationManagerImpl implements RelationManager {
       }
       if (updated) {
          relation.setDirty();
-         order(session, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
+         if (!type.isNewRelationTable()) {
+            order(session, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
+         } else {
+            relation.setRelOrder(relOrder);
+         }
       }
    }
 
@@ -292,7 +297,7 @@ public class RelationManagerImpl implements RelationManager {
          relation.delete();
          modified = true;
       }
-      if (modified) {
+      if (modified && !type.isNewRelationTable()) {
          order(session, type, aNode, SIDE_A, OrderOp.REMOVE_FROM_ORDER, Collections.singleton(bNode));
       }
       return relation;
@@ -314,7 +319,7 @@ public class RelationManagerImpl implements RelationManager {
          otherNodes.add(otherNode);
          modified = true;
       }
-      if (modified) {
+      if (modified && !type.isNewRelationTable()) {
          order(session, type, node, side, OrderOp.REMOVE_FROM_ORDER, otherNodes);
       }
    }

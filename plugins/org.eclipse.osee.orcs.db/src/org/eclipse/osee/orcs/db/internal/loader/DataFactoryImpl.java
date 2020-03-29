@@ -154,6 +154,15 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
+   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, ArtifactId relArtifact, int order) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      version.setBranch(branch);
+      ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+      return objectFactory.createRelationData(version, relationType, modType, aArtifact, bArtifact, relArtifact, order,
+         ApplicabilityId.BASE);
+   }
+
+   @Override
    public TupleData introduceTupleData(TupleTypeId tupleType, GammaId tupleGamma) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setGammaId(tupleGamma);
@@ -235,4 +244,5 @@ public class DataFactoryImpl implements DataFactory {
       version.setTransactionId(TransactionId.SENTINEL);
       // do not clear gammaId for introduce case so we reuse the same version
    }
+
 }

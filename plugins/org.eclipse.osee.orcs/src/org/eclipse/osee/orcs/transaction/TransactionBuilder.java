@@ -147,6 +147,8 @@ public interface TransactionBuilder {
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String insertType, int afterIndex, int beforeIndex);
+
    void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
    void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale);

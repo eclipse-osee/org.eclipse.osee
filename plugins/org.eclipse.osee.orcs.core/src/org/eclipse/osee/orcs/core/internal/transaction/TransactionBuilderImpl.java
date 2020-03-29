@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -373,25 +374,82 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
       validateBuilder();
-      txManager.relate(txData, artA, relType, artB);
+      if (relType.isNewRelationTable()) {
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", 0, 0);
+      } else {
+         txManager.relate(txData, artA, relType, artB);
+      }
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
       validateBuilder();
-      txManager.relate(txData, artA, relType, artB, rationale);
+      if (relType.isNewRelationTable()) {
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", 0, 0);
+      } else {
+         txManager.relate(txData, artA, relType, artB, rationale);
+      }
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType) {
       validateBuilder();
-      txManager.relate(txData, artA, relType, artB, sortType);
+      if (relType.isNewRelationTable()) {
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", 0, 0);
+      } else {
+         txManager.relate(txData, artA, relType, artB, sortType);
+      }
    }
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType) {
       validateBuilder();
-      txManager.relate(txData, artA, relType, artB, rationale, sortType);
+      if (relType.isNewRelationTable()) {
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", 0, 0);
+      } else {
+         txManager.relate(txData, artA, relType, artB, rationale, sortType);
+      }
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String insertType, int afterIndex, int beforeIndex) {
+      relate(relType, artA, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
+   }
+
+   private void relate(RelationTypeToken relType, ArtifactId artA, ArtifactId artB, ArtifactId relationArt, String insertType, int afterIndex, int beforeIndex) {
+      int minOrder = 0;
+      int maxOrder = 0;
+      int relOrder = 0;
+      RelationTypeMultiplicity mult = relType.getMultiplicity();
+      if (mult.equals(RelationTypeMultiplicity.MANY_TO_MANY) || mult.equals(RelationTypeMultiplicity.ONE_TO_MANY)) {
+
+         if (txData.relationSideAExists(relType, artA)) {
+            minOrder = txData.getNewRelations().get(relType, artA).getMinOrder();
+            maxOrder = txData.getNewRelations().get(relType, artA).getMaxOrder();
+         } else {
+            String minMaxString = orcsApi.getJdbcService().getClient().fetch("0,0",
+               "SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ?",
+               getBranch(), artA, relType.getId());
+            if (minMaxString != null) {
+               minOrder = Integer.parseInt(minMaxString.substring(0, minMaxString.indexOf(",") - 1));
+               maxOrder = Integer.parseInt(minMaxString.substring(minMaxString.indexOf(",") + 1));
+            }
+            txData.addRelationSideA(relType, artA, minOrder, maxOrder);
+         }
+
+         if (insertType.equals("head")) {
+            relOrder = txData.calculateHeadInsertionOrderIndex(maxOrder);
+            txData.getNewRelations().get(relType, artA).setMinOrder(relOrder);
+         } else if (insertType.equals("insert")) {
+            //TODO check that the after/before indexes exist
+            relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
+         } else {
+            relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
+            txData.getNewRelations().get(relType, artA).setMaxOrder(relOrder);
+
+         }
+      }
+      txManager.relate(txData, artA, relType, artB, relationArt, relOrder, RelationSorter.USER_DEFINED);
    }
 
    @Override

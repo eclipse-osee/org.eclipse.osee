@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation2;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
@@ -39,6 +40,7 @@ public final class LoaderSqlHandlerFactoryUtil {
       handleMap.put(CriteriaArtifact.class, ArtifactSqlHandler.class);
       handleMap.put(CriteriaAttribute.class, AttributeSqlHandler.class);
       handleMap.put(CriteriaRelation.class, RelationSqlHandler.class);
+      handleMap.put(CriteriaRelation2.class, RelationSqlHandler2.class);
 
       return new SqlHandlerFactoryImpl(null, handleMap);
    }

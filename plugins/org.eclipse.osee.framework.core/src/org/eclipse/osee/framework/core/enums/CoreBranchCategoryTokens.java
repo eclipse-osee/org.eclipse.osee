@@ -25,8 +25,9 @@ public final class CoreBranchCategoryTokens {
 
    public static final BranchCategoryToken PLE = new BranchCategoryToken(1L, "PLE");
    public static final BranchCategoryToken ATS = new BranchCategoryToken(2L, "ATS");
+   public static final BranchCategoryToken MIM = new BranchCategoryToken(3L, "MIM");
 
-   public static List<BranchCategoryToken> values = Arrays.asList(PLE, ATS);
+   public static List<BranchCategoryToken> values = Arrays.asList(PLE, ATS, MIM);
 
    private CoreBranchCategoryTokens() {
       // Constants
