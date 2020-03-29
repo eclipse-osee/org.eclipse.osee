@@ -165,6 +165,7 @@ public class TransactionWriterTest {
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ARTIFACTS);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ATTRIBUTES);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.RELATIONS);
+      inOrder.verify(builder).getInsertData(SqlOrderEnum.RELATIONS2);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS_DETAIL);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS);
 

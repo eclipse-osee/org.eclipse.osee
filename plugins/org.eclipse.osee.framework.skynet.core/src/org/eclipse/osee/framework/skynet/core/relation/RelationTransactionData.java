@@ -45,7 +45,11 @@ public class RelationTransactionData extends BaseTransactionData {
 
    @Override
    public OseeSql getSelectTxNotCurrentSql() {
-      return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS;
+      if (this.relation.getRelationType().isNewRelationTable()) {
+         return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2;
+      } else {
+         return OseeSql.TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS;
+      }
    }
 
    @Override

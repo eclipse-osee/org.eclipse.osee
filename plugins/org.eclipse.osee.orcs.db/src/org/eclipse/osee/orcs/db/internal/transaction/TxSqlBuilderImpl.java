@@ -50,6 +50,7 @@ import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
@@ -67,6 +68,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private List<DataProxy<?>> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
+   private Map<SqlOrderEnum, Id4JoinQuery> txNotCurrentsJoin4;
 
    public TxSqlBuilderImpl(SqlJoinFactory sqlJoinFactory, IdentityManager idManager, JdbcClient jdbcClient) {
       this.sqlJoinFactory = sqlJoinFactory;
@@ -78,6 +80,11 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents() {
       return txNotCurrentsJoin != null ? txNotCurrentsJoin.entrySet() : Collections.<Entry<SqlOrderEnum, IdJoinQuery>> emptySet();
+   }
+
+   @Override
+   public Set<Entry<SqlOrderEnum, Id4JoinQuery>> getTxNotCurrents4() {
+      return txNotCurrentsJoin4 != null ? txNotCurrentsJoin4.entrySet() : Collections.<Entry<SqlOrderEnum, Id4JoinQuery>> emptySet();
    }
 
    @Override
@@ -108,6 +115,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       binaryStores = new ArrayList<>();
       dataItemInserts = new HashCollection<>();
       txNotCurrentsJoin = new HashMap<>();
+      txNotCurrentsJoin4 = new HashMap<>();
 
       addRow(SqlOrderEnum.TXS_DETAIL, tx.getBranch(), txId, tx.getAuthor(), tx.getDate(), tx.getComment(),
          tx.getTxType(), -1, OseeCodeVersion.getVersionId());
@@ -265,10 +273,19 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                RelationId id = idManager.getNextRelationId();
                data.setLocalId(id);
             }
-            addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtifactIdA(), data.getArtifactIdB(),
-               data.getVersion().getGammaId(), data.getId(), data.getRationale());
+            if (data.getType().isNewRelationTable()) {
+               addRow(SqlOrderEnum.RELATIONS2, data.getType(), data.getArtifactIdA(), data.getArtifactIdB(),
+                  data.getRelationArtifact(), data.getRelOrder(), data.getVersion().getGammaId());
+            } else {
+               addRow(SqlOrderEnum.RELATIONS, data.getType(), data.getArtifactIdA(), data.getArtifactIdB(),
+                  data.getVersion().getGammaId(), data.getId(), data.getRationale());
+            }
          }
-         addTxs(SqlOrderEnum.RELATIONS, data);
+         if (data.getType().isNewRelationTable()) {
+            addTxs(SqlOrderEnum.RELATIONS2, data);
+         } else {
+            addTxs(SqlOrderEnum.RELATIONS, data);
+         }
       }
    }
 
@@ -278,17 +295,30 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
       addRow(SqlOrderEnum.TXS, txId.getBranch(), data.getGammaId(), txId, TxCurrent.getCurrent(modType), modType,
          orcsData.getApplicabilityId());
-
+      //TODO: could filter based on relation/
       if (key.hasTxNotCurrentQuery()) {
-         IdJoinQuery join = txNotCurrentsJoin.get(key);
-         if (join == null) {
-            join = createJoin();
-            txNotCurrentsJoin.put(key, join);
-         }
-         if (key.toString().startsWith("TUPLE") || key.toString().equals("BRANCH_CATEGORY")) {
-            join.add(orcsData.getVersion().getGammaId());
+         if (key.toString().equals("RELATIONS2")) {
+            Id4JoinQuery join4 = txNotCurrentsJoin4.get(key);
+            if (join4 == null) {
+               join4 = sqlJoinFactory.createId4JoinQuery();
+               txNotCurrentsJoin4.put(key, join4);
+            }
+            join4.add(((RelationData) orcsData).getType(), ((RelationData) orcsData).getArtifactIdA(),
+               ((RelationData) orcsData).getArtifactIdB());
          } else {
-            join.add(orcsData.getLocalId());
+
+            IdJoinQuery join = txNotCurrentsJoin.get(key);
+            if (join == null) {
+
+               join = createJoin();
+               txNotCurrentsJoin.put(key, join);
+
+            }
+            if (key.toString().startsWith("TUPLE") || key.toString().equals("BRANCH_CATEGORY")) {
+               join.add(orcsData.getVersion().getGammaId());
+            } else {
+               join.add(orcsData.getLocalId());
+            }
          }
       }
    };
@@ -319,6 +349,10 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       return sqlJoinFactory.createIdJoinQuery();
    }
 
+   protected Id4JoinQuery create4Join() {
+      return sqlJoinFactory.createId4JoinQuery();
+   }
+
    protected boolean reuseGamma(OrcsData data) {
       return data.getModType().isExistingVersionUsed() || data.isExistingVersionUsed();
    }
@@ -326,5 +360,4 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private void addRow(SqlOrderEnum sqlKey, Object... data) {
       dataItemInserts.put(sqlKey, data);
    }
-
 }

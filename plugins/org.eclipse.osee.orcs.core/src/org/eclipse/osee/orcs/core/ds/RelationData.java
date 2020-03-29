@@ -36,4 +36,12 @@ public interface RelationData extends OrcsData<RelationTypeToken>, RelationId {
    String getRationale();
 
    void setRationale(String rationale);
+
+   ArtifactId getRelationArtifact();
+
+   void setRelationArtifact(ArtifactId relationArtifact);
+
+   int getRelOrder();
+
+   void setRelOrder(int relOrder);
 }

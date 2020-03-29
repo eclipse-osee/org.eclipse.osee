@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
@@ -51,6 +52,7 @@ import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
+import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor2;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
@@ -67,6 +69,7 @@ public class SqlObjectLoader {
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
    private final RelationLoadProcessor relationProcessor;
+   private final RelationLoadProcessor2 relationProcessor2;
    private final DynamicLoadProcessor dynamicProcessor;
    private final Log logger;
    private final JdbcClient jdbcClient;
@@ -85,6 +88,7 @@ public class SqlObjectLoader {
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
       attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, tokenService);
       relationProcessor = new RelationLoadProcessor(logger, objectFactory, tokenService);
+      relationProcessor2 = new RelationLoadProcessor2(logger, objectFactory, tokenService);
    }
 
    public SqlHandlerFactory getFactory() {
@@ -203,6 +207,11 @@ public class SqlObjectLoader {
 
       checkCancelled(cancellation);
       loadRelations(handler, criteria.getRelationCriteria(), loadContext, fetchSize);
+      if (!loadContext.getBranchCategories().isEmpty() && loadContext.getBranchCategories().contains(
+         CoreBranchCategoryTokens.MIM)) {
+         checkCancelled(cancellation);
+         loadRelations2(handler, criteria.getRelationCriteria2(), loadContext, fetchSize);
+      }
    }
 
    protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) {
@@ -242,6 +251,15 @@ public class SqlObjectLoader {
          OrcsDataHandler<RelationData> relHandler = asRelationHandler(handler);
          writeSql(criteria, loadContext);
          load(relationProcessor, relHandler, loadContext, fetchSize);
+      }
+   }
+
+   protected void loadRelations2(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) {
+      LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
+      if (isRelationLoadingAllowed(loadLevel)) {
+         OrcsDataHandler<RelationData> relHandler = asRelationHandler(handler);
+         writeSql(criteria, loadContext);
+         load(relationProcessor2, relHandler, loadContext, fetchSize);
       }
    }
 

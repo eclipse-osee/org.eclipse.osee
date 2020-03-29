@@ -97,6 +97,27 @@ public final class ChangeItemUtil {
       return item;
    }
 
+   public static ChangeItem newRelationChange2(RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityToken appToken, TransactionToken txToken) {
+      ChangeItem item = new ChangeItem();
+      item.setChangeType(ChangeType.Relation);
+
+      item.setItemId(RelationId.SENTINEL);
+      item.setItemTypeId(relTypeId);
+      item.setSynthetic(false);
+
+      ChangeVersion current = item.getCurrentVersion();
+      current.setGammaId(currentSourceGammaId);
+      current.setModType(currentSourceModType);
+      current.setApplicabilityToken(appToken);
+      current.setTransactionToken(txToken);
+
+      item.setArtId(aArtId);
+      item.setArtIdB(bArtId);
+
+      item.getCurrentVersion().setValue(relArtId.toString() + "," + relOrder);
+      return item;
+   }
+
    public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, TransactionToken txToken, Long... e) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Tuple);

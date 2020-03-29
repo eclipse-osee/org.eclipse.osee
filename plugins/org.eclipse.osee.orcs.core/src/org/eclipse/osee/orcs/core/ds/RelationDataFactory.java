@@ -24,6 +24,8 @@ public interface RelationDataFactory {
 
    RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale);
 
+   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, ArtifactId relArtifact, int order);
+
    RelationData clone(RelationData source);
 
    RelationData introduce(BranchId branch, RelationData source);

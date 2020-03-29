@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
@@ -32,6 +33,8 @@ public interface TxSqlBuilder {
    void accept(TransactionReadable tx, OrcsChangeSet txData);
 
    Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents();
+
+   Set<Entry<SqlOrderEnum, Id4JoinQuery>> getTxNotCurrents4();
 
    List<Object[]> getInsertData(SqlOrderEnum key);
 

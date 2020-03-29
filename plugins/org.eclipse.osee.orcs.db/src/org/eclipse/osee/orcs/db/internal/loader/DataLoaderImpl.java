@@ -38,6 +38,7 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
+import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation2;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
@@ -288,7 +289,8 @@ public class DataLoaderImpl implements DataLoader {
       CriteriaArtifact artifactCriteria = new CriteriaArtifact();
       CriteriaAttribute attributeCriteria = new CriteriaAttribute(copy(attributeIds), copy(attributeTypes));
       CriteriaRelation relationCriteria = new CriteriaRelation(copy(relationIds), copy(relationTypes));
-      return new CriteriaOrcsLoad(artifactCriteria, attributeCriteria, relationCriteria);
+      CriteriaRelation2 relation2Criteria = new CriteriaRelation2(copy(relationTypes));
+      return new CriteriaOrcsLoad(artifactCriteria, attributeCriteria, relationCriteria, relation2Criteria);
    }
 
    private void determineLoadExecutor() {

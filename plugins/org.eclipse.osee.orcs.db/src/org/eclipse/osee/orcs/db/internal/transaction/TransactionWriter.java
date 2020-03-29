@@ -47,6 +47,9 @@ public class TransactionWriter {
    private static final String INSERT_RELATION_TABLE =
       "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, gamma_id, a_art_id, b_art_id, rationale) VALUES (?,?,?,?,?,?)";
 
+   private static final String INSERT_RELATION_TABLE2 =
+      "INSERT INTO osee_relation (rel_type, rel_order, rel_art_id, gamma_id, a_art_id, b_art_id) VALUES (?,?,?,?,?,?)";
+
    private static final String INSERT_TUPLES2_TABLE =
       "INSERT INTO osee_tuple2 (tuple_type, e1, e2, gamma_id) VALUES (?,?,?,?)";
 
@@ -74,6 +77,9 @@ public class TransactionWriter {
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
+   private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2 =
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id4 jid, osee_relation rel, osee_txs txs WHERE jid.query_id = ? and rel.rel_type = jid.id1 and rel.a_art_id = jid.id2 and rel.b_art_id = jid.id3 AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_txs txs WHERE jid.query_id = ? AND jid.id = txs.gamma_id AND txs.branch_id = ?   AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
@@ -84,6 +90,7 @@ public class TransactionWriter {
       ARTIFACTS(OseeDb.ARTIFACT_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
       ATTRIBUTES(OseeDb.ATTRIBUTE_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES),
       RELATIONS(OseeDb.RELATION_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS),
+      RELATIONS2(OseeDb.RELATION_TABLE2, TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2),
       TUPLES2(OseeDb.TUPLE2, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
       TUPLES3(OseeDb.TUPLE3, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
       TUPLES4(OseeDb.TUPLE4, TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE),
@@ -157,7 +164,11 @@ public class TransactionWriter {
             fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData,
                jdbcClient.injectOrderedHint(entry.getKey().getTxsNotCurrentQuery()), entry.getValue());
          }
-
+         List<Object[]> txNotCurrentData4 = new ArrayList<>();
+         for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents4()) {
+            fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData4,
+               jdbcClient.injectOrderedHint(entry.getKey().getTxsNotCurrentQuery()), entry.getValue());
+         }
          // Insert into tables
          for (SqlOrderEnum key : SqlOrderEnum.values()) {
             List<Object[]> data = sqlBuilder.getInsertData(key);
@@ -166,6 +177,9 @@ public class TransactionWriter {
             }
          }
          jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+         if (!txNotCurrentData4.isEmpty()) {
+            jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData4);
+         }
       } finally {
          sqlBuilder.clear();
       }

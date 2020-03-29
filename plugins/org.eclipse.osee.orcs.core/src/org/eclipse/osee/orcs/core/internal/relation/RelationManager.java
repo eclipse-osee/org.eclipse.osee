@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -101,7 +102,7 @@ public interface RelationManager {
 
    void relate(OrcsSession session, Artifact asArtifactA, RelationTypeToken type, Artifact asArtifactB, TxData txData);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, TxData txData);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData);
 
    ///////////////////////////////////////
 }
