@@ -1,0 +1,41 @@
+= Design
+Ryan Brooks <ryan.d.brooks@boeing.com>
+
+== Relations
+
+=== Relation Order
+
+==== Storage
+
+[square]
+* relation order attribute only used to store order type for relevant relation types and only if that order type is Lexicographical (asc or desc)
+* mid point order is 0
+* 
+
+* Order Types
+ ** User Defined Order - artifacts are added before or after insertion point at the order index equal to the mid point between the next artifact, but no more than ideal spacing
+ ** Lexicographical Ascending Order - order based on names are artifacts is stored 
+ ** Lexicographical Descending Order - 
+ ** Chronological Order - same as User Defined Order except the insertion point is always after the last artifact
+
+order indices will be redistributed outside of history while exactly preserving the existing order
+
+new relation types will be persisted on the server following the pattern used by org.eclipse.osee.orcs.core.ds.OrcsVisitor.deleteTuple(BranchId, TableEnum, GammaId)
+
+
+[source,java]
+----
+      int spacing = 2^18;
+      int tightSpacing = 1;
+      if (list.isEmpty()) {
+         return 0;
+      } else if (insertAtHead) {
+         int idealIndex = currentHeadIndex - spacing;
+         if (Integer.MIN_VALUE + spacing < idealIndex) {
+            return idealIndex;
+         }
+         return (Integer.MIN_VALUE + currentHeadIndex) / 2;
+      } else {
+         return (int) ((long) (afterIndex) + beforeIndex) / 2;
+      }	
+----

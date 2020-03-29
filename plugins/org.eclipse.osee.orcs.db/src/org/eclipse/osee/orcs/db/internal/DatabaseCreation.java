@@ -50,6 +50,7 @@ import static org.eclipse.osee.orcs.OseeDb.OSEE_SERVER_LOOKUP_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_SESSION_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_TAG_GAMMA_QUEUE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE;
+import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE2;
 import static org.eclipse.osee.orcs.OseeDb.TUPLE2;
 import static org.eclipse.osee.orcs.OseeDb.TUPLE3;
 import static org.eclipse.osee.orcs.OseeDb.TUPLE4;
@@ -76,6 +77,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(ARTIFACT_TABLE);
       jdbcClient.createTable(ATTRIBUTE_TABLE);
       jdbcClient.createTable(RELATION_TABLE);
+      jdbcClient.createTable(RELATION_TABLE2);
       jdbcClient.createTable(BRANCH_TABLE);
       jdbcClient.createTable(TXS_TABLE);
       jdbcClient.createTable(TXS_ARCHIVED_TABLE);
@@ -145,6 +147,7 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(ARTIFACT_TABLE);
       jdbcClient.dropTable(ATTRIBUTE_TABLE);
       jdbcClient.dropTable(RELATION_TABLE);
+      jdbcClient.dropTable(RELATION_TABLE2);
       jdbcClient.dropTable(BRANCH_TABLE);
       jdbcClient.dropTable(TXS_TABLE);
       jdbcClient.dropTable(TXS_ARCHIVED_TABLE);

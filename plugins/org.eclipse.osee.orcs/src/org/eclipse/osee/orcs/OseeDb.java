@@ -71,6 +71,20 @@ public class OseeDb {
       RELATION_TABLE.createIndex("OSEE_RELATION__B_IDX", true, RELATION_LINK_B_ART_ID);
    }
 
+   public static final SqlTable RELATION_TABLE2 = new SqlTable("osee_relation", "rel", ObjectType.RELATION, 4);
+   public static final SqlColumn RELATION_REL_TYPE = RELATION_TABLE2.addColumn("REL_TYPE", JDBCType.BIGINT);
+   public static final SqlColumn RELATION_A_ART_ID = RELATION_TABLE2.addColumn("A_ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn RELATION_B_ART_ID = RELATION_TABLE2.addColumn("B_ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn RELATION_REL_ART_ID = RELATION_TABLE2.addColumn("REL_ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn RELATION_REL_ORDER = RELATION_TABLE2.addColumn("REL_ORDER", JDBCType.INTEGER);
+   public static final SqlColumn RELATION_GAMMA_ID = RELATION_TABLE2.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   static {
+      RELATION_TABLE2.setPrimaryKeyConstraint(RELATION_REL_TYPE, RELATION_A_ART_ID, RELATION_B_ART_ID,
+         RELATION_REL_ART_ID, RELATION_REL_ORDER);
+      RELATION_TABLE2.createIndex("OSEE_RELATION__G_IDX", true, RELATION_GAMMA_ID);
+      RELATION_TABLE2.createIndex("OSEE_RELATION__B2_IDX", true, RELATION_B_ART_ID);
+   }
+
    public static final SqlTable BRANCH_TABLE = new SqlTable("osee_branch", "br", ObjectType.BRANCH);
    public static final SqlColumn BRANCH_ID = BRANCH_TABLE.addColumn("BRANCH_ID", JDBCType.BIGINT);
    public static final SqlColumn BRANCH_TYPE = BRANCH_TABLE.addColumn("BRANCH_TYPE", JDBCType.SMALLINT);
