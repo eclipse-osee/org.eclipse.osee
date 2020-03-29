@@ -26,7 +26,8 @@ public enum RelationSorter {
    LEXICOGRAPHICAL_ASC("AAT1QW4eVE+YuzsoHFAA", "Lexicographical_Ascending"),
    LEXICOGRAPHICAL_DESC("AAmATn6R9m7VCXQQwuQA", "Lexicographical_Descending"),
    UNORDERED("AAT1uKZpeDQExlygoIAA", "Unordered"),
-   PREEXISTING("AE2ypryqoVzNl6EjpgAA", "Preexisting");
+   PREEXISTING("AE2ypryqoVzNl6EjpgAA", "Preexisting"),
+   CHRONOLOGICAL("1", "Chronological");
 
    private final String guid;
    private final String name;

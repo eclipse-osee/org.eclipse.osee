@@ -29,6 +29,11 @@ public interface RelationTypeToken extends NamedId {
    RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, null, null, null, null, null, null);
 
    public static @NonNull RelationTypeToken create(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+      return create(id, name, relationTypeMultiplicity, order, artifactTypeA, sideAName, artifactTypeB, sideBName,
+         ArtifactTypeToken.SENTINEL, false);
+   }
+
+   public static @NonNull RelationTypeToken create(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName, ArtifactTypeToken relationArtifactType, boolean newRelationTable) {
       final class RelationTypeTokenImpl extends NamedIdBase implements RelationTypeToken {
          private final RelationTypeMultiplicity relationTypeMultiplicity;
          private final RelationSorter order;
@@ -36,8 +41,10 @@ public interface RelationTypeToken extends NamedId {
          private final ArtifactTypeToken artifactTypeB;
          private final String sideAName;
          private final String sideBName;
+         private final ArtifactTypeToken relationArtifactType;
+         private final boolean newRelationTable;
 
-         public RelationTypeTokenImpl(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+         public RelationTypeTokenImpl(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName, ArtifactTypeToken relationArtifactType, boolean newRelationTable) {
             super(id, name);
             this.relationTypeMultiplicity = relationTypeMultiplicity;
             this.order = order;
@@ -45,6 +52,8 @@ public interface RelationTypeToken extends NamedId {
             this.artifactTypeB = artifactTypeB;
             this.sideAName = sideAName;
             this.sideBName = sideBName;
+            this.relationArtifactType = relationArtifactType;
+            this.newRelationTable = newRelationTable;
          }
 
          @Override
@@ -82,9 +91,19 @@ public interface RelationTypeToken extends NamedId {
          public boolean isOrdered() {
             return !RelationSorter.UNORDERED.equals(order);
          }
+
+         @Override
+         public ArtifactTypeToken getRelationArtifactType() {
+            return relationArtifactType;
+         }
+
+         @Override
+         public boolean isNewRelationTable() {
+            return newRelationTable;
+         }
       }
       return new RelationTypeTokenImpl(id, name, relationTypeMultiplicity, order, artifactTypeA, sideAName,
-         artifactTypeB, sideBName);
+         artifactTypeB, sideBName, relationArtifactType, newRelationTable);
    }
 
    RelationTypeMultiplicity getMultiplicity();
@@ -98,6 +117,10 @@ public interface RelationTypeToken extends NamedId {
    boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType);
 
    boolean isOrdered();
+
+   boolean isNewRelationTable();
+
+   ArtifactTypeToken getRelationArtifactType();
 
    default int getRelationSideMax(ArtifactTypeToken artifactType, RelationSide relationSide) {
       return isArtifactTypeAllowed(relationSide, artifactType) ? getMultiplicity().getLimit(relationSide) : 0;

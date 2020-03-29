@@ -81,6 +81,16 @@ public class OrcsTypeTokens {
       return attributeType;
    }
 
+   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+      return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
+         artifactTypeA, sideAName, artifactTypeB, sideBName, ArtifactTypeToken.SENTINEL, true));
+   }
+
+   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName, ArtifactTypeToken relationArtifactType) {
+      return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
+         artifactTypeA, sideAName, artifactTypeB, sideBName, relationArtifactType, true));
+   }
+
    public RelationTypeToken add(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName));

@@ -107,4 +107,13 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
       return type.isOrdered();
    }
 
+   @Override
+   public boolean isNewRelationTable() {
+      return type.isNewRelationTable();
+   }
+
+   @Override
+   public ArtifactTypeToken getRelationArtifactType() {
+      return type.getRelationArtifactType();
+   }
 }
