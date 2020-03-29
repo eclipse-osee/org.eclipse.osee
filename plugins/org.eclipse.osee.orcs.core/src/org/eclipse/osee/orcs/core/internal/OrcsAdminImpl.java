@@ -111,7 +111,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          "OSEE_OAUTH_CLIENT_CREDENTIAL", "OSEE_OAUTH_TOKEN", "OSEE_PERMISSION", "OSEE_RELATION_LINK",
          "OSEE_SCHEMA_VERSION", "OSEE_SEARCH_TAGS", "OSEE_SEQUENCE", "OSEE_SERVER_LOOKUP", "OSEE_SESSION",
          "OSEE_TAG_GAMMA_QUEUE", "OSEE_TUPLE2", "OSEE_TUPLE3", "OSEE_TUPLE4", "OSEE_BRANCH_CATEGORY", "OSEE_TXS",
-         "OSEE_TXS_ARCHIVED", "OSEE_TX_DETAILS")) {
+         "OSEE_TXS_ARCHIVED", "OSEE_TX_DETAILS", "OSEE_RELATION")) {
          try {
             jdbcClient.runCall("create public synonym " + table + " for " + table);
          } catch (Exception ex) {
