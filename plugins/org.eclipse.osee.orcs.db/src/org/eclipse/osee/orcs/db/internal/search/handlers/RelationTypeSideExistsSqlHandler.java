@@ -40,7 +40,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
       writer.addParameter(criteria.getType());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      String side = criteria.getSide().isSideA() ? "a" : "b";
+      String side = criteria.getType().getSide().isSideA() ? "a" : "b";
       if (!aliases.isEmpty()) {
          writer.writeAndLn();
          int aSize = aliases.size();

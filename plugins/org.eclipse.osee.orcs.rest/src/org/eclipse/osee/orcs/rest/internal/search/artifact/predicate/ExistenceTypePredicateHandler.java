@@ -13,7 +13,8 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -53,8 +54,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
                }
             }
          } else if ("relType".equals(existsType)) {
-            Collection<IRelationType> iRelationTypes = PredicateHandlerUtil.getIRelationTypes(values);
-            for (IRelationType rt : iRelationTypes) {
+            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values)) {
                if (checkExists(predicate.getType())) {
                   builder.andRelationExists(rt);
                } else {
@@ -63,11 +63,12 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
             }
          } else if ("relTypeSide".equals(existsType)) {
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-            for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+               RelationTypeSide relationTypeSide = new RelationTypeSide(rt, side);
                if (checkExists(predicate.getType())) {
-                  builder.andRelationExists(rt, side);
+                  builder.andRelationExists(relationTypeSide);
                } else {
-                  builder.andRelationNotExists(rt, side);
+                  builder.andRelationNotExists(rt);
                }
             }
          }

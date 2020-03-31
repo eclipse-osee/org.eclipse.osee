@@ -18,12 +18,10 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -201,28 +199,27 @@ public interface QueryBuilder extends Query {
     *
     * @param relationType the type to start following the link from
     */
-   QueryBuilder andRelationExists(RelationTypeId relationType);
+   QueryBuilder andRelationExists(RelationTypeToken relationType);
 
    /**
     * Search criteria that checks for non-existence of a relation type
-    *
     * @param relationTypeSide the type to check for non-existence
     */
-   QueryBuilder andRelationNotExists(RelationTypeId relationType, RelationSide side);
+   QueryBuilder andRelationNotExists(RelationTypeSide relationType);
 
    /**
     * Search criteria that follows the relation link ending on the given side
     *
     * @param relationType the type to start following the link from
     */
-   QueryBuilder andRelationExists(RelationTypeId relationType, RelationSide side);
+   QueryBuilder andRelationExists(RelationTypeSide relationType);
 
    /**
     * Search criteria that checks for non-existence of a relation type
     *
     * @param relationType the type to check for non-existence
     */
-   QueryBuilder andRelationNotExists(IRelationType relationType);
+   QueryBuilder andRelationNotExists(RelationTypeToken relationType);
 
    /**
     * Artifact name exactly equals value

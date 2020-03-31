@@ -17,13 +17,12 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaRelation extends CriteriaArtifact {
+public final class CriteriaRelation extends CriteriaArtifact {
 
    private final Collection<Integer> ids;
    private final Collection<? extends IRelationType> types;
 
    public CriteriaRelation(Collection<Integer> ids, Collection<? extends IRelationType> types) {
-      super();
       this.ids = ids;
       this.types = types;
    }
@@ -40,5 +39,4 @@ public class CriteriaRelation extends CriteriaArtifact {
    public String toString() {
       return "CriteriaRelation [queryId=" + getQueryId() + ", ids=" + ids + ", types=" + types + "]";
    }
-
 }

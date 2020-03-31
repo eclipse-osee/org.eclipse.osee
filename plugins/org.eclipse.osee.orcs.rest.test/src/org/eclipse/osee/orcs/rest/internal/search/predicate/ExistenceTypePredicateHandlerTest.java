@@ -24,8 +24,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
@@ -50,7 +50,7 @@ public class ExistenceTypePredicateHandlerTest {
    @Mock
    private OrcsApi orcsApi;
    @Captor
-   private ArgumentCaptor<IRelationType> relationTypeCaptor;
+   private ArgumentCaptor<RelationTypeToken> relationTypeCaptor;
    @Captor
    private ArgumentCaptor<Collection<AttributeTypeId>> attrTypeSideCaptor;
 
@@ -158,7 +158,7 @@ public class ExistenceTypePredicateHandlerTest {
       values = Collections.singletonList(value);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(orcsApi, builder, testPredicate);
-      verify(builder, never()).andRelationExists(any(RelationTypeSide.class), any(RelationSide.class));
+      verify(builder, never()).andRelationExists(any(RelationTypeSide.class));
    }
 
    @Test(expected = OseeCoreException.class)

@@ -10,39 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.RelationTypeId;
-import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 
 /**
  * @author John Misinco
  */
-public final class CriteriaRelationTypeSideExists extends Criteria {
-   private final RelationTypeId relationType;
-   private final RelationSide side;
+public final class CriteriaRelationTypeSideExists extends RelationTypeCriteria<RelationTypeSide> {
 
-   public CriteriaRelationTypeSideExists(RelationTypeId relationType, RelationSide side) {
-      this.relationType = relationType;
-      this.side = side;
-   }
-
-   public RelationTypeId getType() {
-      return relationType;
-   }
-
-   public RelationSide getSide() {
-      return side;
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkValid(relationType, "relation type");
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaRelationTypeSideExists [relationType=" + relationType + " side=" + side + "]";
+   public CriteriaRelationTypeSideExists(RelationTypeSide relationTypeSide) {
+      super(relationTypeSide);
    }
 }

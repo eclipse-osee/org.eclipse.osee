@@ -10,32 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.RelationTypeId;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class CriteriaRelationTypeExists extends Criteria {
-   private final RelationTypeId relationType;
+public final class CriteriaRelationTypeExists extends RelationTypeCriteria<RelationTypeToken> {
 
-   public CriteriaRelationTypeExists(RelationTypeId relationType) {
-      this.relationType = relationType;
-   }
-
-   public RelationTypeId getType() {
-      return relationType;
-   }
-
-   @Override
-   public void checkValid(Options options) {
-      Conditions.checkValid(relationType, "relation type");
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaRelationTypeExists [relationType=" + relationType + "]";
+   public CriteriaRelationTypeExists(RelationTypeToken relationType) {
+      super(relationType);
    }
 }

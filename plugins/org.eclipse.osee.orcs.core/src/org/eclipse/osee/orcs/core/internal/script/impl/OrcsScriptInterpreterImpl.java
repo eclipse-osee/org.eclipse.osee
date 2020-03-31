@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -598,7 +597,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       public Void caseOsRelationExistClause(OsRelationExistClause object) {
          OsExistenceOperator op = object.getOp();
          if (object.getSide() == null) {
-            IRelationType type = asRelationType(object.getType());
+            RelationTypeToken type = asRelationType(object.getType());
             if (OsExistenceOperator.EXISTS == op) {
                getArtifactQuery().andRelationExists(type);
             } else {
@@ -607,9 +606,9 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          } else {
             RelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
             if (OsExistenceOperator.EXISTS == op) {
-               getArtifactQuery().andRelationExists(typeSide, typeSide.getSide());
+               getArtifactQuery().andRelationExists(typeSide);
             } else {
-               getArtifactQuery().andRelationNotExists(typeSide, typeSide.getSide());
+               getArtifactQuery().andRelationNotExists(typeSide);
             }
          }
          return null;
@@ -667,8 +666,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          return toReturn;
       }
 
-      private IRelationType asRelationType(OsExpression expression) {
-         IRelationType toReturn;
+      private RelationTypeToken asRelationType(OsExpression expression) {
+         RelationTypeToken toReturn;
          Class<?> clazz = resolver.resolveTypeSingle(expression);
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);

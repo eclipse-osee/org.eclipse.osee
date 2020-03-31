@@ -31,14 +31,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TableEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -64,7 +62,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.core.internal.search.CallableQueryFactory;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.Match;
@@ -88,7 +85,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final QueryFactory queryFactory;
    private final QueryEngine queryEngine;
    private final OrcsTypes orcsTypes;
-   private final ArtifactTypes artifactTypeCache;
    private final AttributeTypes attributeTypeCache;
    private final HashMap<TableEnum, String> mainAliases = new HashMap<>(4);
    private QueryType queryType;
@@ -106,7 +102,6 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.view = view;
       criterias.add(new ArrayList<>());
       this.orcsTypes = orcsTypes;
-      this.artifactTypeCache = orcsTypes.getArtifactTypes();
       this.attributeTypeCache = orcsTypes.getAttributeTypes();
    }
 
@@ -452,23 +447,23 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andRelationExists(RelationTypeId relationType) {
+   public QueryBuilder andRelationExists(RelationTypeToken relationType) {
       return addAndCheck(new CriteriaRelationTypeExists(relationType));
    }
 
    @Override
-   public QueryBuilder andRelationNotExists(IRelationType relationType) {
+   public QueryBuilder andRelationNotExists(RelationTypeToken relationType) {
       return addAndCheck(new CriteriaRelationTypeNotExists(relationType));
    }
 
    @Override
-   public QueryBuilder andRelationNotExists(RelationTypeId relationType, RelationSide side) {
-      return addAndCheck(new CriteriaRelationTypeSideNotExists(relationType, side));
+   public QueryBuilder andRelationNotExists(RelationTypeSide relationType) {
+      return addAndCheck(new CriteriaRelationTypeSideNotExists(relationType));
    }
 
    @Override
-   public QueryBuilder andRelationExists(RelationTypeId relationType, RelationSide side) {
-      return addAndCheck(new CriteriaRelationTypeSideExists(relationType, side));
+   public QueryBuilder andRelationExists(RelationTypeSide relationTypeSide) {
+      return addAndCheck(new CriteriaRelationTypeSideExists(relationTypeSide));
    }
 
    @Override

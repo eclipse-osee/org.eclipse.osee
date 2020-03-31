@@ -12,30 +12,20 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 
 /**
  * @author Ryan D. Brooks
  */
-public class CriteriaRelatedRecursive extends Criteria {
-   private final RelationTypeToken relationType;
+public class CriteriaRelatedRecursive extends RelationTypeCriteria<RelationTypeToken> {
    private final ArtifactId startArtifact;
 
    public CriteriaRelatedRecursive(RelationTypeToken relationType, ArtifactId startArtifact) {
-      this.relationType = relationType;
+      super(relationType);
       this.startArtifact = startArtifact;
-   }
-
-   public RelationTypeToken getRelationType() {
-      return relationType;
    }
 
    public ArtifactId getStartArtifact() {
       return startArtifact;
-   }
-
-   @Override
-   public String toString() {
-      return "<CriteriaFollowRelation startArtifact=" + startArtifact.getIdString() + " relation type: " + relationType.toStringWithId() + ">";
    }
 }

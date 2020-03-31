@@ -13,32 +13,25 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaRelatedTo extends Criteria {
-   private final RelationTypeSide relationTypeSide;
+public class CriteriaRelatedTo extends RelationTypeCriteria<RelationTypeSide> {
    private final Collection<? extends ArtifactId> artifactIds;
    private final ArtifactId artifactId;
 
    public CriteriaRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
-      this.relationTypeSide = relationTypeSide;
+      super(relationTypeSide);
       this.artifactId = artifactId;
       this.artifactIds = null;
    }
 
    public CriteriaRelatedTo(RelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifactIds) {
-      this.relationTypeSide = relationTypeSide;
+      super(relationTypeSide);
       this.artifactId = null;
       this.artifactIds = artifactIds;
-   }
-
-   public RelationTypeSide getType() {
-      return relationTypeSide;
    }
 
    public Collection<? extends ArtifactId> getIds() {
@@ -54,13 +47,7 @@ public class CriteriaRelatedTo extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options) {
-      Conditions.checkNotNull(getType(), "relation type side");
-   }
-
-   @Override
    public String toString() {
-      return "CriteriaRelatedTo [relationTypeSide=" + relationTypeSide + ", artifactIds=" + artifactIds + "]";
+      return "CriteriaRelatedTo [relationTypeSide=" + getType() + ", artifactIds=" + artifactIds + "]";
    }
-
 }

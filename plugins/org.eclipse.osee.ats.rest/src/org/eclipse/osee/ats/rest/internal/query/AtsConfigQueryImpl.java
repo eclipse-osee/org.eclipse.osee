@@ -108,7 +108,7 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
 
    @Override
    public void queryAndExists(RelationTypeSide relationTypeSide) {
-      getQuery().andRelationExists(relationTypeSide, relationTypeSide.getSide());
+      getQuery().andRelationExists(relationTypeSide);
    }
 
 }

@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -35,8 +34,8 @@ public class PredicateHandlerUtil {
       return attrTypes;
    }
 
-   public static Collection<IRelationType> getIRelationTypes(Collection<String> rels) {
-      Collection<IRelationType> types = new LinkedHashSet<>();
+   public static Collection<RelationTypeToken> getIRelationTypes(Collection<String> rels) {
+      Collection<RelationTypeToken> types = new LinkedHashSet<>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
          if (longUuid != -1L) {
