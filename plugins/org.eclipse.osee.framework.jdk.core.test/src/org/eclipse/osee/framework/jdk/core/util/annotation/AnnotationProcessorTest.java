@@ -15,6 +15,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.annotation.AbstractFieldAnnotationHandler;
+import org.eclipse.osee.framework.jdk.core.annotation.AnnotationProcessor;
+import org.eclipse.osee.framework.jdk.core.annotation.FieldAnnotationHandler;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.messaging.internal;
 
 import java.lang.reflect.Field;
-import org.eclipse.osee.framework.jdk.core.util.annotation.AbstractFieldAnnotationHandler;
+import org.eclipse.osee.framework.jdk.core.annotation.AbstractFieldAnnotationHandler;
 import org.eclipse.osee.framework.messaging.rules.InjectMessageService;
 import org.junit.Assert;
 
@@ -23,7 +23,6 @@ public class MessageServiceFieldAnnotationHandler extends AbstractFieldAnnotatio
    private final HasMessageService hasMessageService;
 
    public MessageServiceFieldAnnotationHandler(HasMessageService hasMessageService) {
-      super();
       this.hasMessageService = hasMessageService;
    }
 
@@ -33,5 +32,4 @@ public class MessageServiceFieldAnnotationHandler extends AbstractFieldAnnotatio
       Assert.assertNotNull(service);
       injectToFields(annotation, object, field, service);
    }
-
 }

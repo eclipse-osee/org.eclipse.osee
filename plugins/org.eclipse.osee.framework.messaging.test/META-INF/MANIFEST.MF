@@ -13,5 +13,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.namespace,
+ org.eclipse.osee.framework.jdk.core.annotation,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.annotation

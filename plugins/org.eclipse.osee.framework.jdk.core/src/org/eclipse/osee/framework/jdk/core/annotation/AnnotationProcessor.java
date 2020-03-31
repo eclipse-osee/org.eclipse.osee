@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util.annotation;
+package org.eclipse.osee.framework.jdk.core.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

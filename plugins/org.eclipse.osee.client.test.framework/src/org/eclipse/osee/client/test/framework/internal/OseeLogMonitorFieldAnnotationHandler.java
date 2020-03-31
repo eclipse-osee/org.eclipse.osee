@@ -12,7 +12,7 @@ package org.eclipse.osee.client.test.framework.internal;
 
 import java.lang.reflect.Field;
 import org.eclipse.osee.client.test.framework.OseeLogMonitor;
-import org.eclipse.osee.framework.jdk.core.util.annotation.AbstractFieldAnnotationHandler;
+import org.eclipse.osee.framework.jdk.core.annotation.AbstractFieldAnnotationHandler;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 
 /**
@@ -23,7 +23,6 @@ public class OseeLogMonitorFieldAnnotationHandler extends AbstractFieldAnnotatio
    private final SevereLoggingMonitor logMonitor;
 
    public OseeLogMonitorFieldAnnotationHandler(SevereLoggingMonitor logMonitor) {
-      super();
       this.logMonitor = logMonitor;
    }
 
@@ -31,5 +30,4 @@ public class OseeLogMonitorFieldAnnotationHandler extends AbstractFieldAnnotatio
    public void handleAnnotation(OseeLogMonitor annotation, Object object, Field field) throws Exception {
       injectToFields(annotation, object, field, logMonitor);
    }
-
 }

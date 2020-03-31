@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.mock.internal;
 
 import java.lang.reflect.Field;
-import org.eclipse.osee.framework.jdk.core.util.annotation.AbstractFieldAnnotationHandler;
+import org.eclipse.osee.framework.jdk.core.annotation.AbstractFieldAnnotationHandler;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 
 /**

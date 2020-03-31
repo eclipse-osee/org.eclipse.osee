@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.messaging.internal;
 import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.asURI;
 import java.lang.reflect.Field;
 import java.net.URI;
-import org.eclipse.osee.framework.jdk.core.util.annotation.AbstractFieldAnnotationHandler;
+import org.eclipse.osee.framework.jdk.core.annotation.AbstractFieldAnnotationHandler;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.NodeInfo;
