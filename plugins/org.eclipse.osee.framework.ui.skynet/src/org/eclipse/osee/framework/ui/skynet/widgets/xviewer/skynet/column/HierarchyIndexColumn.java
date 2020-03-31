@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
 /**
@@ -79,6 +80,10 @@ public class HierarchyIndexColumn extends XViewerColumn implements IXViewerPreCo
                   while (artifactCursor.notEqual(CoreArtifactTokens.DefaultHierarchyRoot)) {
                      Artifact parent = null;
                      try {
+                        if (artifactCursor.isHistorical()) {
+                           artifactCursor =
+                              ArtifactQuery.getArtifactFromId(artifactCursor.getId(), artifactCursor.getBranch());
+                        }
                         parent = artifactCursor.getParent();
                      } catch (OseeCoreException ex) {
                         error = "Hierarchy Index unavailable: " + ex.getLocalizedMessage();
