@@ -38,7 +38,6 @@ import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemProperties;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.SavePointManager;
@@ -66,7 +65,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final SystemProperties preferences;
 
    private final IResourceManager resourceManager;
-   private final IdentityLocator identityService;
    private final OrcsTypes orcsTypes;
 
    private final SavePointManager savePointManager;
@@ -82,11 +80,10 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private IOseeExchangeDataProvider exportDataProvider;
    private ExchangeDataProcessor exchangeDataProcessor;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.resourceManager = resourceManager;
-      this.identityService = identityService;
       this.orcsTypes = orcsTypes;
       this.savePointManager = new SavePointManager(jdbcClient);
       this.exchangeFile = exchangeFile;
@@ -189,7 +186,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private void processImportFiles(Iterable<? extends BranchId> branchesToImport, Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler = DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(),
-         resourceManager, identityService, exportDataProvider, 50000);
+         resourceManager, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {

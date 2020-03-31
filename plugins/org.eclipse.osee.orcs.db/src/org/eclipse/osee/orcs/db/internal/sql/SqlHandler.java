@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -20,16 +19,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 public abstract class SqlHandler<T extends Criteria> {
 
    private Log logger;
-   private IdentityLocator idService;
    private int level;
-
-   public void setIdentityService(IdentityLocator idService) {
-      this.idService = idService;
-   }
-
-   public IdentityLocator getIdentityService() {
-      return idService;
-   }
 
    public void setLogger(Log logger) {
       this.logger = logger;

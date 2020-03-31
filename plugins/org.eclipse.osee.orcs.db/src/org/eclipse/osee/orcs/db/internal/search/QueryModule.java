@@ -25,7 +25,6 @@ import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
@@ -41,18 +40,16 @@ public class QueryModule {
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private final JdbcClient jdbcClient;
-   private final IdentityLocator idService;
    private final SqlJoinFactory sqlJoinFactory;
 
    private TaggingEngine taggingEngine;
    private QueryEngineIndexer queryIndexer;
 
-   public QueryModule(Log logger, ExecutorAdmin executorAdmin, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityLocator idService) {
+   public QueryModule(Log logger, ExecutorAdmin executorAdmin, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory) {
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
-      this.idService = idService;
    }
 
    public void startIndexer(IResourceManager resourceManager) throws Exception {
@@ -76,16 +73,15 @@ public class QueryModule {
    public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTypes orcsTypes, OrcsTokenService tokenService, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue, IResourceManager resourceManager) {
       AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
       ArtifactQuerySqlContextFactoryImpl artifactSqlContextFactory =
-         Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
+         Engines.createArtifactSqlContext(logger, sqlJoinFactory, jdbcClient, taggingEngine);
       QueryCallableFactory factory1 = newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine,
          executorAdmin, loaderFactory, attributeTypes);
       QuerySqlContextFactory branchSqlContextFactory =
-         Engines.newBranchSqlContextFactory(logger, sqlJoinFactory, idService, jdbcClient);
-      QuerySqlContextFactory txSqlContextFactory =
-         Engines.newTxSqlContextFactory(logger, sqlJoinFactory, idService, jdbcClient);
+         Engines.newBranchSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
+      QuerySqlContextFactory txSqlContextFactory = Engines.newTxSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
 
-      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
-         executorAdmin, loaderFactory, attributeTypes);
+      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, jdbcClient, taggingEngine, executorAdmin,
+         loaderFactory, attributeTypes);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
          sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, orcsTypes, tokenService,
          keyValue, resourceManager);

@@ -65,13 +65,7 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public Long parseToLocalId(String value) {
-      return Long.valueOf(value);
-   }
-
-   @Override
    public void invalidateIds() {
       client.invalidateSequences();
    }
-
 }

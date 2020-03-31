@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -50,7 +49,6 @@ public class SqlHandlerFactoryUtilTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private IdentityLocator identityService;
    @Mock private TagProcessor tagProcessor;
    // @formatter:on
 
@@ -60,7 +58,7 @@ public class SqlHandlerFactoryUtilTest {
    public void setUp() {
       initMocks(this);
 
-      factory = createArtifactSqlHandlerFactory(logger, identityService, tagProcessor);
+      factory = createArtifactSqlHandlerFactory(logger, tagProcessor);
    }
 
    @Test
@@ -106,7 +104,6 @@ public class SqlHandlerFactoryUtilTest {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
-      Assert.assertEquals(identityService, actual.getIdentityService());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
 
       if (actualProcessor != null) {

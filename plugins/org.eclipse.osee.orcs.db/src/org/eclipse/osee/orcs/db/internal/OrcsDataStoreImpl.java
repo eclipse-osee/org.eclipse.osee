@@ -84,7 +84,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       LoaderModule loaderModule = new LoaderModule(logger, jdbcClient, idManager, joinFactory, resourceManager);
 
-      queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory, idManager);
+      queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory);
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =

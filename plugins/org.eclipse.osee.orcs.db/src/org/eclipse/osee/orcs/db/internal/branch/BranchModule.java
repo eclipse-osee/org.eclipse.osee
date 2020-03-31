@@ -163,7 +163,7 @@ public class BranchModule {
          @Override
          public Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
             ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
-               preferences, resourceManager, idManager, orcsTypes, fileToImport, branches, options);
+               preferences, resourceManager, orcsTypes, fileToImport, branches, options);
             return callable;
          }
 

@@ -51,7 +51,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
@@ -66,30 +65,30 @@ public final class SqlHandlerFactoryUtil {
       // Static Utility
    }
 
-   public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
+   public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addArtifactHandlers(handleMap);
-      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
+      return new SqlHandlerFactoryImpl(logger, tagProcessor, handleMap);
    }
 
-   public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityLocator identityService) {
+   public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addBranchHandlers(handleMap);
-      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
+      return new SqlHandlerFactoryImpl(logger, null, handleMap);
    }
 
-   public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
+   public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addTxHandlers(handleMap);
-      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
+      return new SqlHandlerFactoryImpl(logger, null, handleMap);
    }
 
-   public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
+   public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
       addBranchHandlers(handleMap);
       addTxHandlers(handleMap);
       addArtifactHandlers(handleMap);
-      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
+      return new SqlHandlerFactoryImpl(logger, tagProcessor, handleMap);
    }
 
    private static void addArtifactHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {

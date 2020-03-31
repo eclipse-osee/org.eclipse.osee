@@ -21,14 +21,12 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -39,9 +37,8 @@ import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, IdentityLocator identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
-      return new DbTableSaxHandler(logger, jdbcClient, resourceManager, identityService, exportDataProvider, false,
-         cacheLimit);
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+      return new DbTableSaxHandler(logger, jdbcClient, resourceManager, exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
@@ -49,13 +46,11 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    private final IOseeExchangeDataProvider exportDataProvider;
 
    private final IResourceManager resourceManager;
-   private final IdentityLocator identityService;
    private IExportItem exportItem;
 
-   protected DbTableSaxHandler(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, IdentityLocator identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+   protected DbTableSaxHandler(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(logger, jdbcClient, isCacheAll, cacheLimit);
       this.resourceManager = resourceManager;
-      this.identityService = identityService;
       this.branchesToImport = new HashSet<>();
       this.transferredBinaryContent = new ArrayList<>();
       this.exportDataProvider = exportDataProvider;
@@ -63,10 +58,6 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
 
    private IResourceManager getResourceManager() {
       return resourceManager;
-   }
-
-   private IdentityLocator getIdentityService() {
-      return identityService;
    }
 
    public void setSelectedBranchIds(Iterable<? extends BranchId> branchesToImport) {
@@ -99,10 +90,9 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private long getTypeId(IdentityLocator identityService, Map<String, String> fieldMap) {
-      Conditions.checkNotNull(identityService, "identityService");
+   private long getTypeId(Map<String, String> fieldMap) {
       String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
-      return identityService.parseToLocalId(hexString);
+      return Long.valueOf(hexString);
    }
 
    @Override
@@ -132,17 +122,17 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
             }
 
             if (exportItem.equals(ExportItem.OSEE_ARTIFACT_DATA)) {
-               long typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(fieldMap);
                fieldMap.put("art_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_ATTRIBUTE_DATA)) {
-               long typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(fieldMap);
                fieldMap.put("attr_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
-               long typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(fieldMap);
                fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 /**
  * @author Roberto E. Escobar
  */
-public interface IdentityManager extends IdentityLocator {
+public interface IdentityManager {
 
    TransactionId getNextTransactionId();
 

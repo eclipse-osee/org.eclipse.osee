@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 
@@ -33,12 +32,10 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    private final Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap;
 
    private final Log logger;
-   private final IdentityLocator idService;
    private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityLocator idService, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
+   public SqlHandlerFactoryImpl(Log logger, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       this.logger = logger;
-      this.idService = idService;
       this.handleMap = handleMap;
       this.tagProcessor = tagProcessor;
    }
@@ -81,7 +78,6 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       try {
          handler = item.newInstance();
          handler.setData(criteria);
-         handler.setIdentityService(idService);
          handler.setLogger(logger);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -92,5 +88,4 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       }
       return handler;
    }
-
 }

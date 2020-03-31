@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -38,10 +37,8 @@ import org.mockito.MockitoAnnotations;
  */
 public class LoaderSqlHandlerFactoryUtilTest {
 
-   // @formatter:off
-   @Mock private Log logger;
-   @Mock private IdentityLocator identityService;
-   // @formatter:on
+   @Mock
+   private Log logger;
 
    private SqlHandlerFactory factory;
 
@@ -49,7 +46,7 @@ public class LoaderSqlHandlerFactoryUtilTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      factory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, identityService);
+      factory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger);
    }
 
    @Test
@@ -70,14 +67,13 @@ public class LoaderSqlHandlerFactoryUtilTest {
    }
 
    private void assertSqlHandler(SqlHandler<?> handler, Class<?> clazz, SqlHandlerPriority priority) {
-      assertHandler(handler, clazz, priority, logger, identityService);
+      assertHandler(handler, clazz, priority, logger);
    }
 
-   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityLocator idService) {
+   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
-      Assert.assertEquals(idService, actual.getIdentityService());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
    }
 }

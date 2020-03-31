@@ -22,7 +22,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQueryCallableFactory;
@@ -53,9 +52,8 @@ public final class Engines {
       //
    }
 
-   public static ArtifactQuerySqlContextFactoryImpl createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, TaggingEngine taggingEngine) {
-      SqlHandlerFactory handlerFactory =
-         createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
+   public static ArtifactQuerySqlContextFactoryImpl createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TaggingEngine taggingEngine) {
+      SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
       return new ArtifactQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
    }
 
@@ -66,11 +64,11 @@ public final class Engines {
    }
 
    public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
-      IdentityLocator idService, JdbcClient jdbcClient, TaggingEngine taggingEngine, //
-      ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+      JdbcClient jdbcClient, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, //
+      DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
 
       SqlHandlerFactory handlerFactory =
-         createObjectSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
+         createObjectSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
          new ObjectQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
@@ -87,14 +85,14 @@ public final class Engines {
       return new QuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory, table, idColumn, type);
    }
 
-   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient) {
-      SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger, idService);
+   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
+      SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger);
       return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory,
          ObjectQueryType.BRANCH);
    }
 
-   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient) {
-      SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger, idService);
+   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
+      SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger);
       return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory, ObjectQueryType.TX);
    }
