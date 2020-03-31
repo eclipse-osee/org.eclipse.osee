@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
@@ -31,11 +30,9 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    private final Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap;
 
-   private final Log logger;
    private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(Log logger, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
-      this.logger = logger;
+   public SqlHandlerFactoryImpl(TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       this.handleMap = handleMap;
       this.tagProcessor = tagProcessor;
    }
@@ -66,11 +63,11 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    @SuppressWarnings({"unchecked", "rawtypes"})
    public SqlHandler<?> createHandler(Criteria criteria) {
       Class<? extends Criteria> key = criteria.getClass();
-      Class<? extends SqlHandler> item = handleMap.get(key);
-      if (item == null) {
+      Class<? extends SqlHandler> handlerClass = handleMap.get(key);
+      if (handlerClass == null) {
          throw new OseeStateException("No handler configured for criteria of %s", key);
       }
-      return createHandler(criteria, item);
+      return createHandler(criteria, handlerClass);
    }
 
    private <C extends Criteria, H extends SqlHandler<C>> SqlHandler<C> createHandler(C criteria, Class<H> item) {
@@ -78,7 +75,6 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       try {
          handler = item.newInstance();
          handler.setData(criteria);
-         handler.setLogger(logger);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }

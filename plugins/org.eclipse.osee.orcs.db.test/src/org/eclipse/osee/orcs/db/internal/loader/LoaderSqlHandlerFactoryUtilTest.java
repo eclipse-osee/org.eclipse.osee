@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
@@ -27,7 +26,6 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -37,16 +35,12 @@ import org.mockito.MockitoAnnotations;
  */
 public class LoaderSqlHandlerFactoryUtilTest {
 
-   @Mock
-   private Log logger;
-
    private SqlHandlerFactory factory;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-
-      factory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger);
+      factory = LoaderSqlHandlerFactoryUtil.createHandlerFactory();
    }
 
    @Test
@@ -66,14 +60,9 @@ public class LoaderSqlHandlerFactoryUtilTest {
       assertSqlHandler(iterator.next(), RelationSqlHandler.class, SqlHandlerPriority.RELATION_LOADER);
    }
 
-   private void assertSqlHandler(SqlHandler<?> handler, Class<?> clazz, SqlHandlerPriority priority) {
-      assertHandler(handler, clazz, priority, logger);
-   }
-
-   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger) {
+   private void assertSqlHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
-      Assert.assertEquals(logger, actual.getLogger());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
    }
 }

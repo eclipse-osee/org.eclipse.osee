@@ -53,7 +53,7 @@ public final class Engines {
    }
 
    public static ArtifactQuerySqlContextFactoryImpl createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TaggingEngine taggingEngine) {
-      SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
+      SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(taggingEngine.getTagProcessor());
       return new ArtifactQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
    }
 

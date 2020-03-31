@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
@@ -30,7 +29,7 @@ public final class LoaderSqlHandlerFactoryUtil {
       // Static Utility
    }
 
-   public static SqlHandlerFactory createHandlerFactory(Log logger) {
+   public static SqlHandlerFactory createHandlerFactory() {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap = new HashMap<>();
 
       // Query
@@ -38,6 +37,6 @@ public final class LoaderSqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttribute.class, AttributeSqlHandler.class);
       handleMap.put(CriteriaRelation.class, RelationSqlHandler.class);
 
-      return new SqlHandlerFactoryImpl(logger, null, handleMap);
+      return new SqlHandlerFactoryImpl(null, handleMap);
    }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -48,7 +47,6 @@ import org.mockito.Mock;
 public class SqlHandlerFactoryUtilTest {
 
    // @formatter:off
-   @Mock private Log logger;
    @Mock private TagProcessor tagProcessor;
    // @formatter:on
 
@@ -58,7 +56,7 @@ public class SqlHandlerFactoryUtilTest {
    public void setUp() {
       initMocks(this);
 
-      factory = createArtifactSqlHandlerFactory(logger, tagProcessor);
+      factory = createArtifactSqlHandlerFactory(tagProcessor);
    }
 
    @Test
@@ -103,7 +101,6 @@ public class SqlHandlerFactoryUtilTest {
    private void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, TagProcessor actualProcessor) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
-      Assert.assertEquals(logger, actual.getLogger());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
 
       if (actualProcessor != null) {

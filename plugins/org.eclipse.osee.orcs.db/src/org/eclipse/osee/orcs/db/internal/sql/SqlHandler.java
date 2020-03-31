@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 
 /**
@@ -18,16 +17,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  */
 public abstract class SqlHandler<T extends Criteria> {
 
-   private Log logger;
    private int level;
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public Log getLogger() {
-      return logger;
-   }
 
    public int getLevel() {
       return level;
