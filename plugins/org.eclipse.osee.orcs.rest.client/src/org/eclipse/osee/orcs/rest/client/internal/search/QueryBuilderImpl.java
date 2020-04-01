@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -153,7 +153,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(IRelationType relationType) {
+   public QueryBuilder andExists(RelationTypeToken relationType) {
       predicates.add(predicateFactory.createRelationExistsSearch(Collections.singleton(relationType)));
       return this;
    }
@@ -171,7 +171,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andNotExists(IRelationType relationType) {
+   public QueryBuilder andNotExists(RelationTypeToken relationType) {
       predicates.add(predicateFactory.createRelationNotExistsSearch(Collections.singleton(relationType)));
       return this;
    }

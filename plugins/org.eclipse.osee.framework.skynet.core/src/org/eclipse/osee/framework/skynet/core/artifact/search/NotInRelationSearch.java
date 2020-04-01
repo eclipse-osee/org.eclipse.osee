@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
  */
 public class NotInRelationSearch implements ISearchPrimitive {
    private final static String TOKEN = ";";
-   private final IRelationType relationType;
+   private final RelationTypeToken relationType;
    private final Boolean sideA;
 
-   public NotInRelationSearch(IRelationType relationType, Boolean sideA) {
+   public NotInRelationSearch(RelationTypeToken relationType, Boolean sideA) {
       this.relationType = relationType;
       this.sideA = sideA;
    }
@@ -44,7 +44,7 @@ public class NotInRelationSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
       }
 
-      IRelationType type = RelationTypeToken.create(Long.valueOf(values[1]), "SearchRelType");
+      RelationTypeToken type = RelationTypeToken.create(Long.valueOf(values[1]), "SearchRelType");
       return new NotInRelationSearch(type, Boolean.parseBoolean(values[0]));
    }
 

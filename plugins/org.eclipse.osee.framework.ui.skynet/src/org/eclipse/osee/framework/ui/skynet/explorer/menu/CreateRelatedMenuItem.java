@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -260,7 +260,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private Collection<ArtifactTypeToken> getArtifactTypesFromRelationType(IRelationType relationType) {
+   private Collection<ArtifactTypeToken> getArtifactTypesFromRelationType(RelationTypeToken relationType) {
       RelationType relType = RelationTypeManager.getType(relationType);
       ArtifactTypeToken artifactTypeSideB = relType.getArtifactTypeSideB();
       List<ArtifactTypeToken> artifactTypes = artifactTypeSideB.getAllDescendantTypes();

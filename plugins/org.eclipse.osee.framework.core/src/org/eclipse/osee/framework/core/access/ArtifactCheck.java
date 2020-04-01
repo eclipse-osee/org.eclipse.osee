@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -31,7 +31,7 @@ public class ArtifactCheck implements IArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       return new XResultData();
    }
 }

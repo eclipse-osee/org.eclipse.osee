@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
@@ -189,7 +189,7 @@ public class OrcsTypesIndexer {
       return token;
    }
 
-   private IRelationType getOrCreateToken(RelationTypeIndex index, XRelationType dslType) {
+   private RelationTypeToken getOrCreateToken(RelationTypeIndex index, XRelationType dslType) {
       RelationTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());

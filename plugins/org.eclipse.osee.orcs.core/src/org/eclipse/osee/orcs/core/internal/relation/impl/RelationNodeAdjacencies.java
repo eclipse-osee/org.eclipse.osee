@@ -16,8 +16,7 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdOnSi
 import com.google.common.base.Predicate;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -32,7 +31,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationTypeId, Relation, RelationTypeId, Relation> implements GraphAdjacencies {
+public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationTypeToken, Relation, RelationTypeToken, Relation> implements GraphAdjacencies {
 
    @Override
    protected ResultSet<Relation> createResultSet(List<Relation> values) {
@@ -40,7 +39,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @Override
-   protected <T extends Relation> ResultSet<T> createResultSet(RelationTypeId type, List<T> values) {
+   protected <T extends Relation> ResultSet<T> createResultSet(RelationTypeToken type, List<T> values) {
       return ResultSets.newResultSet(values);
    }
 
@@ -50,19 +49,19 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @Override
-   protected RelationTypeId getType(Relation data) {
+   protected RelationTypeToken getType(Relation data) {
       return data.getRelationType();
    }
 
    //////////////////////////////////////////////////////////////
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted) {
+   public List<Relation> getList(RelationTypeToken type, DeletionFlag includeDeleted) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getListByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
+   public List<Relation> getList(RelationTypeToken relationType, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -70,13 +69,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted) {
+   public ResultSet<Relation> getResultSet(RelationTypeToken type, DeletionFlag includeDeleted) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getSetByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
+   public ResultSet<Relation> getResultSet(RelationTypeToken type, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -84,7 +83,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public Relation getRelation(Artifact aNode, RelationTypeId type, Artifact bNode, DeletionFlag excludeDeleted) {
+   public Relation getRelation(Artifact aNode, RelationTypeToken type, Artifact bNode, DeletionFlag excludeDeleted) {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);
@@ -92,7 +91,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public Relation getRelation(ArtifactId artIdA, RelationTypeId relationType, ArtifactId artIdB) {
+   public Relation getRelation(ArtifactId artIdA, RelationTypeToken relationType, ArtifactId artIdB) {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(artIdA, artIdB);
       List<Relation> listByFilter = getListByFilter(relationType, nodeMatcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);

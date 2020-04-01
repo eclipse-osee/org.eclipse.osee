@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -187,7 +187,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<Void> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
+   public Callable<Void> purgeRelationsByRelationType(Collection<? extends RelationTypeToken> relationTypes) {
       return dataStore.purgeRelationsByRelationType(session, relationTypes);
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -355,7 +355,7 @@ public class ArtifactEventTest {
       return remoteEvent;
    }
 
-   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB) {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client

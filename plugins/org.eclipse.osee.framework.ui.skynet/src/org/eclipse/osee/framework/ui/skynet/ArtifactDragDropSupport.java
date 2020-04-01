@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -69,7 +69,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void ensureLinkValidity(RelationTypeSideSorter group, Artifact artifact) {
-      IRelationType relationType = group.getRelationType();
+      RelationTypeToken relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
       Artifact artifactA = group.getSide() == RelationSide.SIDE_A ? artifact : otherArtifact;
@@ -80,7 +80,7 @@ public class ArtifactDragDropSupport {
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) {
       RelationTypeSideSorter group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
-      IRelationType relationType = group.getRelationType();
+      RelationTypeToken relationType = group.getRelationType();
 
       try {
          for (Artifact artifact : artifacts) {

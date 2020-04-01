@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  * @author Ryan D. Brooks
  */
 public class RelationCriteria implements ArtifactSearchCriteria {
-   private final IRelationType relationType;
+   private final RelationTypeToken relationType;
    private final RelationSide relationSide;
    private final ArtifactId artifactId;
 
@@ -34,15 +34,15 @@ public class RelationCriteria implements ArtifactSearchCriteria {
       this(relationEnum, relationEnum.getSide());
    }
 
-   public RelationCriteria(IRelationType relationType) {
+   public RelationCriteria(RelationTypeToken relationType) {
       this(relationType, null);
    }
 
-   public RelationCriteria(IRelationType relationType, RelationSide relationSide) {
+   public RelationCriteria(RelationTypeToken relationType, RelationSide relationSide) {
       this(ArtifactId.SENTINEL, relationType, relationSide);
    }
 
-   public RelationCriteria(ArtifactId artifactId, IRelationType relationType, RelationSide relationSide) {
+   public RelationCriteria(ArtifactId artifactId, RelationTypeToken relationType, RelationSide relationSide) {
       this.artifactId = artifactId;
       this.relationType = relationType;
       this.relationSide = relationSide;

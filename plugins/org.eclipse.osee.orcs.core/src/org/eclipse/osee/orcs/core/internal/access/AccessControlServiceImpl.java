@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
@@ -68,7 +68,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       for (IArtifactCheck check : artifactChecks) {
          check.isDeleteableRelation(artifact, relationType, results);
       }

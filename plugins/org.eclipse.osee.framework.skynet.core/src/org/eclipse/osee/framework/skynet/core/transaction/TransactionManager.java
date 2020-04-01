@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -383,7 +383,7 @@ public final class TransactionManager {
    }
 
    private static RelationRow loadRelationChange(JdbcStatement chStmt) {
-      IRelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
+      RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Long aArtId = Long.valueOf(chStmt.getInt("a_art_id"));

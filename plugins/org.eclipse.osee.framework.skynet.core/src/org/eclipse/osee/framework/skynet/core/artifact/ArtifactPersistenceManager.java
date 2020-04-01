@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -69,7 +69,7 @@ public class ArtifactPersistenceManager {
    }
 
    // Confirm relations are fit to delete
-   public static void performDeleteRelationChecks(Artifact artifact, IRelationType relationType) {
+   public static void performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType) {
       AccessPolicy policy = ServiceUtil.getAccessPolicy();
       XResultData results = policy.isDeleteableRelation(artifact, relationType, new XResultData());
       if (results.isErrors()) {

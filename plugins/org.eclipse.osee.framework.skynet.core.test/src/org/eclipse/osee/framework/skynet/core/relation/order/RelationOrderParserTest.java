@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -200,7 +200,7 @@ public class RelationOrderParserTest {
       Assert.assertEquals("<OrderList>\n</OrderList>", parser.toXml(data));
    }
 
-   private void addData(List<Object[]> expectedData, IRelationType relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
+   private void addData(List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
       expectedData.add(new Object[] {relationType, side, relationOrderIdGuid, Arrays.asList(guids)});
    }
 

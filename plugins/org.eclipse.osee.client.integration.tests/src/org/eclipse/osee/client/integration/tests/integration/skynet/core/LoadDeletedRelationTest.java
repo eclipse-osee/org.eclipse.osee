@@ -19,7 +19,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -45,7 +45,7 @@ public class LoadDeletedRelationTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private Artifact left, right;
-   private IRelationType type;
+   private RelationTypeToken type;
 
    @Before
    public void setUp() {

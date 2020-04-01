@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationLink;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -253,7 +253,7 @@ public class RelationLink implements HasBranch, IRelationLink {
    }
 
    @Override
-   public boolean isOfType(IRelationType oseeType) {
+   public boolean isOfType(RelationTypeToken oseeType) {
       return relationType.equals(oseeType);
    }
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -107,7 +107,7 @@ public interface QueryBuilder {
     *
     * @param relationType the type to start following the link from
     */
-   QueryBuilder andExists(IRelationType relationType);
+   QueryBuilder andExists(RelationTypeToken relationType);
 
    /**
     * Search criteria that follows the relation link ending on the given side
@@ -121,7 +121,7 @@ public interface QueryBuilder {
     *
     * @param relationType the type to check for non-existence
     */
-   QueryBuilder andNotExists(IRelationType relationType);
+   QueryBuilder andNotExists(RelationTypeToken relationType);
 
    /**
     * Search criteria that checks for non-existence of a relation type

@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -42,9 +42,9 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
    private static final String DELETE_FROM_CONFLICT_TABLE_DEST_SIDE =
       "DELETE FROM osee_conflict WHERE dest_gamma_id = ?";
 
-   private final Collection<? extends IRelationType> typesToPurge;
+   private final Collection<? extends RelationTypeToken> typesToPurge;
 
-   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Collection<? extends IRelationType> typesToPurge) {
+   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Collection<? extends RelationTypeToken> typesToPurge) {
       super(logger, session, jdbcClient);
       this.typesToPurge = typesToPurge;
    }
@@ -56,11 +56,11 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       return null;
    }
 
-   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IRelationType> types) {
+   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends RelationTypeToken> types) {
       List<Object[]> gammas = new ArrayList<>(50000);
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
-         for (IRelationType type : types) {
+         for (RelationTypeToken type : types) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type);
             while (chStmt.next()) {
                gammas.add(new Long[] {chStmt.getLong("gamma_id")});

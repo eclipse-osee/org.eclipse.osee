@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -42,7 +42,7 @@ public class SorterProvider {
       orderMap.put(order.getId(), order);
    }
 
-   public RelationSorter getDefaultSorterId(IRelationType relationType) {
+   public RelationSorter getDefaultSorterId(RelationTypeToken relationType) {
       Conditions.checkNotNull(relationType, "type");
       return typeCache.getDefaultOrderTypeGuid(relationType);
    }

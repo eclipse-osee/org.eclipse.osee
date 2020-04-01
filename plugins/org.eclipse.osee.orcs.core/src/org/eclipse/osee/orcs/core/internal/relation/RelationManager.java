@@ -43,15 +43,15 @@ public interface RelationManager {
 
    boolean hasDirtyRelations(Artifact node);
 
-   Collection<RelationTypeId> getExistingRelationTypes(Artifact node);
+   Collection<RelationTypeToken> getExistingRelationTypes(Artifact node);
 
-   int getRelatedCount(RelationTypeId type, Artifact node, RelationSide side);
+   int getRelatedCount(RelationTypeToken type, Artifact node, RelationSide side);
 
-   int getRelatedCount(RelationTypeId type, Artifact node, RelationSide side, DeletionFlag includeDeleted);
+   int getRelatedCount(RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag includeDeleted);
 
-   boolean areRelated(Artifact aNode, RelationTypeId type, Artifact bNode);
+   boolean areRelated(Artifact aNode, RelationTypeToken type, Artifact bNode);
 
-   String getRationale(Artifact aNode, RelationTypeId type, Artifact bNode);
+   String getRationale(Artifact aNode, RelationTypeToken type, Artifact bNode);
 
    ///////////////////////////////////////
 
@@ -59,9 +59,9 @@ public interface RelationManager {
 
    <T extends Artifact> ResultSet<T> getChildren(OrcsSession session, Artifact parent);
 
-   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side);
 
-   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag flag);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag flag);
 
    ///////////////////////////////////////
 
@@ -75,19 +75,19 @@ public interface RelationManager {
 
    void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType);
 
-   void setRationale(Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);
+   void setRationale(Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale);
 
-   void unrelate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
+   void unrelate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode);
 
    void unrelateFromAll(OrcsSession session, Artifact node);
 
-   void unrelateFromAll(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
+   void unrelateFromAll(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side);
 
    void cloneRelations(Artifact source, Artifact destination);
 
    void introduce(BranchId branch, Artifact source, Artifact destination);
 
-   void setApplicabilityId(Artifact aNode, RelationTypeId type, Artifact bNode, ApplicabilityId applicId);
+   void setApplicabilityId(Artifact aNode, RelationTypeToken type, Artifact bNode, ApplicabilityId applicId);
 
    List<Relation> getRelations(Artifact node, DeletionFlag includeDeleted);
 

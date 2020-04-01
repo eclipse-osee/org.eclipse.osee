@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -48,10 +48,10 @@ public class RelationCriteriaTest {
 
    @Test
    public void testAddRelationTypeToQueryBuilder() {
-      RelationCriteria criteria = new RelationCriteria((IRelationType) CoreRelationTypes.Allocation_Component);
+      RelationCriteria criteria = new RelationCriteria((RelationTypeToken) CoreRelationTypes.Allocation_Component);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);
-      verify(builder).andExists((IRelationType) CoreRelationTypes.Allocation_Component);
+      verify(builder).andExists((RelationTypeToken) CoreRelationTypes.Allocation_Component);
 
       reset(builder);
       ArtifactId artifact = ArtifactId.valueOf(4);

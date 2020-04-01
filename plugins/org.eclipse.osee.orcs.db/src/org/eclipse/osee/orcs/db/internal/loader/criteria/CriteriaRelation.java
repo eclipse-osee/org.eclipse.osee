@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
  * @author Roberto E. Escobar
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 public final class CriteriaRelation extends CriteriaArtifact {
 
    private final Collection<Integer> ids;
-   private final Collection<? extends IRelationType> types;
+   private final Collection<? extends RelationTypeToken> types;
 
-   public CriteriaRelation(Collection<Integer> ids, Collection<? extends IRelationType> types) {
+   public CriteriaRelation(Collection<Integer> ids, Collection<? extends RelationTypeToken> types) {
       this.ids = ids;
       this.types = types;
    }
@@ -31,8 +31,8 @@ public final class CriteriaRelation extends CriteriaArtifact {
       return ids != null ? ids : Collections.<Integer> emptyList();
    }
 
-   public Collection<? extends IRelationType> getTypes() {
-      return types != null ? types : Collections.<IRelationType> emptyList();
+   public Collection<? extends RelationTypeToken> getTypes() {
+      return types != null ? types : Collections.<RelationTypeToken> emptyList();
    }
 
    @Override

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -58,10 +58,10 @@ public class RelationTypeValidityTest {
    @Mock private ArtifactTypeToken artifactType;
    @Mock private ArtifactTypeToken artifactType2;
 
-   @Mock private IRelationType relationType1;
-   @Mock private IRelationType relationType2;
-   @Mock private IRelationType relationType3;
-   @Mock private IRelationType relationType4;
+   @Mock private RelationTypeToken relationType1;
+   @Mock private RelationTypeToken relationType2;
+   @Mock private RelationTypeToken relationType3;
+   @Mock private RelationTypeToken relationType4;
    // @formatter:on
 
    private RelationTypeValidity validity;
@@ -141,12 +141,12 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testValidRelationTypes() {
-      final Collection<? extends IRelationType> types =
+      final Collection<? extends RelationTypeToken> types =
          Arrays.asList(relationType1, relationType2, relationType3, relationType4);
-      when(relTypes.getAll()).thenAnswer(new Answer<Collection<? extends IRelationType>>() {
+      when(relTypes.getAll()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
 
          @Override
-         public Collection<? extends IRelationType> answer(InvocationOnMock invocation) throws Throwable {
+         public Collection<? extends RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {
             return types;
          }
 

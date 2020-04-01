@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
@@ -103,7 +103,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          types = artifactProxy.getValidRelationTypes();
       } else {
          XRelationType xRelationType = restriction.getRelationTypeRef();
-         IRelationType typeToMatch = OseeUtil.toToken(xRelationType);
+         RelationTypeToken typeToMatch = OseeUtil.toToken(xRelationType);
          RelationType relationType = getRelationType(typeToMatch, artifactProxy);
          if (relationType != null) {
             types = Collections.singleton(relationType);
@@ -114,7 +114,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       return types;
    }
 
-   private RelationType getRelationType(IRelationType typeToMatch, ArtifactProxy artifactProxy) {
+   private RelationType getRelationType(RelationTypeToken typeToMatch, ArtifactProxy artifactProxy) {
       RelationType toReturn = null;
       Collection<RelationType> relationTypes = artifactProxy.getValidRelationTypes();
       for (RelationType relationType : relationTypes) {

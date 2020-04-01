@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
@@ -72,25 +72,25 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public String getSideName(IRelationType relation, RelationSide relationSide) {
+   public String getSideName(RelationTypeToken relation, RelationSide relationSide) {
       Conditions.checkNotNull(relationSide, "relationSide");
       return relationSide == RelationSide.SIDE_A ? getSideAName(relation) : getSideBName(relation);
    }
 
    @Override
-   public String getSideAName(IRelationType relation) {
+   public String getSideAName(RelationTypeToken relation) {
       XRelationType type = getType(relation);
       return type.getSideAName();
    }
 
    @Override
-   public String getSideBName(IRelationType relation) {
+   public String getSideBName(RelationTypeToken relation) {
       XRelationType type = getType(relation);
       return type.getSideBName();
    }
 
    @Override
-   public boolean isSideAName(IRelationType relation, String sideName) {
+   public boolean isSideAName(RelationTypeToken relation, String sideName) {
       XRelationType type = getType(relation);
       boolean isSideA = type.getSideAName().equals(sideName);
       if (!isSideA && !type.getSideBName().equals(sideName)) {
@@ -100,23 +100,23 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public boolean isOrdered(IRelationType relation) {
+   public boolean isOrdered(RelationTypeToken relation) {
       return !RelationSorter.UNORDERED.equals(getDefaultOrderTypeGuid(relation));
    }
 
    @Override
-   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation) {
+   public RelationSorter getDefaultOrderTypeGuid(RelationTypeToken relation) {
       XRelationType type = getType(relation);
       return RelationSorter.valueOfName(type.getDefaultOrderType());
    }
 
    @Override
-   public ArtifactTypeId getArtifactTypeSideA(IRelationType relation) {
+   public ArtifactTypeId getArtifactTypeSideA(RelationTypeToken relation) {
       return getArtifactType(relation, RelationSide.SIDE_A);
    }
 
    @Override
-   public ArtifactTypeId getArtifactTypeSideB(IRelationType relation) {
+   public ArtifactTypeId getArtifactTypeSideB(RelationTypeToken relation) {
       return getArtifactType(relation, RelationSide.SIDE_B);
    }
 

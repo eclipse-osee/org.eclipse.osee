@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -92,7 +92,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes) {
+   public Predicate createRelationExistsSearch(Collection<? extends RelationTypeToken> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), typeIds);
    }
@@ -111,7 +111,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes) {
+   public Predicate createRelationNotExistsSearch(Collection<? extends RelationTypeToken> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
       return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("relType"), typeIds);
    }

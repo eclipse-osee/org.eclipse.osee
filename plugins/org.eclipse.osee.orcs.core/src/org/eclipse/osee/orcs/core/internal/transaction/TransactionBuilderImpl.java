@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -362,18 +362,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) {
+   public void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
       txManager.setRationale(txData, artA, relType, artB, rationale);
    }
 
    @Override
-   public void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) {
+   public void unrelate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
       txManager.unrelate(txData, artA, relType, artB);
    }
 
    @Override
    public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
    }
 
@@ -383,7 +383,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId) {
+   public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId) {
       txManager.setRelationApplicabilityId(txData, artA, relType, artB, applicId);
    }
 

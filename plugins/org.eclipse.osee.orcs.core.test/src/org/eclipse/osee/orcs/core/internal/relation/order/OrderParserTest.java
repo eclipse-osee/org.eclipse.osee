@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -109,12 +109,12 @@ public class OrderParserTest {
       when(relationType2.getName()).thenReturn(REL_TYPE_2_NAME);
       when(relationType2.getId()).thenReturn(REL_TYPE_2_ID);
 
-      final Collection<? extends IRelationType> types = Arrays.asList(relationType1, relationType2);
+      final Collection<? extends RelationTypeToken> types = Arrays.asList(relationType1, relationType2);
 
-      when(relationTypeCache.getAll()).thenAnswer(new Answer<Collection<? extends IRelationType>>() {
+      when(relationTypeCache.getAll()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
 
          @Override
-         public Collection<? extends IRelationType> answer(InvocationOnMock invocation) throws Throwable {
+         public Collection<? extends RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {
             return types;
          }
 

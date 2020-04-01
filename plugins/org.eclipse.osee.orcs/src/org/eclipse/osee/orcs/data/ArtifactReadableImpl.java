@@ -257,7 +257,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public Collection<RelationTypeId> getExistingRelationTypes() {
+   public Collection<RelationTypeToken> getExistingRelationTypes() {
       throw new UnsupportedOperationException();
    }
 

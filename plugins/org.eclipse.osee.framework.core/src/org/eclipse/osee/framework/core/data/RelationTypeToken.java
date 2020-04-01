@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Ryan D. Brooks
  */
-public interface RelationTypeToken extends IRelationType, NamedId {
+public interface RelationTypeToken extends RelationTypeId, NamedId {
    RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
 
    public static RelationTypeToken create(long id, String name) {

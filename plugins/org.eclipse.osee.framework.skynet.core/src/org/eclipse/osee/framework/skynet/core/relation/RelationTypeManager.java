@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -52,7 +52,7 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(IRelationType relType, ArtifactTypeToken artifactType, RelationSide relationSide) {
+   public static int getRelationSideMax(RelationTypeToken relType, ArtifactTypeToken artifactType, RelationSide relationSide) {
       RelationType relationType = getType(relType);
       int toReturn = 0;
       if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
@@ -87,7 +87,7 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static RelationType getType(IRelationType relationType) {
+   public static RelationType getType(RelationTypeToken relationType) {
       if (relationType instanceof RelationType) {
          return (RelationType) relationType;
       }

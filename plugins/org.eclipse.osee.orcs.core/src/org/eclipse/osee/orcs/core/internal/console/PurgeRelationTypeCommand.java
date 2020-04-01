@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -66,7 +66,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
             console.writeln();
             console.writeln(!forcePurge ? "Relation Types" : "Purging relation types:");
 
-            Set<IRelationType> types = getTypes(typesToPurge);
+            Set<RelationTypeToken> types = getTypes(typesToPurge);
             boolean found = !types.isEmpty();
 
             if (forcePurge && found) {
@@ -77,9 +77,9 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<IRelationType> getTypes(String[] typesToPurge) {
+         private Set<RelationTypeToken> getTypes(String[] typesToPurge) {
             RelationTypes relationTypes = orcsTypes.getRelationTypes();
-            Set<IRelationType> toReturn = new HashSet<>();
+            Set<RelationTypeToken> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);

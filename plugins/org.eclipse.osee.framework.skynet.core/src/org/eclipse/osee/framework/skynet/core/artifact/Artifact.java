@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -530,7 +530,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return ArtifactTypeManager.isValidAttributeType(attributeType, artifactType, branch);
    }
 
-   public final boolean isRelationTypeValid(IRelationType relationType) {
+   public final boolean isRelationTypeValid(RelationTypeToken relationType) {
       return getValidRelationTypes().contains(relationType);
    }
 

@@ -44,9 +44,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -120,8 +119,8 @@ public class RelationManagerImplTest {
    @Mock private Relation relation3;
    @Mock private Relation relation4;
 
-   @Mock private IRelationType relType1;
-   @Mock private IRelationType relType2;
+   @Mock private RelationTypeToken relType1;
+   @Mock private RelationTypeToken relType2;
 
    @Mock private RelationTypeSide typeAndSide1;
 
@@ -182,10 +181,10 @@ public class RelationManagerImplTest {
 
    @Test
    public void testGetValidRelationTypes() {
-      final List<IRelationType> expected = new ArrayList<>();
-      when(validity.getValidRelationTypes(artifactType1)).thenAnswer(new Answer<List<IRelationType>>() {
+      final List<RelationTypeToken> expected = new ArrayList<>();
+      when(validity.getValidRelationTypes(artifactType1)).thenAnswer(new Answer<List<RelationTypeToken>>() {
          @Override
-         public List<IRelationType> answer(InvocationOnMock invocation) throws Throwable {
+         public List<RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {
             return expected;
          }
       });
@@ -237,15 +236,15 @@ public class RelationManagerImplTest {
    @Test
    public void testGetExistingRelationType() {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      Collection<RelationTypeId> actuals = manager.getExistingRelationTypes(node1);
+      Collection<RelationTypeToken> actuals = manager.getExistingRelationTypes(node1);
       assertEquals(Collections.emptyList(), actuals);
 
-      final List<IRelationType> types = Arrays.asList(relType1, relType2);
+      final List<RelationTypeToken> types = Arrays.asList(relType1, relType2);
       when(graph.getAdjacencies(node1)).thenReturn(container1);
-      when(container1.getExistingTypes(EXCLUDE_DELETED)).thenAnswer(new Answer<List<IRelationType>>() {
+      when(container1.getExistingTypes(EXCLUDE_DELETED)).thenAnswer(new Answer<List<RelationTypeToken>>() {
 
          @Override
-         public List<IRelationType> answer(InvocationOnMock invocation) throws Throwable {
+         public List<RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {
             return types;
          }
 
@@ -253,7 +252,7 @@ public class RelationManagerImplTest {
       actuals = manager.getExistingRelationTypes(node1);
       verify(container1).getExistingTypes(EXCLUDE_DELETED);
       assertEquals(2, actuals.size());
-      Iterator<RelationTypeId> iterator = actuals.iterator();
+      Iterator<RelationTypeToken> iterator = actuals.iterator();
       assertEquals(relType1, iterator.next());
       assertEquals(relType2, iterator.next());
    }
@@ -353,8 +352,7 @@ public class RelationManagerImplTest {
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      ResultSet<Artifact> result =
-         manager.getRelated(session, CoreRelationTypes.Allocation_Requirement, node1, SIDE_B);
+      ResultSet<Artifact> result = manager.getRelated(session, CoreRelationTypes.Allocation_Requirement, node1, SIDE_B);
       assertEquals(3, result.size());
       Iterator<Artifact> iterator = result.iterator();
       assertEquals(node2, iterator.next());

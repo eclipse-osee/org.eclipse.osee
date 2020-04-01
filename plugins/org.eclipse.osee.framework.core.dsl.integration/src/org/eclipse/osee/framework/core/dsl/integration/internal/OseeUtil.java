@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -50,7 +50,7 @@ public final class OseeUtil {
       return AttributeTypeToken.valueOf(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
-   public static IRelationType toToken(XRelationType model) {
+   public static RelationTypeToken toToken(XRelationType model) {
       return RelationTypeToken.create(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 

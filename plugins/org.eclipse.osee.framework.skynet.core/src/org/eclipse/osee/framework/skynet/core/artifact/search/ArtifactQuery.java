@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -418,7 +418,7 @@ public class ArtifactQuery {
     *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getRelatedArtifactList(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static List<Artifact> getRelatedArtifactList(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return new ArtifactQueryBuilder(artifact.getBranch(), ALL, EXCLUDE_DELETED,
          new RelationCriteria(artifact, relationType, relationSide)).getArtifacts(1000, null);
    }
@@ -428,7 +428,7 @@ public class ArtifactQuery {
     *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromRelation(IRelationType relationType, RelationSide relationSide, BranchId branch) {
+   public static List<Artifact> getArtifactListFromRelation(RelationTypeToken relationType, RelationSide relationSide, BranchId branch) {
       return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
          new RelationCriteria(relationType, relationSide)).getArtifacts(1000, null);
    }

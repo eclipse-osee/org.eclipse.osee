@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -117,7 +117,7 @@ public class OrderManager implements HasOrderData {
       return sorterId;
    }
 
-   private RelationSorter getDefaultSorterId(IRelationType type) {
+   private RelationSorter getDefaultSorterId(RelationTypeToken type) {
       return sorterProvider.getDefaultSorterId(type);
    }
 

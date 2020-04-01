@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -207,7 +207,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public int getMaximumRelationAllowed(RelationTypeSide typeAndSide) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getMaximumRelationAllowed(type, getProxiedObject(), side);
    }
@@ -218,7 +218,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Collection<RelationTypeId> getExistingRelationTypes() {
+   public Collection<RelationTypeToken> getExistingRelationTypes() {
       return getRelationManager().getExistingRelationTypes(getProxiedObject());
    }
 
@@ -281,7 +281,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    private ResultSet<ArtifactReadable> getRelatedResultSet(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       ResultSet<Artifact> related =
          getRelationManager().getRelated(getSession(), type, getProxiedObject(), side, deletionFlag);
@@ -290,21 +290,21 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getRelatedCount(type, getProxiedObject(), side);
    }
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), artifact);
       return getRelationManager().areRelated(nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
-      IRelationType type = typeAndSide.getRelationType();
+      RelationTypeToken type = typeAndSide.getRelationType();
       Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().getRationale(nodes.getFirst(), type, nodes.getSecond());
    }

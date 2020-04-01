@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -93,7 +93,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       return artifacts;
    }
 
-   private boolean ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) {
+   private boolean ensureRelationCanBeAdded(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB) {
       try {
          RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
       } catch (OseeCoreException ex) {
@@ -162,7 +162,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
             }
 
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
-            IRelationType relationType = data.getRelationType();
+            RelationTypeToken relationType = data.getRelationType();
             if (relationType.equals(CoreRelationTypes.Verification_Verifier) || relationType.equals(
                CoreRelationTypes.Uses_TestUnit)) {
                AccessPolicy policyHandlerService = null;

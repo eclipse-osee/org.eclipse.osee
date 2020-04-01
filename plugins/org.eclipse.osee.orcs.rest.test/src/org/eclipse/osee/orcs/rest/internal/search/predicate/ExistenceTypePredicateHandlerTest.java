@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -102,7 +102,7 @@ public class ExistenceTypePredicateHandlerTest {
       verify(builder, times(2)).andRelationExists(relationTypeCaptor.capture());
 
       Assert.assertEquals(2, relationTypeCaptor.getAllValues().size());
-      IRelationType type = relationTypeCaptor.getAllValues().get(0);
+      RelationTypeToken type = relationTypeCaptor.getAllValues().get(0);
       Assert.assertTrue(12345L == type.getId());
 
       type = relationTypeCaptor.getAllValues().get(1);

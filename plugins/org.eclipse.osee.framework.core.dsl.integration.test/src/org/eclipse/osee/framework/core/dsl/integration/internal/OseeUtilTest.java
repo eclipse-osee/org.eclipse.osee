@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -105,7 +105,7 @@ public class OseeUtilTest {
    @Test
    public void testToTokenRelationType() {
       XRelationType type = OseeDslFactory.eINSTANCE.createXRelationType();
-      IRelationType expected = CoreRelationTypes.Allocation_Component;
+      RelationTypeToken expected = CoreRelationTypes.Allocation_Component;
 
       setupToToken(type, expected);
 

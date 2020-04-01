@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -151,15 +151,15 @@ public interface TransactionBuilder {
 
    void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
-   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale);
+   void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale);
 
-   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB);
+   void unrelate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB);
 
    void unrelateFromAll(ArtifactId art);
 
    void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art);
 
-   void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
+   void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId);
 
    void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts);
 

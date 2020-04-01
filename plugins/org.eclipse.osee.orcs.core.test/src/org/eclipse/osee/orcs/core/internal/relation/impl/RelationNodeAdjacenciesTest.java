@@ -20,7 +20,6 @@ import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -110,7 +109,7 @@ public class RelationNodeAdjacenciesTest {
       when(deleted.getModificationType()).thenReturn(ModificationType.MODIFIED);
       when(deleted.isDeleted()).thenReturn(false);
 
-      Collection<RelationTypeId> types = collection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
+      Collection<RelationTypeToken> types = collection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, types.size());
 
@@ -118,7 +117,7 @@ public class RelationNodeAdjacenciesTest {
       assertTrue(types.contains(typeB));
       assertTrue(types.contains(typeC));
 
-      Collection<RelationTypeId> types2 = collection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
+      Collection<RelationTypeToken> types2 = collection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
       assertEquals(1, types2.size());
 
       assertFalse(types2.contains(typeA));

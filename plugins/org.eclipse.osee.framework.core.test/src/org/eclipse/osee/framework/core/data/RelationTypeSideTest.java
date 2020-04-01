@@ -28,7 +28,7 @@ public class RelationTypeSideTest {
 
    @Test
    public void testHashCodeEquals() {
-      IRelationType relType1 = RelationTypeToken.create(uuid1, "X");
+      RelationTypeToken relType1 = RelationTypeToken.create(uuid1, "X");
       RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
 
       Assert.assertTrue(relType1.equals(relTypeSide1));
@@ -44,7 +44,7 @@ public class RelationTypeSideTest {
       RelationTypeSide relTypeSide3 = RelationTypeSide.create(sideA, uuid2, uuid2 + "_sideA");
       RelationTypeSide relTypeSide4 = RelationTypeSide.create(sideB, uuid2, uuid2 + "_sideB");
 
-      Map<IRelationType, String> data = new HashMap<>();
+      Map<RelationTypeToken, String> data = new HashMap<>();
       data.put(relTypeSide1, "a1");
       data.put(relTypeSide2, "b2");
       data.put(relTypeSide3, "c3");
@@ -57,7 +57,7 @@ public class RelationTypeSideTest {
       Assert.assertEquals("c3", data.get(relTypeSide3));
       Assert.assertEquals("d4", data.get(relTypeSide4));
 
-      IRelationType relType1 = RelationTypeSide.create(sideB, uuid1, "");
+      RelationTypeToken relType1 = RelationTypeSide.create(sideB, uuid1, "");
       String removed = data.put(relType1, "hello");
       Assert.assertEquals("b2", removed);
 

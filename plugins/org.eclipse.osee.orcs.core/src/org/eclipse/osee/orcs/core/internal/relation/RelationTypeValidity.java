@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -105,9 +105,9 @@ public class RelationTypeValidity {
 
    public List<RelationTypeId> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Conditions.checkNotNull(artifactType, "artifactType");
-      Collection<? extends IRelationType> types = relationTypes.getAll();
+      Collection<? extends RelationTypeToken> types = relationTypes.getAll();
       List<RelationTypeId> toReturn = new ArrayList<>();
-      for (IRelationType relationType : types) {
+      for (RelationTypeToken relationType : types) {
          if (isTypeAllowed(artifactType, relationType)) {
             toReturn.add(relationType);
          }
@@ -115,7 +115,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   private boolean isTypeAllowed(ArtifactTypeToken artifactType, IRelationType relationType) {
+   private boolean isTypeAllowed(ArtifactTypeToken artifactType, RelationTypeToken relationType) {
       boolean result = false;
       for (RelationSide side : RelationSide.values()) {
          int sideMax = getRelationSideMax(relationType, artifactType, side);

@@ -21,9 +21,9 @@ public interface IRelationLink extends RelationId {
 
    ModificationType getModificationType();
 
-   RelationTypeId getRelationType();
+   RelationTypeToken getRelationType();
 
-   boolean isOfType(IRelationType relationType);
+   boolean isOfType(RelationTypeToken relationType);
 
    @Override
    String toString();

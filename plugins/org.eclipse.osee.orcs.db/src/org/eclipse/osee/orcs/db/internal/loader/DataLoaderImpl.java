@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
@@ -45,7 +45,7 @@ public class DataLoaderImpl implements DataLoader {
    private final Collection<AttributeTypeId> attributeTypes = new HashSet<>();
 
    private final Collection<Integer> relationIds = new HashSet<>();
-   private final Collection<IRelationType> relationTypes = new HashSet<>();
+   private final Collection<RelationTypeToken> relationTypes = new HashSet<>();
 
    private final Log logger;
    private AbstractLoadExecutor loadExecutor;
@@ -208,12 +208,12 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader withRelationTypes(IRelationType... relationType) {
+   public DataLoader withRelationTypes(RelationTypeToken... relationType) {
       return withRelationTypes(Arrays.asList(relationType));
    }
 
    @Override
-   public DataLoader withRelationTypes(Collection<? extends IRelationType> relationTypes) {
+   public DataLoader withRelationTypes(Collection<? extends RelationTypeToken> relationTypes) {
       this.relationTypes.addAll(relationTypes);
       return this;
    }

@@ -14,8 +14,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -44,7 +42,7 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    }
 
    @Override
-   public RelationTypeId getRelationType() {
+   public RelationTypeToken getRelationType() {
       return getOrcsData().getType();
    }
 
@@ -80,7 +78,7 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
    }
 
    @Override
-   public boolean isOfType(IRelationType oseeType) {
+   public boolean isOfType(RelationTypeToken oseeType) {
       return getRelationType().equals(oseeType);
    }
 

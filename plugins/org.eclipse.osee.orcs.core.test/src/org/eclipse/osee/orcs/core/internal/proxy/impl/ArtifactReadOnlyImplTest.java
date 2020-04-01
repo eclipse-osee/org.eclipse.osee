@@ -39,9 +39,8 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -252,7 +251,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetValidRelationTypes() {
-      List<? extends IRelationType> types = Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child);
+      List<? extends RelationTypeToken> types = Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child);
 
       when(relationManager.getValidRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
@@ -286,10 +285,10 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetExistingRelationTypes() {
-      List<? extends IRelationType> types = Arrays.asList(Allocation_Requirement);
+      List<? extends RelationTypeToken> types = Arrays.asList(Allocation_Requirement);
       when(relationManager.getExistingRelationTypes(proxiedObject)).thenAnswer(answer(types));
 
-      Collection<RelationTypeId> actual = readOnly.getExistingRelationTypes();
+      Collection<RelationTypeToken> actual = readOnly.getExistingRelationTypes();
 
       assertEquals(types, actual);
       verify(relationManager).getExistingRelationTypes(proxiedObject);

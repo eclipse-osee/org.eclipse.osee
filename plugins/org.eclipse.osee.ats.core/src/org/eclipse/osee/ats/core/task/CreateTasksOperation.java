@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -162,7 +162,7 @@ public class CreateTasksOperation {
                }
 
                for (JaxRelation relation : task.getRelations()) {
-                  IRelationType relationType = getRelationType(atsApi, relation.getRelationTypeName());
+                  RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
                   if (relationType == null) {
                      results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
                         relation.getRelationTypeName(), task);

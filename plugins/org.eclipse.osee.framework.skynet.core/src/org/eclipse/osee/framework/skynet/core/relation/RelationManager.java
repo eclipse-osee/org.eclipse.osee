@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -101,15 +101,15 @@ public class RelationManager {
       }
    }
 
-   private static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   private static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return getRelatedArtifacts(artifact, relationType, relationSide, false);
    }
 
-   public static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
-   private static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) {
+   private static @NonNull List<Artifact> getRelatedArtifacts(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide, boolean sort) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
             artifact);
@@ -271,7 +271,7 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
    }
 
-   private static Artifact getRelatedArtifact(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   private static Artifact getRelatedArtifact(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       List<Artifact> artifacts = getRelatedArtifactsUnSorted(artifact, relationType, relationSide);
 
       if (artifacts.isEmpty()) {
@@ -295,7 +295,7 @@ public class RelationManager {
       return getRelatedArtifactsCount(artifact, relationTypeEnum, relationTypeEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static int getRelatedArtifactsCount(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
             artifact);
@@ -360,15 +360,15 @@ public class RelationManager {
       return null;
    }
 
-   public static List<RelationLink> getRelationsUnordered(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static List<RelationLink> getRelationsUnordered(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return getRelations(artifact, relationType, relationSide, false);
    }
 
-   public static List<RelationLink> getRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static List<RelationLink> getRelations(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       return getRelations(artifact, relationType, relationSide, true);
    }
 
-   public static List<RelationLink> getRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) {
+   public static List<RelationLink> getRelations(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide, boolean sort) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
             artifact);
@@ -401,7 +401,7 @@ public class RelationManager {
       return relations;
    }
 
-   public static void ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) {
+   public static void ensureRelationCanBeAdded(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB) {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       ensureSameBranch(artifactA, artifactB);
       RelationType relType = RelationTypeManager.getType(relationType);
@@ -439,7 +439,7 @@ public class RelationManager {
       }
    }
 
-   public static void deleteRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB) {
+   public static void deleteRelation(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB) {
       RelationLink relation =
          relationCache.getLoadedRelation(artifactA, artifactA, artifactB, relationType, DeletionFlag.EXCLUDE_DELETED);
       Conditions.checkNotNull(relation, "relationLink",
@@ -460,22 +460,22 @@ public class RelationManager {
             "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
       }
       List<RelationLink> selectedRelations = relationCache.getAll(artifact);
-      Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<>();
+      Set<Pair<RelationTypeToken, RelationSide>> typesToUpdate = new HashSet<>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             typesToUpdate.add(
-               new Pair<IRelationType, RelationSide>(relation.getRelationType(), relation.getOppositeSide(artifact)));
+               new Pair<RelationTypeToken, RelationSide>(relation.getRelationType(), relation.getOppositeSide(artifact)));
             relation.delete(reorderRelations, transaction);
          }
       }
 
-      for (Pair<IRelationType, RelationSide> type : typesToUpdate) {
+      for (Pair<RelationTypeToken, RelationSide> type : typesToUpdate) {
          updateOrderListOnDelete(artifact, type.getFirst(), type.getSecond(),
             getRelatedArtifacts(artifact, type.getFirst(), type.getSecond()));
       }
    }
 
-   public static void deleteRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static void deleteRelations(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide) {
       if (artifact.isHistorical()) {
          throw new OseeCoreException(
             "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
@@ -513,11 +513,11 @@ public class RelationManager {
       }
    }
 
-   public static void addRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) {
+   public static void addRelation(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, String rationale) {
       addRelation(PREEXISTING, relationType, artifactA, artifactB, rationale);
    }
 
-   public static void addRelation(RelationSorter sorterId, IRelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) {
+   public static void addRelation(RelationSorter sorterId, RelationTypeToken relationType, Artifact artifactA, Artifact artifactB, String rationale) {
       Conditions.checkExpressionFailOnTrue(artifactA.equals(artifactB), "Not valid to relate artifact [%s] to itself",
          artifactA);
       RelationLink relation =
@@ -543,7 +543,7 @@ public class RelationManager {
       }
    }
 
-   public static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, IRelationType relationType) {
+   public static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, RelationTypeToken relationType) {
       List<RelationLink> relationLinks = relationCache.getAllByType(artifactA, relationType);
       for (RelationLink relation : relationLinks) {
          if (relation.getArtifactB().equals(artifactB)) {
@@ -558,7 +558,7 @@ public class RelationManager {
       return relationSorterProvider.getAllRelationOrderIds();
    }
 
-   public static RelationTypeSideSorter createTypeSideSorter(Artifact artifact, IRelationType relationType, RelationSide side) {
+   public static RelationTypeSideSorter createTypeSideSorter(Artifact artifact, RelationTypeToken relationType, RelationSide side) {
       RelationOrderData data = createRelationOrderData(artifact);
       return new RelationTypeSideSorter(RelationTypeManager.getType(relationType), side, relationSorterProvider, data);
    }
@@ -567,12 +567,12 @@ public class RelationManager {
       return relationOrderFactory.createRelationOrderData(artifact);
    }
 
-   public static void setRelationOrder(Artifact artifact, IRelationType relationType, RelationSide side, RelationSorter orderId, List<Artifact> relatives) {
+   public static void setRelationOrder(Artifact artifact, RelationTypeToken relationType, RelationSide side, RelationSorter orderId, List<Artifact> relatives) {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, side);
       sorter.setOrder(relatives, orderId);
    }
 
-   private static void sort(Artifact artifact, IRelationType type, RelationSide side, List<Artifact> listToOrder) {
+   private static void sort(Artifact artifact, RelationTypeToken type, RelationSide side, List<Artifact> listToOrder) {
       if (type == null || side == null || listToOrder.size() <= 1) {
          return;
       }
@@ -580,7 +580,7 @@ public class RelationManager {
       sorter.sort(listToOrder);
    }
 
-   private static void sortRelations(Artifact artifact, IRelationType type, RelationSide side, List<RelationLink> listToOrder) {
+   private static void sortRelations(Artifact artifact, RelationTypeToken type, RelationSide side, List<RelationLink> listToOrder) {
       if (type == null || side == null || listToOrder.size() <= 1) {
          return;
       }
@@ -588,7 +588,7 @@ public class RelationManager {
       sorter.sortRelations(listToOrder);
    }
 
-   private static void updateOrderListOnDelete(Artifact artifact, IRelationType relationType, RelationSide relationSide, List<Artifact> relatives) {
+   private static void updateOrderListOnDelete(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide, List<Artifact> relatives) {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, relationSide);
       sorter.setOrder(relatives, sorter.getSorterId());
    }
@@ -621,7 +621,7 @@ public class RelationManager {
       return relation;
    }
 
-   public static RelationLink getLoadedRelation(IRelationType relationType, ArtifactToken aArtifactId, ArtifactToken bArtifactId, BranchId branch) {
+   public static RelationLink getLoadedRelation(RelationTypeToken relationType, ArtifactToken aArtifactId, ArtifactToken bArtifactId, BranchId branch) {
       return relationCache.getLoadedRelation(relationType, aArtifactId.getId().intValue(),
          bArtifactId.getId().intValue(), branch);
    }

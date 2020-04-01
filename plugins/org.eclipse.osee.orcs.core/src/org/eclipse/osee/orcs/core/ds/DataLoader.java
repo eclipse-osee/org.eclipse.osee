@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 
@@ -73,8 +73,8 @@ public interface DataLoader extends Loader {
 
    DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes);
 
-   DataLoader withRelationTypes(IRelationType... relationType);
+   DataLoader withRelationTypes(RelationTypeToken... relationType);
 
-   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType);
+   DataLoader withRelationTypes(Collection<? extends RelationTypeToken> relationType);
 
 }

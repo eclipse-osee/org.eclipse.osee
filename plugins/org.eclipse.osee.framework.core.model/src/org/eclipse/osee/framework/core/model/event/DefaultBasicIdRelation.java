@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
  * @author Donald G. Dunne
@@ -141,8 +141,8 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       this.relationId = relationId;
    }
 
-   public boolean is(IRelationType... relationTypes) {
-      for (IRelationType relType : relationTypes) {
+   public boolean is(RelationTypeToken... relationTypes) {
+      for (RelationTypeToken relType : relationTypes) {
          if (relType.equals(getRelTypeGuid())) {
             return true;
          }

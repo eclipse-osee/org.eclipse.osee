@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -443,13 +443,13 @@ public class TxDataManager {
       relationManager.order(asArtifactA, relationSide, relationSide.getSide(), asArtifactBs);
    }
 
-   public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) {
+   public void setRationale(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.setRationale(asArtifactA, type, asArtifactB, rationale);
    }
 
-   public void unrelate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) {
+   public void unrelate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.unrelate(txData.getSession(), asArtifactA, type, asArtifactB);
@@ -460,12 +460,12 @@ public class TxDataManager {
       relationManager.unrelateFromAll(txData.getSession(), asArtifactA);
    }
 
-   public void unrelateFromAll(TxData txData, IRelationType type, ArtifactId artA, RelationSide side) {
+   public void unrelateFromAll(TxData txData, RelationTypeToken type, ArtifactId artA, RelationSide side) {
       Artifact asArtifactA = getForWrite(txData, artA);
       relationManager.unrelateFromAll(txData.getSession(), type, asArtifactA, side);
    }
 
-   public void setRelationApplicabilityId(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, ApplicabilityId applicId) {
+   public void setRelationApplicabilityId(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, ApplicabilityId applicId) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.setApplicabilityId(asArtifactA, type, asArtifactB, applicId);

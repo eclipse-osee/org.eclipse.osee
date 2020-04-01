@@ -48,7 +48,7 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
       return type;
    }
 
-   public boolean isOfType(IRelationType type) {
+   public boolean isOfType(RelationTypeToken type) {
       return this.type.equals(type);
    }
 

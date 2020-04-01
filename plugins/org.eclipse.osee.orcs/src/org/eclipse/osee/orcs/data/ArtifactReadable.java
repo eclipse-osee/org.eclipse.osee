@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -97,7 +98,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<RelationTypeId> getValidRelationTypes();
 
-   Collection<RelationTypeId> getExistingRelationTypes();
+   Collection<RelationTypeToken> getExistingRelationTypes();
 
    default ArtifactReadable getParent() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -60,7 +60,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ChangeArtifactType {
    private final HashSet<AttributeTypeId> attributeTypes = new HashSet<>();
-   private final HashSet<IRelationType> relationTypes = new HashSet<>();
+   private final HashSet<RelationTypeToken> relationTypes = new HashSet<>();
    private final HashMap<BranchId, SkynetTransaction> txMap = new HashMap<>();
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
    private final List<Artifact> modifiedArtifacts = new ArrayList<>();

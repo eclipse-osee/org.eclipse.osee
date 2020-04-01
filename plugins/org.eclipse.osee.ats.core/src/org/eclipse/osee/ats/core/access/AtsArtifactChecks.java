@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.framework.core.access.ArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -55,7 +55,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, IRelationType relationType, XResultData results) {
+   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       if (isDeletionChecksEnabled()) {
          if (Admin_Only_Relation_Type_Ids.contains(
             relationType.getId()) && !AtsApiService.get().getUserService().isAtsAdmin()) {

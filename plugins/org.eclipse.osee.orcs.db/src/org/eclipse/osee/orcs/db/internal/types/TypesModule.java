@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -64,7 +64,7 @@ public class TypesModule {
          }
 
          @Override
-         public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
+         public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends RelationTypeToken> typesToPurge) {
             return new PurgeRelationTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
          }
 

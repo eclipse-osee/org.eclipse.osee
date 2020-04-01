@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,26 +31,26 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
 
-   private Collection<? extends IRelationType> selectable;
+   private Collection<? extends RelationTypeToken> selectable;
 
    public FilteredTreeRelationTypeDialog(String title, String message) {
       this(title, message, RelationTypeManager.getAllTypes(), new StringLabelProvider());
    }
 
-   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ILabelProvider labelProvider) {
+   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends RelationTypeToken> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends RelationTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       this(title, message, selectable, contentProvider, labelProvider, new StringNameComparator());
    }
 
-   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator sorter) {
+   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends RelationTypeToken> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator sorter) {
       super(title, message, contentProvider, labelProvider, sorter);
       this.selectable = selectable;
    }
 
-   public FilteredTreeRelationTypeDialog(String title, Collection<? extends IRelationType> selectable) {
+   public FilteredTreeRelationTypeDialog(String title, Collection<? extends RelationTypeToken> selectable) {
       this(title, title, selectable, new StringLabelProvider());
    }
 
@@ -77,7 +77,7 @@ public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public void setSelectable(Collection<? extends IRelationType> selectable) {
+   public void setSelectable(Collection<? extends RelationTypeToken> selectable) {
       this.selectable = selectable;
    }
 
