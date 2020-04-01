@@ -20,9 +20,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -79,11 +77,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Result getCompleteOrCancellationReason() {
-      if (Strings.isValid(transData.getCancellationReason())) {
-         return new Result(true, transData.getCancellationReason());
-      }
-      return Result.FalseResult;
+   public TransitionData getCancellationReason(TransitionData transitionData) {
+      return transitionData;
    }
 
    @Override
@@ -94,11 +89,6 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
       return transData.getToAssignees();
-   }
-
-   @Override
-   public Result handleExtraHoursSpent(IAtsChangeSet changes) {
-      return Result.TrueResult;
    }
 
    @Override
@@ -169,6 +159,26 @@ public class TransitionHelper extends TransitionHelperAdapter {
       } else {
          this.workItemService = null;
       }
+   }
+
+   @Override
+   public void setCancellationReasonDetails(String cancelReasonDetails) {
+      transData.setCancellationReasonDetails(cancelReasonDetails);
+   }
+
+   @Override
+   public void setCancellationReason(String cancelReason) {
+      transData.setCancellationReason(cancelReason);
+   }
+
+   @Override
+   public String getCancellationReasonDetails() {
+      return transData.getCancellationReasonDetails();
+   }
+
+   @Override
+   public String getCancellationReason() {
+      return transData.getCancellationReason();
    }
 
 }

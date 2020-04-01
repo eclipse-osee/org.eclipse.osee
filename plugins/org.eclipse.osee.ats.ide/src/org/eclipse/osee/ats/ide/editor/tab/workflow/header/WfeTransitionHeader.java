@@ -24,30 +24,26 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -199,11 +195,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
-      final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
-
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
-
-         private IAtsChangeSet changes;
 
          @Override
          public String getToStateName() {
@@ -223,32 +215,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          }
 
          @Override
-         public Result handleExtraHoursSpent(final IAtsChangeSet changes) {
-            final Result result = new Result(true, "");
-            Displays.ensureInDisplayThread(new Runnable() {
-
-               @Override
-               public void run() {
-                  boolean resultBool = false;
-                  try {
-                     resultBool = handlePopulateStateMetrics(awa, fromStateDef, toStateDef, changes);
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                     result.set(false);
-                     result.setText(String.format("Error processing extra hours spent for [%s]", awa.toStringWithId()));
-                  }
-                  if (!resultBool) {
-                     result.setCancelled(true);
-                     result.set(false);
-                  }
-               }
-            }, true);
-            return result;
-         }
-
-         @Override
-         public Result getCompleteOrCancellationReason() {
-            final Result result = new Result(true, "");
+         public TransitionData getCancellationReason(final TransitionData transitionData) {
             Displays.ensureInDisplayThread(new Runnable() {
 
                @Override
@@ -273,16 +240,15 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                            cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
                         }
                         if (cancelDialog.open() != 0) {
-                           result.setCancelled(true);
+                           transitionData.setDialogCancelled(true);
+                           return;
                         }
-                        result.set(true);
                         if (useEntryCancelWidgetDialog) {
-                           awa.setSoleAttributeFromString(AtsAttributeTypes.CancelReason,
-                              ((EntryCancelWidgetDialog) cancelDialog).getEntry());
-                           awa.setSoleAttributeFromString(AtsAttributeTypes.CancelledReasonDetails,
+                           transitionData.setCancellationReason(((EntryCancelWidgetDialog) cancelDialog).getEntry());
+                           transitionData.setCancellationReasonDetails(
                               ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
                         } else {
-                           result.setText(cancelDialog.getEntry());
+                           transitionData.setCancellationReason(cancelDialog.getEntry());
                         }
                      }
                   } catch (OseeCoreException ex) {
@@ -290,7 +256,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                   }
                }
             }, true);
-            return result;
+            return transitionData;
          }
 
          @Override
@@ -300,10 +266,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
 
          @Override
          public IAtsChangeSet getChangeSet() {
-            if (changes == null) {
-               changes = AtsClientService.get().createChangeSet(getName());
-            }
-            return changes;
+            return null;
          }
 
          @Override
@@ -321,6 +284,16 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
             return AtsClientService.get().getServices();
          }
 
+         @Override
+         public String getCancellationReasonDetails() {
+            return null;
+         }
+
+         @Override
+         public String getCancellationReason() {
+            return null;
+         }
+
       };
       final TransitionToOperation operation = new TransitionToOperation(helper);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
@@ -335,46 +308,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          }
 
       });
-   }
-
-   private static boolean handlePopulateStateMetrics(AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) {
-      int percent = 0;
-      // If state weighting, always 100 cause state is completed
-      if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
-         percent = 100;
-      } else {
-         if (toStateDefinition.getStateType().isCompletedOrCancelledState()) {
-            percent = 100;
-         } else {
-            percent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
-         }
-      }
-
-      double hoursSpent = awa.getStateMgr().getHoursSpent(awa.getCurrentStateName());
-      double additionalHours = 0.0;
-
-      if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.getStateType().isCancelledState()) {
-         // Otherwise, open dialog to ask for hours complete
-         String msg = awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(
-            hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
-         // Remove after ATS Resolution options is removed 0.9.9_SR5ish
-         TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
-         TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
-         int result = dialog.open();
-         if (result == 0) {
-            additionalHours = dialog.getData().getAdditionalHours();
-         } else {
-            return false;
-         }
-      }
-      awa.getStateMgr().updateMetrics(awa.getStateDefinition(), additionalHours, percent, true,
-         AtsClientService.get().getUserService().getCurrentUser());
-      changes.add(awa);
-      return true;
-   }
-
-   private static boolean isRequireStateHoursSpentPrompt(IAtsStateDefinition stateDefinition) {
-      return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt.name());
    }
 
    public void updateTransitionToAssignees() {

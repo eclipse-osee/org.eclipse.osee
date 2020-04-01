@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -180,7 +179,6 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      try {
-                        IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Auto Complete Tasks");
                         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf, forState)) {
                            TaskArtifact taskArt = (TaskArtifact) task.getStoreObject();
                            if (!taskArt.isCompletedOrCancelled()) {
@@ -189,18 +187,17 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                     AtsClientService.get().getUserService().getCurrentUser());
                               }
                               TransitionHelper helper = new TransitionHelper("Transition to Completed",
-                                 Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, changes,
+                                 Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, null,
                                  AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
                                  TransitionOption.None);
                               TransitionResults results =
-                                 AtsClientService.get().getWorkItemService().transition(helper);
+                                 AtsClientService.get().getWorkItemServiceClient().transition(helper);
                               if (!results.isEmpty()) {
                                  AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                                  return;
                               }
                            }
                         }
-                        changes.execute();
                      } catch (OseeCoreException ex) {
                         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      }

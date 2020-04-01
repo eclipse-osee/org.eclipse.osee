@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
-import org.eclipse.osee.framework.core.util.Result;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,16 +105,16 @@ public class TransitionHelperTest {
 
    @Test
    public void testGetCompleteOrCancellationReason() {
-      Result reason = helper.getCompleteOrCancellationReason();
-      Assert.assertEquals("cancel reason", reason.getText());
-      Assert.assertTrue(reason.isTrue());
+      TransitionData transitionData = new TransitionData();
+      transitionData.setCancellationReason("cancel reason");
+      helper.getCancellationReason(transitionData);
+      Assert.assertEquals("cancel reason", transitionData.getCancellationReason());
 
-      TransitionHelper helper2 = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
+      TransitionHelper transitionHelper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
          Arrays.asList(Joe, Kay), null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+      transitionHelper.setCancellationReason("cancel reason");
 
-      reason = helper2.getCompleteOrCancellationReason();
-      Assert.assertEquals("", reason.getText());
-      Assert.assertTrue(reason.isFalse());
+      transitionHelper.getCancellationReason(transitionData);
    }
 
    @Test
@@ -128,11 +128,6 @@ public class TransitionHelperTest {
       Assert.assertEquals(2, toAssignees.size());
       Assert.assertTrue(toAssignees.contains(Kay));
       Assert.assertTrue(toAssignees.contains(Joe));
-   }
-
-   @Test
-   public void testHandleExtraHoursSpent() {
-      Assert.assertEquals(Result.TrueResult, helper.handleExtraHoursSpent(changes));
    }
 
    @Test

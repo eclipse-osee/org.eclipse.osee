@@ -496,7 +496,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public TransitionResults transitionValidate(TransitionData transData) {
       TransitionHelper helper = new TransitionHelper(transData, null, atsApi);
-      TransitionResults results = transition(helper);
+      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionResults results = transitionMgr.handleTransitionValidation(new TransitionResults());
       return results;
    }
 

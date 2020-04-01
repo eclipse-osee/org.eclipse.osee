@@ -69,14 +69,22 @@ public class TransitionWorkItemResult {
       }
       StringBuffer sb = new StringBuffer();
       if (workItem != null) {
-         sb.append(workItem.getArtifactTypeName());
+         if (Strings.isValid(workItem.getArtifactTypeName())) {
+            sb.append(workItem.getArtifactTypeName());
+         } else {
+            sb.append("Work Item");
+         }
          sb.append(" [");
          sb.append(workItem.getAtsId());
          sb.append("] Titled [");
          sb.append(workItem.getName());
          sb.append("]\n\n");
       } else if (workItemId != null) {
-         sb.append(workItemId.getArtifactType().getName());
+         if (Strings.isValid(workItemId.getArtifactType().getName())) {
+            sb.append(workItemId.getArtifactType().getName());
+         } else {
+            sb.append("Work Item");
+         }
          sb.append(" [");
          sb.append(workItemId.getIdString());
          sb.append("] Titled [");

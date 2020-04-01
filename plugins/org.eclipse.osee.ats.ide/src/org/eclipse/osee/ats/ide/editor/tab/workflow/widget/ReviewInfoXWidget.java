@@ -20,7 +20,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -313,12 +312,11 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            awas.add(revArt);
                         }
                      }
-                     IAtsChangeSet changes = AtsClientService.get().createChangeSet("Admin Auto-Complete Reviews");
                      TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
-                        TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
+                        TeamState.Completed.getName(), null, null, null, AtsClientService.get().getServices(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+                     TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }

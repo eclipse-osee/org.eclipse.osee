@@ -265,7 +265,7 @@ public class WfeWorkflowSection extends SectionPart {
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
       if (useBothWidgets) {
-         xWidget = new XCancellationReasonTextWidget(sma);
+         xWidget = new XCancellationReasonTextWidget(sma, editor);
          xWidget.addXModifiedListener(xModListener);
          xWidget.createWidgets(parent, 1);
          allXWidgets.add(xWidget);

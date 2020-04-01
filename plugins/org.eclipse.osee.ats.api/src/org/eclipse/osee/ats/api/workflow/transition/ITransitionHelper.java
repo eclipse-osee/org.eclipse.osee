@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -31,19 +30,10 @@ public interface ITransitionHelper {
    public Collection<IAtsWorkItem> getWorkItems();
 
    /**
-    * @return Result.isTrue with text if reason provided
-    * @return Result.isFalse if no reason given
-    * @return Result.isCancelled to cancel transition
+    * @return with cancellationReason and cancellationDetails set
+    * @return TransitionData.isDialogCancelled to cancel transition
     */
-   public Result getCompleteOrCancellationReason();
-
-   /**
-    * @param changes JavaTip
-    * @return Result.isTrue with text if hours provided
-    * @return Result.isFalse if no extra hours given
-    * @return Result.isCancelled to cancel transition
-    */
-   public Result handleExtraHoursSpent(IAtsChangeSet changes);
+   public TransitionData getCancellationReason(TransitionData transitionData);
 
    public Collection<? extends AtsUser> getToAssignees(IAtsWorkItem workItem);
 
@@ -80,5 +70,17 @@ public interface ITransitionHelper {
    public TransitionData getTransData();
 
    public void setAtsApi(AtsApi atsApi);
+
+   public String getCancellationReasonDetails();
+
+   public String getCancellationReason();
+
+   default void setCancellationReasonDetails(String cancelReasonDetails) {
+      // do nothing
+   }
+
+   default void setCancellationReason(String cancelReason) {
+      // do nothing
+   }
 
 }

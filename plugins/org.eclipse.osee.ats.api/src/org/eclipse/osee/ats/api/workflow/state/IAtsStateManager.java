@@ -57,7 +57,7 @@ public interface IAtsStateManager extends WorkStateFactory {
     */
    void setAssignees(String stateName, List<? extends AtsUser> assignees);
 
-   void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason);
+   void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName);
 
    long getTimeInState();
 

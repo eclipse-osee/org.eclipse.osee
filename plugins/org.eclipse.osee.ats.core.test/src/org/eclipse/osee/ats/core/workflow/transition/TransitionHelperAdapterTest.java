@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,12 +107,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Result getCompleteOrCancellationReason() {
-         return null;
-      }
-
-      @Override
-      public Result handleExtraHoursSpent(IAtsChangeSet changes) {
+      public TransitionData getCancellationReason(TransitionData transitionData) {
          return null;
       }
 
@@ -138,6 +133,16 @@ public class TransitionHelperAdapterTest {
 
       @Override
       public AtsApi getServices() {
+         return null;
+      }
+
+      @Override
+      public String getCancellationReasonDetails() {
+         return null;
+      }
+
+      @Override
+      public String getCancellationReason() {
          return null;
       }
 

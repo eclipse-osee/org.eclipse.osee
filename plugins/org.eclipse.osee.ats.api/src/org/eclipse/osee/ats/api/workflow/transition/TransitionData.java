@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class TransitionData {
 
    private String cancellationReason;
+   private String cancellationReasonDetails;
    private Collection<ArtifactToken> workItemIds = new HashSet<>();
    private String name;
    private Collection<TransitionOption> transitionOptions = new HashSet<>();
@@ -33,6 +34,7 @@ public class TransitionData {
    private Collection<IAtsWorkItem> workItems = new HashSet<>();
    private AtsUser transitionUser;
    private boolean workflowsReloaded = false;
+   private boolean dialogCancelled = false;
 
    public TransitionData() {
       // for jax-rs
@@ -117,6 +119,22 @@ public class TransitionData {
 
    public void setTransitionOptions(Collection<TransitionOption> transitionOptions) {
       this.transitionOptions = transitionOptions;
+   }
+
+   public String getCancellationReasonDetails() {
+      return cancellationReasonDetails;
+   }
+
+   public void setCancellationReasonDetails(String cancellationReasonDetails) {
+      this.cancellationReasonDetails = cancellationReasonDetails;
+   }
+
+   public boolean isDialogCancelled() {
+      return dialogCancelled;
+   }
+
+   public void setDialogCancelled(boolean dialogCancelled) {
+      this.dialogCancelled = dialogCancelled;
    }
 
 }

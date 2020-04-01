@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util;
 
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -21,13 +25,14 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 /**
  * @author Donald G. Dunne
  */
-public class XCancellationReasonTextWidget extends XText implements IArtifactWidget {
+public class XCancellationReasonTextWidget extends XText implements IArtifactWidget, IWfeEventHandle {
 
    private AbstractWorkflowArtifact sma;
 
-   public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma) {
+   public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super("Cancallation Reason");
       setArtifact(sma);
+      editor.registerEvent(this, AtsAttributeTypes.CancelledReason);
    }
 
    @Override
@@ -63,6 +68,11 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
 
    @Override
    public AbstractWorkflowArtifact getArtifact() {
+      return sma;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem() {
       return sma;
    }
 

@@ -91,7 +91,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
 
    @Override
    public String toString() {
-      return String.format("[%s][%s]", getName(), getStateType());
+      return String.format("%s  - (%s)", getName(), getStateType());
    }
 
    /**

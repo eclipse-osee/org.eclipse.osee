@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.api.workflow.transition;
 
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +48,6 @@ public class TransitionResult implements ITransitionResult {
       new TransitionResult("All Reviews must be cancelled before Cancelling Workflow.");
    public static TransitionResult TASKS_NOT_COMPLETED =
       new TransitionResult("Tasks Must be Completed/Cancelled to Transition");
-
    public static TransitionResult WORKITEM_DELETED =
       new TransitionResult("Work Item has been deleted.  Transition is invalid.");
 
@@ -58,6 +59,9 @@ public class TransitionResult implements ITransitionResult {
    }
 
    public TransitionResult(String details, Exception ex) {
+      if (Strings.isInValid(details) && ex == null) {
+         throw new OseeArgumentException("Must have details or Exception");
+      }
       this.details = details;
       if (ex != null) {
          this.exception = Lib.exceptionToString(ex);

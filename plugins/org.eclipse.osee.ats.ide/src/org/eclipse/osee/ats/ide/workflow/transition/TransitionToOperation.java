@@ -49,13 +49,12 @@ public class TransitionToOperation extends AbstractOperation {
          }
          changes.executeIfNeeded();
 
-         results = AtsClientService.get().getWorkItemService().transition(helper);
-         if (!results.isEmpty()) {
-            TransitionResultsUi.report("Transition", results);
-         }
+         results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         results = new TransitionResults();
+         if (results == null) {
+            results = new TransitionResults();
+         }
          results.addResult(
             new TransitionResult(String.format("Exception [%s] transitioning to [%s].  See error log for details.",
                ex.getLocalizedMessage(), helper.getToStateName())));

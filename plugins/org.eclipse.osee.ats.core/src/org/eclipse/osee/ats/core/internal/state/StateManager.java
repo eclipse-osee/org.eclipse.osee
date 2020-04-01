@@ -296,7 +296,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromState, IStateToken toState, String cancelReason) {
+   public void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromState, IStateToken toState) {
       createState(toState);
       setAssignees(toState.getName(), toAssignees);
       setCurrentStateName(toState.getName());

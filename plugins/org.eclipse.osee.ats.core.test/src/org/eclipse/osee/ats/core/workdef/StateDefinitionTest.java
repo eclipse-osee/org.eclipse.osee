@@ -48,9 +48,9 @@ public class StateDefinitionTest {
    @Test
    public void testToString() {
       StateDefinition def = new StateDefinition("endorse");
-      Assert.assertEquals("[endorse][null]", def.toString());
+      Assert.assertEquals("endorse  - (null)", def.toString());
       def.setStateType(StateType.Working);
-      Assert.assertEquals("[endorse][Working]", def.toString());
+      Assert.assertEquals("endorse  - (Working)", def.toString());
    }
 
    @Test
@@ -154,8 +154,7 @@ public class StateDefinitionTest {
    @Test
    public void testGetWidgetsFromStateItems() {
       StateDefinition def = new StateDefinition("endorse");
-      Assert.assertEquals(0,
-         new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
 
       IAtsWidgetDefinition widget1 = new WidgetDefinition("item 1");
       def.getLayoutItems().add(widget1);
@@ -173,8 +172,7 @@ public class StateDefinitionTest {
       LayoutItem widget4 = new LayoutItem("item 4");
       stateItem3.getaLayoutItems().add(widget4);
 
-      Assert.assertEquals(3,
-         new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(3, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
    }
 
    @Test
