@@ -2333,3 +2333,82 @@ attributeType "Graphiti Diagram" extends StringAttribute {
 	mediaType "text/xml"
 	defaultValue "<?xml version=\"1.0\" encoding=\"ASCII\"?><pi:Diagram xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:al=\"http://eclipse.org/graphiti/mm/algorithms\" xmlns:pi=\"http://eclipse.org/graphiti/mm/pictograms\" visible=\"true\" gridUnit=\"10\" diagramTypeId=\"mbse\" name=\"mbse basic\" snapToGrid=\"true\" version=\"0.11.0\"><graphicsAlgorithm xsi:type=\"al:Rectangle\" background=\"//@colors.1\" foreground=\"//@colors.0\" lineWidth=\"1\" transparency=\"0.0\" width=\"1000\" height=\"1000\"/><colors red=\"227\" green=\"238\" blue=\"249\"/><colors red=\"255\" green=\"255\" blue=\"255\"/></pi:Diagram>"
 }
+
+
+artifactType "Unit of Conformance" extends "Artifact" {
+	id 3993898326810521606
+	attribute "Tech Standard Version"
+	attribute "OSS Profile"
+	attribute "Segment"
+}
+
+attributeType "Tech Standard Version" extends EnumeratedAttribute {
+	id 8567252650750079789
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "Unspecified"
+	enumType "enum.face.version"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "OSS Profile" extends EnumeratedAttribute {
+	id 2499150216801464545
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "Unspecified"
+	enumType "enum.face.profile"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Segment" extends EnumeratedAttribute {
+	id 4630657574707057068
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "Unspecified"
+	enumType "enum.face.segment"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.face.version" {
+	id 3337747186948890590
+	entry "Unspecified"
+	entry "FACE 2.1"
+	entry "FACE 3.0"
+	entry "FACE 3.1"
+}
+
+oseeEnumType "enum.face.profile" {
+	id 89009216095681031
+	entry "Unspecified"
+	entry "Security"
+	entry "Safety - Base"
+	entry "Safety - Extended"
+	entry "General Purpose"
+}
+
+oseeEnumType "enum.face.segment" {
+	id 3157050496185639681
+	entry "Unspecified"
+	entry "PSSS-PSDS"
+	entry "PSSS-PSCS"
+	entry "PSSS-PSGS"
+	entry "PCS"
+	entry "IOSS"
+	entry "TSS"
+}
+
+relationType "AbstractSpecRequirementToUnitOfConformance" {
+	id 990220659578923911
+	sideAName "Abstract Spec Requirement"
+	sideAArtifactType "Abstract Spec Requirement"
+	sideBName "Unit of Conformance"
+	sideBArtifactType "Unit of Conformance"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
+}
