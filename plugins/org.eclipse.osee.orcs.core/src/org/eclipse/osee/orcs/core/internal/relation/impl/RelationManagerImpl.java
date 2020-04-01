@@ -36,7 +36,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -86,13 +86,13 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public int getMaximumRelationAllowed(RelationTypeId type, Artifact node, RelationSide side) {
+   public int getMaximumRelationAllowed(RelationTypeToken type, Artifact node, RelationSide side) {
       Conditions.checkNotNull(node, "node");
       return validity.getMaximumRelationsAllowed(type, node.getArtifactType(), side);
    }
 
    @Override
-   public Collection<RelationTypeId> getValidRelationTypes(Artifact node) {
+   public Collection<RelationTypeToken> getValidRelationTypes(Artifact node) {
       Conditions.checkNotNull(node, "node");
       return validity.getValidRelationTypes(node.getArtifactType());
    }
@@ -444,7 +444,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void order(Artifact node1, RelationTypeId type, RelationSide side, List<? extends Artifact> node2) {
+   public void order(Artifact node1, RelationTypeToken type, RelationSide side, List<? extends Artifact> node2) {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
       RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), side);
       orderManager.setOrder(key, RelationSorter.USER_DEFINED, node2);
@@ -471,7 +471,7 @@ public class RelationManagerImpl implements RelationManager {
    public void introduce(BranchId branch, Artifact source, Artifact destination) {
       ensureRelationsInitialized(source.getGraph(), source);
 
-      Collection<RelationTypeId> validRelationTypes = getValidRelationTypes(destination);
+      Collection<RelationTypeToken> validRelationTypes = getValidRelationTypes(destination);
       RelationNodeAdjacencies sourceAdjacencies = source.getGraph().getAdjacencies(source);
       RelationNodeAdjacencies destinationAdjacencies = destination.getGraph().getAdjacencies(destination);
       if (sourceAdjacencies != null) {

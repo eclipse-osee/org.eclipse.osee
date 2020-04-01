@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -40,7 +40,7 @@ public class RelationTypesImpl implements RelationTypes {
       this.provider = provider;
    }
 
-   private XRelationType getType(RelationTypeId type) {
+   private XRelationType getType(RelationTypeToken type) {
       Conditions.checkNotNull(type, "relationType");
       return provider.getRelationTypeIndex().getDslTypeByToken(type);
    }
@@ -64,7 +64,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) {
+   public RelationTypeMultiplicity getMultiplicity(RelationTypeToken relation) {
       XRelationType type = getType(relation);
       String multiplicityId = type.getMultiplicity().getName();
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.getFromString(multiplicityId);
@@ -121,14 +121,14 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public ArtifactTypeId getArtifactType(RelationTypeId relation, RelationSide relationSide) {
+   public ArtifactTypeId getArtifactType(RelationTypeToken relation, RelationSide relationSide) {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return provider.getRelationTypeIndex().getArtifactType(relation, relationSide);
    }
 
    @Override
-   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeToken artifactType) {
+   public boolean isArtifactTypeAllowed(RelationTypeToken relation, RelationSide relationSide, ArtifactTypeToken artifactType) {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");

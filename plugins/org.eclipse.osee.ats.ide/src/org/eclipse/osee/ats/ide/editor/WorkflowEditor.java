@@ -66,7 +66,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -87,6 +87,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -136,14 +137,14 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private final HashCollection<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollection<>();
-   private final HashCollection<RelationTypeId, IWfeEventHandle> relHandlers = new HashCollection<>();
+   private final HashCollection<RelationTypeToken, IWfeEventHandle> relHandlers = new HashCollection<>();
    // This MUST be string guid until types are converted to id all at once and events use id
    private final HashCollection<String, IWfeEventHandle> artHandlers = new HashCollection<>();
    /**
     * This MUST be string guid until types are converted to id all at once and events use id. Used when want to listen
     * for rel events for a artifact other than the editor workItem.
     */
-   private final DoubleKeyHashMap<RelationTypeId, String, List<IWfeEventHandle>> artRelHandlers =
+   private final DoubleKeyHashMap<RelationTypeToken, String, List<IWfeEventHandle>> artRelHandlers =
       new DoubleKeyHashMap<>();
 
    @Override
@@ -829,8 +830,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public void registerEvent(IWfeEventHandle handler, RelationTypeId... relTypes) {
-      for (RelationTypeId relType : relTypes) {
+   public void registerEvent(IWfeEventHandle handler, RelationTypeToken... relTypes) {
+      for (RelationTypeToken relType : relTypes) {
          relHandlers.put(relType, handler);
       }
    }
@@ -844,8 +845,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    /**
     * Listen to events for other artifact relation changes (like TeamWf siblings added/deleted)
     */
-   public void registerEvent(IWfeEventHandle handler, ArtifactToken artifact, RelationTypeId... relTypes) {
-      for (RelationTypeId relType : relTypes) {
+   public void registerEvent(IWfeEventHandle handler, ArtifactToken artifact, RelationTypeToken... relTypes) {
+      for (RelationTypeToken relType : relTypes) {
          List<IWfeEventHandle> handlers = artRelHandlers.get(relType, artifact.getGuid());
          if (handlers == null) {
             handlers = new ArrayList<>();
@@ -875,7 +876,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
          if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
             getWorkItem().getGuid())) {
-            List<IWfeEventHandle> handlers = relHandlers.getValues(RelationTypeId.valueOf(eRel.getRelTypeGuid()));
+
+            List<IWfeEventHandle> handlers =
+               relHandlers.getValues(RelationTypeManager.getTypeByGuid(eRel.getRelTypeGuid()));
             if (handlers != null) {
                for (IWfeEventHandle handler : handlers) {
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -906,9 +909,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
       }
       for (EventBasicGuidRelation eRel : artifactEvent.getRelations()) {
-         for (Entry<RelationTypeId, String> relArt : artRelHandlers.keySet().entrySet()) {
+         for (Entry<RelationTypeToken, String> relArt : artRelHandlers.keySet().entrySet()) {
             String artGuid = relArt.getValue();
-            RelationTypeId relation = relArt.getKey();
+            RelationTypeToken relation = relArt.getKey();
             if (eRel.getArtA().getGuid().equals(artGuid) || eRel.getArtB().getGuid().equals(artGuid)) {
                if (eRel.getRelTypeGuid().equals(relation.getId())) {
                   List<IWfeEventHandle> handlers = artRelHandlers.get(relation, artGuid);

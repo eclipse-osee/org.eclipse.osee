@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -31,9 +31,9 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationManager {
 
-   int getMaximumRelationAllowed(RelationTypeId type, Artifact node, RelationSide side);
+   int getMaximumRelationAllowed(RelationTypeToken type, Artifact node, RelationSide side);
 
-   Collection<RelationTypeId> getValidRelationTypes(Artifact node);
+   Collection<RelationTypeToken> getValidRelationTypes(Artifact node);
 
    ///////////////////////////////////////
 
@@ -94,7 +94,7 @@ public interface RelationManager {
    /**
     * Set USER_DEFINED order exactly as specified in bNodes List. Nodes not in bNodes will be removed.
     */
-   void order(Artifact aNode, RelationTypeId type, RelationSide side, List<? extends Artifact> bNodes);
+   void order(Artifact aNode, RelationTypeToken type, RelationSide side, List<? extends Artifact> bNodes);
 
    ///////////////////////////////////////
 }

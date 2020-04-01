@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -231,7 +231,7 @@ public class MissingChangeItemFactoryTest {
       ArtifactId artB = ArtifactId.valueOf(2);
       ArtifactId artC = ArtifactId.valueOf(artB.getId() + 1);
       GammaId srcGamma = GammaId.valueOf(7L);
-      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeId.SENTINEL, srcGamma, ModificationType.NEW,
+      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeToken.SENTINEL, srcGamma, ModificationType.NEW,
          artA, artB, "", ApplicabilityToken.BASE);
       changes.add(ci1);
 
@@ -330,7 +330,7 @@ public class MissingChangeItemFactoryTest {
    }
 
    private static ChangeItem createExpected(RelationData data) {
-      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()), RelationTypeId.SENTINEL,
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()), RelationTypeToken.SENTINEL,
          data.getVersion().getGammaId(), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
          ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE);
    }

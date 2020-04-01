@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.data.RelationId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -74,7 +74,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeId relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken) {
+   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.RELATION_CHANGE);
 

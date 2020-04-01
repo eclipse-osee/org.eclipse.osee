@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.data;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
  */
 public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
-   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation);
+   RelationTypeMultiplicity getMultiplicity(RelationTypeToken relation);
 
    ArtifactTypeId getArtifactTypeSideA(RelationTypeToken relation);
 
    ArtifactTypeId getArtifactTypeSideB(RelationTypeToken relation);
 
-   ArtifactTypeId getArtifactType(RelationTypeId relation, RelationSide relationSide);
+   ArtifactTypeId getArtifactType(RelationTypeToken relation, RelationSide relationSide);
 
    String getSideName(RelationTypeToken relation, RelationSide relationSide);
 
-   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeToken artifactType);
+   boolean isArtifactTypeAllowed(RelationTypeToken relation, RelationSide relationSide, ArtifactTypeToken artifactType);
 
    String getSideAName(RelationTypeToken relation);
 

@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -47,7 +47,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
-      RelationTypeId relationType = relationTypes.get(chStmt.getLong("rel_link_type_id"));
+      RelationTypeToken relationType = relationTypes.get(chStmt.getLong("rel_link_type_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
@@ -98,15 +98,15 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       BranchId previousBranchId = BranchId.SENTINEL;
       ArtifactId previousArtIdA = ArtifactId.SENTINEL;
       ArtifactId previousArtIdB = ArtifactId.SENTINEL;
-      RelationTypeId previousTypeId = RelationTypeId.SENTINEL;
+      RelationTypeToken previousTypeId = RelationTypeToken.SENTINEL;
       GammaId previousGammaId = GammaId.SENTINEL;
 
-      boolean isSame(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeId typeId) {
+      boolean isSame(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId) {
          return previousBranchId.equals(branch) && previousArtIdA.equals(aArtId) && previousArtIdB.equals(
             bArtId) && previousTypeId.equals(typeId);
       }
 
-      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeId typeId, GammaId gammaId) {
+      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId, GammaId gammaId) {
          previousBranchId = branch;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;

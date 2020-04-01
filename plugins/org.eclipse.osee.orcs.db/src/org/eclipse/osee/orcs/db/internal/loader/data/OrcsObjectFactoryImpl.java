@@ -12,11 +12,10 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -133,12 +132,6 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    @Override
    public RelationData createRelationData(VersionData version, Integer id, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       return createRelationData(version, id, relationType, modType, relationType, modType, aArtId, bArtId, rationale,
-         applicId);
-   }
-
-   @Override
-   public RelationData createRelationData(VersionData version, Integer id, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
-      return createRelationData(version, id, relationTypes.get(relationType), modType, aArtId, bArtId, rationale,
          applicId);
    }
 

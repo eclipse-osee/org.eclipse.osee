@@ -170,6 +170,7 @@ public class JsonUtil {
 
       addDeserializer(module, ArtifactId.class, ArtifactId::valueOf);
       addDeserializer(module, TransactionId.class, TransactionId::valueOf);
+      addDeserializer(module, Id.class, Id::valueOf);
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
       module.addDeserializer(ArtifactToken.class,
          new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));

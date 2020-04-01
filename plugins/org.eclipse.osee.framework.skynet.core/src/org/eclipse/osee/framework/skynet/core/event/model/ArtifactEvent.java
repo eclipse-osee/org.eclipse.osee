@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -159,7 +159,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return java.util.Collections.emptyList();
    }
 
-   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeId relationType, ArtifactTypeToken artifactType) {
+   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeToken relationType, ArtifactTypeToken artifactType) {
       Collection<Artifact> reordered = new HashSet<>(relationReorderRecords.size());
       for (DefaultBasicUuidRelationReorder reorder : relationReorderRecords) {
          if (relationType == null || relationType.equals(reorder.getRelTypeGuid())) {

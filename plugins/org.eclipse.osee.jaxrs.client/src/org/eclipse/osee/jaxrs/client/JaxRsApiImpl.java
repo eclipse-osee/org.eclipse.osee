@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,7 +59,6 @@ public final class JaxRsApiImpl implements JaxRsApi {
       JsonUtil.addDeserializer(module, ArtifactTypeId.class, tokenService::getArtifactType);
 
       JsonUtil.addDeserializer(module, RelationTypeToken.class, tokenService::getRelationType);
-      JsonUtil.addDeserializer(module, RelationTypeId.class, tokenService::getRelationType);
 
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();
