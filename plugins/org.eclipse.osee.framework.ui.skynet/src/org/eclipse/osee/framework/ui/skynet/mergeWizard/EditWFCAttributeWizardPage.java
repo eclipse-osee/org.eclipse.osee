@@ -67,13 +67,13 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
    private static final String SDDIFF_TEXT = "Show Source/Destination Diff";
    private static final String SDDIFF_TOOLTIP =
-      "Show the differences between the current Source" + " artifact and the current Merge artifact";
+      "Show the differences between the current Source" + " artifact and the current Destination artifact";
    private static final String SMDIFF_TEXT = "Show Source/Merge Diff";
    private static final String SMDIFF_TOOLTIP =
-      "Show the differences between the current Destination" + " artifact and the current Merge artifact";
+      "Show the differences between the current Source" + " artifact and the current Merge artifact";
    private static final String DMDIFF_TEXT = "Show Destination/Merge Diff";
    private static final String DMDIFF_TOOLTIP =
-      "Show the differences between the current Destination" + " artifact and the current Source artifact";
+      "Show the differences between the current Destination" + " artifact and the current Merge artifact";
    private static final int NUM_COLUMNS = 1;
 
    private final Listener listener = new Listener() {
