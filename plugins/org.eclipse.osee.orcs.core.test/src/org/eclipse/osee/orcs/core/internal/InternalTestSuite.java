@@ -19,7 +19,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationTestSuite;
 import org.eclipse.osee.orcs.core.internal.script.ScriptEngineTestSuite;
 import org.eclipse.osee.orcs.core.internal.search.QueryTestSuite;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionTestSuite;
-import org.eclipse.osee.orcs.core.internal.types.TypesTestSuite;
 import org.eclipse.osee.orcs.core.internal.util.UtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -38,7 +37,6 @@ import org.junit.runners.Suite;
    ScriptEngineTestSuite.class,
    QueryTestSuite.class,
    TransactionTestSuite.class,
-   TypesTestSuite.class,
    UtilTestSuite.class})
 public class InternalTestSuite {
    // Test Suite
