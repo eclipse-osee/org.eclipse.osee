@@ -17,9 +17,11 @@ import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlServiceImpl;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -119,6 +121,7 @@ public final class AccessControlManager {
    }
 
    public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
+      Conditions.assertFalse(CoreBranches.COMMON.equals(object), "Can not set permissions on Common branch.");
       getService().setPermission(subject, object, permission);
    }
 
