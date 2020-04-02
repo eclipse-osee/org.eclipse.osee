@@ -28,7 +28,9 @@ public final class SendEmailCall implements Callable<String> {
    public String call() {
       XResultData results = emailMessage.sendLocalThread();
       results.log(description);
-      XResultDataUI.report(results, description);
+      if (results.isErrors()) {
+         XResultDataUI.report(results, description);
+      }
       return results.toString();
    }
 }
