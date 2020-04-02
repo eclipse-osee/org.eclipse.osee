@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
@@ -40,12 +43,18 @@ public class EntryCheckDialog extends EntryDialog {
    @Override
    protected void createExtendedArea(Composite parent) {
 
+      (new org.eclipse.swt.widgets.Label(parent, SWT.NONE)).setText(" ");
+
+      Composite comp = new Composite(parent, SWT.NONE);
+      comp.setLayoutData(new GridData());
+      comp.setLayout(ALayout.getZeroMarginLayout(2, false));
+
       final XCheckBox checkbox = new XCheckBox(checkBoxMessage);
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);
       checkbox.set(checked);
-      checkbox.createWidgets(parent, 1);
+      checkbox.createWidgets(comp, 1);
 
       SelectionListener selectionListener = new SelectionAdapter() {
 

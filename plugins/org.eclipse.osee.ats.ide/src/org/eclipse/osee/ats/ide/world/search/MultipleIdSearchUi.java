@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -51,13 +49,8 @@ public class MultipleIdSearchUi {
 
       @Override
       public void run() {
-         EntryDialog ed = null;
-         if (AtsClientService.get().getUserService().isAtsAdmin()) {
-            ed = new EntryCheckDialog(data.getName(), "Enter Legacy ID, ID (comma separated)", "Include ArtIds");
-         } else {
-            ed = new EntryDialog(Displays.getActiveShell(), data.getName(), null,
-               "Enter Legacy ID or ID (comma separated)", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-         }
+         EntryDialog ed =
+            new EntryCheckDialog(data.getName(), "Enter ATS IDs or Legacy IDs one per line", "Include ArtIds");
          if (multiLine) {
             ed.setFillVertically(true);
          }
