@@ -55,6 +55,7 @@ public class TransitionToOperation extends AbstractOperation {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+         results = new TransitionResults();
          results.addResult(
             new TransitionResult(String.format("Exception [%s] transitioning to [%s].  See error log for details.",
                ex.getLocalizedMessage(), helper.getToStateName())));
