@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -64,14 +64,37 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityToken> getApplicabilityReferenceTokens(@PathParam("artId") ArtifactId artifact);
 
-   @GET
-   @Path("view/{viewId}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("viewId") ArtifactId view);
+   @PUT
+   @Path("view")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData updateView(ViewDefinition view);
+
+   @POST
+   @Path("view")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData createView(ViewDefinition view);
+
+   @DELETE
+   @Path("view/{viewName}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData deleteView(@PathParam("viewName") String viewName);
 
    @GET
-   @Path("view")
+   @Path("view/{id}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
+
+   @GET
+   @Path("view/name/{viewName}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ViewDefinition getViewByName(@PathParam("viewName") String viewName);
+
+   @GET
+   @Path("views")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getViews();
 
@@ -81,47 +104,27 @@ public interface ApplicabilityEndpoint {
    List<FeatureDefinition> getFeatureDefinitionData();
 
    @GET
-   @Path("feature/{feature}")
+   @Path("feature/name/{featureName}")
    @Produces({MediaType.APPLICATION_JSON})
-   FeatureDefinition getFeature(@PathParam("feature") String feature);
+   FeatureDefinition getFeatureByName(@PathParam("featureName") String featureName);
 
    @PUT
-   @Path("feature/{action}")
+   @Path("feature")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData createUpdateFeature(FeatureDefinition feature, @PathParam("action") String action);
+   XResultData updateFeature(FeatureDefinition feature);
+
+   @POST
+   @Path("feature")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData createFeature(FeatureDefinition feature);
 
    @DELETE
-   @Path("feature/{feature}")
+   @Path("feature/{id}")
    @Produces({MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteFeature(@PathParam("feature") ArtifactId feature);
-
-   @GET
-   @Path("variant/{variant}")
-   @Produces({MediaType.APPLICATION_JSON})
-   VariantDefinition getVariant(@PathParam("variant") String variant);
-
-   @PUT
-   @Path("variant/{action}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData createUpdateVariant(VariantDefinition variant, @PathParam("action") String action);
-
-   @DELETE
-   @Path("variant/{variant}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Consumes({MediaType.APPLICATION_JSON})
-   XResultData deleteVariant(@PathParam("variant") String variant);
-
-   @PUT
-   @Path("variant/{variant}/feature/{feature}/applic/{applicability}")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * @param applicability - comma delimited list of applicabilities, if feature is Multiple
-    */
-   XResultData setApplicability(@PathParam("variant") ArtifactId variant, @PathParam("feature") ArtifactId feature, @PathParam("applicability") String applicability);
+   XResultData deleteFeature(@PathParam("id") ArtifactId id);
 
    /**
     * @return a list of branches that contain the injected change (prior to removalDate)
@@ -177,28 +180,16 @@ public interface ApplicabilityEndpoint {
    @Consumes(MediaType.APPLICATION_JSON)
    ArtifactId getVersionConfig(@PathParam("version") ArtifactId version);
 
-   @POST
-   @Path("view")
+   @PUT
+   @Path("view/{id}/applic")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactToken createView(String viewName);
-
-   @POST
-   @Path("view/{sourceView}/copy")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken copyView(@PathParam("sourceView") ArtifactId sourceView, String viewName);
-
-   @POST
-   @Path("view/{viewId}/applic")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   XResultData createApplicabilityForView(@PathParam("viewId") ArtifactId viewId, String applicability);
+   XResultData createApplicabilityForView(@PathParam("id") ArtifactId id, String applicability);
 
    /**
     * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch
     */
-   @POST
+   @PUT
    @Path("update-from-parent")
    void addMissingApplicabilityFromParentBranch();
 
@@ -211,5 +202,4 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
    XResultData isAccess();
-
 }

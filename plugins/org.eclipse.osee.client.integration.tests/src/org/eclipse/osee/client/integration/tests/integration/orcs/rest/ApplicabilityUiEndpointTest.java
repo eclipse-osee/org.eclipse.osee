@@ -54,7 +54,7 @@ public class ApplicabilityUiEndpointTest {
       Assert.assertNotNull(applUiEndpoint);
 
       List<BranchViewToken> applBranches = applUiEndpoint.getApplicabilityBranches();
-      Assert.assertTrue("Should be at least 1 branches, was " + applBranches.size(), applBranches.size() == 1);
+      Assert.assertTrue("Should be at least 1 branches, was " + applBranches.size(), applBranches.size() > 1);
    }
 
    @Test
@@ -66,7 +66,7 @@ public class ApplicabilityUiEndpointTest {
       Assert.assertNotNull(config);
 
       Assert.assertEquals(4, config.getFeatureIdToFeature().size());
-      Assert.assertEquals(4, config.getVariants().size());
+      Assert.assertEquals(4, config.getViews().size());
       Assert.assertEquals(DemoBranches.SAW_PL.getId(), config.getBranch().getId());
       Assert.assertEquals(4, config.getFeatureToValueMaps().size());
       Assert.assertEquals(null, config.getFeatureToValueMaps().get(0).get("valueType"));

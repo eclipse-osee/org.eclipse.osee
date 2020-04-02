@@ -12,7 +12,9 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
@@ -29,21 +31,21 @@ import org.eclipse.osee.orcs.statistics.QueryStatistics;
 public class QueryModule implements HasStatistics<QueryStatistics> {
 
    private final QueryStatisticsImpl statistics = new QueryStatisticsImpl();
-
    private final CallableQueryFactory artQueryFactory;
-
    private final BranchCriteriaFactory branchCriteriaFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
-
+   private final OrcsTypes orcsTypes;
+   private final OrcsApi orcsApi;
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
    }
 
-   public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
+   public QueryModule(OrcsApi orcsApi, Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTypes orcsTypes, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
+      this.orcsApi = orcsApi;
       this.queryEngine = queryEngine;
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       artQueryFactory =
@@ -53,11 +55,12 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       tupleQuery = queryEngine.createTupleQuery();
       applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
       this.tokenService = tokenService;
+      this.orcsTypes = orcsTypes;
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
-      return new QueryFactoryImpl(artQueryFactory, branchCriteriaFactory, txCriteriaFactory, tupleQuery,
-         applicabilityDsQuery, queryEngine, tokenService);
+      return new QueryFactoryImpl(orcsApi, artQueryFactory, branchCriteriaFactory, txCriteriaFactory, tupleQuery,
+         applicabilityDsQuery, queryEngine, orcsTypes, tokenService);
    }
 
    public CallableQueryFactory getArtQueryFactory() {

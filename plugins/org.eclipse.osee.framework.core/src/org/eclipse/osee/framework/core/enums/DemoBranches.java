@@ -23,6 +23,7 @@ public final class DemoBranches {
 
    public static final IOseeBranch SAW_PL = IOseeBranch.create(8, "SAW Product Line");
    public static final IOseeBranch SAW_PL_Hardening_Branch = IOseeBranch.create(9, "SAW PL Hardening Branch");
+   public static final IOseeBranch SAW_PL_Working_Branch = IOseeBranch.create(10, "SAW PL Working Branch");
 
    public static final IOseeBranch CIS_Bld_1 = IOseeBranch.create(4, "CIS_Bld_1");
 

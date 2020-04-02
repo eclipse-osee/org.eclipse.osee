@@ -25,8 +25,8 @@ public class ApplicabilityBranchConfig {
    BranchViewToken branch;
    Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
-   List<ArtifactToken> variants = new LinkedList<>();
-   List<String> variantsOrdered = new LinkedList<>();
+   List<ArtifactToken> views = new LinkedList<>();
+   List<String> viewsOrdered = new LinkedList<>();
    List<Map<String, String>> featureToValueMaps = new LinkedList<>();
    List<FeatureDefinition> features = new LinkedList<>();
 
@@ -36,9 +36,9 @@ public class ApplicabilityBranchConfig {
       features.add(fDef);
    }
 
-   public void addVariant(ArtifactToken variant) {
-      variants.add(variant);
-      variantsOrdered.add(variant.getName());
+   public void addView(ArtifactToken view) {
+      views.add(view);
+      viewsOrdered.add(view.getName());
    }
 
    public BranchViewToken getBranch() {
@@ -50,12 +50,12 @@ public class ApplicabilityBranchConfig {
       this.branch = new BranchViewToken(branch.getId(), branch.getName(), branch.getViewId());
    }
 
-   public List<ArtifactToken> getVariants() {
-      return variants;
+   public List<ArtifactToken> getViews() {
+      return views;
    }
 
-   public void setVariants(List<ArtifactToken> variants) {
-      this.variants = variants;
+   public void setViews(List<ArtifactToken> views) {
+      this.views = views;
    }
 
    public void addFeatureToValueMap(Map<String, String> featureToValue) {
@@ -74,12 +74,12 @@ public class ApplicabilityBranchConfig {
       return featuresOrdered;
    }
 
-   public List<String> getVariantsOrdered() {
-      return variantsOrdered;
+   public List<String> getViewsOrdered() {
+      return viewsOrdered;
    }
 
-   public void setVariantsOrdered(List<String> variantsOrdered) {
-      this.variantsOrdered = variantsOrdered;
+   public void setViewsOrdered(List<String> viewsOrdered) {
+      this.viewsOrdered = viewsOrdered;
    }
 
    public Map<String, FeatureDefinition> getFeatureIdToFeature() {

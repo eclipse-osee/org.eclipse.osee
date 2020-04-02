@@ -15,17 +15,17 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Donald G. Dunne
  */
-public class VariantDefinition extends NamedIdBase {
+public class ViewDefinition extends NamedIdBase {
 
    public Object data;
    public ArtifactId copyFrom;
 
-   public VariantDefinition() {
+   public ViewDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
    }
 
-   public VariantDefinition(Long id, String name) {
+   public ViewDefinition(Long id, String name) {
       super(id, name);
    }
 

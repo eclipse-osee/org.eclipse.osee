@@ -76,6 +76,8 @@ public class CreateDemoBranches {
          ArtifactId.SENTINEL);
 
       createProductLineConfig(DemoBranches.SAW_PL, account);
+      branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, DemoUsers.Joe_Smith, SAW_PL,
+         ArtifactId.SENTINEL);
    }
 
    private void createProductLineConfig(BranchId branch, UserId account) {
@@ -85,7 +87,7 @@ public class CreateDemoBranches {
       ArtifactId oseeConfig = Artifacts.getOrCreate(CoreArtifactTokens.OseeConfiguration,
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
       ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder, oseeConfig, tx, orcsApi);
-      Artifacts.getOrCreate(CoreArtifactTokens.VariantsFolder, plFolder, tx, orcsApi);
+      Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
 
       ArtifactToken productA = tx.createView(branch, "Product A");

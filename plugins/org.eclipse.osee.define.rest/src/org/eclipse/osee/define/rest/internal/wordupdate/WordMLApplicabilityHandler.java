@@ -11,8 +11,6 @@
 package org.eclipse.osee.define.rest.internal.wordupdate;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.FeatureDefinition;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GeneralStringData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,11 +38,9 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -58,7 +54,7 @@ public class WordMLApplicabilityHandler {
    private Map<String, List<String>> viewApplicabilitiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
    private final String configurationToView;
    private final Stack<ApplicabilityBlock> applicBlocks;
-   private final String featureDefinitionJson;
+   private final List<FeatureDefinition> featureDefinition;
    private final ScriptEngine se;
    private final Log logger;
 
@@ -78,9 +74,8 @@ public class WordMLApplicabilityHandler {
       ArtifactToken viewArtifact = query.fromBranch(branch).andId(view).asArtifactToken();
       configurationToView = viewArtifact.getName();
 
-      ArtifactReadable featureDefArt =
-         query.fromBranch(branch).andTypeEquals(FeatureDefinition).getResults().getExactlyOne();
-      featureDefinitionJson = featureDefArt.getSoleAttributeAsString(GeneralStringData);
+      featureDefinition = query.applicabilityQuery().getFeatureDefinitionData(branch);
+
    }
 
    public static BranchId getProductLineBranch(QueryFactory query, BranchId branch) {
@@ -492,11 +487,9 @@ public class WordMLApplicabilityHandler {
 
    private String getDefaultValue(String feature) {
       String toReturn = null;
-      FeatureDefinition[] featDataList = JsonUtil.readValue(featureDefinitionJson, FeatureDefinition[].class);
-
-      for (FeatureDefinition featData : featDataList) {
-         if (featData.getName().equalsIgnoreCase(feature)) {
-            toReturn = featData.getDefaultValue();
+      for (FeatureDefinition fDef : featureDefinition) {
+         if (fDef.getName().equals(feature)) {
+            toReturn = fDef.getDefaultValue();
             break;
          }
       }

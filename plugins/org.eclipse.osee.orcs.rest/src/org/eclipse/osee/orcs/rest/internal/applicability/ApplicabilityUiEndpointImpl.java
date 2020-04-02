@@ -79,7 +79,11 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    }
 
    @Override
-   public String convertConfigToArtifact(BranchId branch) {
+   @GET
+   @Path("branch/convert/{branch}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.TEXT_HTML})
+   public String convertConfigToArtifact(@PathParam("branch") BranchId branch) {
       return ops.convertConfigToArtifact(branch);
    }
 

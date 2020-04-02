@@ -43,7 +43,7 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken OseeTypesAndAccessFolder      = ArtifactToken.valueOf(7911256, "OSEE Types and Access Control", COMMON, Folder);
    public static final ArtifactToken ProductLineFolder    = ArtifactToken.valueOf(8255179, "Product Line", Folder);
    public static final ArtifactToken UserGroups           = ArtifactToken.valueOf(80920, "User Groups", COMMON, Folder);
-   public static final ArtifactToken VariantsFolder       = ArtifactToken.valueOf(10039752, "Variants", Folder);
+   public static final ArtifactToken ProductsFolder       = ArtifactToken.valueOf(10039752, "Products", Folder);
    // @formatter:on
 
    private CoreArtifactTokens() {

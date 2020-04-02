@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
@@ -202,8 +203,8 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
          new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
-      queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider, tokenService(),
-         proxyManager);
+      queryModule = new QueryModule(this, logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
+         orcsTypes, tokenService(), proxyManager);
 
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), tokenService());
@@ -326,5 +327,10 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public IAccessControlService getAccessControlService() {
       return accessControlService;
+   }
+
+   @Override
+   public JdbcService getJdbcService() {
+      return dataStore.getJdbcService();
    }
 }

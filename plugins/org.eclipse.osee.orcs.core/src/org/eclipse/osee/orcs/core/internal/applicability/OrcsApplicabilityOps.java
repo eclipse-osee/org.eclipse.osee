@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.applicability;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -51,7 +53,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    private final OrcsApi orcsApi;
    private ArtifactToken plFolder = ArtifactToken.SENTINEL;
    private ArtifactToken featureFolder = ArtifactToken.SENTINEL;
-   private ArtifactToken variantsFolder = ArtifactToken.SENTINEL;
+   private ArtifactToken productsFolder = ArtifactToken.SENTINEL;
 
    public OrcsApplicabilityOps(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -66,13 +68,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getExactlyOne();
       config.setBranch(branch);
 
-      // Load all variants (stored as branch views)
+      // Load all products (stored as branch views)
       List<ArtifactReadable> branchViews =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).getResults().getList();
       Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
       Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
       for (ArtifactToken branchView : branchViews) {
-         config.addVariant(branchView);
+         config.addView(branchView);
          branchViewsMap.put(branchView,
             orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, branchView));
       }
@@ -87,32 +89,32 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       // Setup Features column and add maps in order
       for (FeatureDefinition fDef : config.getFeatureIdToFeature().values()) {
-         Map<String, String> variantToValue = new HashMap<>(config.getFeatureIdToFeature().values().size() + 1);
+         Map<String, String> viewToValue = new HashMap<>(config.getFeatureIdToFeature().values().size() + 1);
          /**
           * Note: Confusing, but Features is the header of the first column, so add it here. The rest of the columns
-          * headers will be the variant names added below.
+          * headers will be the view names added below.
           */
-         variantToValue.put("feature", fDef.getName());
-         variantToValue.put("id", fDef.getIdString());
-         variantToValue.put("description", fDef.getDescription());
+         viewToValue.put("feature", fDef.getName());
+         viewToValue.put("id", fDef.getIdString());
+         viewToValue.put("description", fDef.getDescription());
          if (showAll) {
-            variantToValue.put("valueType", fDef.getValueType());
-            variantToValue.put("values",
+            viewToValue.put("valueType", fDef.getValueType());
+            viewToValue.put("values",
                org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", fDef.getValues()));
-            variantToValue.put("defaultValue", fDef.getDefaultValue());
-            variantToValue.put("multiValued", String.valueOf(fDef.isMultiValued()));
+            viewToValue.put("defaultValue", fDef.getDefaultValue());
+            viewToValue.put("multiValued", String.valueOf(fDef.isMultiValued()));
          }
-         config.addFeatureToValueMap(variantToValue);
+         config.addFeatureToValueMap(viewToValue);
 
       }
 
-      // Add variants and values
+      // Add views and values
       int count = 0;
       for (FeatureDefinition fDef : config.getFeatureIdToFeature().values()) {
-         for (ArtifactToken variant : config.getVariants()) {
-            Map<String, String> variantToValue = config.getFeatureToValues(count);
-            String variantToFeatureValue = getVariantToFeatureValue(variant, fDef, branchViewsMap);
-            variantToValue.put(variant.getName().toLowerCase(), variantToFeatureValue);
+         for (ArtifactToken view : config.getViews()) {
+            Map<String, String> viewToValue = config.getFeatureToValues(count);
+            String viewToFeatureValue = getViewToFeatureValue(view, fDef, branchViewsMap);
+            viewToValue.put(view.getName().toLowerCase(), viewToFeatureValue);
          }
          count++;
       }
@@ -120,8 +122,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return config;
    }
 
-   private String getVariantToFeatureValue(ArtifactToken variant, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
-      Map<String, List<String>> map = branchViewsMap.get(variant);
+   private String getViewToFeatureValue(ArtifactToken view, FeatureDefinition fDef, Map<ArtifactId, Map<String, List<String>>> branchViewsMap) {
+      Map<String, List<String>> map = branchViewsMap.get(view);
       //
       List<String> list = map.get(fDef.getName());
       if (list == null) {
@@ -131,13 +133,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public VariantDefinition getVariantDefinition(ArtifactToken featureArt) {
+   public ViewDefinition getViewDefinition(ArtifactToken featureArt) {
       ArtifactReadable art = (ArtifactReadable) featureArt;
-      VariantDefinition variant = new VariantDefinition();
-      variant.setId(art.getId());
-      variant.setName(art.getName());
-      variant.setData(art);
-      return variant;
+      ViewDefinition view = new ViewDefinition();
+      view.setId(art.getId());
+      view.setName(art.getName());
+      view.setData(art);
+      return view;
    }
 
    @Override
@@ -165,12 +167,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
 
       FeatureDefinition lFeature = getFeature(featureDef.getName(), tx.getBranch());
-      if (action != null && action.equals("add") && !(lFeature == null)) {
+      if (action != null && action.equals("add") && lFeature.isValid()) {
          results.error("Feature: " + lFeature.getName() + " already exists.");
          return null;
       }
       //if its an add, create new feature else it is an update
-      if (lFeature == null) {
+      if (lFeature.isInvalid()) {
          ArtifactToken featuresFolder = tx.getWriteable(CoreArtifactTokens.FeaturesFolder);
          // Check current transaction first
          if (featuresFolder.isInvalid()) {
@@ -230,20 +232,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public ArtifactToken getVariantsFolder(BranchId branch) {
-      if (variantsFolder.isInvalid()) {
-         variantsFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
-            CoreArtifactTokens.VariantsFolder).getArtifactOrSentinal();
+   public ArtifactToken getProductsFolder(BranchId branch) {
+      if (productsFolder.isInvalid()) {
+         productsFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
+            CoreArtifactTokens.ProductsFolder).getArtifactOrSentinal();
       }
-      if (variantsFolder.isInvalid()) {
-         variantsFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
-            CoreArtifactTokens.VariantsFolder.getName()).asArtifactTokenOrSentinel();
+      if (productsFolder.isInvalid()) {
+         productsFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
+            CoreArtifactTokens.ProductsFolder.getName()).asArtifactTokenOrSentinel();
       }
-      if (variantsFolder.isInvalid()) {
-         variantsFolder =
+      if (productsFolder.isInvalid()) {
+         productsFolder =
             orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Products").asArtifactTokenOrSentinel();
       }
-      return variantsFolder;
+      return productsFolder;
    }
 
    @Override
@@ -263,24 +265,42 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    public String convertConfigToArtifact(BranchId branch) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
          "Convert Feature Defs to Artifact");
+      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
+         CoreArtifactTypes.FeatureDefinition).getResults().getList();
 
-      for (FeatureDefinition feature : orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(
-         branch)) {
-         ArtifactToken featureArt = getFeaturesFolder(branch);
+      List<FeatureDefinition> featureDefinitionFromJson = new ArrayList<>();
 
-         // type goes to multivalued
-         if (feature.getValueType().equals("single")) {
-            // do nothing
-         } else if (feature.getValueType().equals("multiple")) {
-            feature.setMultiValued(true);
+      for (ArtifactReadable art : featureDefinitionArts) {
+         String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+         // convert legacy field name to new
+         json = json.replaceAll("\"type\"", "\"valueType\"");
+         FeatureDefinition[] readValue = JsonUtil.readValue(json, FeatureDefinition[].class);
+         featureDefinitionFromJson.addAll(Arrays.asList(readValue));
+      }
+      XResultData results = null;
+      for (FeatureDefinition feature : featureDefinitionFromJson) {
+         FeatureDefinition featureArt = orcsApi.getApplicabilityOps().getFeature(feature.getName(), branch);
+         if (featureArt.isValid()) {
+            if (!featureArt.equals(feature)) {
+               // type goes to multivalued
+               if (feature.getValueType().equals("single")) {
+                  // do nothing
+               } else if (feature.getValueType().equals("multiple")) {
+                  feature.setMultiValued(true);
+               } else {
+                  throw new IllegalArgumentException(
+                     String.format("Unexpected value type [%s]", feature.getValueType()));
+               }
+
+               // set feature type
+               feature.setType("String");
+               createUpdateFeatureDefinition(feature, "update", tx, results);
+            }
          } else {
-            throw new IllegalArgumentException(String.format("Unexpected value type [%s]", feature.getValueType()));
+            feature.setType("String");
+            createUpdateFeatureDefinition(feature, "add", tx, results);
          }
 
-         // set feature value type
-         feature.setValueType("String");
-
-         updateFeatureDefinition(featureArt, feature, tx);
       }
       tx.commit();
       return AHTML.simplePage("Completed");
@@ -303,7 +323,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));
       }
-      int numErrors = results.getNumErrors();
       if (action.equals("add") && results.getNumErrors() == 0) {
          try {
 
@@ -313,16 +332,16 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                user = SystemUser.OseeSystem;
             }
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
-               "Set Defaults for Variants for New Feature:  " + feature.toStringWithId());
+               "Set Defaults for Products/Views for New Feature:  " + feature.toStringWithId());
 
             List<ArtifactReadable> branchViews = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andIsOfType(
                CoreArtifactTypes.BranchView).getResults().getList();
             Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
-            for (ArtifactToken variant : branchViews) {
+            for (ArtifactToken view : branchViews) {
                Iterable<String> appl = orcsApi.getQueryFactory().tupleQuery().getTuple2(
-                  CoreTupleTypes.ViewApplicability, tx.getBranch(), variant);
+                  CoreTupleTypes.ViewApplicability, tx.getBranch(), view);
                if (!appl.toString().contains(feature.getName() + " = ")) {
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, variant,
+                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view,
                      feature.getName() + " = " + feature.getDefaultValue());
                   changes = true;
                }
@@ -355,7 +374,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             return getFeatureDefinition(featureArt);
          }
       }
-      return null;
+      return FeatureDefinition.SENTINEL;
    }
 
    @Override
@@ -368,7 +387,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          ArtifactToken featureArt = (ArtifactToken) getFeature(feature.getIdString(), branch).getData();
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
-            "Update Feature " + featureArt.toStringWithId());
+            "Delete Feature " + featureArt.toStringWithId());
          List<ArtifactReadable> branchViews = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andIsOfType(
             CoreArtifactTypes.BranchView).getResults().getList();
          Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
@@ -390,98 +409,113 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public VariantDefinition getVariant(String variant, BranchId branch) {
-      if (Strings.isNumeric(variant)) {
-         ArtifactToken variantArt =
+   public ViewDefinition getView(String view, BranchId branch) {
+      ViewDefinition viewDef = new ViewDefinition();
+      if (Strings.isNumeric(view)) {
+         ArtifactToken viewArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andId(
-               ArtifactId.valueOf(variant)).getResults().getAtMostOneOrNull();
-         if (variantArt != null) {
-            return getVariantDefinition(variantArt);
+               ArtifactId.valueOf(view)).getResults().getAtMostOneOrNull();
+         if (viewArt != null) {
+            viewDef = getViewDefinition(viewArt);
          }
       } else {
-         ArtifactToken variantArt =
+         ArtifactToken viewArt =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).andNameEquals(
-               variant).getResults().getAtMostOneOrNull();
-         if (variantArt != null) {
-            return getVariantDefinition(variantArt);
+               view).getResults().getAtMostOneOrNull();
+         if (viewArt != null) {
+            viewDef = getViewDefinition(viewArt);
          }
       }
-      return null;
+      return viewDef;
    }
 
    @Override
-   public XResultData createUpdateVariant(VariantDefinition variant, String action, BranchId branch, UserId account) {
+   public XResultData createUpdateView(ViewDefinition view, String action, BranchId branch, UserId account) {
       XResultData results = new XResultData();
-      if (!Strings.isValid(variant.getName())) {
-         results.errorf("Name can not be empty for variant %s", variant.getId());
+      if (!Strings.isValid(view.getName())) {
+         results.errorf("Name can not be empty for product %s", view.getId());
          return results;
       }
-      VariantDefinition xVariant = getVariant(variant.getName(), branch);
+      ViewDefinition xView = getView(view.getName(), branch);
       if ((action.equals("edit"))) {
-         results = copyFromVariant(branch, ArtifactId.valueOf(xVariant), variant.copyFrom, account);
+         results = copyFromView(branch, ArtifactId.valueOf(xView), view.copyFrom, account);
       } else {
          if ((action.equals("add"))) {
-            if ((!(xVariant == null))) {
-               results.errorf("Variant Name is already in use.");
+            if (xView.isValid()) {
+               results.errorf("Product Name is already in use.");
                return results;
             }
-            if ((xVariant == null)) {
+            if ((xView.isInvalid())) {
                try {
                   UserId user = account;
                   if (user == null) {
                      user = SystemUser.OseeSystem;
                   }
                   TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
-                     "Update Variant " + variant.toStringWithId());
-                  createUpdateVariantDefinition(variant, tx);
+                     "Create View " + view.toStringWithId());
+                  createUpdateViewDefinition(view, tx);
                   tx.commit();
                } catch (Exception ex) {
                   results.error(Lib.exceptionToString(ex));
                }
             }
             //If copyFrom indicated; set applicability for each feature to match
-            if (variant.copyFrom != null) {
-               VariantDefinition nVariant = getVariant(variant.getName(), branch);
-               results = copyFromVariant(branch, ArtifactId.valueOf(nVariant), variant.copyFrom, account);
+            if (view.copyFrom != null) {
+               ViewDefinition nView = getView(view.getName(), branch);
+               if (nView.isValid()) {
+                  results = copyFromView(branch, ArtifactId.valueOf(nView), view.copyFrom, account);
+               } else {
+                  results.error("View to copy from does not exist");
+               }
             }
          }
       }
       return results;
    }
 
-   private ArtifactToken createUpdateVariantDefinition(VariantDefinition variant, TransactionBuilder tx) {
+   private ArtifactToken createUpdateViewDefinition(ViewDefinition view, TransactionBuilder tx) {
       ArtifactToken vDefArt = null;
-      if (variant.getId() != null && variant.getId() > 0) {
+      if (view.isValid()) {
          vDefArt = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
-            ArtifactId.valueOf(variant.getId())).getResults().getAtMostOneOrNull();
+            ArtifactId.valueOf(view.getId())).getResults().getAtMostOneOrNull();
       }
       if (vDefArt == null) {
-         Long artId = variant.getId();
+         Long artId = view.getId();
          if (artId == null || artId <= 0) {
             artId = Lib.generateArtifactIdAsInt();
          }
-         vDefArt = tx.createArtifact(getVariantsFolder(tx.getBranch()), CoreArtifactTypes.BranchView, variant.getName(),
-            artId);
+         vDefArt =
+            tx.createArtifact(getProductsFolder(tx.getBranch()), CoreArtifactTypes.BranchView, view.getName(), artId);
       }
-      tx.setName(vDefArt, variant.getName());
+      tx.setName(vDefArt, view.getName());
       // reload artifact to return
 
       return orcsApi.getQueryFactory().fromBranch(vDefArt.getBranch()).andId(vDefArt).getArtifactOrSentinal();
    }
 
    @Override
-   public XResultData deleteVariant(String variant, BranchId branch, UserId account) {
+   public XResultData deleteView(String view, BranchId branch, UserId account) {
       XResultData results = new XResultData();
       try {
          UserId user = account;
          if (user == null) {
             user = SystemUser.OseeSystem;
          }
-         ArtifactToken variantArt = (ArtifactToken) getVariant(variant, branch).getData();
-         if (variantArt.isValid()) {
+         ViewDefinition viewDef = getView(view, branch);
+         Iterable<String> deleteApps = orcsApi.getQueryFactory().tupleQuery().getTuple2(
+            CoreTupleTypes.ViewApplicability, branch, ArtifactId.valueOf(viewDef.getId()));
+
+         ArtifactToken viewArt = (ArtifactToken) viewDef.getData();
+         if (viewArt.isValid()) {
+            TransactionBuilder txApps = orcsApi.getTransactionFactory().createTransaction(branch, user,
+               "Delete Applicabilities associated with " + view);
+            for (String app : deleteApps) {
+               txApps.deleteTuple2(CoreTupleTypes.ViewApplicability, ArtifactId.valueOf(viewDef.getId()), app);
+            }
+            txApps.commit();
             TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
-               "Delete Variant " + variantArt.toStringWithId());
-            tx.deleteArtifact(variantArt);
+               "Delete View " + viewArt.toStringWithId());
+            tx.deleteArtifact(viewArt);
             tx.commit();
          }
       } catch (Exception ex) {
@@ -491,7 +525,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability, UserId account) {
+   public XResultData setApplicability(BranchId branch, ArtifactId view, ArtifactId feature, String applicability, UserId account) {
       XResultData results = new XResultData();
       try {
          UserId user = account;
@@ -501,10 +535,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          ArtifactToken featureArt = orcsApi.getQueryFactory().fromBranch(branch).andId(feature).getArtifactOrNull();
          FeatureDefinition fDef = orcsApi.getApplicabilityOps().getFeatureDefinition(featureArt);
          TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(branch, user, "Set Variant Feature Applicability");
+            orcsApi.getTransactionFactory().createTransaction(branch, user, "Set View Feature Applicability");
          List<String> existingValues = new LinkedList<>();
          for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch,
-            variant)) {
+            view)) {
             if (appl.startsWith(fDef.getName() + " = ")) {
                existingValues.add(appl);
             }
@@ -522,20 +556,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             for (String existingValue : existingValues) {
                if (!newValues.contains(existingValue)) {
                   change = true;
-                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, variant, existingValue);
+                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, view, existingValue);
                }
             }
             // add new
             for (String newValue : newValues) {
                if (!existingValues.contains(newValue)) {
                   change = true;
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, variant, newValue);
+                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
                }
             }
          } else {
             for (String newValue : newValues) {
                change = true;
-               tx.addTuple2(CoreTupleTypes.ViewApplicability, variant, newValue);
+               tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
             }
          }
          if (change) {
@@ -547,7 +581,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
-   public XResultData copyFromVariant(BranchId branch, ArtifactId variant, ArtifactId copy_from, UserId account) {
+   public XResultData copyFromView(BranchId branch, ArtifactId view, ArtifactId copy_from, UserId account) {
       XResultData results = new XResultData();
       try {
          UserId user = account;
@@ -555,10 +589,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             user = SystemUser.OseeSystem;
          }
          TransactionBuilder tx =
-            orcsApi.getTransactionFactory().createTransaction(branch, user, "Set Variant Feature Applicability");
+            orcsApi.getTransactionFactory().createTransaction(branch, user, "Set Product/View Feature Applicability");
+
          List<String> existingValues = new LinkedList<>();
          for (String appl : orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability,
-            tx.getBranch(), variant)) {
+            tx.getBranch(), view)) {
             if (!(appl.startsWith("Config") || appl.startsWith("Base"))) {
                existingValues.add(appl);
             }
@@ -576,20 +611,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             for (String existingValue : existingValues) {
                if (!newValues.contains(existingValue)) {
                   change = true;
-                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, variant, existingValue);
+                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, view, existingValue);
                }
             }
             // add new
             for (String newValue : newValues) {
                if (!existingValues.contains(newValue)) {
                   change = true;
-                  tx.addTuple2(CoreTupleTypes.ViewApplicability, variant, newValue);
+                  tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
                }
             }
          } else {
             for (String newValue : newValues) {
                change = true;
-               tx.addTuple2(CoreTupleTypes.ViewApplicability, variant, newValue);
+               tx.addTuple2(CoreTupleTypes.ViewApplicability, view, newValue);
             }
          }
          if (change) {
@@ -603,16 +638,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch) {
-      ApplicabilityBranchConfig apps = getConfig(branch, true);
-      List<FeatureDefinition> features = apps.getFeatures();
-      /**
-       * This for loop can be removed in coordination with build script current json they receive has valueType set as
-       * single/multiple should be the data type e.g. String
-       */
-      for (FeatureDefinition ft : features) {
-         ft.setType(ft.getValueType());
-         ft.setValueType((ft.isMultiValued()) ? "multiple" : "single");
-      }
-      return features;
+      return orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(branch);
+
    }
 }

@@ -27,9 +27,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -147,48 +146,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public ArtifactToken createView(String viewName) {
-      XResultData access = isAccess();
-
-      if (access.isErrors()) {
-         return ArtifactToken.SENTINEL;
-      }
-
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Branch View");
-      ArtifactToken view = tx.createView(branch, viewName);
-      tx.commit();
-
-      TransactionBuilder tx2 =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, account, "Create Branch View");
-
-      tx2.addTuple2(CoreTupleTypes.BranchView, branch, view);
-      tx2.commit();
-      return view;
-   }
-
-   @Override
-   public TransactionToken copyView(ArtifactId sourceView, String viewName) {
-      XResultData access = isAccess();
-
-      if (access.isErrors()) {
-         return TransactionToken.SENTINEL;
-      }
-
-      ArtifactToken view = createView(viewName);
-
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Copy Branch View");
-      List<ApplicabilityToken> viewApplicabilityTokens =
-         applicabilityQuery.getViewApplicabilityTokens(sourceView, branch);
-      for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
-         String name = applicToken.getName();
-         if (!applicabilityQuery.applicabilityExistsOnBranchView(branch, view, name) && !name.startsWith("Config = ")) {
-            tx.createApplicabilityForView(view, name);
-         }
-      }
-      return tx.commit();
-   }
-
-   @Override
    public XResultData createApplicabilityForView(ArtifactId viewId, String applicability) {
       XResultData results = isAccess();
       if (results.isErrors()) {
@@ -200,7 +157,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       if (applicabilityQuery.applicabilityExistsOnBranchView(branch, viewId, applicability)) {
          results.error("Applicability already exists.");
-
+         return results;
       }
       if (applicability.startsWith("Config =")) {
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
@@ -289,17 +246,26 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public FeatureDefinition getFeature(String feature) {
-      return ops.getFeature(feature, branch);
+   public FeatureDefinition getFeatureByName(String featureName) {
+      return ops.getFeature(featureName, branch);
    }
 
    @Override
-   public XResultData createUpdateFeature(FeatureDefinition feature, @PathParam("action") String action) {
+   public XResultData updateFeature(FeatureDefinition feature) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateFeature(feature, action, branch, account);
+      return ops.createUpdateFeature(feature, "edit", branch, account);
+   }
+
+   @Override
+   public XResultData createFeature(FeatureDefinition feature) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.createUpdateFeature(feature, "add", branch, account);
    }
 
    @Override
@@ -312,35 +278,35 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public XResultData createUpdateVariant(VariantDefinition variant, @PathParam("action") String action) {
+   public XResultData updateView(ViewDefinition view) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.createUpdateVariant(variant, action, branch, account);
+      return ops.createUpdateView(view, "edit", branch, account);
    }
 
    @Override
-   public XResultData deleteVariant(@PathParam("variant") String variant) {
+   public XResultData createView(ViewDefinition view) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.deleteVariant(variant, branch, account);
+      return ops.createUpdateView(view, "add", branch, account);
    }
 
    @Override
-   public VariantDefinition getVariant(String variant) {
-      return ops.getVariant(variant, branch);
-   }
-
-   @Override
-   public XResultData setApplicability(ArtifactId variant, ArtifactId feature, String applicability) {
+   public XResultData deleteView(@PathParam("view") String view) {
       XResultData access = isAccess();
       if (access.isErrors()) {
          return access;
       }
-      return ops.setApplicability(branch, variant, feature, applicability, account);
+      return ops.deleteView(view, branch, account);
+   }
+
+   @Override
+   public ViewDefinition getViewByName(String viewName) {
+      return ops.getView(viewName, branch);
    }
 
    @Override

@@ -36,9 +36,13 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -56,8 +60,10 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    private final TransactionQuery transactionQuery;
    private final BranchQuery branchQuery;
    private final QueryFactory queryFactory;
+   private final OrcsApi orcsApi;
 
-   public ApplicabilityQueryImpl(ApplicabilityDsQuery applicabilityDsQuery, QueryFactory queryFactory) {
+   public ApplicabilityQueryImpl(ApplicabilityDsQuery applicabilityDsQuery, QueryFactory queryFactory, OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
       this.tupleQuery = queryFactory.tupleQuery();
       this.applicabilityDsQuery = applicabilityDsQuery;
       this.transactionQuery = queryFactory.transactionQuery();
@@ -129,19 +135,39 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branchToUse = br.getParentBranch();
       }
-
-      List<ArtifactReadable> featureDefinitionArts =
-         queryFactory.fromBranch(branchToUse).andTypeEquals(CoreArtifactTypes.FeatureDefinition).getResults().getList();
-
       List<FeatureDefinition> featureDefinition = new ArrayList<>();
 
-      for (ArtifactReadable art : featureDefinitionArts) {
-         String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
-         // convert legacy field name to new
-         json = json.replaceAll("\"type\"", "\"valueType\"");
-         FeatureDefinition[] readValue = JsonUtil.readValue(json, FeatureDefinition[].class);
-         featureDefinition.addAll(Arrays.asList(readValue));
+      if (OseeInfo.getValue(orcsApi.getJdbcService().getClient(), "featuredefinition.use.json").equals("true")) {
+         List<ArtifactReadable> featureDefinitionArts = queryFactory.fromBranch(branchToUse).andTypeEquals(
+            CoreArtifactTypes.FeatureDefinition).getResults().getList();
+
+         for (ArtifactReadable art : featureDefinitionArts) {
+            String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+            // convert legacy field name to new
+            json = json.replaceAll("\"type\"", "\"valueType\"");
+            FeatureDefinition[] readValue = JsonUtil.readValue(json, FeatureDefinition[].class);
+            featureDefinition.addAll(Arrays.asList(readValue));
+         }
+      } else {
+         List<ArtifactReadable> featureArts =
+            queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.Feature).getResults().getList();
+         Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
+
+         for (ArtifactToken featureArt : featureArts) {
+            ArtifactReadable art = (ArtifactReadable) featureArt;
+            FeatureDefinition feature = new FeatureDefinition();
+            feature.setId(art.getId());
+            feature.setName(art.getName());
+            feature.setDefaultValue(art.getSoleAttributeValue(CoreAttributeTypes.DefaultValue, ""));
+            feature.setValues(art.getAttributeValues(CoreAttributeTypes.Value));
+            feature.setValueType(art.getSoleAttributeAsString(CoreAttributeTypes.FeatureValueType, ""));
+            feature.setMultiValued(art.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued, false));
+            feature.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
+            feature.setData(featureArt);
+            featureDefinition.add(feature);
+         }
       }
+
       return featureDefinition;
    }
 
@@ -153,7 +179,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       for (ApplicabilityToken app : appTokens) {
          // Ignore features with |s and &s, Ignore the configuration name
          if (!app.getName().equalsIgnoreCase("Base") && !app.getName().contains("|") && !app.getName().contains(
-            "&") && !app.getName().toLowerCase().contains("config")) {
+            "&") && !app.getName().toLowerCase().startsWith("Config =")) {
             String[] split = app.getName().split("=");
 
             if (split.length == 2) {
@@ -213,14 +239,24 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          return true;
       }
       boolean returnValue;
-      ArtifactReadable jsonArtifact =
-         queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.FeatureDefinition).andExists(
-            CoreAttributeTypes.GeneralStringData).getResults().getAtMostOneOrNull();
-      String json = jsonArtifact.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
-      if (json.contains("\"name\": \"" + featureName + "\"")) {
-         returnValue = true;
+      if (OseeInfo.getValue(orcsApi.getJdbcService().getClient(), "featuredefinition.use.json").equals("true")) {
+         ArtifactReadable jsonArtifact =
+            queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.FeatureDefinition).andExists(
+               CoreAttributeTypes.GeneralStringData).getResults().getAtMostOneOrNull();
+         String json = jsonArtifact.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+         if (json.contains("\"name\": \"" + featureName + "\"")) {
+            returnValue = true;
+         } else {
+            returnValue = false;
+         }
       } else {
-         returnValue = false;
+         ArtifactId feature = queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.Feature).andAttributeIs(
+            CoreAttributeTypes.Name, featureName).asArtifactIdOrSentinel();
+         if (feature.isValid()) {
+            returnValue = true;
+         } else {
+            returnValue = false;
+         }
       }
       return returnValue;
    }

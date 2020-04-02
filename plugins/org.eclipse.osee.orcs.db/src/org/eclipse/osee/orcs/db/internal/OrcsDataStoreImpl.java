@@ -120,4 +120,9 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       return queryModule.getQueryIndexer();
    }
 
+   @Override
+   public JdbcService getJdbcService() {
+      return jdbcService;
+   }
+
 }

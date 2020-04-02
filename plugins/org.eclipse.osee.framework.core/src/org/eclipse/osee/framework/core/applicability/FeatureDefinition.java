@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 
 public class FeatureDefinition extends NamedIdBase {
+   public static final FeatureDefinition SENTINEL = new FeatureDefinition();
 
    private List<String> values;
    private String defaultValue;

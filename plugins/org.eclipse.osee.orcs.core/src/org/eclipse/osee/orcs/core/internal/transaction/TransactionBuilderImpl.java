@@ -453,9 +453,9 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactToken createView(BranchId branch, String viewName) {
       // Retrieve from transaction in case it has not be persisted yet
-      ArtifactId plFolder = txData.getWriteable(CoreArtifactTokens.VariantsFolder);
+      ArtifactId plFolder = txData.getWriteable(CoreArtifactTokens.ProductsFolder);
       if (plFolder == null) {
-         plFolder = CoreArtifactTokens.VariantsFolder;
+         plFolder = CoreArtifactTokens.ProductsFolder;
       }
       ArtifactToken view = createArtifact(plFolder, CoreArtifactTypes.BranchView, viewName);
       addTuple2(CoreTupleTypes.ViewApplicability, view, ApplicabilityToken.BASE.getName());

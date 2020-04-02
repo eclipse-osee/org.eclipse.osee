@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.VariantDefinition;
+import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -39,11 +39,11 @@ public interface OrcsApplicability {
 
    List<BranchViewToken> getApplicabilityBranches();
 
-   ArtifactToken getVariantsFolder(BranchId branch);
+   ArtifactToken getProductsFolder(BranchId branch);
 
    String convertConfigToArtifact(BranchId branch);
 
-   VariantDefinition getVariantDefinition(ArtifactToken artifact);
+   ViewDefinition getViewDefinition(ArtifactToken artifact);
 
    XResultData createUpdateFeature(FeatureDefinition feature, String action, BranchId branch, UserId account);
 
@@ -51,11 +51,11 @@ public interface OrcsApplicability {
 
    XResultData deleteFeature(ArtifactId feature, BranchId branch, UserId account);
 
-   VariantDefinition getVariant(String variant, BranchId branch);
+   ViewDefinition getView(String view, BranchId branch);
 
-   XResultData createUpdateVariant(VariantDefinition variant, String action, BranchId branch, UserId account);
+   XResultData createUpdateView(ViewDefinition view, String action, BranchId branch, UserId account);
 
-   XResultData deleteVariant(String variant, BranchId branch, UserId account);
+   XResultData deleteView(String view, BranchId branch, UserId account);
 
    XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability, UserId account);
 
