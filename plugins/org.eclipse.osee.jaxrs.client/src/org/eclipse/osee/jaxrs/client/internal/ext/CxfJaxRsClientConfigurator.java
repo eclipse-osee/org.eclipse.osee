@@ -11,6 +11,9 @@
 package org.eclipse.osee.jaxrs.client.internal.ext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -32,7 +35,6 @@ import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jaxrs.JacksonFeature;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
@@ -98,7 +100,11 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
    public void configureDefaults(Map<String, Object> properties, ObjectMapper mapper) {
       List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
-      providers.addAll(JacksonFeature.getProviders(mapper));
+
+      providers.add(new JacksonJaxbJsonProvider(mapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
+      providers.add(JsonParseExceptionMapper.class);
+      providers.add(JsonMappingExceptionMapper.class);
+
       providers.addAll(OAuth2Util.getOAuthProviders());
       providers.add(new OrcsParamConverterProvider());
       providers.add(new OseeAccountClientRequestFilter());

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.ext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
+import com.fasterxml.jackson.jaxrs.base.JsonParseExceptionMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -32,7 +34,6 @@ import org.apache.cxf.jaxrs.impl.WebApplicationExceptionMapper;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
-import org.eclipse.osee.jaxrs.JacksonFeature;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jaxrs.server.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
@@ -89,7 +90,11 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       providers.add(waem);
       providers.add(new GenericExceptionMapper(logger));
       providers.add(new OrcsParamConverterProvider(orcsApi.getOrcsTypes()));
-      providers.addAll(JacksonFeature.getProviders(orcsApi.jaxRsApi().getObjectMapper()));
+      providers.add(new JacksonJaxbJsonProvider(orcsApi.jaxRsApi().getObjectMapper(),
+         JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
+      providers.add(JsonParseExceptionMapper.class);
+      providers.add(JsonMappingExceptionMapper.class);
+
       this.providers = providers;
 
       List<Feature> features = new ArrayList<>();
