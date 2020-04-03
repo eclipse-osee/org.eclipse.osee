@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server;
+package org.eclipse.osee.jaxrs;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.Provider;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Ryan D. Brooks
@@ -27,11 +28,18 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
    private final ParamConverter<ArtifactTypeToken> artifactTypeConverter;
    private final ParamConverter<AttributeTypeToken> attributeTypeConverter;
    private final ParamConverter<RelationTypeToken> relationTypeConverter;
+   private final ParamConverter<Id> idConverter = new IdParamConverter<>(null);
 
-   public OrcsParamConverterProvider(OrcsTypes orcsTypes) {
-      artifactTypeConverter = new IdParamConverter<>(orcsTypes.getArtifactTypes()::get);
-      attributeTypeConverter = new IdParamConverter<>(orcsTypes.getAttributeTypes()::get);
-      relationTypeConverter = new IdParamConverter<>(orcsTypes.getRelationTypes()::get);
+   public OrcsParamConverterProvider(OrcsTokenService tokenService) {
+      if (tokenService == null) {
+         artifactTypeConverter = null;
+         attributeTypeConverter = null;
+         relationTypeConverter = null;
+      } else {
+         artifactTypeConverter = new IdParamConverter<>(tokenService::getArtifactType);
+         attributeTypeConverter = new IdParamConverter<>(tokenService::getAttributeType);
+         relationTypeConverter = new IdParamConverter<>(tokenService::getRelationType);
+      }
    }
 
    @SuppressWarnings("unchecked")
@@ -46,6 +54,10 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       if (RelationTypeToken.class.equals(rawType)) {
          return (ParamConverter<T>) relationTypeConverter;
       }
+      if (Id.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) idConverter;
+      }
+
       return null;
    }
 }

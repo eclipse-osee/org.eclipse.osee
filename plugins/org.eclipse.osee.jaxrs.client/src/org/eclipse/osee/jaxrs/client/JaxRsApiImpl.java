@@ -16,15 +16,15 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import java.io.IOException;
 import java.util.Collection;
+import javax.ws.rs.client.WebTarget;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import javax.ws.rs.client.WebTarget;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -95,7 +95,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTarget(String path) {
-      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(mapper);
+      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService);
       JaxRsClientConfig config = new JaxRsClientConfig();
       config.setCreateThreadSafeProxyClients(true);
       String baseUrl = System.getProperty("osee.application.server", "http://localhost:8089");

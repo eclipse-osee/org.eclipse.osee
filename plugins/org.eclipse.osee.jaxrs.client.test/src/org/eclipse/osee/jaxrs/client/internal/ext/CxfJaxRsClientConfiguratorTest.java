@@ -38,6 +38,7 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jaxrs.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
@@ -136,7 +137,7 @@ public class CxfJaxRsClientConfiguratorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      configurator = new CxfJaxRsClientConfigurator(oauthFactory);
+      configurator = new CxfJaxRsClientConfigurator(oauthFactory, null);
 
       props = new LinkedHashMap<>();
       props.put("a", "1");

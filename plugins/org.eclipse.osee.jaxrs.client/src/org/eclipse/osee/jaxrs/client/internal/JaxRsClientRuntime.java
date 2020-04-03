@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
@@ -43,19 +44,15 @@ public final class JaxRsClientRuntime {
    public static final long MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS = 24L * 60L * 60L * 1000L; // one day
    private static volatile JaxRsClientFactory instance;
 
-   public static JaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper) {
+   public static JaxRsClientFactory getClientFactoryInstance(ObjectMapper mapper, OrcsTokenService tokenService) {
       if (instance == null) {
-         instance = newClientFactory(mapper);
+         OAuthFactory oauthFactory = newOAuthFactory();
+         CxfJaxRsClientConfigurator configurator = new CxfJaxRsClientConfigurator(oauthFactory, tokenService);
+         configurator.configureJaxRsRuntime();
+         configurator.configureDefaults(Collections.<String, Object> emptyMap(), mapper);
+         instance = new CxfJaxRsClientFactory(configurator);
       }
       return instance;
-   }
-
-   private static JaxRsClientFactory newClientFactory(ObjectMapper mapper) {
-      OAuthFactory oauthFactory = newOAuthFactory();
-      CxfJaxRsClientConfigurator configurator = new CxfJaxRsClientConfigurator(oauthFactory);
-      configurator.configureJaxRsRuntime();
-      configurator.configureDefaults(Collections.<String, Object> emptyMap(), mapper);
-      return new CxfJaxRsClientFactory(configurator);
    }
 
    private static OAuthFactory newOAuthFactory() {

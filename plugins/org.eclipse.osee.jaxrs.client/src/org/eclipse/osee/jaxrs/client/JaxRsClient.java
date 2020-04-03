@@ -33,7 +33,7 @@ public final class JaxRsClient {
    }
 
    public static JaxRsClientBuilder newBuilder() {
-      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(JsonUtil.getMapper());
+      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(JsonUtil.getMapper(), null);
       return new JaxRsClientBuilder(factory);
    }
 

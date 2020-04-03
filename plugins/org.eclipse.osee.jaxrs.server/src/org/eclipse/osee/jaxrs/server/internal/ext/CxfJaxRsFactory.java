@@ -34,8 +34,8 @@ import org.apache.cxf.jaxrs.impl.WebApplicationExceptionMapper;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
+import org.eclipse.osee.jaxrs.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.jaxrs.server.OrcsParamConverterProvider;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
 import org.eclipse.osee.jaxrs.server.internal.applications.AbstractJaxRsApplicationContainer;
@@ -89,7 +89,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
       providers.add(waem);
       providers.add(new GenericExceptionMapper(logger));
-      providers.add(new OrcsParamConverterProvider(orcsApi.getOrcsTypes()));
+      providers.add(new OrcsParamConverterProvider(orcsApi.tokenService()));
       providers.add(new JacksonJaxbJsonProvider(orcsApi.jaxRsApi().getObjectMapper(),
          JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS));
       providers.add(JsonParseExceptionMapper.class);
