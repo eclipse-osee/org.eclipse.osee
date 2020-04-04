@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -42,6 +43,8 @@ public final class JaxRsApiImpl implements JaxRsApi {
    private OrcsTokenService tokenService;
    private ObjectMapper mapper;
    private TypeFactory typeFactory;
+   private JaxRsClientFactory factory;
+   private String baseUrl;
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
@@ -67,6 +70,8 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();
+      factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService);
+      baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
    }
 
    @Override
@@ -95,11 +100,7 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTarget(String path) {
-      JaxRsClientFactory factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService);
-      JaxRsClientConfig config = new JaxRsClientConfig();
-      config.setCreateThreadSafeProxyClients(true);
-      String baseUrl = System.getProperty("osee.application.server", "http://localhost:8089");
-      return factory.newWebTarget(config, baseUrl + "/" + path);
+      return factory.newWebTarget(baseUrl + "/" + path);
    }
 
    @Override

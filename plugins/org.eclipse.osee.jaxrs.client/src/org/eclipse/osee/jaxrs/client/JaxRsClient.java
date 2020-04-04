@@ -29,7 +29,9 @@ public final class JaxRsClient {
 
       JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress);
 
-      WebTarget newWebTarget(JaxRsClientConfig config, String serverAddress);
+      WebTarget newWebTarget(JaxRsClientConfig config, String url);
+
+      WebTarget newWebTarget(String url);
    }
 
    public static JaxRsClientBuilder newBuilder() {

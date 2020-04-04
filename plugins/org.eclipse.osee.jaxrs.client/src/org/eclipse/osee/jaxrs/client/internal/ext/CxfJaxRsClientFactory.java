@@ -28,10 +28,19 @@ import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 public class CxfJaxRsClientFactory implements JaxRsClientFactory {
 
    private final JaxRsClientConfigurator configurator;
+   private final Client client;
+   private final JaxRsClientConfig config;
 
    public CxfJaxRsClientFactory(JaxRsClientConfigurator configurator) {
-      super();
       this.configurator = configurator;
+
+      config = new JaxRsClientConfig();
+      config.setCreateThreadSafeProxyClients(true);
+
+      ClientBuilder builder = ClientBuilder.newBuilder();
+      configurator.configureClientBuilder(config, builder);
+
+      client = builder.build();
    }
 
    /**
@@ -47,19 +56,19 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
    }
 
    @Override
-   public WebTarget newWebTarget(JaxRsClientConfig config, String serverAddress) {
-      ClientBuilder builder = ClientBuilder.newBuilder();
-      configurator.configureClientBuilder(config, builder);
-
-      Client client = builder.build();
-      String baseAddress = serverAddress != null ? serverAddress : "";
-      WebTarget target = client.target(baseAddress);
+   public WebTarget newWebTarget(JaxRsClientConfig config, String url) {
+      WebTarget target = client.target(url);
 
       // This is here to force a webClient creation so we can configure the conduit
       target.request();
 
       configureConnection(config, target);
       return target;
+   }
+
+   @Override
+   public WebTarget newWebTarget(String url) {
+      return newWebTarget(config, url);
    }
 
    /**
@@ -87,5 +96,4 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       configurator.configureConnection(config, conduit);
       configurator.configureProxy(config, conduit);
    }
-
 }

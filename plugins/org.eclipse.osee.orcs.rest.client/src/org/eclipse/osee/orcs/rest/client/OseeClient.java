@@ -68,10 +68,6 @@ public interface OseeClient {
 
    ActivityLogEndpoint getActivityLogEndpoint();
 
-   boolean isLocalHost();
-
-   String getBaseUri();
-
    ArtifactEndpoint getArtifactEndpoint(BranchId branch);
 
    ApplicabilityUiEndpoint getApplicabilityUiEndpoint();

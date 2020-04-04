@@ -137,8 +137,7 @@ public class JaxRsClientConfig {
    private int oauthCacheMaxSize;
    private long oauthCacheEvictTimeoutMillis;
 
-   JaxRsClientConfig() {
-      super();
+   public JaxRsClientConfig() {
       reset();
    }
 
@@ -423,7 +422,7 @@ public class JaxRsClientConfig {
       this.proxyClientSubResourcesInheritHeaders = proxyClientSubResourcesInheritHeaders;
    }
 
-   void setCreateThreadSafeProxyClients(boolean proxyClientThreadSafe) {
+   public void setCreateThreadSafeProxyClients(boolean proxyClientThreadSafe) {
       this.proxyClientThreadSafe = proxyClientThreadSafe;
    }
 

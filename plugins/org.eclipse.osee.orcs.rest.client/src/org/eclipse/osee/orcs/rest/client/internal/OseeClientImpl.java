@@ -256,16 +256,6 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public boolean isLocalHost() {
-      return orcsUri.toString().contains("localhost");
-   }
-
-   @Override
-   public String getBaseUri() {
-      return orcsUri.toString();
-   }
-
-   @Override
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
       URI uri = UriBuilder.fromUri(defineUri).build();
       return client.targetProxy(uri, DefineBranchEndpointApi.class);
