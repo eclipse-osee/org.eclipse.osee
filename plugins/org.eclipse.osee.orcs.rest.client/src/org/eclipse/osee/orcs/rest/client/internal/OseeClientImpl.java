@@ -25,6 +25,7 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -67,12 +68,15 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    private PredicateFactory predicateFactory;
    private volatile JaxRsClient client;
    private volatile URI orcsUri;
-   private volatile URI defineUri;
-   private URI baseUri;
+   private UriBuilder searchUriBuilder;
+   private JaxRsApi jaxRsApi;
+
+   public void setJaxRsApi(JaxRsApi jaxRsApi) {
+      this.jaxRsApi = jaxRsApi;
+   }
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
-
       update(properties);
    }
 
@@ -80,7 +84,6 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       client = null;
       orcsUri = null;
       predicateFactory = null;
-      defineUri = null;
    }
 
    public void update(Map<String, Object> properties) {
@@ -91,15 +94,9 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
             System.getProperty(OSEE_APPLICATION_SERVER, org.eclipse.osee.framework.core.data.OseeClient.DEFAULT_URL);
       }
       if (Strings.isValid(address)) {
-         baseUri = UriBuilder.fromUri(address).build();
          orcsUri = UriBuilder.fromUri(address).path("orcs").build();
-         defineUri = UriBuilder.fromUri(address).path("define").build();
+         searchUriBuilder = UriBuilder.fromUri(address).path("orcs/branch/{branch-uuid}/artifact/search/v1");
       }
-   }
-
-   private JaxRsWebTarget newTarget(String path, Object... values) {
-      URI uri = UriBuilder.fromUri(orcsUri).path(path).build(values);
-      return client.target(uri);
    }
 
    @Override
@@ -134,8 +131,8 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       }
 
       SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
+      JaxRsWebTarget resource = client.target(searchUriBuilder.build(branch.getIdString()));
 
-      JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getIdString());
       try {
          return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
       } catch (Exception ex) {
@@ -178,86 +175,93 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public BranchEndpoint getBranchEndpoint() {
-      return client.targetProxy(orcsUri, BranchEndpoint.class);
+      return getOrcsEndpoint(BranchEndpoint.class);
    }
 
    @Override
    public TransactionEndpoint getTransactionEndpoint() {
-      return client.targetProxy(orcsUri, TransactionEndpoint.class);
+      return getOrcsEndpoint(TransactionEndpoint.class);
    }
 
    @Override
    public TypesEndpoint getTypesEndpoint() {
-      return client.targetProxy(orcsUri, TypesEndpoint.class);
+      return getOrcsEndpoint(TypesEndpoint.class);
    }
 
    @Override
    public IndexerEndpoint getIndexerEndpoint() {
-      return client.targetProxy(orcsUri, IndexerEndpoint.class);
+      return getOrcsEndpoint(IndexerEndpoint.class);
    }
 
    @Override
    public ClientEndpoint getClientEndpoint() {
-      URI uri = UriBuilder.fromUri(baseUri).path("ide").build();
-      return client.targetProxy(uri, ClientEndpoint.class);
+      return jaxRsApi.newProxy("ide", ClientEndpoint.class);
    }
 
    @Override
    public ResourcesEndpoint getResourcesEndpoint() {
-      JaxRsClient newClient = JaxRsClient.newBuilder(client.getConfig()).followRedirects(false).build();
-      return newClient.targetProxy(orcsUri, ResourcesEndpoint.class);
+      return getOrcsEndpoint(ResourcesEndpoint.class);
    }
 
    @Override
    public DatastoreEndpoint getDatastoreEndpoint() {
-      return client.targetProxy(orcsUri, DatastoreEndpoint.class);
+      return getOrcsEndpoint(DatastoreEndpoint.class);
    }
 
    @Override
    public RenderEndpoint getRenderEndpoint() {
-      return client.targetProxy(defineUri, RenderEndpoint.class);
+      return getDefineEndpoint(RenderEndpoint.class);
    }
 
    @Override
    public DataRightsEndpoint getDataRightsEndpoint() {
-      return client.targetProxy(defineUri, DataRightsEndpoint.class);
+      return getDefineEndpoint(DataRightsEndpoint.class);
    }
 
    @Override
    public OrcsWriterEndpoint getOrcsWriterEndpoint() {
-      return client.targetProxy(orcsUri, OrcsWriterEndpoint.class);
+      return getOrcsEndpoint(OrcsWriterEndpoint.class);
    }
 
    @Override
    public ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch) {
-      URI uri = UriBuilder.fromUri(orcsUri).path("branch/{branch}").build(branch.getId());
-      return client.targetProxy(uri, ApplicabilityEndpoint.class);
+      return getOrcsBranchEndpoint(ApplicabilityEndpoint.class, branch);
    }
 
    @Override
    public ApplicabilityUiEndpoint getApplicabilityUiEndpoint() {
-      return client.targetProxy(orcsUri, ApplicabilityUiEndpoint.class);
+      return getOrcsEndpoint(ApplicabilityUiEndpoint.class);
    }
 
    @Override
    public ArtifactEndpoint getArtifactEndpoint(BranchId branch) {
-      URI uri = UriBuilder.fromUri(orcsUri).path("branch/{branch}").build(branch.getId());
-      return client.targetProxy(uri, ArtifactEndpoint.class);
+      return getOrcsBranchEndpoint(ArtifactEndpoint.class, branch);
    }
 
    @Override
    public ActivityLogEndpoint getActivityLogEndpoint() {
-      return client.targetProxy(baseUri, ActivityLogEndpoint.class);
+      return jaxRsApi.newProxy("", ActivityLogEndpoint.class);
    }
 
    @Override
    public OrcsScriptEndpoint getOrcsScriptEndpoint() {
-      return client.targetProxy(orcsUri, OrcsScriptEndpoint.class);
+      return getOrcsEndpoint(OrcsScriptEndpoint.class);
    }
 
    @Override
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
-      URI uri = UriBuilder.fromUri(defineUri).build();
-      return client.targetProxy(uri, DefineBranchEndpointApi.class);
+      return getDefineEndpoint(DefineBranchEndpointApi.class);
+   }
+
+   private <T> T getOrcsBranchEndpoint(Class<T> clazz, BranchId branch) {
+      return jaxRsApi.newProxy("orcs/branch/" + branch.getIdString(), clazz);
+   }
+
+   private <T> T getDefineEndpoint(Class<T> clazz) {
+      return jaxRsApi.newProxy("define", clazz);
+   }
+
+   private <T> T getOrcsEndpoint(Class<T> clazz) {
+      return jaxRsApi.newProxy("orcs", clazz);
    }
 }

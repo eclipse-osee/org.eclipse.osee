@@ -295,5 +295,4 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       }
       return toReturn;
    }
-
 }
