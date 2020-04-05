@@ -43,6 +43,10 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       client = builder.build();
    }
 
+   public JaxRsClientConfig copyDefaultConfig() {
+      return config.copy();
+   }
+
    /**
     * Creates a JAX-RS WebTarget
     *
