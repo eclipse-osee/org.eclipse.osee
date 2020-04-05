@@ -100,7 +100,11 @@ public final class JaxRsApiImpl implements JaxRsApi {
 
    @Override
    public WebTarget newTarget(String path) {
-      return factory.newWebTarget(baseUrl + "/" + path);
+      return factory.newWebTarget(url(path));
+   }
+
+   private String url(String path) {
+      return baseUrl + "/" + path;
    }
 
    @Override
@@ -117,5 +121,10 @@ public final class JaxRsApiImpl implements JaxRsApi {
    @Override
    public ObjectMapper getObjectMapper() {
       return mapper;
+   }
+
+   @Override
+   public <T> T newProxy(String path, Class<T> clazz) {
+      return factory.newProxy(url(path), clazz);
    }
 }

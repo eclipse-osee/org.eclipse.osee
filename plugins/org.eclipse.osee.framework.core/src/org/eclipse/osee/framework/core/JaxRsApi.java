@@ -44,4 +44,6 @@ public interface JaxRsApi {
    <T> T newProxy(WebTarget target, Class<T> clazz);
 
    ObjectMapper getObjectMapper();
+
+   <T> T newProxy(String path, Class<T> clazz);
 }

@@ -82,11 +82,11 @@ public class JaxRsClientTest {
       String instance = URI_STRING;
       Class<?> clazz = String.class;
 
-      when(factory.newClient(config, URI_STRING, clazz)).thenAnswer(answer(instance));
+      when(factory.newProxy(config, URI_STRING, clazz)).thenAnswer(answer(instance));
 
       Object actual = client.targetProxy(URI_STRING, clazz);
       assertEquals(instance, actual);
-      verify(factory).newClient(config, URI_STRING, clazz);
+      verify(factory).newProxy(config, URI_STRING, clazz);
    }
 
    @Test
@@ -95,11 +95,11 @@ public class JaxRsClientTest {
       String instance = URI_STRING;
       Class<?> clazz = String.class;
 
-      when(factory.newClient(config, URI, clazz)).thenAnswer(answer(instance));
+      when(factory.newProxy(config, URI, clazz)).thenAnswer(answer(instance));
 
       Object actual = client.targetProxy(expectedUri, clazz);
       assertEquals(instance, actual);
-      verify(factory).newClient(config, URI, clazz);
+      verify(factory).newProxy(config, URI, clazz);
    }
 
    private static <T> Answer<T> answer(final T object) {

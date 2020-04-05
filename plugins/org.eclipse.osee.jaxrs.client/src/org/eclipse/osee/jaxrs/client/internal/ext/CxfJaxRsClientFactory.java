@@ -81,13 +81,18 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
     * @return targetProxy
     */
    @Override
-   public <T> T newClient(JaxRsClientConfig config, String serverAddress, Class<T> clazz) {
+   public <T> T newProxy(JaxRsClientConfig config, String url, Class<T> clazz) {
       JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
-      configurator.configureBean(config, serverAddress, bean);
+      configurator.configureBean(config, url, bean);
       bean.setServiceClass(clazz);
       T client = bean.create(clazz);
       configureConnection(config, client);
       return client;
+   }
+
+   @Override
+   public <T> T newProxy(String url, Class<T> clazz) {
+      return newProxy(config, url, clazz);
    }
 
    private void configureConnection(JaxRsClientConfig config, Object client) {

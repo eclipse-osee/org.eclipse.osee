@@ -25,13 +25,15 @@ public final class JaxRsClient {
 
    public interface JaxRsClientFactory {
 
-      <T> T newClient(JaxRsClientConfig config, String serverAddress, Class<T> clazz);
+      <T> T newProxy(JaxRsClientConfig config, String url, Class<T> clazz);
 
       JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress);
 
       WebTarget newWebTarget(JaxRsClientConfig config, String url);
 
       WebTarget newWebTarget(String url);
+
+      <T> T newProxy(String url, Class<T> clazz);
    }
 
    public static JaxRsClientBuilder newBuilder() {
@@ -120,7 +122,7 @@ public final class JaxRsClient {
     * @return targetProxy
     */
    public <T> T targetProxy(String address, Class<T> clazz) {
-      return factory.newClient(config, address, clazz);
+      return factory.newProxy(config, address, clazz);
    }
 
    /**
