@@ -98,9 +98,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                public void run() {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
-                     IViewPart viewPart = page.showView(MergeView.VIEW_ID,
-                        String.valueOf(
-                           sourceBranch != null ? sourceBranch.getId() / 2 + destBranch.getId() / 2 : commitTrans.getId()),
+                     IViewPart viewPart = page.showView(MergeView.VIEW_ID, String.valueOf(
+                        sourceBranch != null ? sourceBranch.getId() / 2 + destBranch.getId() / 2 : commitTrans.getId()),
                         IWorkbenchPage.VIEW_ACTIVATE);
                      if (viewPart instanceof MergeView) {
                         MergeView mergeView = (MergeView) viewPart;
@@ -276,6 +275,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       return branch.matches(sourceBranch, destBranch);
    }
 
+   private boolean isApplicableSourceAndDestEvent(Id sourceBranch, Id destBranch) {
+      return isApplicableSourceOrDestEvent(sourceBranch) && isApplicableSourceOrDestEvent(destBranch);
+   }
+
    protected BranchId getMergeBranchForView() {
       return mergeBranch;
    }
@@ -297,7 +300,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      close();
                   }
                case Committed:
-                  if (isApplicableSourceOrDestEvent(branchEvent.getSourceBranch())) {
+                  if (isApplicableSourceAndDestEvent(branchEvent.getSourceBranch(),
+                     branchEvent.getDestinationBranch())) {
                      getSite().getPage().hideView(MergeView.this);
                   }
                   break;
