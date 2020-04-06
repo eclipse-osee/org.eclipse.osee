@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
-import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -29,12 +28,10 @@ import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifactType> {
 
    private final Map<ArtifactTypeId, ArtifactTypeMetaData> tokenToTypeData;
-   private final BranchHierarchyProvider hierarchyProvider;
 
-   public ArtifactTypeIndex(BranchHierarchyProvider hierarchyProvider) {
+   public ArtifactTypeIndex() {
       super(ArtifactTypeToken.SENTINEL);
       this.tokenToTypeData = new ConcurrentHashMap<>(1000);
-      this.hierarchyProvider = hierarchyProvider;
    }
 
    public void put(ArtifactTypeToken type, Set<ArtifactTypeToken> superTypes) {
@@ -69,30 +66,6 @@ public class ArtifactTypeIndex extends TokenTypeIndex<ArtifactTypeToken, XArtifa
    public Collection<ArtifactTypeToken> getDescendantTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getDescendantTypes() : Collections.emptyList();
-   }
-
-   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artType, BranchId branch) {
-      Set<AttributeTypeToken> attributeTypes = Sets.newLinkedHashSet();
-      getAttributeTypes(attributeTypes, artType, branch);
-      return attributeTypes;
-   }
-
-   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactTypeToken artifactType, BranchId branch) {
-      ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
-      if (metaData != null) {
-         Map<BranchId, Collection<AttributeTypeToken>> validityMap = metaData.getAttributeTypes();
-
-         Iterable<? extends BranchId> branches = hierarchyProvider.getParentHierarchy(branch);
-         for (BranchId parent : branches) {
-            Collection<AttributeTypeToken> items = validityMap.get(parent);
-            if (items != null) {
-               attributeTypes.addAll(items);
-            }
-         }
-      }
-      for (ArtifactTypeToken superType : artifactType.getSuperTypes()) {
-         getAttributeTypes(attributeTypes, superType, branch);
-      }
    }
 
    private final class ArtifactTypeMetaData {

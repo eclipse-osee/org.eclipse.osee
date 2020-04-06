@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.data.EnumType;
@@ -65,12 +64,10 @@ import org.eclipse.osee.orcs.data.EnumType;
 public class OrcsTypesIndexer {
 
    private final Log logger;
-   private final BranchHierarchyProvider hierarchyProvider;
 
-   public OrcsTypesIndexer(Log logger, BranchHierarchyProvider hierarchyProvider) {
+   public OrcsTypesIndexer(Log logger) {
       super();
       this.logger = logger;
-      this.hierarchyProvider = hierarchyProvider;
    }
 
    public OrcsTypesIndex index(IResource source) throws Exception {
@@ -86,7 +83,7 @@ public class OrcsTypesIndexer {
 
       Conditions.checkNotNull(resource, "osee dsl model", "Error reading osee dsl resource");
       OseeDsl model = resource.getModel();
-      ArtifactTypeIndex artifactTypeIndex = new ArtifactTypeIndex(hierarchyProvider);
+      ArtifactTypeIndex artifactTypeIndex = new ArtifactTypeIndex();
       AttributeTypeIndex attributeTypeIndex = new AttributeTypeIndex();
       EnumTypeIndex enumTypeIndex = new EnumTypeIndex();
       RelationTypeIndex relationTypeIndex = new RelationTypeIndex(artifactTypeIndex);

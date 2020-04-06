@@ -25,15 +25,13 @@ public class OrcsTypesModule {
 
    private final Log logger;
    private final OrcsTypesDataStore dataStore;
-   private final BranchHierarchyProvider hierarchy;
 
    private OrcsTypesLoaderFactory factory;
    private OrcsTypesIndexProvider indexer;
 
-   public OrcsTypesModule(Log logger, OrcsTypesDataStore dataStore, BranchHierarchyProvider hierarchy) {
+   public OrcsTypesModule(Log logger, OrcsTypesDataStore dataStore) {
       this.logger = logger;
       this.dataStore = dataStore;
-      this.hierarchy = hierarchy;
    }
 
    public void start(OrcsSession session) {
@@ -47,7 +45,7 @@ public class OrcsTypesModule {
    }
 
    protected OrcsTypesLoaderFactory createFactory() {
-      return new OrcsTypesLoaderFactoryImpl(logger, hierarchy);
+      return new OrcsTypesLoaderFactoryImpl(logger);
    }
 
    protected OrcsTypesIndexProvider createIndexer(OrcsTypesLoader loader) {

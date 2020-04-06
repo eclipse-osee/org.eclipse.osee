@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import com.google.common.collect.Sets;
-import java.util.Collections;
-import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.framework.core.OseeApiBase;
@@ -64,9 +61,7 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.TransactionProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
-import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -121,33 +116,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public void start() {
       systemSession = createSession();
 
-      BranchHierarchyProvider hierarchyProvider = new BranchHierarchyProvider() {
-
-         private final ThreadLocal<Iterable<? extends BranchId>> cache = new ThreadLocal<>();
-
-         @Override
-         public Iterable<? extends BranchId> getParentHierarchy(BranchId branch) {
-            Iterable<? extends BranchId> toReturn = cache.get();
-            if (toReturn == null) {
-               Set<BranchId> branches = Sets.newLinkedHashSet();
-               BranchQuery branchQuery = getQueryFactory().branchQuery();
-               branchQuery.andIsAncestorOf(branch);
-               branches.add(branch);
-
-               for (BranchId parent : branchQuery.getResults()) {
-                  if (!branches.add(parent)) {
-                     logger.error("Cycle detected with branch: [%s]", parent);
-                     return Collections.emptyList();
-                  }
-               }
-               cache.set(branches);
-               toReturn = branches;
-            }
-            return toReturn;
-         }
-      };
-
-      typesModule = new OrcsTypesModule(logger, dataStore.getTypesDataStore(), hierarchyProvider);
+      typesModule = new OrcsTypesModule(logger, dataStore.getTypesDataStore());
       typesModule.start(getSystemSession());
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());

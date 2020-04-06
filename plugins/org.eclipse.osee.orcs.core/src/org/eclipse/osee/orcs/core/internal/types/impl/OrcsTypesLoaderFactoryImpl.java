@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoader;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoaderFactory;
@@ -27,11 +26,9 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
 public class OrcsTypesLoaderFactoryImpl implements OrcsTypesLoaderFactory {
 
    private final Log logger;
-   private final BranchHierarchyProvider hierarchyProvider;
 
-   public OrcsTypesLoaderFactoryImpl(Log logger, BranchHierarchyProvider hierarchyProvider) {
+   public OrcsTypesLoaderFactoryImpl(Log logger) {
       this.logger = logger;
-      this.hierarchyProvider = hierarchyProvider;
    }
 
    @Override
@@ -51,7 +48,7 @@ public class OrcsTypesLoaderFactoryImpl implements OrcsTypesLoaderFactory {
 
          @Override
          public Callable<OrcsTypesIndex> createLoader() {
-            OrcsTypesIndexer indexer = new OrcsTypesIndexer(logger, hierarchyProvider);
+            OrcsTypesIndexer indexer = new OrcsTypesIndexer(logger);
             return new CreateOrcsTypesIndexCallable(logger, indexer, provider);
          }
       };
