@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -597,9 +598,12 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             if (cmService.isPcrArtifact(associatedArtifact)) {
                cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
             } else if (associatedArtifact.isValid()) {
+               if (SystemUser.OseeSystem.equals(associatedArtifact)) {
+                  AWorkbench.popup("ERROR", "No Associated Artifact");
+               }
                RendererManager.open(associatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
-               AWorkbench.popup("ERROR", "Unknown branch association");
+               AWorkbench.popup("ERROR", "Associated Artifact is invalid");
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -45,12 +46,17 @@ public class OpenAssociatedArtifact extends Action {
       IOperation operation = new LoadAssociatedArtifactOperation(changeData);
       Operations.executeAsJob(operation, false, Job.SHORT, new JobChangeAdapter() {
 
+         @SuppressWarnings("unlikely-arg-type")
          @Override
          public void done(IJobChangeEvent event) {
             if (changeData.getAssociatedArtifact() == null) {
                AWorkbench.popup("ERROR", "Cannot access associated artifact.");
             } else {
-               RendererManager.openInJob(changeData.getAssociatedArtifact(), DEFAULT_OPEN);
+               if (SystemUser.OseeSystem.equals(changeData.getAssociatedArtifact())) {
+                  AWorkbench.popup("ERROR", "No Associated Artifact");
+               } else {
+                  RendererManager.openInJob(changeData.getAssociatedArtifact(), DEFAULT_OPEN);
+               }
             }
          }
       });

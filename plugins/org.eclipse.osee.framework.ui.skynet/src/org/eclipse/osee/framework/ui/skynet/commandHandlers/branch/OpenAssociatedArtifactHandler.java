@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  */
 public class OpenAssociatedArtifactHandler extends CommandHandler {
 
+   @SuppressWarnings("unlikely-arg-type")
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       BranchId selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
@@ -43,6 +45,10 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);
       if (associatedArtifact.isInvalid()) {
          AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
+         return null;
+      }
+      if (SystemUser.OseeSystem.equals(associatedArtifact)) {
+         AWorkbench.popup("ERROR", "No Associated Artifact");
          return null;
       }
       if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
