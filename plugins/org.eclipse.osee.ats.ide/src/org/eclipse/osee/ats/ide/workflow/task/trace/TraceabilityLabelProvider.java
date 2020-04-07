@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.ide.traceability.editor;
+package org.eclipse.osee.ats.ide.workflow.task.trace;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

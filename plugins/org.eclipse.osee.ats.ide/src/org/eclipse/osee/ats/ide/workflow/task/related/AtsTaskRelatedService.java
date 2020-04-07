@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.ide.workflow.task.related;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.task.TaskNameData;
 import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.related.AbstractAtsTaskRelatedService;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -22,7 +20,6 @@ import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -38,32 +35,36 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
    }
 
    @Override
-   public TaskRelatedData getRelatedRequirementArtifactFromChangeReport(IAtsTeamWorkflow derivedFromTeamWf, IAtsTask task) {
+   public void getRelatedChangedArtifactFromChangeReport(TaskRelatedData trd) {
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(
-         (TeamWorkFlowArtifact) derivedFromTeamWf.getStoreObject());
-      return getRelatedRequirementArtifact(task, changeData);
+         (TeamWorkFlowArtifact) trd.getDerivedFromTeamWf().getStoreObject());
+      getTaskRelatedData(trd, changeData);
    }
 
-   private TaskRelatedData getRelatedRequirementArtifact(IAtsTask task, ChangeData changeData) {
-      final TaskNameData data = new TaskNameData(task);
+   private TaskRelatedData getTaskRelatedData(TaskRelatedData trd, ChangeData changeData) {
+      final TaskNameData data = new TaskNameData(trd.getTask());
 
       if (data.isCdb()) {
-         return new TaskRelatedData(new Result("No requirement to show for CDB"));
+         trd.getResults().error("No requirement to show for CDB");
+         return trd;
       }
       if (!data.isRequirement()) {
-         return new TaskRelatedData(new Result(
-            "Task is not against artifact or is named incorrectly.\n\n" + "Must be \"Code|Test \"<partition>\" for \"<requirement name>\""));
+         trd.getResults().error(
+            "Task is not against artifact or is named incorrectly.\n\n" + "Must be \"Code|Test \"<partition>\" for \"<requirement name>\"");
+         return trd;
       }
 
       Artifact headArtifact = findHeadArtifact(changeData, data.getReqName(), data.getAddDetails());
       if (headArtifact == null) {
-         return new TaskRelatedData(new Result("Corresponding requirement can not be found."));
+         trd.getResults().error("Corresponding requirement can not be found.");
+         return trd;
       }
       Artifact latestArt = null;
       if (!headArtifact.isDeleted()) {
          latestArt = ArtifactQuery.getArtifactFromToken(headArtifact, DeletionFlag.INCLUDE_DELETED);
+         trd.setLatestArt(latestArt);
       }
-      return new TaskRelatedData(headArtifact.isDeleted(), headArtifact, latestArt, Result.TrueResult);
+      return trd;
    }
 
    public static Artifact findHeadArtifact(ChangeData changeData, String name, String appendedStr) {

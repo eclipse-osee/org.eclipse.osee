@@ -10,27 +10,39 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task.related;
 
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
+ * Class to resolve related artifact from Derived From relation and branch/commit.
+ *
  * @author Donald G. Dunne
  */
 public class TaskRelatedData {
    private final boolean deleted;
-   private final ArtifactToken headArtifact;
-   private final ArtifactToken latestArt;
-   private final Result result;
+   private ArtifactToken headArtifact;
+   private ArtifactToken latestArt;
+   private XResultData results = new XResultData();
+   private IAtsTeamWorkflow derivedFromTeamWf;
+   private IAtsTask task;
+   private boolean derived;
 
-   public TaskRelatedData(Result result) {
-      this(false, null, null, result);
+   public TaskRelatedData() {
+      this(false, null, null);
    }
 
-   public TaskRelatedData(boolean deleted, ArtifactToken headArtifact, ArtifactToken latestArt, Result result) {
+   public TaskRelatedData(IAtsTask task) {
+      this(false, null, null);
+      this.task = task;
+   }
+
+   public TaskRelatedData(boolean deleted, ArtifactToken headArtifact, ArtifactToken latestArt) {
       this.deleted = deleted;
       this.headArtifact = headArtifact;
       this.latestArt = latestArt;
-      this.result = result;
+      this.results = new XResultData();
    }
 
    public boolean isDeleted() {
@@ -41,11 +53,51 @@ public class TaskRelatedData {
       return headArtifact;
    }
 
-   public Result getResult() {
-      return result;
-   }
-
    public ArtifactToken getLatestArt() {
       return latestArt;
+   }
+
+   public boolean isDerived() {
+      return derived;
+   }
+
+   public void setDerived(boolean derived) {
+      this.derived = derived;
+   }
+
+   public XResultData getResults() {
+      return results;
+   }
+
+   public IAtsTask getTask() {
+      return task;
+   }
+
+   public void setTask(IAtsTask task) {
+      this.task = task;
+   }
+
+   public void setLatestArt(ArtifactToken latestArt) {
+      this.latestArt = latestArt;
+   }
+
+   public void setHeadArtifact(ArtifactToken headArtifact) {
+      this.headArtifact = headArtifact;
+   }
+
+   public IAtsTeamWorkflow getDerivedFromTeamWf() {
+      return derivedFromTeamWf;
+   }
+
+   public void setDerivedFromTeamWf(IAtsTeamWorkflow derivedFromTeamWf) {
+      this.derivedFromTeamWf = derivedFromTeamWf;
+   }
+
+   @Override
+   public String toString() {
+      if (results.isEmpty()) {
+         return "Empty";
+      }
+      return results.toString();
    }
 }

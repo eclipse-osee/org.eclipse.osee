@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.ide.traceability.editor;
+package org.eclipse.osee.ats.ide.workflow.task.trace;
 
 import java.rmi.activation.Activator;
 import java.util.Collection;

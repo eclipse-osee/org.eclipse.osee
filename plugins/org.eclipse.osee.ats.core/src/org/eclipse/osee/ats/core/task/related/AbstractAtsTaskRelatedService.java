@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task.related;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -20,14 +20,14 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -40,104 +40,134 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       this.atsApi = atsApi;
    }
 
-   /**
-    * Attempt first to retrieve TaskRelatedData from AtsAttributeTypes.TaskToChangedArtifactReference and branch. Else
-    * retrieve from change report.
-    */
-   public TaskRelatedData getRelatedRequirementArtifact(IAtsTask task) {
-      IAtsTeamWorkflow derivedFromTeamWf = getDefivedFromTeamWf(task);
-      if (derivedFromTeamWf == null) {
-         return new TaskRelatedData(new Result("Requirement Team Workflow can't be found"));
+   @Override
+   public TaskRelatedData getTaskRelatedData(TaskRelatedData trd) {
+      getDerivedTeamWf(trd);
+      if (trd.getResults().isErrors()) {
+         return trd;
+      }
+      getRelatedChangedArtifact(trd);
+      if (trd.getResults().isErrors()) {
+         return trd;
+      }
+      getRelatedChangedArtifactFromChangeReport(trd);
+      if (trd.getResults().isErrors()) {
+         return trd;
+      }
+      return trd;
+   }
+
+   private TaskRelatedData getRelatedChangedArtifact(TaskRelatedData trd) {
+      if (trd.getDerivedFromTeamWf() == null) {
+         trd.getResults().error("Requirement Team Workflow can't be found\n");
       }
 
-      ArtifactId artifact = atsApi.getAttributeResolver().getSoleAttributeValue(task,
+      ArtifactId artifact = atsApi.getAttributeResolver().getSoleAttributeValue(trd.getTask(),
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
       if (artifact.isValid()) {
-         return getRelatedRequirementArtifact(task, derivedFromTeamWf, artifact);
+         getRelatedChangedArtifact(trd, artifact);
+         return trd;
+      } else {
+         trd.getResults().error("Can't resolve refrence to ArtifactId");
       }
 
-      return getRelatedRequirementArtifactFromChangeReport(derivedFromTeamWf, task);
+      return trd;
    }
 
-   /**
-    * @return team workflow that owns the branch that this task as generated from</br>
-    * If Requirements code/test task, it is the requirement workflow</br>
-    * If Code code/test task, it's the code workflow</br>
-    * They should be related by the Derived relation
-    */
    @Override
-   public IAtsTeamWorkflow getDefivedFromTeamWf(IAtsTask task) {
-      IAtsTeamWorkflow teamWf = task.getParentTeamWorkflow();
+   public TaskRelatedData getDerivedTeamWf(TaskRelatedData trd) {
+      if (trd.getTask() == null) {
+         trd.getResults().error("Task must be specified");
+      }
+      IAtsTeamWorkflow teamWf = trd.getTask().getParentTeamWorkflow();
       ArtifactToken derivedFromArt =
          atsApi.getRelationResolver().getRelatedOrSentinel(teamWf, AtsRelationTypes.Derive_From);
-      if (derivedFromArt.isInvalid()) {
-         // For OSEE CPCRs, the Code Workflow can own the branch where changes were made
-         if (isCodeWorkflow(teamWf)) {
-            return teamWf;
+      if (derivedFromArt.isValid()) {
+         trd.setDerived(true);
+         if (!derivedFromArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            trd.getResults().error("Derived-From is not a Team Workflow");
          }
-         throw new OseeStateException("No derived artifact for generated task %s", task.toStringWithId());
+         teamWf = atsApi.getWorkItemService().getTeamWf(derivedFromArt);
+         trd.setDerivedFromTeamWf(teamWf);
       } else {
-         Conditions.assertTrue(derivedFromArt.isOfType(AtsArtifactTypes.TeamWorkflow),
-            "derivedFromArt not Team Workflow");
-         return atsApi.getWorkItemService().getTeamWf(derivedFromArt);
+         // Assume task parent owns changes
+         trd.setDerived(false);
+         trd.setDerivedFromTeamWf(teamWf);
       }
+      return trd;
    }
 
-   @Override
-   public boolean isCodeWorkflow(IAtsTeamWorkflow teamWf) {
-      WorkType lbaWorkType = atsApi.getProgramService().getWorkType(teamWf);
-      if (!isRequirementsWorkflow(teamWf) && lbaWorkType.equals(WorkType.Code)) {
-         return true;
-      }
-      return false;
-   }
+   private void getRelatedChangedArtifact(TaskRelatedData trd, ArtifactId relatedArtifact) {
+      final TaskNameData nameData = new TaskNameData(trd.getTask());
 
-   @Override
-   public boolean isRequirementsWorkflow(IAtsTeamWorkflow teamWf) {
-      WorkType lbaWorkType = atsApi.getProgramService().getWorkType(teamWf);
-      if (lbaWorkType.equals(WorkType.Code)) {
-         return true;
+      if (nameData.isCdb()) {
+         trd.getResults().error("No changed artifact to show for CDB");
+         return;
       }
-      return false;
-   }
-
-   @Override
-   public TaskRelatedData getRelatedRequirementArtifact(IAtsTask task, IAtsTeamWorkflow derivedfromTeamWf, ArtifactId relatedArtifact) {
-      final TaskNameData data = new TaskNameData(task);
-
-      if (data.isCdb()) {
-         return new TaskRelatedData(new Result("No requirement to show for CDB"));
-      }
-      if (!data.isRequirement()) {
-         new TaskRelatedData(new Result(
-            "Task is not against requirement or is named incorrectly.\n\n" + "Must be \"Code|Test \"<partition>\" for \"<requirement name>\""));
+      if (!nameData.isRequirement()) {
+         trd.getResults().error("Task is not against changed artifact or is named incorrectly.\n\n" + //
+            "Must be \"Code|Test \"<partition>\" for \"<requirement name>\"");
       }
 
-      ArtifactToken headArtifact = findHeadArtifact(derivedfromTeamWf, relatedArtifact, data.getAddDetails());
-      if (headArtifact == null) {
-         return new TaskRelatedData(new Result("Corresponding requirement can not be found."));
+      findHeadArtifact(trd, relatedArtifact, nameData.getAddDetails());
+      if (trd.getResults().isErrors()) {
+         return;
+      }
+      if (trd.getHeadArtifact() == null) {
+         trd.getResults().error("Corresponding changed artifact can not be found.");
       }
       ArtifactToken latestArt = null;
-      if (!atsApi.getStoreService().isDeleted(headArtifact)) {
-         latestArt =
-            atsApi.getQueryService().getArtifact(headArtifact, atsApi.getAtsBranch(), DeletionFlag.INCLUDE_DELETED);
+      if (!atsApi.getStoreService().isDeleted(trd.getHeadArtifact())) {
+         latestArt = atsApi.getQueryService().getArtifact(trd.getHeadArtifact(), atsApi.getAtsBranch(),
+            DeletionFlag.INCLUDE_DELETED);
+         trd.setLatestArt(latestArt);
       }
-      return new TaskRelatedData(atsApi.getStoreService().isDeleted(headArtifact), headArtifact, latestArt,
-         Result.TrueResult);
+      return;
+   }
+
+   private void findHeadArtifact(TaskRelatedData trd, ArtifactId relatedArtifact, String addDetails) {
+      if (trd.getDerivedFromTeamWf() == null) {
+         trd.getResults().error("Derived From Team Wf can not be null");
+         return;
+      }
+      boolean foundBranchOrTransId = false;
+      BranchId workingBranch = atsApi.getBranchService().getWorkingBranchInWork(trd.getDerivedFromTeamWf());
+      if (workingBranch.isValid()) {
+         ArtifactToken headArt = atsApi.getQueryService().getArtifact(relatedArtifact, workingBranch);
+         trd.setHeadArtifact(headArt);
+         foundBranchOrTransId = true;
+      }
+      TransactionToken transaction = atsApi.getBranchService().getEarliestTransactionId(trd.getDerivedFromTeamWf());
+      if (transaction.isValid()) {
+         ArtifactToken headArt = atsApi.getQueryService().getHistoricalArtifactOrNull(relatedArtifact, transaction,
+            DeletionFlag.INCLUDE_DELETED);
+         trd.setHeadArtifact(headArt);
+         foundBranchOrTransId = true;
+      }
+      if (!foundBranchOrTransId) {
+         trd.getResults().error("Derived relation but no working branch or transaction found.");
+      }
    }
 
    @Override
-   public ArtifactToken findHeadArtifact(IAtsTeamWorkflow derivedfromTeamWf, ArtifactId relatedArtifact, String addDetails) {
-      BranchId workingBranch = atsApi.getBranchService().getWorkingBranchInWork(derivedfromTeamWf);
-      if (workingBranch.isValid()) {
-         return atsApi.getQueryService().getArtifact(relatedArtifact, workingBranch);
+   public boolean isAutoGenCodeTestTaskArtifact(IAtsTask task) {
+      for (String staticId : AtsApiService.get().getAttributeResolver().getAttributesToStringList(task,
+         CoreAttributeTypes.StaticId)) {
+         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
+            return false;
+         }
       }
-      TransactionToken transaction = atsApi.getBranchService().getEarliestTransactionId(derivedfromTeamWf);
-      if (transaction.isValid()) {
-         return atsApi.getQueryService().getHistoricalArtifactOrNull(relatedArtifact, transaction,
-            DeletionFlag.INCLUDE_DELETED);
+      return true;
+   }
+
+   @Override
+   public boolean isAutoGenCodeTestTaskArtifacts(Collection<IAtsTask> tasks) {
+      for (IAtsTask task : tasks) {
+         if (!isAutoGenCodeTestTaskArtifact(task)) {
+            return false;
+         }
       }
-      return null;
+      return true;
    }
 
 }

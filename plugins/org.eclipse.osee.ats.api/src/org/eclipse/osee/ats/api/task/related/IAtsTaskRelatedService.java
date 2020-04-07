@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task.related;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -23,16 +21,30 @@ public interface IAtsTaskRelatedService {
    public static final String IMPL_DETAILS = " (Impl Details)";
    public static final String DELETED = " (Deleted)";
 
-   IAtsTeamWorkflow getDefivedFromTeamWf(IAtsTask task);
+   /**
+    * @param trd with getTask specified
+    * @return with derivedTeamWf and isDerived flag.
+    */
+   TaskRelatedData getDerivedTeamWf(TaskRelatedData trd);
 
-   boolean isCodeWorkflow(IAtsTeamWorkflow teamWf);
+   /**
+    * @param trd with task and derived art
+    * @return trd with headArt and latestArt for changeArtifact
+    */
+   void getRelatedChangedArtifactFromChangeReport(TaskRelatedData trd);
 
-   boolean isRequirementsWorkflow(IAtsTeamWorkflow teamWf);
+   default TaskRelatedData getTaskRelatedData(IAtsTask task) {
+      return getTaskRelatedData(new TaskRelatedData(task));
+   }
 
-   TaskRelatedData getRelatedRequirementArtifact(IAtsTask task, IAtsTeamWorkflow teamWf, ArtifactId relatedArtifact);
+   /**
+    * @param trd with getTask specified
+    * @return with all fields filled out and getResults() with errors
+    */
+   TaskRelatedData getTaskRelatedData(TaskRelatedData trd);
 
-   TaskRelatedData getRelatedRequirementArtifactFromChangeReport(IAtsTeamWorkflow derivedFromTeamWf, IAtsTask task);
+   boolean isAutoGenCodeTestTaskArtifact(IAtsTask task);
 
-   ArtifactToken findHeadArtifact(IAtsTeamWorkflow reqTeam, ArtifactId relatedArtifact, String addDetails);
+   boolean isAutoGenCodeTestTaskArtifacts(Collection<IAtsTask> tasks);
 
 }

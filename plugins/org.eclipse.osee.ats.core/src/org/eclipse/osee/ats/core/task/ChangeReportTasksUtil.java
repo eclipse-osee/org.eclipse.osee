@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
@@ -43,7 +42,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
  */
 public class ChangeReportTasksUtil {
 
-   public static String AUTO_GENERATED_STATIC_ID = "AutoGenTask";
+   public static String AUTO_GENERATED_STATIC_ID = "autoGen";
    public static String DE_REFERRENCED_NOTE = "No Matching Artifact; Task can be deleted.";
    public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
    public static final String TASKS_MUST_BE_AUTOGEN_CODE_OR_TEST_TASKS = "Tasks must be Auto Generated Tasks";
@@ -51,16 +50,6 @@ public class ChangeReportTasksUtil {
 
    private ChangeReportTasksUtil() {
       // helper methods
-   }
-
-   public static boolean isTaskCreationEnabled(AtsApi atsApi, IAtsTeamWorkflow teamWf) {
-      for (String staticId : atsApi.getAttributeResolver().getAttributesToStringList(teamWf,
-         CoreAttributeTypes.StaticId)) {
-         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
-            return false;
-         }
-      }
-      return true;
    }
 
    public static void getBranchOrCommitChangeData(ChangeReportTaskData crtd, CreateTasksDefinition setDef) {
@@ -182,6 +171,7 @@ public class ChangeReportTasksUtil {
       return null;
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    public static IAtsTeamWorkflow getDestTeamWfOrNull(ChangeReportTaskTeamWfData crttwd, WorkType workType, AtsApi atsApi, IAtsTeamWorkflow sourceTeamWf, IAtsTeamDefinition destTeamDef) {
       // Try to find by Derive_To first
       ArtifactToken chgRptTeamWf = crttwd.getChgRptTeamWf();
@@ -208,29 +198,6 @@ public class ChangeReportTasksUtil {
          }
       }
       return null;
-   }
-
-   public static boolean isAutoGenCodeTestTaskArtifact(IAtsTask task) {
-      for (String staticId : AtsApiService.get().getAttributeResolver().getAttributesToStringList(task,
-         CoreAttributeTypes.StaticId)) {
-         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-   public static boolean isAutoGenCodeTestTaskArtifacts(Collection<? extends IAtsTask> tasks) {
-      for (IAtsTask task : tasks) {
-         if (!isAutoGenCodeTestTaskArtifact(task)) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-   public static IAtsTeamWorkflow getSourceTeamWf(IAtsTask task) {
-      return AtsApiService.get().getTaskRelatedService().getDefivedFromTeamWf(task);
    }
 
 }
