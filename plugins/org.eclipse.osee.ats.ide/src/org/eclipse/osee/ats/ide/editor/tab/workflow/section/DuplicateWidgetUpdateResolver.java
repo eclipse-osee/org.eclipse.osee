@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
@@ -42,56 +40,40 @@ public class DuplicateWidgetUpdateResolver {
     * to represent the updated state of the modified widget.
     *
     * @param xWidget The modified widget on the workflow.
-    * @param fromHeader A boolean to indicate whether the param xWidget is on the Workflow's header or not.
     */
-   public static void updateDuplicateWidgets(IManagedForm managedForm, AbstractWorkflowArtifact sma, XWidget xWidget, boolean fromHeader) {
+   public static void updateDuplicateWidgets(IManagedForm managedForm, AbstractWorkflowArtifact sma, XWidget xWidget) {
       WorkDefinition workDef = (WorkDefinition) sma.getWorkDefinition();
-      String currStateName = sma.getStateDefinition().getName();
       Object container = managedForm.getContainer();
-      WfeWorkFlowTab currWFE = null;
+      WfeWorkFlowTab currWfe = null;
       if (container instanceof WfeWorkFlowTab) {
-         currWFE = (WfeWorkFlowTab) container;
+         currWfe = (WfeWorkFlowTab) container;
       } else {
          return;
       }
-      // Collect Header Widgets
-      WfeHeaderComposite headComp = currWFE.getHeader();
-      Collection<XWidget> headerWidgets = headComp.getXWidgets(new ArrayList<XWidget>());
-      // Collect state pages and widgets
-      List<StateXWidgetPage> statePages = currWFE.getStatePages();
-      Set<String> statePageNames = new HashSet<String>();
-      for (StateXWidgetPage sP : statePages) {
-         statePageNames.add(sP.getName());
-      }
-      // If xWidget has duplicates on the WF, update duplicates
-      if (!workDef.getDuplicatesMap().containsKey(xWidget.getLabel())) {
+
+      // If widget does not have duplicates, return
+      if (workDef.getLabelCount().get(xWidget.getLabel()) <= 1) {
          return;
       }
-      for (String key : workDef.getDuplicatesMap().get(xWidget.getLabel())) {
-         // Check Header first
-         if (!fromHeader && key.equals("Header Definition")) {
-            for (XWidget currHeadWidget : headerWidgets) {
-               if (currHeadWidget.getLabel().equals(xWidget.getLabel())) {
-                  if (!updateWidget(xWidget, currHeadWidget)) {
-                     break;
-                  }
-               }
-            }
-         }
 
-         // Check Sections
-         if (!key.equals("Header Definition") && (key.equals(currStateName) || !statePageNames.contains(key))) {
-            continue;
+      // Check Header first
+      WfeHeaderComposite headComp = currWfe.getHeader();
+      Collection<XWidget> headerWidgets = headComp.getXWidgets(new ArrayList<XWidget>());
+
+      for (XWidget currHeadWidget : headerWidgets) {
+         if (currHeadWidget.getLabel().equals(xWidget.getLabel())) {
+            updateWidget(xWidget, currHeadWidget);
          }
-         for (StateXWidgetPage currStatePage : statePages) {
-            // Update duplicate widgets
-            Collection<XWidget> updateWidgets = currStatePage.getDynamicXWidgetLayout().getXWidgets();
-            for (XWidget currUpdateWidget : updateWidgets) {
-               if (currUpdateWidget.getLabel().equals(xWidget.getLabel())) {
-                  if (!updateWidget(xWidget, currUpdateWidget)) {
-                     break;
-                  }
-               }
+      }
+
+      // Check States
+      List<StateXWidgetPage> statePages = currWfe.getStatePages();
+      for (StateXWidgetPage currStatePage : statePages) {
+         // Update duplicate widgets
+         Collection<XWidget> updateWidgets = currStatePage.getDynamicXWidgetLayout().getXWidgets();
+         for (XWidget currUpdateWidget : updateWidgets) {
+            if (currUpdateWidget.getLabel().equals(xWidget.getLabel())) {
+               updateWidget(xWidget, currUpdateWidget);
             }
          }
       }

@@ -456,7 +456,7 @@ public class WfeWorkflowSection extends SectionPart {
                }
             }
             // Update duplicate widgets
-            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(getManagedForm(), sma, xWidget, false);
+            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(getManagedForm(), sma, xWidget);
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

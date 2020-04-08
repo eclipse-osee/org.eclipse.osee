@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
@@ -335,6 +336,8 @@ public class WfeHeaderComposite extends Composite {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
+            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(managedForm, (AbstractWorkflowArtifact) workItem,
+               xWidget);
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

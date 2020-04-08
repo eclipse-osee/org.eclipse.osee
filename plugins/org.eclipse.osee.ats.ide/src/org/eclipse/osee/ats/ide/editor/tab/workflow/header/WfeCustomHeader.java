@@ -196,7 +196,7 @@ public class WfeCustomHeader extends Composite {
                return;
             }
             // Update duplicate widgets
-            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(managedForm, wfArt, xWidget, true);
+            DuplicateWidgetUpdateResolver.updateDuplicateWidgets(managedForm, wfArt, xWidget);
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
