@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
@@ -53,20 +52,15 @@ public final class JaxRsApiImpl implements JaxRsApi {
    public void start() {
       SimpleModule module = JsonUtil.createModule();
 
-      module.addDeserializer(AttributeTypeGeneric.class,
-         new IdDeserializer<AttributeTypeGeneric<?>>(tokenService::getAttributeType));
-      module.addDeserializer(AttributeTypeToken.class,
-         new IdDeserializer<AttributeTypeToken>(tokenService::getAttributeType));
-      module.addDeserializer(AttributeTypeId.class,
-         new IdDeserializer<AttributeTypeId>(tokenService::getAttributeType));
+      JsonUtil.addDeserializer(module, AttributeTypeGeneric.class, tokenService::getAttributeType);
+      JsonUtil.addDeserializer(module, AttributeTypeToken.class, tokenService::getAttributeType);
+      JsonUtil.addDeserializer(module, AttributeTypeId.class, tokenService::getAttributeType);
 
-      module.addDeserializer(ArtifactTypeToken.class,
-         new IdDeserializer<ArtifactTypeToken>(tokenService::getArtifactType));
-      module.addDeserializer(ArtifactTypeId.class, new IdDeserializer<ArtifactTypeId>(tokenService::getArtifactType));
+      JsonUtil.addDeserializer(module, ArtifactTypeToken.class, tokenService::getArtifactType);
+      JsonUtil.addDeserializer(module, ArtifactTypeId.class, tokenService::getArtifactType);
 
-      module.addDeserializer(RelationTypeToken.class,
-         new IdDeserializer<RelationTypeToken>(tokenService::getRelationType));
-      module.addDeserializer(RelationTypeId.class, new IdDeserializer<RelationTypeId>(tokenService::getRelationType));
+      JsonUtil.addDeserializer(module, RelationTypeToken.class, tokenService::getRelationType);
+      JsonUtil.addDeserializer(module, RelationTypeId.class, tokenService::getRelationType);
 
       mapper = JsonUtil.createStandardDateObjectMapper(module);
       typeFactory = mapper.getTypeFactory();

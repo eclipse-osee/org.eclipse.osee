@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -160,16 +161,21 @@ public class JsonUtil {
       return createObjectMapper(module).setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
    }
 
+   public static <T extends Id> void addDeserializer(SimpleModule module, Class<T> clazz, Function<Long, T> creator) {
+      module.addDeserializer(clazz, new IdDeserializer<>(clazz, creator));
+   }
+
    public static SimpleModule createModule() {
       SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, "", "", ""));
 
+      addDeserializer(module, ArtifactId.class, ArtifactId::valueOf);
+      addDeserializer(module, TransactionId.class, TransactionId::valueOf);
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
       module.addDeserializer(ArtifactToken.class,
          new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
-      module.addDeserializer(ArtifactId.class, new IdDeserializer<@NonNull ArtifactId>(ArtifactId::valueOf));
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
       module.addDeserializer(UserToken.class, new UserTokenDeserializer());
-      module.addDeserializer(TransactionId.class, new IdDeserializer<@NonNull TransactionId>(TransactionId::valueOf));
+
       module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       module.addSerializer(UserToken.class, new UserTokenSerializer());
       JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();

@@ -25,13 +25,10 @@ import java.util.function.Function;
  * @author Ryan D. Brooks
  */
 public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
+   private static final long serialVersionUID = 1L;
    private final Function<Long, T> creator;
 
-   public IdDeserializer(Function<Long, T> creator) {
-      this(Id.class, creator);
-   }
-
-   public IdDeserializer(Class<?> object, Function<Long, T> creator) {
+   public IdDeserializer(Class<T> object, Function<Long, T> creator) {
       super(object);
       this.creator = creator;
    }
