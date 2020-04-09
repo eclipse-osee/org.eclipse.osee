@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+        id="org.eclipse.osee.mbse.cameo.browser"
+        name="OSEE Browser Panel Plugin Example"
+        version="1.0"
+        provider-name="OSEE"
+        class="org.eclipse.osee.mbse.cameo.browser.OSEEPanelPlugin">
+
+    <requires>
+        <api version="1.0"/>
+    </requires>
+
+    <runtime>
+        <library name="org.eclipse.osee.mbse.cameo.browser.jar"/>
+    </runtime>
+
+</plugin>
