@@ -45,11 +45,10 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
  */
 public class ChangeReportTasksUtil {
 
-   public static String AUTO_GENERATED_STATIC_ID = "autoGen";
-   public static String DE_REFERRENCED_NOTE = "No Matching Artifact; Task can be deleted.";
-   public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
-   public static final String TASKS_MUST_BE_AUTOGEN_CODE_OR_TEST_TASKS = "Tasks must be Auto Generated Tasks";
-   public static String DISABLE_CODE_TEST_TASK_GENERATION = "disableTaskCreation";
+   public static final String TASKS_MUST_BE_AUTOGEN_TASKS = "Tasks must be Auto Generated Tasks";
+   public static final String TASKS_MUST_BE_AUTOGEN_CHANGE_REPORT_RELATED_TASKS =
+      "Tasks must be Auto Generated Change Report Related Tasks";
+   public static String DISABLE_AUTO_TASK_GENERATION = "disableTaskCreation";
 
    private ChangeReportTasksUtil() {
       // helper methods

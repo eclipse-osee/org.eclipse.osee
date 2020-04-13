@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class ShowRelatedRequirementInArtifactExplorerAction extends ShowTaskOptionActionBase {
+public class ShowRelatedRequirementInArtifactExplorerAction extends AbstractShowRelatedAction {
 
    public ShowRelatedRequirementInArtifactExplorerAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super("Show Related Requirement in Artifact Explorer", selectedAtsArtifacts);
@@ -43,7 +43,7 @@ public class ShowRelatedRequirementInArtifactExplorerAction extends ShowTaskOpti
    @Override
    public void run() {
       final Collection<IAtsTask> tasks = Collections.castAll(getSelectedTasks());
-      if (!isAutoGenTasks(tasks)) {
+      if (!isAutoGenRelatedArtTasks(tasks)) {
          return;
       }
 
@@ -89,7 +89,7 @@ public class ShowRelatedRequirementInArtifactExplorerAction extends ShowTaskOpti
    private void showRequirements(final Collection<IAtsTask> tasks, final boolean loadLatest) {
 
       for (final IAtsTask task : tasks) {
-         TaskRelatedData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
+         DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
          if (reqData != null) {
             if (reqData.getResults().isErrors()) {
                AWorkbench.popup(reqData.getResults().toString());

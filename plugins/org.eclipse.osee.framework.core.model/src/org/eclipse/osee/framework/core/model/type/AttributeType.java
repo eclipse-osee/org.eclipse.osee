@@ -167,4 +167,5 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
    public boolean isEnumerated() {
       return getOseeEnumTypeId() != -1;
    }
+
 }

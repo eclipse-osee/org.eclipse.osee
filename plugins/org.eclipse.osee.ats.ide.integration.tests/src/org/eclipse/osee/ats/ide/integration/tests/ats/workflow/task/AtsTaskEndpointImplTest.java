@@ -157,7 +157,7 @@ public class AtsTaskEndpointImplTest {
 
       JaxAtsTask task3 = createJaxAtsTask(taskId3, "Task 3", null, createdByUserId, createdDate,
          Arrays.asList(DemoUsers.Alex_Kay.getUserId()));
-      task3.addAttribute(CoreAttributeTypes.StaticId.getName(), "my static id");
+      task3.addAttribute(CoreAttributeTypes.StaticId, "my static id");
       data.getNewTasks().add(task3);
 
       JaxAtsTasks tasks = taskEp.create(new NewTaskDatas(data));
@@ -180,12 +180,12 @@ public class AtsTaskEndpointImplTest {
       // Work Definition should be set
       boolean found = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
+         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinition)) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default", "WorkDef_Task_Default",
                attr.getValues().iterator().next());
          }
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
+         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinitionReference)) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default",
                AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString(), attr.getValues().iterator().next());
@@ -209,12 +209,12 @@ public class AtsTaskEndpointImplTest {
       boolean foundByName = false;
       boolean foundById = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
+         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinition)) {
             Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getName(),
                attr.getValues().iterator().next());
             foundByName = true;
          }
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
+         if (attr.getAttrType().equals(AtsAttributeTypes.WorkflowDefinitionReference)) {
             Assert.assertEquals(AtsWorkDefinitionTokens.WorkDef_Task_Default.getIdString(),
                attr.getValues().iterator().next());
             foundById = true;
@@ -234,7 +234,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(11, task3R.getAttributes().size());
       found = false;
       for (JaxAttribute attribute : task3R.getAttributes()) {
-         if (attribute.getAttrTypeName().equals(CoreAttributeTypes.StaticId.getName())) {
+         if (attribute.getAttrType().equals(CoreAttributeTypes.StaticId)) {
             Assert.assertEquals("my static id", attribute.getValues().iterator().next());
             found = true;
             break;

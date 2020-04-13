@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.api.task.TaskNameData;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
+import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -93,14 +93,14 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       XResultData results = new XResultData();
 
       for (IAtsTask task : tasks) {
-         TaskNameData data = new TaskNameData(task);
+         IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(task);
          checkForNoRequirementArtifacts(data);
-         if (processedReqNames.contains(data.getReqName() + data.getAddDetails())) {
+         if (processedReqNames.contains(data.getRelatedArtName() + data.getAddDetails())) {
             continue;
          }
 
-         TaskRelatedData trd =
-            AtsClientService.get().getTaskRelatedService().getDerivedTeamWf(new TaskRelatedData(task));
+         DerivedFromTaskData trd =
+            AtsClientService.get().getTaskRelatedService().getDerivedTeamWf(new DerivedFromTaskData(task));
          if (trd.getResults().isErrors()) {
             results.addRaw(trd.getResults().toString());
             continue;
@@ -131,7 +131,8 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
          monitor.worked(calculateWork(0.70));
 
-         Collection<Change> changes = changeData.getArtifactChangesByName(data.getReqName(), data.getAddDetails());
+         Collection<Change> changes =
+            changeData.getArtifactChangesByName(data.getRelatedArtName(), data.getAddDetails());
          checkForCancelledStatus(monitor);
          if (!changes.isEmpty()) {
             if (tasks.size() == 1) {
@@ -143,7 +144,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
                }
             }
          }
-         processedReqNames.add(data.getReqName() + data.getAddDetails());
+         processedReqNames.add(data.getRelatedArtName() + data.getAddDetails());
       }
 
       display.showDifferences(artifactDeltas);
@@ -151,11 +152,11 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       monitor.worked(calculateWork(0.10));
    }
 
-   private void checkForNoRequirementArtifacts(TaskNameData data) {
-      if (data.isCdb()) {
-         throw new OseeArgumentException("No requirement to show for CDB");
+   private void checkForNoRequirementArtifacts(IAutoGenTaskData data) {
+      if (data.hasRelatedArt()) {
+         throw new OseeArgumentException("No related artifact found for %s");
       }
-      if (!data.isRequirement()) {
+      if (!data.hasRelatedArt()) {
          String message =
             "Task is not against requirement or is named incorrectly.\n\nMust be \"Code|Test \"<partition>\" for \"<requirement name>\"\"";
          throw new OseeArgumentException(message);

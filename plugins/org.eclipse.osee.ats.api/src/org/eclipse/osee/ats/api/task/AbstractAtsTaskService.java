@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -47,21 +48,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
-   private final AtsApi atsApi;
+   protected final AtsApi atsApi;
 
    public AbstractAtsTaskService(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment) {
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment) {
       NewTaskData newTaskData = getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState,
          taskWorkDef, attributes, commitComment);
       return createTasks(newTaskData, new XResultData());
    }
 
    @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes) {
+   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes) {
       return getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState, taskWorkDef, attributes,
          null);
    }
@@ -72,7 +73,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment) {
+   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment) {
       NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Simple List", createdBy, teamWf);
       if (createdDate == null) {
          createdDate = new Date();
@@ -98,7 +99,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
          }
          newTaskData.getNewTasks().add(task);
          if (attributes != null) {
-            for (Entry<String, List<Object>> entry : attributes.entrySet()) {
+            for (Entry<AttributeTypeToken, List<Object>> entry : attributes.entrySet()) {
                task.addAttributes(entry.getKey(), entry.getValue());
             }
          }

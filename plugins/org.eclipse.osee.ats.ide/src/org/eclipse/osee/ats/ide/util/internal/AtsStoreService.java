@@ -262,4 +262,10 @@ public class AtsStoreService implements IAtsStoreService {
       return new AtsChangeSet(comment, branch, asUser);
    }
 
+   @Override
+   public boolean isOfType(ArtifactId art, ArtifactTypeToken artType) {
+      Artifact artifact = (Artifact) art;
+      return artifact.isOfType(artType);
+   }
+
 }

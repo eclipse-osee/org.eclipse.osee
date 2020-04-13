@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -279,14 +278,13 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
          boolean contains = expected.contains(task.getName());
          Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
-         String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task,
-            AtsAttributeTypes.WorkflowNotes, "");
-         boolean deReferenced = note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE);
+         boolean deReferenced = AtsClientService.get().getTaskService().isAutoGenDeReferenced(task);
+         boolean autoGenTask = AtsClientService.get().getTaskService().isAutoGen(task);
 
-         if (deReferenced) {
-            Assert.assertTrue(task.getTags().isEmpty());
+         if (autoGenTask) {
+            Assert.assertFalse(deReferenced);
          } else {
-            Assert.assertTrue(task.hasTag(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID));
+            Assert.assertTrue(deReferenced);
          }
       }
    }
@@ -381,16 +379,10 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
 
    private void testTaskIsDeReferenced(IAtsTask task) {
       List<IAtsWorkItem> reload = AtsClientService.get().getStoreService().reload(Collections.singleton(task));
-
       task = (IAtsTask) reload.iterator().next();
-
-      // Test that task has de-referenced note
-      String note =
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, "");
-      Assert.assertEquals(ChangeReportTasksUtil.DE_REFERRENCED_NOTE, note);
 
       // Test that task has AutoGenTask static id removed
       Assert.assertTrue(task.getTags().isEmpty());
+      Assert.assertTrue(AtsClientService.get().getTaskService().isAutoGenDeReferenced(task));
    }
-
 }

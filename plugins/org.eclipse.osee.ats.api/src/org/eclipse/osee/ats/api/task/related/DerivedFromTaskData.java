@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
- * Class to resolve related artifact from Derived From relation and branch/commit.
+ * Class to resolve related artifact from Derived-From relation and branch/commit.
  *
  * @author Donald G. Dunne
  */
-public class TaskRelatedData {
+public class DerivedFromTaskData {
    private final boolean deleted;
    private ArtifactToken headArtifact;
    private ArtifactToken latestArt;
@@ -32,16 +32,16 @@ public class TaskRelatedData {
    private IAtsTask task;
    private boolean derived;
 
-   public TaskRelatedData() {
+   public DerivedFromTaskData() {
       this(false, null, null);
    }
 
-   public TaskRelatedData(IAtsTask task) {
+   public DerivedFromTaskData(IAtsTask task) {
       this(false, null, null);
       this.task = task;
    }
 
-   public TaskRelatedData(boolean deleted, ArtifactToken headArtifact, ArtifactToken latestArt) {
+   public DerivedFromTaskData(boolean deleted, ArtifactToken headArtifact, ArtifactToken latestArt) {
       this.deleted = deleted;
       this.headArtifact = headArtifact;
       this.latestArt = latestArt;

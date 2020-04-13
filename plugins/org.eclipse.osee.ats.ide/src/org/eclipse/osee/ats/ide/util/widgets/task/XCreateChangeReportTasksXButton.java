@@ -121,7 +121,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                      data.setDebug(debug);
                      data.setReportOnly(reportOnly);
 
-                     data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
+                     data = AtsClientService.get().getTaskService().createTasks(data);
                      XResultDataUI.report(data.getResults(), getName());
 
                      // Reload team wfs if tasks created

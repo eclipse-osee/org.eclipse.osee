@@ -163,8 +163,12 @@ public interface AtsAttributeTypes {
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", MediaType.TEXT_PLAIN, "States of workflow state machine.");
    AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "");
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeLong TaskSetId = ats.createLong(2412431655932432L, "ats.Task Set Id", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString TaskAutoGenVersion = ats.createString(29374282544622L, "ats.Task Auto Gen Version", MediaType.TEXT_PLAIN, "Version of Task Auto Generation");
    AttributeTypeArtifactId TaskToChangedArtifactReference = ats.createArtifactId(1153126013769613562L, "ats.Task To Changed Artifact Reference", MediaType.TEXT_PLAIN, "Task reference to the changed artifact");
+   AttributeTypeString TaskToChangedArtifactName = ats.createString(23524392992929L, "ats.Task To Changed Artifact Name", MediaType.TEXT_PLAIN, "Task reference to the changed artifact name");
+   AttributeTypeBoolean TaskToChangedArtifactDeleted = ats.createBoolean(323852383249857L, "ats.Task To Changed Artifact Deleted", MediaType.TEXT_PLAIN, "Referenced artifact was deleted");
    AttributeTypeArtifactId TeamDefinitionReference = ats.createArtifactId(4730961339090285773L, "ats.Team Definition Reference", MediaType.TEXT_PLAIN, "Team Workflow to Team Definition");
    AttributeTypeBoolean TeamUsesVersions = ats.createBoolean(1152921504606847158L, "ats.Team Uses Versions", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", MediaType.TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow");
@@ -176,6 +180,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ValidationRequired = ats.createBoolean(1152921504606847146L, "ats.Validation Required", MediaType.TEXT_PLAIN, "If selected, originator will be asked to validate the implementation.");
    AttributeTypeBoolean VerificationCodeInspection = ats.createBoolean(3454966334779726518L, "ats.Verification Code Inspection", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", MediaType.TEXT_PLAIN, "True if version artifact is locked.");
+   AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", MediaType.TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact");
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", MediaType.TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.");
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
    AttributeTypeString WorkPackageGuid = ats.createString(1152921504606847876L, "ats.Work Package Guid", MediaType.TEXT_PLAIN, "");

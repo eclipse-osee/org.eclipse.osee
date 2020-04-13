@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Donald G. Dunne
  */
-public class ShowRelatedTestCasesAction extends ShowTaskOptionActionBase {
+public class ShowRelatedTestCasesAction extends AbstractShowRelatedAction {
 
    private final static String ACTION_TITLE = "Show Related Test Cases";
 
@@ -47,7 +47,7 @@ public class ShowRelatedTestCasesAction extends ShowTaskOptionActionBase {
    @Override
    public void run() {
       final Collection<IAtsTask> tasks = getSelectedTasks();
-      if (!isAutoGenTasks(tasks)) {
+      if (!isAutoGenRelatedArtTasks(tasks)) {
          return;
       }
       final List<IAtsTask> taskArtsNotFound = new LinkedList<>();
@@ -58,7 +58,7 @@ public class ShowRelatedTestCasesAction extends ShowTaskOptionActionBase {
          protected IStatus run(IProgressMonitor monitor) {
             for (IAtsTask task : tasks) {
                try {
-                  TaskRelatedData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
+                  DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
 
                   BranchId workingBranch =
                      AtsClientService.get().getBranchService().getWorkingBranchInWork(task.getParentTeamWorkflow());

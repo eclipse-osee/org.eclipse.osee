@@ -28,26 +28,44 @@ public interface IAtsTaskRelatedService {
     * @param trd with getTask specified
     * @return with derivedTeamWf and isDerived flag.
     */
-   TaskRelatedData getDerivedTeamWf(TaskRelatedData trd);
+   DerivedFromTaskData getDerivedTeamWf(DerivedFromTaskData trd);
 
    /**
     * @param trd with task and derived art
     * @return trd with headArt and latestArt for changeArtifact
     */
-   void getRelatedChangedArtifactFromChangeReport(TaskRelatedData trd);
+   void getRelatedChangedArtifactFromChangeReport(DerivedFromTaskData trd);
 
-   default TaskRelatedData getTaskRelatedData(IAtsTask task) {
-      return getTaskRelatedData(new TaskRelatedData(task));
+   default DerivedFromTaskData getTaskRelatedData(IAtsTask task) {
+      return getTaskRelatedData(new DerivedFromTaskData(task));
    }
 
    /**
     * @param trd with getTask specified
     * @return with all fields filled out and getResults() with errors
     */
-   TaskRelatedData getTaskRelatedData(TaskRelatedData trd);
+   DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd);
 
-   boolean isAutoGenCodeTestTaskArtifact(IAtsTask task);
+   /**
+    * @return true if AutoGenTaskVer attr is set. This does not mean it's related to a change report artifact.
+    */
+   boolean isAutoGenTask(IAtsTask task);
 
-   boolean isAutoGenCodeTestTaskArtifacts(Collection<IAtsTask> tasks);
+   /**
+    * @return true if AutoGenTaskVer attr is set. This does not mean it's related to a change report artifact.
+    */
+   boolean isAutoGenTasks(Collection<IAtsTask> tasks);
+
+   IAutoGenTaskData getAutoGenTaskData(IAtsTask task);
+
+   /**
+    * @return true if auto generated task and has related change report artifact attr
+    */
+   boolean isAutoGenChangeReportRelatedTasks(Collection<IAtsTask> tasks);
+
+   /**
+    * @return true if auto generated task and has related change report artifact attr
+    */
+   boolean isAutoGenChangeReportRelatedTask(IAtsTask task);
 
 }

@@ -102,22 +102,21 @@ public class JaxAtsTask extends JaxAtsObject {
       this.attributes = attributes;
    }
 
-   public void addAttributes(String attrTypeName, List<Object> values) {
+   public void addAttributes(AttributeTypeToken attrType, List<Object> values) {
+      Conditions.assertNotNullOrEmpty(values, "Values can not be empty");
       JaxAttribute attr = new JaxAttribute();
-      attr.setAttrTypeName(attrTypeName);
+      attr.setAttrType(attrType);
       attr.getValues().addAll(values);
       attributes.add(attr);
    }
 
-   public void addAttribute(String attrTypeName, Object value) {
+   public JaxAttribute addAttribute(AttributeTypeToken attrType, Object value) {
+      Conditions.assertNotNull(value, "Value can not be null");
       JaxAttribute attr = new JaxAttribute();
-      attr.setAttrTypeName(attrTypeName);
+      attr.setAttrType(attrType);
       attr.getValues().add(value);
       attributes.add(attr);
-   }
-
-   public void addAttribute(AttributeTypeToken attrType, Object value) {
-      addAttribute(attrType.getName(), value);
+      return attr;
    }
 
    public void addRelation(RelationTypeSide relationSide, long... relatedIds) {

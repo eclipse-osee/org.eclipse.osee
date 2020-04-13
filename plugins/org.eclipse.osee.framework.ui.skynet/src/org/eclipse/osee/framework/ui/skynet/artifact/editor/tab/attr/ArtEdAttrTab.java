@@ -126,7 +126,7 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isModified(artifact)) {
+      if (xViewer != null && artifactEvent.isModified(artifact)) {
          xViewer.loadTable(artifact);
       }
    }

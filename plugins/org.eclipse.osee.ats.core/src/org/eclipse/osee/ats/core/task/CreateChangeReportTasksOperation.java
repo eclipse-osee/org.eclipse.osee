@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptionsToTeam;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
@@ -41,43 +42,26 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
+import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * Rules:<br/>
- * <br/>
- * <br/>
- * Default rules that can be overridden:<br/>
- * <br/>
- * If artifact attribute was changed, task will be created as Add/Mod and task static id set to AutoGenTask so can't be
- * deleted by users.<br/>
- * If artifact relation was changed, task will be created for both artifacts as as Relation and task static id set to
- * AutoGenTask so can't be deleted by users.<br/>
- * If artifact was deleted, task created with "<name> (Deleted)" as name.<br/>
- * <br/>
- * <br/>
- * Default rules that can NOT be overridden:<br/>
- * <br/>
- * If static tasks (non change report driven) are defined, they will be created upon first task generation.<br/>
- * If task created and then artifact name changes, old will be marked as de-referenced and new task created with new
- * name.<br/>
- * If task created and then artifact change reverted, task notes attribute will be appended with "No Matching Artifact
- * Change" and the AutoGenTask static id attribute will be removed, this allows anyone to delete task.<br/>
+ * See AutomaticTaskGenDesign.adoc
  *
  * @author Donald G. Dunne
  */
@@ -157,6 +141,7 @@ public class CreateChangeReportTasksOperation {
          crtd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
          crtd.setActionId(chgRptTeamWf.getParentAction().getStoreObject());
 
+         // Generate and store ChangeItems from branch or commit
          ChangeReportTasksUtil.getBranchOrCommitChangeData(crtd, setDef);
          if (crtd.getResults().isErrors()) {
             return crtd;
@@ -303,18 +288,7 @@ public class CreateChangeReportTasksOperation {
                         if (changes == null) {
                            crtd.getResults().errorf("AtsChangeSet can not be null.");
                         } else {
-                           // Add StaticId that will keep task from being deleted
-                           changes.deleteAttribute(taskMatch.getTaskWf(), CoreAttributeTypes.StaticId,
-                              ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID);
-
-                           // Add note to user that task is de-referenced
-                           String note = atsApi.getAttributeResolver().getSoleAttributeValue(taskMatch.getTaskWf(),
-                              AtsAttributeTypes.WorkflowNotes, "");
-                           if (!note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE)) {
-                              note = note + ChangeReportTasksUtil.DE_REFERRENCED_NOTE;
-                              changes.setSoleAttributeValue(taskMatch.getTaskWf(), AtsAttributeTypes.WorkflowNotes,
-                                 note);
-                           }
+                           atsApi.getTaskService().addDeReferencedNote(taskMatch.getTaskWf(), changes);
                         }
                      }
                      deletedTaskNames.add(taskMatch.getTaskName());
@@ -353,6 +327,7 @@ public class CreateChangeReportTasksOperation {
             TransactionId transId = changes.executeIfNeeded();
             if (transId != null && transId.isValid()) {
                crtd.setTransaction(transId);
+               crtd.setIds(changes.getIds());
                crtd.getResults().log("\nTasks Updated\n");
             } else {
                crtd.getResults().log("\nNo Changes Needed\n");
@@ -464,7 +439,12 @@ public class CreateChangeReportTasksOperation {
             task.setRelatedToState(createTaskDef.getRelatedToState());
          }
       } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
-         task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
+         if (taskMatch.isChgRptArtValid()) {
+            task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactName, taskMatch.getChgRptArtName());
+            task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactDeleted, taskMatch.isChgRptArtDeleted());
+            task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference,
+               ArtifactId.valueOf(taskMatch.getChgRptArt().getId()));
+         }
          task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
       } else {
          crtd.getResults().errorf("Un-handled MatchType [%s]", taskMatch.getMatchType().name());
@@ -477,7 +457,25 @@ public class CreateChangeReportTasksOperation {
       } else {
          task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
       }
-      task.addAttribute(CoreAttributeTypes.StaticId, ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID);
+      // Allow extensions to set TaskAutoGenVersion, else fail
+      AutoGenVersion ver = null;
+      List<IAtsTaskProvider> taskProviders = AtsTaskProviderCollector.getTaskProviders();
+      for (IAtsTaskProvider provider : taskProviders) {
+         ver = provider.getAutoGenTaskVersionToSet(crtd, crttwd, taskMatch);
+         if (ver != null) {
+            break;
+         }
+      }
+      if (ver == null) {
+         crtd.getResults().errorf("No provider configured to set TaskAutoGenVersion, aborting...");
+         return;
+      }
+      task.addAttribute(AtsAttributeTypes.TaskAutoGenVersion, ver.getName());
+
+      // Allow extensions to add to generating task
+      for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
+         provider.addToAutoGeneratingTask(crtd, crttwd, taskMatch, task);
+      }
       crttwd.getNewTaskData().getNewTasks().add(task);
    }
 

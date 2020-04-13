@@ -127,4 +127,6 @@ public interface IAtsStoreService {
 
    IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser);
 
+   boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType);
+
 }

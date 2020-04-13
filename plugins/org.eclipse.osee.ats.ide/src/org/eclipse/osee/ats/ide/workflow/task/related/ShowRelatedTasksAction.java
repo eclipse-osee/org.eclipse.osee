@@ -19,10 +19,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.task.TaskNameData;
+import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class ShowRelatedTasksAction extends ShowTaskOptionActionBase {
+public class ShowRelatedTasksAction extends AbstractShowRelatedAction {
 
    private Collection<String> srchStrs = new ArrayList<>();
 
@@ -47,12 +48,12 @@ public class ShowRelatedTasksAction extends ShowTaskOptionActionBase {
    public void run() {
       srchStrs = new ArrayList<>();
       final Collection<IAtsTask> tasks = getSelectedTasks();
-      if (!isAutoGenTasks(tasks)) {
+      if (!isAutoGenRelatedArtTasks(tasks)) {
          return;
       }
       for (IAtsTask task : tasks) {
-         TaskNameData data = new TaskNameData(task);
-         final String srchStr = data.isRequirement() ? data.getReqName() : task.getName();
+         IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(task);
+         final String srchStr = data.hasRelatedArt() ? data.getRelatedArtName() : task.getName();
          if (!Strings.isValid(srchStr)) {
             AWorkbench.popup("ERROR", "Unable to extract requirement from task name");
             return;

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -805,24 +804,15 @@ public abstract class BranchRegressionTest {
    }
 
    protected void testTasksAgainstExpected(IAtsTeamWorkflow teamWf, Collection<String> expected) {
-
       Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
-
       Assert.assertEquals(expected.size(), tasks.size());
 
       for (IAtsTask task : tasks) {
          boolean contains = expected.contains(task.getName());
          Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
-         String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(task,
-            AtsAttributeTypes.WorkflowNotes, "");
-         boolean deReferenced = note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE);
-
-         if (deReferenced) {
-            Assert.assertTrue(task.getTags().isEmpty());
-         } else {
-            Assert.assertTrue(task.hasTag(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID));
-         }
+         boolean deReferenced = AtsClientService.get().getTaskService().isAutoGenDeReferenced(task);
+         Assert.assertFalse(deReferenced);
       }
    }
 

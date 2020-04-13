@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -38,17 +39,17 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public interface IAtsTaskService {
 
-   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment);
+   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment);
 
    Collection<IAtsTask> createTasks(NewTaskData newTaskData, XResultData results);
 
-   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, IAtsChangeSet changes);
+   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, IAtsChangeSet changes);
 
-   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, String commitComment);
+   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, String commitComment);
 
    Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas);
 
-   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes);
+   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes);
 
    Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
 
@@ -96,5 +97,17 @@ public interface IAtsTaskService {
    IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token);
 
    IAtsTask getTask(ArtifactToken artifact);
+
+   boolean isAutoGen(IAtsTask task);
+
+   /**
+    * @return true if task is autogen, but de-referenced (no longer have matching change report artifact) so user can
+    * delete
+    */
+   boolean isAutoGenDeReferenced(IAtsTask task);
+
+   void addDeReferencedNote(IAtsTask task, IAtsChangeSet changes);
+
+   Collection<IAtsTaskProvider> getTaskProviders();
 
 }

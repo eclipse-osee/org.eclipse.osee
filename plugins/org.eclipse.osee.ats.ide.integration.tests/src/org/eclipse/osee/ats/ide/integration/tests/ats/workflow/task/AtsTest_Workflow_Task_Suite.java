@@ -23,7 +23,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    TaskRelatedToChangedArtifactTest.class,
    AtsTaskEndpointImplTest.class,
-   CreateTasksDefinitionTransitionToTest.class //
+   CreateTasksDefinitionTransitionToTest.class,
+   AtsLbaRpcrTaskRendererTest.class //
 })
 public class AtsTest_Workflow_Task_Suite {
    // do nothing

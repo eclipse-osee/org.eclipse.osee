@@ -18,12 +18,15 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.task.TaskNameData;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -42,7 +45,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    }
 
    @Override
-   public TaskRelatedData getTaskRelatedData(TaskRelatedData trd) {
+   public DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd) {
       getDerivedTeamWf(trd);
       if (trd.getResults().isErrors()) {
          return trd;
@@ -58,7 +61,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       return trd;
    }
 
-   private TaskRelatedData getRelatedChangedArtifact(TaskRelatedData trd) {
+   private DerivedFromTaskData getRelatedChangedArtifact(DerivedFromTaskData trd) {
       if (trd.getDerivedFromTeamWf() == null) {
          trd.getResults().error("Requirement Team Workflow can't be found\n");
       }
@@ -76,7 +79,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    }
 
    @Override
-   public TaskRelatedData getDerivedTeamWf(TaskRelatedData trd) {
+   public DerivedFromTaskData getDerivedTeamWf(DerivedFromTaskData trd) {
       if (trd.getTask() == null) {
          trd.getResults().error("Task must be specified");
       }
@@ -98,14 +101,17 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       return trd;
    }
 
-   private void getRelatedChangedArtifact(TaskRelatedData trd, ArtifactId relatedArtifact) {
-      final TaskNameData nameData = new TaskNameData(trd.getTask());
-
-      if (nameData.isCdb()) {
-         trd.getResults().error("No changed artifact to show for CDB");
+   private void getRelatedChangedArtifact(DerivedFromTaskData trd, ArtifactId relatedArtifact) {
+      final IAutoGenTaskData nameData = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
+      if (nameData == null) {
+         trd.getResults().error("Can't retrieve Auto Gen Task Data");
          return;
       }
-      if (!nameData.isRequirement()) {
+      if (nameData.isNoChangedArtifact()) {
+         trd.getResults().error("No changed artifact to show");
+         return;
+      }
+      if (!nameData.hasRelatedArt()) {
          trd.getResults().error("Task is not against changed artifact or is named incorrectly.\n\n" + //
             "Must be \"Code|Test \"<partition>\" for \"<requirement name>\"");
       }
@@ -126,7 +132,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       return;
    }
 
-   private void findHeadArtifact(TaskRelatedData trd, ArtifactId relatedArtifact, String addDetails) {
+   private void findHeadArtifact(DerivedFromTaskData trd, ArtifactId relatedArtifact, String addDetails) {
       if (trd.getDerivedFromTeamWf() == null) {
          trd.getResults().error("Derived From Team Wf can not be null");
          return;
@@ -151,9 +157,19 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    }
 
    @Override
-   public boolean isAutoGenCodeTestTaskArtifact(IAtsTask task) {
-      for (String tag : task.getTags()) {
-         if (tag.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
+   public boolean isAutoGenTask(IAtsTask task) {
+      for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {
+         if (provider.isAutoGen(task)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public boolean isAutoGenTasks(Collection<IAtsTask> tasks) {
+      for (IAtsTask task : tasks) {
+         if (!isAutoGenTask(task)) {
             return false;
          }
       }
@@ -161,13 +177,19 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    }
 
    @Override
-   public boolean isAutoGenCodeTestTaskArtifacts(Collection<IAtsTask> tasks) {
+   public boolean isAutoGenChangeReportRelatedTasks(Collection<IAtsTask> tasks) {
       for (IAtsTask task : tasks) {
-         if (!isAutoGenCodeTestTaskArtifact(task)) {
+         if (!isAutoGenChangeReportRelatedTask(task)) {
             return false;
          }
       }
       return true;
+   }
+
+   @Override
+   public boolean isAutoGenChangeReportRelatedTask(IAtsTask task) {
+      return isAutoGenTask(task) && atsApi.getAttributeResolver().getAttributeCount(task,
+         AtsAttributeTypes.TaskToChangedArtifactReference) > 0;
    }
 
 }

@@ -434,6 +434,13 @@ artifactType "Task" extends "ats.State Machine" {
 	attribute "ats.Related To State"
 	attribute "ats.Uses Resolution Options"
 	attribute "ats.Task To Changed Artifact Reference"
+	attribute "ats.Task To Changed Artifact Name"
+	attribute "ats.Task To Changed Artifact Deleted"
+	attribute "ats.Work Type"
+	attribute "ats.Partition"
+	attribute "ats.WCAFE Impact"
+	attribute "ats.Signal Impact"
+	attribute "ats.Task Auto Gen Version"
 }
 
 artifactType "Configuration" extends "Artifact" {
@@ -666,6 +673,60 @@ attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReference
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Task reference to the changed artifact"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Task To Changed Artifact Name" extends StringAttribute {
+	id 23524392992929
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Task reference to the changed artifact name"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Task To Changed Artifact Deleted" extends BooleanAttribute {
+	id 323852383249857
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "false"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Signal Impact" extends BooleanAttribute {
+	id 2380093348200994
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.WCAFE Impact" extends StringAttribute {
+	id 238328342584350
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Task Auto Gen Version" extends StringAttribute {
+	id 29374282544622
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Partition" extends StringAttribute {
+	id 339234205417829
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 

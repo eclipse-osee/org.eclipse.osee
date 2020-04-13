@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -34,14 +35,14 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class AtsObjects {
 
-   public static String toIdsString(String separator, Collection<? extends IAtsObject> atsObjects) {
-      return Collections.toString(separator, toIds(atsObjects));
+   public static String toIdsString(String separator, Collection<? extends Id> idOjs) {
+      return Collections.toString(separator, toIds(idOjs));
    }
 
-   public static List<Long> toIds(Collection<? extends IAtsObject> atsObjects) {
-      List<Long> ids = new ArrayList<>(atsObjects.size());
-      for (IAtsObject atsObject : atsObjects) {
-         ids.add(atsObject.getId());
+   public static List<Long> toIds(Collection<? extends Id> idObjs) {
+      List<Long> ids = new ArrayList<>(idObjs.size());
+      for (Id idObj : idObjs) {
+         ids.add(idObj.getId());
       }
       return ids;
    }

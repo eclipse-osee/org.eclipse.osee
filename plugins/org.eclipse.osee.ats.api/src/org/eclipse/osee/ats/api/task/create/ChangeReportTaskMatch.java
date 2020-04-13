@@ -26,13 +26,18 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class ChangeReportTaskMatch {
 
    ArtifactId chgRptArt = ArtifactId.SENTINEL;
+   String chgRptArtName;
+   boolean chgRptArtDeleted;
    String taskName;
    ArtifactToken taskTok;
    @JsonIgnore
    IAtsTask taskWf;
    StaticTaskDefinition createTaskDef;
-   private ChangeReportTaskMatchType matchType;
+   ChangeReportTaskMatchType matchType;
 
+   /**
+    * @return ArtifactId or SENTINEL
+    */
    public ArtifactId getChgRptArt() {
       return chgRptArt;
    }
@@ -90,4 +95,25 @@ public class ChangeReportTaskMatch {
    public void setCreateTaskDef(StaticTaskDefinition createTaskDef) {
       this.createTaskDef = createTaskDef;
    }
+
+   public String getChgRptArtName() {
+      return chgRptArtName;
+   }
+
+   public void setChgRptArtName(String chgRptArtName) {
+      this.chgRptArtName = chgRptArtName;
+   }
+
+   public boolean isChgRptArtDeleted() {
+      return chgRptArtDeleted;
+   }
+
+   public void setChgRptArtDeleted(boolean chgRptArtDeleted) {
+      this.chgRptArtDeleted = chgRptArtDeleted;
+   }
+
+   public boolean isChgRptArtValid() {
+      return chgRptArt.isValid();
+   }
+
 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -62,11 +63,11 @@ public class ChangeReportTaskData {
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<Long, IAtsTeamWorkflow>();
    // Show detailed debug logging
    private boolean debug = false;
-   private TransactionId transaction;
+   private TransactionId transaction = TransactionId.SENTINEL;
    private Collection<ArtifactId> destTeamWfs = new HashSet<>();
    private ArtifactId actionId;
    private IAtsChangeSet changes;
-   // ArtifactId to full Artifact
+   private Set<ArtifactId> ids;
 
    public ChangeReportTaskData() {
       // for jax-rs
@@ -211,6 +212,14 @@ public class ChangeReportTaskData {
 
    public void setChanges(IAtsChangeSet changes) {
       this.changes = changes;
+   }
+
+   public Set<ArtifactId> getIds() {
+      return ids;
+   }
+
+   public void setIds(Set<ArtifactId> ids) {
+      this.ids = ids;
    }
 
 }

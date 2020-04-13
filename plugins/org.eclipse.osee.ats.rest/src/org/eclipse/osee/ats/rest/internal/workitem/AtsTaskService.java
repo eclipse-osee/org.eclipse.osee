@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
-import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
@@ -33,23 +32,23 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTasksOperation;
 import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsTaskService extends AbstractAtsTaskService {
-   private final AtsApi atsApi;
+public class AtsTaskService extends AbstractAtsTaskServiceCore {
 
    public AtsTaskService(AtsApi atsApi) {
       super(atsApi);
-      this.atsApi = atsApi;
    }
 
    @Override
@@ -104,7 +103,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, IAtsChangeSet changes) {
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, IAtsChangeSet changes) {
       NewTaskData tasks = atsApi.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
          relatedToState, taskWorkDef, attributes, changes.getComment());
       return createTasks(tasks, changes, new XResultData());

@@ -13,6 +13,10 @@
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.ide.workflow.AtsArtifactFactory"/>
    </extension>
+   <extension id="org.eclipse.osee.ats.ide.task.openwith" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.ats.ide.workflow.task.AtsOpenWithTaskRenderer"/>
+	</extension>
+   
          <extension
          point="org.eclipse.ui.editors">
          <editor

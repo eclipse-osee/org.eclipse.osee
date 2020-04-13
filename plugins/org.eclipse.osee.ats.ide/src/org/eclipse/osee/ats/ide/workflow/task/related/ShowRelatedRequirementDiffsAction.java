@@ -36,16 +36,16 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class ShowRequirementDiffsAction extends ShowTaskOptionActionBase {
+public class ShowRelatedRequirementDiffsAction extends AbstractShowRelatedAction {
 
-   public ShowRequirementDiffsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public ShowRelatedRequirementDiffsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super("Show Requirement Diffs", selectedAtsArtifacts);
    }
 
    @Override
    public void run() {
       final Collection<IAtsTask> tasks = getSelectedTasks();
-      if (!isAutoGenTasks(tasks)) {
+      if (!isAutoGenRelatedArtTasks(tasks)) {
          return;
       }
       Job job = new Job("Show Requirement Diffs") {

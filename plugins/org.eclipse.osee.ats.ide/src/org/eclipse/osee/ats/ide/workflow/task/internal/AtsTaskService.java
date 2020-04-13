@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.workflow.task.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -21,7 +22,6 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
-import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -47,6 +48,7 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -55,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -69,7 +72,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskServiceClient {
+public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTaskServiceClient {
 
    private final IAtsClient atsClient;
 
@@ -140,7 +143,7 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes, IAtsChangeSet changes) {
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes, IAtsChangeSet changes) {
       throw new UnsupportedOperationException("Not Supported on Client");
    }
 
@@ -208,7 +211,32 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
 
    @Override
    public ChangeReportTaskData createTasks(ChangeReportTaskData changeReportTaskData) {
-      return AtsClientService.get().getServerEndpoints().getTaskEp().create(changeReportTaskData);
+      ChangeReportTaskData crtd = AtsClientService.get().getServerEndpoints().getTaskEp().create(changeReportTaskData);
+      reloadTasksIfNecessary(crtd);
+      return crtd;
+   }
+
+   private void reloadTasksIfNecessary(ChangeReportTaskData crtd) {
+      if (crtd.getTransaction().isValid()) {
+         List<ArtifactToken> toReload = new ArrayList<>();
+         for (ArtifactId id : crtd.getIds()) {
+            Artifact cachedArt = ArtifactCache.getActive(id, atsApi.getAtsBranch());
+            if (cachedArt != null) {
+               toReload.add(cachedArt);
+            }
+         }
+         if (!toReload.isEmpty()) {
+            ArtifactQuery.reloadArtifacts(toReload);
+         }
+
+         //         TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
+         //            AtsObjects.toIdsString(";", crtd.getIds()));
+         //         event.put(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,Arrays.asList(AtsAttributeTypes.)
+         //            Collections.toString(";", Arrays.asList(AtsAttributeTypes.WorkPackage.getIdString(),
+         //               AtsAttributeTypes.WorkPackageReference.getIdString())));
+         //         OseeEventManager.kickTopicEvent(getClass(), event);
+
+      }
    }
 
    @Override
@@ -217,7 +245,9 @@ public class AtsTaskService extends AbstractAtsTaskService implements IAtsTaskSe
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(hostTeamWf);
       data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
-      return AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
+      ChangeReportTaskData crtd = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
+      reloadTasksIfNecessary(crtd);
+      return crtd;
    }
 
    @Override

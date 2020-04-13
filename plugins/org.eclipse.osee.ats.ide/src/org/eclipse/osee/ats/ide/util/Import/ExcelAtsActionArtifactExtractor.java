@@ -302,7 +302,7 @@ public class ExcelAtsActionArtifactExtractor {
       addToAgile(changes, aData, teamWf);
 
       for (JaxAttribute attr : aData.attributes) {
-         AttributeTypeToken attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
+         AttributeTypeToken attrType = attr.getAttrType();
          changes.setAttributeValues(teamWf, attrType, attr.getValues());
       }
 
@@ -610,7 +610,7 @@ public class ExcelAtsActionArtifactExtractor {
                            String value = cols[i];
                            if (Strings.isValid(value)) {
                               JaxAttribute attr = new JaxAttribute();
-                              attr.setAttrTypeName(attrTypeName);
+                              attr.setAttrType(attributeType);
                               attr.getValues().add(value);
                               aData.attributes.add(attr);
                            }

@@ -254,4 +254,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public String getSafeName(ArtifactId art) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(art)).getSafeName();
    }
+
+   @Override
+   public boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType) {
+      return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isOfType(artType);
+   }
 }

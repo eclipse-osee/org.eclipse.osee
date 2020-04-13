@@ -165,6 +165,10 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, AbstractWorkflowArtifact)
       .zeroOrOne(RelatedToState, "")
       .zeroOrOne(TaskToChangedArtifactReference, "")
+      .zeroOrOne(TaskToChangedArtifactName, "")
+      .zeroOrOne(TaskToChangedArtifactDeleted, "")
+      .zeroOrOne(TaskAutoGenVersion, "")
+      .zeroOrOne(WcafeImpact, "")
       .zeroOrOne(UsesResolutionOptions, "false"));
    ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, AbstractAccessControlled, ResponsibleTeam)
       .zeroOrOne(ActionDetailsFormat, "")

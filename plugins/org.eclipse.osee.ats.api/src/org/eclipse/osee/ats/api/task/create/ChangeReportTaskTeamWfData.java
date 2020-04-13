@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -34,6 +35,10 @@ public class ChangeReportTaskTeamWfData {
    ArtifactToken destTeamDef;
    XResultData rd;
    boolean reportOnly;
+   String partition;
+   String wcafeType;
+   AutoGenVersion autoGenVersion;
+
    /**
     * Collection of task objects that are created for all tasks needed to be created and then later used to match any
     * tasks already created
@@ -128,14 +133,17 @@ public class ChangeReportTaskTeamWfData {
       return null;
    }
 
-   public void addTaskMatch(ArtifactId art, ChangeReportTaskMatchType changeReportTaskMatchType, String format, Object... data) {
+   public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType, boolean deleted, String format, Object... data) {
       ChangeReportTaskMatch taskMatch = new ChangeReportTaskMatch();
       taskMatch.setTaskName(String.format(format, data));
       if (art != null) {
          taskMatch.setChgRptArt(art);
+         taskMatch.setChgRptArtName(art.getName());
+         taskMatch.setChgRptArtDeleted(deleted);
       }
       taskMatch.setType(changeReportTaskMatchType);
       taskMatches.add(taskMatch);
+      return taskMatch;
    }
 
    public ArtifactToken getDestTeamDef() {
@@ -144,6 +152,30 @@ public class ChangeReportTaskTeamWfData {
 
    public void setDestTeamDef(ArtifactToken destTeamDef) {
       this.destTeamDef = destTeamDef;
+   }
+
+   public String getPartition() {
+      return partition;
+   }
+
+   public void setPartition(String partition) {
+      this.partition = partition;
+   }
+
+   public String getWcafeType() {
+      return wcafeType;
+   }
+
+   public void setWcafeType(String wcafeType) {
+      this.wcafeType = wcafeType;
+   }
+
+   public AutoGenVersion getAutoGenVersion() {
+      return autoGenVersion;
+   }
+
+   public void setAutoGenVersion(AutoGenVersion autoGenVersion) {
+      this.autoGenVersion = autoGenVersion;
    }
 
 }

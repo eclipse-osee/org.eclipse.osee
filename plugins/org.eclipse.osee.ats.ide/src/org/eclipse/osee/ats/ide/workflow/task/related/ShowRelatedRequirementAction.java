@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class ShowRelatedRequirementAction extends ShowTaskOptionActionBase {
+public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
 
    public ShowRelatedRequirementAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super("Show Related Requirement", selectedAtsArtifacts);
@@ -47,7 +47,7 @@ public class ShowRelatedRequirementAction extends ShowTaskOptionActionBase {
    @Override
    public void run() {
       final Collection<IAtsTask> tasks = getSelectedTasks();
-      if (!isAutoGenTasks(tasks)) {
+      if (!isAutoGenRelatedArtTasks(tasks)) {
          return;
       }
 
@@ -97,7 +97,7 @@ public class ShowRelatedRequirementAction extends ShowTaskOptionActionBase {
 
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
-               TaskRelatedData trd = new TaskRelatedData(task);
+               DerivedFromTaskData trd = new DerivedFromTaskData(task);
                trd.getResults().logf(getName() + "\n\n");
                trd.getResults().logf("Task %s \n\n", task.toStringWithId());
                AtsClientService.get().getTaskRelatedService().getTaskRelatedData(trd);
@@ -113,7 +113,7 @@ public class ShowRelatedRequirementAction extends ShowTaskOptionActionBase {
       }
    }
 
-   private void dialog(final TaskRelatedData reqData, final boolean loadLatest) {
+   private void dialog(final DerivedFromTaskData reqData, final boolean loadLatest) {
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {

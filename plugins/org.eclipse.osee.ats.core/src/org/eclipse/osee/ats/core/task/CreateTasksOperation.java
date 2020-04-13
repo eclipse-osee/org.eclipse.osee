@@ -158,33 +158,42 @@ public class CreateTasksOperation {
             Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
 
             for (JaxAttribute attribute : task.getAttributes()) {
-               AttributeTypeId attrType = atsApi.tokenService().getAttributeType(attribute.getAttrTypeName());
+               AttributeTypeId attrType = attribute.getAttrType();
                if (attrType == null || attrType.isInvalid()) {
                   results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
                }
+            }
 
-               for (JaxRelation relation : task.getRelations()) {
-                  if (relation.getRelatedIds().isEmpty()) {
-                     results.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
-                        relation.getRelationTypeName(), task);
-                  }
-                  List<Long> foundWorkItemIds = new ArrayList<>();
-                  for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-                     relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds()) {
-                     foundWorkItemIds.add(foundId.getId());
-                  }
-                  if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
-                     List<Long> notFoundIds = new ArrayList<>();
-                     notFoundIds.addAll(relation.getRelatedIds());
-                     notFoundIds.removeAll(foundWorkItemIds);
-                     results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
-                        relation.getRelationTypeName(), notFoundIds, task);
-                  }
+            for (JaxRelation relation : task.getRelations()) {
+               RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
+               if (relationType == null) {
+                  results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
+                     relation.getRelationTypeName(), task);
+               }
+               if (relation.getRelatedIds().isEmpty()) {
+                  results.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
+                     relation.getRelationTypeName(), task);
+               }
+               List<Long> foundWorkItemIds = new ArrayList<>();
+               for (ArtifactId foundId : atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds()) {
+                  foundWorkItemIds.add(foundId.getId());
+               }
+               if (foundWorkItemIds.size() != relation.getRelatedIds().size()) {
+                  List<Long> notFoundIds = new ArrayList<>();
+                  notFoundIds.addAll(relation.getRelatedIds());
+                  notFoundIds.removeAll(foundWorkItemIds);
+                  results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
+                     relation.getRelationTypeName(), notFoundIds, task);
                }
             }
          }
       }
       return results;
+   }
+
+   private RelationTypeToken getRelationType(AtsApi atsApi, String relationTypeName) {
+      return atsApi.tokenService().getRelationType(relationTypeName);
    }
 
    private IAtsTeamWorkflow getTeamWorkflow(Long teamWfId) {
@@ -287,7 +296,7 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
-               AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(attribute.getAttrTypeName());
+               AttributeTypeToken attrType = attribute.getAttrType();
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 
@@ -333,7 +342,7 @@ public class CreateTasksOperation {
             for (Object value : taskArt.getAttributeValues(type)) {
                attributeValues.add(value);
             }
-            newJaxTask.addAttributes(type.getName(), attributeValues);
+            newJaxTask.addAttributes(type, attributeValues);
          }
          return newJaxTask;
       }

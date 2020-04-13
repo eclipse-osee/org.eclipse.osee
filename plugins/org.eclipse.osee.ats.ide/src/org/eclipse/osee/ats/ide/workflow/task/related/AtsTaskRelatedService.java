@@ -14,10 +14,15 @@
 package org.eclipse.osee.ats.ide.workflow.task.related;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.task.TaskNameData;
-import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.task.IAtsTaskProvider;
+import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
+import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
+import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.task.related.AbstractAtsTaskRelatedService;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -38,26 +43,26 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
    }
 
    @Override
-   public void getRelatedChangedArtifactFromChangeReport(TaskRelatedData trd) {
+   public void getRelatedChangedArtifactFromChangeReport(DerivedFromTaskData trd) {
       ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(
          (TeamWorkFlowArtifact) trd.getDerivedFromTeamWf().getStoreObject());
       getTaskRelatedData(trd, changeData);
    }
 
-   private TaskRelatedData getTaskRelatedData(TaskRelatedData trd, ChangeData changeData) {
-      final TaskNameData data = new TaskNameData(trd.getTask());
+   private DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd, ChangeData changeData) {
+      final IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
 
-      if (data.isCdb()) {
-         trd.getResults().error("No requirement to show for CDB");
+      if (data.isNoChangedArtifact()) {
+         trd.getResults().error("No changed artifact to show");
          return trd;
       }
-      if (!data.isRequirement()) {
+      if (!data.hasRelatedArt()) {
          trd.getResults().error(
             "Task is not against artifact or is named incorrectly.\n\n" + "Must be \"Code|Test \"<partition>\" for \"<requirement name>\"");
          return trd;
       }
 
-      Artifact headArtifact = findHeadArtifact(changeData, data.getReqName(), data.getAddDetails());
+      Artifact headArtifact = findHeadArtifact(changeData, data.getRelatedArtName(), data.getAddDetails());
       if (headArtifact == null) {
          trd.getResults().error("Corresponding requirement can not be found.");
          return trd;
@@ -98,6 +103,20 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
          }
       }
       return headArtifact;
+   }
+
+   @Override
+   public IAutoGenTaskData getAutoGenTaskData(IAtsTask task) {
+      String autoGenVerStr = atsApi.getAttributeResolver().getSoleAttributeValue(task,
+         AtsAttributeTypes.TaskAutoGenVersion, AutoGenVersion.Other.getName());
+      AutoGenVersion autoGenVer = AutoGenVersion.valueOf(autoGenVerStr);
+      for (IAtsTaskProvider taskProvider : atsApi.getTaskService().getTaskProviders()) {
+         IAutoGenTaskData taskGenData = taskProvider.getAutoGenTaskData(autoGenVer, task);
+         if (taskGenData != null) {
+            return taskGenData;
+         }
+      }
+      return null;
    }
 
 }

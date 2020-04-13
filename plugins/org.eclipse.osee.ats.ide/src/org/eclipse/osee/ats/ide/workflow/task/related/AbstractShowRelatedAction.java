@@ -33,11 +33,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 /**
  * @author Donald G. Dunne
  */
-public abstract class ShowTaskOptionActionBase extends Action {
+public abstract class AbstractShowRelatedAction extends Action {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public ShowTaskOptionActionBase(String name, ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public AbstractShowRelatedAction(String name, ISelectedAtsArtifacts selectedAtsArtifacts) {
       super(name, IAction.AS_PUSH_BUTTON);
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       boolean shouldEnable = false;
@@ -49,10 +49,10 @@ public abstract class ShowTaskOptionActionBase extends Action {
       setEnabled(shouldEnable);
    }
 
-   protected boolean isAutoGenTasks(final Collection<IAtsTask> tasks) {
+   protected boolean isAutoGenRelatedArtTasks(final Collection<IAtsTask> tasks) {
       try {
-         if (!AtsClientService.get().getTaskRelatedService().isAutoGenCodeTestTaskArtifacts(tasks)) {
-            AWorkbench.popup(ChangeReportTasksUtil.TASKS_MUST_BE_AUTOGEN_CODE_OR_TEST_TASKS);
+         if (!AtsClientService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTasks(tasks)) {
+            AWorkbench.popup(ChangeReportTasksUtil.TASKS_MUST_BE_AUTOGEN_CHANGE_REPORT_RELATED_TASKS);
             return false;
          }
       } catch (OseeCoreException ex) {
@@ -85,8 +85,8 @@ public abstract class ShowTaskOptionActionBase extends Action {
 
    public static boolean isValid(TaskArtifact task) {
       try {
-         if (task.hasTag(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID)) {
-            return true;
+         if (!AtsClientService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(task)) {
+            return false;
          }
          TeamWorkFlowArtifact teamArt = task.getParentTeamWorkflow();
          if (AtsClientService.get().getProgramService().getProgram(teamArt) == null) {

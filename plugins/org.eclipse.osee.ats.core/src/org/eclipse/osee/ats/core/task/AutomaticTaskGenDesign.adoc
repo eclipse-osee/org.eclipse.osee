@@ -1,0 +1,49 @@
+= Automatic Task Generation - Design
+
+[.lead]
+Provides the classes /design that make up the Automatic Task Generation.  See also AutomaticTaskGenModel.adoc.
+
+ 
+== Rules:
+
+=== Default rules that can be overridden:
+
+* If artifact attribute was changed, task will be created as Add/Mod and task static id set to AutoGenTask so can't be deleted by users.
+
+* If artifact relation was changed, task will be created for both artifacts as as Relation and task static id set to AutoGenTask so can't be deleted by users.
+
+* If artifact was deleted, task created with "<name> (Deleted)" as name.
+
+=== Default rules that can NOT be overridden:
+
+* If static tasks (non change report driven) are defined, they will be created upon first task generation.
+
+* If task created and then artifact name changes, old will be marked as de-referenced and new task created with new name.
+ 
+* If task created and then artifact change reverted, task notes attribute will be appended with "No Matching Artifact
+Change" and the AutoGenTask static id attribute will be removed, this allows anyone to delete task.
+
+== CreateChangeReportTasksOperation Design
+
+Uses AtsTaskDefToken to load java CreateTasksDefinitionBuilder that creates CreateTasksDefinition which defines how task generation will work.
+
+ChangeReportTaskData crtd - Will contain all inputs, outputs and results for operation
+
+* ChangeReportTaskTeamWfData crttwd - Will be created for each destination Team Workflow that contains
+
+** WorkType from Team Def
+** Targeted Version
+** ChangeReportTaskNameProviderToken - token used in task set definition to identify provider to use
+*** Task Service will return the provider given the token
+
+ChangeReportTaskMatch taskMatch - created for each task needed and then notated for if task already exists or needs creation.
+
+== Extensions to provide custiomization
+(see explanations above)
+
+* ChangeReportTaskNameProviderToken (Class in bundle) - Used in Team Definition Api
+* ChangeReportTaskNameProvider (OSGI) - Provided by bundle to provided task names
+* IAtsTaskProvider (OSGI) - For each case where auto-gen tasks are going to be provided
+** IAutoGenTaskData which are implemented for that special case. Uses AutoGenVersion to notate which AutoGenTaskData to instantiate
+** AutoGenVersion - Version of task gen to provide for changes in future
+

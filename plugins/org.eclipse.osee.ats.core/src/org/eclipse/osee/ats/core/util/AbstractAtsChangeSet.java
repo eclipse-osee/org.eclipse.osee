@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -58,6 +59,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
    protected boolean execptionIfEmpty = true;
    protected BranchId branch;
+   protected Set<ArtifactId> ids = new HashSet<>();
 
    public AbstractAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       this.comment = comment;
@@ -67,6 +69,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(asUser, "user");
       Conditions.assertTrue(branch.isValid(), "%s is not a valid branch", branch);
+   }
+
+   @Override
+   public Set<ArtifactId> getIds() {
+      return ids;
    }
 
    @Override
@@ -83,6 +90,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                atsObj.toStringWithId(), atsObj.getStoreObject().getBranchIdString(), branch.getIdString());
          }
          atsObjects.add((IAtsObject) obj);
+         ids.add(((IAtsObject) obj).getArtifactId());
       } else if (obj instanceof ArtifactToken) {
          ArtifactToken artTok = (ArtifactToken) obj;
          if (!artTok.getBranch().equals(branch)) {
@@ -90,10 +98,16 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
                artTok.toStringWithId(), artTok.getBranchIdString(), branch.getIdString());
          }
          artifacts.add((ArtifactToken) obj);
+         ids.add((ArtifactToken) obj);
       } else if (obj instanceof ArtifactId) {
          artifacts.add((ArtifactId) obj);
+         ids.add((ArtifactId) obj);
       } else if (obj instanceof AtsRelationChange) {
-         relations.add((AtsRelationChange) obj);
+         AtsRelationChange relation = (AtsRelationChange) obj;
+         relations.add(relation);
+         for (Object ob : relation.getObjects()) {
+            add(ob);
+         }
       } else {
          throw new OseeArgumentException("Object not supported: " + obj);
       }

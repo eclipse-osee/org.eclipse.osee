@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.util;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -184,5 +185,7 @@ public interface IAtsChangeSet {
    ArtifactToken createArtifact(ArtifactToken parent, ArtifactToken artifact);
 
    ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name);
+
+   Set<ArtifactId> getIds();
 
 }

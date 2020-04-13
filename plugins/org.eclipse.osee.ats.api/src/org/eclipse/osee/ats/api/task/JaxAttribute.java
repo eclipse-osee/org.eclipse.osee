@@ -15,22 +15,15 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
 public class JaxAttribute {
 
-   private String attrTypeName;
+   private AttributeTypeToken attrType;
    private List<Object> values;
-
-   public String getAttrTypeName() {
-      return attrTypeName;
-   }
-
-   public void setAttrTypeName(String attrTypeName) {
-      this.attrTypeName = attrTypeName;
-   }
 
    public List<Object> getValues() {
       if (values == null) {
@@ -45,7 +38,15 @@ public class JaxAttribute {
 
    @Override
    public String toString() {
-      return "JaxAttribute [attrTypeName=" + attrTypeName + ", values=" + values + "]";
+      return "JaxAttribute [attrTypeName=" + attrType + ", values=" + values + "]";
+   }
+
+   public AttributeTypeToken getAttrType() {
+      return attrType;
+   }
+
+   public void setAttrType(AttributeTypeToken attrType) {
+      this.attrType = attrType;
    }
 
 }
