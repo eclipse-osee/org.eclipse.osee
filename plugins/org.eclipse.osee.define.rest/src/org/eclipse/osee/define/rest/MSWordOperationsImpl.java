@@ -163,4 +163,9 @@ public class MSWordOperationsImpl implements MSWordOperations {
       builder.header("Content-Disposition", "attachment; filename=" + fileName);
       return builder.build();
    }
+
+   @Override
+   public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal) {
+      return null;
+   }
 }

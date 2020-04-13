@@ -53,8 +53,12 @@ public final class RenderEndpointImpl implements RenderEndpoint {
    }
 
    @Override
-   public String getDocumentNames(BranchId branchId) {
+   public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal) {
       return null;
    }
 
+   @Override
+   public String getDocumentNames(BranchId branchId) {
+      return null;
+   }
 }

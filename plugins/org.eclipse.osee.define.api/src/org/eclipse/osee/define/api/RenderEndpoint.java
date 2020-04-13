@@ -53,6 +53,12 @@ public interface RenderEndpoint {
    Response msWordTemplatePublishPreview(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact);
 
    @GET
+   @Path("goalWorkflowPublish/{template}/{goal}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_XML})
+   Response goalWorkflowPublish(@PathParam("template") ArtifactId template, @PathParam("goal") ArtifactId goal);
+
+   @GET
    @Path("getDocumentNames/{branchId}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
