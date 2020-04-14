@@ -11,10 +11,6 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import java.util.Collection;
-import java.util.HashMap;
-import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -58,15 +54,7 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isApplicabilityExist(BranchId branch, String value) {
-
-      HashMap<Long, ApplicabilityToken> tokenMap = queryFactory.applicabilityQuery().getApplicabilityTokens(branch);
-      Collection<ApplicabilityToken> tokens = tokenMap.values();
-      for (ApplicabilityToken applicToken : tokens) {
-         if (applicToken.getName().equals(value)) {
-            return true;
-         }
-      }
-      return false;
+      return queryFactory.applicabilityQuery().featureExistsOnBranch(branch, value);
    }
 
    @Override
@@ -78,15 +66,4 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
    public boolean isAttributeTypeExists(long attributeTypeUuid) {
       return orcsTypes.getAttributeTypes().get(attributeTypeUuid) != null;
    }
-
-   @Override
-   public boolean isAttributeTypeExists(String attributeTypeName) {
-      for (AttributeTypeToken type : orcsTypes.getAttributeTypes().getAll()) {
-         if (type.getName().equals(attributeTypeName)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

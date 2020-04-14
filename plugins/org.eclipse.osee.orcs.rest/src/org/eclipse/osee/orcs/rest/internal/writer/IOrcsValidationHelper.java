@@ -29,8 +29,6 @@ public interface IOrcsValidationHelper {
 
    public boolean isArtifactExists(BranchId branch, long artifactUuid);
 
-   boolean isAttributeTypeExists(String attributeTypeName);
-
    boolean isApplicabilityExist(BranchId branch, String value);
 
 }

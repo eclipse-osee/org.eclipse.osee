@@ -209,6 +209,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public boolean featureExistsOnBranch(BranchId branch, String featureName) {
+      if (ApplicabilityToken.BASE.getName().equals(featureName)) {
+         return true;
+      }
       boolean returnValue;
       ArtifactReadable jsonArtifact =
          queryFactory.fromBranch(branch).andTypeEquals(CoreArtifactTypes.FeatureDefinition).andExists(
