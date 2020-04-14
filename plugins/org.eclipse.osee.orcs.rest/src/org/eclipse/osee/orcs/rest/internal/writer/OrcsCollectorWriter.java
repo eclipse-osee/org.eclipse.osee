@@ -277,12 +277,16 @@ public class OrcsCollectorWriter {
    }
 
    protected static AttributeTypeToken getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
-      if (attributeType.isInvalid()) {
-         AttributeTypeToken attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
-
-         return attributeTypeId;
+      if (attributeType == null || attributeType.isInvalid()) {
+         if (attributeTypeCache != null) {
+            AttributeTypeToken attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
+            return attributeTypeId;
+         }
       }
-      return attributeTypeCache.get(attributeType.getId());
+      if (attributeTypeCache != null) {
+         return attributeTypeCache.get(attributeType.getId());
+      }
+      return null;
    }
 
    private void processCreate(XResultData results) {

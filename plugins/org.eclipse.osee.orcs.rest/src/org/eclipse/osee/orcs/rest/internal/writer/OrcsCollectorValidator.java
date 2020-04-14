@@ -192,7 +192,9 @@ public class OrcsCollectorValidator {
 
    private boolean validateBranch(XResultData results) {
       boolean valid = true;
-      if (collector.getBranchId().isInvalid() || !helper.isBranchExists(collector.getBranchId())) {
+      boolean branchIsInValid = collector.getBranchId().isInvalid();
+      boolean branchExists = helper.isBranchExists(collector.getBranchId());
+      if (branchIsInValid || !branchExists) {
          results.errorf("Branch [%s] not valid.\n", collector.getBranch());
          valid = false;
       }

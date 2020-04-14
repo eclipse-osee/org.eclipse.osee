@@ -1,4 +1,3 @@
-This is an integration test suite that requires an application server and uses a canned database.
+This is JUnit test suite that does not require server or database.
 
-1) Launch OSEE_Application_Server[HSQLDB]
-2) Select OrcsRest_Integration_TestSuite > right-click > Debug As > Plugin JUnit Test
+Right-click on OrcsRest_JUnit_TestSuite > Debug As > JUnit Test

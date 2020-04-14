@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.writer;
+package org.eclipse.osee.orcs.rest.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.eclipse.osee.orcs.rest.internal.writer.OrcsValidationHelperAdapter;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.writer;
+package org.eclipse.osee.orcs.rest.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertFalse;
@@ -17,6 +17,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.orcs.rest.internal.writer.IOrcsValidationHelper;
+import org.eclipse.osee.orcs.rest.internal.writer.OrcsCollectorValidator;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
@@ -49,10 +51,18 @@ public class OrcsCollectorValidatorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
+      // Branch is valid and exists by default
+      when(collector.getBranch()).thenReturn(branch);
+      when(collector.getBranchId()).thenReturn(COMMON);
+      when(helper.isBranchExists(COMMON)).thenReturn(true);
+
+      // User valid
       when(collector.getAsUserId()).thenReturn("3443");
+      when(helper.isUserExists("3443")).thenReturn(true);
+
       when(branch.getId()).thenReturn(570L);
       when(branch.toString()).thenReturn("OwBranch [id=570]");
-      when(collector.getBranch()).thenReturn(branch);
+      when(branch.isValid()).thenReturn(true);
       when(collector.getPersistComment()).thenReturn("persist comment");
 
       validator = createValidator(collector);
@@ -96,10 +106,9 @@ public class OrcsCollectorValidatorTest {
       rd = validator.run();
       assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [id=11, data=null]] does not exist."));
 
-      when(branch.getId()).thenReturn(0L);
+      when(helper.isBranchExists(COMMON)).thenReturn(false);
       rd = validator.run();
-      assertTrue(rd.toString().contains(
-         "Invalid Branch; can't validate artifact id for [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
+      assertTrue(rd.toString().startsWith("Error: Branch [OwBranch [id=570]] not valid.\n"));
 
    }
 
@@ -111,34 +120,31 @@ public class OrcsCollectorValidatorTest {
       assertFalse(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
 
       OwArtifact artifact = new OwArtifact(5555L, "");
+      artifact.setName("my name");
       OwArtifactType artType = new OwArtifactType(11L, "Folder");
       artifact.setType(artType);
+      when(helper.isArtifactTypeExist(11L)).thenReturn(true);
+      when(collector.getUpdate()).thenReturn(Arrays.asList(artifact));
+      when(helper.isArtifactExists(COMMON, 5555L)).thenReturn(true);
 
-      when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
-
-      rd = validator.run();
-      assertTrue(rd.toString().contains(
-         "Artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]] does not have Name attribute."));
-
-      artifact.setName("my name");
       OwAttribute attribute = new OwAttribute();
       artifact.getAttributes().add(attribute);
       rd = validator.run();
-      assertTrue(rd.toString().contains(
-         "Invalid Attribute Type id [null] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
+      assertTrue(rd.toString().startsWith(
+         "Error: Invalid Attribute Type [null] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
       OwAttributeType attrType = new OwAttributeType(234L, "Static Id");
       attribute.setType(attrType);
 
       when(helper.isAttributeTypeExists(234)).thenReturn(false);
       rd = validator.run();
-      assertTrue(rd.toString().contains(
-         "Error: Attribute Type [OwAttributeType [id=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
+      assertTrue(rd.toString().startsWith(
+         "Error: Invalid Attribute Type [OwAttributeType [id=234, data=null]] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
       when(helper.isAttributeTypeExists(234)).thenReturn(true);
       rd = validator.run();
-      assertFalse(rd.toString().contains(
-         "Error: Attribute Type [OwAttributeType [id=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
+      assertFalse(rd.toString().startsWith(
+         "Error: Invalid Attribute Type [OwAttributeType [id=234, data=null]] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
    }
 
    @Test
