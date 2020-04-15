@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.actions;
+package org.eclipse.osee.ats.ide.workflow.duplicate;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.operation.DuplicateWorkflowBlam;
+import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
+import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

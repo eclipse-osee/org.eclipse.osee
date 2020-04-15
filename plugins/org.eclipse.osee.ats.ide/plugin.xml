@@ -222,7 +222,7 @@
          name="DuplicateWorkflowBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.ide.operation.DuplicateWorkflowBlam">
+            className="org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowBlam">
       </Operation>
    </extension>
    <extension

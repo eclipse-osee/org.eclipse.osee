@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.actions;
+package org.eclipse.osee.ats.ide.workflow.duplicate;
 
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
