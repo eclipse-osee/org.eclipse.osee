@@ -205,6 +205,7 @@ public class SwtXWidgetRenderer {
          }
 
          XWidget xWidget = setupXWidget(xWidgetLayoutData, isEditable);
+         xWidget.setId(xWidgetLayoutData.getId());
          if (xWidgetLayoutData.getObject() != null) {
             xWidget.setObject(xWidgetLayoutData.getObject());
          }

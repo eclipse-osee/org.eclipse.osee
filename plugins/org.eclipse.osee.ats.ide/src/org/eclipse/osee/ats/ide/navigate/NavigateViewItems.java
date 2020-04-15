@@ -101,6 +101,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
+import org.eclipse.osee.framework.ui.skynet.action.XWidgetsDialogExampleAction;
 import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
@@ -324,6 +325,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new FilteredCheckboxTreeDialogExample(exampleItems);
          new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
          new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
+         new XNavigateItemAction(exampleItems, new XWidgetsDialogExampleAction(), FrameworkImage.GEAR);
          items.add(exampleItems);
       }
    }

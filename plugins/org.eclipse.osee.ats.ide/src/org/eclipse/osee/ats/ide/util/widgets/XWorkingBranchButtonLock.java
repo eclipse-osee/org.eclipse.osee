@@ -89,6 +89,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       button.getParent().redraw();
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    private void toggleWorkingBranchLock(Button button) {
       try {
          BranchId branch = getTeamArt().getWorkingBranch();

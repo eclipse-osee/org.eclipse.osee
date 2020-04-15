@@ -65,6 +65,7 @@ public abstract class XWidget {
    private Object object;
    private ILabelProvider labelProvider;
    private ArtifactTypeId artifactType;
+   private String id;
 
    public XWidget(String label) {
       this.label = label;
@@ -415,5 +416,13 @@ public abstract class XWidget {
     */
    public void setArtifactType(ArtifactTypeId artifactType) {
       this.artifactType = artifactType;
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 }
