@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.config.tx.IAtsConfigTx;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxActionableItem;
 import org.eclipse.osee.ats.api.config.tx.IAtsConfigTxTeamDef;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
@@ -214,7 +215,8 @@ public class DemoDatabaseConfig {
          .andLeads(DemoUsers.Kay_Jason) //
          .andMembers(DemoUsers.Kay_Jason, DemoUsers.Michael_John, DemoUsers.Steven_Kohn) //
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
-         .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.Released, DemoBranches.SAW_PL, NextRelease.None) //
+         .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.UnReleased, DemoBranches.SAW_PL,
+            NextRelease.Next) //
          .andVersion(DemoArtifactToken.SAW_Hardening_Branch, ReleasedOption.UnReleased,
             DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next);
 
@@ -258,6 +260,14 @@ public class DemoDatabaseConfig {
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Test) //
          .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoTestTeamWorkflow);
 
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_ARB) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ARB) //
+         .andLeads(DemoUsers.Joe_Smith) //
+         .andMembers(DemoUsers.Joe_Smith) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
+         .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
+
       // SAW SW Actionable Items
       IAtsConfigTxActionableItem sawPlSwAI =
          topActionableItem.createChildActionableItem(DemoArtifactToken.SAW_PL_CSCI_AI) //
@@ -297,6 +307,12 @@ public class DemoDatabaseConfig {
          .andTeamDef(DemoArtifactToken.SAW_PL_HW) //
          .andActionable(true) //
          .andChildAis("Adapter", "Case", "Manual", "Screen");
+
+      sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_ARB_AI) //
+         .andProgram(DemoArtifactToken.SAW_PL_Program) //
+         .andWorkType(WorkType.ARB) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_ARB) //
+         .andActionable(true);
 
       // SAW PL Program
       cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
@@ -504,7 +520,6 @@ public class DemoDatabaseConfig {
       IAtsVersion sawBld3Ver = atsApi.getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_3);
 
       changes.relate(sawBld1Ver, AtsRelationTypes.ParallelVersion_Child, sawBld2Ver);
-
       changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld1Ver);
       changes.relate(sawBld2Ver, AtsRelationTypes.ParallelVersion_Child, sawBld3Ver);
 

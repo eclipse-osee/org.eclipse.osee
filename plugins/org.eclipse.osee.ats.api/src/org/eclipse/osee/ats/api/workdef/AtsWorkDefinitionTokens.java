@@ -30,6 +30,9 @@ public class AtsWorkDefinitionTokens {
    public static AtsWorkDefinitionToken WorkDef_Team_Default = new AtsWorkDefinitionToken(72301L, "WorkDef_Team_Default");
 
    public static AtsWorkDefinitionToken WorkDef_Team_AtsConfig2Example = new AtsWorkDefinitionToken(282846363L, "WorkDef_Team_AtsConfig2Example");
+   public static AtsWorkDefinitionToken WorkDef_Team_Simple_InWork = new AtsWorkDefinitionToken(7285608L, "WorkDef_Team_Simple_InWork");
+   public static AtsWorkDefinitionToken WorkDef_Team_ProductLine = new AtsWorkDefinitionToken(10837868L, "WorkDef_Team_ProductLine");
+
    // @formatter:on
 
 }

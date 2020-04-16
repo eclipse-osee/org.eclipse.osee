@@ -321,6 +321,8 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Estimate Assumptions"	
 	attribute "ats.Approve Requested Hours Date"
 	attribute "ats.Approve Requested Hours By"
+	attribute "ats.Product Line Approved By"
+	attribute "ats.Product Line Approved Date"
 	
 }
 
@@ -495,6 +497,23 @@ oseeEnumType "enum.ipt.team" {
    entry "Software" 
    entry "WpnSight" 
 }
+
+attributeType "ats.Product Line Approved Date" extends DateAttribute {
+	id 735226602374161400
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/calendar"
+}
+
+attributeType "ats.Product Line Approved By" extends StringAttribute {
+	id 7838821957985211888
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+	}
 
 attributeType "ats.Holiday" extends DateAttribute {
 	id 72064629481881851

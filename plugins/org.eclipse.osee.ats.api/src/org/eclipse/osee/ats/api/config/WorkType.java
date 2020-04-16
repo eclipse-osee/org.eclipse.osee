@@ -49,6 +49,7 @@ public enum WorkType {
    Maintenance,
    All,
    Custom("Custom Work Type that doesn't match a WorkType enum"),
+   ARB("Architecture Review Board"),
    None;
 
    private String description;
