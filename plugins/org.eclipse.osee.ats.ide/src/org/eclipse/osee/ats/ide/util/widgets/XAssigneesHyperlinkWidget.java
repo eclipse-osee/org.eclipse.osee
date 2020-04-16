@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
  */
 public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
+   public static final Object WIDGET_ID = XAssigneesHyperlinkWidget.class.getSimpleName();
    Collection<AtsUser> assignees = new HashSet<>();
    private final IAtsTeamDefinition teamDef;
 
@@ -47,7 +48,9 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    public boolean handleSelection() {
       UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
          AtsClientService.get().getUserService().getUsers(Active.Active));
-      uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
+      if (teamDef != null) {
+         uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
+      }
 
       if (!assignees.isEmpty()) {
          uld.setInitialSelections(assignees);

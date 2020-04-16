@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,6 +60,9 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
    protected Label errorLabel;
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final List<XWidget> xWidgets = new ArrayList<>();
+   private final Map<String, String> xTextKeyValueMap = new HashMap<>();
+   private final Map<String, String> xComboKeyValueMap = new HashMap<>();
+   private final Map<String, Boolean> xCheckBoxKeyValueMap = new HashMap<>();
 
    public XWidgetsDialog(String dialogTitle, String dialogMessage) {
       this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
@@ -93,9 +99,23 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
 
       createExtendedArea(areaComposite);
 
+      populateWidgets();
+
       areaComposite.layout();
       parent.layout();
       return areaComposite;
+   }
+
+   private void populateWidgets() {
+      for (Entry<String, String> entry : xTextKeyValueMap.entrySet()) {
+         setXTextString(entry.getKey(), entry.getValue());
+      }
+      for (Entry<String, String> entry : xComboKeyValueMap.entrySet()) {
+         setXComboString(entry.getKey(), entry.getValue());
+      }
+      for (Entry<String, Boolean> entry : xCheckBoxKeyValueMap.entrySet()) {
+         setXCheckBoxChecked(entry.getKey(), entry.getValue());
+      }
    }
 
    protected void createErrorLabel(Composite parent) {
@@ -237,18 +257,39 @@ public abstract class XWidgetsDialog extends MessageDialog implements IDynamicWi
    }
 
    public String getXtextString(String idOrLabel) {
-      return ((XText) getXtextWidget(idOrLabel)).get();
+      return ((XText) getXWidget(idOrLabel)).get();
+   }
+
+   public void setXTextString(String idOrLabel, String text) {
+      xTextKeyValueMap.put(idOrLabel, text);
+      if (getXWidget(idOrLabel) != null) {
+         ((XText) getXWidget(idOrLabel)).set(text);
+      }
    }
 
    public String getXComboString(String idOrLabel) {
-      return ((XCombo) getXtextWidget(idOrLabel)).get();
+      return ((XCombo) getXWidget(idOrLabel)).get();
    }
 
-   public boolean getXCheckChecked(String idOrLabel) {
-      return ((XCheckBox) getXtextWidget(idOrLabel)).isChecked();
+   public void setXComboString(String idOrLabel, String selected) {
+      xComboKeyValueMap.put(idOrLabel, selected);
+      if (getXWidget(idOrLabel) != null) {
+         ((XCombo) getXWidget(idOrLabel)).setDefaultValue(selected);
+      }
    }
 
-   public XWidget getXtextWidget(String idOrLabel) {
+   public boolean getXCheckBoxChecked(String idOrLabel) {
+      return ((XCheckBox) getXWidget(idOrLabel)).isChecked();
+   }
+
+   public void setXCheckBoxChecked(String idOrLabel, boolean checked) {
+      xCheckBoxKeyValueMap.put(idOrLabel, checked);
+      if (getXWidget(idOrLabel) != null) {
+         ((XCheckBox) getXWidget(idOrLabel)).set(checked);
+      }
+   }
+
+   public XWidget getXWidget(String idOrLabel) {
       for (XWidget xWidget : xWidgets) {
          if (idOrLabel.equals(xWidget.getId()) || idOrLabel.equals(xWidget.getLabel())) {
             return xWidget;

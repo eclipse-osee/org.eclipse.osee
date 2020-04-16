@@ -41,7 +41,7 @@ public class XWidgetsDialogExampleAction extends Action {
          if (dialog.open() == 0) {
             String title = dialog.getXtextString("title");
             String desc = dialog.getXtextString("desc");
-            boolean valid = dialog.getXCheckChecked("valid");
+            boolean valid = dialog.getXCheckBoxChecked("valid");
             String number = dialog.getXComboString("number");
 
             String html = AHTML.beginMultiColumnTable(95, 2);

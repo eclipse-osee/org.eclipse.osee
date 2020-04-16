@@ -56,4 +56,10 @@ public interface IAtsActionFactory {
 
    String getActionStateJson(Collection<IAtsWorkItem> workItemsByLegacyPcrId2);
 
+   /**
+    * This will only create the action artifact and not the workflows. It should only be used during cloning and not by
+    * normal action/workflow creation.
+    */
+   IAtsAction createAction(String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes);
+
 }

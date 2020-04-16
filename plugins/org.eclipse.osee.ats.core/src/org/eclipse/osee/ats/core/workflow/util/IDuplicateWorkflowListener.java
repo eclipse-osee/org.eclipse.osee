@@ -23,4 +23,11 @@ public interface IDuplicateWorkflowListener {
       return null;
    }
 
+   /**
+    * @return false if operation should be cancelled
+    */
+   default boolean handleChanges(IAtsTeamWorkflow newTeamWf, IAtsChangeSet changes) {
+      return true;
+   }
+
 }

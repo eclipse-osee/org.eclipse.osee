@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +23,10 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -49,21 +53,28 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private static String ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY =
       "DuplicateWorkflowAsIsOperation_ExcludeAttrTypeIds";
    private final String comment;
-   private final IDuplicateWorkflowListener duplicateListener;
+   private final Collection<IDuplicateWorkflowListener> duplicateListeners =
+      new ArrayList<IDuplicateWorkflowListener>();
+   private final boolean newAction;
+   private AtsUser originator;
+   private String description;
 
    public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi) {
-      this(teamWfs, duplicateTasks, title, asUser, atsApi, "", null);
+      this(teamWfs, duplicateTasks, title, asUser, atsApi, "", false, null);
    }
 
-   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi, String comment, IDuplicateWorkflowListener duplicateListener) {
+   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, AtsUser asUser, AtsApi atsApi, String comment, boolean newAction, Collection<IDuplicateWorkflowListener> listeners) {
       super(teamWfs, title, asUser, atsApi);
       this.duplicateTasks = duplicateTasks;
       this.comment = comment;
-      this.duplicateListener = duplicateListener;
+      if (listeners != null) {
+         this.duplicateListeners.addAll(listeners);
+      }
+      this.newAction = newAction;
    }
 
-   public DuplicateWorkflowAsIsOperation(List<IAtsTeamWorkflow> asList, boolean b, String existingName, String newName, AtsUser currentUser, AtsApi atsApi) {
-      this(asList, b, newName, currentUser, atsApi, "", null);
+   public DuplicateWorkflowAsIsOperation(List<IAtsTeamWorkflow> asList, boolean duplicateTasks, String existingName, String newName, AtsUser currentUser, AtsApi atsApi) {
+      this(asList, duplicateTasks, newName, currentUser, atsApi, "", false, null);
    }
 
    @Override
@@ -110,7 +121,8 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       ArtifactToken newWorkItemArt = changes.createArtifact(
          atsApi.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
 
-      if (workItem.isTeamWorkflow()) {
+      // If not creating new action art, add new workflow to this action
+      if (workItem.isTeamWorkflow() && !newAction) {
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, workItem.getParentAction());
       }
       IAtsLog atsLog = atsApi.getLogFactory().getLogLoaded(workItem, atsApi.getAttributeResolver());
@@ -129,8 +141,9 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          // Auto-add actions to configured goals
          if (newWorkItemArt instanceof IAtsTeamWorkflow) {
             IAtsGoal goal = null;
-            if (duplicateListener != null) {
-               goal = duplicateListener.addToGoal((IAtsTeamWorkflow) newWorkItemArt, changes);
+            for (IDuplicateWorkflowListener listener : duplicateListeners) {
+               goal = listener.addToGoal((IAtsTeamWorkflow) newWorkItemArt, changes);
+               listener.handleChanges((IAtsTeamWorkflow) newWorkItemArt, changes);
             }
             atsApi.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(),
                (IAtsTeamWorkflow) newWorkItemArt, teamWf.getActionableItems(), goal, changes);
@@ -139,10 +152,39 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
          if (!getExcludeTypes().contains(attr.getAttributeType())) {
-            changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
+            if (attr.getAttributeType().equals(AtsAttributeTypes.CreatedBy)) {
+               if (originator != null) {
+                  changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.CreatedBy, originator.getUserId());
+               } else {
+                  changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.CreatedBy,
+                     atsApi.getUserService().getCurrentUser().getUserId());
+               }
+            } else if (attr.getAttributeType().equals(AtsAttributeTypes.CreatedDate)) {
+               changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.CreatedDate, new Date());
+            } else if (attr.getAttributeType().equals(AtsAttributeTypes.Description) && Strings.isValid(description)) {
+               changes.setSoleAttributeValue(newWorkItemArt, AtsAttributeTypes.Description, description);
+            } else {
+               changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
+            }
          }
       }
       IAtsWorkItem newWorkItem = atsApi.getWorkItemService().getWorkItem(newWorkItemArt);
+
+      // If action created, set values off original action
+      if (newAction) {
+         IAtsAction origAction = workItem.getParentAction();
+         ChangeType changeType = ChangeTypeUtil.getChangeType(origAction, atsApi);
+         String priority =
+            atsApi.getAttributeResolver().getSoleAttributeValue(origAction, AtsAttributeTypes.Priority, "");
+         boolean validationRequired = atsApi.getAttributeResolver().getSoleAttributeValue(origAction,
+            AtsAttributeTypes.ValidationRequired, false);
+         Date needByDate =
+            atsApi.getAttributeResolver().getSoleAttributeValue(origAction, AtsAttributeTypes.NeedBy, null);
+         IAtsAction newAction = atsApi.getActionFactory().createAction(comment, description, changeType, priority,
+            validationRequired, needByDate, changes);
+         changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, newAction);
+      }
+
       atsApi.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), null,
          changes);
       return newWorkItem;
@@ -174,6 +216,22 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          }
       }
       return excludeTypes;
+   }
+
+   public AtsUser getOriginator() {
+      return originator;
+   }
+
+   public void setOriginator(AtsUser originator) {
+      this.originator = originator;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
    }
 
 }

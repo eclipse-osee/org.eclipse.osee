@@ -324,12 +324,7 @@ public class ActionFactory implements IAtsActionFactory {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
-      ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
-      IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
-      IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
-      atsApi.getActionFactory().setAtsId(action, topTeamDefinition, workItemListener, changes);
-      changes.add(action);
-      setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
+      IAtsAction action = createAction(title, desc, changeType, priority, validationRequired, needByDate, changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       Collection<IAtsTeamDefinition> teamDefs = atsApi.getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
@@ -365,6 +360,17 @@ public class ActionFactory implements IAtsActionFactory {
       changes.add(action);
       ActionResult result = new ActionResult(action, teamWfs);
       return result;
+   }
+
+   @Override
+   public IAtsAction createAction(String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+      ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
+      IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
+      IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
+      atsApi.getActionFactory().setAtsId(action, topTeamDefinition, workItemListener, changes);
+      changes.add(action);
+      setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
+      return action;
    }
 
    private IAtsTeamDefinition getTopTeamDef() {

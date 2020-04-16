@@ -237,7 +237,9 @@ public abstract class XWidget {
          this.managedForm = managedForm;
       }
       createWidgets(parent, horizontalSpan);
-      adaptControls(toolkit);
+      if (toolkit != null) {
+         adaptControls(toolkit);
+      }
 
       // Added to be able to operate on XWidget who create the control
       Control internalControl = getControl();

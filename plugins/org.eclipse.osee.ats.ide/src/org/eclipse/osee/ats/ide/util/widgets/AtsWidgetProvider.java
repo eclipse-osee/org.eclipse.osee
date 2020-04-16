@@ -180,6 +180,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       } else if (widgetName.equals(XCreateChangeReportTasksXButton.WIDGET_ID)) {
          AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) widgetRendererItem.getParameters().get(AtsTaskDefToken.ID);
          return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
+      } else if (widgetName.equals(XAssigneesHyperlinkWidget.WIDGET_ID)) {
+         return new XAssigneesHyperlinkWidget(null);
       }
 
       return toReturn;
