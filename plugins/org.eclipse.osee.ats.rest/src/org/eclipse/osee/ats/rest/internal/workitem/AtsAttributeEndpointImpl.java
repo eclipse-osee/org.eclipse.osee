@@ -98,7 +98,7 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
 
    private void getEnumValues(List<String> values, Long id) {
       AttributeTypes attrTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      AttributeTypeToken attrType = attrTypes.get(id);
+      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeType(id);
       if (attrTypes.isEnumerated(attrType)) {
          for (EnumEntry entry : attrTypes.getEnumType(attrType).values()) {
             values.add(entry.getName());

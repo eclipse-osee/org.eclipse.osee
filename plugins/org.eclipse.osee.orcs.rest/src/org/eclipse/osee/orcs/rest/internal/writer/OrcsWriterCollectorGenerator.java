@@ -183,7 +183,7 @@ public class OrcsWriterCollectorGenerator {
          }
       } else {
          for (Long typeId : config.getIncludeArtifactTypes()) {
-            ArtifactTypeToken type = orcsApi.getOrcsTypes().getArtifactTypes().get(typeId);
+            ArtifactTypeToken type = orcsApi.tokenService().getArtifactType(typeId);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -223,7 +223,7 @@ public class OrcsWriterCollectorGenerator {
          }
       } else {
          for (Long typeId : config.getIncludeAttributeTypes()) {
-            AttributeTypeToken type = orcsApi.getOrcsTypes().getAttributeTypes().get(typeId);
+            AttributeTypeToken type = orcsApi.tokenService().getAttributeType(typeId);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -250,7 +250,7 @@ public class OrcsWriterCollectorGenerator {
       } else {
          for (OrcsWriterRelationSide token : config.getIncludeRelationTypes()) {
             Long relationTypeId = token.getRelationTypeId();
-            RelationTypeToken type = orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeId);
+            RelationTypeToken type = orcsApi.tokenService().getRelationType(relationTypeId);
             if (type != null) {
                types.put(type.getName(), type);
             }

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -62,7 +61,7 @@ public interface IAtsStoreService {
 
    ArtifactTypeToken getArtifactType(IAtsObject atsObject);
 
-   boolean isDateType(AttributeTypeId attributeType);
+   boolean isDateType(AttributeTypeToken attributeType);
 
    ArtifactTypeToken getArtifactType(Long artTypeId);
 

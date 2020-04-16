@@ -29,15 +29,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Angel Avila
@@ -60,8 +58,7 @@ public class ReportResource {
       Set<Long> modArts = new HashSet<>();
       Set<Long> deletedArts = new HashSet<>();
 
-      Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges =
-         new HashMap<>();
+      Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges = new HashMap<>();
 
       buildArtIdToChangeMap(changes, artToChanges);
       buildLists(artToChanges, newArts, modArts, deletedArts);
@@ -110,8 +107,6 @@ public class ReportResource {
    }
 
    private void buildLists(Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges, Set<Long> newArts, Set<Long> modArts, Set<Long> deletedArts) {
-      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      ArtifactTypes artifactTypes = orcsApi.getOrcsTypes().getArtifactTypes();
 
       for (Integer artId : artToChanges.keySet()) {
          Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artId);
@@ -122,20 +117,19 @@ public class ReportResource {
             newArts.add((long) artId);
          } else if (modType.equals(ModificationType.DELETED)) {
             deletedArts.add((long) artId);
-         } else if (modType.equals(ModificationType.MODIFIED) && isCountable(artChange, pair.getSecond(),
-            attributeTypes, artifactTypes)) {
+         } else if (modType.equals(ModificationType.MODIFIED) && isCountable(artChange, pair.getSecond())) {
             modArts.add((long) artId);
          }
       }
 
    }
 
-   private boolean isCountable(ChangeItem artChange, Set<ChangeItem> attrChanges, AttributeTypes attributeTypes, ArtifactTypes artTypes) {
+   private boolean isCountable(ChangeItem artChange, Set<ChangeItem> attrChanges) {
       boolean toReturn = false;
 
       // Was a synthetic artifact change added by AddArtifactChangeDataCallable
       for (ChangeItem change : attrChanges) {
-         AttributeTypeId attrType = attributeTypes.get(change.getItemTypeId());
+         AttributeTypeToken attrType = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId());
          if (attrType.matches(WordTemplateContent)) {
             toReturn = true;
             break;

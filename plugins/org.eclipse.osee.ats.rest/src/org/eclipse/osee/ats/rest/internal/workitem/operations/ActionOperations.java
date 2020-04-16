@@ -190,7 +190,7 @@ public class ActionOperations {
    }
 
    private AttributeTypeToken getAttributeType(String id) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().get(Long.valueOf(id));
+      return orcsApi.tokenService().getAttributeType(Long.valueOf(id));
    }
 
    public Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {

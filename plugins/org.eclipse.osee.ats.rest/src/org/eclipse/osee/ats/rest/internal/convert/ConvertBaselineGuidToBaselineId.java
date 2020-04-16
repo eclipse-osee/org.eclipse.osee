@@ -39,10 +39,6 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
-      if (!getOrcsApi().getOrcsTypes().getAttributeTypes().exists(AtsAttributeTypes.BaselineBranchId)) {
-         data.error("ats.BaselineBranchId is not configured for this database");
-         return;
-      }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andTypeEquals(

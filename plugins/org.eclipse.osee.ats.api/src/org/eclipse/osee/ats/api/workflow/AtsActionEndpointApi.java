@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -200,7 +200,7 @@ public interface AtsActionEndpointApi {
    @GET
    @Path("{id}/assocArt/{attrTypeId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeId relatedReqs, @QueryParam("versionType") AttributeTypeId versionType);
+   public List<String> getRelatedRequirements(@PathParam("workflowId") ArtifactId workflowId, @PathParam("relatedReqs") AttributeTypeToken relatedReqs, @QueryParam("versionType") AttributeTypeToken versionType);
 
    @Path("branch/changes/{branchId}")
    @GET

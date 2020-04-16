@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -143,7 +142,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isDateType(AttributeTypeId attributeType) {
+   public boolean isDateType(AttributeTypeToken attributeType) {
       return orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attributeType);
    }
 
@@ -163,7 +162,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public ArtifactTypeToken getArtifactType(Long artTypeId) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().get(artTypeId);
+      return orcsApi.tokenService().getArtifactType(artTypeId);
    }
 
    @Override
@@ -191,7 +190,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public AttributeTypeToken getAttributeType(Long attrTypeId) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().get(attrTypeId);
+      return orcsApi.tokenService().getAttributeType(attrTypeId);
    }
 
    @Override

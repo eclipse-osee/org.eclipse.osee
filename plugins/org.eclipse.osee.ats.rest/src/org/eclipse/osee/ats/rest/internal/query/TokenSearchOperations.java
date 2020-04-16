@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -75,7 +75,7 @@ public class TokenSearchOperations {
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
-            ArtifactTypeToken artTypeId = orcsApi.getOrcsTypes().getArtifactTypes().get(chStmt.getLong("art_type_id"));
+            ArtifactTypeToken artTypeId = orcsApi.tokenService().getArtifactType(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
             ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);
@@ -98,7 +98,7 @@ public class TokenSearchOperations {
     * @return ArtifactTokens in artifacts that have attribute matching value in database. Excludes binary attribute
     * values.
     */
-   public static Collection<ArtifactToken> getArtifactTokensMatchingAttrValue(BranchId branch, Collection<ArtifactToken> artifacts, AttributeTypeId attributeType, Object value, OrcsApi orcsApi, JdbcService jdbcService) {
+   public static Collection<ArtifactToken> getArtifactTokensMatchingAttrValue(BranchId branch, Collection<ArtifactToken> artifacts, AttributeTypeToken attributeType, Object value, OrcsApi orcsApi, JdbcService jdbcService) {
       List<Long> artIds = new LinkedList<>();
       Map<Long, ArtifactToken> artIdToTokenMap = new HashMap<>();
       String ids = "";
