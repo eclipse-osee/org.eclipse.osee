@@ -16,11 +16,11 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 
 /**
  * @author Angel Avila
@@ -55,6 +55,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
       final OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
+      final OrcsTokenService tokenService = orcsApi.tokenService();
       return new Callable<Void>() {
 
          @Override
@@ -77,12 +78,11 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
          }
 
          private Set<ArtifactTypeToken> getTypes(String[] typesToPurge) {
-            ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
             Set<ArtifactTypeToken> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);
-                  ArtifactTypeToken type = artifactTypes.get(typeId);
+                  ArtifactTypeToken type = tokenService.getArtifactType(typeId);
                   console.writeln("Type [%s] found.", type);
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

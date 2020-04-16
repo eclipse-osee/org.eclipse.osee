@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
@@ -55,14 +56,14 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class TypesEndpointImpl implements TypesEndpoint {
    private final OrcsApi orcsApi;
    private final JdbcService jdbcService;
+   private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
    public TypesEndpointImpl(OrcsApi orcsApi, JdbcService jdbcService) {
       this.orcsApi = orcsApi;
       this.jdbcService = jdbcService;
-   }
-
-   private OrcsTypes getOrcsTypes() {
-      return orcsApi.getOrcsTypes();
+      this.orcsTypes = orcsApi.getOrcsTypes();
+      this.tokenService = orcsApi.tokenService();
    }
 
    @Override
@@ -71,7 +72,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            Callable<Void> op = getOrcsTypes().writeTypes(output);
+            Callable<Void> op = orcsTypes.writeTypes(output);
             executeCallable(op);
          }
       }).build();
@@ -79,14 +80,14 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Response invalidateCaches() {
-      getOrcsTypes().invalidateAll();
+      orcsTypes.invalidateAll();
       return Response.ok().build();
    }
 
    @Override
    public Response getEnums() {
       List<JaxEnumAttribute> attributes = new ArrayList<>();
-      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
+      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
       for (AttributeTypeToken type : attributeTypes.getAll()) {
          if (attributeTypes.isEnumerated(type)) {
             JaxEnumAttribute enumAttr = createJaxEnumAttribute(attributeTypes, type);
@@ -121,15 +122,15 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Response getEnums(Long uuid) {
-      AttributeTypeToken attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
-      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
+      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeTypeOrCreate(uuid);
+      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsTypes.getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute).build();
    }
 
    @Override
    public Response getEnumEntries(Long uuid) {
-      AttributeTypeToken attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
-      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
+      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeTypeOrCreate(uuid);
+      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsTypes.getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }
 

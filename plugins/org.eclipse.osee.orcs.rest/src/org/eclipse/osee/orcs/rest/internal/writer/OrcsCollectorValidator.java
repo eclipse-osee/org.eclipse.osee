@@ -15,13 +15,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
@@ -39,7 +37,6 @@ public class OrcsCollectorValidator {
    private final Map<Long, OwArtifact> idToArtifact;
    private final Set<Long> artifactsExist;
    private final IOrcsValidationHelper helper;
-   private AttributeTypes attributeTypeCache;
    private final Set<OwAttributeType> owAttributeTypesSet;
 
    public OrcsCollectorValidator(OwCollector collector, IOrcsValidationHelper helper) {
@@ -52,7 +49,6 @@ public class OrcsCollectorValidator {
 
    public OrcsCollectorValidator(OrcsApi orcsApi, OwCollector collector2) {
       this(collector2, new OrcsValidationHelperAdapter(orcsApi));
-      attributeTypeCache = orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    public XResultData run() {
@@ -181,9 +177,7 @@ public class OrcsCollectorValidator {
 
          if (!owAttributeTypesSet.contains(owAttrType)) {
             owAttributeTypesSet.add(owAttrType);
-
-            AttributeTypeId attrType = OrcsCollectorWriter.getAttributeType(attributeTypeCache, owAttrType);
-            if (attrType == null) {
+            if (owAttrType == null || owAttrType.isInvalid() || !helper.isAttributeTypeExists(owAttrType.getId())) {
                results.errorf("Invalid Attribute Type [%s] for artifact [%s].\n", owAttrType, artifact);
             }
          }

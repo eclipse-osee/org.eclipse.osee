@@ -16,12 +16,11 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -56,6 +55,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
       final OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
+      final OrcsTokenService tokenService = orcsApi.tokenService();
       return new Callable<Void>() {
 
          @Override
@@ -78,12 +78,11 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
          }
 
          private Set<RelationTypeToken> getTypes(String[] typesToPurge) {
-            RelationTypes relationTypes = orcsTypes.getRelationTypes();
             Set<RelationTypeToken> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);
-                  RelationTypeToken type = relationTypes.get(typeId);
+                  RelationTypeToken type = tokenService.getRelationType(typeId);
                   console.writeln("Type [%s] found. Id: [%s]", type.getName(), type.getId());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

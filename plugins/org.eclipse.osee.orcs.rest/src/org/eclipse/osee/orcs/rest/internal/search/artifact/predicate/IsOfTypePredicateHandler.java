@@ -31,8 +31,7 @@ public class IsOfTypePredicateHandler implements PredicateHandler {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.IS_OF_TYPE);
       }
 
-      Collection<ArtifactTypeToken> artTypes =
-         getArtifactTypeTokens(orcsApi.getOrcsTypes().getArtifactTypes(), predicate);
+      Collection<ArtifactTypeToken> artTypes = getArtifactTypeTokens(orcsApi.tokenService(), predicate);
       if (!artTypes.isEmpty()) {
          builder.andIsOfType(artTypes);
       }

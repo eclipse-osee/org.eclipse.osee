@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -25,10 +26,12 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    private final QueryFactory queryFactory;
    private final OrcsTypes orcsTypes;
+   private final OrcsTokenService tokenService;
 
    public OrcsValidationHelperAdapter(OrcsApi orcsApi) {
       queryFactory = orcsApi.getQueryFactory();
       orcsTypes = orcsApi.getOrcsTypes();
+      tokenService = orcsApi.tokenService();
    }
 
    @Override
@@ -49,7 +52,7 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isArtifactTypeExist(long artifactTypeUuid) {
-      return orcsTypes.getArtifactTypes().get(artifactTypeUuid) != null;
+      return tokenService.getArtifactType(artifactTypeUuid) != null;
    }
 
    @Override
@@ -59,11 +62,11 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isRelationTypeExist(long relationTypeUuid) {
-      return orcsTypes.getRelationTypes().get(relationTypeUuid) != null;
+      return tokenService.getRelationType(relationTypeUuid) != null;
    }
 
    @Override
    public boolean isAttributeTypeExists(long attributeTypeUuid) {
-      return orcsTypes.getAttributeTypes().get(attributeTypeUuid) != null;
+      return tokenService.getAttributeType(attributeTypeUuid) != null;
    }
 }

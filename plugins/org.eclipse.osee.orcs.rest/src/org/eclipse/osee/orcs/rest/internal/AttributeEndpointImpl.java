@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -49,6 +50,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    private final ArtifactId artifactId;
    private final OrcsApi orcsApi;
    private final AttributeTypes attributeTypes;
+   private final OrcsTokenService tokenService;
 
    public AttributeEndpointImpl(ArtifactId artifactId, BranchId branch, OrcsApi orcsApi, QueryBuilder query, UriInfo uriInfo) {
       this.artifactId = artifactId;
@@ -57,6 +59,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
       this.branch = branch;
       this.orcsApi = orcsApi;
       attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
+      tokenService = orcsApi.tokenService();
    }
 
    @Override
@@ -103,7 +106,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
             if (value instanceof AttributeReadable<?>) {
                builder = Response.ok();
                AttributeReadable<?> attribute = (AttributeReadable<?>) value;
-               String mediaType = attributeTypes.getMediaType(attribute.getAttributeType());
+               String mediaType = attribute.getAttributeType().getMediaType();
                String fileExtension = attributeTypes.getFileTypeExtension(attribute.getAttributeType());
                if (mediaType.isEmpty() || mediaType.startsWith("text") || textOut) {
                   builder.entity(attribute.getDisplayableString());
@@ -146,7 +149,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    }
 
    private Response getAttributeTypeResponse(TransactionId transaction, AttributeTypeId attributeTypeId) {
-      AttributeTypeToken attributeType = attributeTypes.get(attributeTypeId);
+      AttributeTypeToken attributeType = tokenService.getAttributeType(attributeTypeId.getId());
 
       ResponseBuilder builder = Response.noContent();
       try {
@@ -164,7 +167,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
          if (attrs.size() == 1) {
             builder = Response.ok();
             AttributeReadable<?> attribute = attrs.iterator().next();
-            String mediaType = attributeTypes.getMediaType(attribute.getAttributeType());
+            String mediaType = attribute.getAttributeType().getMediaType();
             String fileExtension = attributeTypes.getFileTypeExtension(attribute.getAttributeType());
             if (mediaType.isEmpty() || mediaType.startsWith("text")) {
                builder.entity(attribute.getDisplayableString());

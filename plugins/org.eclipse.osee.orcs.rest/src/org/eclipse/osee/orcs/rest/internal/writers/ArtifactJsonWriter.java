@@ -77,10 +77,6 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
       return false;
    }
 
-   private AttributeTypes getAttibuteTypes() {
-      return orcsApi.getOrcsTypes().getAttributeTypes();
-   }
-
    @Override
    public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
@@ -94,7 +90,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
             if (matches(IdentityView.class, annotations)) {
                writer.writeStringField("Name", artifact.getName());
             } else {
-               AttributeTypes attributeTypes = getAttibuteTypes();
+               AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
                Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
                ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
                if (!attributes.isEmpty()) {

@@ -30,8 +30,7 @@ public class TypeEqualsPredicateHandler implements PredicateHandler {
       if (predicate.getType() != SearchMethod.TYPE_EQUALS) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.TYPE_EQUALS);
       }
-      Collection<ArtifactTypeToken> artTypes =
-         getArtifactTypeTokens(orcsApi.getOrcsTypes().getArtifactTypes(), predicate);
+      Collection<ArtifactTypeToken> artTypes = getArtifactTypeTokens(orcsApi.tokenService(), predicate);
       if (!artTypes.isEmpty()) {
          builder.andTypeEquals(artTypes);
       }

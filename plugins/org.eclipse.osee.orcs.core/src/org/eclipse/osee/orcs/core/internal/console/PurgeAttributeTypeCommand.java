@@ -16,11 +16,11 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Angel Avila
@@ -55,6 +55,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
       final OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
+      final OrcsTokenService tokenService = orcsApi.tokenService();
       return new Callable<Void>() {
 
          @Override
@@ -83,12 +84,11 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
          }
 
          private Set<AttributeTypeId> getTypes(String[] typesToPurge) {
-            AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
             Set<AttributeTypeId> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);
-                  AttributeTypeId type = attributeTypes.get(typeId);
+                  AttributeTypeId type = tokenService.getAttributeTypeOrCreate(typeId);
                   console.writeln("Type [%s] found.", type);
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

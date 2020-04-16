@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
@@ -142,8 +142,7 @@ public class OrcsCollectorWriter {
          }
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-               AttributeTypeToken attrType =
-                  getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttribute.getType());
+               AttributeTypeToken attrType = getAttributeType(orcsApi.tokenService(), owAttribute.getType());
 
                if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
                   String currValue = artifact.getSoleAttributeAsString(attrType, null);
@@ -276,23 +275,18 @@ public class OrcsCollectorWriter {
       return null;
    }
 
-   protected static AttributeTypeToken getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
-      if (attributeType == null || attributeType.isInvalid()) {
-         if (attributeTypeCache != null) {
-            AttributeTypeToken attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
-            return attributeTypeId;
-         }
+   protected static AttributeTypeToken getAttributeType(OrcsTokenService tokenService, OwAttributeType attributeType) {
+      AttributeTypeToken attributeTypeToken = AttributeTypeToken.SENTINEL;
+      if (attributeType != null && attributeType.isValid()) {
+         attributeTypeToken = tokenService.getAttributeTypeOrSentinel(attributeType.getId());
       }
-      if (attributeTypeCache != null) {
-         return attributeTypeCache.get(attributeType.getId());
-      }
-      return null;
+      return attributeTypeToken;
    }
 
    private void processCreate(XResultData results) {
       for (OwArtifact owArtifact : collector.getCreate()) {
          OwArtifactType owArtType = owArtifact.getType();
-         ArtifactTypeToken artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getId());
+         ArtifactTypeToken artType = orcsApi.tokenService().getArtifactTypeOrCreate(owArtType.getId());
 
          long artifactId = owArtifact.getId();
          String name = owArtifact.getName();
@@ -354,7 +348,7 @@ public class OrcsCollectorWriter {
    private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
       for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
-         RelationTypeToken relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
+         RelationTypeToken relType = orcsApi.tokenService().getRelationTypeOrCreate(owRelType.getId());
 
          ArtifactToken artToken = relation.getArtToken();
 
@@ -387,7 +381,7 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            AttributeTypeToken attrType = getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttrType);
+            AttributeTypeToken attrType = getAttributeType(orcsApi.tokenService(), owAttrType);
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {

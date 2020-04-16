@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.PredicateHandlerUtil;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public interface PredicateHandler {
    QueryBuilder handle(OrcsApi orcsApi, QueryBuilder builder, Predicate predicate);
 
-   default Collection<ArtifactTypeToken> getArtifactTypeTokens(ArtifactTypes artifactTypes, Predicate predicate) {
+   default Collection<ArtifactTypeToken> getArtifactTypeTokens(OrcsTokenService tokenService, Predicate predicate) {
       Collection<String> types = predicate.getValues();
       Conditions.checkNotNull(types, "types");
 
@@ -35,7 +35,7 @@ public interface PredicateHandler {
       for (String value : types) {
          long uuid = PredicateHandlerUtil.parseUuid(value);
          if (uuid != -1L) {
-            artTypes.add(artifactTypes.get(uuid));
+            artTypes.add(tokenService.getArtifactType(uuid));
          }
       }
       return artTypes;

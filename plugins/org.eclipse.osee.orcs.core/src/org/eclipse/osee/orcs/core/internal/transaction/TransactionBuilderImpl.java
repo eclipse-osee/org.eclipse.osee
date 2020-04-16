@@ -177,7 +177,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
       List<ArtifactToken> tokens = new ArrayList<>(names.size());
 
-      ArtifactTypeToken artifactTypeToken = orcsApi.getOrcsTypes().getArtifactTypes().get(artifactType);
+      ArtifactTypeToken artifactTypeToken = orcsApi.tokenService().getArtifactType(artifactType.getId());
       for (String name : names) {
          tokens.add(createArtifact(parent, artifactTypeToken, name));
       }
