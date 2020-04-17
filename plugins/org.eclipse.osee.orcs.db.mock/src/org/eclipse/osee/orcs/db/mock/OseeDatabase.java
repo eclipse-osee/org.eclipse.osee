@@ -20,14 +20,9 @@ import org.junit.runners.model.Statement;
  * @author Roberto E. Escobar
  */
 public class OseeDatabase implements TestRule {
-   private final String[] osgiBindings;
-
-   public OseeDatabase(String... osgiBindings) {
-      this.osgiBindings = osgiBindings;
-   }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service")).around(new OsgiRule(testObject));
+      return RuleChain.outerRule(new OseeDatabase()).around(new OsgiRule(testObject));
    }
 
    @Override
@@ -35,10 +30,8 @@ public class OseeDatabase implements TestRule {
       return new Statement() {
          @Override
          public void evaluate() throws Throwable {
-            Assert.assertNotNull("Osgi Binding cannot be null", osgiBindings);
             Assert.assertNotNull("Description cannot be null", description);
-            Assert.assertTrue("Osgi Binding cannot be empty", osgiBindings.length > 0);
-            TestDatabase db = new TestDatabase(description.getClassName(), description.getMethodName(), osgiBindings);
+            TestDatabase db = new TestDatabase(description.getClassName(), description.getMethodName());
             try {
                db.initialize();
                base.evaluate();

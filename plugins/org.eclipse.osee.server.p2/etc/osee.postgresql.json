@@ -9,12 +9,7 @@
                     "jdbc.client.db.uri": "jdbc:postgresql://localhost:5432/OSEE",
                     "jdbc.client.db.username": "osee",
                     "jdbc.client.db.password": "osee",
-                    "jdbc.client.connection.pool.enabled": "true",
-                    "jdbc.client.connection.pool.max.active.connections": "100",
-                    "jdbc.client.connection.pool.max.idle.connections": "100",
-                    "osgi.binding": [
-                        "client.jdbc.service"
-                    ]
+                    "jdbc.client.connection.pool.enabled": "true"
                 }
             ]
         }

@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc.internal.osgi;
 
-import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVICE__OSGI_BINDING;
 import static org.eclipse.osee.jdbc.JdbcConstants.NAMESPACE;
 import static org.eclipse.osee.jdbc.internal.osgi.JdbcSvcCfgChangeType.ALL_CHANGED;
 import static org.eclipse.osee.jdbc.internal.osgi.JdbcSvcCfgChangeType.JDBC_PROPERTY;
 import static org.eclipse.osee.jdbc.internal.osgi.JdbcSvcCfgChangeType.NO_CHANGE;
-import static org.eclipse.osee.jdbc.internal.osgi.JdbcSvcCfgChangeType.OSGI_BINDING;
 import static org.eclipse.osee.jdbc.internal.osgi.JdbcSvcCfgChangeType.OTHER_CHANGE;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link JdbcSvcCfgChangeType}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -65,8 +63,6 @@ public class JdbcSvcCfgChangeTypeTest {
       tests.add(row(ALL_CHANGED, map("a", "1"), map()));
       tests.add(row(JDBC_PROPERTY, map(NAMESPACE, "a"), map(NAMESPACE, "b")));
       tests.add(row(OTHER_CHANGE, map("a", "1"), map("a", "2")));
-      tests.add(row(OSGI_BINDING, map(JDBC_SERVICE__OSGI_BINDING, "1"), map(JDBC_SERVICE__OSGI_BINDING, "2")));
-      tests.add(row(OSGI_BINDING, map(NAMESPACE, "a", JDBC_SERVICE__OSGI_BINDING, "1"), map(NAMESPACE, "b", JDBC_SERVICE__OSGI_BINDING, "2")));
       //@formatter:on
       return tests;
    }

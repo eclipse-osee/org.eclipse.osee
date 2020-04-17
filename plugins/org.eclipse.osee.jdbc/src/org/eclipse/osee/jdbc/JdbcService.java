@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
-import java.util.Set;
-
 /**
  * @author Roberto E. Escobar
  */
@@ -20,8 +18,6 @@ public interface JdbcService {
    String getId();
 
    JdbcClient getClient();
-
-   Set<String> getBindings();
 
    boolean hasServer();
 

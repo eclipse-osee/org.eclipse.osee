@@ -137,7 +137,6 @@ public final class JdbcConstants {
    public static final String DEFAULT_JDBC_SERVER__USERNAME = null;
    public static final String DEFAULT_JDBC_SERVER__PASSWORD = null;
    public static final String JDBC_SERVICE__ID = "service.id";
-   public static final String JDBC_SERVICE__OSGI_BINDING = "osgi.binding";
 
    public static enum PoolExhaustedAction {
       WHEN_EXHAUSTED_FAIL((byte) 0),

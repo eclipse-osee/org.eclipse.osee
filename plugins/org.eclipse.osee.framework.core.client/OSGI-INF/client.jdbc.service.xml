@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" >
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" >
    <implementation class="org.eclipse.osee.framework.core.client.internal.ClientJdbcServiceImpl"/>
    <service>
       <provide interface="org.eclipse.osee.jdbc.JdbcService"/>
    </service>
-   <property name="osgi.binding" type="String">
-skynet.jdbc.service
-activity.jdbc.service
-   </property>
 </scr:component>

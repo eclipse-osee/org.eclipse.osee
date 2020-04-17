@@ -94,7 +94,7 @@ public class OrcsTransactionTest {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      db = new TestDatabase(OrcsTransactionTest.class.getName(), "for whole class", "orcs.jdbc.service");
+      db = new TestDatabase(OrcsTransactionTest.class.getName(), "for whole class");
       db.initialize();
       OrcsApi orcsApi = OsgiUtil.getService(OrcsTransactionTest.class, OrcsApi.class);
       txFactory = orcsApi.getTransactionFactory();

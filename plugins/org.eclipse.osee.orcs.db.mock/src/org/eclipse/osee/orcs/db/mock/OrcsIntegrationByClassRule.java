@@ -29,8 +29,7 @@ public final class OrcsIntegrationByClassRule extends OsgiRule {
    }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new OseeClassDatabase("orcs.jdbc.service")).around(
-         new OsgiRule(new CheckServices(), testObject));
+      return RuleChain.outerRule(new OseeClassDatabase()).around(new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {
@@ -40,5 +39,4 @@ public final class OrcsIntegrationByClassRule extends OsgiRule {
       @OsgiService public ExecutorAdmin executorAdmin;
       // @formatter:on
    }
-
 }

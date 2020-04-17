@@ -12,14 +12,12 @@ package org.eclipse.osee.jdbc.internal.osgi;
 
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,13 +32,11 @@ public final class JdbcServiceConfigParser {
       Map<String, JdbcServiceConfig> toReturn = new LinkedHashMap<>();
       if (Strings.isValid(source)) {
          try {
-            Set<String> allBindings = new HashSet<>();
             JSONArray array = new JSONArray(source);
             for (int index = 0; index < array.length(); index++) {
                JSONObject object = array.getJSONObject(index);
                JdbcServiceConfig newConfig = asConfig(object);
                if (!newConfig.isEmpty()) {
-                  checkBinding(newConfig, allBindings);
                   checkId(newConfig);
                   JdbcServiceConfig oldConfig = toReturn.put(newConfig.getId(), newConfig);
                   checkUnique(oldConfig, newConfig);
@@ -107,22 +103,7 @@ public final class JdbcServiceConfigParser {
       }
    }
 
-   private void checkBinding(JdbcServiceConfig config, Set<String> allBindings) {
-      if (!config.hasBindings()) {
-         throw newError("[%s] - was not defined for [%s]", JdbcConstants.JDBC_SERVICE__OSGI_BINDING, config);
-      }
-      for (String binding : config.getBindings()) {
-         boolean wasAdded = allBindings.add(binding);
-         if (!wasAdded) {
-            throw newError(
-               "binding [%s] should not be referenced multiple times betweeen [%s] configurations. Ensure [%s] contains unique bindings.",
-               binding, JdbcConstants.JDBC_SERVICE__CONFIGS, JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
-         }
-      }
-   }
-
    private RuntimeException newError(String msg, Object... args) {
       return newJdbcException("Jdbc Service configuration error - " + msg, args);
    }
-
 }

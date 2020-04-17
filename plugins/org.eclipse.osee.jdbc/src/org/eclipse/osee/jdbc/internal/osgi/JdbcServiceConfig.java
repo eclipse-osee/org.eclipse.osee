@@ -16,7 +16,6 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.eclipse.osee.jdbc.internal.JdbcUtil;
 
 /**
@@ -50,17 +49,8 @@ public class JdbcServiceConfig {
       data.put(key, value);
    }
 
-   public boolean hasBindings() {
-      return !getBindings().isEmpty();
-   }
-
-   public Set<String> getBindings() {
-      return JdbcUtil.getBindings(data);
-   }
-
    @Override
    public String toString() {
       return "JdbcServiceConfig [props=" + data + "]";
    }
-
 }

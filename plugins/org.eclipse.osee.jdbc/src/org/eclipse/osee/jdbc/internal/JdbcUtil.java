@@ -19,12 +19,10 @@ import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -55,13 +53,11 @@ public final class JdbcUtil {
    }
 
    public static boolean isValidExtraParam(String key) {
-      return Strings.isValid(key) //
-         && !key.startsWith(JdbcConstants.NAMESPACE) //
-         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__ID) //
-         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__OSGI_BINDING) //
-         && !key.equalsIgnoreCase("objectClass") //
-         && !key.equalsIgnoreCase("component.id") //
-         && !key.equalsIgnoreCase("component.name");
+      return Strings.isValid(key) && (key.startsWith(JdbcConstants.NAMESPACE) //
+         || key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__ID) //
+         || key.equalsIgnoreCase("objectClass") //
+         || key.equalsIgnoreCase("component.id") //
+         || key.equalsIgnoreCase("component.name"));
    }
 
    public static <O extends Object> void setInputParameterForStatement(PreparedStatement statement, O dataValue, int preparedIndex) throws JdbcException {
@@ -228,12 +224,6 @@ public final class JdbcUtil {
 
    public static String getServiceId(Map<String, Object> data) {
       return get(data, JdbcConstants.JDBC_SERVICE__ID, null);
-   }
-
-   @SuppressWarnings("unchecked")
-   public static Set<String> getBindings(Map<String, Object> data) {
-      Set<String> bindings = (Set<String>) data.get(JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
-      return bindings != null ? bindings : Collections.<String> emptySet();
    }
 
    public static int calculateBatchUpdateResults(int[] updates) throws JdbcException {

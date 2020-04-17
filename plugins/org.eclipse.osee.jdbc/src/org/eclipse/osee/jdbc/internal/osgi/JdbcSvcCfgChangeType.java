@@ -23,7 +23,6 @@ public enum JdbcSvcCfgChangeType {
    NO_CHANGE,
    ALL_CHANGED,
    JDBC_PROPERTY,
-   OSGI_BINDING,
    OTHER_CHANGE;
 
    public boolean isJdbcChange() {
@@ -41,9 +40,7 @@ public enum JdbcSvcCfgChangeType {
             changeType = ALL_CHANGED;
          } else {
             if (Compare.isDifferent(original, other)) {
-               if (isOsgiBindingDifferent(original, other)) {
-                  changeType = OSGI_BINDING;
-               } else if (Compare.isDifferent(jdbcEntries(original), jdbcEntries(other))) {
+               if (Compare.isDifferent(jdbcEntries(original), jdbcEntries(other))) {
                   changeType = JDBC_PROPERTY;
                } else {
                   changeType = OTHER_CHANGE;
@@ -56,18 +53,6 @@ public enum JdbcSvcCfgChangeType {
          changeType = ALL_CHANGED;
       }
       return changeType;
-   }
-
-   private static boolean isOsgiBindingDifferent(Map<String, Object> original, Map<String, Object> other) {
-      Object object1 = original.get(JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
-      Object object2 = other.get(JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
-      boolean result = true;
-      if (object1 != null && object2 != null) {
-         result = !object1.equals(object2);
-      } else if (object1 == null && object2 == null) {
-         result = false;
-      }
-      return result;
    }
 
    private static Map<String, Object> jdbcEntries(Map<String, Object> original) {

@@ -49,14 +49,13 @@ public final class ConnectionHandler {
    private static JdbcService findJdbcService(BundleContext context) {
       JdbcService toReturn = null;
       try {
-         Collection<ServiceReference<JdbcService>> references =
-            context.getServiceReferences(JdbcService.class, "(osgi.binding=skynet.jdbc.service)");
+         Collection<ServiceReference<JdbcService>> references = context.getServiceReferences(JdbcService.class, null);
          ServiceReference<JdbcService> reference = Iterables.getFirst(references, null);
          if (reference != null) {
             toReturn = context.getService(reference);
          }
       } catch (InvalidSyntaxException ex) {
-         throw new OseeCoreException(ex, "Error finding JdbcService reference with osgi.binding=skynet.jdbc.service");
+         throw new OseeCoreException(ex, "Error finding JdbcService reference");
       }
       return toReturn;
    }

@@ -14,11 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.ats.rest.test.db.AtsMethodDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -37,7 +35,6 @@ public class AtsTestDatabase {
 
    private final String className;
    private final String methodName;
-   private final String[] osgiBindings;
 
    private File tempFolder;
 
@@ -45,11 +42,10 @@ public class AtsTestDatabase {
    private JdbcService jdbcService;
    private final boolean asClass;
 
-   public AtsTestDatabase(String className, String methodName, boolean asClass, String... osgiBindings) {
+   public AtsTestDatabase(String className, String methodName, boolean asClass) {
       this.className = className;
       this.methodName = methodName;
       this.asClass = asClass;
-      this.osgiBindings = osgiBindings;
    }
 
    private File createTempFolder() {
@@ -84,7 +80,7 @@ public class AtsTestDatabase {
       configuration = configAdmin.getConfiguration("org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory", null);
       configuration.update(newConfig(dbPath));
 
-      jdbcService = OsgiUtil.getService(JdbcService.class, "(osgi.binding=orcs.jdbc.service)", 10000L);
+      jdbcService = OsgiUtil.getService(JdbcService.class, null, 10000L);
       Assert.assertNotNull("Unable to get JdbcService", jdbcService);
       boolean isAlive = jdbcService.isServerAlive(10000L);
       Assert.assertEquals("database service is not alive", true, isAlive);
@@ -96,12 +92,6 @@ public class AtsTestDatabase {
       config.put(JdbcConstants.JDBC_SERVER__DB_DATA_PATH, dbPath);
       config.put(JdbcConstants.JDBC_SERVER__USE_RANDOM_PORT, true);
       config.put(JdbcConstants.JDBC_POOL__ENABLED, false);
-
-      Set<String> bindings = new HashSet<>();
-      for (String binding : osgiBindings) {
-         bindings.add(binding);
-      }
-      config.put(JdbcConstants.JDBC_SERVICE__OSGI_BINDING, bindings);
 
       JSONArray jsonArray = new JSONArray();
       try {

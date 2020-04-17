@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -123,8 +122,6 @@ public class JdbcServiceImpl implements JdbcService {
          }
          clientRef.set(builder.build());
       }
-      logger.trace("Configured - [%s - %s] - uri[%s] bindings%s", getClass().getSimpleName(), //
-         getId(), getClient().getConfig().getDbUri(), getBindings());
    }
 
    private JdbcServer newServer(Map<String, Object> props) {
@@ -166,11 +163,6 @@ public class JdbcServiceImpl implements JdbcService {
    @Override
    public JdbcClient getClient() {
       return clientProxy;
-   }
-
-   @Override
-   public Set<String> getBindings() {
-      return JdbcUtil.getBindings(config);
    }
 
    @Override

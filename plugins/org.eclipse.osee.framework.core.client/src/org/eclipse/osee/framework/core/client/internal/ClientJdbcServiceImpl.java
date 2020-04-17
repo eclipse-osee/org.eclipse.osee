@@ -13,15 +13,11 @@ package org.eclipse.osee.framework.core.client.internal;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcServerConfig;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -34,33 +30,6 @@ public class ClientJdbcServiceImpl implements JdbcService {
 
    private final JdbcClientExtended clientProxy = createClientProxy();
 
-   private Set<String> bindings;
-
-   public void start(Map<String, Object> props) {
-      bindings = new LinkedHashSet<>();
-      String[] values = getBindings(props);
-      for (String value : values) {
-         bindings.add(value);
-      }
-   }
-
-   private String[] getBindings(Map<String, Object> props) {
-      String[] toReturn = new String[0];
-      if (props != null && !props.isEmpty()) {
-         Object binding = props.get(JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
-         if (binding instanceof String) {
-            toReturn = new String[] {(String) binding};
-         } else if (binding instanceof String[]) {
-            toReturn = (String[]) binding;
-         }
-      }
-      return toReturn;
-   }
-
-   public void stop(Map<String, Object> props) {
-      bindings = null;
-   }
-
    @Override
    public String getId() {
       return clientProxy.getId();
@@ -69,11 +38,6 @@ public class ClientJdbcServiceImpl implements JdbcService {
    @Override
    public JdbcClient getClient() {
       return clientProxy;
-   }
-
-   @Override
-   public Set<String> getBindings() {
-      return bindings;
    }
 
    @Override

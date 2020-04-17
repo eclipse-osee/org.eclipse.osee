@@ -146,12 +146,7 @@
                     "jdbc.server.port": "@{dbPort}",
                     "jdbc.server.db.data.path": "${dbFilePath}",
                     "jdbc.client.db.username": "public",
-                    "jdbc.client.connection.pool.enabled": "true",
-                    "jdbc.client.connection.pool.max.active.connections": "100",
-                    "jdbc.client.connection.pool.max.idle.connections": "100",
-                    "osgi.binding": [
-                        "client.jdbc.service"
-                    ]
+                    "jdbc.client.connection.pool.enabled": "true"
                 }
             ]
         }
