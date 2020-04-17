@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="org.eclipse.osee.logger.slf4j.internal.OsgiSlf4jLogger">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true">
    <implementation class="org.eclipse.osee.logger.slf4j.internal.OsgiSlf4jLogger"/>
 
    <reference bind="setLoggingService" 
