@@ -19,7 +19,7 @@ import org.eclipse.osee.jdbc.internal.JdbcUtil;
 
 /**
  * Class used to configure and build embedded database server instances.
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class JdbcServerBuilder extends JdbcServerConfig {
@@ -38,10 +38,6 @@ public final class JdbcServerBuilder extends JdbcServerConfig {
 
    public static JdbcServer fromConfig(JdbcServerConfig config) {
       return newBuilder(config).build();
-   }
-
-   public static JdbcServer fromProperties(Map<String, Object> properties) {
-      return newBuilder(properties).build();
    }
 
    public static JdbcServerBuilder hsql() {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" activate="activate" configuration-pid="OseeJdbc" deactivate="stop" factory="org.eclipse.osee.jdbc.JdbcService" modified="modified" name="org.eclipse.osee.jdbc.internal.osgi.JdbcServiceImpl">
+   <property name="jdbc.server.host" value="127.0.0.1"/>
+   <property name="jdbc.server.port" value="8088"/>
+   <property name="jdbc.server.db.data.path" value="file:demo/hsql/osee.hsql.db"/>
+   <property name="jdbc.client.db.username" value="public"/>
+   <property name="jdbc.client.connection.pool.enabled" value="true"/>
+   <property name="jdbc.client.connection.pool.max.active.connections" value="100"/>
+   <property name="jdbc.client.connection.pool.max.idle.connections" value="100"/>
+   <service>
+      <provide interface="org.eclipse.osee.jdbc.JdbcService"/>
+   </service>
+   <reference bind="setExecutorAdmin" interface="org.eclipse.osee.framework.core.executor.ExecutorAdmin" name="ExecutorAdmin"/>
+   <reference bind="setLogger" interface="org.eclipse.osee.logger.Log" name="Logger"/>
+   <implementation class="org.eclipse.osee.jdbc.internal.osgi.JdbcServiceImpl"/>
+</scr:component>

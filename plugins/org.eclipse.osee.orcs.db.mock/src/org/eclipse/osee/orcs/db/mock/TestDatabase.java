@@ -104,8 +104,6 @@ public class TestDatabase {
       config.put(JdbcConstants.JDBC_SERVER__DB_DATA_PATH, dbPath);
       config.put(JdbcConstants.JDBC_SERVER__USE_RANDOM_PORT, true);
       config.put(JdbcConstants.JDBC_POOL__ENABLED, false);
-      config.put(JdbcConstants.JDBC_POOL__MAX_ACTIVE_CONNECTIONS, 100);
-      config.put(JdbcConstants.JDBC_POOL__MAX_IDLE_CONNECTIONS, 100);
 
       Set<String> bindings = new HashSet<>();
       for (String binding : osgiBindings) {

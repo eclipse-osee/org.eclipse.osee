@@ -48,10 +48,6 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       this.logger = logger;
    }
 
-   private Log getLogger() {
-      return logger;
-   }
-
    public void start(Map<String, ?> props) {
       logger.trace("Starting [%s]...", getClass().getSimpleName());
       cache = new ExecutorCache();
@@ -152,7 +148,7 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
             //               }
          }
       } catch (Exception ex) {
-         getLogger().error(ex, "Error shutting down executor [%s]", id);
+         logger.error(ex, "Error shutting down executor [%s]", id);
       }
    }
 

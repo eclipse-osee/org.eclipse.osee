@@ -122,7 +122,7 @@ public class JdbcComponentFactory {
                   break;
                case JDBC_PROPERTY:
                   JdbcServiceImpl object = (JdbcServiceImpl) instance.getInstance();
-                  object.update(config.asMap());
+                  object.modified(config.asMap());
                   break;
                default:
                   instance.dispose();
@@ -138,7 +138,5 @@ public class JdbcComponentFactory {
             instance.dispose();
          }
       }
-
    }
-
 }

@@ -10,6 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc.internal.osgi;
 
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_POOL__ENABLED;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_POOL__MAX_ACTIVE_CONNECTIONS;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_POOL__MAX_IDLE_CONNECTIONS;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__DB_DATA_PATH;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__HOST;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC_SERVER__PORT;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__CONNECTION_USERNAME;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -32,15 +39,27 @@ import org.eclipse.osee.jdbc.JdbcServerConfig;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.internal.JdbcUtil;
 import org.eclipse.osee.logger.Log;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Roberto E. Escobar
  */
+@Component(configurationPid = "OseeJdbc", factory = "org.eclipse.osee.jdbc.JdbcService", property = {
+   JDBC_SERVER__HOST + "=127.0.0.1",
+   JDBC_SERVER__PORT + "=8088",
+   JDBC_SERVER__DB_DATA_PATH + "=file:demo/hsql/osee.hsql.db",
+   JDBC__CONNECTION_USERNAME + "=public",
+   JDBC_POOL__ENABLED + "=true",
+   JDBC_POOL__MAX_ACTIVE_CONNECTIONS + "=100",
+   JDBC_POOL__MAX_IDLE_CONNECTIONS + "=100"})
 public class JdbcServiceImpl implements JdbcService {
 
    private final AtomicReference<JdbcServer> serverRef = new AtomicReference<>();
    private final AtomicReference<JdbcClient> clientRef = new AtomicReference<>();
-
    private final JdbcClient clientProxy = createClientProxy();
 
    private Log logger;
@@ -51,27 +70,32 @@ public class JdbcServiceImpl implements JdbcService {
       return serverRef.get();
    }
 
-   public void setLogger(Log logger) {
+   @Reference
+   void setLogger(Log logger) {
       this.logger = logger;
    }
 
-   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+   @Reference
+   void setExecutorAdmin(ExecutorAdmin executorAdmin) {
       this.executorAdmin = executorAdmin;
    }
 
-   public void start(Map<String, Object> props) {
+   @Activate
+   void activate(Map<String, Object> props) {
       // update() eventually calls org.hsqldb.server.Server.start() which hangs under certain unknown circumstances so keep that from halting OSGi startup
-      executorAdmin.submitAndWait("Start JDBC service", () -> update(props), 20, TimeUnit.SECONDS);
+      executorAdmin.submitAndWait("Start JDBC service", () -> modified(props), 20, TimeUnit.SECONDS);
    }
 
-   public void stop(Map<String, Object> props) {
+   @Deactivate
+   void stop(Map<String, Object> props) {
       JdbcServer server = getServer();
       if (server != null) {
          server.stop();
       }
    }
 
-   public void update(Map<String, Object> props) {
+   @Modified
+   void modified(Map<String, Object> props) {
       this.config = props;
       synchronized (clientRef) {
          JdbcServer server = newServer(props);
@@ -228,7 +252,6 @@ public class JdbcServiceImpl implements JdbcService {
          }
 
          try {
-
             return method.invoke(client, args);
          } catch (Throwable ex) {
             Throwable cause = ex.getCause();
