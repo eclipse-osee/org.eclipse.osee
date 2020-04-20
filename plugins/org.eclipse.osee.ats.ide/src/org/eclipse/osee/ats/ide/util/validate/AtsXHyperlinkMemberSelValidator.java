@@ -25,10 +25,10 @@ public class AtsXHyperlinkMemberSelValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if ("XHyperlabelMemberSelDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
       }

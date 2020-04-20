@@ -191,10 +191,10 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       if (editor.isDirty()) {
          editor.doSave(null);
       }
-      handleTransitionButtonSelection(awa, isEditable, toStateDef);
+      handleTransitionButtonSelection(awa, isEditable, toStateDef, this);
    }
 
-   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef) {
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WfeTransitionHeader wfeTransitionHeader) {
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
          @Override
@@ -301,9 +301,11 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          @Override
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
+            results.setAtsApi(AtsClientService.get());
             if (results.isErrors()) {
-               TransitionResultsUi.report("Transition Failed", results);
+               TransitionResultsUi.reportDialog("Transition Failed", results);
                AtsUtilClient.logExceptions(results);
+               wfeTransitionHeader.refresh();
             }
          }
 
@@ -365,23 +367,29 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    }
 
    public void refresh() {
-      if (Widgets.isAccessible(transitionAssigneesLabel)) {
-         IAtsStateDefinition toState = userSelectedTransitionToState;
-         if (toState == null) {
-            toState = awa.getStateDefinition().getDefaultToState();
-         }
-         if (toState == null) {
-            stateLabelLink.setText("<Not Set>");
-         } else {
-            stateLabelLink.setText(toState.getName());
-         }
-         stateLabelLink.getParent().layout();
+      Displays.ensureInDisplayThread(new Runnable() {
 
-         transitionLabelLink.setEnabled(true);
+         @Override
+         public void run() {
+            if (Widgets.isAccessible(transitionAssigneesLabel)) {
+               IAtsStateDefinition toState = userSelectedTransitionToState;
+               if (toState == null) {
+                  toState = awa.getStateDefinition().getDefaultToState();
+               }
+               if (toState == null) {
+                  stateLabelLink.setText("<Not Set>");
+               } else {
+                  stateLabelLink.setText(toState.getName());
+               }
+               stateLabelLink.getParent().layout();
 
-         transitionAssigneesLabel.setText(awa.getTransitionAssigneesStr());
-         transitionAssigneesLabel.getParent().layout();
-      }
+               transitionLabelLink.setEnabled(true);
+
+               transitionAssigneesLabel.setText(awa.getTransitionAssigneesStr());
+               transitionAssigneesLabel.getParent().layout();
+            }
+         }
+      });
    }
 
    private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) {

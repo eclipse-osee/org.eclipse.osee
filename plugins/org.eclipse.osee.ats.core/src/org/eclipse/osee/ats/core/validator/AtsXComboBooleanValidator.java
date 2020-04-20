@@ -32,16 +32,16 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if ("XComboBooleanDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, fromStateDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
          for (String value : provider.getValues()) {
             if (!isValid(value)) {
-               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be true or false", provider.getName(),
-                  value);
+               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be true or false",
+                  provider.getName(), value);
             }
          }
       }

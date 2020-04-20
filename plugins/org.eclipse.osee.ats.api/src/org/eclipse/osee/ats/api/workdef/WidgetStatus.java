@@ -10,23 +10,62 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+
 /**
  * @author Donald G. Dunne
  */
-public enum WidgetStatus {
+public class WidgetStatus extends OseeEnum {
 
-   Valid,
-   Empty,
-   Invalid_Type, // string entered when should be int
-   Invalid_Range, // entered 8 when should be >2 and <5 or entered 5 characters when min =8
-   Invalid_Incompleted, // entered 2 integers when should be 3; have to enter hours for defect
-   Exception;
+   private static final Long ENUM_ID = 8837298548L;
 
-   public boolean isValid() {
-      return this == Valid;
+   // @formatter:off
+   public static WidgetStatus None = new WidgetStatus("None");
+   public static WidgetStatus Success = new WidgetStatus("Success");
+   public static WidgetStatus Empty = new WidgetStatus("Empty");
+   // string entered when sho2uld be int
+   public static WidgetStatus Invalid_Type = new WidgetStatus("Invalid_Type");
+   // entered 8 when should b2e >2 and <5 or entered 5 characters when min =8
+   public static WidgetStatus Invalid_Range = new WidgetStatus("Invalid_Range");
+   // entered 2 integers when2 should be 3; have to enter hours for defect
+   public static WidgetStatus Invalid_Incompleted = new WidgetStatus("Invalid_Incompleted");
+   public static WidgetStatus Exception = new WidgetStatus("Exception");
+   // @formatter:on
+
+   public static final WidgetStatus instance = None;
+
+   public WidgetStatus() {
+      super(ENUM_ID, -1L, "");
    }
 
+   public WidgetStatus(String name) {
+      super(ENUM_ID, name);
+   }
+
+   public WidgetStatus(long id, String name) {
+      super(ENUM_ID, id, name);
+   }
+
+   @Override
+   public Long getTypeId() {
+      return ENUM_ID;
+   }
+
+   @JsonIgnore
+   @Override
+   public WidgetStatus getDefault() {
+      return None;
+   }
+
+   @JsonIgnore
    public boolean isEmpty() {
-      return this == Empty;
+      return getId().equals(Empty.id);
    }
+
+   @JsonIgnore
+   public boolean isSuccess() {
+      return getId().equals(Success.id);
+   }
+
 }

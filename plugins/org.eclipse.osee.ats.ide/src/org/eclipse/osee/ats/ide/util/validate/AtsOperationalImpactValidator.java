@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Test unit for {@link
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
@@ -32,7 +32,7 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();

@@ -13,20 +13,30 @@ package org.eclipse.osee.ats.core.review;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
 
 /**
  * @author Donald G. Dunne
  */
-public enum ReviewDefectError {
+public class ReviewDefectError extends OseeEnum {
 
-   None("", WidgetStatus.Valid),
-   ExceptionValidatingRoles("Exception validating defects. See log for details.", WidgetStatus.Exception),
-   AllItemsMustBeMarkedAndClosed("All items must be marked for severity, disposition and closed.", WidgetStatus.Invalid_Incompleted);
+   private static final Long ENUM_ID = 345345222L;
+
+   // @formatter:off
+   public static final ReviewDefectError None = new ReviewDefectError("None", "", WidgetStatus.Success);
+   public static final ReviewDefectError ExceptionValidatingRoles = new ReviewDefectError("ExceptionValidatingRoles", "Exception validating defects. See log for details.", WidgetStatus.Exception);
+   public static final ReviewDefectError AllItemsMustBeMarkedAndClosed = new ReviewDefectError("AllItemsMustBeMarkedAndClosed", "All items must be marked for severity, disposition and closed.", WidgetStatus.Invalid_Incompleted);
+   // @formatter:on
 
    private final String error;
    private final WidgetStatus widgetStatus;
 
-   private ReviewDefectError(String error, WidgetStatus widgetStatus) {
+   public ReviewDefectError() {
+      this("", "", WidgetStatus.Success);
+   }
+
+   public ReviewDefectError(String name, String error, WidgetStatus widgetStatus) {
+      super(ENUM_ID, name);
       this.error = error;
       this.widgetStatus = widgetStatus;
    }
@@ -41,8 +51,18 @@ public enum ReviewDefectError {
 
    public WidgetResult toWidgetResult(IAtsWidgetDefinition widgetDef) {
       if (this == None) {
-         return WidgetResult.Valid;
+         return WidgetResult.Success;
       }
       return new WidgetResult(widgetStatus, getError());
+   }
+
+   @Override
+   public Long getTypeId() {
+      return ENUM_ID;
+   }
+
+   @Override
+   public OseeEnum getDefault() {
+      return None;
    }
 }

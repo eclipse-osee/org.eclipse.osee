@@ -69,7 +69,7 @@ public class AtsXDefectValidatorTest {
       // Reviews do not require Defects to be entered, even if required for transition
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
          toStateDef, atsServices);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
    }
 
    @org.junit.Test
@@ -90,7 +90,7 @@ public class AtsXDefectValidatorTest {
       // Valid defect
       WidgetResult result =
          validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
 
       // Invalid Severity
       item = getValidItem();

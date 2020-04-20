@@ -24,8 +24,8 @@ public class ValidatorTestUtil {
    public static StringValueProvider emptyValueProvider = new StringValueProvider(new ArrayList<String>());
 
    public static void assertValidResult(WidgetResult result) {
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
-      Assert.assertEquals(WidgetStatus.Valid.name(), result.getDetails());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success.getName(), result.getDetails());
    }
 
 }

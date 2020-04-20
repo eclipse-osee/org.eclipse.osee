@@ -29,7 +29,7 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          // ReviewDefectValidation converted to provider IValueProvider
          IAtsPeerReviewRoleManager mgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();

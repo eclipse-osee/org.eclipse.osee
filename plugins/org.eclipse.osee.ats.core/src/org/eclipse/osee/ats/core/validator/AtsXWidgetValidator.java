@@ -47,12 +47,13 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
    public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition", widgetDef.getName());
+         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
+            widgetDef.getName());
       } else if (isTransitionToComplete(toStateDef) && isRequiredForCompletion(widgetDef) && isEmptyValue(provider)) {
-         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]", widgetDef.getName(),
-            toStateDef.getName());
+         return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition to [%s]",
+            widgetDef.getName(), toStateDef.getName());
       }
-      return WidgetResult.Valid;
+      return WidgetResult.Success;
    }
 
    @Override
@@ -62,54 +63,54 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
-               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be in future", valueProvider.getName(),
-                  DateUtil.get(date, DateUtil.MMDDYYHHMM));
+               return new WidgetResult(WidgetStatus.Invalid_Range, "[%s] value [%s] must be in future",
+                  valueProvider.getName(), DateUtil.get(date, DateUtil.MMDDYYHHMM));
             }
          }
       }
-      return WidgetResult.Valid;
+      return WidgetResult.Success;
    }
 
    public WidgetResult isValidFloat(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Double) {
-            return WidgetResult.Valid;
+            return WidgetResult.Success;
          }
          if (obj instanceof String) {
             String attrStr = (String) obj;
             if (attrStr.matches("[-+]?\\d*\\.?\\d*")) {
                WidgetResult result = checkValid(widgetDef, Double.parseDouble(attrStr), valueProvider.getName());
-               if (!result.isValid()) {
+               if (!result.isSuccess()) {
                   return result;
                }
             } else {
-               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid float", valueProvider.getName(),
-                  attrStr);
+               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid float",
+                  valueProvider.getName(), attrStr);
             }
          }
       }
-      return WidgetResult.Valid;
+      return WidgetResult.Success;
    }
 
    public WidgetResult isValidInteger(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
       for (Object obj : valueProvider.getValues()) {
          if (obj instanceof Integer) {
-            return WidgetResult.Valid;
+            return WidgetResult.Success;
          }
          if (obj instanceof String) {
             String attrStr = (String) obj;
             if (Strings.isValid(attrStr)) {
                WidgetResult result = checkValid(widgetDef, Integer.parseInt(attrStr), valueProvider.getName());
-               if (!result.isValid()) {
+               if (!result.isSuccess()) {
                   return result;
                }
             } else {
-               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid integer", valueProvider.getName(),
-                  attrStr);
+               return new WidgetResult(WidgetStatus.Invalid_Type, "[%s] value [%s] is not a valid integer",
+                  valueProvider.getName(), attrStr);
             }
          }
       }
-      return WidgetResult.Valid;
+      return WidgetResult.Success;
    }
 
    private WidgetResult checkValid(IAtsWidgetDefinition widgetDef, double value, String valueProviderName) {
@@ -124,7 +125,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
             value, minValue, maxValue);
       }
 
-      return WidgetResult.Valid;
+      return WidgetResult.Success;
    }
 
    public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {

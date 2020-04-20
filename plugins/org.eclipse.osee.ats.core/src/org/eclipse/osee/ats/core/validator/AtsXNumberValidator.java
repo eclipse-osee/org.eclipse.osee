@@ -24,19 +24,19 @@ public class AtsXNumberValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       String name = widgetDef.getXWidgetName();
 
       if ("XFloatDam".equals(name)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
          return isValidFloat(provider, widgetDef);
       }
       if ("XIntegerDam".equals(name)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
          return isValidInteger(provider, widgetDef);

@@ -10,17 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
  */
-public class WidgetResult implements ITransitionResult {
+public class WidgetResult extends TransitionResult {
 
-   private final WidgetStatus status;
-   private final String message;
-   public static WidgetResult Valid = new WidgetResult(WidgetStatus.Valid, "");
+   private WidgetStatus status;
+   private String message;
+   public static WidgetResult Success = new WidgetResult(WidgetStatus.Success, "");
    private String exception = "";
+
+   public WidgetResult() {
+      this(WidgetStatus.Success, "");
+   }
 
    public WidgetResult(WidgetStatus status, String format, Object... object) {
       this(status, null, format, object);
@@ -34,8 +39,8 @@ public class WidgetResult implements ITransitionResult {
       this.message = String.format(format, objects);
    }
 
-   public boolean isValid() {
-      return status.isValid();
+   public boolean isSuccess() {
+      return status.isSuccess();
    }
 
    public WidgetStatus getStatus() {
@@ -44,8 +49,8 @@ public class WidgetResult implements ITransitionResult {
 
    @Override
    public String getDetails() {
-      if (this == Valid) {
-         return "Valid";
+      if (this == Success) {
+         return "Success";
       }
       return message;
    }
@@ -58,5 +63,22 @@ public class WidgetResult implements ITransitionResult {
    @Override
    public String getException() {
       return exception;
+   }
+
+   public String getMessage() {
+      return message;
+   }
+
+   public void setMessage(String message) {
+      this.message = message;
+   }
+
+   public void setStatus(WidgetStatus status) {
+      this.status = status;
+   }
+
+   @Override
+   public void setException(String exception) {
+      this.exception = exception;
    }
 }

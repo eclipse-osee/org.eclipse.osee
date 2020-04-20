@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow.transition;
 
-import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -18,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class TransitionResult implements ITransitionResult {
+public class TransitionResult {
 
    public static TransitionResult MUST_BE_TARGETED_FOR_VERSION =
       new TransitionResult("Actions must be targeted for a Version.  Please set \"Target Version\" before transition.");
@@ -72,7 +71,6 @@ public class TransitionResult implements ITransitionResult {
       this(details, null);
    }
 
-   @Override
    public String getDetails() {
       return details;
    }
@@ -82,7 +80,6 @@ public class TransitionResult implements ITransitionResult {
       return getDetails();
    }
 
-   @Override
    public String getException() {
       return exception;
    }

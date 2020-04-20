@@ -79,12 +79,12 @@ public class AtsXComboBooleanValidatorTest {
       // Check for "true" value
       StringValueProvider valueProvider = new StringValueProvider(Arrays.asList("true"));
       result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
 
       // Check for "false" value
       valueProvider = new StringValueProvider(Arrays.asList("false"));
       result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
 
       // Check for "junk" value
       valueProvider = new StringValueProvider(Arrays.asList("junk"));

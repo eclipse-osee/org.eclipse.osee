@@ -100,7 +100,7 @@ public class AtsXWidgetValidateManagerTest {
 
       @Override
       public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-         return new WidgetResult(WidgetStatus.Valid, "Here it is");
+         return new WidgetResult(WidgetStatus.Success, "Here it is");
       }
 
    }

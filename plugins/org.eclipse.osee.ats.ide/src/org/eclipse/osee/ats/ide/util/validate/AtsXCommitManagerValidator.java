@@ -38,7 +38,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {
             IAtsBranchService branchService = atsServices.getBranchService();

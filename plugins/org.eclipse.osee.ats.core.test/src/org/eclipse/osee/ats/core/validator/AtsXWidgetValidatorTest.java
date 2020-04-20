@@ -130,7 +130,7 @@ public class AtsXWidgetValidatorTest {
       WidgetDefinition widgetDef = new WidgetDefinition("test");
 
       WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
 
    }
 

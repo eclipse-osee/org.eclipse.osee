@@ -29,7 +29,7 @@ public class AtsXDefectValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          ReviewDefectManager mgr = new ReviewDefectManager(provider);
          ReviewDefectError error = ReviewDefectValidator.isValid(mgr.getDefectItems());

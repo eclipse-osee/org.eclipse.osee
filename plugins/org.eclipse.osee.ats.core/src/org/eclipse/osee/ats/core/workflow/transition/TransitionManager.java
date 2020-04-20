@@ -394,7 +394,7 @@ public class TransitionManager implements IExecuteListener {
          // Validate XWidgets for transition
          Collection<WidgetResult> widgetResults = workItemService.validateWidgetTransition(workItem, toStateDef);
          for (WidgetResult widgetResult : widgetResults) {
-            if (!widgetResult.isValid()) {
+            if (!widgetResult.isSuccess()) {
                results.addResult(workItem, widgetResult);
             }
          }

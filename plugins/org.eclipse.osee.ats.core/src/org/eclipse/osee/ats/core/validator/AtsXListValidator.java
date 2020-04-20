@@ -24,14 +24,14 @@ public class AtsXListValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
-      WidgetResult result = WidgetResult.Valid;
+      WidgetResult result = WidgetResult.Success;
       if ("XListDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
          result = isValidList(provider, widgetDef);
-         if (!result.isValid()) {
+         if (!result.isSuccess()) {
             return result;
          }
       }

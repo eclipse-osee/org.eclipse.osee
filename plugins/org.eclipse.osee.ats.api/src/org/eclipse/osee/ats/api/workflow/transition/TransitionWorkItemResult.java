@@ -13,9 +13,7 @@ package org.eclipse.osee.ats.api.workflow.transition;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -24,14 +22,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TransitionWorkItemResult {
 
-   @JsonIgnore
-   private IAtsWorkItem workItem;
    private ArtifactToken workItemId;
-   private List<ITransitionResult> transitionResults = new ArrayList<ITransitionResult>();
-   @JsonIgnore
-   private AtsApi atsApi;
+   private String workItemType;
+   private String atsId;
+   private List<TransitionResult> transitionResults = new ArrayList<TransitionResult>();
 
-   public void addResult(ITransitionResult result) {
+   public void addResult(TransitionResult result) {
       transitionResults.add(result);
    }
 
@@ -68,36 +64,23 @@ public class TransitionWorkItemResult {
          return "<Empty>";
       }
       StringBuffer sb = new StringBuffer();
-      if (workItem != null) {
-         if (Strings.isValid(workItem.getArtifactTypeName())) {
-            sb.append(workItem.getArtifactTypeName());
-         } else {
-            sb.append("Work Item");
-         }
-         sb.append(" [");
-         sb.append(workItem.getAtsId());
-         sb.append("] Titled [");
-         sb.append(workItem.getName());
-         sb.append("]\n\n");
-      } else if (workItemId != null) {
-         if (Strings.isValid(workItemId.getArtifactType().getName())) {
-            sb.append(workItemId.getArtifactType().getName());
-         } else {
-            sb.append("Work Item");
-         }
-         sb.append(" [");
-         sb.append(workItemId.getIdString());
-         sb.append("] Titled [");
-         sb.append(workItemId.getName());
-         sb.append("]\n\n");
+      if (Strings.isValid(workItemType)) {
+         sb.append(workItemType);
+      } else {
+         sb.append("Work Item");
       }
+      sb.append(" [");
+      sb.append(atsId);
+      sb.append("] Titled [");
+      sb.append(workItemId.getName());
+      sb.append("]\n\n");
       appendResultsString(sb, transitionResults);
 
       return sb.toString();
    }
 
-   public void appendResultsString(StringBuffer sb, List<ITransitionResult> results) {
-      for (ITransitionResult result : results) {
+   public void appendResultsString(StringBuffer sb, List<TransitionResult> results) {
+      for (TransitionResult result : results) {
          sb.append("    - ");
          sb.append(result.getDetails());
          if (result.getException() != null) {
@@ -105,8 +88,6 @@ public class TransitionWorkItemResult {
                sb.append(" - Exception [");
                sb.append(result.getException());
                sb.append("] (see log for details)");
-            } else {
-               sb.append(" - (see log for details)");
             }
          }
          sb.append("\n");
@@ -119,43 +100,42 @@ public class TransitionWorkItemResult {
       return getResultString();
    }
 
-   public List<ITransitionResult> getResults() {
+   public List<TransitionResult> getResults() {
       return transitionResults;
    }
 
-   void setResults(List<ITransitionResult> transitionResults) {
+   void setResults(List<TransitionResult> transitionResults) {
       this.transitionResults = transitionResults;
    }
 
-   @JsonIgnore
-   public AtsApi getAtsApi() {
-      return atsApi;
-   }
-
-   public void setAtsApi(AtsApi atsApi) {
-      this.atsApi = atsApi;
-   }
-
-   public IAtsWorkItem getWorkItem() {
-      if (workItem == null && workItemId.isValid()) {
-         workItem = atsApi.getWorkItemService().getWorkItem(workItemId);
-      }
-      return workItem;
-   }
-
    public void setWorkItem(IAtsWorkItem workItem) {
-      this.workItem = workItem;
+      this.workItemType = workItem.getArtifactTypeName();
+      this.atsId = workItem.getAtsId();
+      this.workItemId = ArtifactToken.valueOf(workItem.getId(), workItem.getName());
    }
 
    public ArtifactToken getWorkItemId() {
-      if ((workItemId == null || workItemId.isInvalid()) && workItem != null) {
-         workItemId = workItem.getArtifactToken();
-      }
       return workItemId;
    }
 
    public void setWorkItemId(ArtifactToken workItemId) {
       this.workItemId = workItemId;
+   }
+
+   public String getWorkItemType() {
+      return workItemType;
+   }
+
+   public void setWorkItemType(String workItemType) {
+      this.workItemType = workItemType;
+   }
+
+   public String getAtsId() {
+      return atsId;
+   }
+
+   public void setAtsId(String atsId) {
+      this.atsId = atsId;
    }
 
 }

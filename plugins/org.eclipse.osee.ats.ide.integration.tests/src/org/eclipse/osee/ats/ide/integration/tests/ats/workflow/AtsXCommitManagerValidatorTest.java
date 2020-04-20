@@ -56,14 +56,14 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
       AtsXCommitManagerValidator validator = new AtsXCommitManagerValidator();
 
       WidgetResult result = validator.validateTransition(workItem, null, notXCommitManagerWidget, null, null, null);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
 
       result = validator.validateTransition(workItem, notArtifactValueProvider, widgetDef, null, null, atsApi);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
 
       when(provider.getObject()).thenReturn(task1);
       result = validator.validateTransition(workItem, provider, widgetDef, null, null, atsApi);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
 
    }
 
@@ -75,7 +75,7 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
       when(branchService.isWorkingBranchInWork(teamWf)).thenReturn(false);
       when(branchService.isCommittedBranchExists(teamWf)).thenReturn(false);
       WidgetResult result = validator.validateTransition(workItem, provider, widgetDef, analyze, implement, atsApi);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
    }
 
    @Test
@@ -107,7 +107,7 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
       when(branchService.isAllObjectsToCommitToConfigured(teamWf)).thenReturn(true);
       when(implement.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name())).thenReturn(true);
       WidgetResult result = validator.validateTransition(workItem, provider, widgetDef, analyze, implement, atsApi);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
    }
 
    @Test
@@ -122,7 +122,7 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
 
       when(branchService.isBranchesAllCommitted(teamWf)).thenReturn(true);
       WidgetResult result = validator.validateTransition(workItem, provider, widgetDef, analyze, implement, atsApi);
-      Assert.assertEquals(WidgetResult.Valid, result);
+      Assert.assertEquals(WidgetResult.Success, result);
 
       when(branchService.isBranchesAllCommitted(teamWf)).thenReturn(false);
       result = validator.validateTransition(workItem, provider, widgetDef, analyze, implement, atsApi);

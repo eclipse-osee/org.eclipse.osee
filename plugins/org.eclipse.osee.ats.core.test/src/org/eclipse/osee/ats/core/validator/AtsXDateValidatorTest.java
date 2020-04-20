@@ -83,7 +83,7 @@ public class AtsXDateValidatorTest {
       // Valid for valid date
       WidgetResult result =
          validator.validateTransition(workItem, dateProvider, widgetDef, fromStateDef, toStateDef, atsServices);
-      Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
+      Assert.assertEquals(WidgetStatus.Success, result.getStatus());
    }
 
    @org.junit.Test

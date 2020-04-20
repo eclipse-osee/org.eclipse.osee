@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
+
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**

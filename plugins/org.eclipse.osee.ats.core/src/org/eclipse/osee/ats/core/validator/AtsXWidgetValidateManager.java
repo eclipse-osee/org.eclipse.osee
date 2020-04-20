@@ -46,7 +46,7 @@ public class AtsXWidgetValidateManager {
             try {
                WidgetResult status = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef,
                   toStateDef, atsServices);
-               if (!status.isValid()) {
+               if (!status.isSuccess()) {
                   results.add(status);
                }
             } catch (Exception ex) {

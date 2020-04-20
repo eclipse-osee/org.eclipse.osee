@@ -274,7 +274,7 @@ public class TransitionToMenu {
                   String resultStr = results.getResultString();
                   AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
                } else {
-                  TransitionResultsUi.report("Transition Failed", results);
+                  TransitionResultsUi.reportDialog("Transition Failed", results);
                }
             }
          }

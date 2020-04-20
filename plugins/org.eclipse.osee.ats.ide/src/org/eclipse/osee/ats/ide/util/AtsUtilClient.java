@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.api.workdef.ITransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionWorkItemResult;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -87,17 +87,17 @@ public class AtsUtilClient {
     * Log exceptions to OseeLog. Don't always want to do this due to testing.
     */
    public static void logExceptions(TransitionResults transResult) {
-      for (ITransitionResult result : transResult.getResults()) {
+      for (TransitionResult result : transResult.getResults()) {
          String ex = result.getException();
          if (Strings.isValid(ex)) {
             OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails() + "\n\n" + ex);
          }
       }
       for (TransitionWorkItemResult transitionWorkItemResult : transResult.getTransitionWorkItems()) {
-         for (ITransitionResult result : transitionWorkItemResult.getResults()) {
+         for (TransitionResult result : transitionWorkItemResult.getResults()) {
             String ex = result.getException();
             if (Strings.isValid(ex)) {
-               String message = transitionWorkItemResult.getWorkItem().toStringWithId() + " - " + result.getDetails();
+               String message = transitionWorkItemResult.getWorkItemId().toStringWithId() + " - " + result.getDetails();
                OseeLog.log(TransitionResults.class, Level.SEVERE, message + "\n\n" + ex);
             }
          }

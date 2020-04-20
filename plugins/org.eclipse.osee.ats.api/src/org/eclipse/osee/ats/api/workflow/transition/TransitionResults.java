@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,12 +29,12 @@ public class TransitionResults {
 
    boolean cancelled;
    private Set<ArtifactToken> workItemIds = new HashSet<>();
-   private List<ITransitionResult> results = new ArrayList<>();
+   private List<TransitionResult> results = new ArrayList<>();
    private List<TransitionWorkItemResult> transitionWorkItems = new ArrayList<>();
    @JsonIgnore
    private AtsApi atsApi;
 
-   public void addResult(IAtsWorkItem workItem, ITransitionResult result) {
+   public void addResult(IAtsWorkItem workItem, TransitionResult result) {
       TransitionWorkItemResult workItemResult = getTransitionWorkItemResult(workItem);
       if (workItemResult == null) {
          workItemResult = new TransitionWorkItemResult();
@@ -61,7 +60,7 @@ public class TransitionResults {
       transitionWorkItems.clear();
    }
 
-   public void addResult(ITransitionResult result) {
+   public void addResult(TransitionResult result) {
       results.add(result);
    }
 
@@ -122,17 +121,15 @@ public class TransitionResults {
       return sb.toString();
    }
 
-   public void appendResultsString(StringBuffer sb, List<ITransitionResult> results) {
-      for (ITransitionResult result : results) {
+   public void appendResultsString(StringBuffer sb, List<TransitionResult> results) {
+      for (TransitionResult result : results) {
          sb.append("    - ");
          sb.append(result.getDetails());
-         if (result.getException() != null) {
+         if (Strings.isValid(result.getException())) {
             if (Strings.isValid(result.getException())) {
                sb.append(" - Exception [");
                sb.append(result.getException());
                sb.append("] (see log for details)");
-            } else {
-               sb.append(" - (see log for details)");
             }
          }
          sb.append("\n");
@@ -154,7 +151,7 @@ public class TransitionResults {
       return getResultString();
    }
 
-   public List<ITransitionResult> getResults() {
+   public List<TransitionResult> getResults() {
       return results;
    }
 
@@ -181,7 +178,7 @@ public class TransitionResults {
       }
    }
 
-   public void setResults(List<ITransitionResult> results) {
+   public void setResults(List<TransitionResult> results) {
       this.results = results;
    }
 
