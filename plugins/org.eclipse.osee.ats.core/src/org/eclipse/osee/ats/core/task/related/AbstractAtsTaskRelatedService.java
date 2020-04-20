@@ -68,7 +68,7 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
          getRelatedChangedArtifact(trd, artifact);
          return trd;
       } else {
-         trd.getResults().error("Can't resolve refrence to ArtifactId");
+         trd.getResults().errorf("No related change artifact for %s", trd.getTask().toStringWithId());
       }
 
       return trd;
