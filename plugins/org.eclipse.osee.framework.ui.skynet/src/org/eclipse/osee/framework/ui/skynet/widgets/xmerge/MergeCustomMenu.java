@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -443,11 +444,12 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
    private class PreviewHandler extends AbstractSelectionEnabledHandler {
       private final int partToPreview;
-      private List<Artifact> artifacts;
+      private final List<Artifact> artifacts;
 
       public PreviewHandler(MenuManager menuManager, int partToPreview) {
          super(menuManager);
          this.partToPreview = partToPreview;
+         artifacts = new ArrayList<>();
       }
 
       @Override
@@ -468,7 +470,10 @@ public class MergeCustomMenu extends XViewerCustomMenu {
                   if (status.isInformational()) {
                      return false;
                   }
-
+               }
+               Artifact artifact = conflict.getArtifact();
+               if (!artifacts.contains(artifact)) {
+                  artifacts.add(artifact);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
