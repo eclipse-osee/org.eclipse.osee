@@ -13,12 +13,7 @@
 					"jdbc.client.connection.pool.max.active.connections": "100",
 					"jdbc.client.connection.pool.max.idle.connections": "100",
 					"osgi.binding": [
-						"client.jdbc.service",
-						"activity.jdbc.service",
-						"orcs.jdbc.service",
-						"account.jdbc.service",
-						"oauth.jdbc.service",
-						"app.server.jdbc.service"
+						"client.jdbc.service"
 					],
 					"application.servers": [
 						"localhost:8089"

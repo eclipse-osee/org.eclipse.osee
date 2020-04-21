@@ -6,5 +6,5 @@
    </service>
    <property name="store.id" type="String" value="osee.system.preferences"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=orcs.jdbc.service)"/>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
 </scr:component>

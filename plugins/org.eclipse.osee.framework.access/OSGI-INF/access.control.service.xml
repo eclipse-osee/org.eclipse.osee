@@ -4,7 +4,7 @@
    <service>
       <provide interface="org.eclipse.osee.framework.core.model.access.IAccessControlService"/>
    </service>
-   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
    <reference bind="setCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
    <reference bind="setEventService" cardinality="1..1" interface="org.eclipse.osee.framework.skynet.core.event.OseeEventService" name="OseeEventService" policy="static"/>
    <reference bind="setLifecycleService" cardinality="1..1" interface="org.eclipse.osee.framework.lifecycle.ILifecycleService" name="ILifecycleService" policy="static"/>
