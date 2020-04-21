@@ -149,6 +149,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
          }
 
+         // Register for events and deregister on dispose
          AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this,
             AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
 
@@ -157,9 +158,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
 
-         // Register for events and deregister on dispose
-         AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this,
-            AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
          final WfeWorkFlowTab fThis = this;
          bodyComp.addDisposeListener(new DisposeListener() {
 
@@ -559,7 +557,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public void refreshExpandStates() {
       for (WfeWorkflowSection wfeSection : sections) {
-         if (Widgets.isAccessible(wfeSection.getMainComp())) {
+         if (!Widgets.isAccessible(wfeSection.getMainComp())) {
             continue;
          }
          boolean isCurrentState = wfeSection.isCurrentState();
