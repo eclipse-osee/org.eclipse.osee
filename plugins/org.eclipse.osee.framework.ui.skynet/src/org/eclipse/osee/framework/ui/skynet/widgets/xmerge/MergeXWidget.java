@@ -29,6 +29,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -492,6 +493,15 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
             boolean isValidUpdate =
                rebase && BranchManager.isParent(sourceBranch, BranchManager.getParentBranch(destBranch));
+            // if this is the update from targeted branch case, even if the parent of the target branch is not the
+            // same as the parent branch of the source branch, we need to allow the update.
+            if (!isValidUpdate) {
+               if (sourceBranch.getName().subSequence(0, 12).equals(
+                  destBranch.getName().substring(0, 12)) && BranchManager.getType(destBranch) == BranchType.WORKING) {
+                  // override since names are similar and destination isn't a baseline branch (see commit bug:[ats_B2207])
+                  isValidUpdate = true;
+               }
+            }
             boolean isValidCommit = BranchManager.hasMergeBranches(sourceBranch) && !rebase;
 
             isVisible &= isValidUpdate || isValidCommit;

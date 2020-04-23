@@ -31,16 +31,18 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
  */
 public class UpdateBranchOperation extends AbstractOperation {
    private final IOseeBranch originalBranch;
+   private final BranchId fromBranch;
    private final ConflictResolverOperation resolver;
    private IOseeBranch newBranch;
 
    public UpdateBranchOperation(final IOseeBranch branch, final ConflictResolverOperation resolver) {
-      this(branch, null, resolver);
+      this(branch, BranchManager.getParentBranch(branch), resolver);
    }
 
    public UpdateBranchOperation(final IOseeBranch branch, final BranchId fromBranch, final ConflictResolverOperation resolver) {
       super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
+      this.fromBranch = fromBranch;
       this.resolver = resolver;
    }
 
@@ -59,23 +61,19 @@ public class UpdateBranchOperation extends AbstractOperation {
          OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
 
-         BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
          proxy.logBranchActivity(
-            String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s parentBranchId: %s",
-               originalBranch.getIdString(), originalBranch.getName(), parentBranch.getId()));
+            String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s fromBranch: %s",
+               originalBranch.getIdString(), originalBranch.getName(), fromBranch));
       }
-   }
-
-   private IOseeBranch createTempBranch(IOseeBranch originalBranch) {
-      BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
-      return BranchManager.createWorkingBranch(parentBranch, getUpdatedName(originalBranch.getName()));
    }
 
    private void performUpdate(IProgressMonitor monitor, IOseeBranch originalBranch) throws Exception {
       boolean wasSuccessful = false;
       try {
          monitor.setTaskName("Creating temporary branch");
-         newBranch = createTempBranch(originalBranch);
+
+         newBranch = BranchManager.createWorkingBranch(fromBranch, getUpdatedName(originalBranch.getName()));
+
          BranchManager.setState(originalBranch, BranchState.REBASELINE_IN_PROGRESS);
          monitor.worked(calculateWork(0.40));
 
