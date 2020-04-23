@@ -51,11 +51,11 @@ public abstract class CommitHandler extends CommandHandler {
       this.useParentBranch = useParentBranch;
    }
 
-   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch) {
-      return commitBranch(conflictManager, archiveSourceBranch, false);
+   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch) {
+      return commitBranch(conflictManager, showArchiveCheck, archiveSourceBranch, false);
    }
 
-   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, boolean skipPrompts) {
+   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
       boolean toReturn = false;
       AtomicBoolean checkBox = new AtomicBoolean(false);
       BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
@@ -70,15 +70,22 @@ public abstract class CommitHandler extends CommandHandler {
                   public void run() {
                      String message = String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
                         conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
-                     CheckBoxDialog diag = new CheckBoxDialog(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Commit Branch", null, message,
-                        "Archive Working Branch? (not normally selected)", MessageDialog.QUESTION, 0);
 
-                     if (diag.open() == Window.OK) {
-                        if (diag.isChecked()) {
-                           checkBox.set(true);
+                     if (showArchiveCheck) {
+                        CheckBoxDialog diag = new CheckBoxDialog(
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Commit Branch", null,
+                           message, "Archive Working Branch? (not normally selected)", MessageDialog.QUESTION, 0);
+                        if (diag.open() == Window.OK) {
+                           if (diag.isChecked()) {
+                              checkBox.set(true);
+                           }
+                           dialogResult.setValue(true);
                         }
-                        dialogResult.setValue(true);
+                     } else {
+                        if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Commit Branch", message)) {
+                           dialogResult.setValue(true);
+                        }
                      }
                   }
                });
@@ -149,7 +156,7 @@ public abstract class CommitHandler extends CommandHandler {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            commitBranch(new ConflictManagerExternal(destinationBranch, sourceBranch), archiveSourceBranch);
+            commitBranch(new ConflictManagerExternal(destinationBranch, sourceBranch), true, archiveSourceBranch);
          } catch (OseeCoreException ex) {
             return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
          }

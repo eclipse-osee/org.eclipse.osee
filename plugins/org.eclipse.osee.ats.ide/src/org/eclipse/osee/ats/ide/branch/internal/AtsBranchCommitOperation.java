@@ -111,7 +111,8 @@ public class AtsBranchCommitOperation extends AbstractOperation {
             new ConflictManagerExternal(destinationBranch, workflowWorkingBranch);
 
          if (commitPopup) {
-            branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
+            boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+            branchCommitted = CommitHandler.commitBranch(conflictManager, atsAdmin, archiveWorkingBranch);
          } else {
             BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, false);
             branchCommitted = true;
