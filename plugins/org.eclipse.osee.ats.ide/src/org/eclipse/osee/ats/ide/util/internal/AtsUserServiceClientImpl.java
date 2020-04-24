@@ -60,6 +60,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public void clearCaches() {
       currentUser = null;
+      atsAdmin = null;
    }
 
    @Override

@@ -87,6 +87,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             }
             AtsClientService.get().getConfigService().getConfigurationsWithPend();
             AtsClientService.get().getUserService().isAtsAdmin(false);
+            AtsClientService.get().getUserService().clearCaches();
             NavigateViewItems.getInstance().clearCaches();
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refreshPages();
