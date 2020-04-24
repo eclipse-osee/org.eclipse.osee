@@ -13,16 +13,20 @@ package org.eclipse.osee.define.rest;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitCommitFile;
 import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -37,11 +41,13 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class FullHistoryTolerant implements HistoryImportStrategy {
    protected final Map<String, ArtifactId> pathToCodeunitMap;
    private final TupleQuery tupleQuery;
-   protected final ArtifactToken repoArtifact;
+   protected final ArtifactReadable repoArtifact;
    protected final BranchId branch;
    protected final QueryFactory queryFactory;
 
-   public FullHistoryTolerant(ArtifactToken repoArtifact, OrcsApi orcsApi, Map<String, ArtifactId> pathToCodeunitMap) {
+   private final Map<String, ArtifactId> existingCodeUnitPath = new ConcurrentHashMap<>();
+
+   public FullHistoryTolerant(ArtifactReadable repoArtifact, OrcsApi orcsApi, Map<String, ArtifactId> pathToCodeunitMap) {
       this.repoArtifact = repoArtifact;
       this.branch = repoArtifact.getBranch();
       queryFactory = orcsApi.getQueryFactory();
@@ -63,7 +69,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
                codeUnit);
             return ArtifactId.SENTINEL;
          } else {
-            codeUnit = tx.createArtifact(CoreArtifactTypes.CodeUnit, newPath);
+            codeUnit = createCodeUnit(tx, newPath);
             pathToCodeunitMap.put(newPath, codeUnit);
          }
       } else if (changeType == ChangeType.DELETE) {
@@ -85,7 +91,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          } else {
             System.out.printf("didn't find in commit [%s] for rename from [%s] to [%s]\n", commitSHA, path, newPath);
             if (Strings.isValid(newPath)) {
-               codeUnit = tx.createArtifact(CoreArtifactTypes.CodeUnit, newPath);
+               codeUnit = createCodeUnit(tx, newPath);
                pathToCodeunitMap.put(newPath, codeUnit);
             }
          }
@@ -101,6 +107,35 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          return codeUnit;
       }
       return ArtifactId.SENTINEL;
+   }
+
+   private ArtifactId createCodeUnit(TransactionBuilder tx, String newPath) {
+      ArtifactId folder = repoArtifact;
+      String codeUnitName = "";
+      String wholePath = "";
+      List<String> path = Lists.newArrayList(Splitter.on("/").split(newPath));
+      if (!(path.size() > 0)) {
+         return ArtifactId.SENTINEL;
+      }
+      codeUnitName = path.get(path.size() - 1);
+      path.remove(path.size() - 1);
+
+      String temp = "";
+      for (String newFolder : path) {
+         wholePath += newFolder + "/";
+         temp = folder.getIdString();
+         if (!existingCodeUnitPath.containsKey(wholePath)) {
+            folder = tx.createArtifact(folder, CoreArtifactTypes.Folder, newFolder);
+            existingCodeUnitPath.put(wholePath, folder);
+         } else {
+            folder = existingCodeUnitPath.get(wholePath);
+         }
+      }
+      temp = folder.getIdString();
+      ArtifactId codeUnit = tx.createArtifact(folder, CoreArtifactTypes.CodeUnit, codeUnitName);
+      wholePath += newPath;
+
+      return codeUnit;
    }
 
    @Override

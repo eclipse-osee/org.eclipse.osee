@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -32,7 +32,7 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
    private final HashSet<String> changeIds = new HashSet<>();
    private final boolean initialImport;
 
-   public FastHistoryStrategy(ArtifactToken repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport, Map<String, ArtifactId> pathToCodeunitMap) {
+   public FastHistoryStrategy(ArtifactReadable repository, OrcsApi orcsApi, TransactionBuilder tx, boolean initialImport, Map<String, ArtifactId> pathToCodeunitMap) {
       super(repository, orcsApi, pathToCodeunitMap);
       this.tx = tx;
       this.initialImport = initialImport;

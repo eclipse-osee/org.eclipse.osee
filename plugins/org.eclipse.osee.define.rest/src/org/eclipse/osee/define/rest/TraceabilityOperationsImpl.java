@@ -132,7 +132,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
 
    @Override
    public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, UserId account, TransactionBuilder tx, String password) {
-      ArtifactId baselineEvent = tx.createArtifact(repoArtifact, CertificationBaselineEvent, baselineData.eventName);
+
+      ArtifactId baselineEvent = tx.createArtifact(CertificationBaselineEvent, baselineData.eventName);
 
       ArtifactId baselinedByUser =
          queryFactory.fromBranch(COMMON).andAttributeIs(UserId, baselineData.baselinedByUserId).asArtifactId();

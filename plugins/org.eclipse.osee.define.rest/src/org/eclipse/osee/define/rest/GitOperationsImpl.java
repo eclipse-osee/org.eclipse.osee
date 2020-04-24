@@ -272,6 +272,7 @@ public final class GitOperationsImpl implements GitOperations {
          orcsApi.getTransactionFactory().createTransaction(branch, account, "GitOperationsImpl.createGitRepository()");
 
       ArtifactId repoArtifact = tx.createArtifact(CoreArtifactTokens.GitRepoFolder, GitRepository, repoName);
+
       tx.setSoleAttributeValue(repoArtifact, RepositoryUrl, gitRepoUrl);
       try {
          tx.setSoleAttributeValue(repoArtifact, FileSystemPath, localPath.getCanonicalPath());
@@ -340,7 +341,7 @@ public final class GitOperationsImpl implements GitOperations {
       }
    }
 
-   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactId repoArtifact, RevCommit revCommit, BranchId branch, UserId account, HistoryImportStrategy importStrategy) {
+   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, UserId account, HistoryImportStrategy importStrategy) {
       try {
          TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch, account);
 
@@ -359,6 +360,7 @@ public final class GitOperationsImpl implements GitOperations {
          }
 
          ArtifactId commitArtifact = tx.createArtifact(GitCommit, revCommit.getShortMessage());
+
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitSha, commitSHA);
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.UserArtifactId, SystemUser.OseeSystem); //TODO: this must convert author to the corresponding user artifact
          tx.setSoleAttributeValue(commitArtifact, CoreAttributeTypes.GitCommitAuthorDate,
