@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -223,5 +224,15 @@ public interface AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    TransitionResults transitionValidate(TransitionData transData);
+
+   @Path("sync/jira")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public XResultData syncJira();
+
+   @Path("sync/jira/persist")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public XResultData syncJiraAndPersist();
 
 }

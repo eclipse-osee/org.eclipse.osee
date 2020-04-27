@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -304,6 +305,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          throw new OseeArgumentException("Multiple artifacts found with value [%s]", value);
       }
       return ArtifactToken.SENTINEL;
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactListFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(attributeType, values).getResults().getList());
    }
 
 }

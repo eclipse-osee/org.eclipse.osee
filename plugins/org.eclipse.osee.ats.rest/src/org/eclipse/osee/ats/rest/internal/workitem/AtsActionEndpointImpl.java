@@ -67,6 +67,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -77,6 +78,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -741,6 +743,26 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transitionValidate(TransitionData transData) {
       TransitionResults results = atsApi.getWorkItemService().transitionValidate(transData);
+      return results;
+   }
+
+   @Path("sync/jira")
+   @GET
+   @Override
+   @Produces({MediaType.APPLICATION_JSON})
+   public XResultData syncJira() {
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, true);
+      XResultData results = op.run();
+      return results;
+   }
+
+   @Path("sync/jira/persist")
+   @GET
+   @Override
+   @Produces({MediaType.APPLICATION_JSON})
+   public XResultData syncJiraAndPersist() {
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, false);
+      XResultData results = op.run();
       return results;
    }
 

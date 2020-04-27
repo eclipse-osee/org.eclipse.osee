@@ -178,4 +178,6 @@ public interface IAgileService {
 
    Collection<IAgileFeatureGroup> getFeatureGroups(IAtsWorkItem workItem);
 
+   IAgileSprint getSprint(IAtsTeamWorkflow teamWf);
+
 }

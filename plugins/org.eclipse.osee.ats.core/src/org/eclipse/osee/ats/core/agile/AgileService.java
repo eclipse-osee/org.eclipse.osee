@@ -824,4 +824,14 @@ public class AgileService implements IAgileService {
       return AtsObjects.toString(",", getFeatureGroups(workItem));
    }
 
+   @Override
+   public IAgileSprint getSprint(IAtsTeamWorkflow teamWf) {
+      ArtifactToken sprintArt =
+         atsApi.getRelationResolver().getRelatedOrSentinel(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+      if (sprintArt.isValid()) {
+         return atsApi.getAgileService().getAgileSprint(sprintArt);
+      }
+      return null;
+   }
+
 }
