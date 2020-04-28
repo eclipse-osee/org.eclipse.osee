@@ -178,7 +178,12 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public Collection<RelationTypeToken> getRelationTypes() {
       return Collections.unmodifiableCollection(relationTypes.values());
    }
-   
+
+   @Override
+   public Collection<AttributeTypeGeneric<?>> getAttributeTypes() {
+      return Collections.unmodifiableCollection(attributeTypes.values());
+   }
+
    public void start() {
    }
 }

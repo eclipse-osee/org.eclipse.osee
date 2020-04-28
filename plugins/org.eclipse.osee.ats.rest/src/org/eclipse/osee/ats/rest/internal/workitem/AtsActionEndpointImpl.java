@@ -273,7 +273,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
       IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
       AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
-      AttributeTypeId attrTypeId = null;
+      AttributeTypeToken attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
          attrTypeId = CoreAttributeTypes.Name;

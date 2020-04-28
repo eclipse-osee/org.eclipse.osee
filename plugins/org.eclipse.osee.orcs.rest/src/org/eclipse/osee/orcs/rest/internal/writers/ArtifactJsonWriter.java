@@ -23,14 +23,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -90,11 +89,10 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
             if (matches(IdentityView.class, annotations)) {
                writer.writeStringField("Name", artifact.getName());
             } else {
-               AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-               Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
+               Collection<AttributeTypeGeneric<?>> attrTypes = orcsApi.tokenService().getAttributeTypes();
                ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
                if (!attributes.isEmpty()) {
-                  for (AttributeTypeToken attrType : attrTypes) {
+                  for (AttributeTypeGeneric<?> attrType : attrTypes) {
                      if (artifact.isAttributeTypeValid(attrType)) {
                         List<Object> attributeValues = artifact.getAttributeValues(attrType);
                         if (!attributeValues.isEmpty()) {

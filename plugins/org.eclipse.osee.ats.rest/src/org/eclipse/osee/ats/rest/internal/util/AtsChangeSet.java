@@ -399,51 +399,51 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
-         if (orcsApi.getOrcsTypes().getAttributeTypes().isStringType(attributeType)) {
+         if (attributeType.isString()) {
             try {
                objValues.add(value);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid value [%s]; must be string", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attributeType)) {
+         } else if (attributeType.isDate()) {
             try {
                Date date = new Date(Long.valueOf(value));
                objValues.add(date);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid date value [%s]; must be long date", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attributeType)) {
+         } else if (attributeType.isDouble()) {
             try {
                Double double1 = Double.valueOf(value);
                objValues.add(double1);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid double value [%s]", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attributeType)) {
+         } else if (attributeType.isInteger()) {
             try {
                Integer integer = Integer.valueOf(value);
                objValues.add(integer);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid integer value [%s]", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isLongType(attributeType)) {
+         } else if (attributeType.isLong()) {
             try {
                Long longVal = Long.valueOf(value);
                objValues.add(longVal);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid long value [%s]", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attributeType)) {
+         } else if (attributeType.isBoolean()) {
             try {
                Boolean bool = Boolean.valueOf(value);
                objValues.add(bool);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid boolean value [%s]", value);
             }
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isEnumerated(attributeType)) {
+         } else if (attributeType.isEnumerated()) {
             try {
                objValues.add(value);
             } catch (Exception ex) {
@@ -455,7 +455,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       ArtifactReadable art = getArtifact(atsObject);
-      setAttributeValues(art, (AttributeTypeToken) attributeType, objValues);
+      setAttributeValues(art, attributeType, objValues);
    }
 
    @Override

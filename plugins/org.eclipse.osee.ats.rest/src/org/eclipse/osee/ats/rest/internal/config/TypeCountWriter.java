@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -126,8 +127,8 @@ public class TypeCountWriter {
    private List<AttributeTypeToken> getAttrTypes(List<Long> typeIds) {
       List<AttributeTypeToken> toReturn = new ArrayList<>();
 
-      Collection<AttributeTypeToken> allTypes = orcsApi.getOrcsTypes().getAttributeTypes().getAll();
-      for (AttributeTypeToken type : allTypes) {
+      Collection<AttributeTypeGeneric<?>> allTypes = orcsApi.tokenService().getAttributeTypes();
+      for (AttributeTypeGeneric<?> type : allTypes) {
          if (typeIds.contains(type.getId())) {
             toReturn.add(type);
          }

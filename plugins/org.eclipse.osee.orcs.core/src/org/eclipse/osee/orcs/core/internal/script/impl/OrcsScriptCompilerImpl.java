@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptAssembler;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptCompiler;
@@ -47,16 +46,14 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
    private final OrcsSession session;
    private final DataModule dataModule;
    private final OrcsTokenService tokenService;
-   private final OrcsTypes orcsTypes;
    private final QueryModule queryModule;
 
    private OrcsScriptInterpreter interpreter;
 
-   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTokenService tokenService, OrcsTypes orcsTypes, QueryModule queryModule) {
+   public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTokenService tokenService, QueryModule queryModule) {
       this.session = session;
       this.dataModule = dataModule;
       this.tokenService = tokenService;
-      this.orcsTypes = orcsTypes;
       this.queryModule = queryModule;
    }
 
@@ -64,7 +61,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
       if (interpreter == null) {
          IExpressionResolver resolver = OrcsScriptUtil.getExpressionResolver();
          IFieldResolver fieldResolver = OrcsScriptUtil.getFieldResolver();
-         interpreter = new OrcsScriptInterpreterImpl(tokenService, orcsTypes, resolver, fieldResolver);
+         interpreter = new OrcsScriptInterpreterImpl(tokenService, resolver, fieldResolver);
       }
       return interpreter;
    }

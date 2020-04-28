@@ -19,6 +19,11 @@ public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
    }
 
    @Override
+   public boolean isDouble() {
+      return true;
+   }
+
+   @Override
    public Double valueFromStorageString(String storedValue) {
       return Double.valueOf(storedValue);
    }

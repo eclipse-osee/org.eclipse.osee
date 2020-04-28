@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -19,12 +18,6 @@ import org.eclipse.osee.framework.core.data.TaggerTypeToken;
  * @author Roberto E. Escobar
  */
 public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
-
-   Collection<AttributeTypeId> getAllTaggable();
-
-   String getDescription(AttributeTypeId attrType);
-
-   String getBaseAttributeTypeId(AttributeTypeId attrType);
 
    String getAttributeProviderId(AttributeTypeId attrType);
 
@@ -40,32 +33,10 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    TaggerTypeToken getTaggerId(AttributeTypeId attrType);
 
-   boolean isTaggable(AttributeTypeId attrType);
-
-   boolean isEnumerated(AttributeTypeId attrType);
-
-   String getMediaType(AttributeTypeId attrType);
-
-   boolean hasMediaType(AttributeTypeId attrType);
-
-   boolean isBooleanType(AttributeTypeId attrType);
-
-   boolean isIntegerType(AttributeTypeId attrType);
-
-   boolean isDateType(AttributeTypeId attrType);
-
-   boolean isFloatingType(AttributeTypeId attrType);
-
    /**
     * @return AttributeTypeToken or OseeTypeDoesNotExist
     */
    AttributeTypeToken getByName(String attrTypeName);
-
-   boolean isStringType(AttributeTypeId attrType);
-
-   boolean isLongType(AttributeTypeId attrType);
-
-   boolean isArtifactReferencedAttribute(AttributeTypeId attrType);
 
    boolean typeExists(String attrTypeName);
 

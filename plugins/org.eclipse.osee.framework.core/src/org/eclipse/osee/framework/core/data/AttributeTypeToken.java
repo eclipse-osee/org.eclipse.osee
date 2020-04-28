@@ -45,7 +45,51 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return false;
    }
 
+   default boolean isString() {
+      return false;
+   }
+
    default boolean isEnumerated() {
+      return false;
+   }
+
+   default boolean isBoolean() {
+      return false;
+   }
+
+   default boolean isDate() {
+      return false;
+   }
+
+   default boolean isInteger() {
+      return false;
+   }
+
+   default boolean isDouble() {
+      return false;
+   }
+
+   default boolean isLong() {
+      return false;
+   }
+
+   default boolean isArtifactId() {
+      return false;
+   }
+
+   default boolean isBranchId() {
+      return false;
+   }
+
+   default boolean isObject() {
+      return false;
+   }
+
+   default boolean isInputStream() {
+      return false;
+   }
+
+   default boolean isJavaObject() {
       return false;
    }
 

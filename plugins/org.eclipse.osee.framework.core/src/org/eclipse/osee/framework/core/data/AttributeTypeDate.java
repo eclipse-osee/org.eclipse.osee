@@ -23,6 +23,11 @@ public final class AttributeTypeDate extends AttributeTypeGeneric<Date> {
    }
 
    @Override
+   public boolean isDate() {
+      return true;
+   }
+
+   @Override
    public Date valueFromStorageString(String storedValue) {
       return new Date(Long.parseLong(storedValue));
    }

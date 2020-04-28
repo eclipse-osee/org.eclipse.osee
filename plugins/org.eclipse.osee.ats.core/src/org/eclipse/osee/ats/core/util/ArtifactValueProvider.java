@@ -71,7 +71,7 @@ public class ArtifactValueProvider implements IValueProvider {
    @Override
    public Collection<Date> getDateValues() {
       AttributeTypeToken attributeType = getAtributeType();
-      if (attributeType != null && atsApi.getStoreService().isDateType(attributeType)) {
+      if (attributeType != null && attributeType.isDate()) {
          return atsApi.getAttributeResolver().getAttributeValues(artifact, attributeType);
       }
       return Collections.emptyList();

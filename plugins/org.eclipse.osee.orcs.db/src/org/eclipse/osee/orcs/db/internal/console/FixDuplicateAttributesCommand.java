@@ -113,7 +113,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       private void populateAttributeTypeJoin(IdJoinQuery typeJoin) {
          AttributeTypes types = orcsApi.getOrcsTypes().getAttributeTypes();
-         for (AttributeTypeId attributeType : types.getAll()) {
+         for (AttributeTypeId attributeType : orcsApi.tokenService().getAttributeTypes()) {
             if (types.getMaxOccurrences(attributeType) == 1) {
                typeJoin.add(attributeType);
             }

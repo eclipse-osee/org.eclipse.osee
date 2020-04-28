@@ -19,6 +19,11 @@ public final class AttributeTypeBranchId extends AttributeTypeGeneric<BranchId> 
    }
 
    @Override
+   public boolean isBranchId() {
+      return true;
+   }
+
+   @Override
    public String storageStringFromValue(BranchId branch) {
       return branch.getIdString();
    }

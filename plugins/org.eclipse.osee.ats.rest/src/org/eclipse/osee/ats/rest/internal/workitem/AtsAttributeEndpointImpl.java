@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributeEndpointApi;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributes;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -60,9 +61,8 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
          attrs.add(key.name(), key.name(),
             key.getUrl().equals("N/A") ? key.getUrl() : System.getProperty("OseeApplicationServer") + key.getUrl());
       }
-      AttributeTypes attrTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      for (AttributeTypeToken attrType : attrTypes.getAll()) {
-         if (attrTypes.isEnumerated(attrType)) {
+      for (AttributeTypeGeneric<?> attrType : orcsApi.tokenService().getAttributeTypes()) {
+         if (attrType.isEnumerated()) {
             attrs.add(attrType.getIdString(), attrType.getName(),
                System.getProperty("OseeApplicationServer") + "/ats/attr/" + attrType.getIdString() + "/");
          }
@@ -99,7 +99,7 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
    private void getEnumValues(List<String> values, Long id) {
       AttributeTypes attrTypes = orcsApi.getOrcsTypes().getAttributeTypes();
       AttributeTypeToken attrType = orcsApi.tokenService().getAttributeType(id);
-      if (attrTypes.isEnumerated(attrType)) {
+      if (attrType.isEnumerated()) {
          for (EnumEntry entry : attrTypes.getEnumType(attrType).values()) {
             values.add(entry.getName());
          }

@@ -240,7 +240,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
-      for (AttributeTypeToken attrType : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken attrType : orcsApi.tokenService().getAttributeTypes()) {
          idToToken.put(attrType.getName(), attrType);
       }
 
@@ -255,20 +255,19 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          SortDataType sortDataType = SortDataType.String;
          int width = 60;
 
-         boolean isBoolean = orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType);
-         if (orcsApi.getOrcsTypes().getAttributeTypes().isEnumerated(attrType)) {
+         if (attrType.isEnumerated()) {
             width = 40;
-         } else if (isBoolean) {
+         } else if (attrType.isBoolean()) {
             width = 50;
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+         } else if (attrType.isInteger()) {
             width = 45;
             sortDataType = SortDataType.Integer;
             columnAlign = ColumnAlign.Center;
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+         } else if (attrType.isDouble()) {
             width = 40;
             sortDataType = SortDataType.Float;
             columnAlign = ColumnAlign.Center;
-         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+         } else if (attrType.isDate()) {
             width = 80;
             sortDataType = SortDataType.Date;
          }
@@ -286,7 +285,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          String name = attrType.getName().replaceAll("^.*\\.", "");
          valueColumn.setName(name);
          valueColumn.setId(generateId(attrType.getName(), name));
-         if (isBoolean) {
+         if (attrType.isBoolean()) {
             valueColumn.setBooleanNotSetShow("");
             valueColumn.setBooleanOnFalseShow("false");
             valueColumn.setBooleanOnTrueShow("true");

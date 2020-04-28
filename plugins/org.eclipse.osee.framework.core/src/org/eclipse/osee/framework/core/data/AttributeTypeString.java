@@ -26,6 +26,11 @@ public class AttributeTypeString extends AttributeTypeGeneric<String> {
    }
 
    @Override
+   public boolean isString() {
+      return true;
+   }
+
+   @Override
    public String valueFromStorageString(String storedValue) {
       return storedValue;
    }

@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -91,10 +90,6 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
       return false;
    }
 
-   private AttributeTypes getAttributeTypes() {
-      return orcsApi.getOrcsTypes().getAttributeTypes();
-   }
-
    @Override
    public void writeTo(Collection<IAtsConfigObject> programs, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
@@ -103,7 +98,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
          writer.writeStartArray();
          for (IAtsConfigObject program : programs) {
             ConfigJsonWriter.addProgramObject(atsApi, orcsApi, program, annotations, writer,
-               matches(IdentityView.class, annotations), getAttributeTypes());
+               matches(IdentityView.class, annotations));
          }
          writer.writeEndArray();
       } finally {

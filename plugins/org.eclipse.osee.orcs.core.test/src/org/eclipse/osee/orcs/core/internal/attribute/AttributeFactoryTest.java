@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -77,7 +78,7 @@ public class AttributeFactoryTest {
       when(attributeData.getType()).thenReturn(attributeType);
       doReturn(attributeType).when(tokenService).getAttributeType(attributeType.getId());
       assertEquals(attributeType, tokenService.getAttributeType(attributeType.getId()));
-      when(cache.getBaseAttributeTypeId(attributeType)).thenReturn("StringAttribute");
+      assertTrue(attributeType.isString());
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 

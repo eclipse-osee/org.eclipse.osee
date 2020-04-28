@@ -88,8 +88,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
    public Response getEnums() {
       List<JaxEnumAttribute> attributes = new ArrayList<>();
       AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-      for (AttributeTypeToken type : attributeTypes.getAll()) {
-         if (attributeTypes.isEnumerated(type)) {
+      for (AttributeTypeToken type : orcsApi.tokenService().getAttributeTypes()) {
+         if (type.isEnumerated()) {
             JaxEnumAttribute enumAttr = createJaxEnumAttribute(attributeTypes, type);
             attributes.add(enumAttr);
          }
@@ -107,7 +107,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       enumAttr.setDefaultValue(attributeTypes.getDefaultValue(type));
       enumAttr.setMax(attributeTypes.getMaxOccurrences(type));
       enumAttr.setMin(attributeTypes.getMinOccurrences(type));
-      enumAttr.setMediaType(attributeTypes.getMediaType(type));
+      enumAttr.setMediaType(type.getMediaType());
       EnumType enumType = attributeTypes.getEnumType(type);
       enumAttr.setEnumTypeName(enumType.getName());
       enumAttr.setEnumTypeUuid(enumType.getIdString());

@@ -19,6 +19,11 @@ public final class AttributeTypeInteger extends AttributeTypeGeneric<Integer> {
    }
 
    @Override
+   public boolean isInteger() {
+      return true;
+   }
+
+   @Override
    public Integer valueFromStorageString(String storedValue) {
       return Integer.valueOf(storedValue);
    }

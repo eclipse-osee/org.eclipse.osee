@@ -161,7 +161,7 @@ public class RoughArtifact {
       boolean result = false;
       AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
       AttributeTypeToken type = attributeTypes.getByName(typeName);
-      result = attributeTypes.isEnumerated(type);
+      result = type.isEnumerated();
       return result;
    }
 
@@ -170,7 +170,7 @@ public class RoughArtifact {
       try {
          AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
          AttributeTypeToken type = attributeTypes.getByName(typeName);
-         if (attributeTypes.isEnumerated(type) && attributeTypes.getMaxOccurrences(type) > 1 && value.contains(",")) {
+         if (type.isEnumerated() && attributeTypes.getMaxOccurrences(type) > 1 && value.contains(",")) {
             result = true;
          }
       } catch (OseeCoreException ex) {

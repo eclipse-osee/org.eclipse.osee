@@ -19,6 +19,11 @@ public final class AttributeTypeArtifactId extends AttributeTypeGeneric<Artifact
    }
 
    @Override
+   public boolean isArtifactId() {
+      return true;
+   }
+
+   @Override
    public String storageStringFromValue(ArtifactId value) {
       return value.getIdString();
    }

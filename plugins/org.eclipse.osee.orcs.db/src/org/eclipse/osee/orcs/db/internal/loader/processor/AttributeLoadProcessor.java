@@ -14,7 +14,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -69,19 +69,18 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
+         AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
 
-         String baseAttributeType = attributeTypes.getBaseAttributeTypeId(attributeType);
          Object value = null;
-         if (baseAttributeType.contains("BooleanAttribute")) {
+         if (attributeType.isBoolean()) {
             value = chStmt.getBoolean("value");
-         } else if (baseAttributeType.contains("FloatingPointAttribute")) {
+         } else if (attributeType.isDouble()) {
             value = chStmt.getDouble("value");
-         } else if (baseAttributeType.contains("IntegerAttribute")) {
+         } else if (attributeType.isInteger()) {
             value = chStmt.getInt("value");
-         } else if (baseAttributeType.contains("LongAttribute")) {
+         } else if (attributeType.isLong()) {
             value = chStmt.getLong("value");
-         } else if (baseAttributeType.contains("ArtifactReferenceAttribute")) {
+         } else if (attributeType.isArtifactId()) {
             String id = chStmt.getString("value");
             if (Strings.isNumeric(id)) {
                value = ArtifactId.valueOf(id);
@@ -89,13 +88,13 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
                logger.error("Inavlid non-numeric value [%s] for ArtRefAttribute [%s] attrId [%s] on artId [%s]", id,
                   attributeType.getIdString(), attrId, artId);
             }
-         } else if (baseAttributeType.contains("BranchReferenceAttribute")) {
+         } else if (attributeType.isBranchId()) {
             value = BranchId.valueOf(chStmt.getString("value"));
-         } else if (baseAttributeType.contains("DateAttribute")) {
+         } else if (attributeType.isDate()) {
             value = new Date(chStmt.getLong("value"));
          } else {
             value = chStmt.getString("value");
-            if (baseAttributeType.contains("EnumeratedAttribute")) {
+            if (attributeType.isEnumerated()) {
                value = Strings.intern((String) value);
             }
          }

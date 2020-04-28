@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -52,7 +53,6 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -94,10 +94,6 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       return assignableFrom && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
    }
 
-   private AttributeTypes getAttributeTypes() {
-      return orcsApi.getOrcsTypes().getAttributeTypes();
-   }
-
    @Override
    public void writeTo(IAtsConfigObject config, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
@@ -105,7 +101,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer = jsonFactory.createGenerator(entityStream);
          writer.writeStartArray();
          addProgramObject(atsApi, orcsApi, config, annotations, writer,
-            JsonUtil.hasAnnotation(IdentityView.class, annotations), getAttributeTypes());
+            JsonUtil.hasAnnotation(IdentityView.class, annotations));
          writer.writeEndArray();
       } finally {
          if (writer != null) {
@@ -114,7 +110,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   public static void addProgramObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addProgramObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject);
       writer.writeStartObject();
       writer.writeNumberField("id", atsObject.getId());
@@ -126,7 +122,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeArrayFieldStart("version");
             for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
-               addProgramObject(atsApi, orcsApi, version, annotations, writer, true, attributeTypes);
+               addProgramObject(atsApi, orcsApi, version, annotations, writer, true);
             }
             writer.writeEndArray();
          }
@@ -235,19 +231,19 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer.writeStringField("Backlog", backlogArt.isValid() ? backlogArt.getName() : "");
       }
       if (!identityView) {
-         addAttributeData(writer, attributeTypes, artifact, Collections.emptyList(), atsApi, orcsApi);
+         addAttributeData(writer, artifact, Collections.emptyList(), atsApi, orcsApi);
       }
       writer.writeEndObject();
    }
 
-   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
-      Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
+   public static void addAttributeData(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
+      Collection<AttributeTypeGeneric<?>> attrTypes = orcsApi.tokenService().getAttributeTypes();
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       boolean fieldsAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
-         for (AttributeTypeToken attrType : attrTypes) {
-            boolean isDateType = orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType);
+         for (AttributeTypeGeneric<?> attrType : attrTypes) {
+            boolean isDateType = attrType.isDate();
             if (artifact.isAttributeTypeValid(attrType)) {
                List<Object> attributeValues = artifact.getAttributeValues(attrType);
                if (!attributeValues.isEmpty()) {
@@ -291,7 +287,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             AttributeTypeToken attrType = attributeValues.iterator().next().getAttributeType();
             if (!writtenTypes.contains(attrType.getId())) {
                writtenTypes.add(attrType.getId());
-               boolean isDateType = orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType);
+               boolean isDateType = attrType.isDate();
 
                if (attributeValues.size() > 1) {
                   if (keysAsIds) {

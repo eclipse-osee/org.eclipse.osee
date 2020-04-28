@@ -25,6 +25,11 @@ public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputSt
    }
 
    @Override
+   public boolean isInputStream() {
+      return true;
+   }
+
+   @Override
    public InputStream valueFromStorageString(String storedValue) {
       try {
          return Lib.stringToInputStream(storedValue);

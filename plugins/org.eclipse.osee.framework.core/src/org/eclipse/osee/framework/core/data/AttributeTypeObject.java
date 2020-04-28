@@ -19,6 +19,11 @@ public final class AttributeTypeObject extends AttributeTypeGeneric<Object> {
    }
 
    @Override
+   public boolean isJavaObject() {
+      return true;
+   }
+
+   @Override
    public Object valueFromStorageString(String storedValue) {
       return storedValue;
    }

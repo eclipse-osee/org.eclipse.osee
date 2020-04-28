@@ -65,11 +65,6 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getBaseAttributeTypeId(AttributeTypeId attributeType) {
-      return getType(attributeType).getBaseAttributeType();
-   }
-
-   @Override
    public String getAttributeProviderId(AttributeTypeId attrType) {
       return getType(attrType).getDataProvider();
    }
@@ -124,18 +119,6 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isTaggable(AttributeTypeId attributeType) {
-      return getTaggerId(attributeType).isValid();
-   }
-
-   @Override
-   public boolean isEnumerated(AttributeTypeId attrType) {
-      XAttributeType type = getType(attrType);
-      XOseeEnumType enumType = type.getEnumType();
-      return enumType != null;
-   }
-
-   @Override
    public EnumType getEnumType(AttributeTypeId attrType) {
       EnumType toReturn = null;
       XAttributeType type = getType(attrType);
@@ -144,13 +127,6 @@ public class AttributeTypesImpl implements AttributeTypes {
          toReturn = enumTypeIndexProvider.getEnumTypeIndex().getTokenByDslType(enumType);
       }
       return toReturn;
-   }
-
-   @Override
-   public String getDescription(AttributeTypeId attrType) {
-      XAttributeType type = getType(attrType);
-      String value = type.getDescription();
-      return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    @Override
@@ -164,72 +140,8 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public Collection<AttributeTypeId> getAllTaggable() {
-      return provider.getAttributeTypeIndex().getAllTaggable();
-   }
-
-   @Override
    public boolean exists(Id id) {
       return provider.getAttributeTypeIndex().exists(id);
-   }
-
-   @Override
-   public String getMediaType(AttributeTypeId attrType) {
-      XAttributeType type = getType(attrType);
-      String value = type.getMediaType();
-      return Strings.isValid(value) ? value : Strings.emptyString();
-   }
-
-   @Override
-   public boolean hasMediaType(AttributeTypeId attrType) {
-      boolean toReturn = false;
-      String mediaType = getMediaType(attrType);
-      if (mediaType != null) {
-         toReturn = Strings.isValid(mediaType.trim());
-      }
-      return toReturn;
-   }
-
-   @Override
-   public boolean isBooleanType(AttributeTypeId attrType) {
-      String baseType = getBaseAttributeTypeId(attrType);
-      return baseType != null && baseType.toLowerCase().contains("boolean");
-   }
-
-   @Override
-   public boolean isIntegerType(AttributeTypeId attrType) {
-      String baseType = getBaseAttributeTypeId(attrType);
-      return baseType != null && baseType.toLowerCase().contains("integer");
-   }
-
-   @Override
-   public boolean isDateType(AttributeTypeId attributeType) {
-      String baseType = getBaseAttributeTypeId(attributeType);
-      return baseType != null && baseType.toLowerCase().contains("date");
-   }
-
-   @Override
-   public boolean isStringType(AttributeTypeId attributeType) {
-      String baseType = getBaseAttributeTypeId(attributeType);
-      return baseType != null && baseType.endsWith("StringAttribute");
-   }
-
-   @Override
-   public boolean isLongType(AttributeTypeId attributeType) {
-      String baseType = getBaseAttributeTypeId(attributeType);
-      return baseType != null && baseType.toLowerCase().contains("long");
-   }
-
-   @Override
-   public boolean isFloatingType(AttributeTypeId attrType) {
-      String baseType = getBaseAttributeTypeId(attrType);
-      return baseType != null && baseType.toLowerCase().contains("floatingpoint");
-   }
-
-   @Override
-   public boolean isArtifactReferencedAttribute(AttributeTypeId attrType) {
-      String baseType = getBaseAttributeTypeId(attrType);
-      return baseType != null && baseType.endsWith("ArtifactReferenceAttribute");
    }
 
    @Override

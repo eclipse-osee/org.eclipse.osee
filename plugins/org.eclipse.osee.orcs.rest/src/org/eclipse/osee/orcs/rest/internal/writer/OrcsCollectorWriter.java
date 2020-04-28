@@ -159,14 +159,14 @@ public class OrcsCollectorWriter {
                   if (Strings.isValid(currValue) && newValue == null) {
                      logChange(artifact, attrType, currValue, newValue);
                      getTransaction().deleteAttributes(artifact, attrType);
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
+                  } else if (attrType.isBoolean()) {
                      Boolean currVal = getBoolean(currValue);
                      Boolean newVal = getBoolean(newValue);
                      if (currVal == null || !currVal.equals(newVal)) {
                         logChange(artifact, attrType, currValue, newValue);
                         getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
                      }
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+                  } else if (attrType.isDouble()) {
                      try {
                         Double currVal = getDouble(currValue);
                         Double newVal = getDouble(newValue);
@@ -178,7 +178,7 @@ public class OrcsCollectorWriter {
                         throw new OseeArgumentException("Exception processing Double for OwAttribute %s Exception %s",
                            owAttribute, ex);
                      }
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+                  } else if (attrType.isInteger()) {
                      try {
                         Integer currVal = getInteger(currValue);
                         Integer newVal = getInteger(newValue);
@@ -190,7 +190,7 @@ public class OrcsCollectorWriter {
                         throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
                            owAttribute, ex);
                      }
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                  } else if (attrType.isDate()) {
                      try {
                         Date currVal = artifact.getSoleAttributeValue(attrType, null);
                         Date newVal = getDate(newValue);
@@ -220,7 +220,7 @@ public class OrcsCollectorWriter {
                   }
                } else if (owAttribute.getValues().size() > 1 && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
                   attrType) > 1) {
-                  if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                  if (attrType.isDate()) {
                      throw new OseeArgumentException(
                         "Date attributes not supported for multi-value set for OwAttribute %s Exception %s",
                         owAttribute);
@@ -387,16 +387,16 @@ public class OrcsCollectorWriter {
             for (Object value : values) {
                String valueOf = String.valueOf(value);
                if (Strings.isValid(valueOf) && !valueOf.equals("null")) {
-                  if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+                  if (attrType.isDouble()) {
                      getTransaction().setSoleAttributeValue(artifact, attrType, Double.valueOf((String) value));
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+                  } else if (attrType.isInteger()) {
                      getTransaction().setSoleAttributeValue(artifact, attrType, Integer.valueOf((String) value));
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
+                  } else if (attrType.isBoolean()) {
                      Boolean set = getBoolean((String) value);
                      if (set != null) {
                         getTransaction().setSoleAttributeValue(artifact, attrType, set);
                      }
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                  } else if (attrType.isDate()) {
                      Date date = getDate(value);
                      if (date != null) {
                         getTransaction().setSoleAttributeValue(artifact, attrType, date);

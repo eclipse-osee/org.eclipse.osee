@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -134,11 +135,6 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isDateType(AttributeTypeToken attributeType) {
-      return AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType);
-   }
-
-   @Override
    public void executeChangeSet(String comment, IAtsObject atsObject) {
       executeChangeSet(comment, Collections.singleton(atsObject));
    }
@@ -158,7 +154,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public Collection<AttributeTypeToken> getAttributeTypes() {
+   public Collection<AttributeTypeGeneric<?>> getAttributeTypes() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(AttributeTypeManager.getAllTypes());
    }
 

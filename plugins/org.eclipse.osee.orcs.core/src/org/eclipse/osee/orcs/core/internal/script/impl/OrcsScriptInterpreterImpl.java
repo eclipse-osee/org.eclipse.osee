@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptAssembler;
@@ -116,14 +115,12 @@ import org.eclipse.osee.orcs.search.TxQueryBuilder;
  */
 public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
-   private final OrcsTypes orcsTypes;
    private final OrcsTokenService tokenService;
    private final IExpressionResolver resolver;
    private final IFieldResolver fieldResolver;
 
-   public OrcsScriptInterpreterImpl(OrcsTokenService tokenService, OrcsTypes orcsTypes, IExpressionResolver resolver, IFieldResolver fieldResolver) {
+   public OrcsScriptInterpreterImpl(OrcsTokenService tokenService, IExpressionResolver resolver, IFieldResolver fieldResolver) {
       super();
-      this.orcsTypes = orcsTypes;
       this.tokenService = tokenService;
       this.resolver = resolver;
       this.fieldResolver = fieldResolver;
@@ -170,7 +167,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
    private AttributeTypeToken getAttributeType(String name) {
       AttributeTypeToken toReturn = null;
-      for (AttributeTypeToken type : orcsTypes.getAttributeTypes().getAll()) {
+      for (AttributeTypeToken type : tokenService.getAttributeTypes()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;

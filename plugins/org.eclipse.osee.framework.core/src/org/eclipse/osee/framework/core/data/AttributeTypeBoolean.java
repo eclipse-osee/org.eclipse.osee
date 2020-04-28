@@ -19,6 +19,11 @@ public final class AttributeTypeBoolean extends AttributeTypeGeneric<Boolean> {
    }
 
    @Override
+   public boolean isBoolean() {
+      return true;
+   }
+
+   @Override
    public Boolean valueFromStorageString(String storedValue) {
       return Boolean.valueOf(storedValue);
    }

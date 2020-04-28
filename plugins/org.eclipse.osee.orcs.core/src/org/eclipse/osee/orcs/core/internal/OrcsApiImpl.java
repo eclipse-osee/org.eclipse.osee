@@ -177,8 +177,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), tokenService());
 
-      OrcsScriptCompiler compiler =
-         new OrcsScriptCompilerImpl(getSystemSession(), module, tokenService(), orcsTypes, queryModule);
+      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, tokenService(), queryModule);
       manager = ScriptEngines.newScriptEngineManager(compiler);
 
       applicability = new OrcsApplicabilityOps(this);

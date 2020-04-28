@@ -219,7 +219,7 @@ public class OrcsWriterCollectorGenerator {
    private void createAttributeTypeSheet() {
       Map<String, AttributeTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+         for (AttributeTypeToken type : orcsApi.tokenService().getAttributeTypes()) {
             types.put(type.getName(), type);
          }
       } else {

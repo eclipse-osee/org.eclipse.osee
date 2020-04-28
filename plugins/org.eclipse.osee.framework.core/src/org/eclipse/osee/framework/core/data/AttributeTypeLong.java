@@ -19,6 +19,11 @@ public final class AttributeTypeLong extends AttributeTypeGeneric<Long> {
    }
 
    @Override
+   public boolean isLong() {
+      return true;
+   }
+
+   @Override
    public Long valueFromStorageString(String storedValue) {
       return Long.valueOf(storedValue);
    }

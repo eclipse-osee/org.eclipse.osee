@@ -91,14 +91,18 @@ public interface OrcsTokenService {
     */
    Iterable<AttributeTypeGeneric<?>> getTaggedAttrs();
 
-
    /**
     * Get unmodifiable list of ArtifactTypes.
     */
    Collection<ArtifactTypeToken> getArtifactTypes();
 
-    /**
+   /**
     * Get unmodifiable list of RelationTypes.
     */
    Collection<RelationTypeToken> getRelationTypes();
+
+   /**
+    * Get unmodifiable list of AttributeTypes.
+    */
+   Collection<AttributeTypeGeneric<?>> getAttributeTypes();
 }
