@@ -96,7 +96,6 @@ public class User extends Artifact implements UserToken {
          BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE));
 
       boolean found = false;
-      @SuppressWarnings("deprecation")
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
@@ -215,6 +214,16 @@ public class User extends Artifact implements UserToken {
    @Override
    public Collection<String> getLoginIds() {
       return getAttributeValues(CoreAttributeTypes.LoginId);
+   }
+
+   @Override
+   public ArtifactToken getArtifact() {
+      return this;
+   }
+
+   @Override
+   public void setArtifact(ArtifactToken artifact) {
+      // do nothing
    }
 
 }

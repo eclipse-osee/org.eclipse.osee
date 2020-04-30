@@ -288,6 +288,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public UserGroupService getUserGroupService() {
       if (userGroupService == null) {
          userGroupService = new UserGroupService();
+         userGroupService.setOrcsApi(this);
       }
       return userGroupService;
    }

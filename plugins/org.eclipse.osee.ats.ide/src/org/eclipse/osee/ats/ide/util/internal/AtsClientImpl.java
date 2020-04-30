@@ -72,11 +72,13 @@ import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -411,5 +413,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public boolean isIde() {
       return true;
+   }
+
+   @Override
+   public IUserGroupService getUserGroupService() {
+      return UserGroupService.instance();
    }
 }

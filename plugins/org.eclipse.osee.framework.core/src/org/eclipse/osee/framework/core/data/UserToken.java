@@ -57,6 +57,10 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public Collection<String> getLoginIds();
 
+   public ArtifactToken getArtifact();
+
+   public void setArtifact(ArtifactToken artifact);
+
    static final class UserTokenImpl extends NamedIdBase implements UserToken {
       private final String userId;
       private final boolean active;
@@ -64,6 +68,7 @@ public interface UserToken extends ArtifactToken, UserId {
       private final String email;
       private final Set<ArtifactToken> roles = new HashSet<>();
       private final Collection<String> loginIds = new ArrayList<String>();
+      private ArtifactToken artifact;
 
       public UserTokenImpl(long id, String name, String userId, boolean active, String email, Collection<String> loginIds, ArtifactToken... roles) {
          super(id, name);
@@ -119,6 +124,16 @@ public interface UserToken extends ArtifactToken, UserId {
       @Override
       public Collection<String> getLoginIds() {
          return loginIds;
+      }
+
+      @Override
+      public ArtifactToken getArtifact() {
+         return artifact;
+      }
+
+      @Override
+      public void setArtifact(ArtifactToken artifact) {
+         this.artifact = artifact;
       }
 
    }

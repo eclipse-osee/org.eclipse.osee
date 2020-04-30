@@ -35,6 +35,10 @@ public class UserGroupService implements IUserGroupService {
       this.orcsApi = orcsApi;
    }
 
+   public static IUserGroupService instance() {
+      return userGroupService;
+   }
+
    public static IUserGroup getOseeAdmin() {
       return get(CoreUserGroups.OseeAdmin);
    }

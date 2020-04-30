@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.server.OseeInfo;
@@ -352,4 +353,10 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    public boolean isIde() {
       return false;
    }
+
+   @Override
+   public IUserGroupService getUserGroupService() {
+      return orcsApi.getUserGroupService();
+   }
+
 }

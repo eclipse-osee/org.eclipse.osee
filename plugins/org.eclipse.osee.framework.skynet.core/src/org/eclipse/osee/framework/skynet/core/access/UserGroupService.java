@@ -34,6 +34,10 @@ public class UserGroupService implements IUserGroupService {
 
    private static UserGroupService userGroupService;
 
+   public static IUserGroupService instance() {
+      return userGroupService;
+   }
+
    public static IUserGroup getOseeAdmin() {
       return get(CoreUserGroups.OseeAdmin);
    }
