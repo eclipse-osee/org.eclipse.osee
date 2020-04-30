@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -44,7 +43,6 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
@@ -58,7 +56,6 @@ public class WorkDefTeamSimpleInWork extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //

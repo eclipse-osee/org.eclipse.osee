@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -23,7 +22,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -47,7 +45,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(0) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
@@ -68,7 +65,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.BLACK) //
          .andRecommendedPercentComplete(15) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
@@ -89,7 +85,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_RED) //
          .andRecommendedPercentComplete(60) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
@@ -109,7 +104,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_GREEN) //
          .andRecommendedPercentComplete(100) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //
@@ -128,7 +122,6 @@ public class WorkDefTaskAtsConfig2Example extends AbstractWorkDef {
          .andColor(StateColor.DARK_GREEN) //
          .andRecommendedPercentComplete(100) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
                new WidgetDefinition(AtsAttributeTypes.EstimatedHours, "XFloatDam"), //

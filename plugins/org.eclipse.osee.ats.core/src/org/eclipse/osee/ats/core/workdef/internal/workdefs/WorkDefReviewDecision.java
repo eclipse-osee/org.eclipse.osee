@@ -44,7 +44,6 @@ public class WorkDefReviewDecision extends AbstractWorkDef {
          .andToStates(StateToken.Cancelled, StateToken.Decision) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.DecisionReviewOptions, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -45,7 +44,6 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
@@ -62,7 +60,6 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
@@ -84,7 +81,6 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //

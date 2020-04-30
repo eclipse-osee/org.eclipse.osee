@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.workdef.builder.DecisionReviewDefinitionBuilder
 import org.eclipse.osee.ats.core.workdef.builder.PeerReviewDefinitionBuilder;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -93,7 +92,6 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", REQUIRED_FOR_TRANSITION, FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //

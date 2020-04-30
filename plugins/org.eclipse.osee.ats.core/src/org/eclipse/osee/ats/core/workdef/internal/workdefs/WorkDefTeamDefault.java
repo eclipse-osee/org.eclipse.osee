@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
 import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -45,7 +44,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(6, //
@@ -64,7 +62,6 @@ public class WorkDefTeamDefault extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowAssigneeToAll, RuleDefinitionOption.AllowEditToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY), //
