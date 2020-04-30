@@ -109,25 +109,25 @@ public class AtsIdProviderTest {
          (String) null)).thenReturn("");
 
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_WORKFLOW_SEQ_NAME)).thenReturn(333L);
-      when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_WORKFLOW_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
 
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_ACTION_SEQ_NAME)).thenReturn(333L);
-      when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Action)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_ACTION_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
 
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_REVIEW_SEQ_NAME)).thenReturn(333L);
-      when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Action)).thenReturn(false);
-      when(newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)).thenReturn(true);
+      when(newObject.isOfType(AtsArtifactTypes.AbstractReview)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_REVIEW_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
 
       when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_TASK_SEQ_NAME)).thenReturn(333L);
-      when(newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
       when(newObject.isTypeEqual(AtsArtifactTypes.Action)).thenReturn(false);
-      when(newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)).thenReturn(false);
-      when(newObject.isTypeEqual(AtsArtifactTypes.Task)).thenReturn(true);
+      when(newObject.isOfType(AtsArtifactTypes.AbstractReview)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.Task)).thenReturn(true);
       Assert.assertEquals(AtsIdProvider.DEFAULT_TASK_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
    }
 

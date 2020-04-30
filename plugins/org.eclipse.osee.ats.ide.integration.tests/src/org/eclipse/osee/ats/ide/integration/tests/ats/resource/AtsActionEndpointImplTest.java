@@ -656,7 +656,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          String urlStr = response.getLocation().toString();
          URL url = new URL(urlStr);
          String path = url.getPath();
-         Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/ATS"));
+         Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/TW"));
          String atsId = path.replaceFirst("^.*/", "");
 
          teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,

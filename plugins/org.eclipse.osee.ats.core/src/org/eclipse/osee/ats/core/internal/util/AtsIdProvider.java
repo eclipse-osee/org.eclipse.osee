@@ -61,13 +61,13 @@ public final class AtsIdProvider {
    public String getNextAtsId() {
       String seqName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdSequenceName);
       if (!Strings.isValid(seqName)) {
-         if (newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)) {
+         if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             seqName = DEFAULT_WORKFLOW_SEQ_NAME;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             seqName = DEFAULT_ACTION_SEQ_NAME;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)) {
+         } else if (newObject.isOfType(AtsArtifactTypes.AbstractReview)) {
             seqName = DEFAULT_REVIEW_SEQ_NAME;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
+         } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
             seqName = DEFAULT_TASK_SEQ_NAME;
          } else {
             seqName = DEFAULT_SEQ_NAME;
@@ -81,13 +81,13 @@ public final class AtsIdProvider {
          prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
       }
       if (Strings.isInValid(prefixName)) {
-         if (newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)) {
+         if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
          } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             prefixName = DEFAULT_ACTION_ID_PREFIX;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.AbstractReview)) {
+         } else if (newObject.isOfType(AtsArtifactTypes.AbstractReview)) {
             prefixName = DEFAULT_REVIEW_ID_PREFIX;
-         } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
+         } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
             prefixName = DEFAULT_TASK_ID_PREFIX;
          } else {
             prefixName = DEFAULT_ID_PREFIX;
