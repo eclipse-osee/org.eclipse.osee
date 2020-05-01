@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -70,17 +71,17 @@ public class BranchesResource {
    }
 
    @Path("{branch}/tuple")
-   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
+   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new TupleEndpointImpl(orcsApi, branch, accountId);
    }
 
    @Path("{branch}/applic")
-   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
+   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new ApplicabilityEndpointImpl(orcsApi, branch, accountId);
    }
 
    @Path("{branch}/artifact")
-   public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
+   public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId accountId) {
       return new ArtifactEndpointImpl(orcsApi, branch, accountId, uriInfo);
    }
 }

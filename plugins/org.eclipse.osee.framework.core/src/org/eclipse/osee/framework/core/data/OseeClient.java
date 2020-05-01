@@ -19,6 +19,7 @@ public class OseeClient {
    public static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    public static final int PORT = 8089;
    public static final String DEFAULT_URL = "http://localhost:" + PORT;
+   public static final String OSEE_ACCOUNT_ID = "osee.account.id";
 
    private OseeClient() {
       // utility class

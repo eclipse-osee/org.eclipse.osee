@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -124,7 +125,7 @@ public interface BranchEndpoint {
    @Path("{branch}/program")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   IOseeBranch createProgramBranch(@HeaderParam("osee.account.id") UserId account, @PathParam("branch") BranchId branchId, String branchName);
+   IOseeBranch createProgramBranch(@HeaderParam(OSEE_ACCOUNT_ID) UserId account, @PathParam("branch") BranchId branchId, String branchName);
 
    @POST
    @Path("{branch}")

@@ -162,7 +162,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
             selectedUsers.clear();
             for (Object obj : uld.getResult()) {
                User user = (User) obj;
-               AtsUser atsUser = AtsClientService.get().getUserService().getUserByAccountId(user.getId());
+               AtsUser atsUser = AtsClientService.get().getUserService().getUserByAccountId(user);
                if (!AtsCoreUsers.isUnAssignedUser(atsUser)) {
                   selectedUsers.add(atsUser);
                }

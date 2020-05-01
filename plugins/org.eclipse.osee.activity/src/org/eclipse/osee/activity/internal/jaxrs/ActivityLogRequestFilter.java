@@ -52,7 +52,7 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
             String clientStr = context.getHeaderString("osee.client.id");
             Long clientId = Strings.isValid(clientStr) ? Long.valueOf(clientStr) : Id.SENTINEL;
             Long serverId = Long.valueOf(OseeClient.getPort());
-            UserId accountId = UserId.valueOf(context.getHeaderString("osee.account.id"));
+            UserId accountId = UserId.valueOf(context.getHeaderString(OseeClient.OSEE_ACCOUNT_ID));
 
             Long entryId = activityLog.createActivityThread(JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
 

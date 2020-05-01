@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -26,11 +25,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.utility.RestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -171,20 +168,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public AtsUser getUserByAccountId(HttpHeaders httpHeaders) {
-      AtsUser user = null;
-      String accountId = RestUtil.getAccountId(httpHeaders);
-      if (Strings.isInValid(accountId)) {
-         return null;
-      }
-      AtsUser userById = getUserByAccountId(Long.valueOf(accountId));
-      if (userById != null) {
-         user = userById;
-      }
-      return user;
-   }
-
-   @Override
    public void setCurrentUser(AtsUser user) {
       // TBD
    }
@@ -193,5 +176,4 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    public void clearCaches() {
       // do nothing
    }
-
 }

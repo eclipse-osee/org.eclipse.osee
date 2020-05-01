@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.api;
 
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_ACCOUNT_ID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -32,12 +33,12 @@ public interface GitEndpoint {
    @Path("{branch}/repo")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId trackGitBranch(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId account, @QueryParam("git-branch") String gitBranchName, @QueryParam("clone") boolean clone, String gitRepoUrl);
+   ArtifactId trackGitBranch(@PathParam("branch") BranchId branch, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("git-branch") String gitBranchName, @QueryParam("clone") boolean clone, String gitRepoUrl);
 
    @POST
    @Path("{branch}/repo/{repository-name}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, @HeaderParam("osee.account.id") UserId account, @QueryParam("fetch") boolean fetch, String gitBranchName);
+   ArtifactId updateGitTrackingBranch(@PathParam("branch") BranchId branch, @PathParam("repository-name") String repositoryName, @HeaderParam(OSEE_ACCOUNT_ID) UserId account, @QueryParam("fetch") boolean fetch, String gitBranchName);
 
 }

@@ -19,7 +19,7 @@ public class RestAssuredTest {
 
    @Test
    public void testOrcsApplicability() {
-      given().port(OseeClient.getPort()).header("osee.account.id", "61106791").when().get(
+      given().port(OseeClient.getPort()).header(OseeClient.OSEE_ACCOUNT_ID, "61106791").when().get(
          "/orcs/branch/3/applic/artifact/425075333").then().body("id", equalTo("1"));
    }
 }

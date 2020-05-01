@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -30,7 +31,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -73,7 +72,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -96,12 +97,12 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 @Path("action")
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
-   private final AtsApi atsApi;
    private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
+   private final AtsApi atsApi;
 
-   @Context
-   private HttpHeaders httpHeaders;
+   @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
+   private UserId accountId;
 
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -271,10 +272,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
       IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
-      if (asUser == null) {
-         asUser = AtsCoreUsers.SYSTEM_USER;
-      }
+      AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
       AttributeTypeId attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
@@ -398,13 +396,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.TEXT_HTML})
    public Response cancelAction(@PathParam("id") String id) {
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       if (workItem.isInWork()) {
          Conditions.assertNotNull(workItem, "workItem can not be found");
-         if (asUser == null) {
-            asUser = AtsCoreUsers.SYSTEM_USER;
-         }
+         AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
          ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
          ops.setActionAttributeByType(id, AttributeKey.State.name(), Arrays.asList("Cancelled"));
       }
@@ -423,10 +418,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    public Collection<ArtifactToken> setByArtifactToken(@PathParam("workItemId") String workItemId, @PathParam("changeType") String changeType, Collection<ArtifactToken> artifacts) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
-      AtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
-      if (asUser == null) {
-         asUser = AtsCoreUsers.SYSTEM_USER;
-      }
+      AtsUser asUser = atsApi.getUserService().getUserByAccountId(accountId);
       ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
       return ops.setByArtifactToken(workItem, changeType, artifacts);
 
@@ -507,8 +499,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             try {
                List<StateType> stateTypes = new LinkedList<>();
                for (String type : entry.getValue()) {
-                  StateType stateType2 = StateType.valueOf(type);
-                  stateTypes.add(stateType2);
+                  stateTypes.add(StateType.valueOf(type));
                }
                query.andStateType(stateTypes.toArray(new StateType[stateTypes.size()]));
             } catch (Exception ex) {
