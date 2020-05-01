@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -119,5 +120,10 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    @Override
    public JdbcClient getJdbcClient() {
       return jdbcClient;
+   }
+
+   @Override
+   public void updateBootstrapUser(UserId accountId) {
+      jdbcClient.runPreparedUpdate("UPDATE osee_tx_details SET author = ? where author <= 0", accountId);
    }
 }

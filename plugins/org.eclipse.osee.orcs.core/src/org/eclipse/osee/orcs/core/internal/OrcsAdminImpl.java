@@ -219,4 +219,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
       artifacts.forEach(art -> batchStatement.addToBatch(artifactType, art));
       batchStatement.execute();
    }
+
+   @Override
+   public void updateBootstrapUser(UserId accountId) {
+      dataStoreAdmin.updateBootstrapUser(accountId);
+   }
 }

@@ -43,4 +43,6 @@ public interface OrcsAdmin {
 
    void changeArtifactTypeOutsideofHistory(ArtifactTypeId artifactType, List<? extends ArtifactId> artifacts);
 
+   void updateBootstrapUser(UserId accountId);
+
 }

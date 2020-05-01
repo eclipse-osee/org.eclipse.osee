@@ -14,11 +14,14 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
 import java.util.concurrent.Callable;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserTokens;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -37,6 +40,9 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    private final ActivityLog activityLog;
    private final OrcsAdmin adminOps;
    private final TransactionFactory txFactory;
+
+   @HeaderParam(OseeClient.OSEE_ACCOUNT_ID)
+   private UserId accountId;
 
    public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.activityLog = activityLog;
@@ -100,5 +106,10 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
          txFactory.createTransaction(COMMON, users.getAccount(), "DatastoreEndpointImpl.createUsers()");
       adminOps.createUsers(tx, users.getUsers());
       return tx.commit();
+   }
+
+   @Override
+   public void updateBootstrapUser() {
+      adminOps.updateBootstrapUser(accountId);
    }
 }

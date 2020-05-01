@@ -56,4 +56,9 @@ public interface DatastoreEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    TransactionId createUsers(UserTokens users);
 
+   @POST
+   @Path("user/bootstrap")
+   @Produces(MediaType.APPLICATION_JSON)
+   void updateBootstrapUser();
+
 }
