@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -34,9 +36,9 @@ public interface IAtsUserService {
 
    String getCurrentUserId();
 
-   AtsUser getUserById(String userId);
+   AtsUser getUserByUserId(String userId);
 
-   AtsUser getUserByArtifactId(ArtifactId id);
+   AtsUser getUserById(ArtifactId id);
 
    boolean isUserIdValid(String userId);
 
@@ -60,10 +62,6 @@ public interface IAtsUserService {
 
    Collection<AtsUser> getUsers();
 
-   List<? extends AtsUser> getUsersFromDb();
-
-   AtsUser getUserByAccountId(Long accountId);
-
    /**
     * @param accountId UserId or null
     * @return if accountId is null, then the IAtsUser corresponding to SystemUser.Anonymous is returned
@@ -74,8 +72,6 @@ public interface IAtsUserService {
 
    Collection<AtsUser> getActiveAndAssignedInActive(Collection<? extends IAtsWorkItem> workItems);
    void setCurrentUser(AtsUser user);
-
-   AtsUser getAtsUser(AtsUser user);
 
    Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation);
 
@@ -92,5 +88,7 @@ public interface IAtsUserService {
    Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId user);
 
    Boolean isUserMember(IUserGroupArtifactToken userGroup);
+
+   AtsUser getUserByToken(UserToken userToken);
 
 }

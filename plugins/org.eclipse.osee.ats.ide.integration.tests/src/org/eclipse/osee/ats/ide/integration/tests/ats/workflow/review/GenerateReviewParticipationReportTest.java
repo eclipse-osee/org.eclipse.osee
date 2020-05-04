@@ -29,7 +29,7 @@ public class GenerateReviewParticipationReportTest {
    @Test
    public void test() {
       GenerateReviewParticipationReport report = new GenerateReviewParticipationReport(null);
-      report.setSelectedUser(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
+      report.setSelectedUser(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Set<Artifact> results = report.getResults();
       Assert.assertEquals(6, results.size());
       int decRevCount = 0, peerRevCount = 0;

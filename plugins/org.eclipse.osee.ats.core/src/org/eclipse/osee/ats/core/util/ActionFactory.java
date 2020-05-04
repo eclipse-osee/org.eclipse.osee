@@ -113,14 +113,14 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public ActionResult createAction(NewActionData data, IAtsChangeSet changes) {
-      AtsUser asUser = atsApi.getUserService().getUserById(data.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserByUserId(data.getAsUserId());
       Conditions.assertNotNull(asUser, "As-User must be specified.");
       AtsUser createdBy = null;
       if (Strings.isValid(data.getCreatedByUserId())) {
-         createdBy = atsApi.getUserService().getUserById(data.getCreatedByUserId());
+         createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
       }
       if (createdBy == null && Strings.isValid(data.getCreatedByUserId())) {
-         createdBy = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getCreatedByUserId()));
+         createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
       }
       Conditions.assertNotNull(createdBy, "Created-By must be specified.");
       Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
@@ -255,7 +255,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       // set originator
       if (Strings.isNumeric(data.getOriginatorStr())) {
-         AtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getOriginatorStr()));
+         AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(data.getOriginatorStr()));
          if (originator != null) {
             for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
                changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
@@ -267,7 +267,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (Strings.isValid(data.getAssigneeStr())) {
          List<AtsUser> assignees = new LinkedList<>();
          for (String id : data.getAssigneeStr().split(",")) {
-            AtsUser user = atsApi.getUserService().getUserByAccountId(Long.valueOf(id));
+            AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(id));
             if (user != null) {
                assignees.add(user);
             }

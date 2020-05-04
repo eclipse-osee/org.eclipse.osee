@@ -230,7 +230,7 @@ public final class AtsEditors {
    public static Image getImage(Collection<AtsUser> atsUsers) {
       Set<User> users = new HashSet<>();
       for (AtsUser user : atsUsers) {
-         users.add((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
+         users.add((User) AtsClientService.get().getUserService().getUserByUserId(user.getUserId()).getStoreObject());
       }
       return FrameworkArtifactImageProvider.getUserImage(users);
    }

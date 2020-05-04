@@ -43,7 +43,7 @@ public class CancelledByColumn extends AbstractServicesColumn {
          userId = atsApi.getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) obj, AtsAttributeTypes.CancelledBy,
             null);
          if (Strings.isValid(userId)) {
-            return atsApi.getUserService().getUserById(userId);
+            return atsApi.getUserService().getUserByUserId(userId);
          }
       }
       return null;

@@ -115,11 +115,10 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    }
 
    public static boolean promptChangeOriginator(final Collection<IAtsWorkItem> workItems, boolean persist) {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator",
-         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         AtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
+         AtsUser selectedUser = AtsClientService.get().getUserService().getUserById(ld.getSelection());
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
          for (IAtsWorkItem workItem : workItems) {
             workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);

@@ -105,7 +105,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
       Set<AtsUser> results = new HashSet<>();
       try {
          for (Artifact userArt : artifact.getRelatedArtifacts(relation)) {
-            AtsUser lead = getAtsClient().getUserService().getUserById(
+            AtsUser lead = getAtsClient().getUserService().getUserByUserId(
                (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
             results.add(lead);
          }

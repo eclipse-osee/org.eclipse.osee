@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -36,8 +35,6 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects);
 
    void reloadAllCaches(boolean pend);
-
-   IAtsUserServiceClient getUserServiceClient();
 
    AtsApi getServices();
 

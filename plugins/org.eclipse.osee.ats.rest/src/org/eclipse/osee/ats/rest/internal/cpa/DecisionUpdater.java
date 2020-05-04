@@ -107,7 +107,7 @@ public class DecisionUpdater {
       if (update.getAssignees() != null) {
          List<AtsUser> assignees = new ArrayList<>();
          for (String userId : update.getAssignees()) {
-            AtsUser user = atsApi.getUserService().getUserById(userId);
+            AtsUser user = atsApi.getUserService().getUserByUserId(userId);
             if (user == null) {
                rd.errorf("Invalid userId [%s]", userId);
             }

@@ -82,7 +82,7 @@ public class StateResourceTest extends AbstractRestTest {
          StateResourceTest.class.getName(), "description", ChangeType.Improvement, "1", false, null,
          AtsClientService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-         new Date(), AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null,
+         new Date(), AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), null,
          changes);
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
       changes.execute();

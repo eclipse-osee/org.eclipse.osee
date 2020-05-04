@@ -80,8 +80,8 @@ public class AtsWorkStateFactoryTest {
       Assert.assertEquals(0, state.getAssignees().size());
       Assert.assertEquals(0, state.getPercentComplete());
 
-      when(userService.getUserById(eq("joe"))).thenReturn(joe);
-      when(userService.getUserById(eq("qwer"))).thenReturn(Kay);
+      when(userService.getUserByUserId(eq("joe"))).thenReturn(joe);
+      when(userService.getUserByUserId(eq("qwer"))).thenReturn(Kay);
       state = atsWorkStateFactory.fromStoreStr("Implement;<joe><qwer>;1.3;20");
       Assert.assertEquals("Implement", state.getName());
       Assert.assertEquals(1.3, state.getHoursSpent(), 0.01);

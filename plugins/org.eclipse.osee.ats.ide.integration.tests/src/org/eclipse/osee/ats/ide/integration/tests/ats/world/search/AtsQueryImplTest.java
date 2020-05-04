@@ -53,7 +53,7 @@ public class AtsQueryImplTest {
       AtsApi atsApi = AtsClientService.get().getServices();
       IAtsQueryService queryService = atsApi.getQueryService();
 
-      AtsUser joeSmith = atsApi.getUserService().getUserById("3333");
+      AtsUser joeSmith = atsApi.getUserService().getUserByUserId("3333");
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -64,7 +64,7 @@ public class AtsQueryImplTest {
 
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andAssignee(atsApi.getUserService().getUserById("3333"));
+      query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
       assertEquals(8, query.getResults().size());
 
       // team

@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -173,8 +175,8 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
             }
          } else {
             try {
-               ids = accessControl.getContextId(AtsClientService.get().getUserServiceClient().getOseeUser(
-                  AtsClientService.get().getUserService().getCurrentUser()), workingBranch);
+               User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
+               ids = accessControl.getContextId(user, workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

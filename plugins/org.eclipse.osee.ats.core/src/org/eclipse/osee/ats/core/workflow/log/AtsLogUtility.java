@@ -36,12 +36,12 @@ public class AtsLogUtility {
    }
 
    public static String getToStringUser(IAtsLogItem item, IAtsUserService userService) {
-      AtsUser user = userService.getUserById(item.getUserId());
+      AtsUser user = userService.getUserByUserId(item.getUserId());
       return user == null ? "unknown" : user.getName();
    }
 
    public static String toString(IAtsLogItem item, IAtsUserService userService) {
-      AtsUser user = userService.getUserById(item.getUserId());
+      AtsUser user = userService.getUserByUserId(item.getUserId());
       return String.format("%s (%s)%s by %s on %s", getToStringMsg(item), item.getType(), getToStringState(item),
          user.getName(), DateUtil.getMMDDYYHHMM(item.getDate()));
    }
@@ -56,7 +56,7 @@ public class AtsLogUtility {
 
    public static String getUserName(String userId, IAtsUserService userService) {
       String name = "unknown (" + userId + ")";
-      AtsUser user = userService.getUserById(userId);
+      AtsUser user = userService.getUserByUserId(userId);
       if (user != null) {
          name = user.getName();
       }

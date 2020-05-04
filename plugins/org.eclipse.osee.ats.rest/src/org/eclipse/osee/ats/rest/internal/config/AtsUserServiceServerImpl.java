@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -93,7 +91,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       throw new UnsupportedOperationException();
    }
 
-   private AtsUser createFromArtifact(ArtifactReadable userArt) {
+   public static AtsUser valueOf(ArtifactReadable userArt) {
       AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());
       atsUser.setStoreObject(userArt);
@@ -114,57 +112,51 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
-   public List<AtsUser> getUsersFromDb() {
-      List<AtsUser> users = new ArrayList<>();
-      for (ArtifactId art : getQuery().andTypeEquals(CoreArtifactTypes.User).getResults()) {
-         ArtifactReadable userArt = (ArtifactReadable) art;
-         AtsUser atsUser = createFromArtifact(userArt);
-         users.add(atsUser);
-      }
-      return users;
+   public boolean isLoadValid() {
+      return true;
    }
 
    @Override
-   protected AtsUser loadUserFromDbByUserId(String userId) {
+   protected AtsUser loadUserByUserId(String userId) {
       ArtifactReadable userArt =
          getQuery().andTypeEquals(CoreArtifactTypes.User).andAttributeIs(CoreAttributeTypes.UserId,
             userId).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
       if (userArt.isValid()) {
-         return createFromArtifact(userArt);
+         return valueOf(userArt);
       }
       return null;
    }
 
    @Override
-   protected AtsUser loadUserFromDbByUserName(String name) {
+   protected AtsUser loadUserByUserName(String name) {
       ArtifactReadable userArt =
          getQuery().andTypeEquals(CoreArtifactTypes.User).andNameEquals(name).getResults().getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
       if (userArt.isValid()) {
-         return createFromArtifact(userArt);
+         return valueOf(userArt);
       }
       return null;
    }
 
    @Override
-   protected AtsUser loadUserByAccountId(Long accountId) {
+   protected AtsUser loadUserByUserId(Long accountId) {
       AtsUser user = null;
       ArtifactId userArt = getArtifactOrSentinel(ArtifactId.valueOf(accountId));
       if (userArt.isValid()) {
-         user = createFromArtifact((ArtifactReadable) userArt);
+         user = valueOf((ArtifactReadable) userArt);
       }
       return user;
    }
 
    @Override
-   public AtsUser getUserByArtifactId(ArtifactId id) {
+   public AtsUser getUserById(ArtifactId id) {
       ArtifactReadable userArt = null;
       if (id instanceof ArtifactReadable) {
          userArt = (ArtifactReadable) id;
       } else {
          userArt = getQuery().andId(id).getResults().getExactlyOne();
       }
-      return createFromArtifact(userArt);
+      return valueOf(userArt);
    }
 
    @Override

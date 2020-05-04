@@ -99,8 +99,8 @@ public class DecisionReviewManagerTest {
       IAtsDecisionReview decRev =
          AtsClientService.get().getReviewService().createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle,
             "my description", AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
-            Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned)),
-            new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+            Arrays.asList(AtsClientService.get().getUserService().getUserByToken(SystemUser.UnAssigned)), new Date(),
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(decRev);
@@ -124,7 +124,7 @@ public class DecisionReviewManagerTest {
       IAtsDecisionReview decRev = AtsClientService.get().getReviewService().createNewDecisionReview(teamWf,
          ReviewBlockType.Commit, reviewTitle, TeamState.Implement.getName(), "description",
          AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(),
-         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay)), new Date(),
+         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay)), new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
@@ -150,7 +150,7 @@ public class DecisionReviewManagerTest {
       IAtsDecisionReview decRev = AtsClientService.get().getReviewService().createNewDecisionReview(teamWf,
          ReviewBlockType.Commit, reviewTitle, TeamState.Implement.getName(), "description",
          AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(),
-         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned)),
+         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(SystemUser.UnAssigned)),
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 

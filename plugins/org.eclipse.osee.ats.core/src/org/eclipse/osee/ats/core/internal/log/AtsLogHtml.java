@@ -67,7 +67,7 @@ public class AtsLogHtml {
    private String getUserName(String userId) {
       String name = userId;
       if (atsUserService != null) {
-         AtsUser userById = atsUserService.getUserById(userId);
+         AtsUser userById = atsUserService.getUserByUserId(userId);
          if (userById != null) {
             String userName = userById.getName();
             if (Strings.isValid(userName)) {

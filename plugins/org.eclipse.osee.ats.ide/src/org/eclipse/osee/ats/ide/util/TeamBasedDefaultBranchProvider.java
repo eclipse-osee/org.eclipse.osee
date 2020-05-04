@@ -15,13 +15,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
 
 /**
@@ -34,7 +35,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
       AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       try {
          Collection<IAtsTeamDefinition> teams = new ArrayList<>();
-         for (Artifact art : AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
+         for (ArtifactToken art : AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
             AtsRelationTypes.TeamMember_Team)) {
             teams.add(AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(art));
          }

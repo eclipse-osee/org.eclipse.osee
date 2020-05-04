@@ -256,8 +256,7 @@ public class DefectXViewerMenu {
    }
 
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User",
-         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
       int result = ld.open();
       if (result == 0) {
          modified = setUser(defectItems, ld.getSelection());
@@ -353,7 +352,7 @@ public class DefectXViewerMenu {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUserId().equals(user.getUserId())) {
-            AtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user);
+            AtsUser atsUser = AtsClientService.get().getUserService().getUserById(user);
             defectItem.setUser(atsUser);
             // at least one in the list has been changed.
             if (!modified) {

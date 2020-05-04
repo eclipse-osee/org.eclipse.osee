@@ -125,8 +125,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (status == CommitStatus.Commit_Overridden) {
             CommitOverride override =
                AtsClientService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
-            String userName =
-               AtsClientService.get().getUserService().getUserByAccountId(override.getUser().getId()).getName();
+            String userName = AtsClientService.get().getUserService().getUserById(override.getUser()).getName();
             return String.format("%s by %s - Reason: [%s]", status.getDisplayName(), userName, override.getReason());
          }
          return status.getDisplayName();

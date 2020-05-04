@@ -47,7 +47,7 @@ public class UsersByIds {
             throw new IllegalArgumentException("Blank userId specified.");
          }
          try {
-            AtsUser u = userService.getUserById(m.group(1));
+            AtsUser u = userService.getUserByUserId(m.group(1));
             users.add(u);
          } catch (Exception ex) {
             OseeLog.log(UsersByIds.class, Level.SEVERE, ex);

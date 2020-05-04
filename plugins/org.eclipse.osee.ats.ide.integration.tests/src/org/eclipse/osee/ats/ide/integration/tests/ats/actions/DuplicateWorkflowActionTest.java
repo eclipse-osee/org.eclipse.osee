@@ -54,8 +54,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
       List<AtsUser> assignees = setupAssignees(teamWf);
 
-      AtsUser originator = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-         UserManager.getUser(DemoUsers.Jason_Michael));
+      AtsUser originator = AtsClientService.get().getUserService().getUserById(DemoUsers.Jason_Michael);
 
       // new workflow
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Duplicate Workflow");
@@ -90,7 +89,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
       List<AtsUser> assignees = new LinkedList<>();
       assignees.addAll(teamWf.getAssignees());
       AtsUser lead =
-         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(UserManager.getUser(DemoUsers.Kay_Jones));
+         AtsClientService.get().getUserService().getUserById(UserManager.getUser(DemoUsers.Kay_Jones));
       assignees.add(lead);
       return assignees;
    }

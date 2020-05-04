@@ -133,7 +133,7 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserServiceClient().getCurrentOseeUser())) {
+      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserService().getCurrentUser().getEmail())) {
          logf("Can't email from user account [%s] cause email not valid.",
             AtsClientService.get().getUserService().getCurrentUser());
          return;

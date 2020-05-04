@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
 import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.junit.After;
@@ -46,9 +47,10 @@ public class ImportTasksFromSpreadsheetTest {
 
       // Import files live in deployed ATS bundle cause they are used as examples for users
       File file = OseeInf.getResourceAsFile("atsImport/Task_Import.xml", NavigateView.class);
-      importTasks.performImport(false, false, AtsTestUtil.getTeamWf(), file);
+      TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
+      importTasks.performImport(false, false, teamWf, file);
 
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(AtsTestUtil.getTeamWf());
+      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
       Assert.assertEquals(3, tasks.size());
       IAttributeResolver attrs = AtsClientService.get().getAttributeResolver();
       for (IAtsTask task : tasks) {

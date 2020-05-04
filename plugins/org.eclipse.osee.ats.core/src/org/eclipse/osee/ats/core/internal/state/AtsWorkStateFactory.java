@@ -100,7 +100,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
          }
          try {
             String uId = m.group(1);
-            AtsUser u = userService.getUserById(uId);
+            AtsUser u = userService.getUserByUserId(uId);
             Conditions.checkNotNull(u, "userById " + uId);
             users.add(u);
          } catch (Exception ex) {

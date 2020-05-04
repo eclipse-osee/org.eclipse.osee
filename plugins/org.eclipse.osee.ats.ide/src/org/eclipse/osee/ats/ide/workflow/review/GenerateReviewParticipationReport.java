@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
-import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -67,9 +67,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       AtsUser useUser = null;
 
-      IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
-      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User",
-         userServiceClient.getOseeUsersSorted(Active.Active));
+      IAtsUserService userService = AtsClientService.get().getUserService();
+      UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", Active.Active);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == 0) {
@@ -77,7 +76,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             AWorkbench.popup("ERROR", "Must select user");
             return;
          }
-         useUser = userServiceClient.getUserFromOseeUser(dialog.getSelection());
+         useUser = userService.getUserById(dialog.getSelection());
       }
 
       selectedUser = useUser;

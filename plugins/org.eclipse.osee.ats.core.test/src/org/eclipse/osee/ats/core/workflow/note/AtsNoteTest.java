@@ -44,7 +44,7 @@ public class AtsNoteTest {
       MockitoAnnotations.initMocks(this);
 
       when(atsApi.getUserService()).thenReturn(userService);
-      when(userService.getUserById(joe.getUserId())).thenReturn(joe);
+      when(userService.getUserByUserId(joe.getUserId())).thenReturn(joe);
    }
 
    @Test

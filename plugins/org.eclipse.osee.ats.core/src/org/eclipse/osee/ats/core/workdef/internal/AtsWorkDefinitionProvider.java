@@ -61,7 +61,7 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
    }
 
    public boolean isDemoDb() {
-      return AtsApiService.get().getUserService().getUserById("3333") != null;
+      return AtsApiService.get().getUserService().getUserByUserId("3333") != null;
    }
 
 }

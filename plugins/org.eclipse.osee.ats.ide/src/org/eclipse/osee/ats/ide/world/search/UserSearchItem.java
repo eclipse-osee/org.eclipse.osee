@@ -110,11 +110,10 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedUser != null) {
          return;
       }
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select User",
-         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select User", active);
       int result = ld.open();
       if (result == 0) {
-         selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
+         selectedUser = AtsClientService.get().getUserService().getUserById(ld.getSelection());
          return;
       }
       cancelled = true;

@@ -37,7 +37,7 @@ public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> 
       setup(getWidget());
       String userId = data.getUserId();
       if (Strings.isValid(userId)) {
-         AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+         AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
          XComboViewer combo = getWidget();
          combo.setSelected(Arrays.asList(user));
       }

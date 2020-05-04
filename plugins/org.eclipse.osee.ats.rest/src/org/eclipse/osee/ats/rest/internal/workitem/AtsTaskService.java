@@ -126,7 +126,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(hostTeamWf);
-      AtsUser atsUser = atsApi.getUserService().getUserByAccountId(asUser.getId());
+      AtsUser atsUser = atsApi.getUserService().getUserById(asUser);
       data.setAsUser(atsUser);
       return createTasks(data);
    }

@@ -146,10 +146,11 @@ public class ActionPage {
       if (action.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamWf = action;
       } else if (action.isOfType(AtsArtifactTypes.AbstractReview)) {
-         teamWf =
-            action.getRelated(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow).getOneOrDefault(ArtifactReadable.SENTINEL);
+         teamWf = action.getRelated(AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow).getOneOrDefault(
+            ArtifactReadable.SENTINEL);
       } else if (action.isOfType(AtsArtifactTypes.Task)) {
-         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWorkflow).getOneOrDefault(ArtifactReadable.SENTINEL);
+         teamWf =
+            action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWorkflow).getOneOrDefault(ArtifactReadable.SENTINEL);
       }
       return teamWf;
    }
@@ -335,7 +336,7 @@ public class ActionPage {
                sb.append("<td>");
                String data = AXml.getTagData(xml, key);
                if (key.equals("userId")) {
-                  data = atsApi.getUserService().getUserById(data).getName();
+                  data = atsApi.getUserService().getUserByUserId(data).getName();
                }
                sb.append(data);
                sb.append("</td>");
@@ -358,7 +359,7 @@ public class ActionPage {
                sb.append("<td>");
                String data = AXml.getTagData(xml, key);
                if (key.equals("user")) {
-                  data = atsApi.getUserService().getUserById(data).getName();
+                  data = atsApi.getUserService().getUserByUserId(data).getName();
                } else if (key.equals("date")) {
                   data = DateUtil.getDateStr(new Date(Long.valueOf(data)), DateUtil.MMDDYYHHMM);
                }

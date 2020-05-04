@@ -78,7 +78,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       if (workPackageArt == null) {
          rd.errorf("Work Package with id [%s] Not Found", workPackageId);
       }
-      AtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserByUserId(workPackageData.getAsUserId());
       if (asUser == null) {
          rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
@@ -156,7 +156,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Override
    public XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
       XResultData rd = new XResultData();
-      AtsUser asUser = atsApi.getUserService().getUserById(workPackageData.getAsUserId());
+      AtsUser asUser = atsApi.getUserService().getUserByUserId(workPackageData.getAsUserId());
       if (asUser == null) {
          rd.errorf("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }

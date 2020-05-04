@@ -64,7 +64,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Get all things user is directly assigned to
                Collection<Artifact> assignedToArts =
-                  AtsEditors.getAssigned(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(fromUser));
+                  AtsEditors.getAssigned(AtsClientService.get().getUserService().getUserById(fromUser));
                Set<Artifact> atsArts = new HashSet<>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof AbstractWorkflowArtifact) {
@@ -92,9 +92,8 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                   if (artifact instanceof AbstractWorkflowArtifact) {
                      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                      awa.getStateMgr().removeAssignee(
-                        AtsClientService.get().getUserServiceClient().getUserFromOseeUser(fromUser));
-                     awa.getStateMgr().addAssignee(
-                        AtsClientService.get().getUserServiceClient().getUserFromOseeUser(toUser));
+                        AtsClientService.get().getUserService().getUserById(fromUser));
+                     awa.getStateMgr().addAssignee(AtsClientService.get().getUserService().getUserById(toUser));
                      changes.add(awa);
                   }
                }

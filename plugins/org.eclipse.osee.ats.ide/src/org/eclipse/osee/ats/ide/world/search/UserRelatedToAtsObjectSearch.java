@@ -14,12 +14,14 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -53,7 +55,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
          return EMPTY_SET;
       }
 
-      List<Artifact> arts = new ArrayList<>();
+      List<ArtifactToken> arts = new ArrayList<>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
@@ -62,16 +64,20 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }
-      User user = AtsClientService.get().getUserServiceClient().getOseeUser(atsUser);
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact));
+
+      arts.addAll(
+         AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamLead_Team));
+      arts.addAll(
+         AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamMember_Team));
+      arts.addAll(AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+         AtsRelationTypes.FavoriteUser_Artifact));
+      arts.addAll(AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+         AtsRelationTypes.SubscribedUser_Artifact));
 
       if (isCancelled()) {
          return EMPTY_SET;
       }
-      return arts;
+      return Collections.castAll(arts);
    }
 
    @Override

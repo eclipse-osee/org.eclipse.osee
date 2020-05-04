@@ -60,7 +60,7 @@ public class AtsSearchDataSearch {
 
    public void setUserType(AtsSearchUserType userType, IAtsQuery query) {
       if (Strings.isValid(data.getUserId())) {
-         userById = atsApi.getUserService().getUserById(data.getUserId());
+         userById = atsApi.getUserService().getUserByUserId(data.getUserId());
          if (userType == AtsSearchUserType.Originated) {
             query.andOriginator(userById);
          } else if (userType == AtsSearchUserType.Subscribed) {

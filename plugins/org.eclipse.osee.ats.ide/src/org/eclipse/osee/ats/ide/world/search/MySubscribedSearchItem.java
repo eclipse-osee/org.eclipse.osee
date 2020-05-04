@@ -11,10 +11,12 @@
 package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -32,8 +34,8 @@ public class MySubscribedSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(AtsUser user) {
-      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
-         AtsRelationTypes.SubscribedUser_Artifact);
+      return Collections.castAll(AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+         AtsRelationTypes.SubscribedUser_Artifact));
    }
 
    @Override

@@ -74,7 +74,7 @@ public class CpaDuplicator {
                      TransitionHelper helper =
                         new TransitionHelper("Complete Applicability Workflow", Arrays.asList(cpaWf), "Completed",
                            new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-                     AtsUser asUser = atsApi.getUserService().getUserById(duplicate.getUserId());
+                     AtsUser asUser = atsApi.getUserService().getUserByUserId(duplicate.getUserId());
                      if (asUser == null) {
                         rd.errorf("Invalid userId [%s].  Skipping.", asUser);
                      }

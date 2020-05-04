@@ -119,6 +119,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
                configs.setTopTeamDefinition(ArtifactId.valueOf(art.getId()));
             }
+            teamDef.setAtsApi(atsApi);
          } else if (art.isOfType(ActionableItem)) {
             ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
             configs.addAi(ai);
@@ -126,13 +127,19 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             if (AtsArtifactToken.TopActionableItem.equals(art)) {
                configs.setTopActionableItem(ArtifactId.valueOf(art.getId()));
             }
+            ai.setAtsApi(atsApi);
          } else if (art.isOfType(Version)) {
             Version version = atsApi.getVersionService().createVersion(art);
             configs.addVersion(version);
             handleVersion(art, version, idToArtifact, configs);
+            version.setAtsApi(atsApi);
          } else if (art.isOfType(CoreArtifactTypes.User)) {
-            AtsUser user = atsApi.getUserService().getUserByArtifactId(art);
+            AtsUser user = AtsUserServiceServerImpl.valueOf(art);
+            if (user == null) {
+               System.err.println(getClass().getSimpleName());
+            }
             configs.addUser(user);
+            user.setAtsApi(atsApi);
          }
          idToArtifact.put(art.getId(), art);
       }
@@ -244,7 +251,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          ArtifactToken userArt = atsApi.getQueryService().getArtifactFromAttribute(CoreAttributeTypes.LoginId,
             System.getProperty("user.name"), atsApi.getAtsBranch());
          if (userArt.isValid()) {
-            user = atsApi.getUserService().getUserByArtifactId(userArt);
+            user = atsApi.getUserService().getUserById(userArt);
             // Don't use cache if not loaded
             if (isConfigLoaded()) {
                atsApi.getUserService().addUser(user);

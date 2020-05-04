@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.ui.PlatformUI;
@@ -88,14 +89,14 @@ public class FavoritesManager {
    public static void addFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
       if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user.getStoreObject())) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
-            AtsClientService.get().getUserServiceClient().getOseeUser(user));
+            (Artifact) AtsClientService.get().getQueryService().getArtifact(user.getArtifactId()));
          workflow.persist(transaction);
       }
    }
 
    public static void removeFavorite(AbstractWorkflowArtifact workflow, AtsUser user, SkynetTransaction transaction) {
       workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User,
-         AtsClientService.get().getUserServiceClient().getOseeUser(user));
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(user.getArtifactId()));
       workflow.persist(transaction);
    }
 

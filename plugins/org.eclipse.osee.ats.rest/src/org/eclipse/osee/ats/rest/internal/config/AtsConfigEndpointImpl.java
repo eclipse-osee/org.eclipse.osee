@@ -140,7 +140,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      AtsUser user = atsApi.getUserService().getUserById(userId);
+      AtsUser user = atsApi.getUserService().getUserByUserId(userId);
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }

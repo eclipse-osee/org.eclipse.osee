@@ -319,7 +319,7 @@ public class AgileService implements IAgileService {
       Set<AtsUser> activeMembers = new HashSet<>();
       // add users related to AgileTeam
       for (ArtifactToken user : atsApi.getRelationResolver().getRelated(agileTeam, CoreRelationTypes.Users_User)) {
-         activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+         activeMembers.add(atsApi.getUserService().getUserById(user));
       }
       // add lead and members related to AtsTeam
       for (ArtifactToken atsTeam : atsApi.getRelationResolver().getRelated(agileTeam,
@@ -328,13 +328,13 @@ public class AgileService implements IAgileService {
          for (ArtifactToken user : atsApi.getRelationResolver().getRelated(atsTeam,
             AtsRelationTypes.TeamMember_Member)) {
             if (atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.Active, true)) {
-               activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+               activeMembers.add(atsApi.getUserService().getUserById(user));
             }
          }
 
          for (ArtifactToken user : atsApi.getRelationResolver().getRelated(atsTeam, AtsRelationTypes.TeamLead_Lead)) {
             if (atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.Active, true)) {
-               activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+               activeMembers.add(atsApi.getUserService().getUserById(user));
             }
          }
       }

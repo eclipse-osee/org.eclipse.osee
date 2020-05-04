@@ -347,7 +347,7 @@ public class ExcelAtsTaskArtifactExtractor {
          if (Strings.isValid(str)) {
             AtsUser user = null;
             try {
-               user = AtsClientService.get().getUserService().getUserById(str);
+               user = AtsClientService.get().getUserService().getUserByUserId(str);
             } catch (Exception ex) {
                // do nothing
                rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);

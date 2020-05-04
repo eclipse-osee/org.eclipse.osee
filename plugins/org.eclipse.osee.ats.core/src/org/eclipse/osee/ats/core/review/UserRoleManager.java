@@ -91,8 +91,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    public List<AtsUser> getRoleUsers(Role role) {
       List<AtsUser> users = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role && !users.contains(userService.getUserById(uRole.getUserId()))) {
-            users.add(userService.getUserById(uRole.getUserId()));
+         if (uRole.getRole() == role && !users.contains(userService.getUserByUserId(uRole.getUserId()))) {
+            users.add(userService.getUserByUserId(uRole.getUserId()));
          }
       }
       return users;
@@ -102,8 +102,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    public List<AtsUser> getRoleUsers(Collection<UserRole> roles) {
       List<AtsUser> users = new ArrayList<>();
       for (UserRole uRole : roles) {
-         if (!users.contains(userService.getUserById(uRole.getUserId()))) {
-            users.add(userService.getUserById(uRole.getUserId()));
+         if (!users.contains(userService.getUserByUserId(uRole.getUserId()))) {
+            users.add(userService.getUserByUserId(uRole.getUserId()));
          }
       }
       return users;
@@ -222,7 +222,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    public static AtsUser getUser(UserRole item, AtsApi atsApi) {
-      return atsApi.getUserService().getUserById(item.getUserId());
+      return atsApi.getUserService().getUserByUserId(item.getUserId());
    }
 
 }

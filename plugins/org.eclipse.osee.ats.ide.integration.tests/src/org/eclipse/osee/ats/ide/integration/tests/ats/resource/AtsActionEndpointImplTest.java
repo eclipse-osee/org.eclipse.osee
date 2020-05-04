@@ -522,10 +522,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamWf.reloadAttributesAndRelations();
       assignees = teamWf.getStateMgr().getAssignees();
       Assert.assertEquals(2, assignees.size());
-      Assert.assertTrue(
-         assignees.contains(AtsClientService.get().getUserService().getUserByAccountId(DemoUsers.Kay_Jones.getId())));
-      Assert.assertTrue(
-         assignees.contains(AtsClientService.get().getUserService().getUserByAccountId(DemoUsers.Joe_Smith.getId())));
+      Assert.assertTrue(assignees.contains(AtsClientService.get().getUserService().getUserById(DemoUsers.Kay_Jones)));
+      Assert.assertTrue(assignees.contains(AtsClientService.get().getUserService().getUserById(DemoUsers.Joe_Smith)));
 
       // reset back to Joe
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),

@@ -54,15 +54,15 @@ public class AtsUserTest {
    @org.junit.Test
    public void testRemove() {
       Collection<AtsUser> assignees = new HashSet<>();
-      assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
-      assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
+      assignees.add(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
+      assignees.add(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay),
-            AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith))));
+         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+            AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith))));
 
       assignees.remove(AtsClientService.get().getUserService().getCurrentUser());
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay))));
+         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay))));
    }
 
 }

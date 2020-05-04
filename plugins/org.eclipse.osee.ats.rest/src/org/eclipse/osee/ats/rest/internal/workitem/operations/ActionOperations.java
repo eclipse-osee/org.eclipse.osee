@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -141,7 +142,7 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
          String accountId = values.iterator().next();
          if (!Strings.isNumeric(accountId)) {
-            AtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountId));
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
@@ -159,7 +160,7 @@ public class ActionOperations {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
          String accountIdOrName = values.iterator().next();
          if (Strings.isNumeric(accountIdOrName)) {
-            AtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
+            AtsUser assignee = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountIdOrName));
             if (assignee == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
             }
@@ -216,7 +217,7 @@ public class ActionOperations {
          } else {
             Set<AtsUser> assignees = new HashSet<>();
             for (ArtifactToken userArt : artifacts) {
-               AtsUser user = atsApi.getUserService().getUserByArtifactId(userArt);
+               AtsUser user = atsApi.getUserService().getUserById(userArt);
                Conditions.assertNotNull(user, "Artifact %s is not a User", userArt.toStringWithId());
                assignees.add(user);
             }

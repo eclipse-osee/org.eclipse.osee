@@ -374,7 +374,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsClientService.get().getUserService().getUserById(userId));
+               add(items, AtsClientService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -396,7 +396,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             "Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsClientService.get().getUserService().getUserById(userId));
+               add(items, AtsClientService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -459,7 +459,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             try {
-               AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+               AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
                add(items, user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));

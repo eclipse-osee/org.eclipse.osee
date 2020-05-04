@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectSeverityToImage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -49,7 +51,8 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       try {
          AtsUser user = UserRoleManager.getUser(roleItem, AtsClientService.get());
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-            return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(user));
+            User user2 = UserManager.getUserByArtId(user.getArtifactId());
+            return ArtifactImageManager.getImage(user2);
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {

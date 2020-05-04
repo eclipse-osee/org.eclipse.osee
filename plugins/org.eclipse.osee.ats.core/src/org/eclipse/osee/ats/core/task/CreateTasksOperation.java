@@ -92,7 +92,7 @@ public class CreateTasksOperation {
             results.error("As User Id id not specified");
             continue;
          }
-         asUser = atsApi.getUserService().getUserById(asUserId);
+         asUser = atsApi.getUserService().getUserByUserId(asUserId);
          if (asUser == null) {
             results.errorf("As User Id id %d does not exist\n", asUserId);
             continue;
@@ -113,7 +113,7 @@ public class CreateTasksOperation {
             if (!Strings.isValid(task.getName())) {
                results.errorf("Task name [%s] is invalid for %s\n", task.getName(), task);
             }
-            AtsUser createdBy = atsApi.getUserService().getUserById(task.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserByUserId(task.getCreatedByUserId());
             if (createdBy == null) {
                results.errorf("Task Created By user id %d does not exist in %s\n", createdBy, task);
             }
@@ -288,7 +288,7 @@ public class CreateTasksOperation {
             if (Strings.isValid(jaxTask.getDescription())) {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
             }
-            AtsUser createdBy = atsApi.getUserService().getUserById(jaxTask.getCreatedByUserId());
+            AtsUser createdBy = atsApi.getUserService().getUserByUserId(jaxTask.getCreatedByUserId());
             atsApi.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
                workDefinition, changes);
 

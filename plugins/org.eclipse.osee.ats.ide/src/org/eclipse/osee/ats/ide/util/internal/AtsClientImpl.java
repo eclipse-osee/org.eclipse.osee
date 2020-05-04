@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
-import org.eclipse.osee.ats.ide.config.IAtsUserServiceClient;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -125,7 +124,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
 
-      storeService = new AtsStoreService(this, getUserServiceClient(), jdbcService);
+      storeService = new AtsStoreService(this, getUserService(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       queryServiceClient = new AtsQueryServiceClient(this);
@@ -225,11 +224,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsVersionService getVersionService() {
       return versionService;
-   }
-
-   @Override
-   public IAtsUserServiceClient getUserServiceClient() {
-      return (IAtsUserServiceClient) userService;
    }
 
    @Override

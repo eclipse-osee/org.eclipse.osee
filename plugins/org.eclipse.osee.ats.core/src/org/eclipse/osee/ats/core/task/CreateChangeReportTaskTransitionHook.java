@@ -59,9 +59,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(workItem.getStoreObject());
-      AtsUser atsUser =
-         AtsApiService.get().getUserService().getAtsUser(AtsApiService.get().getUserService().getCurrentUser());
-      data.setAsUser(atsUser);
+      data.setAsUser(AtsApiService.get().getUserService().getCurrentUser());
 
       /**
        * Until all transitions are done on server, need to directly call this operation so it's part of the full

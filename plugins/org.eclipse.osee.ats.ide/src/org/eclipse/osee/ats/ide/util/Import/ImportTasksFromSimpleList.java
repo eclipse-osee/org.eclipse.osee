@@ -71,7 +71,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     AtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art);
+                     AtsUser atsUser = AtsClientService.get().getUserService().getUserById(art);
                      assignees.add(atsUser);
                   }
                }

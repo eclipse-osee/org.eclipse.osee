@@ -70,10 +70,10 @@ public class WorkItemNotificationProcessor {
       List<AtsUser> notifyUsers = new ArrayList<>();
       AtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
       if (Strings.isValid(event.getFromUserId())) {
-         fromUser = userService.getUserById(event.getFromUserId());
+         fromUser = userService.getUserByUserId(event.getFromUserId());
       }
       for (String userId : event.getUserIds()) {
-         notifyUsers.add(userService.getUserById(userId));
+         notifyUsers.add(userService.getUserByUserId(userId));
       }
       for (String atsId : event.getAtsIds()) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
@@ -186,7 +186,7 @@ public class WorkItemNotificationProcessor {
                Collection<AtsUser> authorModerator = new ArrayList<>();
                for (UserRole role : roleMgr.getUserRoles()) {
                   if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
-                     authorModerator.add(userService.getUserById(role.getUserId()));
+                     authorModerator.add(userService.getUserByUserId(role.getUserId()));
                   }
                }
                authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);
@@ -242,7 +242,7 @@ public class WorkItemNotificationProcessor {
       ArrayList<AtsUser> arts = new ArrayList<>();
       for (ArtifactId art : atsApi.getRelationResolver().getRelated(workItem.getStoreObject(),
          AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(userService.getUserById(
+         arts.add(userService.getUserByUserId(
             (String) atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null)));
       }
       return arts;
@@ -278,7 +278,7 @@ public class WorkItemNotificationProcessor {
    private AtsUser getFromUser(AtsWorkItemNotificationEvent event) {
       AtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
       if (Strings.isValid(event.getFromUserId())) {
-         fromUser = userService.getUserById(event.getFromUserId());
+         fromUser = userService.getUserByUserId(event.getFromUserId());
       }
       return fromUser;
    }

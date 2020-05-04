@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
-
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -36,11 +35,10 @@ public class XOriginatorHyperlinkWidget extends XHyperlinkLabelCmdValueSelection
 
    @Override
    public boolean handleSelection() {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select Originator",
-         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         originator = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
+         originator = AtsClientService.get().getUserService().getUserById(ld.getSelection());
          return true;
       }
       return false;

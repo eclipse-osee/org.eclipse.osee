@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.column;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -33,6 +35,8 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
@@ -199,8 +203,15 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserServiceClient().getOseeUsers(
-            ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
+         List<User> users = new ArrayList<>();
+         for (AtsUser aUser : ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()) {
+            User user = UserManager.getUserByArtId(aUser);
+            if (user != null) {
+               users.add(user);
+            }
+         }
+
+         return FrameworkArtifactImageProvider.getUserImage(users);
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {

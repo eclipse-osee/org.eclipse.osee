@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -26,16 +27,12 @@ public class SubscribeManager {
 
    public static void addSubscribed(AbstractWorkflowArtifact workflow, AtsUser user, IAtsChangeSet changes) {
       if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user.getStoreObject())) {
-         workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
-            AtsClientService.get().getUserServiceClient().getOseeUser(user));
-         changes.add(workflow);
+         changes.relate(workflow, AtsRelationTypes.SubscribedUser_User, user);
       }
    }
 
    public static void removeSubscribed(AbstractWorkflowArtifact workflow, AtsUser user, IAtsChangeSet changes) {
-      workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User,
-         AtsClientService.get().getUserServiceClient().getOseeUser(user));
-      changes.add(workflow);
+      changes.unrelate((IAtsObject) workflow, AtsRelationTypes.SubscribedUser_User, (IAtsObject) user);
    }
 
    public static boolean isSubscribed(AbstractWorkflowArtifact workflow, AtsUser user) {

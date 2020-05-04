@@ -134,7 +134,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          }
          AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create System Safety Workflow",
-            atsApi.getUserService().getUserByArtifactId(userArt));
+            atsApi.getUserService().getUserById(userArt));
          IAtsAction action = atsApi.getActionFactory().getAction(teamWf);
          teamWorkflow = atsApi.getActionFactory().createTeamWorkflow(action, teamDef,
             java.util.Collections.singleton(ai), Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(),

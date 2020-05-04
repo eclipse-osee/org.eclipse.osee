@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -199,7 +200,7 @@ public class AgileItemWriter {
    private Collection<AtsUser> getAssignees(List<String> usersAccountIds) {
       List<AtsUser> users = new ArrayList<>();
       for (String userId : usersAccountIds) {
-         users.add(atsApi.getUserService().getUserByAccountId(Long.valueOf(userId)));
+         users.add(atsApi.getUserService().getUserById(ArtifactId.valueOf(userId)));
       }
       return users;
    }

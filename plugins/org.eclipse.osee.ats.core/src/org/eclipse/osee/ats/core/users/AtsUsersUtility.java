@@ -59,7 +59,7 @@ public final class AtsUsersUtility {
    public static Collection<? extends AtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
       Set<AtsUser> users = new HashSet<>();
       for (String userId : userIds) {
-         users.add(userService.getUserById(userId));
+         users.add(userService.getUserByUserId(userId));
       }
       return users;
    }

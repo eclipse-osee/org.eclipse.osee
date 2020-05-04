@@ -90,7 +90,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public Collection<IAtsWorkItem> getMyWorld(@PathParam("userArtId") ArtifactId userArtId) {
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
-         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
+         atsServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
@@ -105,7 +105,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
-         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
+         atsServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
@@ -121,7 +121,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       ElapsedTime time = new ElapsedTime("start");
       ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
-         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
+         atsServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Conditions.checkNotNull(userById, "User by Id " + userArtId);
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");

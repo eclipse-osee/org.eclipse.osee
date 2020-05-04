@@ -51,7 +51,7 @@ public class CompletedCancelledByColumn extends AbstractServicesColumn {
          if (type != null) {
             userId = atsApi.getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) obj, type, null);
             if (Strings.isValid(userId)) {
-               return atsApi.getUserService().getUserById(userId);
+               return atsApi.getUserService().getUserByUserId(userId);
             }
          }
       }

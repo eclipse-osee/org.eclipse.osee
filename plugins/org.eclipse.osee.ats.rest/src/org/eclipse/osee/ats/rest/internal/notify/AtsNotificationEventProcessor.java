@@ -55,7 +55,7 @@ public class AtsNotificationEventProcessor {
       String email = noReplyEmail;
       for (AtsNotificationEvent event : notifications.getNotificationEvents()) {
          if (Strings.isValid(event.getFromUserId())) {
-            AtsUser userById = userService.getUserById(event.getFromUserId());
+            AtsUser userById = userService.getUserByUserId(event.getFromUserId());
             if (EmailUtil.isEmailValid(userById.getEmail())) {
                email = userById.getEmail();
                break;

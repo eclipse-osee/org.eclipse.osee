@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -56,8 +57,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsClientService.get().getUserServiceClient().getOseeUser(
-            AtsClientService.get().getUserService().getCurrentUser());
+         User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
          // Make sure we have latest artifact
          user.reloadAttributesAndRelations();
          if (user.isSystemUser()) {

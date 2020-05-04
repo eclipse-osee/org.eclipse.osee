@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets.role;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -23,6 +25,7 @@ import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -41,7 +44,7 @@ import org.eclipse.swt.widgets.Control;
 public class NewRoleDialog extends MessageDialog {
 
    private XComboViewer roleCombo;
-   private XHyperlabelMemberSelection users;
+   private XHyperlabelMemberSelection usersLink;
    private PeerToPeerReviewArtifact reviewArt;
    private Button okButton;
 
@@ -58,9 +61,9 @@ public class NewRoleDialog extends MessageDialog {
       return c;
    }
 
-   //both users and role is selected --> enable button
+   //both usersLink and role is selected --> enable button
    private void updateButtons() {
-      if (roleCombo.getSelected() != null && (!users.isEmpty())) {
+      if (roleCombo.getSelected() != null && usersLink != null && (!usersLink.isEmpty())) {
          okButton.setEnabled(true);
       } else {
          okButton.setEnabled(false);
@@ -91,12 +94,18 @@ public class NewRoleDialog extends MessageDialog {
          }
 
       });
-      Collection<User> oseeUsers = AtsClientService.get().getUserServiceClient().getOseeUsers(
-         AtsClientService.get().getUserService().getUsers(Active.Active));
-      oseeUsers.remove(SystemUser.BootStrap);
-      users = new XHyperlabelMemberSelection("Select User(s)", oseeUsers);
-      users.createWidgets(comp, 2);
-      users.addXModifiedListener(new XModifiedListener() {
+      Collection<AtsUser> atsUsers = AtsClientService.get().getUserService().getUsers(Active.Active);
+      List<User> users = new ArrayList<>();
+      for (AtsUser aUser : atsUsers) {
+         User user = UserManager.getUserByArtId(aUser);
+         if (user != null) {
+            users.add(user);
+         }
+      }
+      users.remove(SystemUser.BootStrap);
+      usersLink = new XHyperlabelMemberSelection("Select User(s)", users);
+      usersLink.createWidgets(comp, 2);
+      usersLink.addXModifiedListener(new XModifiedListener() {
          @Override
          public void widgetModified(XWidget widget) {
             updateButtons();
@@ -115,8 +124,14 @@ public class NewRoleDialog extends MessageDialog {
          }
       }
       if (teamDef != null) {
-         users.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(
-            AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)));
+         users = new ArrayList<>();
+         for (AtsUser aUser : AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)) {
+            User user = UserManager.getUserByArtId(aUser);
+            if (user != null) {
+               users.add(user);
+            }
+         }
+         usersLink.setTeamMembers(users);
       }
 
       return customArea;
@@ -133,7 +148,11 @@ public class NewRoleDialog extends MessageDialog {
    }
 
    public Collection<AtsUser> getUsers() {
-      return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
+      List<AtsUser> selected = new ArrayList<AtsUser>();
+      for (User user : usersLink.getSelectedUsers()) {
+         AtsClientService.get().getUserService().getUserById(user);
+      }
+      return selected;
    }
 
    public void setReview(PeerToPeerReviewArtifact reviewArt) {

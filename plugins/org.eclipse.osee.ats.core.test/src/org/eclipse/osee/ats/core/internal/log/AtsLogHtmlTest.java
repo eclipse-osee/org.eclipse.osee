@@ -67,7 +67,7 @@ public class AtsLogHtmlTest {
    @Test
    public void testSave() {
       // without title and with user name resolution
-      when(atsUserService.getUserById("456")).thenReturn(Joe);
+      when(atsUserService.getUserByUserId("456")).thenReturn(Joe);
       IAtsLogItem item = log.addLog(LogType.Originated, "", "", "456");
       Date testDate2011 = getTestDate2011();
       String dateString = new SimpleDateFormat(DateUtil.MMDDYYHHMM, Locale.US).format(testDate2011);
@@ -84,7 +84,7 @@ public class AtsLogHtmlTest {
       Assert.assertEquals(getHtmlStrWithTitle(dateString), html);
 
       // No user name
-      when(atsUserService.getUserById("456")).thenReturn(null);
+      when(atsUserService.getUserByUserId("456")).thenReturn(null);
       writer = new AtsLogHtml(log, storeProvider, atsUserService, false);
       html = writer.get();
       Assert.assertTrue(html.contains("456"));
@@ -95,7 +95,7 @@ public class AtsLogHtmlTest {
       Assert.assertTrue(html.contains("456"));
 
       // No user name
-      when(atsUserService.getUserById("456")).thenReturn(Joe);
+      when(atsUserService.getUserByUserId("456")).thenReturn(Joe);
       when(Joe.getName()).thenReturn(null);
       writer = new AtsLogHtml(log, storeProvider, atsUserService, false);
       html = writer.get();

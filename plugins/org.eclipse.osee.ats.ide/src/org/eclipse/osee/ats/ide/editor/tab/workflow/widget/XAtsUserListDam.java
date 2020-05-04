@@ -86,7 +86,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    private Collection<AtsUser> getStoredAtsUsers() {
       List<AtsUser> users = new LinkedList<>();
       for (String userId : awa.getAttributesToStringList(attributeType)) {
-         AtsUser user = AtsClientService.get().getUserService().getUserById(userId);
+         AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
          if (user != null && !AtsCoreUsers.isSystemUser(user)) {
             users.add(user);
          }
@@ -162,7 +162,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
             selectedUsers.clear();
             for (Object obj : uld.getResult()) {
                User user = (User) obj;
-               AtsUser atsUser = AtsClientService.get().getUserService().getUserByAccountId(user);
+               AtsUser atsUser = AtsClientService.get().getUserService().getUserById(user);
                if (!AtsCoreUsers.isUnAssignedUser(atsUser)) {
                   selectedUsers.add(atsUser);
                }

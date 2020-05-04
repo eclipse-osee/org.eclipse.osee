@@ -219,7 +219,7 @@ public class ReviewDefectManager {
          "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Id</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
          String userId = item.getUserId();
-         AtsUser user = atsApi.getUserService().getUserById(userId);
+         AtsUser user = atsApi.getUserService().getUserByUserId(userId);
          builder.append("<TR>");
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");

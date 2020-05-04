@@ -281,7 +281,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (UserToken user : users) {
          UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch(atsApi.getUserService().getUserByArtifactId(user), false, atsApi);
+            new UserRelatedToAtsObjectSearch(atsApi.getUserService().getUserById(user), false, atsApi);
          if (srch.getResults().size() > 0) {
             results.errorf(
                "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",

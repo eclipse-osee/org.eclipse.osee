@@ -305,7 +305,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public AtsUser getCreatedBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserService().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserByUserId(userId);
       }
       return null;
    }
@@ -318,7 +318,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public AtsUser getCancelledBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserService().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserByUserId(userId);
       }
       return null;
    }
@@ -354,7 +354,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public AtsUser getCompletedBy() {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserService().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserByUserId(userId);
       }
       return null;
    }

@@ -83,7 +83,7 @@ public class WorkItemNotificationProcessorTest {
 
    private AtsUser setupUser(UserToken userToken) {
       AtsUser user = new AtsUser(userToken);
-      when(userService.getUserById(userToken.getUserId())).thenReturn(user);
+      when(userService.getUserByUserId(userToken.getUserId())).thenReturn(user);
       return user;
    }
 
@@ -179,7 +179,7 @@ public class WorkItemNotificationProcessorTest {
       expectedUserIds.add(kay_ValidEmail.getUserId());
       List<AtsUser> users = new ArrayList<>();
       for (String userId : event.getUserIds()) {
-         users.add(userService.getUserById(userId));
+         users.add(userService.getUserByUserId(userId));
       }
       event.getUserIds().clear();
 
@@ -217,7 +217,7 @@ public class WorkItemNotificationProcessorTest {
       when(relResolver.getRelated(teamWf.getStoreObject(), AtsRelationTypes.SubscribedUser_User)).thenReturn(
          Arrays.asList(kayArtifact));
       when(attrResolver.getSoleAttributeValue(kayArtifact, CoreAttributeTypes.UserId, null)).thenReturn("4444");
-      when(userService.getUserById(eq("4444"))).thenReturn(kay_ValidEmail);
+      when(userService.getUserByUserId(eq("4444"))).thenReturn(kay_ValidEmail);
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Subscribed);

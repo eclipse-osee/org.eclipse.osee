@@ -154,7 +154,7 @@ public class TransitionManagerTest {
       results.clear();
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
+         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.MUST_BE_ASSIGNED));
 
@@ -163,7 +163,7 @@ public class TransitionManagerTest {
       helper.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertTrue(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
+         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
@@ -172,13 +172,13 @@ public class TransitionManagerTest {
       helper.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned));
+         AtsClientService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(getResultsAndDebug(results, teamArt, helper), results.isEmpty());
 
       // cleanup test
       teamArt.getStateMgr().setAssignee(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned));
+         AtsClientService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
    }
 
    private String getResultsAndDebug(TransitionResults results, TeamWorkFlowArtifact teamArt, TransitionHelper helper) {

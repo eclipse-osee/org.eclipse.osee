@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
-
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
@@ -28,30 +27,25 @@ public class AtsUsersTest {
    @Test
    public void testGetUser() {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
-         AtsClientService.get().getUserService().getUserById(SystemUser.OseeSystem.getUserId()));
+         AtsClientService.get().getUserService().getUserByUserId(SystemUser.OseeSystem.getUserId()));
       Assert.assertEquals(AtsCoreUsers.ANONYMOUS_USER,
-         AtsClientService.get().getUserService().getUserById(SystemUser.Anonymous.getUserId()));
+         AtsClientService.get().getUserService().getUserByUserId(SystemUser.Anonymous.getUserId()));
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER,
-         AtsClientService.get().getUserService().getUserById(SystemUser.UnAssigned.getUserId()));
-   }
-
-   @Test
-   public void testGetUserNotInDatabase() {
-      Assert.assertNull(AtsClientService.get().getUserService().getUserById("2345"));
+         AtsClientService.get().getUserService().getUserByUserId(SystemUser.UnAssigned.getUserId()));
    }
 
    @Test
    public void testGetUserWithNull() {
-      Assert.assertNull(AtsClientService.get().getUserService().getUserById(null));
+      Assert.assertNull(AtsClientService.get().getUserService().getUserByUserId(null));
    }
 
    @Test
    public void testGetCurrentUser() {
       User currentUser = UserManager.getUser();
 
-      Assert.assertEquals(currentUser, AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
+      Assert.assertEquals(currentUser, AtsClientService.get().getUserService().getCurrentUser());
 
-      AtsUser atsUser = AtsClientService.get().getUserService().getUserById(currentUser.getUserId());
+      AtsUser atsUser = AtsClientService.get().getUserService().getUserByUserId(currentUser.getUserId());
 
       Assert.assertEquals(currentUser.getUserId(), atsUser.getUserId());
       Assert.assertEquals(currentUser.getEmail(), atsUser.getEmail());

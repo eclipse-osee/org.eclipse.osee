@@ -76,7 +76,7 @@ public final class StateResource {
       if (!Strings.isValid(asUserId)) {
          return RestUtil.returnBadRequest("asUserId is not valid");
       }
-      AtsUser transitionUser = atsApi.getUserService().getUserById(asUserId);
+      AtsUser transitionUser = atsApi.getUserService().getUserByUserId(asUserId);
       if (transitionUser == null) {
          return RestUtil.returnBadRequest(String.format("User by id [%s] does not exist", asUserId));
       }

@@ -14,15 +14,19 @@ package org.eclipse.osee.ats.ide.navigate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AICheckTreeDialog;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -45,7 +49,8 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<IAtsActionableItem> objs = new ArrayList<>();
-         for (Artifact artifact : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
+         for (ArtifactToken artifact : AtsClientService.get().getRelationResolver().getRelated(
+            (IAtsObject) AtsClientService.get().getUserService().getCurrentUser(),
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                objs.add(AtsClientService.get().getActionableItemService().getActionableItemById(artifact));
@@ -58,9 +63,9 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          Collection<IAtsActionableItem> selected = diag.getChecked();
          Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
-         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserServiceClient().getCurrentOseeUser(),
-            AtsRelationTypes.SubscribedUser_Artifact, arts, AtsArtifactTypes.ActionableItem,
-            getClass().getSimpleName());
+         User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
+         SubscribeUtility.setSubcriptionsAndPersist(user, AtsRelationTypes.SubscribedUser_Artifact, arts,
+            AtsArtifactTypes.ActionableItem, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -354,7 +354,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
          String accountId = values.iterator().next();
          if (!Strings.isNumeric(accountId)) {
-            AtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountId));
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
@@ -364,7 +364,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          List<AtsUser> assignees = new LinkedList<>();
          for (String accountIdOrName : values) {
             if (Strings.isNumeric(accountIdOrName)) {
-               AtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
+               AtsUser assignee = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountIdOrName));
                if (assignee == null) {
                   throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
                } else {
@@ -477,7 +477,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          } else if (entry.getKey().equals("Assignee")) {
             Collection<AtsUser> assignees = new LinkedList<>();
             for (String userId : entry.getValue()) {
-               AtsUser assignee = atsApi.getUserService().getUserById(userId);
+               AtsUser assignee = atsApi.getUserService().getUserByUserId(userId);
                if (assignee != null) {
                   assignees.add(assignee);
                }
@@ -506,7 +506,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                // do nothing
             }
          } else if (entry.getKey().equals("Originator")) {
-            AtsUser assignee = atsApi.getUserService().getUserById(entry.getValue().iterator().next());
+            AtsUser assignee = atsApi.getUserService().getUserByUserId(entry.getValue().iterator().next());
             query.andOriginator(assignee);
          } else if (entry.getKey().equals("WorkItemType")) {
             List<WorkItemType> workItemTypes = new LinkedList<>();
@@ -553,7 +553,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    private NewActionResult createNewAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {
-         AtsUser asUser = atsApi.getUserService().getUserById(newActionData.getAsUserId());
+         AtsUser asUser = atsApi.getUserService().getUserByUserId(newActionData.getAsUserId());
          if (asUser == null) {
             result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
             return result;
@@ -650,7 +650,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(userId)) {
          return RestUtil.returnBadRequest("userId is not valid");
       }
-      AtsUser atsUser = atsApi.getUserService().getUserById(userId);
+      AtsUser atsUser = atsApi.getUserService().getUserByUserId(userId);
       if (atsUser == null) {
          return RestUtil.returnBadRequest(String.format("userId [%s] is not valid", userId));
       }

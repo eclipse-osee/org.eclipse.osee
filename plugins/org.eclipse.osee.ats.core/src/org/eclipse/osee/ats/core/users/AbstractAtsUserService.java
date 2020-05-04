@@ -54,7 +54,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    public Collection<AtsUser> getUsersByUserIds(Collection<String> userIds) {
       List<AtsUser> users = new LinkedList<>();
       for (String userId : userIds) {
-         AtsUser user = getUserById(userId);
+         AtsUser user = getUserByUserId(userId);
          if (user != null) {
             users.add(user);
          }
@@ -62,16 +62,20 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return users;
    }
 
+   public boolean isLoadValid() {
+      return false;
+   }
+
    @Override
-   public AtsUser getUserById(String userId) {
+   public AtsUser getUserByUserId(String userId) {
       AtsUser atsUser = null;
       if (Strings.isValid(userId)) {
          atsUser = configurationService.getUserByUserId(userId);
          if (atsUser == null && Strings.isValid(userId)) {
             atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
-            if (atsUser == null) {
+            if (atsUser == null && isLoadValid()) {
                try {
-                  atsUser = loadUserFromDbByUserId(userId);
+                  atsUser = loadUserByUserId(userId);
                } catch (UserNotInDatabase ex) {
                   // do nothing
                }
@@ -87,14 +91,14 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    @Override
    public AtsUser getUserByAccountId(UserId accountId) {
       Long id = accountId == null ? SystemUser.Anonymous.getId() : accountId.getId();
-      return getUserByAccountId(id);
+      return getUserById(ArtifactId.valueOf(id));
    }
 
    @Override
-   public AtsUser getUserByAccountId(Long accountId) {
-      AtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(accountId);
-      if (atsUser == null) {
-         atsUser = loadUserByAccountId(accountId);
+   public AtsUser getUserById(ArtifactId user) {
+      AtsUser atsUser = configurationService.getConfigurations().getIdToUser().get(user.getId());
+      if (atsUser == null && isLoadValid()) {
+         atsUser = loadUserByUserId(user.getId());
          if (atsUser != null) {
             configurationService.getConfigurations().addUser(atsUser);
          }
@@ -102,15 +106,23 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsUser;
    }
 
-   protected abstract AtsUser loadUserByAccountId(Long accountId);
+   protected AtsUser loadUserByUserId(Long accountId) {
+      throw new UnsupportedOperationException();
+   }
 
-   protected abstract AtsUser loadUserFromDbByUserId(String userId);
+   protected AtsUser loadUserByUserId(String userId) {
+      throw new UnsupportedOperationException();
+   }
+
+   protected AtsUser loadUserByUserName(String name) {
+      throw new UnsupportedOperationException();
+   }
 
    @Override
    public AtsUser getUserByName(String name) {
       AtsUser atsUser = configurationService.getUserByName(name);
-      if (atsUser == null && Strings.isValid(name)) {
-         atsUser = loadUserFromDbByUserName(name);
+      if (atsUser == null && Strings.isValid(name) && isLoadValid()) {
+         atsUser = loadUserByUserName(name);
          if (atsUser != null) {
             configurationService.getConfigurations().addUser(atsUser);
          }
@@ -118,11 +130,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsUser;
    }
 
-   protected abstract AtsUser loadUserFromDbByUserName(String name);
-
    @Override
    public boolean isUserIdValid(String userId) {
-      return getUserById(userId) != null;
+      return getUserByUserId(userId) != null;
    }
 
    @Override
@@ -137,8 +147,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return users;
    }
 
-   public AtsUser getUserFromToken(UserToken userToken) {
-      return getUserById(userToken.getUserId());
+   @Override
+   public AtsUser getUserByToken(UserToken userToken) {
+      return getUserByUserId(userToken.getUserId());
    }
 
    @Override
@@ -189,24 +200,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public AtsUser getAtsUser(AtsUser user) {
-      AtsUser atsUser = new AtsUser();
-      atsUser.setName(user.getName());
-      atsUser.setUserId(user.getUserId());
-      atsUser.setEmail(user.getEmail());
-      atsUser.setActive(user.isActive());
-      atsUser.setId(user.getId());
-      atsUser.setLoginIds(user.getLoginIds());
-      return atsUser;
-   }
-
-   @Override
    public Collection<AtsUser> getRelatedUsers(AtsApi atsApi, ArtifactToken artifact, RelationTypeSide relation) {
       Set<AtsUser> results = new HashSet<>();
       for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
          String userId = (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
             CoreAttributeTypes.UserId, null);
-         AtsUser lead = atsApi.getUserService().getUserById(userId);
+         AtsUser lead = atsApi.getUserService().getUserByUserId(userId);
          Conditions.assertNotNull(lead, "Lead can not be null with userArt %s", userArt);
          results.add(lead);
       }
@@ -222,7 +221,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public Boolean isUserMember(IUserGroupArtifactToken userGroup, UserId userId) {
-      AtsUser user = getUserByAccountId(userId.getId());
+      AtsUser user = getUserById(userId);
       if (user != null) {
          return user.getUserGroups().contains(userGroup);
       }

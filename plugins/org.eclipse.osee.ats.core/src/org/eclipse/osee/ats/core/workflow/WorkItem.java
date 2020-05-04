@@ -181,7 +181,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public AtsUser getCreatedBy() {
       String userId = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
-      return atsApi.getUserService().getUserById(userId);
+      return atsApi.getUserService().getUserByUserId(userId);
    }
 
    @Override
@@ -193,14 +193,14 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public AtsUser getCompletedBy() {
       String userId =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedBy, null);
-      return atsApi.getUserService().getUserById(userId);
+      return atsApi.getUserService().getUserByUserId(userId);
    }
 
    @Override
    public AtsUser getCancelledBy() {
       String userId =
          atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledBy, null);
-      return atsApi.getUserService().getUserById(userId);
+      return atsApi.getUserService().getUserByUserId(userId);
    }
 
    @Override
