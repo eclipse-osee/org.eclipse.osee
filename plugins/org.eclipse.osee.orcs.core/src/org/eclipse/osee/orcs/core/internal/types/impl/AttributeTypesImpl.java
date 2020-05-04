@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -104,18 +103,6 @@ public class AttributeTypesImpl implements AttributeTypes {
       XAttributeType type = getType(attrType);
       String value = type.getFileExtension();
       return Strings.isValid(value) ? value : Strings.emptyString();
-   }
-
-   @Override
-   public TaggerTypeToken getTaggerId(AttributeTypeId attributeType) {
-      String taggerId = getType(attributeType).getTaggerId();
-      if ("DefaultAttributeTaggerProvider".equals(taggerId)) {
-         return TaggerTypeToken.PlainTextTagger;
-      }
-      if ("XmlAttributeTaggerProvider".equals(taggerId)) {
-         return TaggerTypeToken.XmlTagger;
-      }
-      return TaggerTypeToken.SENTINEL;
    }
 
    @Override

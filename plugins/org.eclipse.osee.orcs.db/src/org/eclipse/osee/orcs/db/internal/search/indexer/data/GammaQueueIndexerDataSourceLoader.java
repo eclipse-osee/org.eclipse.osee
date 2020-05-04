@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -48,7 +48,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       Collection<AttributeData> attrData = new HashSet<>();
       Consumer<JdbcStatement> consumer = stmt -> {
          int itemId = stmt.getInt("attr_id");
-         AttributeTypeId attributeType = tokenService.getAttributeTypeOrCreate(stmt.getLong("attr_type_id"));
+         AttributeTypeToken attributeType = tokenService.getAttributeTypeOrCreate(stmt.getLong("attr_type_id"));
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          String uri = stmt.getString("uri");
          String value = stmt.getString("value");
@@ -89,12 +89,12 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
    private class AttributeData {
 
       private final int itemId;
-      private final AttributeTypeId attributeType;
+      private final AttributeTypeToken attributeType;
       private final GammaId gammaId;
       private final String uri;
       private final String value;
 
-      public AttributeData(int itemId, AttributeTypeId attributeType, GammaId gammaId, String uri, String value) {
+      public AttributeData(int itemId, AttributeTypeToken attributeType, GammaId gammaId, String uri, String value) {
          this.itemId = itemId;
          this.attributeType = attributeType;
          this.gammaId = gammaId;
@@ -106,7 +106,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          return itemId;
       }
 
-      public AttributeTypeId getAttributeType() {
+      public AttributeTypeToken getAttributeType() {
          return attributeType;
       }
 

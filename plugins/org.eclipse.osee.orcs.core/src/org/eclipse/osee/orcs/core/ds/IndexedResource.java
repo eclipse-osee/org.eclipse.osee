@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 
 /**
@@ -22,7 +22,7 @@ public interface IndexedResource {
 
    GammaId getGammaId();
 
-   AttributeTypeId getAttributeType();
+   AttributeTypeToken getAttributeType();
 
    InputStream getResourceInput() throws IOException;
 }

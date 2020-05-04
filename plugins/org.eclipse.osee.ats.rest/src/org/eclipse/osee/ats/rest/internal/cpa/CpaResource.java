@@ -36,11 +36,11 @@ import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.EnumEntry;
 
 /**
  * Services provided for ATS Cross Program Applicability
@@ -149,8 +149,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Override
    public CpaConfig getConfigs() throws Exception {
       CpaConfig config = new CpaConfig();
-      for (EnumEntry entry : orcsApi.getOrcsTypes().getAttributeTypes().getEnumType(
-         AtsAttributeTypes.ApplicableToProgram).values()) {
+      for (EnumToken entry : AtsAttributeTypes.ApplicableToProgram.getEnumValues()) {
          config.getApplicabilityOptions().add(entry.getName());
       }
       for (IAtsCpaService service : cpaRegistry.getServices()) {

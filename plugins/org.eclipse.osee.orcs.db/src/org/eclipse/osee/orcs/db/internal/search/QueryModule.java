@@ -24,7 +24,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
@@ -71,17 +70,16 @@ public class QueryModule {
    }
 
    public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTypes orcsTypes, OrcsTokenService tokenService, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue, IResourceManager resourceManager) {
-      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
       ArtifactQuerySqlContextFactoryImpl artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, jdbcClient, taggingEngine);
-      QueryCallableFactory factory1 = newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine,
-         executorAdmin, loaderFactory, attributeTypes);
+      QueryCallableFactory factory1 =
+         newArtifactQueryEngine(artifactSqlContextFactory, logger, taggingEngine, executorAdmin, loaderFactory);
       QuerySqlContextFactory branchSqlContextFactory =
          Engines.newBranchSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
       QuerySqlContextFactory txSqlContextFactory = Engines.newTxSqlContextFactory(logger, sqlJoinFactory, jdbcClient);
 
-      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, jdbcClient, taggingEngine, executorAdmin,
-         loaderFactory, attributeTypes);
+      QueryCallableFactory factory4 =
+         newQueryEngine(logger, sqlJoinFactory, jdbcClient, taggingEngine, executorAdmin, loaderFactory);
       return new QueryEngineImpl(factory1, branchSqlContextFactory, txSqlContextFactory, factory4, jdbcClient,
          sqlJoinFactory, artifactSqlContextFactory.getHandlerFactory(), sqlObjectLoader, tokenService, keyValue,
          resourceManager);

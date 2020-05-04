@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 
 /**
  * @author Roberto E. Escobar
@@ -30,8 +29,6 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
    EnumType getEnumType(AttributeTypeId attrType);
 
    String getFileTypeExtension(AttributeTypeId attrType);
-
-   TaggerTypeToken getTaggerId(AttributeTypeId attrType);
 
    /**
     * @return AttributeTypeToken or OseeTypeDoesNotExist

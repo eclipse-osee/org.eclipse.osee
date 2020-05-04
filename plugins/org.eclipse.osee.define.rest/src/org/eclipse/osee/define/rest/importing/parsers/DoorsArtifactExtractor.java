@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -25,17 +26,17 @@ import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.rest.internal.importing.NormalizeHtml;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.data.EnumType;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -743,15 +744,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private void parseAndStoreEnum(OrcsApi orcsApi, RoughArtifact roughArtifact, String data, AttributeTypeToken type) {
+   private void parseAndStoreEnum(OrcsApi orcsApi, RoughArtifact roughArtifact, String data, AttributeTypeEnum<?> type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
-      OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
-      EnumType enumType = orcsTypes.getAttributeTypes().getEnumType(type);
-      Set<String> theValues = enumType.valuesAsOrderedStringSet();
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {
          singleItem += theTokens.nextToken();
-         for (String item : theValues) {
+         for (String item : valuesAsOrderedStringSet(type)) {
             if (item.equals(singleItem)) {
                roughArtifact.addAttribute(type, singleItem);
                singleItem = "";
@@ -765,6 +763,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       if (Strings.isValid(singleItem)) {
          roughArtifact.addAttribute(type, singleItem);
       }
+   }
+
+   private Set<String> valuesAsOrderedStringSet(AttributeTypeEnum<?> type) {
+      Set<String> values = new LinkedHashSet<>();
+      for (EnumToken oseeEnumEntry : type.getEnumValues()) {
+         values.add(oseeEnumEntry.getName());
+      }
+      return values;
    }
 
    /*************************************************************

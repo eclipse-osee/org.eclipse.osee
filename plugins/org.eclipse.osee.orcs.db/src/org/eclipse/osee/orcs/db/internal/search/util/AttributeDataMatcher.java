@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -45,12 +45,10 @@ public class AttributeDataMatcher {
 
    private final Log logger;
    private final TaggingEngine engine;
-   private final AttributeTypes attrTypes;
 
-   public AttributeDataMatcher(Log logger, TaggingEngine engine, AttributeTypes attrTypes) {
+   public AttributeDataMatcher(Log logger, TaggingEngine engine) {
       this.logger = logger;
       this.engine = engine;
-      this.attrTypes = attrTypes;
    }
 
    public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
@@ -83,10 +81,10 @@ public class AttributeDataMatcher {
 
    private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
-      AttributeTypeId attrType = source.getAttributeType();
+      AttributeTypeToken attrType = source.getAttributeType();
       if (typesFilter.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE) || typesFilter.contains(attrType)) {
          checkCancelled(cancellation);
-         TaggerTypeToken taggerType = attrTypes.getTaggerId(attrType);
+         TaggerTypeToken taggerType = attrType.getTaggerType();
          if (taggerType.isValid()) {
             Tagger tagger = engine.getTagger(taggerType);
             checkCancelled(cancellation);
@@ -129,7 +127,7 @@ public class AttributeDataMatcher {
       }
 
       @Override
-      public AttributeTypeId getAttributeType() {
+      public AttributeTypeToken getAttributeType() {
          return attrData.getType();
       }
 

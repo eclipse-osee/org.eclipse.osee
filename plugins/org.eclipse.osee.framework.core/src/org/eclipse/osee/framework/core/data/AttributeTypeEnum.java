@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 
@@ -28,6 +30,10 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    @Override
    public boolean isEnumerated() {
       return true;
+   }
+
+   public Collection<T> getEnumValues() {
+      return Collections.unmodifiableCollection(enumTokens);
    }
 
    @Override

@@ -13,8 +13,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -25,20 +24,18 @@ import org.eclipse.osee.orcs.data.EnumEntry;
  */
 public class AttributeTypeToXWidgetName {
 
-   public static String getXWidgetName(OrcsApi orcsApi, AttributeTypeId attributeTypeId) {
-      int minOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMinOccurrences(attributeTypeId);
-      int maxOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attributeTypeId);
+   public static String getXWidgetName(OrcsApi orcsApi, AttributeTypeToken attributeType) {
+      int minOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMinOccurrences(attributeType);
+      int maxOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attributeType);
       String xWidgetName = "";
-      AttributeTypeGeneric<?> attributeType = orcsApi.tokenService().getAttributeType(attributeTypeId.getId());
-      if (attributeTypeId.equals(CoreAttributeTypes.AccessContextId)) {
+      if (attributeType.equals(CoreAttributeTypes.AccessContextId)) {
          xWidgetName = "XTextFlatDam";
       } else if (attributeType.isEnumerated()) {
          if (maxOccurrence == 1) {
-            xWidgetName =
-               "XComboDam(" + Collections.toString(",", getEnumerationValues(orcsApi, attributeTypeId)) + ")";
+            xWidgetName = "XComboDam(" + Collections.toString(",", getEnumerationValues(orcsApi, attributeType)) + ")";
          } else {
             xWidgetName = "XSelectFromMultiChoiceDam(" + Collections.toString(",",
-               getEnumerationValues(orcsApi, attributeTypeId)) + ")";
+               getEnumerationValues(orcsApi, attributeType)) + ")";
          }
       } else if (attributeType.isBoolean()) {
          if (minOccurrence == 1) {
@@ -74,7 +71,7 @@ public class AttributeTypeToXWidgetName {
       return xWidgetName;
    }
 
-   private static Collection<String> getEnumerationValues(OrcsApi orcsApi, AttributeTypeId attributeType) {
+   private static Collection<String> getEnumerationValues(OrcsApi orcsApi, AttributeTypeToken attributeType) {
       List<String> values = new ArrayList<>();
       for (EnumEntry entry : orcsApi.getOrcsTypes().getAttributeTypes().getEnumType(attributeType).values()) {
          values.add(entry.getName());

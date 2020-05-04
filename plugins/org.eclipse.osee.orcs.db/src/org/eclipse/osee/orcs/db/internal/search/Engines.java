@@ -21,7 +21,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQueryCallableFactory;
@@ -57,21 +56,20 @@ public final class Engines {
       return new ArtifactQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
    }
 
-   public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
-      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
+   public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader) {
+      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
    }
 
    public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
       JdbcClient jdbcClient, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, //
-      DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+      DataLoaderFactory objectLoader) {
 
-      SqlHandlerFactory handlerFactory =
-         createObjectSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
+      SqlHandlerFactory handlerFactory = createObjectSqlHandlerFactory(logger, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
          new ObjectQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
-      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
+      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
    }
