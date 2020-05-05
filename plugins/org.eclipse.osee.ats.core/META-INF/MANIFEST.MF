@@ -8,7 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
- com.fasterxml.jackson.databind.annotation;version="2.9.2",
+ com.fasterxml.jackson.databind.annotation,
  com.google.common.base,
  com.google.common.cache,
  javax.ws.rs.core,

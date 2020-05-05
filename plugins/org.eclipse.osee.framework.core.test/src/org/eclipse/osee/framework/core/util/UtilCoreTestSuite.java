@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AbstractOperationTest.class, ConditionsTest.class, XResultDataTest.class})
+@Suite.SuiteClasses({AbstractOperationTest.class, ConditionsTest.class, XResultDataTest.class, ManifestTest.class})
 /**
  * @author Roberto E. Escobar
  */
