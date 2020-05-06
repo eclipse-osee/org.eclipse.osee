@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
@@ -43,6 +44,7 @@ public class NewActionData {
    String workPackage;
    String originatorStr;
    String assigneeStr;
+   ArtifactId versionId;
 
    public NewActionData() {
       // jax-rs
@@ -237,5 +239,13 @@ public class NewActionData {
     */
    public void setAssigneeStr(String assigneeStr) {
       this.assigneeStr = assigneeStr;
+   }
+
+   public ArtifactId getVersionId() {
+      return versionId;
+   }
+
+   public void setVersionId(ArtifactId versionId) {
+      this.versionId = versionId;
    }
 }

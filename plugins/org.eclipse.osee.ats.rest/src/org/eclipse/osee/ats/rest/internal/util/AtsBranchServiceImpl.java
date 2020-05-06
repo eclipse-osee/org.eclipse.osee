@@ -184,7 +184,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public ArtifactId getAssociatedArtifactId(BranchId branch) {
-      throw new UnsupportedOperationException("Not yet supported on server");
+      return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne().getAssociatedArtifact();
    }
 
    @Override

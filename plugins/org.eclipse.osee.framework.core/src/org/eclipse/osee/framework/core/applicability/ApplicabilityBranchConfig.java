@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
 
@@ -23,12 +24,14 @@ import org.eclipse.osee.framework.core.data.BranchViewToken;
 public class ApplicabilityBranchConfig {
 
    BranchViewToken branch;
+   BranchViewToken parentBranch;
    Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
    List<ArtifactToken> views = new LinkedList<>();
    List<String> viewsOrdered = new LinkedList<>();
    List<Map<String, String>> featureToValueMaps = new LinkedList<>();
    List<FeatureDefinition> features = new LinkedList<>();
+   ArtifactId associatedArtifactId;
 
    public void addFeature(FeatureDefinition fDef) {
       featureIdToFeature.put(fDef.getIdString(), fDef);
@@ -96,6 +99,22 @@ public class ApplicabilityBranchConfig {
 
    public void setFeatures(List<FeatureDefinition> features) {
       this.features = features;
+   }
+
+   public ArtifactId getAssociatedArtifactId() {
+      return associatedArtifactId;
+   }
+
+   public void setAssociatedArtifactId(ArtifactId associatedArtifactId) {
+      this.associatedArtifactId = associatedArtifactId;
+   }
+
+   public BranchViewToken getParentBranch() {
+      return parentBranch;
+   }
+
+   public void setParentBranch(BranchViewToken parentBranch) {
+      this.parentBranch = parentBranch;
    }
 
 }

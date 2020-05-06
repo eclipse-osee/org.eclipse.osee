@@ -1,16 +1,51 @@
+.floatingPane {
+  position: absolute;
+  background-color: #f1f1f1;
+  border: 1px solid #d3d3d3;
+  text-align: left;
+  background-color: white;
+  height: auto; 
+  width: auto; 
+  border: 3px solid #666; 
+  padding: 10px
+}
+.floatingTitle {
+	align: center;
+	
+}
+.floatingHr {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border-style: inset;
+  border-width: 1px;
+  margin-left:0;
+  margin-right:0;
+}
+.dropdown {
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+	font-size: 12px;
+	border-radius: 4px;
+}
+.button {
+	padding: 4px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+	font-size: 12px;
+	border-radius: 4px;
+}
 .myGrid {
 	width: 'auto';
-	height: 250px;
+	height: 'auto';
 	position:relative;
 }
-
-.container {
-	width: 400px;
-	position: relative;
-	z-index:-1;
-}
-
-
 .content {
     margin-left: auto;
     margin-right: auto;
@@ -39,3 +74,27 @@
 [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+
+.outer
+{  display:block;
+  padding:0px
+}
+
+.handle {
+  margin-top: 0px; 
+  margin-left: 0px;
+  align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.inner { 
+  position: relative;}
+  .dropbtn {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+

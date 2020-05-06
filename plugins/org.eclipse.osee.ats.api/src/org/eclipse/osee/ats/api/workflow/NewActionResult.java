@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -23,6 +24,7 @@ public class NewActionResult {
    ArtifactId action;
    List<ArtifactId> teamWfs = new LinkedList<>();
    XResultData results = new XResultData();
+   BranchId workingBranch;
 
    public NewActionResult() {
       // for jax-rs
@@ -54,6 +56,14 @@ public class NewActionResult {
 
    public void addTeamWf(ArtifactId teamWf) {
       teamWfs.add(ArtifactId.valueOf(teamWf));
+   }
+
+   public BranchId getWorkingBranchId() {
+      return workingBranch;
+   }
+
+   public void setWorkingBranchId(BranchId workingBranchId) {
+      this.workingBranch = workingBranchId;
    }
 
 }

@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -71,7 +72,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -550,6 +553,51 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return createNewAction(newActionData);
    }
 
+   @Override
+   @Path("branch")
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
+
+      NewActionResult result = new NewActionResult();
+      try {
+
+         AtsUser asUser = atsApi.getUserService().getUserByUserId(newActionData.getAsUserId());
+         if (asUser == null) {
+            result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
+            return result;
+         }
+         Collection<IAtsActionableItem> ais = new ArrayList<>();
+         ActionableItem ai =
+            atsApi.getQueryService().getConfigItem(Long.valueOf(newActionData.getAiIds().iterator().next()));
+         ais.add(ai);
+
+         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+         IAtsVersion version =
+            atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
+         ActionResult actionResult = atsApi.getActionFactory().createAction(asUser, newActionData.getTitle(),
+            newActionData.getDescription(), ChangeType.Improvement, newActionData.getPriority(), false, null, ais,
+            new Date(), atsApi.getUserService().getCurrentUser(), null, changes);
+
+         IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
+         atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
+
+         changes.execute();
+
+         BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
+         IOseeBranch parentBranchToken =
+            orcsApi.getQueryFactory().branchQuery().andId(parentBranch).getResultsAsId().getExactlyOne();
+         Branch workingBranch = orcsApi.getBranchOps().createWorkingBranch(
+            IOseeBranch.create(teamWf.getAtsId() + " " + newActionData.getTitle()), asUser.getArtifactId(),
+            parentBranchToken, teamWf.getArtifactId());
+         result.setWorkingBranchId(workingBranch);
+      } catch (Exception ex) {
+         result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
+      }
+      return result;
+
+   }
+
    private NewActionResult createNewAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {
@@ -723,6 +771,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transition(TransitionData transData) {
+      if (transData.getTransitionUser() == null && transData.getTransitionUserArtId().isValid()) {
+         transData.setTransitionUser(atsApi.getUserService().getUserById(transData.getTransitionUserArtId()));
+      }
       TransitionResults results = atsApi.getWorkItemService().transition(transData);
       return results;
    }
@@ -733,6 +784,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public TransitionResults transitionValidate(TransitionData transData) {
+      if (transData.getTransitionUser() == null && transData.getTransitionUserArtId().isValid()) {
+         transData.setTransitionUser(atsApi.getUserService().getUserById(transData.getTransitionUserArtId()));
+      }
       TransitionResults results = atsApi.getWorkItemService().transitionValidate(transData);
       return results;
    }

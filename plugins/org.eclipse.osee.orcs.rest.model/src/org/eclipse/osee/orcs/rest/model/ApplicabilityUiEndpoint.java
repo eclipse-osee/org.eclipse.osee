@@ -44,6 +44,12 @@ public interface ApplicabilityUiEndpoint {
    List<BranchViewToken> getApplicabilityBranches();
 
    @GET
+   @Path("branches/{branchQueryType}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<BranchViewToken> getApplicabilityBranchesByType(String branchQueryType);
+
+   @GET
    @Path("branch/{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
@@ -54,5 +60,9 @@ public interface ApplicabilityUiEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.TEXT_HTML})
    public String convertConfigToArtifact(@PathParam("branch") BranchId branch);
+
+   @GET
+   @Produces({MediaType.TEXT_HTML})
+   Response getRO();
 
 }

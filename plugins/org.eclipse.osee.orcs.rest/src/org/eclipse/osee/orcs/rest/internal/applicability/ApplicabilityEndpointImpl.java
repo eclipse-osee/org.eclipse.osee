@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.rest.internal.applicability;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.PathParam;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -148,86 +147,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public XResultData createApplicabilityForView(ArtifactId viewId, String applicability) {
       XResultData results = isAccess();
+      UserId user = account;
+      if (user == null) {
+         user = SystemUser.OseeSystem;
+      }
       if (results.isErrors()) {
          return results;
       }
-      if (!applicabilityQuery.viewExistsOnBranch(branch, viewId)) {
-         results.error("View is invalid.");
-         return results;
-      }
-      if (applicabilityQuery.applicabilityExistsOnBranchView(branch, viewId, applicability)) {
-         results.error("Applicability already exists.");
-         return results;
-      }
-      if (applicability.startsWith("Config =")) {
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
-            "Create " + applicability + " applicability");
-         tx.createApplicabilityForView(viewId, applicability);
-         tx.commit();
-         return results;
-      }
-      if (applicability.contains("|")) {
-         boolean validApplicability = true;
-         for (String value : applicability.split("|")) {
-            /**
-             * loop through existing applicabilities for view and see if new applicability exists if so, stop else check
-             * that at least one of the | separated applicability exists
-             **/
-            Iterable<String> existingApps =
-               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
-            for (String appl : existingApps) {
-               if (appl.equals(value)) {
-                  validApplicability = true;
-               }
-            }
-         }
-         if (validApplicability) {
-            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
-               "Apply " + applicability + " applicability");
-            tx.createApplicabilityForView(viewId, applicability);
-            tx.commit();
-         }
-
-      } else {
-         String featureName = applicability.substring(0, applicability.indexOf("=") - 1);
-         String featureValue = applicability.substring(applicability.indexOf("=") + 2);
-         if (applicabilityQuery.featureExistsOnBranch(branch,
-            featureName) && applicabilityQuery.featureValueIsValid(branch, featureName, featureValue)) {
-            List<String> existingValues = new LinkedList<>();
-            Iterable<String> existingApps =
-               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
-            for (String appl : existingApps) {
-               if (appl.startsWith(featureName + " = ") || appl.contains("| " + featureName + "=")) {
-                  existingValues.add(appl);
-               }
-            }
-            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
-               "Apply " + applicability + " applicability");
-            String valueType = "single";
-            if (existingValues.size() > 0) {
-               List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData();
-               for (FeatureDefinition feat : featureDefinitionData) {
-                  if (feat.getName().toUpperCase().equals(featureName)) {
-                     valueType = feat.getValueType();
-                     break;
-                  }
-               }
-            }
-            if (valueType.equals("single")) {
-               for (String existingValue : existingValues) {
-                  tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, existingValue);
-               }
-            }
-            tx.createApplicabilityForView(viewId, applicability);
-            tx.commit();
-
-         } else {
-            results.error("Feature is not defined or Value is invalid.");
-         }
-
-      }
-
-      return results;
+      return ops.createApplicabilityForView(viewId, applicability, user, branch);
    }
 
    @Override
@@ -246,8 +173,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public FeatureDefinition getFeatureByName(String featureName) {
-      return ops.getFeature(featureName, branch);
+   public FeatureDefinition getFeature(String featureNameOrId) {
+      return ops.getFeature(featureNameOrId, branch);
    }
 
    @Override
@@ -305,8 +232,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public ViewDefinition getViewByName(String viewName) {
-      return ops.getView(viewName, branch);
+   public ViewDefinition getView(String viewNameOrId) {
+      return ops.getView(viewNameOrId, branch);
    }
 
    @Override

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
-
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -34,6 +34,7 @@ public class TransitionData {
    @JsonIgnore
    private Collection<IAtsWorkItem> workItems = new HashSet<>();
    private AtsUser transitionUser;
+   private ArtifactId transitionUserArtId;
    private boolean workflowsReloaded = false;
    private boolean dialogCancelled = false;
 
@@ -136,6 +137,14 @@ public class TransitionData {
 
    public void setDialogCancelled(boolean dialogCancelled) {
       this.dialogCancelled = dialogCancelled;
+   }
+
+   public ArtifactId getTransitionUserArtId() {
+      return transitionUserArtId;
+   }
+
+   public void setTransitionUserArtId(ArtifactId transitionUserArtId) {
+      this.transitionUserArtId = transitionUserArtId;
    }
 
 }

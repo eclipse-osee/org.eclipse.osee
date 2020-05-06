@@ -117,7 +117,7 @@ public class CreateDemoBranches {
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A significant capability");
       ops.createUpdateFeatureDefinition(def1, "add", tx, results);
       FeatureDefinition def2 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.ENGINE_5.name(),
-         "String", Arrays.asList("A2543", "B5543"), "", false, "Used select type of engine");
+         "String", Arrays.asList("A2543", "B5543"), "A2543", false, "Used select type of engine");
       ops.createUpdateFeatureDefinition(def2, "add", tx, results);
       FeatureDefinition def3 = new FeatureDefinition(Lib.generateArtifactIdAsInt(), DemoFeatures.JHU_CONTROLLER.name(),
          "String", Arrays.asList("Included", "Excluded"), "Included", false, "A small point of variation");

@@ -62,11 +62,34 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
 
    @Override
    @GET
+   @Produces({MediaType.TEXT_HTML})
+   public Response getRO() {
+      try {
+         String basePath = uriInfo.getAbsolutePath().toString();
+         String url = basePath + "/config/plconfigro.html";
+         URI uri = new URI(url);
+         return Response.seeOther(uri).build();
+      } catch (URISyntaxException ex) {
+         throw new OseeCoreException("Exception ", ex);
+      }
+   }
+
+   @Override
+   @GET
    @Path("branches")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public List<BranchViewToken> getApplicabilityBranches() {
       return ops.getApplicabilityBranches();
+   }
+
+   @Override
+   @GET
+   @Path("branches/{branchQueryType}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<BranchViewToken> getApplicabilityBranchesByType(@PathParam("branchQueryType") String branchQueryType) {
+      return ops.getApplicabilityBranchesByType(branchQueryType);
    }
 
    @Override

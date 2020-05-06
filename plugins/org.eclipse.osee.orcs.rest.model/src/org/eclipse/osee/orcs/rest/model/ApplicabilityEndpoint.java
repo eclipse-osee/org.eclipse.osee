@@ -89,9 +89,9 @@ public interface ApplicabilityEndpoint {
    List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
 
    @GET
-   @Path("view/name/{viewName}")
+   @Path("view/def/{viewNameOrId}")
    @Produces({MediaType.APPLICATION_JSON})
-   ViewDefinition getViewByName(@PathParam("viewName") String viewName);
+   ViewDefinition getView(@PathParam("viewNameOrId") String viewNameOrId);
 
    @GET
    @Path("views")
@@ -104,9 +104,9 @@ public interface ApplicabilityEndpoint {
    List<FeatureDefinition> getFeatureDefinitionData();
 
    @GET
-   @Path("feature/name/{featureName}")
+   @Path("feature/{featureNameOrId}")
    @Produces({MediaType.APPLICATION_JSON})
-   FeatureDefinition getFeatureByName(@PathParam("featureName") String featureName);
+   FeatureDefinition getFeature(@PathParam("featureNameOrId") String featureNameOrId);
 
    @PUT
    @Path("feature")

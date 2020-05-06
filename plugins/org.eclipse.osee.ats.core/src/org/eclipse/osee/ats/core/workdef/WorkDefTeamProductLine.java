@@ -58,6 +58,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andToStates(StateToken.Completed, StateToken.Cancelled, StateToken.InWork) //
          .andOverrideValidationStates(StateToken.InWork) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
+         .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
             new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //

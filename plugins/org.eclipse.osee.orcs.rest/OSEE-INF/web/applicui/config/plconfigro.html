@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<title>OSEE - Product Line Configuration</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+<link rel="stylesheet" type="text/css" href="plconfig.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css"></link>
+
+<script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-messages.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-touch.min.js"></script>
+<script src="/ajax/libs/angularjs/1.3.11/angular-aria.min.js"></script>
+<script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
+<script
+	src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
+<script src="plconfig.js"></script>
+
+<body>
+	<div ng-app="app" class="outer" ng-controller="appCtrl">
+
+
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="plconfig.html">&nbsp;&nbsp;&nbsp;OSEE
+						- Product Line Configuration Matrix</a>
+				</div>
+			</div>
+		</nav>
+		<div class="inner">
+
+						<div class="container">
+							<label>Branch: </label> <select class="dropdown" ng-model="selectedBranch"
+								ng-options="branch.name for branch in branches | orderBy : 'name'"
+								ng-change="handleBranchSelectionRO()">
+							</select>
+							<button class="button" type="submit" ng-click="handleShowAllFeatureColumns()">{{showAllLabel}}
+						   </button>
+						</div>
+						<p>
+						<div class="container">
+							<div ui-grid="itemsGridOptions" class="myGrid" ui-grid-selection
+								ui-grid-auto-resize ui-grid-resize-columns ui-grid-pagination></div>
+						</div>
+		<div class="container">
+			&nbsp;&nbsp;&nbsp;<label ng-show="showErrorLabel"><font
+				color="red">Error: {{errorMsg}}</font></label>
+		</div>
+	</div>
+</body>
+</html>

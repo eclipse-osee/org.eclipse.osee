@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
@@ -28,5 +30,10 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}/changedata")
    @Produces({MediaType.APPLICATION_JSON})
    public List<ChangeItem> getChangeData(@PathParam("id") String id);
+
+   @GET
+   @Path("{aiId}/version")
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId);
 
 }

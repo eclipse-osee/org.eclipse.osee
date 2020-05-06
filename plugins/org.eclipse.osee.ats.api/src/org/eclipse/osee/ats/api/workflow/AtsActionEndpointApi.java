@@ -113,6 +113,11 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createAction(NewActionData newActionData);
 
+   @Path("branch")
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
+
    @Path("createEmpty")
    @POST
    @Produces(MediaType.APPLICATION_JSON)

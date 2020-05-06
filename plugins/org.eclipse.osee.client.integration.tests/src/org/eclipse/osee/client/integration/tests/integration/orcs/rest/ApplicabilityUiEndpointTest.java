@@ -45,7 +45,7 @@ public class ApplicabilityUiEndpointTest {
 
       Response response = applUiEndpoint.get();
       String html = response.readEntity(String.class);
-      Assert.assertTrue(html.contains("ORCS Product Line Configuration"));
+      Assert.assertTrue(html.contains("Configuration Matrix"));
    }
 
    @Test

@@ -10,36 +10,77 @@ app
                   '$resource',
                   '$timeout',
                   function($scope, $http, $resource, $timeout) {
-
+                	  $scope.elem = {
+                  	        top: 98,
+                  	        left: 357
+                  	      };
+                	  $scope.branchQueryType = 'all';
+                	  $scope.selectedViewOption = 'productAction';
+                	  $scope.selectedFeatureOption = 'featureAction';
+                	  $scope.selectedActionOption = 'actionAction';
+                      $scope.teamWf = {};
+                      $scope.events = [];
+                      $scope.elements = [];
                      $scope.selectedBranch = {};
+                     $scope.selectedVersion = {};
+                     $scope.selectedAI = {};
+                     $scope.selectedUser = {};
+                     $scope.selectedToState = '';
+                     $scope.transitionToStates = [];
+                     $scope.users = [];
+                     $scope.actionableitems = [];
+                     $scope.versions = [];
                      $scope.branches = [];
                      $scope.selectedBranch.id = getQueryParameterByName('branch');
                      $scope.itemsGridOptions = [];
                      $scope.itemsGridOptions.data = [];
-                     $scope.showAll = getQueryParameterByName("showAll"); 
-
+                     $scope.showAll = getQueryParameterByName('showAll'); 
+                     $scope.feature = {};
+                     $scope.view = {};
+                     $scope.htmlFeatureColumns = false;
+                     $scope.branchQueryType = getQueryParameterByName('branchQueryType');
                      // HTML boolean to show/hide elements
                      $scope.resetHtmlVarsAndFlags = function() {
+                    	 $scope.elem.top = 98;
+                    	 $scope.elem.left = 357;
                          $scope.edit = {};
 
-                         // ///// VARIANT flags and
+                   	  $scope.selectedViewOption = 'productAction';
+                   	  $scope.selectedFeatureOption = 'featureAction';
+                	  $scope.selectedActionOption = 'actionAction';
+                       //Create Action flags and vars
+                         $scope.action = {};
+                         $scope.htmlAISelect = false;
+                         $scope.htmlUserSelect = false;
+                         $scope.htmlVersionSelect = false;
+                         $scope.htmlActionPane = false;
+                         $scope.htmlActionAdd = false;
+                         $scope.htmlActionSave = false;
+                         $scope.htmlTransitionPane = false;
+                         $scope.htmlTransition = false;
+                         $scope.htmlTransitionSelect = false;
+                         $scope.htmlTransitionSave = false;
+                         $scope.htmlCommitWorkingBranchPane = false;
+                         $scope.htmlCommitWorkingBranch = false;
+                         $scope.htmlCommitWorkingBranchSave = false;
+                         // ///// view flags and
                             // vars
-                         $scope.variant = {};
-                         $scope.validatePatternVariant = '^[A-Za-z0-9 ]+$';
+                         $scope.view = {};
+                         $scope.validatePatternView = '^[A-Za-z0-9 ]+$';
                          // Main Edit Container
-                         $scope.htmlVariantPane = false;
+                         $scope.htmlViewPane = false;
                          // For Add/Edit/Delete
-                         $scope.htmlVariantAction = null;
-                         $scope.htmlVariantEdit = false;
-                         $scope.htmlVariantAdd = false;
-                         $scope.htmlVariantDelete = false;
+                         $scope.htmlViewAction = null;
+                         $scope.htmlViewEdit = false;
+                         $scope.htmlViewAdd = false;
+                         $scope.htmlViewDelete = false;
                          // Widgets
-                         $scope.htmlVariantSelect = false;
-                         $scope.htmlVariantSave = false;
-                         $scope.htmlVariantCopyFrom = false;
-                         $scope.htmlVariantAddTitle = false;
-                         $scope.htmlVariantEditTitle = false;
-                         $scope.htmlVariantDeleteTitle = false;
+                         $scope.htmlViewSelect = false;
+                         $scope.htmlViewSave = false;
+                         $scope.htmlViewCopyFrom = false;
+                         $scope.htmlViewAddTitle = false;
+                         $scope.htmlViewEditTitle = false;
+                         $scope.htmlViewDeleteTitle = false;
                          
                          // ///// FEATURE flags and
                             // vars
@@ -59,19 +100,40 @@ app
                          $scope.htmlFeatureEditTitle = false;
                          $scope.htmlFeatureAddTitle = false;
                          $scope.htmlFeatureDeleteTitle = false;
+                         //clear errors
+                         $scope.showErrorLabel = false;
+                         $scope.errorMsg = '';
+                         
                      }
                      $scope.resetHtmlVarsAndFlags();
 
+                     $scope.updateBranchQueryType = function() {
+                    	 $scope.selectedBranch = {};
+                    	 $scope.loadBranches();
+                     }
                      // //////////////////////////////////////
                      // Load branch combo regardless of which "page"
                      // //////////////////////////////////////
                      $scope.loadBranches = function() {
-                        $http.get('/orcs/applicui/branches').then(
+                    	 if (!$scope.branchQueryType) {
+                    		 $scope.branchQueryType = 'all';
+                    	 }
+                    	 if($scope.branchQueryType == 'all') {
+                            $http.get('/orcs/applicui/branches').then(
                               function(response) {
                                  $scope.branches = response.data;
                                  $scope.message = '';
                                  $scope.setSelectedBranch();
                               });
+                    	 } else {
+                    		 $http.get('/orcs/applicui/branches/'+$scope.branchQueryType).then(
+                                     function(response) {
+                                        $scope.branches = response.data;
+                                        $scope.message = '';
+                                        $scope.setSelectedBranch();
+                                     });
+                    	 }
+                         
                      }
                      $scope.loadBranches();
 
@@ -103,7 +165,37 @@ app
                         } else {
                            $scope.message = 'Selected branch '
                                  + $scope.selectedBranch;
-                           var url = '/orcs/applicui/config/plconfig.html?branch='
+//                           var url = '/orcs/applicui/config/plconfig.html?branch='
+//                                 + $scope.selectedBranch.id;
+//                           
+//                           window.location.replace(url);
+                             $scope.updateUrl();
+                        }
+                     }
+                     
+                     $scope.updateUrl = function () {
+                    	 var url = '/orcs/applicui/config/plconfig.html';
+                    	 
+                    	 if ($scope.selectedBranch) {
+                    		 url = url + '?branchQueryType='+$scope.branchQueryType+'&branch=' + $scope.selectedBranch.id
+                    		 
+                    		 if (getQueryParameterByName('showAll')) {
+                    			 url = url + '&showAll=true';
+                    		 }
+                    	 };
+                    	 window.location.replace(url);
+                     }
+                     
+                  // //////////////////////////////////////
+                     // Handle branch selection READ ONLY
+                     // //////////////////////////////////////
+                     $scope.handleBranchSelectionRO = function() {
+                        if (!$scope.selectedBranch) {
+                           $scope.message = 'Must Select a Branch';
+                        } else {
+                           $scope.message = 'Selected branch '
+                                 + $scope.selectedBranch;
+                           var url = '/orcs/applicui/config/plconfigro.html?branch='
                                  + $scope.selectedBranch.id;
                            window.location.replace(url);
                         }
@@ -119,27 +211,122 @@ app
                            $http.get(url) .then(
                                function(response) {
                                    if (response.data.errors) {
-                                       $scope.accessLevel = "(Read-Only)";
+                                       //$scope.accessLevel = "(Read-Only)";
                                        $scope.isReadOnly = true;
+                                       //document.getElementById("selectedBranchField").style.color = "yellow";
                                     } else {
-                                       $scope.accessLevel = "";
+                                       //$scope.accessLevel = "";
                                        $scope.isReadOnly = false;
+                                       //document.getElementById("selectedBranchField").style.color = "blue";
                                     }
                                });
                      }
+                     // //////////////////////////////////////
+                     // Load users combo 
+                     // //////////////////////////////////////
+                     //http://<server>/ats/user
+                     $scope.loadUsers = function() {
+                        $http.get('/ats/user').then(
+                              function(response) {
+                                 $scope.users = response.data;
+                                 $scope.message = '';
+                              });
+                     }
+                     $scope.loadUsers();
+                     // //////////////////////////////////////
+                     // Handle User selection
+                     // //////////////////////////////////////
+                     $scope.handleUserSelection = function() {
+                        if (!$scope.selectedUser) {
+                           $scope.message = 'Must Select Originator';
+                        } else {
+                           $scope.message = 'Selected Originator: '
+                                 + $scope.selectedUser;
+                        }
+                     }
+                     // //////////////////////////////////////
+                     // Load actionable item combo 
+                     // //////////////////////////////////////
+                     //http://<server>/ats/ui/action/actionableitems
+                     $scope.loadAIs = function() {
+                        $http.get('/ats/ai').then(
+                              function(response) {
+                                 $scope.actionableitems = response.data;
+                                 $scope.message = '';
+                              });
+                     }
+                     $scope.loadAIs();
+
+                     // //////////////////////////////////////
+                     // Handle AI selection
+                     // //////////////////////////////////////
+                     $scope.handleAISelection = function() {
+                        if (!$scope.selectedAI) {
+                           $scope.message = 'Must Select a Actionable Item';
+                        } else {
+                           $scope.message = 'Selected Actionable Item: '
+                                 + $scope.selectedAI;
+                           $scope.loadVersions();
+                        }
+                     }
+        
+                     
+                  // //////////////////////////////////////
+                     // Load version combo regardless of which "page"
+                     // //////////////////////////////////////
+                     //http://<server>/ats/teamwf/<actionableItemId>/version
+                     $scope.loadVersions = function() {
+                        $http.get('/ats/teamwf/'+$scope.selectedAI.id+'/version').then(
+                              function(response) {
+                                 $scope.versions = response.data;
+                                 $scope.message = '';
+                              });
+                     }
+                  // //////////////////////////////////////
+                     // Load transitionTo
+                     // //////////////////////////////////////
+                     //http://localhost:8089/ats/action/201204/TransitionToStates
+                     $scope.loadTransitionStates = function() {
+                        $http.get('/ats/action/'+$scope.actionId+'/TransitionToStates').then(
+                              function(response) {
+                                 $scope.transitionToStates = response.data;
+                                 $scope.message = '';
+                              });
+                     }
                      
                      // /////////////////////////////////////////////////////////////////////
-                     // VARIANT METHODS
+                     // View METHODS
                      // /////////////////////////////////////////////////////////////////////
-                     
+
+                     $scope.doSelectedViewAction = function() {
+                 		switch($scope.selectedViewOption) {
+                 		case "add":
+                 			$scope.handleAddView();
+                 			break;
+                 		case "edit":
+                 			$scope.handleEditView();
+                 			break;
+                 		case "delete":
+                 			$scope.handleDeleteView();
+                 			break;
+                 		}
+                 	}
                       
                      // //////////////////////////////////////
-                     // Handle Add Variant
+                     // Handle Add View
                      // //////////////////////////////////////
-                     $scope.handleAddVariant = function() {
-
+                     $scope.handleAddView = function() {
                     	 $scope.resetHtmlVarsAndFlags();
-                    	 $scope.htmlVariantAction = "add";
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    		 return;
+                    	 }
+                    	 
+                    	 $scope.htmlViewAction = "add";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -147,21 +334,30 @@ app
                         .then(
                               function(response) {
                                  var config = response.data;
-                                 $scope.htmlVariantPane = true;
-                                 $scope.htmlVariantAdd = true;
-                                 $scope.htmlVariantCopyFrom = true;
-                                 $scope.htmlVariantSave = true;
-                                 $scope.variants = config.variants;
+                                 $scope.htmlViewPane = true;
+                                 $scope.htmlViewAdd = true;
+                                 $scope.htmlViewCopyFrom = true;
+                                 $scope.htmlViewSave = true;
+                                 $scope.views = config.views;
                               });
+                    	 
                      }
 
                      // //////////////////////////////////////
-                     // Handle Edit Variant
+                     // Handle Edit view
                      // //////////////////////////////////////
-                     $scope.handleEditVariant = function() {
-
+                     $scope.handleEditView = function() {
                     	 $scope.resetHtmlVarsAndFlags();
-                    	 $scope.htmlVariantAction = "edit";
+
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    		 return;
+                    	 }
+                    	 $scope.htmlViewAction = "edit";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -169,73 +365,101 @@ app
                         .then(
                               function(response) {
                             	  var config = response.data;
-                            	  $scope.htmlVariantPane = true;
-                            	  $scope.htmlVariantEdit = true;
-                            	  if (!$scope.variant.id) {
-                            		  $scope.htmlVariantSelect = true;
+                            	  $scope.htmlViewPane = true;
+                            	  $scope.htmlViewEdit = true;
+                            	  if (!$scope.view.id) {
+                            		  $scope.htmlViewSelect = true;
                             		  }
-                            	  $scope.htmlVariantEditTitle = true;
-                            	  $scope.htmlVariantSave = true;
-                            	  $scope.htmlVariantCopyFrom = true;
-                            	  $scope.variants = config.variants;
+                            	  $scope.htmlViewEditTitle = true;
+                            	  $scope.htmlViewSave = true;
+                            	  $scope.htmlViewCopyFrom = true;
+                            	  $scope.views = config.views;
                             	  }
                               );
                      }                     
                      // //////////////////////////////////////
-                     // Handle Edit Variant - Values
+                     // Handle Edit view - Values
                      //
                      // Open edit pane 
                      // //////////////////////////////////////
-                     $scope.handleEditVariantSelect = function() {
+                     $scope.handleEditViewSelect = function() {
                      	// Same select widget used for both; return if deleting
-                     	if ($scope.htmlVariantAction == "delete") {
+                     	if ($scope.htmlViewAction == "delete") {
                      		return;
                      	}
-                     	var variant = $scope.variant;
-                        $scope.htmlVariantPane = true;
-                        $scope.htmlVariantEditTitle = true;
-                        $scope.htmlVariantSelect = true;
-                        $scope.htmlVariantEdit = true;
-                        $scope.htmlVariantSave = true;
+                     	var view = $scope.view;
+                        $scope.htmlViewPane = true;
+                        $scope.htmlViewEditTitle = true;
+                        $scope.htmlViewSelect = true;
+                        $scope.htmlViewEdit = true;
+                        $scope.htmlViewSave = true;
                         $scope.htmlCopyFrom=true;
                      }
                      // //////////////////////////////////////
-                     // Cancel Variant Edit
+                     // Cancel View Edit
                      // //////////////////////////////////////
-                     $scope.cancelVariantEdit = function() {
-                    	 $scope.htmlVariantAction = null;
+                     $scope.cancelViewEdit = function() {
+                    	 $scope.htmlViewAction = null;
                         $scope.resetHtmlVarsAndFlags();
                      }
 
 
                      // //////////////////////////////////////
-                     // Save Variant Edit
+                     // Save View Edit
                      // //////////////////////////////////////
-                     $scope.saveVariantEdit = function() {
-                        var variant = $scope.variant;
-                        var action = $scope.htmlVariantAction;
+                     $scope.saveViewEdit = function() {
+
+                         if (!$scope.view.name) {
+                         	$scope.error("View title is required")
+                         	return;
+                         }
+                         if (!$scope.view.copyFrom) {
+                         	$scope.error("Copy From is required");
+                         	return;
+                         }
+                        var view = $scope.view;
+                        var action = $scope.htmlViewAction;
                         var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/variant/'+$scope.htmlVariantAction;
+                              + '/applic/view';
                         
-                        var json = JSON.stringify(variant);
-                        $http.put(url, json).then(function(response) {
-                           if (response.data.errors) {
-                              $scope.error(response.data.results);
-                           } else {
-                              $scope.loadTable();
-                           }
-                           $scope.resetHtmlVarsAndFlags();
-                        });
+                        var json = JSON.stringify(view); 
+                        if ($scope.htmlViewAction == "add") {
+	                        $http.post(url, json).then(function(response) {
+	                            if (response.data.errors) {
+	                               $scope.error(response.data.results);
+	                            } else {
+	                               $scope.loadTable();
+	                            }
+	                            $scope.resetHtmlVarsAndFlags();
+	                         }) 
+	                    } else {
+	                        $http.put(url, json).then(function(response) {
+	                           if (response.data.errors) {
+	                              $scope.error(response.data.results);
+	                           } else {
+	                              $scope.loadTable();
+	                           }
+	                           $scope.resetHtmlVarsAndFlags();
+	                        })
+	                     }
                      }
 
                      // //////////////////////////////////////
-                     // Handle Delete Variant
+                     // Handle Delete View
                      // //////////////////////////////////////
-                     $scope.handleDeleteVariant = function(variant) {
-
+                     $scope.handleDeleteView = function(view) {
                     	 $scope.resetHtmlVarsAndFlags();
-                    	 $scope.htmlVariantAction = "delete";
+
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    		 return;
+                    	 }
+                    	 $scope.htmlViewAction = "delete";
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -246,29 +470,29 @@ app
                                   $scope.error(response.data.results);
                                } else {
                                      var config = response.data;
-                                     $scope.htmlVariantPane = true;
-                                     $scope.htmlVariantSelect = true;
-                                     $scope.htmlVariantDelete = true;
-                                     $scope.htmlVariantAction = "delete";
-                                     $scope.variants = config.variants;
+                                     $scope.htmlViewPane = true;
+                                     $scope.htmlViewSelect = true;
+                                     $scope.htmlViewDelete = true;
+                                     $scope.htmlViewAction = "delete";
+                                     $scope.views = config.views;
                                }
                          });
                      }
 
                      // //////////////////////////////////////
-                     // Save Variant Delete
+                     // Save View Delete
                      // //////////////////////////////////////
-                     $scope.saveVariantDelete = function(variant) {
-                        if (!variant || !variant.id) {
-                           variant = $scope.variant;
+                     $scope.saveViewDelete = function(view) {
+                        if (!view || !view.id) {
+                           view = $scope.view;
                         } 
-                        if (!variant.name) {
-                           variant.name = $scope.getVariantById(variant.id).name; 
+                        if (!view.name) {
+                           view.name = $scope.getViewById(view.id).name; 
                         }
-                        if (confirm("Delete Variant ["+variant.name+"]\n\nAre you sure?")) {
+                        if (confirm("Delete View ["+view.name+"]\n\nAre you sure?")) {
                            var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/variant/' + variant.id;
+                              + '/applic/view/' + view.id;
                            $http.delete(url).then(
                                  function(response) {
                                     if (response.data.errors) {
@@ -280,18 +504,337 @@ app
                                  });
                         }
                      }
+
+                  // /////////////////////////////////////////////////////////////////////
+                     // Action METHODS
+                     // /////////////////////////////////////////////////////////////////////
+                     
+                     $scope.doSelectedActionAction = function() {
+                  		switch($scope.selectedActionOption) {
+                  		case "create":
+                  			$scope.handleActionAdd();
+                  			break;
+                  		case "transition":
+                  			$scope.handleTransition();
+                  			break;
+                  		case "commitBranch":
+                  			$scope.handleCommitWorkingBranch();
+                  			break;
+                  		}
+                  	}
+                     
+                     $scope.handleActionAdd = function() {
+                    	 $scope.resetHtmlVarsAndFlags();
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch.");
+                    		 return;
+                    	 }
+                    	 if (!$scope.isReadOnly) {
+                    		 $scope.error("This is a working branch, please choose a baseline branch.");
+                    		 return;
+                    	 }
+                        $http
+                        .get(
+                              '/orcs/applicui/branch/'
+                                    + $scope.selectedBranch.id)
+                        .then(
+                              function(response) {
+                                 var config = response.data;
+                                 $scope.htmlActionPane = true;
+                                 $scope.htmlActionAdd = true;
+                                 $scope.htmlActionSave = true;
+                                 $scope.htmlAISelect = true;
+                                 $scope.htmlUserSelect = true;
+                                 $scope.htmlVersionSelect = true;
+                              });
+                     }
+ 
+                     // //////////////////////////////////////
+                     // Cancel Action Add 
+                     // //////////////////////////////////////
+                     $scope.cancelActionAdd = function() {
+                    	 $scope.htmlActionAdd = null;
+                        $scope.resetHtmlVarsAndFlags();
+                     }
+
+
+                     // //////////////////////////////////////
+                     // Save Action Add
+                     // //////////////////////////////////////
+                     $scope.saveActionAdd = function() {
+                        var action = $scope.action;
+                        if (!$scope.selectedAI.id) {
+                        	$scope.error("Actionable Item is required");
+                        	return;
+                        }
+                        if (!$scope.action.title) {
+                        	$scope.error("Action title is required");
+                        	return;
+                        }
+                        if (!$scope.action.description) {
+                        	$scope.error("Description is required");
+                        	return;
+                        }
+                        if (!$scope.selectedUser.id) {
+                        	$scope.error("User is required");
+                        	return;
+                        }
+                        if (!$scope.selectedVersion.id) {
+                        	$scope.error("Version is required");
+                        	return;
+                        }
+                        var aiIdsParam = []; 
+                        aiIdsParam.push($scope.selectedAI.id);
+                        
+                        var actionData = { title: $scope.action.title,
+                        		           description: $scope.action.description,
+                        		           aiIds: aiIdsParam,
+                        		           asUserId: $scope.selectedUser.id,
+                        		           createdByUserId: $scope.selectedUser.id,
+                        		           versionId: $scope.selectedVersion.id }
+                        var url = '/ats/action/branch';
+                        
+                        var json = JSON.stringify(actionData);
+                        
+                        $http.post(url, json).then(function(response) {
+                           if (response.data.errors) {
+                              $scope.error(response.data.results);
+                           } else {
+                              $scope.selectedBranch = response.data.workingBranchId;
+                              $scope.branchQueryType = 'working';
+                              $scope.handleBranchSelection();
+                           }
+                           $scope.resetHtmlVarsAndFlags();
+                        });
+                     }
+
+			// /////////////////////////////////////////////////////////////////////
+			// Transition METHODS
+			// /////////////////////////////////////////////////////////////////////
+                     
+			$scope.handleTransition = function() {
+			   $scope.resetHtmlVarsAndFlags();
+           	   if (!$scope.selectedBranch.id) {
+           		 $scope.error("Must select a branch");
+           		 return;
+           	   }
+			   if ($scope.isReadOnly) {
+				   $scope.error("Selected branch is read only");
+				   return;
+			   }
+			   if (!$scope.actionId || $scope.actionId < 1) {
+				   $scope.error("Selected branch does not have an associated action to transition");
+				   return;
+			   }
+			   if ($scope.actionId) {
+              	 $http.get('/ats/action/'+$scope.actionId)
+              	 .then(
+                       function(response) {
+                              var rtn = response.data[0];
+                              $scope.atsId = rtn.AtsId;
+                       }
+                       );
+               }
+			   $http
+			   .get(
+			         '/orcs/applicui/branch/'
+			               + $scope.selectedBranch.id)
+			   .then(
+			         function(response) {
+			            var config = response.data;
+			            $scope.htmlTransitionPane = true;
+			            $scope.htmlTransition = true;
+			            $scope.htmlTransitionSave = true;
+			            $scope.htmlTransitionSelect = true;
+			            $scope.htmlUserSelect = true;
+			         });
+			   $scope.loadTransitionStates();
+			}
+			
+			// //////////////////////////////////////
+			// Cancel Transition 
+			// //////////////////////////////////////
+			$scope.cancelTransition = function() {
+				 $scope.htmlTransition = null;
+				 $scope.error("");
+			   $scope.resetHtmlVarsAndFlags();
+			}
+			
+			
+			// //////////////////////////////////////
+			// Save Transition
+			// //////////////////////////////////////
+			$scope.validateTransition = function() {
+				if ($scope.selectedToState && $scope.actionId && $scope.selectedUser.id) {
+					
+
+					var workItemIdsParam = []; 
+					var workItem = { id: $scope.actionId, name: ""};
+	                workItemIdsParam.push(workItem);
+					   var transitionData = { toStateName: $scope.selectedToState,
+					   		           name: "Transition to " + $scope.selectedToState,
+					   		           transitionUserArtId: $scope.selectedUser.accountId,
+					   		           workItemIds: workItemIdsParam }
+					   
+					   var validateUrl = '/ats/action/transitionValidate';
+					   var json = JSON.stringify(transitionData);
+					   
+					   $http.post(validateUrl, json).then(function(response) {
+						      
+						      if (response.data.empty) {
+						    	  $scope.handleSaveTransition();
+						    	  
+						      } else {
+						    	  var results = response.data.transitionWorkItems[0].results[0];
+						    	  $scope.error(results.details);
+						      }
+						   });
+				} else {
+					   if (!$scope.selectedToState) {
+						   $scope.error("Must selected a Transition To State");
+					   }
+					   if (!$scope.selectedUser.id) {
+						   $scope.error("Must selected transition user");
+					   }
+					   if (!$scope.actionId) {
+						   $scope.error("Error occurred with associated action Id.  Contact Admin");
+					   }
+				   }
+			}
+			$scope.handleSaveTransition = function() {
+				
+
+				var workItemIdsParam = []; 
+				var workItem = { id: $scope.actionId, name: ""};
+                workItemIdsParam.push(workItem);
+				   var transitionData = { toStateName: $scope.selectedToState,
+				   		           name: "Transition to " + $scope.selectedToState,
+				   		           transitionUserArtId: $scope.selectedUser.accountId,
+				   		           workItemIds: workItemIdsParam }
+			   		  var json = JSON.stringify(transitionData);
+					  var url = '/ats/action/transition';
+					  $http.post(url, json).then(function(response) {
+					      if (response.data.errors) {
+					         $scope.error(response.data.results);
+					      } else {
+					   	   var results = response.data.results;
+					      }
+					      $scope.resetHtmlVarsAndFlags();
+					   })
+				  
+			   
+			}
+
+					// /////////////////////////////////////////////////////////////////////
+					// Commit Branch METHODS
+					// /////////////////////////////////////////////////////////////////////
+					         
+					$scope.handleCommitWorkingBranch = function() {
+					   $scope.resetHtmlVarsAndFlags();
+						   if (!$scope.selectedBranch.id) {
+							 $scope.error("Must select a branch");
+							 return;
+						   }
+					   if ($scope.isReadOnly) {
+						   $scope.error("Selected branch is read only");
+						   return;
+					   }
+					   if (!$scope.config.parentBranch) {
+						   $scope.error("Selected branch does not have a parent branch");
+						   return;
+					   }
+					   $http
+					   .get(
+					         '/orcs/applicui/branch/'
+					               + $scope.selectedBranch.id)
+					   .then(
+					         function(response) {
+					            var config = response.data;
+					            $scope.htmlCommitWorkingBranchPane = true;
+					            $scope.htmlCommitWorkingBranch = true;
+					            $scope.htmlCommitWorkingBranchSave = true;
+					            $scope.htmlUserSelect = true;
+					         });
+					}
+					
+					// //////////////////////////////////////
+					// Cancel Commit 
+					// //////////////////////////////////////
+					$scope.cancelCommitWorkingBranch = function() {
+						 $scope.htmlCommitWorkingBranch = null;
+						 $scope.error("");
+					   $scope.resetHtmlVarsAndFlags();
+					}
+					
+					
+					// //////////////////////////////////////
+					// Save Commit Working Branch
+					// //////////////////////////////////////
+					$scope.handleSaveCommitWorkingBranch = function() {
+					   if ($scope.selectedBranch.id && $scope.config.parentBranch.id && $scope.selectedUser.id) {
+						   var branchCommitOptions = { committer: $scope.selectedUser.id,
+						   		           archive: false}
+						   var url = '/orcs/branches/'+$scope.selectedBranch.id+'/commit/'+$scope.config.parentBranch.id;
+						   
+						   var json = JSON.stringify(branchCommitOptions);
+						   var branchCommitted = false;
+						   $http.post(url, json).then(function(response) {
+						      if (response.data == null) {
+						         $scope.error("Branch Commit Failed");
+						         
+						      } else {
+						   	     branchCommitted = true;
+						   	     $scope.selectedBranch.id = response.data.branchId;
+	                             $scope.branchQueryType = 'baseline';
+	                             $scope.handleBranchSelection();
+						      }
+						      $scope.resetHtmlVarsAndFlags();
+						   });
+						   if (branchCommitted) {
+							   $scope.selectedToState = 'Completed';
+							   $scope.handleSaveTransition();
+						   }
+					   } else {
+						   
+						   if (!$scope.selectedUser.id) {
+							   $scope.error("Must selected commit user");
+						   }
+						   
+					   }
+					}
                      
                      // /////////////////////////////////////////////////////////////////////
                      // FEATURE METHODS
                      // /////////////////////////////////////////////////////////////////////
 
+					$scope.doSelectedFeatureAction = function() {
+						switch($scope.selectedFeatureOption) {
+						case "add":
+							$scope.handleAddFeature();
+							break;
+						case "edit":
+							$scope.handleEditFeature();
+							break;
+						case "delete":
+							$scope.handleDeleteFeature();
+							break;
+						}
+					}
                      // //////////////////////////////////////
                      // Handle Add Feature
                      // //////////////////////////////////////
                      $scope.handleAddFeature = function() {
-
                     	 $scope.resetHtmlVarsAndFlags();
-                    	 $scope.htmlFeatureAction = "add";
+
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    		 return;
+                    	 }
+                     	 $scope.htmlFeatureAction = "add";
                     	 $http
                     	 .get(
                     			 '/orcs/applicui/branch/'+$scope.selectedBranch.id)
@@ -314,38 +857,35 @@ app
                      
                      $scope.handleEditFeatureSelect = function() {
 
-                    	 $scope.resetHtmlVarsAndFlags();
                     	$scope.htmlFeatureAction = "edit";
-                        $http
-                              .get(
-                                    '/orcs/applicui/branch/'
-                                          + $scope.selectedBranch.id)
-                              .then(
-                                    function(response) {
-                                       $scope.config = response.data;
-                                       $scope.features = $scope.config.features;
-                                       $scope.htmlFeaturePane = true;
-                                       $scope.htmlFeatureSelect = true;
-                                       $scope.htmlFeatureEditTitle = true;
-                                       $scope.htmlFeatureEdit = true;
-                                       $scope.htmlFeatureSave = true;
-                                       $scope.feature.valueStr = feature.values
-                                       .join(";");
-                                    });
+                        $scope.feature.valueStr = $scope.feature.values.join();
                      }
                      
                      // //////////////////////////////////////
-                     // Handle Edit Feature - Values
+                     // Handle Edit Feature
                      //
                      // Open edit pane and populate with selected feature
                      // //////////////////////////////////////
-                     $scope.handleEditFeatureValues = function() {
-                     	// Same select widget used for both; return if deleting
+                     $scope.handleEditFeature = function() {
+                     	$scope.resetHtmlVarsAndFlags();
+
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    		 return;
+                    	 }                        
+                      	 $scope.htmlFeaturePane = true;
+                         $scope.htmlFeatureEditTitle = true;
+                         $scope.htmlFeatureSelect = true;
+                         $scope.htmlFeatureEdit = true;
+                         $scope.htmlFeatureSave = true;
                      	if ($scope.htmlFeatureAction == "delete") {
                      		return;
                      	}
-                     	var feature = $scope.feature;
-                	    //$scope.resetHtmlVarsAndFlags();
+                     	if ($scope.feature.id) {
                         $http
                               .get(
                                     '/orcs/branch/'
@@ -355,41 +895,73 @@ app
                               .then(
                                     function(response) {
 
-                                       $scope.htmlFeaturePane = true;
-                                       $scope.htmlFeatureEditTitle = true;
-                                       $scope.htmlFeatureSelect = true;
-                                       $scope.htmlFeatureEdit = true;
-                                       $scope.htmlFeatureSave = true;
-                                       //$scope.feature = response.data;
-                                       $scope.feature.valueStr = feature.values
-                                             .join(";");
+                                       
+                                       $scope.feature = response.data;
+                                       $scope.feature.valueStr = feature.values.join();
                                        
                                     });
+                     	} else {
+                     		$scope.features = $scope.config.features;
+                     	}
+                    	 
                      }
                      
                      // //////////////////////////////////////
                      // Save Feature Edit
                      // //////////////////////////////////////
                      $scope.saveFeatureEdit = function() {
-                        var feature = $scope.feature;
+
+                         var feature = $scope.feature;
+                    	if (!$scope.feature.name) {
+                        	$scope.error("Feature title is required");
+                        	return;
+                        }
+                        if (!$scope.feature.description) {
+                        	$scope.error("Feature Description is required");
+                        	return;
+                        }
+                        if (!$scope.feature.valueStr) {
+                        	$scope.error("Values are required");
+                        	return;
+                        }
+                        if (!$scope.feature.defaultValue) {
+                        	$scope.error("Default_value is required");
+                        	return;
+                        }
+                        if (!$scope.feature.valueType) {
+                        	$scope.error("Value Type is required");
+                        	return;
+                        }
+                        
                         if (feature.valueStr) {
                            feature.values = feature.valueStr
-                                 .split(";");
+                                 .split(",");
                            //feature.valueStr = "";
                         }
 
                         var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
-                              + '/applic/feature/'+$scope.htmlFeatureAction;
+                              + '/applic/feature';
                         var json = JSON.stringify(feature);
+                        if ($scope.htmlFeatureAction == "add") {
+                        	$http.post(url, json).then(function(response) {
+                                if (response.data.errors) {
+                                    $scope.error(response.data.results);
+                                } else {
+                                    $scope.loadTable();
+                                    alert("Saved new Feature.  Add another or press Cancel");
+                                }
+                             })
+                     	} else {
                         $http.put(url, json).then(function(response) {
                            if (response.data.errors) {
                                $scope.error(response.data.results);
                            } else {
                                $scope.loadTable();
-                               alert("Saved new Feature.  Add another or press Cancel");
+                               alert("Saved edited Feature.  Edit another or press Cancel");
                            }
-                        });
+                        })};
+                    	 
                      }
 
                      // //////////////////////////////////////
@@ -402,8 +974,17 @@ app
                      // //////////////////////////////////////
                      // Handle Delete Feature
                      // //////////////////////////////////////
-                     $scope.handleDeleteFeature = function(variant) {
+                     $scope.handleDeleteFeature = function(view) {
                     	 $scope.resetHtmlVarsAndFlags();
+
+                    	 if (!$scope.selectedBranch.id) {
+                    		 $scope.error("Must select a branch");
+                    		 return;
+                    	 }
+                    	 if ($scope.isReadOnly) {
+                    		 $scope.error("Selected Branch cannot be modified.  Choose a working branch or create one.");
+                    	 } else {
+                    	 
                         $http
                         .get(
                               '/orcs/applicui/branch/'
@@ -418,9 +999,11 @@ app
                                          $scope.htmlFeatureSelect = true;
                                          $scope.htmlFeatureDelete = true;
                                          $scope.htmlFeatureAction = "delete";
+                                         $scope.htmlFeatureDeleteTitle = true;
                                          $scope.features = config.features;
                                    }
                               });
+                    	 }
                      }
 
                      // //////////////////////////////////////
@@ -478,7 +1061,7 @@ app
                      // Load Table if selectedBranch.id
                      // //////////////////////////////////////
                      if ($scope.selectedBranch.id) {
-
+                        
                         $scope.loadTable = function() {
                            var url = null;
                            if ($scope.showAll) {
@@ -493,7 +1076,9 @@ app
                              .then(
                                    function(response) {
                                       $scope.config = response.data;
+                                      $scope.actionId = $scope.config.associatedArtifactId;
                                       $scope.message = '';
+                                      $scope.htmlFeatureColumns = true;
                                       
                                       $scope.columns = [ {
                                          field : 'feature',
@@ -505,7 +1090,7 @@ app
                                       } ];
 
                                       $scope.createFeatureColumns();
-                                      $scope.createVariantColumns();
+                                      $scope.createViewColumns();
                                       $scope.refreshAccess();
                                       $scope.refreshShowAllLabel();
                                       
@@ -558,15 +1143,15 @@ app
 
                      $scope.updateValue = function(rowEntity, colDef, newValue, oldValue) {
                 	 var featureId = rowEntity.id;
-                	 var variantId = colDef.id;
-                         var url = '/orcs/branch/' + $scope.selectedBranch.id  + '/applic/variant/' + variantId + '/feature/' + featureId + '/applic/' + newValue;
-                         $http.put(url).then(function(response) {
-                   			var result = response.data;
-                            if (result.data.errorCount > 0) {
-                               $scope.error(result.data.results);
-                            } else {
-                               $scope.loadTable();
-                            }
+                	 var newApplic = rowEntity.feature + " = " + newValue;
+                	 var viewId = colDef.id;
+                     var url = '/orcs/branch/' + $scope.selectedBranch.id  + '/applic/view/' + viewId + '/applic';
+                         $http.put(url,newApplic).then(function(response) {
+                        	 if (response.data.errors) {
+                                 $scope.error(response.data.results);
+                              } else {
+                                 $scope.loadTable();
+                              }
                          });
                      }
 
@@ -612,26 +1197,26 @@ app
                      }
                      
                      // //////////////////////////////////////
-                     // Dynamically create columns based on variants from
+                     // Dynamically create columns based on views from
 					 // configs
                      // //////////////////////////////////////
-                     $scope.createVariantColumns = function() {
-                        for (i = 0; i < $scope.config.variants.length; i++) {
-                           var variant = $scope.config.variants[i];
-                           if (variant.id == null || variant.id <=0) {
-                              $scope.error("Variant Id is invalid in "+$scope.variants);
+                     $scope.createViewColumns = function() {
+                        for (i = 0; i < $scope.config.views.length; i++) {
+                           var view = $scope.config.views[i];
+                           if (view.id == null || view.id <=0) {
+                              $scope.error("view Id is invalid in "+$scope.views);
                               $return;
-                           } else if (!variant.name) {
-                              $scope.error("Variant Name is invalid in "+$scope.variants);
+                           } else if (!view.name) {
+                              $scope.error("view Name is invalid in "+$scope.views);
                               return;
                            }
-                           var columnName = variant.name;
+                           var columnName = view.name;
                            $scope.columns
                                  .push({
                                     field : columnName
                                           .toLowerCase(),
                                     displayName : columnName,
-                                    id : variant.id,
+                                    id : view.id,
                                     enableSorting : true,
                                     width : 125,
                                     enableCellEdit: true,
@@ -650,21 +1235,21 @@ app
                                     },
                                     menuItems: [
                                                 {
-                                                  title: 'Edit Varient',
+                                                  title: 'Edit View',
                                                   icon: 'glyphicon glyphicon-pencil',
-                                                  context: {scope: $scope, variant: variant},
+                                                  context: {scope: $scope, view: view},
                                                   action: function($event) {
-                                                     this.context.scope.variant = this.context.variant;
-                                                     this.context.scope.handleEditVariant();
+                                                     this.context.scope.view = this.context.view;
+                                                     this.context.scope.handleEditView();
                                                   }
                                                 },
                                                 {
-                                                  title: 'Delete Variant',
+                                                  title: 'Delete view',
                                                   icon: 'glyphicon glyphicon-remove',
-                                                  context: {scope: $scope, variant: variant},
+                                                  context: {scope: $scope, view: view},
                                                   action: function($event) {
-                                                     this.context.scope.variant = this.context.variant;
-                                                     this.context.scope.saveVariantDelete();
+                                                     this.context.scope.view = this.context.view;
+                                                     this.context.scope.saveViewDelete();
                                                   }
                                                 }
                                               ]
@@ -676,16 +1261,21 @@ app
                      // //////////////////////////////////////
                      // Utilities
                      // //////////////////////////////////////
+                     
+
+                     
+                     
+                     
                      $scope.home = function() {
-                        var url = '/orcs/applicui/plconfig.html';
+                        var url = '/orcs/applicui/plconfigro.html';
                         window.location.replace(url);
                      }
 
-                     $scope.getVariantById = function (id) {
-                        for (i = 0; i < $scope.config.variants.length; i++) {
-                           var variant = $scope.config.variants[i];
-                           if (variant.id == id) {
-                              return variant
+                     $scope.getViewById = function (id) {
+                        for (i = 0; i < $scope.config.views.length; i++) {
+                           var view = $scope.config.views[i];
+                           if (view.id == id) {
+                              return view
                            }
                         }
                      }
@@ -700,7 +1290,7 @@ app
                            $scope.errorMsg = "";
                         }
                      }
-
+                     
                      function getQueryParameterByName(name, url) {
                         if (!url)
                            url = window.location.href;
@@ -715,6 +1305,90 @@ app
                         return decodeURIComponent(results[2].replace(
                               /\+/g, ' '));
                      }
-                  } ])
-                  
-;
+                  } ]);
+
+app.directive("draggable", function($document) {
+    return function(scope, element, attr) {
+      var container, mousemove, mouseup, startX, startY, x, y, _ref;
+      _ref = [null, null, null, null, null], x = _ref[0], y = _ref[1], container = _ref[2], startX = _ref[3], startY = _ref[4];
+      mousemove = function(event) {
+        y = event.pageY - startY;
+        x = event.pageX - startX;
+        if (x < 0) {
+          x = 0;
+        }
+        if (y < 0) {
+          y = 0;
+        }
+        scope.$apply(function() {
+          return scope.$parent.events.push({
+            mousemove: {
+              x: x,
+              y: y,
+              pageX: event.pageX,
+              pageY: event.pageY,
+              startY: startY,
+              startX: startX
+            }
+          });
+        });
+        return container.css({
+          top: y + "px",
+          left: x + "px"
+        });
+      };
+      mouseup = function() {
+        $document.unbind("mousemove", mousemove);
+        $document.unbind("mouseup", mouseup);
+        scope.elem.top = y;
+        scope.elem.left = x;
+        console.log(element);
+        return scope.$apply(function() {
+          return scope.$parent.events.push({
+            mouseup: {
+              x: x,
+              y: y
+            }
+          });
+        });
+      };
+      startX = 0;
+      startY = 0;
+      x = scope.elem.left;
+      y = scope.elem.top;
+      container = null;
+      element.css({
+        position: "relative",
+        cursor: "pointer"
+      });
+      return element.on("mousedown", function(event) {
+        if (event.which !== 1) {
+          return;
+        }
+        event.preventDefault();
+        console.log('mousedown');
+        console.log(event);
+        console.log(element);
+        container = attr.$$element.parent();
+        console.log(container);
+        scope.$apply(function() {
+          return scope.$parent.events = [
+            {
+              "mousedown": {
+                x: x,
+                y: y,
+                pageX: event.pageX,
+                pageY: event.pageY,
+                startY: startY,
+                startX: startX
+              }
+            }
+          ];
+        });
+        startX = event.pageX - x;
+        startY = event.pageY - y;
+        $document.on("mousemove", mousemove);
+        return $document.on("mouseup", mouseup);
+      });
+    };
+  });

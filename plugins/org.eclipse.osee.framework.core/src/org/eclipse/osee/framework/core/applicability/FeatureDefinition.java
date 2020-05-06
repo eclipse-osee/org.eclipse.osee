@@ -28,7 +28,7 @@ public class FeatureDefinition extends NamedIdBase {
    private boolean multiValued;
    private String valueType;
    private Object data;
-   private String type;
+   private String type; //legacy
 
    public FeatureDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");

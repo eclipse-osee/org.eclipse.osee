@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -19,6 +20,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -58,4 +62,16 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       return Collections.<ChangeItem> emptyList();
    }
 
+   @Override
+   @GET
+   @Path("{aiId}/version")
+   @Produces({MediaType.APPLICATION_JSON})
+   public Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId) {
+      IAtsActionableItem ai = services.getActionableItemService().getActionableItem(aiId);
+      IAtsTeamDefinition impactedTeamDef = services.getTeamDefinitionService().getImpactedTeamDef(ai);
+      IAtsTeamDefinition teamDefHoldingVersions =
+         services.getTeamDefinitionService().getTeamDefinitionHoldingVersions(impactedTeamDef);
+
+      return services.getVersionService().getVersions(teamDefHoldingVersions);
+   }
 }

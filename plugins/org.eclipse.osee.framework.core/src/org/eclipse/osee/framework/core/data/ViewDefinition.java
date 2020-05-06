@@ -38,7 +38,11 @@ public class ViewDefinition extends NamedIdBase {
    }
 
    public ArtifactId getCopyFrom() {
-      return copyFrom;
+      if (copyFrom == null) {
+         return ArtifactId.SENTINEL;
+      } else {
+         return copyFrom;
+      }
    }
 
    public void setCopyFrom(ArtifactId copyFrom) {

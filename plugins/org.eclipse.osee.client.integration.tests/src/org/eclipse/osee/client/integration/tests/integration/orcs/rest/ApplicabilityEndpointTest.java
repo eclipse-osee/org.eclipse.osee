@@ -59,34 +59,33 @@ public class ApplicabilityEndpointTest {
       ApplicabilityEndpoint appl =
          ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
-      FeatureDefinition updateFd = appl.getFeatureByName("ROBOT_SPEAKER");
+      FeatureDefinition updateFd = appl.getFeature("ROBOT_SPEAKER");
       updateFd.setDefaultValue("SPKR_B");
       appl.updateFeature(updateFd);
 
       FeatureDefinition newFeature = new FeatureDefinition();
-      newFeature.setName("TestFeature1");
+      newFeature.setName("TESTFEATURE1");
       newFeature.setDescription("description");
       newFeature.setDefaultValue("Included");
       newFeature.setValues(Arrays.asList(new String[] {"Included", "Excluded"}));
-      newFeature.setType("String");
-      newFeature.setValueType("single");
+      newFeature.setType("single");
+      newFeature.setValueType("String");
       appl.createFeature(newFeature);
-      FeatureDefinition deleteFeature = appl.getFeatureByName("ROBOT_ARM_LIGHT");
+      FeatureDefinition deleteFeature = appl.getFeature("ROBOT_ARM_LIGHT");
 
       appl.deleteFeature(ArtifactId.valueOf(deleteFeature.getId()));
 
       List<FeatureDefinition> fList = appl.getFeatureDefinitionData();
       Assert.assertEquals(4, fList.size());
       Assert.assertFalse("ApplicabilityEndpoing.deleteFeature failure", fList.contains(newFeature));
-      Assert.assertTrue("ApplicabilityEndpoint.addFeature failure",
-         fList.contains(appl.getFeatureByName("TestFeature1")));
-      FeatureDefinition checkUpdatedFeature = appl.getFeatureByName("ROBOT_SPEAKER");
+      Assert.assertTrue("ApplicabilityEndpoint.addFeature failure", fList.contains(appl.getFeature("TESTFEATURE1")));
+      FeatureDefinition checkUpdatedFeature = appl.getFeature("ROBOT_SPEAKER");
       Assert.assertTrue("ApplicabilityEntpoint.updateFeature failure",
          checkUpdatedFeature.getDefaultValue().equals("SPKR_B"));
       OseeInfo.setValue("featuredefinition.use.json", "true");
       List<FeatureDefinition> fromJson = appl.getFeatureDefinitionData();
       OseeInfo.setValue("featuredefinition.use.json", "false");
-      Assert.assertFalse("featuredefinition.use.json flag not working", fromJson.toString().contains("TestFeature1"));
+      Assert.assertFalse("featuredefinition.use.json flag not working", fromJson.toString().contains("TESTFEATURE1"));
    }
 
    @Test
@@ -94,8 +93,8 @@ public class ApplicabilityEndpointTest {
       ApplicabilityEndpoint appl =
          ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
-      ViewDefinition updateView = appl.getViewByName("Product A");
-      ViewDefinition copyFromView = appl.getViewByName("Product B");
+      ViewDefinition updateView = appl.getView("Product A");
+      ViewDefinition copyFromView = appl.getView("Product B");
       updateView.setCopyFrom(ArtifactId.valueOf(copyFromView.getId()));
       appl.updateView(updateView);
 
@@ -119,7 +118,7 @@ public class ApplicabilityEndpointTest {
       ApplicabilityEndpoint appl =
          ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
 
-      ViewDefinition view = appl.getViewByName("Product A");
+      ViewDefinition view = appl.getView("Product A");
       XResultData createNewApp =
          appl.createApplicabilityForView(ArtifactId.valueOf(view.getId()), "ROBOT_ARM_LIGHT = Included");
       Assert.assertEquals("ApplicabilityEndpoint.createApplicabilityForView failure", createNewApp.getErrorCount(), 0);

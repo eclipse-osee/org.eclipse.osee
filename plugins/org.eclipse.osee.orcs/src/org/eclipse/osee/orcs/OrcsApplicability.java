@@ -39,6 +39,8 @@ public interface OrcsApplicability {
 
    List<BranchViewToken> getApplicabilityBranches();
 
+   List<BranchViewToken> getApplicabilityBranchesByType(String branchQueryType);
+
    ArtifactToken getProductsFolder(BranchId branch);
 
    String convertConfigToArtifact(BranchId branch);
@@ -60,5 +62,7 @@ public interface OrcsApplicability {
    XResultData setApplicability(BranchId branch, ArtifactId variant, ArtifactId feature, String applicability, UserId account);
 
    List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
+
+   XResultData createApplicabilityForView(ArtifactId viewId, String applicability, UserId account, BranchId branch);
 
 }
