@@ -26,7 +26,6 @@ import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
@@ -65,10 +64,8 @@ public class DataModuleFactory {
    public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       logger.debug("Creating DataModule");
 
-      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-
       final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
-      final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes, tokenService);
+      final AttributeDataProxyFactory proxyFactory = loaderModule.createProxyDataFactory();
       final OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, tokenService);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(tokenService, proxyFactory);

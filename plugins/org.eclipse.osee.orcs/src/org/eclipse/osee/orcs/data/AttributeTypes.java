@@ -21,8 +21,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
  */
 public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
-   String getAttributeProviderId(AttributeTypeId attrType);
-
    String getDefaultValue(AttributeTypeId attrType);
 
    int getMaxOccurrences(AttributeTypeId attrType);

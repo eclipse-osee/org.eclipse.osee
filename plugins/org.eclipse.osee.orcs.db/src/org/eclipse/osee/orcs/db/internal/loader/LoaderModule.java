@@ -20,7 +20,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
@@ -47,8 +46,8 @@ public class LoaderModule {
       this.resourceManager = resourceManager;
    }
 
-   public AttributeDataProxyFactory createProxyDataFactory(AttributeTypes attributeTypes, OrcsTokenService tokenService) {
-      return new AttributeDataProxyFactory(attributeTypes, tokenService, resourceManager, logger);
+   public AttributeDataProxyFactory createProxyDataFactory() {
+      return new AttributeDataProxyFactory(resourceManager, logger);
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory) {

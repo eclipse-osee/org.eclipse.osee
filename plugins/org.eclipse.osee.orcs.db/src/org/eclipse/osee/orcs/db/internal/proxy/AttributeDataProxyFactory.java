@@ -13,52 +13,58 @@
 
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeDataProxyFactory {
-   private final AttributeTypes attributeTypeCache;
-   private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
    private final Log logger;
 
-   public AttributeDataProxyFactory(AttributeTypes attributeTypes, OrcsTokenService tokenService, IResourceManager resourceManager, Log logger) {
-      this.attributeTypeCache = attributeTypes;
-      this.tokenService = tokenService;
+   public AttributeDataProxyFactory(IResourceManager resourceManager, Log logger) {
       this.resourceManager = resourceManager;
       this.logger = logger;
    }
 
-   public DataProxy createProxy(AttributeTypeId attributeType, Object value, String uri) {
-      String attributeProviderId = attributeTypeCache.getAttributeProviderId(attributeType);
-
-      Object checkedValue = intern(attributeType, value);
+   public DataProxy createProxy(AttributeTypeToken attributeTypeToken, Object value, String uri) {
+      Object checkedValue = intern(attributeTypeToken, value);
       AbstractDataProxy dataProxy;
-      if (attributeProviderId.equals("UriAttributeDataProvider") || attributeProviderId.equals(
-         "MappedAttributeDataProvider")) {
+
+      if (isUri(attributeTypeToken.getMediaType())) {
          dataProxy = new UriDataProxy();
       } else {
          dataProxy = new VarCharDataProxy();
       }
+
       dataProxy.setLogger(logger);
       dataProxy.setStorage(new Storage(resourceManager, dataProxy));
       dataProxy.setData(checkedValue, uri);
       return dataProxy;
    }
 
-   private Object intern(AttributeTypeId attributeType, Object original) {
+   private Object intern(AttributeTypeToken attributeType, Object original) {
       Object value = original;
-      if (tokenService.getAttributeType(attributeType.getId()).isEnumerated() && value instanceof String) {
+      if (attributeType.isEnumerated() && value instanceof String) {
          value = Strings.intern((String) value);
       }
       return value;
+   }
+
+   static final String APPLICATION_ZIP = "application/zip";
+
+   private boolean isUri(String mediaType) {
+      if (mediaType.equals(AttributeTypeToken.TEXT_URI_LIST) || mediaType.equals(
+         AttributeTypeToken.APPLICATION_MSWORD) || mediaType.equals(AttributeTypeToken.IMAGE) || mediaType.equals(
+            AttributeTypeToken.APPLICATION_ZIP) || mediaType.equals(
+               MediaType.TEXT_HTML) || mediaType.equals(MediaType.APPLICATION_OCTET_STREAM)) {
+         return true;
+      }
+      return false;
    }
 }

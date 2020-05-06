@@ -106,7 +106,6 @@ public class TypesEndpointImpl implements TypesEndpoint {
       enumAttr.setName(type.getName());
       enumAttr.setDescription(type.getDescription());
       enumAttr.setUuid(type.getIdString());
-      enumAttr.setDataProvider(attributeTypes.getAttributeProviderId(type));
       enumAttr.setDefaultValue(attributeTypes.getDefaultValue(type));
       enumAttr.setMax(attributeTypes.getMaxOccurrences(type));
       enumAttr.setMin(attributeTypes.getMinOccurrences(type));

@@ -67,11 +67,6 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getAttributeProviderId(AttributeTypeId attrType) {
-      return getType(attrType).getDataProvider();
-   }
-
-   @Override
    public String getDefaultValue(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       return type.getDefaultValue();
