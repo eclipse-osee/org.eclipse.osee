@@ -110,7 +110,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
                builder = Response.ok();
                AttributeReadable<?> attribute = (AttributeReadable<?>) value;
                String mediaType = attribute.getAttributeType().getMediaType();
-               String fileExtension = attributeTypes.getFileTypeExtension(attribute.getAttributeType());
+               String fileExtension = attribute.getAttributeType().getFileExtension();
                if (mediaType.isEmpty() || mediaType.startsWith("text") || textOut) {
                   builder.entity(attribute.getDisplayableString());
                } else {
@@ -171,7 +171,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
             builder = Response.ok();
             AttributeReadable<?> attribute = attrs.iterator().next();
             String mediaType = attribute.getAttributeType().getMediaType();
-            String fileExtension = attributeTypes.getFileTypeExtension(attribute.getAttributeType());
+            String fileExtension = attribute.getAttributeType().getFileExtension();
             if (mediaType.isEmpty() || mediaType.startsWith("text")) {
                builder.entity(attribute.getDisplayableString());
             } else {

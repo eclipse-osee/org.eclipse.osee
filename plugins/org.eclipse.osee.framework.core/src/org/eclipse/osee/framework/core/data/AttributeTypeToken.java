@@ -36,6 +36,8 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
 
    String getMediaType();
 
+   String getFileExtension();
+
    default NamespaceToken getNamespace() {
       return NamespaceToken.SENTINEL;
    }
@@ -113,12 +115,12 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
          TaggerTypeToken.SENTINEL);
    }
 
-   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType);
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
+      return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension);
    }
 
-   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description) {
-      return createString(id, namespace, name, mediaType, description, determineTaggerType(mediaType));
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, String fileExtension) {
+      return createString(id, namespace, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
    }
 
    /**

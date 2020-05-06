@@ -40,7 +40,7 @@ public interface OteAttributeTypes {
    AttributeTypeString OseeServerJarVersion = ote.createString(1152921504606847292L, "OSEE Server Jar Version", MediaType.TEXT_PLAIN, "OSEE Server Jar Version");
    AttributeTypeString OseeServerTitle = ote.createString(1152921504606847291L, "OSEE Server Title", MediaType.TEXT_PLAIN, "OSEE Server Title");
    AttributeTypeString OseeVersion = ote.createString(1152921504606847290L, "OSEE Version", MediaType.TEXT_PLAIN, "OSEE Version");
-   AttributeTypeString OutfileUrl = ote.createString(1152921504606847281L, "Outfile URL", MediaType.TEXT_PLAIN, "Test Run Content");
+   AttributeTypeString OutfileUrl = ote.createString(1152921504606847281L, "Outfile URL", MediaType.TEXT_PLAIN, "Test Run Content", "tmo");
    AttributeTypeInteger Passed = ote.createInteger(1152921504606847297L, "Passed", MediaType.TEXT_PLAIN, "Number of test points that passed");
    AttributeTypeString ProcessorId = ote.createString(1152921504606847293L, "Processor ID", MediaType.TEXT_PLAIN, "Processor ID");
    AttributeTypeString QualificationLevel = ote.createString(1152921504606847305L, "Qualification Level", MediaType.TEXT_PLAIN, "Qualification level");

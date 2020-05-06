@@ -18,7 +18,7 @@ package org.eclipse.osee.framework.core.data;
  */
 public final class AttributeTypeBranchId extends AttributeTypeGeneric<BranchId> {
    public AttributeTypeBranchId(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      super(id, namespace, name, mediaType, description, taggerType);
+      super(id, namespace, name, mediaType, description, taggerType, "");
    }
 
    @Override

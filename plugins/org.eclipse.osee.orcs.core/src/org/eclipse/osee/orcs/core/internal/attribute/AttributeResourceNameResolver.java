@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -34,10 +33,8 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    private final static int MAX_NAME_SIZE = 60;
 
    private final Attribute<?> attribute;
-   private final AttributeTypes attributeTypeCache;
 
-   public AttributeResourceNameResolver(AttributeTypes attributeTypeCache, Attribute<?> attribute) {
-      this.attributeTypeCache = attributeTypeCache;
+   public AttributeResourceNameResolver(Attribute<?> attribute) {
       this.attribute = attribute;
    }
 
@@ -82,13 +79,13 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    }
 
    private String getExtension(Attribute<?> attribute) {
-      AttributeTypeId attributeType = attribute.getAttributeType();
+      AttributeTypeToken attributeType = attribute.getAttributeType();
       String fileTypeExtension = null;
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = (String) attribute.getValue();
       }
       if (!Strings.isValid(fileTypeExtension)) {
-         fileTypeExtension = attributeTypeCache.getFileTypeExtension(attributeType);
+         fileTypeExtension = attributeType.getFileExtension();
       }
       return fileTypeExtension;
    }

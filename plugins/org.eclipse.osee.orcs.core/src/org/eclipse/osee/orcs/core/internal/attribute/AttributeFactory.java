@@ -144,7 +144,7 @@ public class AttributeFactory {
    }
 
    private ResourceNameResolver createResolver(Attribute<?> attribute) {
-      return new AttributeResourceNameResolver(cache, attribute);
+      return new AttributeResourceNameResolver(attribute);
    }
 
    public int getMaxOccurrenceLimit(AttributeTypeId attributeType) {

@@ -128,6 +128,11 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       return getFieldValueLogException("", ATTRIBUTE_MEDIA_TYPE_FIELD_KEY);
    }
 
+   @Override
+   public String getFileExtension() {
+      return getFieldValueLogException("", ATTRIBUTE_FILE_EXTENSION_FIELD_KEY);
+   }
+
    /**
     * Whether this attribute type has a media type.
     *
@@ -148,6 +153,7 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
     *
     * @return <b>true</b> if this attribute type is taggable. <b>false</b> if this is not taggable.
     */
+   @Override
    public boolean isTaggable() {
       boolean toReturn = false;
       String taggerId = getTaggerId();
@@ -157,6 +163,7 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       return toReturn;
    }
 
+   @Override
    public boolean isEnumerated() {
       return getOseeEnumTypeId() != -1;
    }

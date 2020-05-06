@@ -29,8 +29,6 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    EnumType getEnumType(AttributeTypeId attrType);
 
-   String getFileTypeExtension(AttributeTypeId attrType);
-
    /**
     * @return AttributeTypeToken or OseeTypeDoesNotExist
     */

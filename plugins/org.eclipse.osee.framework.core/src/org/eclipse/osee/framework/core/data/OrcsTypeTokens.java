@@ -96,6 +96,9 @@ public class OrcsTypeTokens {
       }
    }
 
+   /**
+    * Methods for creating ArtifactId AttributeType
+    */
    public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType));
@@ -109,6 +112,9 @@ public class OrcsTypeTokens {
       return createArtifactId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating Boolean AttributeType
+    */
    public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType));
@@ -122,6 +128,9 @@ public class OrcsTypeTokens {
       return createBoolean(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating BranchId AttributeType
+    */
    public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType));
@@ -135,6 +144,9 @@ public class OrcsTypeTokens {
       return createBranchId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating Date AttributeType
+    */
    public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeDate(id, namespace, name, mediaType, description, taggerType));
@@ -148,6 +160,9 @@ public class OrcsTypeTokens {
       return createDate(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating Double AttributeType
+    */
    public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType));
@@ -161,19 +176,35 @@ public class OrcsTypeTokens {
       return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
-   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   /**
+    * Methods for creating InputStream AttributeType
+    */
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
       return attributeTypes.addAndReturn(
-         new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType));
+         new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType, fileExtension));
    }
 
    public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description) {
-      return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType));
+      return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType),
+         defaultFileExtension(mediaType));
+   }
+
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, String fileExtension) {
+      return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
    }
 
    public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType, String description) {
-      return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+      return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL,
+         defaultFileExtension(mediaType));
    }
 
+   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType, String description, String fileExtension) {
+      return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension);
+   }
+
+   /**
+    * Methods for creating Integer AttributeType
+    */
    public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
@@ -187,6 +218,9 @@ public class OrcsTypeTokens {
       return createInteger(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating Long AttributeType
+    */
    public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
       return attributeTypes.addAndReturn(
          new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
@@ -200,6 +234,9 @@ public class OrcsTypeTokens {
       return createLong(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
+   /**
+    * Methods for creating Enumerated AttributeType
+    */
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
       return attributeTypes.addAndReturn(
          attributeEnumConstructor.apply(determineTaggerType(mediaType), mediaType, namespace));
@@ -229,17 +266,29 @@ public class OrcsTypeTokens {
       return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   /**
+    * Methods for creating String AttributeType
+    */
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
       return attributeTypes.addAndReturn(
-         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType));
+         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension));
    }
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description) {
-      return createString(id, name, mediaType, description, determineTaggerType(mediaType));
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType),
+         defaultFileExtension(mediaType));
+   }
+
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, String fileExtension) {
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
    }
 
    public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description) {
-      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
+      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, defaultFileExtension(mediaType));
+   }
+
+   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description, String fileExtension) {
+      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension);
    }
 
    /**
@@ -252,6 +301,27 @@ public class OrcsTypeTokens {
             return TaggerTypeToken.XmlTagger;
          default:
             return TaggerTypeToken.PlainTextTagger;
+      }
+   }
+
+   public static String defaultFileExtension(String mediaType) {
+      switch (mediaType) {
+         case MediaType.TEXT_PLAIN:
+            return "txt";
+         case MediaType.TEXT_XML:
+            return "xml";
+         case AttributeTypeToken.APPLICATION_MSWORD:
+            return "xml";
+         case MediaType.TEXT_HTML:
+            return "html";
+         case MediaType.APPLICATION_OCTET_STREAM:
+            return "bin";
+         case AttributeTypeToken.IMAGE:
+            return "bin";
+         case AttributeTypeToken.APPLICATION_ZIP:
+            return "txt";
+         default:
+            return "";
       }
    }
 

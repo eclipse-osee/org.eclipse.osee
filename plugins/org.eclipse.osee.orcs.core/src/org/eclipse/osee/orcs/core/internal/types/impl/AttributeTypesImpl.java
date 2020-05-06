@@ -97,13 +97,6 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getFileTypeExtension(AttributeTypeId attrType) {
-      XAttributeType type = getType(attrType);
-      String value = type.getFileExtension();
-      return Strings.isValid(value) ? value : Strings.emptyString();
-   }
-
-   @Override
    public EnumType getEnumType(AttributeTypeId attrType) {
       EnumType toReturn = null;
       XAttributeType type = getType(attrType);

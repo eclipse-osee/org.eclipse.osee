@@ -22,22 +22,29 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
  */
 public abstract class AttributeTypeGeneric<T> extends NamedIdDescription implements AttributeTypeToken {
    public static final AttributeTypeString SENTINEL =
-      AttributeTypeToken.createString(Id.SENTINEL, NamespaceToken.OSEE, Named.SENTINEL, Named.SENTINEL, "");
+      AttributeTypeToken.createString(Id.SENTINEL, NamespaceToken.OSEE, Named.SENTINEL, Named.SENTINEL, "", "");
 
    private final String mediaType;
    private final TaggerTypeToken taggerType;
    private final NamespaceToken namespace;
+   private final String fileExtension;
 
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;
       this.taggerType = taggerType;
+      this.fileExtension = fileExtension;
    }
 
    @Override
    public String getMediaType() {
       return mediaType;
+   }
+
+   @Override
+   public String getFileExtension() {
+      return fileExtension;
    }
 
    /**
