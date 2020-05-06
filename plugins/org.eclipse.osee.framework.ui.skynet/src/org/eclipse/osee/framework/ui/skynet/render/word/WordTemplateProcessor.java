@@ -333,8 +333,7 @@ public class WordTemplateProcessor {
          if (fullBranch.getBranchType().equals(BranchType.MERGE)) {
             fullBranch = fullBranch.getParentBranch();
          }
-         ApplicabilityEndpoint applEndpoint =
-            ServiceUtil.getOseeClient().getApplicabilityEndpoint(fullBranch.getParentBranch());
+         ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(fullBranch);
 
          applicabilityTokens = new HashMap<>();
          Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokens();
