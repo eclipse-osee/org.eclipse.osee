@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2017 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.server.application.internal.operations;
 
-import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -21,7 +20,6 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
 import java.util.Arrays;
-import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ThreadStats;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
@@ -29,8 +27,8 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.server.application.internal.model.ServerStatus;
-import org.eclipse.osee.server.application.internal.model.StatusKey;
+import org.eclipse.osee.orcs.health.ServerStatus;
+import org.eclipse.osee.orcs.health.StatusKey;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +40,6 @@ public class BuildServerStatusOperation {
    private final ActivityLog activityLog;
    private final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
-   private final List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
 
    public BuildServerStatusOperation(IApplicationServerManager applicationServerManager, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.applicationServerManager = applicationServerManager;

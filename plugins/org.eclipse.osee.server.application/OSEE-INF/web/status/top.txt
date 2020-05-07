@@ -1,0 +1,48 @@
+top - 15:13:44 up 161 days, 19:35, 20 users,  load average: 0.18, 0.12, 0.14
+Tasks: 1305 total,   1 running, 1303 sleeping,   0 stopped,   1 zombie
+Cpu(s):  0.2%us,  0.2%sy,  0.0%ni, 99.6%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  132156172k total, 131293760k used,   862412k free, 15374736k buffers
+Swap: 33554424k total,    37708k used, 33516716k free, 81764612k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+25691 osee      20   0 24300 2312  972 S  2.6  0.0   2834:26 top
+ 5020 root      20   0 1217m 108m 4668 S  2.3  0.1   6134:38 glusterfs
+18316 osee      20   0 24160 2172  900 S  2.3  0.0 497:17.05 top
+ 6892 osee      20   0 24160 2160  892 R  2.0  0.0   0:00.32 top
+ 4262 root      20   0  540m  24m 9.8m S  1.6  0.0   6451:40 BESClient
+ 5127 osee      20   0 18.7g 1.2g  13m S  1.0  1.0   5586:30 java
+ 3719 root      20   0 12.0g 694m  15m S  0.3  0.5 535:44.38 java
+ 8469 osee      20   0 11.9g 2.1g  16m S  0.3  1.6 278:45.65 java
+13043 osee      20   0 11.2g 3.6g  16m S  0.3  2.9   1094:50 java
+17841 osee      20   0  259m 6920 5492 S  0.3  0.0  20:11.39 gnome-power-man
+18723 b286815   20   0  131m 2224 1732 S  0.3  0.0  15:06.98 xload
+    1 root      20   0 21444 1460 1240 S  0.0  0.0   2:54.47 init
+    2 root      20   0     0    0    0 S  0.0  0.0   0:23.43 kthreadd
+    3 root      RT   0     0    0    0 S  0.0  0.0  51:33.15 migration/0
+    4 root      20   0     0    0    0 S  0.0  0.0   7:16.02 ksoftirqd/0
+    5 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/0
+    6 root      RT   0     0    0    0 S  0.0  0.0  11:54.77 watchdog/0
+    7 root      RT   0     0    0    0 S  0.0  0.0  27:43.66 migration/1
+    8 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/1
+    9 root      20   0     0    0    0 S  0.0  0.0   5:56.05 ksoftirqd/1
+   10 root      RT   0     0    0    0 S  0.0  0.0   5:31.76 watchdog/1
+   11 root      RT   0     0    0    0 S  0.0  0.0  26:57.01 migration/2
+   12 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/2
+   13 root      20   0     0    0    0 S  0.0  0.0   4:48.66 ksoftirqd/2
+   14 root      RT   0     0    0    0 S  0.0  0.0   8:27.65 watchdog/2
+   15 root      RT   0     0    0    0 S  0.0  0.0  28:09.89 migration/3
+   16 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/3
+   17 root      20   0     0    0    0 S  0.0  0.0   4:21.51 ksoftirqd/3
+   18 root      RT   0     0    0    0 S  0.0  0.0   6:41.64 watchdog/3
+   19 root      RT   0     0    0    0 S  0.0  0.0  23:46.45 migration/4
+   20 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/4
+   21 root      20   0     0    0    0 S  0.0  0.0   4:11.48 ksoftirqd/4
+   22 root      RT   0     0    0    0 S  0.0  0.0   6:13.99 watchdog/4
+   23 root      RT   0     0    0    0 S  0.0  0.0  24:35.43 migration/5
+   24 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/5
+   25 root      20   0     0    0    0 S  0.0  0.0   3:49.94 ksoftirqd/5
+   26 root      RT   0     0    0    0 S  0.0  0.0   5:56.24 watchdog/5
+   27 root      RT   0     0    0    0 S  0.0  0.0  22:49.91 migration/6
+   28 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 migration/6
+   29 root      20   0     0    0    0 S  0.0  0.0   3:37.58 ksoftirqd/6
+   30 root      RT   0     0    0    0 S  0.0  0.0   6:42.04 watchdog/6
