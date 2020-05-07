@@ -113,7 +113,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
    @Override
    protected void refreshEnablement(Button button) {
       boolean enabled;
-      enabled = !disableAll || (!isWorkingBranchCreationInProgress() && //
+      enabled = !disableAll && (!isWorkingBranchCreationInProgress() && //
          !isWorkingBranchCommitInProgress() && //
          !isWorkingBranchInWork() && //
          !isCommittedBranchExists());
