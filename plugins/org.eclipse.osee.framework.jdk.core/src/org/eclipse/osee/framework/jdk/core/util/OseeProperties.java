@@ -43,6 +43,7 @@ public class OseeProperties {
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
    public static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
    private static final String JWT_LOGIN_KEY = "jwt.login.key";
+   public static final String OSEE_HEALTH_STATUS_LINKS = "OseeHealthLinks";
 
    protected OseeProperties() {
       // Utility Class

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.server.application.internal.model;
+package org.eclipse.osee.orcs.health;
 
 /**
  * @author Donald G. Dunne

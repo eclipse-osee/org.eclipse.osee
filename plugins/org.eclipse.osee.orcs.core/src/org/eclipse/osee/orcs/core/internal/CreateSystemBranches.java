@@ -369,9 +369,13 @@ public class CreateSystemBranches {
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.Publishing);
 
-      ArtifactId globalPreferences = tx.createArtifact(oseeConfig, CoreArtifactTokens.GlobalPreferences);
-      tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
-      tx.setSoleAttributeValue(globalPreferences, CoreAttributeTypes.ProductLinePreferences, JSON_PL_PREFERENCES);
+      ArtifactToken prefArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();
+      if (prefArt.isInvalid()) {
+         prefArt = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
+      }
+      tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.GeneralStringData, JSON_ATTR_VALUE);
+      tx.setSoleAttributeValue(prefArt, CoreAttributeTypes.ProductLinePreferences, JSON_PL_PREFERENCES);
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.XViewerCustomization);
 

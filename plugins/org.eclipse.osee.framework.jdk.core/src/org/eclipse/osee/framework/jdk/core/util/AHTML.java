@@ -36,6 +36,10 @@ public class AHTML {
       return String.format("<a href=\"%s\">%s</a>", url, name);
    }
 
+   public static String getHyperlinkNewTab(String url, String name) {
+      return String.format("<a href=\"%s\" target=_blank>%s</a>", url, name);
+   }
+
    //TODO: replace with ReservedCharacters.java
    public static String textToHtml(String text) {
       if (text == null) {
@@ -92,6 +96,24 @@ public class AHTML {
       return null;
    }
 
+   public static String getUrlPageHtml(String urlStr) {
+      StringBuffer buffer = new StringBuffer();
+      try {
+         URL url = new URL(urlStr);
+         URLConnection connection = url.openConnection();
+         BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+         String line = null;
+         while ((line = rd.readLine()) != null) {
+            buffer.append(line);
+         }
+         rd.close();
+         return buffer.toString();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         return simplePage("Exception opening url " + ex.getLocalizedMessage());
+      }
+   }
+
    public static String getUrlPageHtml(String urlStr, InetSocketAddress addr) {
       StringBuffer buffer = new StringBuffer();
       try {
@@ -120,6 +142,10 @@ public class AHTML {
 
    public static String simplePage(String text) {
       return pageEncoding("<html>" + text + "</html>");
+   }
+
+   public static String simplePage(String title, String body) {
+      return pageEncoding("<html><h3>" + title + "</h3>" + body + "</html>");
    }
 
    public static String simplePageNoPageEncoding(String text) {
@@ -531,6 +557,10 @@ public class AHTML {
          }
       }
       return table.toString();
+   }
+
+   public static String simplePageWithImageUrl(String title, String imageUrl, String text) {
+      return "<html><h3>" + title + "</h3><body>" + imageUrl + AHTML.textToHtml(text) + "</html>";
    }
 
 }
