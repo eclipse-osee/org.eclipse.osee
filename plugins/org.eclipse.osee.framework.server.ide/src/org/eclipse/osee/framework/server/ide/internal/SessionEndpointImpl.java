@@ -16,17 +16,7 @@ package org.eclipse.osee.framework.server.ide.internal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
@@ -57,41 +47,27 @@ public class SessionEndpointImpl implements SessionEndpoint {
    }
 
    @Override
-   @PUT
-   @Path("session")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   public Response createIdeClientSession(OseeCredential credential) {
+   public OseeSessionGrant createIdeClientSession(OseeCredential credential) {
       OseeSessionGrant sessionGrant = sessionManager.createSession(credential);
       if (sessionGrant != null) {
          logSessionCreation(credential, sessionGrant);
-      } else {
-         // session could not be created due to version or invalid user
-         Response.serverError().status(Status.FORBIDDEN).entity("Unable to create session");
       }
-      return Response.ok().entity(sessionGrant).build();
+      return sessionGrant;
    }
 
    @Override
-   @DELETE
-   @Path("session/{sessionId}")
-   @Produces({MediaType.APPLICATION_JSON})
-   public Response releaseIdeClientSession(@PathParam("sessionId") String sessionId) {
+   public void releaseIdeClientSession(String sessionId) {
       logSessionReleased(sessionId);
       sessionManager.releaseSession(sessionId);
-      return Response.ok().build();
    }
 
    @Override
-   @GET
-   @Path("session/protocols")
-   @Produces({MediaType.APPLICATION_JSON})
-   public Response getIdeClientProtocols() {
+   public List<String> getIdeClientProtocols() {
       List<String> protocols = new LinkedList<>();
       for (String protocol : authenticationManager.getProtocols()) {
          protocols.add(protocol);
       }
-      return Response.ok(protocols).build();
+      return protocols;
    }
 
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
@@ -143,5 +119,4 @@ public class SessionEndpointImpl implements SessionEndpoint {
       }
       return duration;
    }
-
 }
