@@ -63,9 +63,4 @@ public class IdentityManagerImpl implements IdentityManager {
       }
       return toReturn;
    }
-
-   @Override
-   public void invalidateIds() {
-      client.invalidateSequences();
-   }
 }

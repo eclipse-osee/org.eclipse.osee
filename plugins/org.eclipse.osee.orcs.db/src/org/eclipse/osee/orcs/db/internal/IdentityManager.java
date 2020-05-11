@@ -28,8 +28,6 @@ public interface IdentityManager {
 
    GammaId getNextGammaId();
 
-   void invalidateIds();
-
    String getUniqueGuid(String guid);
 
 }

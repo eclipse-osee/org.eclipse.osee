@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Roberto E. Escobar
@@ -21,7 +20,4 @@ public interface IDatabaseInitConfiguration {
    List<String> getTaskExtensionIds();
 
    List<String> getOseeTypeExtensionIds();
-
-   List<UserToken> getUserTokens();
-
 }

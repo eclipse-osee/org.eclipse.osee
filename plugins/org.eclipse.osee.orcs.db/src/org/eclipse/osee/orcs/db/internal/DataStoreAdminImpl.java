@@ -43,14 +43,12 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
    private final Log logger;
    private final JdbcClient jdbcClient;
-   private final IdentityManager identityService;
    private final SystemProperties properties;
    private final OrcsTypesDataStore typesDataStore;
 
-   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemProperties properties, OrcsTypesDataStore typesDataStore) {
+   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, SystemProperties properties, OrcsTypesDataStore typesDataStore) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
-      this.identityService = identityService;
       this.properties = properties;
       this.typesDataStore = typesDataStore;
    }
@@ -73,7 +71,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
 
       addDefaultPermissions();
 
-      identityService.invalidateIds();
+      jdbcClient.invalidateSequences();
    }
 
    private void addDefaultPermissions() {

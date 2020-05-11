@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.UserToken;
 
 /**
  * @author Roberto E. Escobar
@@ -23,19 +22,10 @@ import org.eclipse.osee.framework.core.data.UserToken;
 public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> dbInitTasks;
    private final List<String> oseeTypeIds;
-   private List<UserToken> dbInitUsers = new ArrayList<>();
 
    public DatabaseInitConfiguration() {
       this.dbInitTasks = new ArrayList<>();
       this.oseeTypeIds = new ArrayList<>();
-   }
-
-   public List<UserToken> getDbInitUsers() {
-      return dbInitUsers;
-   }
-
-   public void setDbInitUsers(List<UserToken> dbInitUsers) {
-      this.dbInitUsers = dbInitUsers;
    }
 
    public void addTask(String taskId) {
@@ -46,17 +36,8 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       oseeTypeIds.add(oseeTypesExtensionIds);
    }
 
-   public void addTask(DefaultDbInitTasks task) {
-      addDefaultTask(dbInitTasks, task);
-   }
-
    public void addOseeType(DefaultOseeTypeDefinitions typeDef) {
       addDefaultType(oseeTypeIds, typeDef);
-   }
-
-   public void addUserTokens(List<UserToken> userTokens) {
-      dbInitUsers.clear();
-      dbInitUsers.addAll(userTokens);
    }
 
    @Override
@@ -75,11 +56,6 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       Set<String> oseeTypes = new LinkedHashSet<>();
       oseeTypes.addAll(oseeTypeIds);
       return new ArrayList<>(oseeTypes);
-   }
-
-   @Override
-   public List<UserToken> getUserTokens() {
-      return dbInitUsers;
    }
 
    private void addDefaultTask(Collection<String> initTasks, DefaultDbInitTasks task) {
