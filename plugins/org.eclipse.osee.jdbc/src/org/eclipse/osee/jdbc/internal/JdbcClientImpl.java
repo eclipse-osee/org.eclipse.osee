@@ -41,6 +41,9 @@ import org.eclipse.osee.jdbc.SQL3DataType;
  * @author Roberto E. Escobar
  */
 public final class JdbcClientImpl implements JdbcClient {
+   private static final String POSTGRESQL_VACUUM_AND_STATS = "VACUUM FULL VERBOSE ANALYZE";
+   private static final String ORACLE_GATHER_STATS =
+      "begin DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE); end;";
 
    private final JdbcClientConfig config;
    private final JdbcConnectionProvider connectionProvider;
@@ -523,6 +526,16 @@ public final class JdbcClientImpl implements JdbcClient {
          return new OseePreparedStatement(preparedStatement, batchIncrementSize, connect, autoClose);
       } catch (SQLException ex) {
          throw newJdbcException(ex);
+      }
+   }
+
+   @Override
+   public void vacuum() {
+      JdbcDbType dbType = getDbType();
+      if (dbType.equals(JdbcDbType.postgresql)) {
+         runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
+      } else if (dbType.equals(JdbcDbType.oracle)) {
+         runPreparedUpdate(ORACLE_GATHER_STATS);
       }
    }
 

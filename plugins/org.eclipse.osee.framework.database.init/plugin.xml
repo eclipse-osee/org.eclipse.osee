@@ -3,20 +3,6 @@
 <plugin>
    <extension-point id="DatabaseInitializationConfiguration" name="DatabaseInitializationConfiguration" schema="OSEE-INF/extensionPts/DatabaseInitializationConfiguration.exsd"/>
    <extension-point id="DatabaseInitializationTask" name="DatabaseInitializationTask" schema="OSEE-INF/extensionPts/DatabaseInitializationTask.exsd"/>
-   <extension
-         id="configClient"
-         point="org.eclipse.core.runtime.applications">
-      <application>
-         <run class="org.eclipse.osee.framework.database.init.internal.ConfigDatabaseApplication"/>
-      </application>
-   </extension>
-	<extension
-			id="PostDatabaseInitialization"
-      	point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.internal.PostDatabaseInitialization">
-      </DatabaseInitializationTask>
-	</extension>
 	<extension
 			id="PostDbUserCleanUp"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">

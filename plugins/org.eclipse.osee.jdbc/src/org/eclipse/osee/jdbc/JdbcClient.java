@@ -111,4 +111,6 @@ public interface JdbcClient {
    default String getOrderedHint() {
       return getDbType().areHintsSupported() ? "/*+ ordered */" : "";
    }
+
+   void vacuum();
 }

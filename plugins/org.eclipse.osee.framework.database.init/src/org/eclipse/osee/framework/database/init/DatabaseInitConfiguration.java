@@ -47,7 +47,6 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
       initTasks.addAll(dbInitTasks);
       addDefaultTask(initTasks, DefaultDbInitTasks.DB_USER_CLEANUP);
       addDefaultTask(initTasks, DefaultDbInitTasks.BRANCH_DATA_IMPORT);
-      addDefaultTask(initTasks, DefaultDbInitTasks.DB_STATS);
       return initTasks;
    }
 
