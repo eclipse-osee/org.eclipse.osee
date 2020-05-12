@@ -26,9 +26,10 @@ public class SafetySeverityAttributeType extends AttributeTypeEnum<SafetySeverit
    public final SafetySeverityEnum Marginal = new SafetySeverityEnum(2, "(3) Marginal");
    public final SafetySeverityEnum Negligible = new SafetySeverityEnum(3, "(4) Negligible");
    public final SafetySeverityEnum Unspecified = new SafetySeverityEnum(4, "Unspecified");
+   public final SafetySeverityEnum None = new SafetySeverityEnum(5, "None");
 
    public SafetySeverityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(846763346271224762L, namespace, "Safety Severity", mediaType, "", taggerType, 5);
+      super(846763346271224762L, namespace, "Safety Severity", mediaType, "", taggerType, 6);
    }
 
    public class SafetySeverityEnum extends EnumToken {

@@ -1979,6 +1979,7 @@ oseeEnumType "enum.safety.severity" {
 	entry "(3) Marginal"
 	entry "(4) Negligible"
 	entry "Unspecified"
+	entry "None"
 }
 
 attributeType "Doors ID" extends EnumeratedAttribute {
