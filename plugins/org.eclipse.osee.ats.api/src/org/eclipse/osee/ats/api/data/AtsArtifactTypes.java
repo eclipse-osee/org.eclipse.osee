@@ -206,8 +206,10 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ChangeType, "")
       .zeroOrOne(ColorTeam, "Unspecified")
       .any(CommitOverride, "")
+      .zeroOrOne(Condition, "")
       .zeroOrOne(DuplicatedPcrId, "")
       .zeroOrOne(EstimateAssumptions, "")
+      .zeroOrOne(Information, "")
       .zeroOrOne(IPT, "")
       .zeroOrOne(LegacyPcrId, "")
       .zeroOrOne(NeedBy, "")
@@ -222,6 +224,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Problem, "")
       .zeroOrOne(ProgramId, "")
       .zeroOrOne(ProposedResolution, "")
+      .zeroOrOne(Rank, "")
       .zeroOrOne(Rationale, "")
       .any(RelatedTaskWorkflowDefinition, "")
       .zeroOrOne(RelatedTaskWorkflowDefinitionOld, "")
@@ -264,5 +267,14 @@ public interface AtsArtifactTypes {
       .zeroOrOne(WorkPackageId, "")
       .zeroOrOne(WorkPackageProgram, "")
       .zeroOrOne(WorkPackageType, ""));
+
+   //iCTeam Types
+   ArtifactTypeToken Project = ats.add(ats.artifactType(250L, "Project", false, Artifact)
+      .zeroOrOne(BaselineBranchGuid, "")
+      .zeroOrOne(Shortname, "")
+      .zeroOrOne(TaskCountForProject, ""));
+   ArtifactTypeToken AgileProject = ats.add(ats.artifactType(8517L, "Agile Project", false, Project));
+
+
    // @formatter:on
 }

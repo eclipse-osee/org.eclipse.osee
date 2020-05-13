@@ -28,10 +28,12 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Country;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Insertion;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.InsertionActivity;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Program;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Project;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
@@ -210,6 +212,48 @@ public interface AtsRelationTypes {
    // Program uses supporting info to relate to team.  Use different name for readability and understandability
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
    RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
+
+   //iCTeam Types
+   RelationTypeToken ActionableItemWorkFlow = ats.add(2305843009213694467L, "ActionableItemWorkFlow", MANY_TO_MANY, UNORDERED, ActionableItem, "Actionable Item", TeamWorkflow, "Team Workflow");
+   RelationTypeSide ActionableItemWorkFlow_ActionableItem = RelationTypeSide.create(ActionableItemWorkFlow, SIDE_A);
+   RelationTypeSide ActionableItemWorkFlow_TeamWorkflow = RelationTypeSide.create(ActionableItemWorkFlow, SIDE_B);
+
+   RelationTypeToken AgileTaskLink = ats.add(2305843009213694352L, "AgileTaskLink", MANY_TO_MANY, UNORDERED, TeamWorkflow, "Team WorkFlowA", TeamWorkflow, "Team WorkFlowB");
+   RelationTypeSide AgileTaskLink_TeamWorkflowA = RelationTypeSide.create(AgileTaskLink, SIDE_A);
+   RelationTypeSide AgileTaskLink_TeamWorkflowB = RelationTypeSide.create(AgileTaskLink, SIDE_B);
+
+   RelationTypeToken ProjectToAction = ats.add(2305843009213694464L, "ProjectToAction", MANY_TO_MANY, UNORDERED, Project, "Project", Action, "Action");
+   RelationTypeSide ProjectToAction_Project = RelationTypeSide.create(ProjectToAction, SIDE_A);
+   RelationTypeSide ProjectToAction_Action = RelationTypeSide.create(ProjectToAction, SIDE_B);
+
+   RelationTypeToken ProjectToActionableItem = ats.add(2305843009213694465L, "ProjectToActionableItem", MANY_TO_MANY, UNORDERED, Project, "Project", ActionableItem, "Actionable Item");
+   RelationTypeSide ProjectToActionableItem_Project = RelationTypeSide.create(ProjectToActionableItem, SIDE_A);
+   RelationTypeSide ProjectToActionableItem_ActionableItem = RelationTypeSide.create(ProjectToActionableItem, SIDE_B);
+
+   RelationTypeToken ProjectToTeamDefinition = ats.add(2305843009213694361L, "ProjectToTeamDefinition", MANY_TO_MANY, UNORDERED, Project, "Project", TeamDefinition, "Team Definition");
+   RelationTypeSide ProjectToTeamDefinition_Project = RelationTypeSide.create(ProjectToTeamDefinition, SIDE_A);
+   RelationTypeSide ProjectToTeamDefinition_TeamDefinition = RelationTypeSide.create(ProjectToTeamDefinition, SIDE_B);
+
+   RelationTypeToken ProjectToTeamWorkFlow = ats.add(2305843009214812512L, "ProjectToTeamWorkFlow", MANY_TO_MANY, UNORDERED, Project, "Project", TeamWorkflow, "Team Workflow");
+   RelationTypeSide ProjectToTeamWorkFlow_Project = RelationTypeSide.create(ProjectToTeamWorkFlow, SIDE_A);
+   RelationTypeSide ProjectToTeamWorkFlow_TeamWorkflow = RelationTypeSide.create(ProjectToTeamWorkFlow, SIDE_B);
+
+   RelationTypeToken ProjectToUser = ats.add(144115188075925782L, "ProjectToUser", MANY_TO_MANY, UNORDERED, Project, "Project", User, "User");
+   RelationTypeSide ProjectToUser_Project = RelationTypeSide.create(ProjectToUser, SIDE_A);
+   RelationTypeSide ProjectToUser_User = RelationTypeSide.create(ProjectToUser, SIDE_B);
+
+   RelationTypeToken ProjectToVersion = ats.add(2305843009214812513L, "ProjectToVersion", MANY_TO_MANY, UNORDERED, Project, "Project", Version, "Version");
+   RelationTypeSide ProjectToVersion_Project = RelationTypeSide.create(ProjectToVersion, SIDE_A);
+   RelationTypeSide ProjectToVersion_Version = RelationTypeSide.create(ProjectToVersion, SIDE_B);
+
+   RelationTypeToken ProjectToWorkDefinition = ats.add(2305843009213694466L, "ProjectToWorkDefinition", MANY_TO_MANY, UNORDERED, Project, "Project", WorkDefinition, "Work Definition");
+   RelationTypeSide ProjectToWorkDefinition_Project = RelationTypeSide.create(ProjectToWorkDefinition, SIDE_A);
+   RelationTypeSide ProjectToWorkDefinition_WorkDefinition = RelationTypeSide.create(ProjectToWorkDefinition, SIDE_B);
+
+   RelationTypeToken TaskLink = ats.add(144115188075855994L, "TaskLink", MANY_TO_MANY, UNORDERED, TeamWorkflow, "From", TeamWorkflow, "To");
+   RelationTypeSide TaskLink_From = RelationTypeSide.create(TaskLink, SIDE_A);
+   RelationTypeSide TaskLink_To = RelationTypeSide.create(TaskLink, SIDE_B);
+
 
    //@formatter:on
 }

@@ -319,7 +319,9 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Approve Requested Hours By"
 	attribute "ats.Product Line Approved By"
 	attribute "ats.Product Line Approved Date"
-	
+	attribute "tag.Information"
+	attribute "req.Condition"
+	attribute "agile.Rank"
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -2181,5 +2183,200 @@ attributeType "ats.closure.Closure State" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "ats.closure.states"
+	mediaType "text/plain"
+}
+
+//iCTeam Types
+artifactType "Project" extends "Artifact" {
+	id 250
+	attribute "ats.Baseline Branch Guid"
+	attribute "Shortname"
+	attribute "TaskCountForProject"
+}
+
+attributeType "agile.Rank" extends StringAttribute {
+	id 1152921504606851480
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue " "
+	mediaType "text/plain"
+}
+
+attributeType "Shortname" extends StringAttribute {
+	id 1152921904606847240
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "TaskCountForProject" extends StringAttribute {
+	id 1152921504606849831
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue "0"
+	mediaType "text/plain"
+}
+
+attributeType "task.guid" extends StringAttribute {
+	id 1152921504606851425
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+
+relationType "ProjectToTeamDefinition" {
+	id 2305843009213694361
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Team Definition"
+	sideBArtifactType "Team Definition"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ProjectToAction" {
+	id 2305843009213694464
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Action"
+	sideBArtifactType "Action"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ProjectToActionableItem" {
+	id 2305843009213694465
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Actionable Item"
+	sideBArtifactType "Actionable Item"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ProjectToWorkDefinition" {
+	id 2305843009213694466
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Work Definition"
+	sideBArtifactType "Work Definition"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ActionableItemWorkFlow" {
+	id 2305843009213694467
+	sideAName "Actionable Item"
+	sideAArtifactType "Actionable Item"
+	sideBName "Team Workflow"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ProjectToTeamWorkFlow" {
+	id 2305843009214812512
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Team Workflow"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "ProjectToVersion" {
+	id 2305843009214812513
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "Version"
+	sideBArtifactType "Version"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+
+artifactType "Agile Project" extends "Project" {
+	id 8517
+}
+
+relationType "ProjectToUser" {
+	id 144115188075925782
+	sideAName "Project"
+	sideAArtifactType "Project"
+	sideBName "User"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+oseeEnumType "enum.agile.change.type" {
+	id 345876451382054132
+	entry "Improvement"
+	entry "Problem"
+	entry "Support"
+	entry "Refinement"
+	entry "Epic"
+	entry "Story"
+	entry "Impediment"
+	entry "Task"
+	entry "Customer Feature"
+	entry "Requirement"
+}
+
+attributeType "agile.Change Type" extends EnumeratedAttribute {
+	id 1152921504606851584
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.agile.change.type"
+	mediaType "text/plain"
+}
+
+relationType "AgileTaskLink" {
+	id 2305843009213694352
+	sideAName "Team WorkFlowA"
+	sideAArtifactType "Team Workflow"
+	sideBName "Team WorkFlowB"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "TaskLink" {
+	id 144115188075855994
+	sideAName "From"
+	sideAArtifactType "Team Workflow"
+	sideBName "To"
+	sideBArtifactType "Team Workflow"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+attributeType "tag.Information" extends StringAttribute {
+	id 1152921504606851665
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue " "
+	mediaType "text/plain"
+}
+
+attributeType "req.Condition" extends StringAttribute {
+	id 1152921504606851666
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	defaultValue " "
 	mediaType "text/plain"
 }

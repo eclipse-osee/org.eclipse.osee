@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.data;
 
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelReasonAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
@@ -191,6 +192,16 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", MediaType.TEXT_PLAIN, "Work Type of this Team.");
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow");
+
+   //icTeam Types
+   AttributeTypeString StoryPoint = ats.createString(1152921504606851479L, "agile.Story Point", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Shortname = ats.createStringNoTag(1152921904606847240L, "Shortname", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "TaskCountForProject", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "");
+   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(AgileChangeTypeAttributeType::new, MediaType.TEXT_PLAIN);
+   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "");
 
    // Remove static after 25.0
    AttributeTypeString ActionableItem = ats.createString(1152921504606847200L, "ats.Actionable Item", MediaType.TEXT_PLAIN, "Actionable Items that are impacted by this change.");
