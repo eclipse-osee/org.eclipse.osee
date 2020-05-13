@@ -66,7 +66,7 @@ public class ValidationReportOperation extends AbstractOperation {
          Collection<Artifact> changedArtifacts =
             changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.APPLICABILITY,
                ModificationType.INTRODUCED, ModificationType.MERGED, ModificationType.REPLACED_WITH_VERSION,
-               ModificationType.UNDELETED, ModificationType.NEW, ModificationType.MODIFIED, ModificationType.DELETED);
+               ModificationType.UNDELETED, ModificationType.NEW, ModificationType.MODIFIED);
          checkForCancelledStatus(monitor);
 
          double total = changedArtifacts.size() * rules.size();
