@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.rest;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DefaultTrackingBranch;
@@ -273,6 +275,10 @@ public final class GitOperationsImpl implements GitOperations {
 
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "GitOperationsImpl.createGitRepository()");
+
+      if (!queryFactory.fromBranch(branch).andNameEquals("Git Repositories").andTypeEquals(Folder).exists()) {
+         tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
+      }
 
       ArtifactId repoArtifact = tx.createArtifact(CoreArtifactTokens.GitRepoFolder, GitRepository, repoName);
 
