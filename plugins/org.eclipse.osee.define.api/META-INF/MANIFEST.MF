@@ -17,6 +17,7 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.datarights,
  org.eclipse.osee.framework.core.model.type,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.result,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -26,4 +27,3 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.transaction,
  org.json
-Require-Bundle: org.eclipse.osee.framework.core

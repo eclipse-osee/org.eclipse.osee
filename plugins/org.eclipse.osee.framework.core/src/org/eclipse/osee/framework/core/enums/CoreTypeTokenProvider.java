@@ -23,10 +23,14 @@ public final class CoreTypeTokenProvider extends OrcsTypeTokenProviderBase {
    private static final NamespaceToken FACE =
       NamespaceToken.valueOf(108, "face", "Namespace for Future Airborne Capability Environment Consortium");
    public static final OrcsTypeTokens face = new OrcsTypeTokens(FACE);
+   private static final NamespaceToken OTE =
+      NamespaceToken.valueOf(3, "ote", "Namespace for ote system and content management types");
+   public static final OrcsTypeTokens ote = new OrcsTypeTokens(OTE);
 
    public CoreTypeTokenProvider() {
-      super(osee, face);
+      super(osee, face, ote);
       loadClasses(CoreArtifactTypes.Artifact, CoreAttributeTypes.Name, CoreRelationTypes.Allocation,
-         FaceOseeTypes.UnitOfConformance);
+         FaceOseeTypes.UnitOfConformance, OteArtifactTypes.TestRun, OteAttributeTypes.BuildId,
+         OteRelationTypes.TestCaseToRunRelation);
    }
 }

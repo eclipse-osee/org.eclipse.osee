@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define;
+package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.ote;
+import static org.eclipse.osee.framework.core.enums.OteArtifactTypes.TestRun;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
-import static org.eclipse.osee.ote.define.OteArtifactTypes.TestRun;
-import static org.eclipse.osee.ote.define.OteTypeTokenProvider.ote;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 

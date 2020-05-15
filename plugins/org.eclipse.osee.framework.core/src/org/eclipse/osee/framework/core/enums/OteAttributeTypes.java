@@ -8,9 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define;
+package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.ote.define.OteTypeTokenProvider.ote;
+import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.ote;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
