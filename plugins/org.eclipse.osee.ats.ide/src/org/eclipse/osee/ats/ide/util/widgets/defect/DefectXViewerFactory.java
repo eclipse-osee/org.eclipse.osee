@@ -39,13 +39,15 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
    public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 100,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
+   public static XViewerColumn DefectId_Col =
+      new XViewerColumn("osee.defect.id", "Defect Id", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
 
    private final static String NAMESPACE = "DefectXViewer";
 
    public DefectXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
-         Description_Col, Location_Col, Resolution_Col);
+         Description_Col, Location_Col, Resolution_Col, DefectId_Col);
    }
 
 }

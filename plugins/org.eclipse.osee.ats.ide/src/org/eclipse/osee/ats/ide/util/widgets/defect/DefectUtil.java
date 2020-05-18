@@ -61,6 +61,7 @@ public class DefectUtil {
             ReviewDefectManager defectManager = getDefectManager();
             defectManager.addOrUpdateDefectItem(item);
             defectManager.saveToArtifact(review, changes);
+            changes.execute();
             refreshActionHandler.refreshActionHandler();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

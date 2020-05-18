@@ -86,6 +86,8 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return defectItem.getDescription();
       } else if (aCol.equals(DefectXViewerFactory.Resolution_Col)) {
          return defectItem.getResolution();
+      } else if (aCol.equals(DefectXViewerFactory.DefectId_Col)) {
+         return String.valueOf(defectItem.getId());
       } else if (aCol.equals(DefectXViewerFactory.Location_Col)) {
          return defectItem.getLocation();
       } else if (aCol.equals(DefectXViewerFactory.Severity_Col)) {

@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -38,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 public class ReviewDefectManager {
 
    private final static String DEFECT_ITEM_TAG = "Item";
-   private static final AttributeTypeToken REVIEW_STORAGE_TYPE = AtsAttributeTypes.ReviewDefect;
 
    private final Matcher defectMatcher =
       java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
@@ -49,7 +47,7 @@ public class ReviewDefectManager {
 
    public ReviewDefectManager(ArtifactToken artifact, AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.valueProvider = new ArtifactValueProvider(artifact, REVIEW_STORAGE_TYPE, atsApi);
+      this.valueProvider = new ArtifactValueProvider(artifact, AtsAttributeTypes.ReviewDefect, atsApi);
    }
 
    public ReviewDefectManager(IValueProvider valueProvider) {
@@ -151,7 +149,7 @@ public class ReviewDefectManager {
    private List<ReviewDefectItem> getStoredDefectItems(IAtsPeerToPeerReview peerRev) {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<ReviewDefectItem> storedDefectItems = new ArrayList<>();
-      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.ReviewDefect)) {
          ReviewDefectItem storedRole = new ReviewDefectItem((String) attr.getValue());
          storedDefectItems.add(storedRole);
       }
@@ -160,7 +158,7 @@ public class ReviewDefectManager {
 
    public void saveToArtifact(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
       // Change existing ones
-      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.ReviewDefect)) {
          ReviewDefectItem storedDefect = new ReviewDefectItem((String) attr.getValue());
          for (ReviewDefectItem defectItem : getDefectItems()) {
             if (defectItem.equals(storedDefect)) {
@@ -173,7 +171,8 @@ public class ReviewDefectManager {
       // Remove deleted ones; items in dbdefectItems that are not in defectItems
       for (ReviewDefectItem delItem : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
          storedDefectItems, getDefectItems())) {
-         for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, REVIEW_STORAGE_TYPE)) {
+         for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
+            AtsAttributeTypes.ReviewDefect)) {
             ReviewDefectItem storedItem = new ReviewDefectItem((String) attr.getValue());
             if (storedItem.equals(delItem)) {
                changes.deleteAttribute(peerRev, attr);
@@ -183,7 +182,8 @@ public class ReviewDefectManager {
       // Add new ones: items in defectItems that are not in dbdefectItems
       for (ReviewDefectItem newDefect : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
          getDefectItems(), storedDefectItems)) {
-         changes.addAttribute(peerRev, REVIEW_STORAGE_TYPE, AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml()));
+         changes.addAttribute(peerRev, AtsAttributeTypes.ReviewDefect,
+            AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml()));
       }
    }
 
