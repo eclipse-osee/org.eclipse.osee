@@ -28,8 +28,7 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUtilities;
-import org.eclipse.osee.define.rest.publishing.TemplatePublisherPreviewStreamingOutput;
-import org.eclipse.osee.define.rest.publishing.TemplatePublisherStreamingOutput;
+import org.eclipse.osee.define.rest.publishing.SpecifiedTemplatePublisherStreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.LinkType;
@@ -135,29 +134,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
       publishingOptions.excludeFolders = true;
 
       StreamingOutput streamingOutput =
-         new TemplatePublisherStreamingOutput(publishingOptions, template, headArtifact, orcsApi, logger);
-
-      ResponseBuilder builder = Response.ok(streamingOutput);
-      builder.header("Content-Disposition", "attachment; filename=" + fileName);
-      return builder.build();
-   }
-
-   @Override
-   public Response msWordTemplatePublishPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact) {
-      //Generate filename with the headArtifact name and current time
-      String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifact().getName();
-      SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
-      Date date = new Date(System.currentTimeMillis());
-      String time = format.format(date);
-      String fileName = name + "_" + time + ".xml";
-
-      PublishingOptions publishingOptions = new PublishingOptions();
-      publishingOptions.branch = branch;
-      publishingOptions.linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
-      publishingOptions.excludeFolders = true;
-
-      StreamingOutput streamingOutput =
-         new TemplatePublisherPreviewStreamingOutput(publishingOptions, template, headArtifact, orcsApi, logger);
+         new SpecifiedTemplatePublisherStreamingOutput(publishingOptions, template, headArtifact, orcsApi, logger);
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + fileName);

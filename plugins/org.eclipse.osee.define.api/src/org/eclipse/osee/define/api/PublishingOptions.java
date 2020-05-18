@@ -77,4 +77,7 @@ public class PublishingOptions {
    public String threeWayMerge = null;
    public String id = null;
    public String name = null;
+
+   //Int
+   public int msWordHeadingDepth = 9;
 }

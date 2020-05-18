@@ -29,8 +29,6 @@ public interface MSWordOperations {
 
    public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact);
 
-   public Response msWordTemplatePublishPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact);
-
    public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal);
 
    public String renderPlainText(BranchId branchId, String data);

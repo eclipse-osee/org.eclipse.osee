@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.define.rest.publishing;
 
 import java.io.IOException;
@@ -24,7 +25,8 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Branden W. Phillips
  */
-public class TemplatePublisherPreviewStreamingOutput implements StreamingOutput {
+public class SpecifiedTemplatePublisherStreamingOutput implements StreamingOutput {
+
    private final PublishingOptions publishingOptions;
    private final ArtifactId templateArtId;
    private final ArtifactId headArtifact;
@@ -32,7 +34,7 @@ public class TemplatePublisherPreviewStreamingOutput implements StreamingOutput 
    private final Log logger;
    private Writer writer;
 
-   public TemplatePublisherPreviewStreamingOutput(PublishingOptions publishingOptions, ArtifactId templateArtId, ArtifactId headArtifact, OrcsApi orcsApi, Log logger) {
+   public SpecifiedTemplatePublisherStreamingOutput(PublishingOptions publishingOptions, ArtifactId templateArtId, ArtifactId headArtifact, OrcsApi orcsApi, Log logger) {
       this.publishingOptions = publishingOptions;
       this.templateArtId = templateArtId;
       this.headArtifact = headArtifact;
@@ -42,11 +44,13 @@ public class TemplatePublisherPreviewStreamingOutput implements StreamingOutput 
 
    @Override
    public void write(OutputStream arg0) throws IOException, WebApplicationException {
-      MSWordTemplatePublisherPreview publisher = new MSWordTemplatePublisherPreview(publishingOptions, logger, orcsApi);
+      MSWordSpecifiedTemplatePublisher publisher =
+         new MSWordSpecifiedTemplatePublisher(publishingOptions, logger, orcsApi);
       writer = new OutputStreamWriter(arg0);
       writer.write("");
       String publishOutput = publisher.publish(templateArtId, headArtifact);
       writer.write(publishOutput);
       writer.close();
    }
+
 }

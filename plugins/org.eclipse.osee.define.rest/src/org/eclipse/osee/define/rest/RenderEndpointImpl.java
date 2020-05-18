@@ -48,11 +48,6 @@ public final class RenderEndpointImpl implements RenderEndpoint {
    }
 
    @Override
-   public Response msWordTemplatePublishPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact) {
-      return defineApi.getMSWordOperations().msWordTemplatePublishPreview(branch, template, headArtifact);
-   }
-
-   @Override
    public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal) {
       return null;
    }
