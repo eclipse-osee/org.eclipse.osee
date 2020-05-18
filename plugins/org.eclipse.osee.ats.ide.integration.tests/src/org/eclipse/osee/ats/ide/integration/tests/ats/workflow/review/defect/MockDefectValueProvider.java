@@ -43,7 +43,7 @@ public class MockDefectValueProvider implements IValueProvider {
    public Collection<String> getValues() {
       List<String> values = new ArrayList<>();
       for (ReviewDefectItem item : defectItems) {
-         values.add(AXml.addTagData("Item", item.toXml()));
+         values.add(AXml.addTagData("Item", item.toXml(false)));
       }
       return values;
    }

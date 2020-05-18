@@ -32,7 +32,7 @@ public class ReviewDefectItemTest {
          new ReviewDefectItem("1234", Severity.Issue, Disposition.Duplicate, InjectionActivity.Software_Design,
             "this is the description", "this is the resolution", "this is the location", date);
 
-      ReviewDefectItem fromItem = new ReviewDefectItem(item.toXml());
+      ReviewDefectItem fromItem = new ReviewDefectItem(item.toXml(false), false, null);
       Assert.assertEquals("1234", fromItem.getUserId());
       Assert.assertEquals(item.getSeverity(), fromItem.getSeverity());
       Assert.assertEquals(item.getDisposition(), fromItem.getDisposition());
@@ -52,14 +52,18 @@ public class ReviewDefectItemTest {
       ReviewDefectItem item =
          new ReviewDefectItem("1234", Severity.Issue, Disposition.Duplicate, InjectionActivity.Software_Design,
             "this is the description", "this is the resolution", "this is the location", date);
-      String xmlStr = item.toXml();
+      String xmlStr = item.toXml(false);
       String guid = GUID.create();
       xmlStr = xmlStr.replaceFirst("id>.*</id", String.format("guid>%s</guid", guid));
       Assert.assertTrue(xmlStr.contains("guid"));
 
-      ReviewDefectItem fromItem = new ReviewDefectItem(xmlStr);
+      ReviewDefectItem fromItem = new ReviewDefectItem(xmlStr, false, null);
 
-      Assert.assertEquals(guid.hashCode(), fromItem.getId().intValue());
+      long hash = guid.hashCode();
+      if (hash < 0) {
+         hash = hash * -1;
+      }
+      Assert.assertEquals(hash, fromItem.getId().intValue());
    }
 
 }

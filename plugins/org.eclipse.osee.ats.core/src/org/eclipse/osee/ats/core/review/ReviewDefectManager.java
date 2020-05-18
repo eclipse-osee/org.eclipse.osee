@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
@@ -44,10 +45,13 @@ public class ReviewDefectManager {
    private final IValueProvider valueProvider;
    private Set<ReviewDefectItem> defectItems = null;
    private AtsApi atsApi;
+   private Boolean asGuid;
+   private IAtsPeerToPeerReview review;
 
    public ReviewDefectManager(ArtifactToken artifact, AtsApi atsApi) {
       this.atsApi = atsApi;
       this.valueProvider = new ArtifactValueProvider(artifact, AtsAttributeTypes.ReviewDefect, atsApi);
+      this.review = (IAtsPeerToPeerReview) artifact;
    }
 
    public ReviewDefectManager(IValueProvider valueProvider) {
@@ -74,7 +78,7 @@ public class ReviewDefectManager {
          for (String xml : valueProvider.getValues()) {
             defectMatcher.reset(xml);
             while (defectMatcher.find()) {
-               ReviewDefectItem item = new ReviewDefectItem(defectMatcher.group());
+               ReviewDefectItem item = new ReviewDefectItem(defectMatcher.group(), false, review);
                defectItems.add(item);
             }
          }
@@ -146,11 +150,18 @@ public class ReviewDefectManager {
       return x;
    }
 
+   private boolean asGuid() {
+      if (asGuid == null) {
+         asGuid = "true".equals(atsApi.getConfigValue(AtsConfigKey.PeerDefectAsGuid, "false"));
+      }
+      return asGuid;
+   }
+
    private List<ReviewDefectItem> getStoredDefectItems(IAtsPeerToPeerReview peerRev) {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<ReviewDefectItem> storedDefectItems = new ArrayList<>();
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.ReviewDefect)) {
-         ReviewDefectItem storedRole = new ReviewDefectItem((String) attr.getValue());
+         ReviewDefectItem storedRole = new ReviewDefectItem((String) attr.getValue(), asGuid(), peerRev);
          storedDefectItems.add(storedRole);
       }
       return storedDefectItems;
@@ -159,10 +170,10 @@ public class ReviewDefectManager {
    public void saveToArtifact(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
       // Change existing ones
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.ReviewDefect)) {
-         ReviewDefectItem storedDefect = new ReviewDefectItem((String) attr.getValue());
+         ReviewDefectItem storedDefect = new ReviewDefectItem((String) attr.getValue(), asGuid(), peerRev);
          for (ReviewDefectItem defectItem : getDefectItems()) {
             if (defectItem.equals(storedDefect)) {
-               changes.setAttribute(peerRev, attr, AXml.addTagData(DEFECT_ITEM_TAG, defectItem.toXml()));
+               changes.setAttribute(peerRev, attr, AXml.addTagData(DEFECT_ITEM_TAG, defectItem.toXml(asGuid())));
             }
          }
       }
@@ -173,7 +184,7 @@ public class ReviewDefectManager {
          storedDefectItems, getDefectItems())) {
          for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
             AtsAttributeTypes.ReviewDefect)) {
-            ReviewDefectItem storedItem = new ReviewDefectItem((String) attr.getValue());
+            ReviewDefectItem storedItem = new ReviewDefectItem((String) attr.getValue(), asGuid(), peerRev);
             if (storedItem.equals(delItem)) {
                changes.deleteAttribute(peerRev, attr);
             }
@@ -183,7 +194,7 @@ public class ReviewDefectManager {
       for (ReviewDefectItem newDefect : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
          getDefectItems(), storedDefectItems)) {
          changes.addAttribute(peerRev, AtsAttributeTypes.ReviewDefect,
-            AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml()));
+            AXml.addTagData(DEFECT_ITEM_TAG, newDefect.toXml(asGuid())));
       }
    }
 
@@ -192,7 +203,7 @@ public class ReviewDefectManager {
       boolean found = false;
       for (ReviewDefectItem dItem : defectItems) {
          if (defectItem.equals(dItem)) {
-            dItem.update(defectItem);
+            dItem.update(defectItem, asGuid(), review);
             found = true;
          }
       }

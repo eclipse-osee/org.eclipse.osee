@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +32,8 @@ public class ReviewDefectItem {
    private String location = "";
    private String resolution = "";
    private String userId;
-   private Long id = Lib.generateId();
+   private Long id;
+   private String guid;
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
@@ -79,17 +80,21 @@ public class ReviewDefectItem {
       if (date != null) {
          this.date = date;
       }
+      id = Lib.generateId();
+      this.guid = String.valueOf(id);
    }
 
-   public ReviewDefectItem(String xml) {
-      fromXml(xml);
+   public ReviewDefectItem(String xml, boolean andGuid, IAtsPeerToPeerReview review) {
+      fromXml(xml, andGuid, review);
    }
 
    public ReviewDefectItem() {
+      id = Lib.generateId();
+      this.guid = String.valueOf(id);
    }
 
-   public void update(ReviewDefectItem dItem) {
-      fromXml(dItem.toXml());
+   public void update(ReviewDefectItem dItem, boolean andGuid, IAtsPeerToPeerReview review) {
+      fromXml(dItem.toXml(andGuid), andGuid, review);
    }
 
    public static enum Disposition {
@@ -146,29 +151,22 @@ public class ReviewDefectItem {
       return id.hashCode();
    }
 
-   public String toXml() {
-      return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() +
-      //
-         "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() +
+   public String toXml(boolean andGuid) {
+      StringBuilder sb =
+         new StringBuilder("<severity>" + severity.name() + "</severity><disposition>" + disposition.name() +
          //
-         "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
-         //
-         "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><id>" + id + "</id>";
+            "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() +
+            //
+            "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
+            //
+            "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><id>" + id + "</id>");
+      if (andGuid) {
+         sb.append("<guid>" + guid + "</guid>");
+      }
+      return sb.toString();
    }
 
-   private final Pattern guidPattern = Pattern.compile("<guid>(.*)</guid>");
-
-   private void fromXml(String xml) {
-      /**
-       * Handle backward compatibility of guid in db. Turn into unique int if guid exists, else it's a long. After
-       * release of 26.0, either db can be converted to longs and this code removed, or leave this in.
-       */
-      Matcher m = guidPattern.matcher(xml);
-      if (m.find()) {
-         String guid = m.group(1);
-         int id = guid.hashCode();
-         xml = m.replaceAll(String.format("<id>%s</id>", id));
-      }
+   private void fromXml(String xml, boolean andGuid, IAtsPeerToPeerReview review) {
       this.severity = Severity.valueOf(AXml.getTagData(xml, "severity"));
       this.disposition = Disposition.valueOf(AXml.getTagData(xml, "disposition"));
       this.injectionActivity = InjectionActivity.valueOf(AXml.getTagData(xml, "injectionActivity"));
@@ -180,7 +178,31 @@ public class ReviewDefectItem {
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
       this.closed = AXml.getTagBooleanData(xml, "closed");
-      this.id = Long.valueOf(AXml.getTagData(xml, "id"));
+      String idStr = AXml.getTagData(xml, "id");
+      if (Strings.isNumeric(idStr)) {
+         this.id = Long.valueOf(idStr);
+         if (this.id < 0) {
+            this.id = this.id * -1;
+         }
+      }
+      this.guid = AXml.getTagData(xml, "guid");
+      /**
+       * Handle backward compatibility of guid in db. Turn into unique int if guid exists, else id is long and guid is
+       * hashcode of long. After release of 26.0, either db can be converted to longs and this code removed, or leave
+       * this in.
+       */
+      if (id == null && Strings.isValid(guid)) {
+         id = Long.valueOf(guid.hashCode());
+         if (this.id < 0) {
+            this.id = this.id * -1;
+         }
+      }
+      if (Strings.isInValid(guid)) {
+         guid = String.valueOf(id);
+      }
+      if (Strings.isInValid(guid) && (id == null || id <= 0)) {
+         throw new OseeArgumentException("Invalid guid/id in review %s and xml [%x]", review.toStringWithId(), xml);
+      }
    }
 
    public Date getDate() {
@@ -275,6 +297,14 @@ public class ReviewDefectItem {
 
    public void setUser(AtsUser user) {
       this.userId = user.getUserId();
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
    }
 
 }

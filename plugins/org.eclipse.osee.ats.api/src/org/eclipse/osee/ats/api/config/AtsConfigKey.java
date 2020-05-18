@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.api.config;
  */
 public enum AtsConfigKey {
 
-   AJaxBasePath("Controls what is put on front of /ajax/... paths in html files when they are snapshots or save to file.");
+   AJaxBasePath("Controls what is put on front of /ajax/... paths in html files when they are snapshots or save to file."),
+   // Remove after 26.0 and convert peer defects guid tag to id; convert guid values to long (if want)
+   PeerDefectAsGuid("True if store id as guid tag");
 
    private final String description;
 

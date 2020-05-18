@@ -196,6 +196,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (artifactEvent.isModified(
          AtsClientService.get().getQueryServiceClient().getArtifact(review.getStoreObject()))) {
+         refreshActionHandler();
          refreshMessageLabel();
       }
    }
