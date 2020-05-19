@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
+import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -39,7 +40,6 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
    @Override
    public WorkDefinition build() {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
-
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Review) //
          .andToStates(StateToken.Review, StateToken.Cancelled) //
@@ -47,7 +47,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(4, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
@@ -64,7 +64,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_YELLOW) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //
@@ -72,10 +72,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
             ), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new CompositeLayoutItem(2, //
-               new WidgetDefinition(AtsAttributeTypes.ProductLineApprovedDate, "XDateDam"), //
-               new WidgetDefinition(AtsAttributeTypes.ProductLineApprovedBy, "XTextDam") //
-            ) //
+            new WidgetDefinition("PL ARB Approved", "XProductLineApprovalWidget(true)", REQUIRED_FOR_TRANSITION) //
          );
 
       bld.andState(3, "Completed", StateType.Completed) //
@@ -85,7 +82,7 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
          .andRules(RuleDefinitionOption.AddDecisionValidateBlockingReview) //
          .andColor(StateColor.DARK_GREEN) //
          .andLayout( //
-            new WidgetDefinition("Description", CoreAttributeTypes.Name, "XTextDam", FILL_VERTICALLY), //
+            new WidgetDefinition("Description", CoreAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new CompositeLayoutItem(3, //
                new WidgetDefinition(AtsAttributeTypes.ChangeType, "XComboDam(Improvement,Problem,Refinement,Support)"), //
                new WidgetDefinition(AtsAttributeTypes.Priority, "XComboDam(1,2,3,4,5)"), //

@@ -82,6 +82,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLongDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XProductLineApprovalWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
@@ -199,6 +200,14 @@ public final class FrameworkXWidgetProvider {
                }
             } else if (xWidgetName.equals("XLabelDam")) {
                xWidget = new XLabelDam(name);
+            } else if (xWidgetName.startsWith("XProductLineApprovalWidget")) {
+               String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+               if (values.length > 0) {
+                  xWidget = new XProductLineApprovalWidget(Boolean.getBoolean(values[0]));
+               } else {
+                  xWidget = new XProductLineApprovalWidget();
+               }
             } else if (xWidgetName.equals("XMembersList")) {
                try {
                   xWidget = new XMembersList(name);

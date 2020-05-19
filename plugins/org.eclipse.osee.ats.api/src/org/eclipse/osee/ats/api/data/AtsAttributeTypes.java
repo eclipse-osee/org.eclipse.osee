@@ -57,7 +57,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", MediaType.TEXT_PLAIN, "");
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(ApplicableToProgramAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
-   AttributeTypeLong ProductLineApprovedDate = ats.createLong(735226602374161400L, "ats.Product Line Approved Date", MediaType.TEXT_PLAIN, "");
+   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ApproveRequestedHoursDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString AtsConfiguredBranch = ats.createString(72063456936722683L, "ats.ATS Configured Branch", MediaType.TEXT_PLAIN, "ATS Configured Branch");

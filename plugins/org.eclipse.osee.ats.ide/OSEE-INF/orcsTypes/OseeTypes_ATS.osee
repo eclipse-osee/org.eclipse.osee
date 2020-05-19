@@ -506,7 +506,7 @@ attributeType "ats.Product Line Approved Date" extends DateAttribute {
 	mediaType "text/calendar"
 }
 
-attributeType "ats.Product Line Approved By" extends StringAttribute {
+attributeType "ats.Product Line Approved By" extends LongAttribute {
 	id 7838821957985211888
 	dataProvider DefaultAttributeDataProvider
 	min 0

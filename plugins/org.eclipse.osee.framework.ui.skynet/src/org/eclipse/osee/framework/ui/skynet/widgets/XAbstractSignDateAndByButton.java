@@ -137,26 +137,34 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       });
    }
 
+   public boolean userHasPermission() {
+      return true;
+   }
+
    public void setSigned() {
-      SkynetTransaction tx =
-         TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
-      Artifact storeArt = getArtifact();
-      storeArt.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
-      storeArt.setSoleAttributeValue(signDateAttrType, new Date());
-      tx.addArtifact(storeArt);
-      tx.execute();
-      refreshLabel();
+      if (userHasPermission()) {
+         SkynetTransaction tx =
+            TransactionManager.createTransaction(getArtifact().getBranch(), "Set signed for " + getLabel());
+         Artifact storeArt = getArtifact();
+         storeArt.setSoleAttributeValue(signByAttrType, UserManager.getUser().getId());
+         storeArt.setSoleAttributeValue(signDateAttrType, new Date());
+         tx.addArtifact(storeArt);
+         tx.execute();
+         refreshLabel();
+      }
    }
 
    public void setUnsigned() {
-      SkynetTransaction tx =
-         TransactionManager.createTransaction(getArtifact().getBranch(), "Set unsigned for " + getLabel());
-      Artifact storeArt = getArtifact();
-      storeArt.deleteSoleAttribute(signByAttrType);
-      storeArt.deleteSoleAttribute(signDateAttrType);
-      tx.addArtifact(storeArt);
-      tx.execute();
-      refreshLabel();
+      if (userHasPermission()) {
+         SkynetTransaction tx =
+            TransactionManager.createTransaction(getArtifact().getBranch(), "Set unsigned for " + getLabel());
+         Artifact storeArt = getArtifact();
+         storeArt.deleteSoleAttribute(signByAttrType);
+         storeArt.deleteSoleAttribute(signDateAttrType);
+         tx.addArtifact(storeArt);
+         tx.execute();
+         refreshLabel();
+      }
    }
 
    @Override
