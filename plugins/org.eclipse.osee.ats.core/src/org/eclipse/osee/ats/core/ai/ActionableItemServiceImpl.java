@@ -244,8 +244,10 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
             atsApi.getAttributeResolver().getAttributeValues(ai, AtsAttributeTypes.WorkType);
          for (String workTypeStr : workTypeStrs) {
             try {
-               WorkType workType = WorkType.valueOf(workTypeStr);
-               workTypes.add(workType);
+               WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+               if (workType != WorkType.None) {
+                  workTypes.add(workType);
+               }
             } catch (Exception ex) {
                // do nothing
             }

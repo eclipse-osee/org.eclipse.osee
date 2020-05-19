@@ -179,8 +179,10 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
          atsApi.getAttributeResolver().getAttributeValues(teamDef, AtsAttributeTypes.WorkType);
       for (String workTypeStr : workTypeStrs) {
          try {
-            WorkType workType = WorkType.valueOf(workTypeStr);
-            workTypes.add(workType);
+            WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+            if (workType != WorkType.None) {
+               workTypes.add(workType);
+            }
          } catch (Exception ex) {
             // do nothing
          }

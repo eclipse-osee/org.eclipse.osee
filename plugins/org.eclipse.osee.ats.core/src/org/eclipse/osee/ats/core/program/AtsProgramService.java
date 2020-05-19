@@ -383,7 +383,7 @@ public class AtsProgramService implements IAtsProgramService {
          String typeStr =
             atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkType, "");
          if (Strings.isValid(typeStr)) {
-            workType = WorkType.valueOf(typeStr);
+            workType = WorkType.valueOfOrNone(typeStr);
          }
       } catch (Exception ex) {
          workType = WorkType.Custom;
