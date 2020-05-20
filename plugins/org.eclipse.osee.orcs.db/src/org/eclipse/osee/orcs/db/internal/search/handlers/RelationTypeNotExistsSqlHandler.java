@@ -36,9 +36,11 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
       for (int index = 0; index < aSize; index++) {
          String artAlias = aliases.get(index);
 
+         writer.write("(");
          writer.writeEquals(relAlias, "a_art_id", artAlias, "art_id");
          writer.write(" OR ");
          writer.writeEquals(relAlias, "b_art_id", artAlias, "art_id");
+         writer.write(")");
 
          if (index + 1 < aSize) {
             writer.writeAndLn();
