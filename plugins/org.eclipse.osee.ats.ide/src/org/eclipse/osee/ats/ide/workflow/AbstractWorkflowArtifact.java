@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -28,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -474,6 +477,41 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public void setStateMgr(IAtsStateManager stateMgr) {
       Conditions.assertNotNull(stateMgr, "StateManager");
       AtsClientService.get().getStateFactory().setStateMgr(this, stateMgr);
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes() {
+      Set<WorkType> workTypes = new HashSet<>();
+      IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
+      if (teamWf != null) {
+         for (IAtsActionableItem ai : AtsClientService.get().getActionableItemService().getActionableItems(
+            teamWf.getTeamDefinition())) {
+            Collection<String> workTypeStrs =
+               AtsClientService.get().getAttributeResolver().getAttributeValues(ai, AtsAttributeTypes.WorkType);
+            for (String workTypeStr : workTypeStrs) {
+               try {
+                  WorkType workType = WorkType.valueOfOrNone(workTypeStr);
+                  workTypes.add(workType);
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
+         }
+      }
+      return workTypes;
+   }
+
+   public void setWorkTypes(List<WorkType> workTypes) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isWorkType(WorkType workType) {
+      return getWorkTypes().contains(workType);
+   }
+
+   public void setTags(List<String> tags) {
+      throw new UnsupportedOperationException();
    }
 
 }

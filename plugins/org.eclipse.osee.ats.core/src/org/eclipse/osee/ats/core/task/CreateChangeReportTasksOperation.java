@@ -183,17 +183,11 @@ public class CreateChangeReportTasksOperation {
             crttwd.setDestTeamDef(teamDef.getStoreObject());
 
             WorkType workType = WorkType.None;
-            String workTypeStr =
-               atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.WorkType, "");
-            if (Strings.isValid(workTypeStr)) {
-               workType = WorkType.valueOfOrNone(workTypeStr);
-            }
-            if (workType == WorkType.None) {
-               if (teamDef.getName().contains("Code")) {
-                  workType = WorkType.Code;
-               } else if (teamDef.getName().contains("Test")) {
-                  workType = WorkType.Test;
-               }
+            Collection<WorkType> workTypes = teamDef.getWorkTypes();
+            if (workTypes.contains(WorkType.Code) || teamDef.getName().contains("Code")) {
+               workType = WorkType.Code;
+            } else if (workTypes.contains(WorkType.Test) || teamDef.getName().contains("Test")) {
+               workType = WorkType.Test;
             }
             if (workType == WorkType.None) {
                rd.errorf("\n\nCan't determine Work Type from Team Def or Name%s\n", teamDef.toStringWithId());

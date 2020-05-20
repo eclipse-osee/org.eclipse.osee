@@ -816,13 +816,9 @@ public abstract class BranchRegressionTest {
          boolean deReferenced = note.contains(ChangeReportTasksUtil.DE_REFERRENCED_NOTE);
 
          if (deReferenced) {
-            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
-               CoreAttributeTypes.StaticId);
-            Assert.assertTrue(staticIds.isEmpty());
+            Assert.assertTrue(task.getTags().isEmpty());
          } else {
-            List<String> staticIds = AtsClientService.get().getAttributeResolver().getAttributesToStringList(task,
-               CoreAttributeTypes.StaticId);
-            Assert.assertEquals(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID, staticIds.iterator().next());
+            Assert.assertTrue(task.hasTag(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID));
          }
       }
    }

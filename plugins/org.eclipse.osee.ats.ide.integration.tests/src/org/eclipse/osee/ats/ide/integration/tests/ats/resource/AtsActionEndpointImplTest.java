@@ -273,9 +273,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
-      Assert.assertEquals(0,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            CoreAttributeTypes.StaticId).size());
+      Assert.assertTrue(teamWf.getTags().isEmpty());
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "asdf");
@@ -284,18 +282,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
-      Assert.assertEquals(3,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            CoreAttributeTypes.StaticId).size());
+      Assert.assertEquals(3, teamWf.getTags().size());
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), CoreAttributeTypes.StaticId.getIdString(),
          Arrays.asList("asdf", "zxcv"));
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
-      Assert.assertEquals(2,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            CoreAttributeTypes.StaticId).size());
+      Assert.assertEquals(2, teamWf.getTags().size());
 
       // test that search by id or atsId work as well
       Attribute attribute =

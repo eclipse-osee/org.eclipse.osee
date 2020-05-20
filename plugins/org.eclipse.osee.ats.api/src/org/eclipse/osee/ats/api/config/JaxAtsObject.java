@@ -11,6 +11,9 @@
 package org.eclipse.osee.ats.api.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -32,6 +35,8 @@ public class JaxAtsObject extends NamedIdBase {
    protected AtsApi atsApi;
    @JsonIgnore
    private ArtifactToken artifact;
+   private List<WorkType> workTypes = new ArrayList<>();
+   private List<String> tags = new ArrayList<>();
 
    public JaxAtsObject() {
       this(Id.SENTINEL, "");
@@ -92,6 +97,30 @@ public class JaxAtsObject extends NamedIdBase {
 
    public void setStoreObject(ArtifactToken artifact) {
       this.artifact = artifact;
+   }
+
+   public Collection<WorkType> getWorkTypes() {
+      return workTypes;
+   }
+
+   public void setWorkTypes(List<WorkType> workTypes) {
+      this.workTypes = workTypes;
+   }
+
+   public boolean isWorkType(WorkType workType) {
+      return getWorkTypes().contains(workType);
+   }
+
+   public Collection<String> getTags() {
+      return tags;
+   }
+
+   public void setTags(List<String> tags) {
+      this.tags = tags;
+   }
+
+   public boolean hasTag(String tag) {
+      return getTags().contains(tag);
    }
 
 }

@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.program;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -39,6 +41,26 @@ public interface IAtsProgram extends IAtsConfigObject {
          @Override
          public AtsApi getAtsApi() {
             return null;
+         }
+
+         @Override
+         public Collection<WorkType> getWorkTypes() {
+            return null;
+         }
+
+         @Override
+         public boolean isWorkType(WorkType workType) {
+            return false;
+         }
+
+         @Override
+         public Collection<String> getTags() {
+            return null;
+         }
+
+         @Override
+         public boolean hasTag(String tag) {
+            return false;
          }
 
       }

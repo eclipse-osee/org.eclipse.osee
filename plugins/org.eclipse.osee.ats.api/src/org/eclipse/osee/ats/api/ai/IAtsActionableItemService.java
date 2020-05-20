@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -61,10 +60,6 @@ public interface IAtsActionableItemService {
    ActionableItem createActionableItem(String name, IAtsChangeSet changes);
 
    IAtsActionableItem getActionableItem(String value);
-
-   Collection<WorkType> getWorkTypes(IAtsWorkItem workItem);
-
-   boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
    Collection<AtsUser> getSubscribed(IAtsActionableItem ai);
 

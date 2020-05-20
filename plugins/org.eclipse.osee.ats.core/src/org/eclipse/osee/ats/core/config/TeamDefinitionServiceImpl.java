@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -170,29 +169,6 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    @Override
    public TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes) {
       return createTeamDefinition(name, Lib.generateArtifactIdAsInt(), changes);
-   }
-
-   @Override
-   public Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef) {
-      Collection<WorkType> workTypes = new HashSet<>();
-      Collection<String> workTypeStrs =
-         atsApi.getAttributeResolver().getAttributeValues(teamDef, AtsAttributeTypes.WorkType);
-      for (String workTypeStr : workTypeStrs) {
-         try {
-            WorkType workType = WorkType.valueOfOrNone(workTypeStr);
-            if (workType != WorkType.None) {
-               workTypes.add(workType);
-            }
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      return workTypes;
-   }
-
-   @Override
-   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
-      return getWorkTypes(getTeamDefinition(workItem)).contains(workType);
    }
 
    @Override

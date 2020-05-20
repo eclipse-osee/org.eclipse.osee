@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -53,10 +52,6 @@ public interface IAtsTeamDefinitionService {
    TeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes);
 
    TeamDefinition createTeamDefinition(String name, IAtsChangeSet changes);
-
-   Collection<WorkType> getWorkTypes(IAtsTeamDefinition teamDef);
-
-   boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
    Collection<AtsUser> getLeads(IAtsTeamDefinition teamDef);
 

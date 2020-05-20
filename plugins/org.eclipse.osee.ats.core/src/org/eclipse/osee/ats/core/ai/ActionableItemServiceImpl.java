@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -234,31 +233,6 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    @Override
    public IAtsActionableItem getActionableItem(String value) {
       return getActionableItemById(ArtifactId.valueOf(value));
-   }
-
-   @Override
-   public Collection<WorkType> getWorkTypes(IAtsWorkItem workItem) {
-      Collection<WorkType> workTypes = new HashSet<>();
-      for (IAtsActionableItem ai : getActionableItems(workItem)) {
-         Collection<String> workTypeStrs =
-            atsApi.getAttributeResolver().getAttributeValues(ai, AtsAttributeTypes.WorkType);
-         for (String workTypeStr : workTypeStrs) {
-            try {
-               WorkType workType = WorkType.valueOfOrNone(workTypeStr);
-               if (workType != WorkType.None) {
-                  workTypes.add(workType);
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }
-      return workTypes;
-   }
-
-   @Override
-   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
-      return getWorkTypes(workItem).contains(workType);
    }
 
    @Override

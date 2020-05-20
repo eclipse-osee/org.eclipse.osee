@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -83,11 +82,8 @@ public abstract class ShowTaskOptionActionBase extends Action {
 
    public static boolean isValid(TaskArtifact task) {
       try {
-         for (String staticId : task.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            if (staticId.contains(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID)) {
-               return true;
-            }
-            return false;
+         if (task.hasTag(ChangeReportTasksUtil.AUTO_GENERATED_STATIC_ID)) {
+            return true;
          }
          TeamWorkFlowArtifact teamArt = task.getParentTeamWorkflow();
          if (AtsClientService.get().getProgramService().getProgram(teamArt) == null) {

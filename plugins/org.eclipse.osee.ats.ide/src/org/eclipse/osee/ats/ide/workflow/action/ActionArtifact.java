@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -23,25 +24,32 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.workflow.AbstractAtsArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionArtifact extends Artifact implements IAtsAction {
+public class ActionArtifact extends AbstractAtsArtifact implements IAtsAction {
 
    public ActionArtifact(BranchId branch) {
-      super(branch, AtsArtifactTypes.Action);
+      this(AtsArtifactTypes.Action);
    }
 
-   public ActionArtifact(Long id, BranchId branch) {
-      super(id, branch, AtsArtifactTypes.Action);
+   public ActionArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
+      super(id, guid, branch, artifactType);
+   }
+
+   public ActionArtifact(ArtifactTypeToken artifactType) {
+      super(Lib.generateId(), null, CoreBranches.COMMON, artifactType);
    }
 
    public Set<IAtsActionableItem> getActionableItems() {
@@ -92,6 +100,26 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    @Override
    public AtsApi getAtsApi() {
       return AtsClientService.get();
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isWorkType(WorkType workType) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public Collection<String> getTags() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean hasTag(String tag) {
+      throw new UnsupportedOperationException();
    }
 
 }

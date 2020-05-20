@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -67,6 +68,26 @@ public interface IAtsActionableItem extends IAtsConfigObject {
          @Override
          public TeamDefinition getTeamDefinition() {
             return null;
+         }
+
+         @Override
+         public Collection<WorkType> getWorkTypes() {
+            return null;
+         }
+
+         @Override
+         public boolean isWorkType(WorkType workType) {
+            return false;
+         }
+
+         @Override
+         public Collection<String> getTags() {
+            return null;
+         }
+
+         @Override
+         public boolean hasTag(String tag) {
+            return false;
          }
 
       }

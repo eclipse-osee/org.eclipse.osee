@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -67,5 +69,13 @@ public interface IAtsObject extends NamedId, HasDescription {
    }
 
    public AtsApi getAtsApi();
+
+   public Collection<WorkType> getWorkTypes();
+
+   public boolean isWorkType(WorkType workType);
+
+   public Collection<String> getTags();
+
+   public boolean hasTag(String tag);
 
 }

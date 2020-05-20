@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,8 +77,7 @@ public class CopyActionDetails {
       if (workItem instanceof IAtsTeamWorkflow) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
          result = ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
-         if (atsApi.getAttributeResolver().getAttributesToStringList(teamWf.getTeamDefinition(),
-            CoreAttributeTypes.StaticId).contains(USE_DEVELOPER_CHANGE_TYPES)) {
+         if (teamWf.getTeamDefinition().hasTag(USE_DEVELOPER_CHANGE_TYPES)) {
             if (result.equals("Improvement")) {
                result = "feature";
             } else if (result.equals("Problem")) {

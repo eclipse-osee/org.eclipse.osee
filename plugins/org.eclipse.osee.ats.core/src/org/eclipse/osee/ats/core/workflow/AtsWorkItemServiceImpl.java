@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -469,19 +468,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return null;
-   }
-
-   @Override
-   public Collection<WorkType> getWorkTypes(IAtsWorkItem workItem) {
-      Collection<WorkType> workTypes = new HashSet<>();
-      workTypes.addAll(
-         atsApi.getTeamDefinitionService().getWorkTypes(atsApi.getTeamDefinitionService().getTeamDefinition(workItem)));
-      return workTypes;
-   }
-
-   @Override
-   public boolean isWorkType(IAtsWorkItem workItem, WorkType workType) {
-      return getWorkTypes(workItem).contains(workType);
    }
 
    @Override

@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -121,10 +120,6 @@ public interface IAtsWorkItemService {
    Collection<IAtsWorkflowHook> getWorkflowHooks();
 
    IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name);
-
-   Collection<WorkType> getWorkTypes(IAtsWorkItem workItem);
-
-   boolean isWorkType(IAtsWorkItem workItem, WorkType workType);
 
    TransitionResults transition(TransitionData transData);
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.ide.workdef.config.internal;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -81,16 +80,6 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
    @Override
    public boolean isActive() {
       return getAttributeValue(AtsAttributeTypes.Active, false);
-   }
-
-   public Collection<String> getStaticIds() {
-      Collection<String> results = Collections.emptyList();
-      try {
-         results = artifact.getAttributeValues(CoreAttributeTypes.StaticId);
-      } catch (OseeCoreException ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error getting static Ids");
-      }
-      return results;
    }
 
    public Collection<AtsUser> getLeads() {

@@ -20,13 +20,11 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.task.related.TaskRelatedData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
@@ -151,9 +149,8 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
 
    @Override
    public boolean isAutoGenCodeTestTaskArtifact(IAtsTask task) {
-      for (String staticId : AtsApiService.get().getAttributeResolver().getAttributesToStringList(task,
-         CoreAttributeTypes.StaticId)) {
-         if (staticId.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
+      for (String tag : task.getTags()) {
+         if (tag.contains(ChangeReportTasksUtil.DISABLE_CODE_TEST_TASK_GENERATION)) {
             return false;
          }
       }

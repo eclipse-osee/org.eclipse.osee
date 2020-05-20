@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.mock;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -261,6 +263,26 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public boolean isInState(IStateToken state) {
+      return false;
+   }
+
+   @Override
+   public Collection<WorkType> getWorkTypes() {
+      return null;
+   }
+
+   @Override
+   public boolean isWorkType(WorkType workType) {
+      return false;
+   }
+
+   @Override
+   public Collection<String> getTags() {
+      return null;
+   }
+
+   @Override
+   public boolean hasTag(String tag) {
       return false;
    }
 }

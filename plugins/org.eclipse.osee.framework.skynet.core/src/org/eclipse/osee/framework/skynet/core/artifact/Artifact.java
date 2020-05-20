@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -1755,4 +1755,13 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public String getGammaIdString() {
       return String.valueOf(getGammaId());
    }
+
+   public Collection<String> getTags() {
+      return getAttributesToStringList(CoreAttributeTypes.StaticId);
+   }
+
+   public boolean hasTag(String tag) {
+      return getTags().contains(tag);
+   }
+
 }
