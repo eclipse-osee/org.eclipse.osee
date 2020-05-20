@@ -71,6 +71,7 @@ import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
+import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -799,7 +800,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJira() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, true);
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true, orcsApi);
       XResultData results = op.run();
       return results;
    }
@@ -809,7 +810,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJiraAndPersist() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, false);
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false, orcsApi);
       XResultData results = op.run();
       return results;
    }

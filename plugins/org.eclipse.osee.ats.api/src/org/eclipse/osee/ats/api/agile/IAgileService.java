@@ -183,4 +183,6 @@ public interface IAgileService {
 
    IAgileSprint getSprint(IAtsTeamWorkflow teamWf);
 
+   void setSprint(IAtsTeamWorkflow teamWf, IAgileSprint sprint, IAtsChangeSet changes);
+
 }

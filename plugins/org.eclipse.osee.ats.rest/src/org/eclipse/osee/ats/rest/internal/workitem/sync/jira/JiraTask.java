@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.ats.rest.internal.workitem.sync.jira;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
@@ -23,8 +27,9 @@ public class JiraTask {
    String summary;
    String status;
    String desc;
-   String atsId;
-   String sprint;
+   Set<String> atsIds = new HashSet<String>();
+   String jSprint;
+   IAgileSprint aSprint;
    IAtsTeamWorkflow teamWf;
 
    public JiraTask() {
@@ -54,25 +59,9 @@ public class JiraTask {
       this.desc = desc;
    }
 
-   public String getAtsId() {
-      return atsId;
-   }
-
-   public void setAtsId(String atsId) {
-      this.atsId = atsId;
-   }
-
    @Override
    public String toString() {
-      return "JiraTask [summary=" + summary + ", status=" + status + ", atsId=" + atsId + ", sprint=" + sprint + "]";
-   }
-
-   public String getSprint() {
-      return sprint;
-   }
-
-   public void setSprint(String sprint) {
-      this.sprint = sprint;
+      return "JiraTask [summary=" + summary + ", status=" + status + ", atsIds=" + atsIds + ", jSprint=" + jSprint + "]";
    }
 
    public IAtsTeamWorkflow getTeamWf() {
@@ -83,4 +72,31 @@ public class JiraTask {
       this.teamWf = teamWf;
    }
 
+   public Set<String> getAtsIds() {
+      return atsIds;
+   }
+
+   public void setAtsIds(Collection<String> atsIds) {
+      this.atsIds.addAll(atsIds);
+   }
+
+   public void addAtsId(String atsId) {
+      this.atsIds.add(atsId);
+   }
+
+   public String getjSprint() {
+      return jSprint;
+   }
+
+   public void setjSprint(String jSprint) {
+      this.jSprint = jSprint;
+   }
+
+   public IAgileSprint getaSprint() {
+      return aSprint;
+   }
+
+   public void setaSprint(IAgileSprint aSprint) {
+      this.aSprint = aSprint;
+   }
 }

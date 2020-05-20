@@ -325,6 +325,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          teamWf = (IAtsTeamWorkflow) artifact;
       } else if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
+      } else {
+         artifact = atsApi.getQueryService().getArtifact(artifact);
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
       }
       return teamWf;
    }

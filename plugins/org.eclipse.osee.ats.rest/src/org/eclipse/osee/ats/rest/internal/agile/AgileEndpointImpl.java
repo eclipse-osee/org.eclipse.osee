@@ -640,7 +640,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamId())).path("sprints").path(
+      URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamId())).path("syncSprints").path(
          String.valueOf(sprint.getId())).build();
       return Response.created(location).entity(created).build();
    }

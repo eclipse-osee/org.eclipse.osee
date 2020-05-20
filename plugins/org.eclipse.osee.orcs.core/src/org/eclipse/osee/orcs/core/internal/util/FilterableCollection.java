@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 
 /**
  * @author Roberto E. Escobar
@@ -98,6 +99,12 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
          toReturn = new LinkedList<>();
          for (Iterator<DATA> iterator = source.iterator(); iterator.hasNext();) {
             DATA data = iterator.next();
+            if (((Relation) data).getArtIdA() == 10446338) {
+               System.err.println(getClass().getSimpleName());
+            }
+            if (((Relation) data).getArtIdB() == 10446338) {
+               System.err.println(getClass().getSimpleName());
+            }
             if (isValid(data)) {
                MATCH_DATA toMatch = asMatcherData(data);
                if (matcher.apply(toMatch)) {

@@ -216,7 +216,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeEndObject();
          }
          writer.writeEndArray();
-         writer.writeArrayFieldStart("sprints");
+         writer.writeArrayFieldStart("syncSprints");
          Collection<IAgileSprint> agileSprints = atsApi.getAgileService().getAgileSprints(team);
          for (IAgileSprint sprint : agileSprints) {
             writer.writeStartObject();
