@@ -84,6 +84,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {
             return change.getItemTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
+
             if (attributeWasDeleted(change)) {
                return "";
             }
@@ -113,6 +114,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    private boolean attributeWasDeleted(Change change) {
       if (change.getChangeArtifact().isDeleted()) {
          return true;
+      }
+      if (change.getModificationType().equals(ModificationType.APPLICABILITY)) {
+         return false;
       }
       boolean found = false;
       for (Attribute<?> attr : change.getChangeArtifact().getAttributes()) {

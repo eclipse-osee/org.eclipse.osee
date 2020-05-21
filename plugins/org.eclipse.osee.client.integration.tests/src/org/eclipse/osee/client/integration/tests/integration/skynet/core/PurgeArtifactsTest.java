@@ -72,7 +72,7 @@ public class PurgeArtifactsTest {
       operation =
          ChangeManager.comparedToPreviousTx(TransactionToken.valueOf(transactionId, CoreBranches.COMMON), changes);
       Operations.executeWorkAndCheckStatus(operation);
-      Assert.assertEquals(3, changes.size());
+      Assert.assertEquals(4, changes.size());
 
       PurgeArtifacts purge = new PurgeArtifacts(Collections.singleton(childFolder));
       purge.run(null);

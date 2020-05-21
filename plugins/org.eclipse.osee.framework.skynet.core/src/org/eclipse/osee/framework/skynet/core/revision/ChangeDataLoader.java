@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -94,13 +95,16 @@ public class ChangeDataLoader extends AbstractOperation {
          BranchId startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
-            if (ChangeItemUtil.hasValueChange(item) && ChangeItemUtil.hasApplicabilityChange(item)) {
+            if ((ChangeItemUtil.hasValueChange(item) || item.getChangeType().equals(
+               ChangeType.ARTIFACT_CHANGE)) && ChangeItemUtil.hasApplicabilityChange(item)) {
                ChangeItem splitItem = ChangeItemUtil.splitForApplicability(item);
                Change splitChange = computeChange(bulkLoaded, startTxBranch, splitItem);
                changes.add(splitChange);
             }
             Change change = computeChange(bulkLoaded, startTxBranch, item);
-            changes.add(change);
+            if (!changes.contains(change)) {
+               changes.add(change);
+            }
             monitor.worked(calculateWork(workAmount));
          }
       }
@@ -224,10 +228,16 @@ public class ChangeDataLoader extends AbstractOperation {
 
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
+               String isValue = "";
+               String wasValue = "";
+               if (item.getDestinationVersion().isValid()) {
+                  wasValue = item.getDestinationVersion().getApplicabilityToken().getName();
+               }
+               if (item.getCurrentVersion().isValid()) {
+                  isValue = item.getCurrentVersion().getApplicabilityToken().getName();
+               }
                change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
-                  item.getCurrentVersion().getApplicabilityToken().getName(),
-                  item.getDestinationVersion().getApplicabilityToken().getName(), isHistorical, changeArtifact,
-                  artifactDelta);
+                  isValue, wasValue, isHistorical, changeArtifact, artifactDelta);
             } else {
                change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
                   "", "", isHistorical, changeArtifact, artifactDelta);

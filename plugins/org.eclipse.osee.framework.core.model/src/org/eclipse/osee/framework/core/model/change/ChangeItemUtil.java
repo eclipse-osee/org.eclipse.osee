@@ -324,6 +324,9 @@ public final class ChangeItemUtil {
             return true;
          }
       }
+      if (changeItem.getCurrentVersion().isValid() && !changeItem.getDestinationVersion().isValid()) {
+         return true;
+      }
       return false;
    }
 
