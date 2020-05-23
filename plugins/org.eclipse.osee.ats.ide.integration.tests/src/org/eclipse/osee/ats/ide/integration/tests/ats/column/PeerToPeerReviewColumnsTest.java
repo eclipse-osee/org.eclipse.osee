@@ -1,13 +1,16 @@
-/*******************************************************************************
-AtsClientService.get().getReviewService() * Copyright (c) 2010 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*********************************************************************
+ * Copyright (c) 2010 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Boeing - initial API and implementation
- *******************************************************************************/
+ **********************************************************************/
+
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import java.util.Arrays;
@@ -107,15 +110,13 @@ public class PeerToPeerReviewColumnsTest {
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Moderator,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
+      role =
+         new UserRole(Role.Moderator, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      role = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       roleMgr.addOrUpdateUserRole(role);
-      role = new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
+      role = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(changes);
       changes.add(peerArt);

@@ -1,8 +1,16 @@
-/**
- * <copyright> Copyright (c) Robert Bosch Engineering and Business Solutions Ltd India.All rights reserved. This program
- * and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html </copyright>
- */
+/*********************************************************************
+ * Copyright (c) 2012 Robert Bosch Engineering and Business Solutions Ltd India
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+ **********************************************************************/
+
 package org.eclipse.osee.framework.authentication.ldap.core;
 
 import java.util.Hashtable;
@@ -19,7 +27,7 @@ import org.osgi.framework.Bundle;
 /**
  * This class gives the implementation of the LDAP authentication mechanism. if the user is included in the LDAP
  * directory , then the user gets authentication.
- * 
+ *
  * @author Swapna
  */
 public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
@@ -30,7 +38,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
    /**
     * This function runs only if the user is authenticated and returns a user token from the user data store.
-    * 
+    *
     * @param credential sent my the OSee sesion manager which has the OSEE client user details
     * @return IUserToken created for the given OSeeCrendtial.
     */
@@ -43,7 +51,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
    /**
     * The authentication of the user is decided by the return value of this function.
-    * 
+    *
     * @param credential sent my the OSee sesion manager which has the OSEE client user details
     * @return true if user is authenticated using LDAP authentication mechanism otherwise false.
     */
@@ -70,7 +78,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
    /**
     * This function gets the user name and searches that in the LDAP directory. it returns true if exists and false
     * otherwise.
-    * 
+    *
     * @param credential OSeeCrendetial object which contains the user information like username.
     * @return boolean status indicating whether the user is authenticated
     */

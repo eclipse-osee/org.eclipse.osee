@@ -1,13 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2010 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*********************************************************************
+ * Copyright (c) 2010 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Boeing - initial API and implementation
- *******************************************************************************/
+ **********************************************************************/
+
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.HashSet;
@@ -18,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 
 /**
  * Decides whether a outline number is valid or invalid.
- * 
+ *
  * @see OutlineResolutionAndNumberTest
  * @author Karol M. Wilk
  */
@@ -28,7 +31,7 @@ public final class OutlineResolution {
     * Converts <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to ReqNumbering (without trimming
     * ending 0s) and runs
     * <code>isInvalidOutlineNumber(ReqNumbering currentOutlineNumber, ReqNumbering lastOutlineNumber)</code>
-    * 
+    *
     * @param currentOutlineNumber
     * @param lastOutlineNumber
     * @return
@@ -51,7 +54,7 @@ public final class OutlineResolution {
     * Compares <code>currentOutlineNumber</code> and <code>lastOutlineNumber</code> to determine if current is not next
     * in outline numbering sequence. Assumes that <code>last</code> is the last valid outline number. <b>NOTE</b>
     * Accepts larger paragraph numbers
-    * 
+    *
     * @param currentOutlineNumber
     * @param lastOutlineNumber
     * @return

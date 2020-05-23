@@ -1,12 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
- * All rights import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
- ******************************/
+/*********************************************************************
+ * Copyright (c) 2004, 2007 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.net.URI;
@@ -42,10 +46,10 @@ import org.eclipse.swt.graphics.Image;
  */
 public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
-   private static List<ArtifactTypeToken> laserArtifactTypes =
-      Arrays.asList(CoreArtifactTypes.SystemDesignMsWord, CoreArtifactTypes.SupportingContent,
-         CoreArtifactTypes.IndirectSoftwareRequirementMsWord, CoreArtifactTypes.TestProcedureWholeWord,
-         CoreArtifactTypes.InterfaceRequirementMsWord, CoreArtifactTypes.SystemFunctionMsWord, CoreArtifactTypes.SubsystemFunctionMsWord);
+   private static List<ArtifactTypeToken> laserArtifactTypes = Arrays.asList(CoreArtifactTypes.SystemDesignMsWord,
+      CoreArtifactTypes.SupportingContent, CoreArtifactTypes.IndirectSoftwareRequirementMsWord,
+      CoreArtifactTypes.TestProcedureWholeWord, CoreArtifactTypes.InterfaceRequirementMsWord,
+      CoreArtifactTypes.SystemFunctionMsWord, CoreArtifactTypes.SubsystemFunctionMsWord);
 
    @Override
    public void init() {
@@ -70,9 +74,10 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          FrameworkImage.IMPLEMENTATION_DETAILS_DRAWING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDataDefinitionMsWord,
          FrameworkImage.IMPLEMENTATION_DETAILS_DATA_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HardwareRequirementMsWord, FrameworkImage.hardware_requirement,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HardwareRequirementMsWord,
+         FrameworkImage.hardware_requirement, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareDesignMsWord, FrameworkImage.software_design,
          this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareDesignMsWord, FrameworkImage.software_design, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDataDefinitionMsWord,
          FrameworkImage.SOFTWARE_REQUIREMENT_DATA_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDrawingMsWord,
@@ -81,9 +86,10 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          FrameworkImage.SOFTWARE_REQUIERMENT_FUNCTION, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementProcedureMsWord,
          FrameworkImage.SOFTWARE_REQUIERMENT_PROCEDURE, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementMsWord, FrameworkImage.software_requirement,
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementMsWord,
+         FrameworkImage.software_requirement, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesignMsWord, FrameworkImage.subsystem_design,
          this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesignMsWord, FrameworkImage.subsystem_design, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemRequirementMsWord,
          FrameworkImage.subsystem_requirement, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMsWord,

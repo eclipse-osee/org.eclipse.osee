@@ -1,8 +1,15 @@
-/**
- * <copyright> Copyright (c) Robert Bosch Engineering and Business Solutions Ltd India.All rights reserved. This program
- * and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html </copyright>
- */
+/*********************************************************************
+ * Copyright (c) 2012 Robert Bosch Engineering and Business Solutions Ltd India
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
+ **********************************************************************/
 package org.eclipse.osee.framework.authentication.ldap.core.internal;
 
 import java.util.Hashtable;
@@ -20,7 +27,7 @@ import org.eclipse.osee.logger.Log;
  * This is class responsible for making connection to LDAP.<br>
  * It makes connection to LDAP server directory if the given <br>
  * user account is a valid LDAP user account.
- * 
+ *
  * @author Swapna
  */
 public class LDAPConnector {
@@ -52,7 +59,7 @@ public class LDAPConnector {
 
    /**
     * Constructor of the LDAPConnector class
-    * 
+    *
     * @param logger logging object
     * @param env Hashtable of environment properties required for LDAPContext
     * @param searchBase String containing DC values required for searching LDAP e.g., "DC=eclipse,DC=com"
@@ -63,7 +70,7 @@ public class LDAPConnector {
 
    /**
     * Constructor of the LDAPConnector class
-    * 
+    *
     * @param logger logging object
     * @param env Hashtable of environment properties required for LDAPContext
     * @param searchBase String containing DC values required for searching LDAP e.g., "DC=eclipse,DC=com"
@@ -84,7 +91,7 @@ public class LDAPConnector {
     * The env table should have all the necessary info like LDAPCntxFactory,<br>
     * LDAP Security credentials, LDAP Security Principal (user name) <br>
     * LDAP Authentication type, etc ..
-    * 
+    *
     * @return accountName
     * @throws NamingException incase if the LDAPContext could not be created.
     */
@@ -134,7 +141,7 @@ public class LDAPConnector {
 
    /**
     * Searches the user in the LDAP directory and returns true if present and false if not present
-    * 
+    *
     * @param username UserName in the form of sAMAccountName of user in LDAP Server
     * @return search result true if given username exists in LDAP User Directory otherwise false
     */
