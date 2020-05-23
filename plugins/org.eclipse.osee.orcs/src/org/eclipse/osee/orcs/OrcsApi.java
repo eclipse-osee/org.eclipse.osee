@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs;
 
 import javax.script.ScriptEngine;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
@@ -57,5 +58,7 @@ public interface OrcsApi extends OseeApi {
    boolean isTypesValid();
 
    JdbcService getJdbcService();
+
+   ActivityLog getActivityLog();
 
 }

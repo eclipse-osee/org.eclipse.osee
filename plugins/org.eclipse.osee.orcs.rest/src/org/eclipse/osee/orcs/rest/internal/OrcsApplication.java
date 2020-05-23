@@ -39,6 +39,7 @@ public class OrcsApplication extends Application {
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
+
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }

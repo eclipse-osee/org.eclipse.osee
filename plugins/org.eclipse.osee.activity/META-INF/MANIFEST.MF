@@ -14,13 +14,11 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.activity.api,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.executor,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jdbc,
- org.eclipse.osee.logger,
- org.eclipse.osee.orcs
+ org.eclipse.osee.logger
 Export-Package: org.eclipse.osee.activity

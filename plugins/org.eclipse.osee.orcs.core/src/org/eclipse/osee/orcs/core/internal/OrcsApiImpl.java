@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -93,6 +94,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private OrcsApplicabilityOps applicability;
    private UserGroupService userGroupService;
    private IAccessControlService accessControlService;
+   private ActivityLog activityLog;
 
    ExternalArtifactManager proxyManager;
 
@@ -114,6 +116,10 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    public void setEventAdmin(EventAdmin eventAdmin) {
       this.eventAdmin = eventAdmin;
+   }
+
+   public void setActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 
    public void start() {
@@ -303,5 +309,10 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public JdbcService getJdbcService() {
       return dataStore.getJdbcService();
+   }
+
+   @Override
+   public ActivityLog getActivityLog() {
+      return activityLog;
    }
 }

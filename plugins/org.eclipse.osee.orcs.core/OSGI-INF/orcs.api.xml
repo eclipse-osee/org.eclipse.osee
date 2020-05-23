@@ -11,4 +11,5 @@
    <reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
    <reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
    <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
+   <reference bind="setActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
 </scr:component>

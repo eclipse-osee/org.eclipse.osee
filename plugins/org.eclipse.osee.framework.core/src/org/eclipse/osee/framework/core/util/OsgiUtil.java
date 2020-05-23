@@ -57,11 +57,11 @@ public final class OsgiUtil {
       }
       ServiceReference<T> serviceReference = context.getServiceReference(clazz);
       if (serviceReference == null) {
-         throw new OseeCoreException("ServiceReference is null for class" + clazz);
+         throw new OseeCoreException("ServiceReference is null for " + clazz);
       }
       T service = context.getService(serviceReference);
       if (service == null) {
-         throw new OseeCoreException("getService is null for class" + clazz);
+         throw new OseeCoreException("getService is null for " + clazz);
       }
       return service;
    }

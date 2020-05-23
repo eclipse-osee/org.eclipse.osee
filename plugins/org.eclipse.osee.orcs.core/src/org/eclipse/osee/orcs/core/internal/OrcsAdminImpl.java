@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -75,10 +76,17 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public void createDatastoreAndSystemBranches(String typeModel) {
-      typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
-      dataStoreAdmin.createDataStore();
-      orcsApi.getOrcsTypes().loadTypes(typeModel);
-      new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
+      ActivityLog activityLog = orcsApi.getActivityLog();
+      try {
+         activityLog.setEnabled(false);
+
+         typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
+         dataStoreAdmin.createDataStore();
+         orcsApi.getOrcsTypes().loadTypes(typeModel);
+         new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
+      } finally {
+         activityLog.setEnabled(true);
+      }
    }
 
    @Override

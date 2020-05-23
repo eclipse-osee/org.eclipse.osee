@@ -51,7 +51,6 @@ import org.eclipse.osee.activity.api.ThreadStats;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
-import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -64,7 +63,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.SystemProperties;
 
 /**
  * @author Ryan D. Brooks
@@ -109,7 +107,6 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    private Log logger;
    private ExecutorAdmin executorAdmin;
    private ActivityStorage storage;
-   private SystemProperties properties;
 
    private ActivityMonitor activityMonitor;
    private volatile long freshnessMillis;
@@ -138,10 +135,6 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       this.executorAdmin = executorAdmin;
    }
 
-   public void setSystemProperties(SystemProperties properties) {
-      this.properties = properties;
-   }
-
    public void start(Map<String, Object> properties) throws Exception {
       for (ActivityTypeToken type : CoreActivityTypes.getTypes()) {
          types.put(type.getId(), type);
@@ -163,15 +156,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, get(SERVER_ID),
          DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
 
-      int sampleWindowSecs;
-      String sampleWindowSecStr =
-         properties.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, "100");
-      if (Strings.isValid(sampleWindowSecStr)) {
-         sampleWindowSecs = Integer.parseInt(sampleWindowSecStr);
-      } else {
-         sampleWindowSecs = 100;
-      }
-
+      int sampleWindowSecs = 100;
       threadStats = getThreadActivity();
       executorAdmin.scheduleWithFixedDelay("Thread Activity Log", this::continuouslyLogThreadActivity, sampleWindowSecs,
          sampleWindowSecs, TimeUnit.SECONDS);
