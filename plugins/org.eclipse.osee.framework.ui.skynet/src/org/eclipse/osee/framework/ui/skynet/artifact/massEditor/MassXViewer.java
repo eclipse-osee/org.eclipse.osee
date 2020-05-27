@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.dnd.DND;
@@ -101,6 +102,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+
       super.handleColumnMultiEdit(treeColumn, treeItems);
       String colName = treeColumn.getText();
       if (EXTRA_COLUMNS.contains(colName)) {
@@ -117,6 +119,8 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
                refresh();
                editor.onDirtied();
             }
+         } else if (treeColumn.getText().equals(ViewApplicabilityColumn.columnlabel)) {
+            refresh();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -138,28 +142,33 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+
       super.handleAltLeftClick(treeColumn, treeItem);
       String colName = treeColumn.getText();
       if (EXTRA_COLUMNS.contains(colName)) {
          AWorkbench.popup("ERROR", "Can't change the field " + colName);
       }
       try {
-         AttributeTypeToken attributeType = null;
-         try {
-            attributeType = AttributeTypeManager.getType(colName);
-         } catch (OseeTypeDoesNotExist ex) {
-            // do nothing
-         }
-         if (attributeType != null) {
-            Artifact useArt = (Artifact) treeItem.getData();
-            boolean persist = false;
-            boolean multiColumnEditable = ((XViewerColumn) treeColumn.getData()).isMultiColumnEditable();
-            if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist,
-               multiColumnEditable)) {
-               refresh();
-               editor.onDirtied();
-               return true;
+         if (AttributeTypeManager.typeExists(colName)) {
+            AttributeTypeToken attributeType = null;
+            try {
+               attributeType = AttributeTypeManager.getType(colName);
+            } catch (OseeTypeDoesNotExist ex) {
+               // do nothing
             }
+            if (attributeType != null) {
+               Artifact useArt = (Artifact) treeItem.getData();
+               boolean persist = false;
+               boolean multiColumnEditable = ((XViewerColumn) treeColumn.getData()).isMultiColumnEditable();
+               if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist,
+                  multiColumnEditable)) {
+                  refresh();
+                  editor.onDirtied();
+                  return true;
+               }
+            }
+         } else if (treeColumn.getText().equals(ViewApplicabilityColumn.columnlabel)) {
+            refresh();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

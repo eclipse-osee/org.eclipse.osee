@@ -51,8 +51,8 @@ public class ViewApplicabilityUtil {
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
 
-      ViewApplicabilityFilterTreeDialog dialog =
-         new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
+      ViewApplicabilityFilterTreeDialog dialog = new ViewApplicabilityFilterTreeDialog("Select View Applicability",
+         "Select View Applicability.  Saves immediately.");
       dialog.setInput(applicabilityTokens);
       dialog.setMultiSelect(false);
       int result = dialog.open();

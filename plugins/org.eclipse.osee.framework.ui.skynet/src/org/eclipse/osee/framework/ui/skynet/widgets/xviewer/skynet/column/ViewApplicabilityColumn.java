@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
@@ -47,9 +46,10 @@ import org.eclipse.swt.widgets.TreeItem;
 public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static final String APPLICABILITY = "framework.view.applicability";
+   public static final String columnlabel = "View Applicability";
 
    public ViewApplicabilityColumn(boolean show) {
-      super(APPLICABILITY, "View Applicability", 50, XViewerAlign.Left, show, SortDataType.String, true,
+      super(APPLICABILITY, columnlabel, 50, XViewerAlign.Left, show, SortDataType.String, true,
          "Retrieves the view applicability for a give Artifact.");
    }
 
@@ -125,9 +125,8 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
          AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
          return;
       }
-      if (ViewApplicabilityUtil.changeApplicability(artifacts)) {
-         ArtifactQuery.reloadArtifacts(artifacts);
-      }
+      ViewApplicabilityUtil.changeApplicability(artifacts);
+
    }
 
    @Override
@@ -140,7 +139,6 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
             return false;
          }
          if (ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact))) {
-            ArtifactQuery.reloadArtifacts(Collections.singletonList(artifact));
             return true;
          } else {
             return false;
