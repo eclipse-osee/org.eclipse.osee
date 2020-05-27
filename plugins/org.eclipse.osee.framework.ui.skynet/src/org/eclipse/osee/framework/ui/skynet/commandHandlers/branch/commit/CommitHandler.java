@@ -60,7 +60,7 @@ public abstract class CommitHandler extends CommandHandler {
 
    public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
       boolean toReturn = false;
-      AtomicBoolean checkBox = new AtomicBoolean(false);
+      AtomicBoolean checkBox = new AtomicBoolean(archiveSourceBranch);
       BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
       if (!state.isRebaselineInProgress() && !state.isRebaselined()) {
          if (conflictManager.getOriginalConflicts().size() > 0) {
