@@ -473,18 +473,22 @@ public class TransitionManager implements IExecuteListener {
    }
 
    private void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
-      workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), helper.getCancellationReason(), cancelDate,
+      logWorkflowCancelledEvent(workItem, fromState, toState, cancelDate, helper.getCancellationReason(),
+         helper.getCancellationReasonDetails(), cancelBy, changes, attrResolver);
+   }
+
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, Date cancelDate, String cancelReason, String cancelReasonDetails, AtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) {
+      workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), cancelReason, cancelDate,
          cancelBy.getUserId());
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(), changes);
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
-         if (Strings.isValid(helper.getCancellationReason())) {
-            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason,
-               helper.getCancellationReason(), changes);
+         if (Strings.isValid(cancelReason)) {
+            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, cancelReason, changes);
          }
-         if (Strings.isValid(helper.getCancellationReasonDetails())) {
-            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReasonDetails,
-               helper.getCancellationReasonDetails(), changes);
+         if (Strings.isValid(cancelReasonDetails)) {
+            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReasonDetails, cancelReasonDetails,
+               changes);
          }
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState, fromState.getName(),
             changes);
