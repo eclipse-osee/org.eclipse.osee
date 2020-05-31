@@ -16,8 +16,6 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
@@ -38,10 +36,7 @@ public class VersionLabelProvider extends LabelProvider {
       if (element instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) element;
          String str = version.getName();
-         if (AtsClientService.get().getVersionService().getEstimatedReleaseDate(version) != null) {
-            str += "   (" + DateUtil.getMMDDYY(
-               AtsClientService.get().getVersionService().getEstimatedReleaseDate(version)) + ")";
-         } else if (version.isNextVersion()) {
+         if (version.isNextVersion()) {
             str += "   (Next Release)";
          } else if (version.isReleased()) {
             str += "   (Released)";

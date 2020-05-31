@@ -114,7 +114,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       if (teamSelection == null) {
          return java.util.Collections.emptyList();
       }
-      return AtsClientService.get().getTeamDefinitionService().getTeamDefs(teamSelection.getSelectedTeamDefintions());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(teamSelection.getSelectedTeamDefintions());
    }
 
    public Collection<IAtsActionableItem> getSelectedActionableItems() {
