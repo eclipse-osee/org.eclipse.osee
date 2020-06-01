@@ -193,4 +193,8 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
       }
    }
 
+   public static void handleEventAfterReload(Event event) {
+      instance.handleEvent(event);
+   }
+
 }

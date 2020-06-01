@@ -96,7 +96,6 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
             AtsAttributeTypes.WorkPackageReference.getIdString())));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
-      atsApi.getStoreService().reload(workItems);
    }
 
    @Override

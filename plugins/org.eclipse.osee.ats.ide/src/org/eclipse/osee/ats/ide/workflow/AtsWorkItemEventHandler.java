@@ -32,6 +32,7 @@ public class AtsWorkItemEventHandler implements EventHandler {
    @Override
    public void handleEvent(Event event) {
       try {
+         // If artifact in opened WorkflowEditor, reload.  Else just decache.
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
@@ -44,6 +45,8 @@ public class AtsWorkItemEventHandler implements EventHandler {
                   }
                }
             }
+            // And, handle event for those WorkflowEditor listeners to specific attr, rel or arts
+            WfeArtifactEventManager.handleEventAfterReload(event);
          }
       } catch (Exception ex) {
          // do nothing
