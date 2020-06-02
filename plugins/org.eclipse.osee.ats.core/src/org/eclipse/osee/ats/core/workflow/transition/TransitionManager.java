@@ -285,7 +285,8 @@ public class TransitionManager implements IExecuteListener {
     */
    public void handleTransition(TransitionResults results) {
       try {
-         helper.getChangeSet().addExecuteListener(this);
+         IAtsChangeSet changes = helper.getChangeSet();
+         changes.addExecuteListener(this);
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
 
@@ -299,17 +300,16 @@ public class TransitionManager implements IExecuteListener {
 
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
-                     logWorkflowUnCancelledEvent(workItem, toState, helper.getChangeSet(), attrResolver);
+                     logWorkflowUnCancelledEvent(workItem, toState, changes, attrResolver);
                   } else if (fromState.getStateType().isCompletedState()) {
-                     logWorkflowUnCompletedEvent(workItem, toState, helper.getChangeSet(), attrResolver);
+                     logWorkflowUnCompletedEvent(workItem, toState, changes, attrResolver);
                   }
 
                   if (toState.getStateType().isCancelledState()) {
-                     logWorkflowCancelledEvent(workItem, fromState, toState, transitionDate, transitionUser,
-                        helper.getChangeSet(), attrResolver);
+                     logWorkflowCancelledEvent(workItem, fromState, toState, transitionDate, transitionUser, changes,
+                        attrResolver);
                   } else if (toState.getStateType().isCompletedState()) {
-                     logWorkflowCompletedEvent(workItem, fromState, toState, transitionDate, transitionUser,
-                        helper.getChangeSet());
+                     logWorkflowCompletedEvent(workItem, fromState, toState, transitionDate, transitionUser, changes);
                   } else {
                      logStateCompletedEvent(workItem, workItem.getStateMgr().getCurrentStateName(), transitionDate,
                         transitionUser);
@@ -323,9 +323,9 @@ public class TransitionManager implements IExecuteListener {
                   // Create validation review if in correct state and TeamWorkflow
                   if (reviewService.isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
                      IAtsDecisionReview review = reviewService.createValidateReview((IAtsTeamWorkflow) workItem, false,
-                        transitionDate, transitionUser, helper.getChangeSet());
+                        transitionDate, transitionUser, changes);
                      if (review != null) {
-                        helper.getChangeSet().add(review);
+                        changes.add(review);
                      }
                   }
 
@@ -343,16 +343,16 @@ public class TransitionManager implements IExecuteListener {
 
                   // Notify extension points of transition
                   for (IAtsTransitionHook listener : helper.getTransitionListeners()) {
-                     listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
+                     listener.transitioned(workItem, fromState, toState, updatedAssigees, changes);
                   }
                   // Notify any state transition listeners
                   for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
-                     listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
+                     listener.transitioned(workItem, fromState, toState, updatedAssigees, changes);
                   }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
                      workItemService.clearImplementersCache(workItem);
                   }
-                  helper.getChangeSet().add(workItem);
+                  changes.add(workItem);
 
                   workItemFromStateMap.put(workItem, fromState.getName());
                }

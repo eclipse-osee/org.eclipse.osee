@@ -475,7 +475,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public TransitionResults transition(TransitionData transData) {
-      IAtsChangeSet changes = atsApi.createChangeSet(transData.getName());
+      IAtsChangeSet changes = atsApi.createChangeSet(transData.getName(), transData.getTransitionUser());
       TransitionHelper helper = new TransitionHelper(transData, changes, atsApi);
       TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();

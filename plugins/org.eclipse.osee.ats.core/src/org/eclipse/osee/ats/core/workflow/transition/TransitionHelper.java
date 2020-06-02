@@ -114,7 +114,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public IAtsChangeSet getChangeSet() {
       if (changes == null) {
-         changes = atsApi.createChangeSet(getName(), getTransitionUser());
+         AtsUser transitionUser = getTransitionUser();
+         changes = atsApi.createChangeSet(getName(), transitionUser);
       }
       return changes;
    }
