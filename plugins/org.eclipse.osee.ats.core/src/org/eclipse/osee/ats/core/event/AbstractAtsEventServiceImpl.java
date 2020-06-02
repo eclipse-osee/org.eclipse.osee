@@ -109,6 +109,7 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
             List<IAtsWorkItemTopicEventListener> listeners = workItemEventListeners.getValues(topic);
             if (listeners != null && !listeners.isEmpty()) {
                List<ArtifactId> workItemArtIds = getWorkItemArtIds(event);
+               reloadWorkItemsAsNecessry(workItemArtIds);
                for (IAtsWorkItemTopicEventListener listener : listeners) {
                   try {
                      if (listener.isDisposed()) {
@@ -125,6 +126,10 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
       } catch (Exception ex) {
          // do nothing
       }
+   }
+
+   protected void reloadWorkItemsAsNecessry(Collection<ArtifactId> ids) {
+      // do nothing
    }
 
    private List<ArtifactId> getWorkItemArtIds(Event event) {

@@ -38,7 +38,7 @@ public class TopicLocalEventHandler implements EventHandlerLocal<TopicEventAdmin
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }
-      if (sender.isLocal() && event.getEventType() == EventType.LocalAndRemote) {
+      if (sender.isLocal() && (event.getEventType() == EventType.LocalAndRemote || event.getEventType() == EventType.RemoteOnly)) {
          transport.sendRemote(FrameworkEventUtil.getRemoteTopicEvent(event));
       }
    }

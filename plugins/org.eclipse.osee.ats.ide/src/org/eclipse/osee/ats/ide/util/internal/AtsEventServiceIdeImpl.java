@@ -18,8 +18,13 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.event.AbstractAtsEventServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.osgi.framework.BundleContext;
@@ -37,6 +42,20 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
    public BundleContext getBundleContext(String pluginId) {
       PluginUtil pluginUtil = new PluginUtil(pluginId);
       return pluginUtil.getBundleContext();
+   }
+
+   @Override
+   protected void reloadWorkItemsAsNecessry(Collection<ArtifactId> ids) {
+      for (ArtifactId workItemId : ids) {
+         Artifact artifact = ArtifactCache.getActive(workItemId, AtsClientService.get().getAtsBranch());
+         if (artifact != null) {
+            if (WfeArtifactEventManager.isLoaded(artifact)) {
+               artifact.reloadAttributesAndRelations();
+            } else {
+               ArtifactCache.deCache(artifact);
+            }
+         }
+      }
    }
 
    @Override
