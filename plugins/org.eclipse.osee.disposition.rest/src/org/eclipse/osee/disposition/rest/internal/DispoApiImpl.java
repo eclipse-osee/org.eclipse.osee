@@ -53,7 +53,6 @@ import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -1036,19 +1035,15 @@ public class DispoApiImpl implements DispoApi {
    public String createDispoItem(BranchId branch, CiItemData data, String userName) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(data.getScriptName());
-      dispoItemData.setAssignee(SystemUser.UnAssigned.getName());
       dispoItemData.setGuid(dataFactory.getNewId());
-      dispoItemData.setCreationDate(new Date());
       dispoItemData.setDiscrepanciesAsRanges(data.getTestPoints().getFail());
       dispoItemData.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       dispoItemData.setAnnotationsList(data.getAnnotations());
-      List<DispoItem> newItem = new ArrayList<>();
-      newItem.add(dispoItemData);
 
       UserId author = getQuery().findUser();
       DispoSet parentSet = getQuery().findDispoSetsById(branch, data.getSetData().getDispoSetId());
       if (parentSet != null) {
-         getWriter().createDispoItems(author, branch, parentSet, newItem);
+         getWriter().createDispoItem(author, branch, parentSet, dispoItemData);
       }
       return dispoItemData.getGuid();
    }

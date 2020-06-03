@@ -50,7 +50,17 @@ public class DispoItemData implements DispoItem {
    private String team;
 
    public DispoItemData() {
-
+      this.assignee = "UnAssigned";
+      this.creationDate = new Date();
+      this.lastUpdate = new Date();
+      this.status = "Unspecified";
+      this.version = "0.0";
+      this.totalPoints = "0.0";
+      this.needsRerun = false;
+      this.machine = "n/a";
+      this.category = "";
+      this.elapsedTime = "0.0";
+      this.aborted = false;
    }
 
    @Override

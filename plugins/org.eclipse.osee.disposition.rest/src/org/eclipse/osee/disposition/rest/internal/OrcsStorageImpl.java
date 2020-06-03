@@ -330,6 +330,41 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public void createDispoItem(UserId author, BranchId branch, DispoSet parentSet, DispoItem data) {
+      ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid());
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
+
+      ArtifactId createdItem = tx.createArtifact(DispoOseeTypes.DispositionableItem, data.getName());
+
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, data.getCreationDate());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemLastUpdated, data.getLastUpdate());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemStatus, data.getStatus());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemTotalPoints, data.getTotalPoints());
+
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemNeedsRerun, data.getNeedsRerun());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAborted, data.getAborted());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDiscrepanciesJson,
+         JsonUtil.toJson(data.getDiscrepanciesList()));
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoAnnotationsJson,
+         JsonUtil.toJson(data.getAnnotationsList()));
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemVersion, data.getVersion());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAssignee, data.getAssignee());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMachine, data.getMachine());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemCategory, data.getCategory());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemElapsedTime, data.getElapsedTime());
+
+      if (Strings.isValid(data.getFileNumber())) {
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemFileNumber, data.getFileNumber());
+      }
+      if (Strings.isValid(data.getMethodNumber())) {
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMethodNumber, data.getMethodNumber());
+      }
+      tx.relate(parentSetArt, CoreRelationTypes.DefaultHierarchical_Child, createdItem);
+
+      tx.commit();
+   }
+
+   @Override
    public void createDispoItems(UserId author, BranchId branch, DispoSet parentSet, List<DispoItem> data) {
       ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");

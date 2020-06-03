@@ -35,6 +35,8 @@ public interface DispoWriter {
 
    boolean deleteDispoSet(UserId author, BranchId branch, String setId);
 
+   void createDispoItem(UserId author, BranchId branch, DispoSet parentSet, DispoItem data);
+
    void createDispoItems(UserId author, BranchId branch, DispoSet parentSet, List<DispoItem> data);
 
    boolean deleteDispoItem(UserId author, BranchId branch, String itemId);

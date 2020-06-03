@@ -71,7 +71,7 @@ public interface DispoOseeTypes {
       .zeroOrOne(DispoDateCreated, "")
       .zeroOrOne(DispoDiscrepanciesJson, "[]")
       .exactlyOne(DispoItemAborted, "false")
-      .zeroOrOne(DispoItemAssignee, "UnAssinged")
+      .zeroOrOne(DispoItemAssignee, "UnAssigned")
       .zeroOrOne(DispoItemCategory, "")
       .zeroOrOne(DispoItemElapsedTime, "0.0")
       .zeroOrOne(DispoItemFileNumber, "0")
