@@ -119,10 +119,7 @@ public class EditAttributeWizardPage extends WizardPage {
       imageLabel.setImage(null);
 
       try {
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.ART_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getArtifactName());
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.TYPE_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + changeType);
+         createChangeTypeLabels(composite, conflict, changeType);
 
          new Label(composite, SWT.NONE).setText("");
 
@@ -152,6 +149,13 @@ public class EditAttributeWizardPage extends WizardPage {
       editor.create(composite, gd);
 
       setControl(composite);
+   }
+
+   protected static void createChangeTypeLabels(Composite composite, AttributeConflict conflict, String changeType) {
+      String artText = String.format("%s: %s", ConflictResolutionWizard.ART_TEXT, conflict.getArtifactName());
+      new Label(composite, SWT.NONE).setText(artText);
+      String chngText = String.format("%s: %s", ConflictResolutionWizard.TYPE_TEXT, changeType);
+      new Label(composite, SWT.NONE).setText(chngText);
    }
 
    private Button createButton(String text, String tooltip, Composite composite) {

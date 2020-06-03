@@ -221,7 +221,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       if (conflict.mergeEqualsSource()) {
          return ImageManager.getImage(FrameworkImage.MERGE_SOURCE);
       } else {
-         return ImageManager.getImage(FrameworkImage.MERGE_YELLOW_M);
+         return ImageManager.getImage(FrameworkImage.MERGE_MERGED);
       }
    }
 

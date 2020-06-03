@@ -47,7 +47,7 @@ public class ConflictResolutionWizard extends Wizard {
    @Override
    public void addPages() {
       if (conflict.isWordAttribute()) {
-         editWizardPage = new EditWFCAttributeWizardPage(conflict);
+         editWizardPage = new EditWordAttributeWizardPage(conflict);
       } else {
          editWizardPage = new EditAttributeWizardPage(conflict);
       }
@@ -59,8 +59,8 @@ public class ConflictResolutionWizard extends Wizard {
       IWizardPage page = getContainer().getCurrentPage();
       if (page instanceof EditAttributeWizardPage) {
          return ((EditAttributeWizardPage) page).closingPage();
-      } else if (page instanceof EditWFCAttributeWizardPage) {
-         return ((EditWFCAttributeWizardPage) page).closingPage();
+      } else if (page instanceof EditWordAttributeWizardPage) {
+         return ((EditWordAttributeWizardPage) page).closingPage();
       }
       return true;
    }
@@ -77,7 +77,7 @@ public class ConflictResolutionWizard extends Wizard {
    @Override
    public IWizardPage getStartingPage() {
       if (conflict.isWordAttribute()) {
-         return getPage(EditWFCAttributeWizardPage.TITLE);
+         return getPage(EditWordAttributeWizardPage.TITLE);
       } else {
          return getPage(EditAttributeWizardPage.TITLE);
       }
@@ -100,8 +100,8 @@ public class ConflictResolutionWizard extends Wizard {
          Image image = XMergeLabelProvider.getMergeImage(conflict);
          if (page instanceof EditAttributeWizardPage) {
             ((EditAttributeWizardPage) page).setResolution(image);
-         } else if (page instanceof EditWFCAttributeWizardPage) {
-            ((EditWFCAttributeWizardPage) page).setResolution(image);
+         } else if (page instanceof EditWordAttributeWizardPage) {
+            ((EditWordAttributeWizardPage) page).setResolution(conflict);
          }
       }
 

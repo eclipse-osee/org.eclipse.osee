@@ -19,10 +19,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeLabelProvider;
+import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -36,7 +39,7 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Theron Virgin
  */
-public class EditWFCAttributeWizardPage extends WizardPage {
+public class EditWordAttributeWizardPage extends WizardPage {
 
    public static final String TITLE = "WFC Editor Page";
    private AttributeConflict conflict;
@@ -51,38 +54,11 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private Button sourceDestDiffButton;
    private Button sourceMergeDiffButton;
    private Button destMergeDiffButton;
-   private Label imageLabel;
-   private static final String EDIT_TEXT = "Edit Merge Artifact";
-   private static final String EDIT_TOOLTIP = "Make additional changes using the Document/Merge Editor";
-   private static final String MERGE_TEXT = "Generate Three Way Merge";
-   private static final String MERGE_TOOLTIP = "Use the new inline merging";
-   private static final String CLEAR_TEXT = "Clear the Merge Artifact";
-   private static final String CLEAR_TOOLTIP = "Reinitializes the merge for this Document";
-   private static final String SOURCE_TEXT = "Populate with Source Data";
-   private static final String SOURCE_TOOLTIP = "Initialize the Document with Source Values";
-   private static final String DEST_TEXT = "Populate with Destination Data";
-   private static final String DEST_TOOLTIP = "Initialize the Document with Destination Values";
-   private static final String SDIFF_TEXT = "Show Source Diff";
-   private static final String SDIFF_TOOLTIP =
-      "Show the differences between the current Source" + " artifact and the artifact at the time the Source Branch was created";
-   private static final String DDIFF_TEXT = "Show Destination Diff";
-   private static final String DDIFF_TOOLTIP =
-      "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
-   private static final String SDDIFF_TEXT = "Show Source/Destination Diff";
-   private static final String SDDIFF_TOOLTIP =
-      "Show the differences between the current Source" + " artifact and the current Destination artifact";
-   private static final String SMDIFF_TEXT = "Show Source/Merge Diff";
-   private static final String SMDIFF_TOOLTIP =
-      "Show the differences between the current Source" + " artifact and the current Merge artifact";
-   private static final String DMDIFF_TEXT = "Show Destination/Merge Diff";
-   private static final String DMDIFF_TOOLTIP =
-      "Show the differences between the current Destination" + " artifact and the current Merge artifact";
-   private static final int NUM_COLUMNS = 1;
+   private Label imageLabel, resultLabel;
 
    private final Listener listener = new Listener() {
       @Override
       public void handleEvent(Event event) {
-         // ...
 
          try {
             if (event.widget == editButton) {
@@ -125,7 +101,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       }
    };
 
-   public EditWFCAttributeWizardPage(AttributeConflict conflict) {
+   public EditWordAttributeWizardPage(AttributeConflict conflict) {
       super(TITLE);
       try {
          if (conflict != null) {
@@ -139,69 +115,105 @@ public class EditWFCAttributeWizardPage extends WizardPage {
 
    @Override
    public void createControl(Composite parent) {
+      parent.setLayout(new GridLayout());
       setTitle("Edit the attribute ");
 
-      Composite composite = new Composite(parent, SWT.NONE);
-      GridLayout gl = new GridLayout();
-      gl.numColumns = NUM_COLUMNS;
-      composite.setLayout(gl);
-      GridData gd = new GridData(SWT.BEGINNING);
-      composite.setLayoutData(gd);
-      gd.horizontalSpan = NUM_COLUMNS;
+      Composite mainComp = new Composite(parent, SWT.NONE);
+      mainComp.setLayout(new GridLayout(1, false));
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      imageLabel = new Label(composite, SWT.NONE);
-      imageLabel.setImage(null);
+      EditAttributeWizardPage.createChangeTypeLabels(mainComp, conflict, changeType);
+      createResultsWidgets(mainComp);
+
+      createSourceDestButtons(mainComp);
+      createEditButtons(mainComp);
+      createMergeButton(mainComp);
+      createDiffsButtons(mainComp);
 
       try {
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.ART_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getArtifactName());
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.TYPE_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + changeType);
+         setResolution(conflict);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      new Label(composite, SWT.NONE);
+      setControl(mainComp);
+      getShell().setMinimumSize(100, 500);
+   }
 
-      editButton = createButton(EDIT_TEXT, EDIT_TOOLTIP, composite);
-      mergeButton = createButton(MERGE_TEXT, MERGE_TOOLTIP, composite);
-      new Label(composite, SWT.NONE);
-      sourceButton = createButton(SOURCE_TEXT, SOURCE_TOOLTIP, composite);
-      destButton = createButton(DEST_TEXT, DEST_TOOLTIP, composite);
-      clearButton = createButton(CLEAR_TEXT, CLEAR_TOOLTIP, composite);
-      new Label(composite, SWT.NONE);
+   private void createDiffsButtons(Composite mainComp) {
+      Composite diffsComp = new Composite(mainComp, SWT.NONE);
+      diffsComp.setLayout(new GridLayout(3, false));
+      diffsComp.setLayoutData(new GridData());
 
-      Composite buttonComp = new Composite(composite, SWT.NONE);
-      GridLayout glay = new GridLayout();
-      glay.numColumns = 3;
-      buttonComp.setLayout(glay);
-      GridData gdata = new GridData(SWT.FILL);
-      buttonComp.setLayoutData(gdata);
-      gdata.horizontalSpan = 1;
-
-      sourceDiffButton = createButton(SDIFF_TEXT, SDIFF_TOOLTIP, buttonComp);
-      destDiffButton = createButton(DDIFF_TEXT, DDIFF_TOOLTIP, buttonComp);
-      sourceDestDiffButton = createButton(SDDIFF_TEXT, SDDIFF_TOOLTIP, buttonComp);
-      sourceMergeDiffButton = createButton(SMDIFF_TEXT, SMDIFF_TOOLTIP, buttonComp);
-      destMergeDiffButton = createButton(DMDIFF_TEXT, DMDIFF_TOOLTIP, buttonComp);
+      sourceDiffButton = createButton(diffsComp, null, "Show Source Diff",
+         "Show the differences between the current Source artifact and the artifact at the time the Source Branch was created");
+      destDiffButton = createButton(diffsComp, null, "Show Destination Diff",
+         "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created");
+      sourceDestDiffButton = createButton(diffsComp, null, "Show Source/Destination Diff",
+         "Show the differences between the current Source" + " artifact and the current Destination artifact");
+      sourceMergeDiffButton = createButton(diffsComp, null, "Show Source/Merge Diff",
+         "Show the differences between the current Source" + " artifact and the current Merge artifact");
+      destMergeDiffButton = createButton(diffsComp, null, "Show Destination/Merge Diff",
+         "Show the differences between the current Destination" + " artifact and the current Merge artifact");
       if (MergeUtility.getStartArtifact(conflict) == null) {
          sourceDiffButton.setEnabled(false);
          destDiffButton.setEnabled(false);
       }
-
-      try {
-         setResolution(XMergeLabelProvider.getMergeImage(conflict));
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
-      setControl(composite);
+      diffsComp.layout();
    }
 
-   private Button createButton(String text, String tooltip, Composite composite) {
+   private void createResultsWidgets(Composite mainComp) {
+      Composite resultsComp = new Composite(mainComp, SWT.NONE);
+      resultsComp.setLayout(ALayout.getZeroMarginLayout(3, false));
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+      new Label(resultsComp, SWT.NONE).setText("Result: ");
+
+      imageLabel = new Label(resultsComp, SWT.NONE);
+      imageLabel.setImage(null);
+
+      resultLabel = new Label(resultsComp, SWT.NONE);
+   }
+
+   private void createEditButtons(Composite mainComp) {
+      Composite editComp = new Composite(mainComp, SWT.NONE);
+      editComp.setLayout(new GridLayout(2, false));
+      editComp.setLayoutData(new GridData());
+
+      editButton = createButton(editComp, ImageManager.getImage(FrameworkImage.MERGE_MERGED), "Edit Merged Value",
+         "Make additional changes using the Document/Merge Editor");
+      clearButton = createButton(editComp, ImageManager.getImage(FrameworkImage.MERGE_START), "Clear Merged Value",
+         "Reinitializes the merge for this Document");
+   }
+
+   private void createMergeButton(Composite mainComp) {
+      Composite mergeComp = new Composite(mainComp, SWT.NONE);
+      mergeComp.setLayout(new GridLayout(1, false));
+      mergeComp.setLayoutData(new GridData());
+
+      mergeButton = createButton(mergeComp, ImageManager.getImage(FrameworkImage.MERGE_MERGED),
+         "Generate Three Way Merge", "Use the new inline merging");
+   }
+
+   private Composite createSourceDestButtons(Composite mainComp) {
+      Composite sourceDestComp = new Composite(mainComp, SWT.NONE);
+      sourceDestComp.setLayout(new GridLayout(2, false));
+      sourceDestComp.setLayoutData(new GridData());
+
+      sourceButton = createButton(sourceDestComp, ImageManager.getImage(FrameworkImage.MERGE_SOURCE),
+         "Use Source Value", "Initialize the Document with Source Values");
+      destButton = createButton(sourceDestComp, ImageManager.getImage(FrameworkImage.MERGE_DEST),
+         "Use Destination Value", "Initialize the Document with Destination Values");
+      return sourceDestComp;
+   }
+
+   private Button createButton(Composite composite, Image image, String text, String tooltip) {
       Button button = new Button(composite, SWT.PUSH);
       button.addListener(SWT.Selection, listener);
       button.setText(text);
+      if (image != null) {
+         button.setImage(image);
+      }
       button.setToolTipText(tooltip);
       return button;
    }
@@ -214,8 +226,20 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       return true;
    }
 
-   public void setResolution(Image image) {
-      imageLabel.setImage(image);
+   public void setResolution(AttributeConflict conflict) {
+      imageLabel.setImage(XMergeLabelProvider.getMergeImage(conflict));
+      String mergedText = "Unknown";
+      if (conflict.getStatus().isUntouched()) {
+         mergedText = "Un-Set";
+      } else if (conflict.mergeEqualsDestination()) {
+         mergedText = "Destination Value";
+      } else if (conflict.mergeEqualsSource()) {
+         mergedText = "Source Value";
+      } else {
+         mergedText = "Merged";
+      }
+      resultLabel.setText(mergedText);
+      resultLabel.getParent().layout();
    }
 
 }

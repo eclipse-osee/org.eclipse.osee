@@ -156,7 +156,7 @@ public enum FrameworkImage implements KeyedImage {
    MERGE("merge.gif"),
    MERGE_SOURCE("green_s.gif"),
    MERGE_DEST("blue_d.gif"),
-   MERGE_YELLOW_M("yellow_m.gif"),
+   MERGE_MERGED("yellow_m.gif"),
    MERGE_START("conflict.gif"),
    MERGE_INFO("issue.gif"),
    MERGE_MARKED(PluginUiImage.CHECKBOX_ENABLED),
