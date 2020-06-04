@@ -731,7 +731,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    private void createExpandAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
       menuItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
-      menuItem.setText("Expand All");
+      menuItem.setText("Expand All\tCtrl+Shift+'+'");
       menuItem.addSelectionListener(new ExpandListener());
    }
 
