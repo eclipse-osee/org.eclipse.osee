@@ -72,10 +72,14 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
@@ -96,7 +100,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private Label extraInfoLabel;
    private String displayLabelText;
    private Action openAssociatedArtifactAction;
-   private Action completeCommitAction;
    private IOseeBranch sourceBranch;
    private IOseeBranch destBranch;
    private TransactionToken commitTrans;
@@ -112,11 +115,19 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       Composite mainComp = new Composite(parent, SWT.BORDER);
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      mainComp.setLayout(ALayout.getZeroMarginLayout());
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
+
       Composite taskComp = new Composite(mainComp, SWT.NONE);
       taskComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
       taskComp.setLayout(ALayout.getZeroMarginLayout());
       createTextWidgets(parent);
-      createMainComposite(mainComp);
+
+      createCompletionComposite(mainComp);
+
       mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, this);
       createMergeXViewer();
       createTaskActionBar(taskComp);
@@ -127,6 +138,36 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       createTree(tree);
    }
 
+   private void createCompletionComposite(Composite mainComp) {
+      Composite completeComp = new Composite(mainComp, SWT.NONE);
+      completeComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      completeComp.setLayout(new GridLayout(2, false));
+
+      new Label(completeComp, SWT.NONE).setText("Resolve all conflicts and ");
+      Button completeButton = new Button(completeComp, SWT.PUSH);
+      completeButton.setText("Complete Commit");
+      completeButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_COMMIT));
+      completeButton.setToolTipText("Commit changes into destination branch");
+      setId(COMPLETE_COMMIT_ACTION_ID);
+      completeButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (hasMergeBranchBeenCommitted()) {
+               AWorkbench.popup("Branch has been committed");
+            } else if (isCompleteForCommit()) {
+               if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Complete Commit",
+                  "Are you sure?")) {
+                  completeCommit();
+               }
+            } else {
+               AWorkbench.popup("All conflicts must be resolved");
+            }
+         }
+
+      });
+   }
+
    private void createTextWidgets(Composite parent) {
       if (isDisplayLabel() && !getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
@@ -135,15 +176,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             labelWidget.setToolTipText(getToolTip());
          }
       }
-   }
-
-   private void createMainComposite(Composite mainComp) {
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) {
-         toolkit.paintBordersFor(mainComp);
-      }
-
    }
 
    private void createMergeXViewer() {
@@ -301,14 +333,15 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                informational++;
             }
          }
-         if (resolved == conflicts.length) {
+         if (hasMergeBranchBeenCommitted()) {
+            extraInfoLabel.setText(displayLabelText + "\nBranch has been committed.");
+         } else if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
             extraInfoLabel.setText(
                displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
          }
       }
-      checkForCompleteCommit();
    }
 
    private boolean areAllConflictsResolved() {
@@ -405,7 +438,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                         extraInfoLabel.setText(CONFLICTS_NOT_LOADED);
                      }
                   }
-                  checkForCompleteCommit();
                }
             });
          }
@@ -473,13 +505,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
    }
 
-   private Action getCompleteCommitAction() {
-      if (completeCommitAction == null) {
-         completeCommitAction = new CompleteCommitAction();
-      }
-      return completeCommitAction;
-   }
-
    private boolean hasMergeBranchBeenCommitted() {
       Conflict[] conflicts = getConflicts();
       if (conflicts.length > 0) {
@@ -488,8 +513,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       return false;
    }
 
-   private void checkForCompleteCommit() {
-      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && getConflicts().length > 0;
+   private boolean isCompleteForCommit() {
+      boolean complete = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && getConflicts().length > 0;
       if (null != sourceBranch) {
          try {
             boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
@@ -498,99 +523,81 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             // if this is the update from targeted branch case, even if the parent of the target branch is not the
             // same as the parent branch of the source branch, we need to allow the update.
             if (!isValidUpdate) {
-               if (sourceBranch.getName().subSequence(0, 12).equals(
-                  destBranch.getName().substring(0, 12)) && BranchManager.getType(destBranch) == BranchType.WORKING) {
+               if (BranchManager.getType(destBranch) == BranchType.WORKING) {
                   // override since names are similar and destination isn't a baseline branch (see commit bug:[ats_B2207])
                   isValidUpdate = true;
                }
             }
             boolean isValidCommit = BranchManager.hasMergeBranches(sourceBranch) && !rebase;
 
-            isVisible &= isValidUpdate || isValidCommit;
+            complete &= isValidUpdate || isValidCommit;
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            isVisible = false;
-         }
-      }
-      setCompleteCommitItemVisible(isVisible);
-   }
+            Displays.ensureInDisplayThread(new Runnable() {
 
-   private void setCompleteCommitItemVisible(boolean isVisible) {
-      IToolBarManager manager = getToolBarManager();
-      boolean wasFound = manager.find(COMPLETE_COMMIT_ACTION_ID) != null;
-      if (isVisible) {
-         if (!wasFound) {
-            manager.insertBefore(REFRESH_ACTION_ID, getCompleteCommitAction());
+               @Override
+               public void run() {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            });
+            complete = false;
          }
-      } else if (wasFound) {
-         manager.remove(COMPLETE_COMMIT_ACTION_ID);
       }
-      manager.update(true);
+      return complete;
    }
 
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
     */
-   private final class CompleteCommitAction extends Action {
-      public CompleteCommitAction() {
-         super();
-         setImageDescriptor(FrameworkImage.BRANCH_COMMIT.createImageDescriptor());
-         setToolTipText("Commit changes into destination branch");
-         setId(COMPLETE_COMMIT_ACTION_ID);
-      }
+   private void completeCommit() {
+      if (mergeView.getMergeBranchForView() != null) {
+         try {
+            boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
+            if (rebase) {
+               ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
+               IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
+               Operations.executeAsJob(operation, true);
+            } else if (BranchManager.hasMergeBranches(sourceBranch) && !rebase) {
+               IOseeCmService cm = ServiceUtil.getOseeCmService();
 
-      @Override
-      public void run() {
-         if (mergeView.getMergeBranchForView() != null) {
-            try {
-               boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
-               if (rebase) {
-                  ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
-                  IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
-                  Operations.executeAsJob(operation, true);
-               } else if (BranchManager.hasMergeBranches(sourceBranch) && !rebase) {
-                  IOseeCmService cm = ServiceUtil.getOseeCmService();
-
-                  if (cm.isWorkFlowBranch(sourceBranch)) {
-                     Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
-                     boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
-                     cm.commitBranch(art, destBranch, isArchiveSourceBranch);
-                  } else {
-                     handleNonAtsCommit(sourceBranch, destBranch);
-                  }
+               if (cm.isWorkFlowBranch(sourceBranch)) {
+                  Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
+                  boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
+                  cm.commitBranch(art, destBranch, isArchiveSourceBranch);
+               } else {
+                  handleNonAtsCommit(sourceBranch, destBranch);
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-
       }
 
-      private void handleNonAtsCommit(final BranchId sourceBranch, final BranchId destBranch) {
-         final MutableBoolean archiveSourceBranch = new MutableBoolean();
+   }
 
-         if (BranchManager.isParent(sourceBranch, destBranch)) {
-            archiveSourceBranch.setValue(true);
-         } else {
-            Displays.pendInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  CheckBoxDialog dialog = new CheckBoxDialog("Commit Into",
-                     String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]",
-                        sourceBranch, destBranch),
-                     "Archive Source Branch");
-                  if (dialog.open() == 0) {
-                     archiveSourceBranch.setValue(dialog.isChecked());
-                  }
+   private void handleNonAtsCommit(final BranchId sourceBranch, final BranchId destBranch) {
+      final MutableBoolean archiveSourceBranch = new MutableBoolean();
+
+      if (BranchManager.isParent(sourceBranch, destBranch)) {
+         archiveSourceBranch.setValue(true);
+      } else {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               CheckBoxDialog dialog = new CheckBoxDialog("Commit Into",
+                  String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
+                     destBranch),
+                  "Archive Source Branch");
+               if (dialog.open() == 0) {
+                  archiveSourceBranch.setValue(dialog.isChecked());
                }
-            });
-         }
-
-         IOperation operation = new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
-            archiveSourceBranch.booleanValue(), false);
-         Operations.executeWorkAndCheckStatus(operation, null);
+            }
+         });
       }
+
+      IOperation operation = new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
+         archiveSourceBranch.booleanValue(), false);
+      Operations.executeWorkAndCheckStatus(operation, null);
    }
 
    private final class OpenAssociatedArtifactAction extends Action {
