@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.transaction.TxData;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -79,7 +80,7 @@ public interface RelationManager {
 
    void setRationale(Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale);
 
-   void unrelate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode);
+   Relation unrelate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode);
 
    void unrelateFromAll(OrcsSession session, Artifact node);
 
@@ -97,6 +98,10 @@ public interface RelationManager {
     * Set USER_DEFINED order exactly as specified in bNodes List. Nodes not in bNodes will be removed.
     */
    void order(Artifact aNode, RelationTypeToken type, RelationSide side, List<? extends Artifact> bNodes);
+
+   void relate(OrcsSession session, Artifact asArtifactA, RelationTypeToken type, Artifact asArtifactB, TxData txData);
+
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, TxData txData);
 
    ///////////////////////////////////////
 }

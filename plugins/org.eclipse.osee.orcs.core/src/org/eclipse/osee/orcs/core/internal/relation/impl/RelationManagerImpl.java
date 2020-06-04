@@ -63,6 +63,7 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
+import org.eclipse.osee.orcs.core.internal.transaction.TxData;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -208,6 +209,11 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, TxData txData) {
+      relate(session, aNode, type, bNode, emptyString(), PREEXISTING, txData);
+   }
+
+   @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale) {
       relate(session, aNode, type, bNode, rationale, PREEXISTING);
    }
@@ -219,6 +225,11 @@ public class RelationManagerImpl implements RelationManager {
 
    @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType) {
+      relate(session, aNode, type, bNode, rationale, sortType, null);
+   }
+
+   @Override
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, TxData txData) {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);
@@ -227,7 +238,7 @@ public class RelationManagerImpl implements RelationManager {
       validity.checkRelationTypeValid(type, bNode, SIDE_B);
 
       // Check we can create the type on other side of each node
-      checkMultiplicityCanAdd(type, aNode, bNode);
+      checkMultiplicityCanAdd(type, aNode, bNode, txData);
 
       Relation relation = getRelation(aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
@@ -253,7 +264,7 @@ public class RelationManagerImpl implements RelationManager {
          bNode.getGraph().getTransaction()) ? bNode.getGraph() : aNode.getGraph();
    }
 
-   private void checkMultiplicityCanAdd(RelationTypeToken type, Artifact aNode, Artifact bNode) {
+   private void checkMultiplicityCanAdd(RelationTypeToken type, Artifact aNode, Artifact bNode, TxData txData) {
       int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED).size();
       int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
 
@@ -273,7 +284,7 @@ public class RelationManagerImpl implements RelationManager {
 
    ///////////////////////// UNRELATE NODES ///////////////////
    @Override
-   public void unrelate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode) {
+   public Relation unrelate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode) {
       Relation relation = getRelation(aNode, type, bNode, EXCLUDE_DELETED).getOneOrNull();
       boolean modified = false;
       if (relation != null) {
@@ -283,6 +294,7 @@ public class RelationManagerImpl implements RelationManager {
       if (modified) {
          order(session, type, aNode, SIDE_A, OrderOp.REMOVE_FROM_ORDER, Collections.singleton(bNode));
       }
+      return relation;
    }
 
    @Override
@@ -389,6 +401,10 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag includeDeleted) {
+      return getRelations(type, node, side, includeDeleted, null);
+   }
+
+   private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag includeDeleted, TxData txData) {
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
       checkNotNull(node, "node");
@@ -397,6 +413,15 @@ public class RelationManagerImpl implements RelationManager {
       ensureRelationsInitialized(graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
       List<Relation> relations = adjacencies.getList(type, includeDeleted, node, side);
+
+      // Remove any deleted relations in txData if this is transaction
+      if (txData != null) {
+         for (Relation relation : txData.getRelations()) {
+            if (relation.isDeleted()) {
+               relations.remove(relation);
+            }
+         }
+      }
       return relations;
    }
 

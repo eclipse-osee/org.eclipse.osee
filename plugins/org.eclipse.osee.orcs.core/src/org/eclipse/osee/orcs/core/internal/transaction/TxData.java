@@ -15,7 +15,9 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -27,6 +29,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.HasSession;
 
@@ -49,6 +52,7 @@ public class TxData implements HasSession, HasBranch {
    private final HashCollection<TableEnum, GammaId> tuplesToDelete = new HashCollection<>();
    private final HashMap<Long, Artifact> writeables = new HashMap<>();
    private final HashMap<Long, ArtifactReadable> readables = new HashMap<>();
+   private final Set<Relation> relations = new HashSet<>();
 
    private UserId author;
    private String comment;
@@ -153,5 +157,13 @@ public class TxData implements HasSession, HasBranch {
    @Override
    public String toString() {
       return "TxData [session=" + session + ", graph=" + graph + ", author=" + author + ", comment=" + comment + ", isCommitInProgress=" + isCommitInProgress + ", txState=" + txState + "]";
+   }
+
+   public Set<Relation> getRelations() {
+      return relations;
+   }
+
+   public void addRelation(Relation relation) {
+      relations.add(relation);
    }
 }

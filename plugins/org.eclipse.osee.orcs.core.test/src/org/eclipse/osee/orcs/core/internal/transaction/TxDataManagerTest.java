@@ -546,7 +546,7 @@ public class TxDataManagerTest {
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
-      verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
+      verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2, txData);
    }
 
    @Test

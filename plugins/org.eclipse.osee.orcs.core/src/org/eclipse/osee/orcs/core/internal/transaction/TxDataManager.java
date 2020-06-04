@@ -394,7 +394,7 @@ public class TxDataManager {
    public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, txData);
    }
 
    public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale) {
@@ -454,7 +454,10 @@ public class TxDataManager {
    public void unrelate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      relationManager.unrelate(txData.getSession(), asArtifactA, type, asArtifactB);
+      Relation relation = relationManager.unrelate(txData.getSession(), asArtifactA, type, asArtifactB);
+      if (relation != null) {
+         txData.addRelation(relation);
+      }
    }
 
    public void unrelateFromAll(TxData txData, ArtifactId artA) {

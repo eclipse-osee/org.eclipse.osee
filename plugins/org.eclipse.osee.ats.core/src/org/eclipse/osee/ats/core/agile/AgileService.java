@@ -839,7 +839,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void setSprint(IAtsTeamWorkflow teamWf, IAgileSprint sprint, IAtsChangeSet changes) {
-      changes.unrelate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf.getStoreObject());
+      changes.unrelate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
       changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
    }
 

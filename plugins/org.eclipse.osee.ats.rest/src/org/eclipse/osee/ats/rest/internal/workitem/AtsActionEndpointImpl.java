@@ -800,7 +800,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJira() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true, orcsApi);
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), true);
       XResultData results = op.run();
       return results;
    }
@@ -810,7 +810,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @Produces({MediaType.APPLICATION_JSON})
    public XResultData syncJiraAndPersist() {
-      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false, orcsApi);
+      SyncJiraOperation op = new SyncJiraOperation(atsApi, new SyncTeam(), false);
       XResultData results = op.run();
       return results;
    }

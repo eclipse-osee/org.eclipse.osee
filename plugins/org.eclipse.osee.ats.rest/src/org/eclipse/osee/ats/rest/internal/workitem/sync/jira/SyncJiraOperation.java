@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * - Goto JIRA backlog</br>
@@ -59,52 +58,16 @@ public class SyncJiraOperation {
    private XResultData results;
    private List<JiraTask> jTasks;
    private final Set<String> atsIds = new HashSet<>();
-   private final boolean reportOnly;
    private final SyncTeam syncTeam;
    private final boolean fixSprint = false;
-   private final OrcsApi orcsApi;
 
-   public SyncJiraOperation(AtsApi atsApi, SyncTeam syncTeam, boolean reportOnly, OrcsApi orcsApi) {
+   public SyncJiraOperation(AtsApi atsApi, SyncTeam syncTeam, boolean reportOnly) {
       this.atsApi = atsApi;
       this.syncTeam = syncTeam;
-      this.reportOnly = reportOnly;
-      this.orcsApi = orcsApi;
       this.results = syncTeam.getResults();
    }
 
    public XResultData run() {
-
-      // feature[TW13617]: Setup Coverity Scans
-
-      //      IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(ArtifactToken.valueOf(10446338, ""));
-      //      // in sprint - 1657752358 - "Agile Sprint" - ATS430091 - "OSEE Sprint 120 - AMS 10.4 (Jan 30 - Feb 12)"
-      //      IAgileSprint fromSprint = atsApi.getAgileService().getAgileSprint(1657752358);
-      //
-      //      // to sprint - 1202889310 - "Agile Sprint" - ATS430090 - "OSEE Sprint 119 - AMS 10.3 (Jan 16 - Jan 29)"
-      //      IAgileSprint toSprint = atsApi.getAgileService().getAgileSprint(1202889310);
-      //
-      //      TransactionBuilder transaction =
-      //         orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(), AtsCoreUsers.SYSTEM_USER, "here");
-      //
-      //      Collection<ArtifactToken> items =
-      //         atsApi.getRelationResolver().getRelated(toSprint, AtsRelationTypes.AgileSprintToItem_AtsItem);
-      //      Collection<ArtifactToken> sprints =
-      //         atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.AgileSprintToItem_AgileSprint);
-      //
-      //      transaction.unrelate(fromSprint.getStoreObject(), AtsRelationTypes.AgileSprintToItem_AtsItem,
-      //         teamWf.getStoreObject());
-      //
-      //      transaction.relate(toSprint.getStoreObject(), AtsRelationTypes.AgileSprintToItem_AtsItem,
-      //         teamWf.getStoreObject());
-      //
-      //      transaction.commit();
-
-      //            IAtsChangeSet changes = atsApi.createChangeSet("here");
-      //            changes.unrelate(sprint.getStoreObject(), AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf.getStoreObject());
-      //            changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
-
-      //      atsApi.getAgileService().setSprint(teamWf, sprint, changes);
-      //      changes.execute();
 
       ElapsedTime allTime = new ElapsedTime(getClass().getSimpleName(), true);
 
@@ -130,15 +93,15 @@ public class SyncJiraOperation {
       }
 
       time.start("checkJiraClosedToOseeOpen");
-      //      checkJiraClosedToOseeOpen();
+      checkJiraClosedToOseeOpen();
       time.end();
 
       time.start("checkJiraOpenToOseeClosed");
-      //      checkJiraOpenToOseeClosed();
+      checkJiraOpenToOseeClosed();
       time.end();
 
       time.start("validateWorkflowsNotInJira");
-      //      validateWorkflowsNotInJira();
+      validateWorkflowsNotInJira();
       time.end();
 
       time.start("validateSprints");
@@ -149,8 +112,22 @@ public class SyncJiraOperation {
       printSprints();
       time.end();
 
+      time.start("orderBacklog");
+      orderBacklog();
+      time.end();
+
       allTime.end(Units.MIN);
       return results;
+   }
+
+   private void orderBacklog() {
+      IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(syncTeam.getAgileTeam());
+      // This is returned in backlog order
+      Collection<IAgileItem> aItems = atsApi.getAgileService().getItems(backlog);
+      // sort by sprint 1-5
+      //   each sprint -> Cancelled,Completed,Review,Implement,Analyze
+      // after sprints, order by backlog order
+
    }
 
    private void printSprints() {
