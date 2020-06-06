@@ -115,24 +115,12 @@ public interface RelationTypeToken extends NamedId {
 
          @Override
          public String getSideName(RelationSide relationSide) {
-            String sideName = null;
-            if (relationSide.equals(RelationSide.SIDE_A)) {
-               sideName = sideAName;
-            } else if (relationSide.equals(RelationSide.SIDE_B)) {
-               sideName = sideBName;
-            }
-            return sideName;
+            return relationSide.equals(RelationSide.SIDE_A) ? sideAName : sideBName;
          }
 
          @Override
          public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
-            boolean isAllowed = false;
-            if (relationSide.equals(RelationSide.SIDE_A)) {
-               isAllowed = artifactType.inheritsFrom(artifactTypeA);
-            } else if (relationSide.equals(RelationSide.SIDE_B)) {
-               isAllowed = artifactType.inheritsFrom(artifactTypeB);
-            }
-            return isAllowed;
+            return artifactType.inheritsFrom(getArtifactType(relationSide));
          }
 
          @Override

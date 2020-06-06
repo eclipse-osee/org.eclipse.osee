@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
@@ -301,7 +300,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private void checkMultiplicity(Artifact art, RelationLink link) {
-      RelationType relationType = RelationTypeManager.getType(link.getRelationType());
+      RelationTypeToken relationType = link.getRelationType();
       RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
 
       RelationSide sideToCheck = link.getOppositeSide(art);

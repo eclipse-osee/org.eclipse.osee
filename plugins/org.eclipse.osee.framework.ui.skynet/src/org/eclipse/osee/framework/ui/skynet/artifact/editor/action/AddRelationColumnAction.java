@@ -22,8 +22,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -82,7 +82,7 @@ public class AddRelationColumnAction extends Action {
 
    private Collection<RelationTypeSide> getInput() {
       List<RelationTypeSide> sides = new ArrayList<>();
-      for (RelationType type : RelationTypeManager.getAllTypes()) {
+      for (RelationTypeToken type : RelationTypeManager.getAllTypes()) {
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_A));
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_B));
       }
@@ -103,8 +103,6 @@ public class AddRelationColumnAction extends Action {
    }
 
    public static String getTypeSideName(RelationTypeSide typeSide) {
-      RelationType type = RelationTypeManager.getType(typeSide.getRelationType());
-      return String.format("%s - %s", typeSide.getRelationType().getName(),
-         (typeSide.getSide().isSideA() ? type.getSideAName() : type.getSideBName()));
+      return String.format("%s - %s", typeSide.getRelationType().getName(), typeSide.getSideName(typeSide.getSide()));
    }
 }

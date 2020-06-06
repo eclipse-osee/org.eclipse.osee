@@ -30,8 +30,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -228,7 +229,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setLabelProvider(new StringLabelProvider());
 
       try {
-         for (RelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
+         for (RelationTypeToken linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
             relationTypeList.add(linkDescriptor);
             relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }
@@ -240,10 +241,10 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          @Override
          public void widgetSelected(SelectionEvent e) {
             relationSideList.getCombo().removeAll();
-            RelationType linkDescriptor =
-               (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
-            relationSideList.add(linkDescriptor.getSideAName());
-            relationSideList.add(linkDescriptor.getSideBName());
+            RelationTypeToken linkDescriptor =
+               (RelationTypeToken) relationTypeList.getData(relationTypeList.getCombo().getText());
+            relationSideList.add(linkDescriptor.getSideName(RelationSide.SIDE_A));
+            relationSideList.add(linkDescriptor.getSideName(RelationSide.SIDE_B));
             relationSideList.add("-Either-");
             relationSideList.getCombo().select(0);
          }
@@ -253,9 +254,10 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       if (relationTypeList.getCombo().getItemCount() > 0) { // ensure we don't get a null pointer
          // exception when there are no relation types in the db
          relationTypeList.getCombo().select(0);
-         RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
-         relationSideList.add(linkDescriptor.getSideAName());
-         relationSideList.add(linkDescriptor.getSideBName());
+         RelationTypeToken linkDescriptor =
+            (RelationTypeToken) relationTypeList.getData(relationTypeList.getCombo().getText());
+         relationSideList.add(linkDescriptor.getSideName(RelationSide.SIDE_A));
+         relationSideList.add(linkDescriptor.getSideName(RelationSide.SIDE_B));
          relationSideList.add("-Either-");
          relationSideList.getCombo().select(0);
       }

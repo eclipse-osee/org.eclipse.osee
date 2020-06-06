@@ -18,13 +18,12 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
@@ -67,7 +66,6 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
                Collection<String> linkNames = new ArrayList<>(links.size());
                for (RelationLink link : links) {
-                  RelationType relType = RelationTypeManager.getType(link.getRelationType());
                   if (options.getLinkName() == LinkName.Phrasing_A_to_B) {
                      if (link.getArtifactIdA().equals(source)) {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);
@@ -85,8 +83,9 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                   } else if (options.getLinkName() == LinkName.Full_Link_Name) {
                      linkNames.add(link.getRelationType().toString());
                   } else if (options.getLinkName() == LinkName.Other_Side_Name) {
-                     linkNames.add(
-                        link.getArtifactIdA() + " (" + relType.getSideAName() + ")" + " <--> " + link.getArtifactIdB() + " (" + relType.getSideBName() + ")");
+                     linkNames.add(link.getArtifactIdA() + " (" + link.getRelationType().getSideName(
+                        RelationSide.SIDE_A) + ")" + " <--> " + link.getArtifactIdB() + " (" + link.getRelationType().getSideName(
+                           RelationSide.SIDE_B) + ")");
                   } else {
                      linkNames.add("");
                   }

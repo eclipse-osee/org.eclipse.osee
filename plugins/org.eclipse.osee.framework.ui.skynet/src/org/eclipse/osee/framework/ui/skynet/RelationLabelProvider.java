@@ -110,9 +110,9 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    @Override
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
-         RelationTypeSide side = (RelationTypeSide) element;
+         RelationTypeSide relationType = (RelationTypeSide) element;
          try {
-            return RelationTypeManager.getType(side).getSideName(side.getSide());
+            return relationType.getSideName(relationType.getSide());
          } catch (OseeCoreException ex) {
             return ex.toString();
          }

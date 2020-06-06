@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -99,9 +100,9 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          return Collections.toString(" ", extraInfo);
       } else if (element instanceof ArtifactExplorerLinkNode) {
          ArtifactExplorerLinkNode smartifactLinkNode = (ArtifactExplorerLinkNode) element;
-         RelationType relationType = smartifactLinkNode.getRelationType();
-         String sideName =
-            smartifactLinkNode.isParentIsOnSideA() ? relationType.getSideBName() : relationType.getSideAName();
+         RelationTypeToken relationType = smartifactLinkNode.getRelationType();
+         String sideName = smartifactLinkNode.isParentIsOnSideA() ? relationType.getSideName(
+            RelationSide.SIDE_B) : relationType.getSideName(RelationSide.SIDE_A);
          return String.format("%s - [%s]", relationType.getName(), sideName);
       } else if (element != null) {
          return element.toString();

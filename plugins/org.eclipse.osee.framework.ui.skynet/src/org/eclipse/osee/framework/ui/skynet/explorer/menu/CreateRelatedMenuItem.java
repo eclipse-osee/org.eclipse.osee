@@ -23,13 +23,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,7 +79,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
          if (obj instanceof ArtifactExplorerLinkNode) {
             ArtifactExplorerLinkNode linkNode = (ArtifactExplorerLinkNode) obj;
             Artifact existingArtifact = linkNode.getArtifact();
-            RelationType relationType = linkNode.getRelationType();
+            RelationTypeToken relationType = linkNode.getRelationType();
             RelationTypeSide relationTypeSide = null;
             RelationSide relationSide = null;
             if (linkNode.isParentIsOnSideA()) {
@@ -116,7 +115,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
             }
 
             List<RelationTypeSide> validRelationTypes = new LinkedList<>();
-            for (RelationType relType : RelationTypeManager.getValidTypes(parentArt.getBranch())) {
+            for (RelationTypeToken relType : RelationTypeManager.getValidTypes(parentArt.getBranch())) {
                if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactType())) {
                   validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_B));
                }
@@ -152,7 +151,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
    }
 
-   private void handleCreateRelated(Artifact existingArtifact, RelationType relationType, RelationTypeSide relationTypeSide, RelationSide relationSide) {
+   private void handleCreateRelated(Artifact existingArtifact, RelationTypeToken relationType, RelationTypeSide relationTypeSide, RelationSide relationSide) {
       // get valid artifact types for this relation
       List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
       BranchId branch = artifactExplorer.getBranch();
@@ -210,7 +209,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       if (obj instanceof ArtifactExplorerLinkNode) {
          ArtifactExplorerLinkNode linkNode = (ArtifactExplorerLinkNode) obj;
          Artifact artifact = linkNode.getArtifact();
-         RelationType relationType = linkNode.getRelationType();
+         RelationTypeToken relationType = linkNode.getRelationType();
          RelationTypeSide relationSide = null;
          if (linkNode.isParentIsOnSideA()) {
             relationSide = RelationTypeSide.create(relationType, RelationSide.SIDE_B);
@@ -246,17 +245,19 @@ public class CreateRelatedMenuItem implements SelectionListener {
       public String getText(Object arg0) {
          if (arg0 instanceof RelationTypeSide) {
             RelationTypeSide relationTypeSide = (RelationTypeSide) arg0;
-            RelationType relationType = RelationTypeManager.getType(relationTypeSide.getRelationType());
+            RelationTypeToken relationType = relationTypeSide.getRelationType();
             if (relationTypeSide.getSide().isSideA()) {
                return String.format(
                   "Relation: [%s]  <New Artifact> of type [%s] and name [%s] <---> <Selected> of type [%s] and name [%s]",
-                  relationType.getName(), relationType.getArtifactTypeSideB(), relationType.getSideBName(),
-                  relationType.getArtifactTypeSideA(), relationType.getSideAName());
+                  relationType.getName(), relationType.getArtifactType(RelationSide.SIDE_B),
+                  relationType.getSideName(RelationSide.SIDE_B), relationType.getArtifactType(RelationSide.SIDE_A),
+                  relationType.getSideName(RelationSide.SIDE_A));
             } else {
                return String.format(
                   "Relation: [%s]  <Selected> of type [%s] and name [%s] <---> <New Artifact> of type [%s] and name [%s]",
-                  relationType.getName(), relationType.getArtifactTypeSideA(), relationType.getSideAName(),
-                  relationType.getArtifactTypeSideB(), relationType.getSideBName());
+                  relationType.getName(), relationType.getArtifactType(RelationSide.SIDE_A),
+                  relationType.getSideName(RelationSide.SIDE_A), relationType.getArtifactType(RelationSide.SIDE_B),
+                  relationType.getSideName(RelationSide.SIDE_B));
             }
          }
          return arg0.toString();
@@ -264,8 +265,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
    }
 
    private Collection<ArtifactTypeToken> getArtifactTypesFromRelationType(RelationTypeToken relationType) {
-      RelationType relType = RelationTypeManager.getType(relationType);
-      ArtifactTypeToken artifactTypeSideB = relType.getArtifactTypeSideB();
+      RelationTypeToken relType = RelationTypeManager.getType(relationType);
+      ArtifactTypeToken artifactTypeSideB = relType.getArtifactType(RelationSide.SIDE_B);
       List<ArtifactTypeToken> artifactTypes = artifactTypeSideB.getAllDescendantTypes();
       artifactTypes.add(artifactTypeSideB);
       return artifactTypes;

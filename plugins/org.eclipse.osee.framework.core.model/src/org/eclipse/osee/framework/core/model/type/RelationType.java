@@ -67,22 +67,10 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return getFieldValueLogException(null, RELATION_MULTIPLICITY_FIELD_KEY);
    }
 
-   public ArtifactTypeToken getArtifactTypeSideA() {
-      return getFieldValueLogException(null, RELATION_SIDE_A_ART_TYPE_FIELD_KEY);
-   }
-
-   public ArtifactTypeToken getArtifactTypeSideB() {
-      return getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
-   }
-
    @Override
    public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
-      return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
-   }
-
-   @Override
-   public String getSideName(RelationSide relationSide) {
-      return relationSide == RelationSide.SIDE_A ? getSideAName() : getSideBName();
+      return relationSide == RelationSide.SIDE_A ? getFieldValueLogException(null,
+         RELATION_SIDE_A_ART_TYPE_FIELD_KEY) : getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
    }
 
    @Override
@@ -91,24 +79,24 @@ public final class RelationType extends AbstractOseeType implements RelationType
       return artifactType.inheritsFrom(allowedType);
    }
 
-   public String getSideAName() {
-      return getFieldValueLogException("", RELATION_SIDE_A_NAME_FIELD_KEY);
-   }
-
-   public String getSideBName() {
-      return getFieldValueLogException("", RELATION_SIDE_B_NAME_FIELD_KEY);
+   @Override
+   public String getSideName(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? getFieldValueLogException("",
+         RELATION_SIDE_A_NAME_FIELD_KEY) : getFieldValueLogException("", RELATION_SIDE_B_NAME_FIELD_KEY);
    }
 
    public boolean isSideAName(String sideName) {
-      if (!getSideAName().equals(sideName) && !getSideBName().equals(sideName)) {
+      String sideAName = getSideName(RelationSide.SIDE_A);
+      if (!sideAName.equals(sideName) && !getSideName(RelationSide.SIDE_B).equals(sideName)) {
          throw new OseeArgumentException("sideName does not match either of the available side names");
       }
-      return getSideAName().equals(sideName);
+      return sideAName.equals(sideName);
    }
 
    @Override
    public String toString() {
-      return String.format("[%s]<-[%s]->[%s]", getSideAName(), getName(), getSideBName());
+      return String.format("[%s]<-[%s]->[%s]", getSideName(RelationSide.SIDE_A), getName(),
+         getSideName(RelationSide.SIDE_B));
    }
 
    @Override

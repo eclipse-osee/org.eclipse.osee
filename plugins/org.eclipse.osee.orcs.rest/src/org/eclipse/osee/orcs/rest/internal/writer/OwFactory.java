@@ -78,7 +78,7 @@ public class OwFactory {
    }
 
    public static OwRelationType createRelationType(OrcsApi orcsApi, RelationTypeSide type) {
-      String sideAName = orcsApi.tokenService().getRelationType(type.getId()).getSideName(RelationSide.SIDE_A);
+      String sideAName = type.getSideName(RelationSide.SIDE_A);
       OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
       return owType;
    }

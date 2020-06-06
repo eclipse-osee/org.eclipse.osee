@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -422,7 +421,7 @@ public class RelationManager {
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
     */
-   private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) {
+   private static void ensureSideWillSupport(Artifact artifact, RelationTypeToken relationType, RelationSide relationSide, int artifactCount) {
       if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
          throw new OseeArgumentException(String.format(
             "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
@@ -466,8 +465,8 @@ public class RelationManager {
       Set<Pair<RelationTypeToken, RelationSide>> typesToUpdate = new HashSet<>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            typesToUpdate.add(
-               new Pair<RelationTypeToken, RelationSide>(relation.getRelationType(), relation.getOppositeSide(artifact)));
+            typesToUpdate.add(new Pair<RelationTypeToken, RelationSide>(relation.getRelationType(),
+               relation.getOppositeSide(artifact)));
             relation.delete(reorderRelations, transaction);
          }
       }
