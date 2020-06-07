@@ -23,11 +23,9 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 public class RelationOrderMergeUtility {
 
@@ -39,7 +37,7 @@ public class RelationOrderMergeUtility {
          new RelationOrderData(new ArtifactRelationOrderAccessor(new RelationOrderParser()), right);
 
       for (Pair<RelationTypeToken, RelationSide> typeSide : getAllTypeSides(leftData, rightData)) {
-         RelationType type = RelationTypeManager.getType(typeSide.getFirst());
+         RelationTypeToken type = typeSide.getFirst();
          RelationSide side = typeSide.getSecond();
          RelationTypeSide rts = new RelationTypeSide(type, side);
          RelationSorter leftSorter = leftData.getCurrentSorterGuid(type, side);

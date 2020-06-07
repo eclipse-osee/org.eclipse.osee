@@ -538,7 +538,7 @@ public final class ReplaceWithBaselineTest {
       @Override
       public String toString() {
          String message =
-            "Item: %s ChangeItem %s isBaseline %s ArtifactId %s RelationType %s artifactId %s bArtifactId %s";
+            "Item: %s ChangeItem %s isBaseline %s ArtifactId %s RelationTypeToken %s artifactId %s bArtifactId %s";
          return String.format(message, item, changeItem, isBaseline, artifactId, relationType, artifactId, bArtifactId);
       }
    }

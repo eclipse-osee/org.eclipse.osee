@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -274,7 +274,7 @@ public class ChangeDataLoader extends AbstractOperation {
             }
             break;
          case RELATION_CHANGE:
-            RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId().getId());
+            RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId().getId());
 
             TransactionId transaction = txDelta.getStartTx();
             if (txDelta.areOnTheSameBranch()) {

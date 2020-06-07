@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -29,7 +29,7 @@ public class MockArtifactProxy implements ArtifactProxy {
 
    private final ArtifactTypeToken artifactType;
    private final Collection<ArtifactProxy> hierarchy;
-   private final Collection<RelationType> validRelationTypes;
+   private final Collection<RelationTypeToken> validRelationTypes;
    private final ArtifactToken artifactObject;
 
    public MockArtifactProxy(ArtifactToken artifactObject) {
@@ -44,7 +44,7 @@ public class MockArtifactProxy implements ArtifactProxy {
       this(artifactType, null, Collections.emptyList(), Collections.emptyList());
    }
 
-   public MockArtifactProxy(ArtifactTypeToken artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
+   public MockArtifactProxy(ArtifactTypeToken artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationTypeToken> validRelationTypes) {
       this.artifactType = artifactType;
       this.hierarchy = hierarchy;
       this.validRelationTypes = validRelationTypes;
@@ -62,7 +62,7 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes() {
+   public Collection<RelationTypeToken> getValidRelationTypes() {
       return validRelationTypes;
    }
 

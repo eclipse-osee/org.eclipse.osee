@@ -20,9 +20,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -156,7 +156,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    }
 
    private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation) {
-      RelationType relationType = RelationTypeManager.getType(roughRelation.getRelationTypeName());
+      RelationTypeToken relationType = RelationTypeManager.getType(roughRelation.getRelationTypeName());
       Artifact aArt = ArtifactQuery.getArtifactFromId(roughRelation.getAartifactGuid(), transaction.getBranch());
       Artifact bArt = ArtifactQuery.getArtifactFromId(roughRelation.getBartifactGuid(), transaction.getBranch());
 

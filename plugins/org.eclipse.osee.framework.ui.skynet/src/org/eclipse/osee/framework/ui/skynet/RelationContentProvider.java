@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -79,8 +80,8 @@ public class RelationContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       try {
          if (parentElement instanceof Artifact) {
-            Collection<RelationType> relationTypes = artifactRoot.getValidRelationTypes();
-            for (RelationType type : relationTypes) {
+            Collection<RelationTypeToken> relationTypes = artifactRoot.getValidRelationTypes();
+            for (RelationTypeToken type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
             Object[] ret = relationTypes.toArray();

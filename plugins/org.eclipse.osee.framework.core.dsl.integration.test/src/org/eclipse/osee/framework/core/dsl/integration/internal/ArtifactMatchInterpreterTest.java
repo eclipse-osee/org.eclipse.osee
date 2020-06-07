@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
@@ -286,7 +286,7 @@ public class ArtifactMatchInterpreterTest {
          }
 
          @Override
-         public Collection<RelationType> getValidRelationTypes() {
+         public Collection<RelationTypeToken> getValidRelationTypes() {
             return null;
          }
 

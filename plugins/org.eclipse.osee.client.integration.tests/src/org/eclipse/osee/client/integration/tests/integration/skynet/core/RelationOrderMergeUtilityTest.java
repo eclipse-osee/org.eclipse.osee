@@ -25,16 +25,15 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -63,7 +62,7 @@ public class RelationOrderMergeUtilityTest {
    private final RelationSorter ascOrder = LEXICOGRAPHICAL_ASC;
    private final RelationSorter descOrder = LEXICOGRAPHICAL_DESC;
 
-   private RelationType hierType;
+   private RelationTypeToken hierType;
    private RelationSide hierSide;
 
    private IOseeBranch destBranch;
@@ -72,7 +71,7 @@ public class RelationOrderMergeUtilityTest {
    public void createBranch() {
       destBranch =
          BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, "RelationOrderMergeUtilityTest.createBranch");
-      hierType = RelationTypeManager.getType(defaultHierarchy);
+      hierType = defaultHierarchy;
       hierSide = defaultHierarchy.getSide();
    }
 

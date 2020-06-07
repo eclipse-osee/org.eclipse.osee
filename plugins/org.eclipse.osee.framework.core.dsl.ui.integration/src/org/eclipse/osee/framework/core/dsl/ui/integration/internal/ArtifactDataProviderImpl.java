@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,8 +89,8 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public Collection<RelationType> getValidRelationTypes() {
-         return self.getValidRelationTypes();
+      public Collection<RelationTypeToken> getValidRelationTypes() {
+         return org.eclipse.osee.framework.jdk.core.util.Collections.cast(self.getValidRelationTypes());
       }
 
       @Override

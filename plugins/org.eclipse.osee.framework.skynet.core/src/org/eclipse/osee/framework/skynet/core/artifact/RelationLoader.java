@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -53,7 +53,7 @@ class RelationLoader {
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
             ArtifactToken aArtifactId = ArtifactToken.valueOf(chStmt.getLong("a_art_id"), branch);
             ArtifactToken bArtifactId = ArtifactToken.valueOf(chStmt.getLong("b_art_id"), branch);
-            RelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
+            RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
 
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             String rationale = chStmt.getString("rationale");

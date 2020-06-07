@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +41,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
- * Updates ATS Cache based on Artifact Events. Registers for accessControlService via ats.cache.update.listener osgi registration.
+ * Updates ATS Cache based on Artifact Events. Registers for accessControlService via ats.cache.update.listener osgi
+ * registration.
  *
  * @author Donald G. Dunne
  */
@@ -80,7 +81,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          // update cache
          for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
             try {
-               RelationType typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
+               RelationTypeToken typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
                if (configReloadRelationTypeGuids.contains(typeByGuid.getId())) {
                   AtsClientService.get().reloadServerAndClientCaches();
                   break;

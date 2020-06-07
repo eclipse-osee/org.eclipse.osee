@@ -17,11 +17,11 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
@@ -177,7 +177,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
          try {
             EventUtil.eventLog(String.format("REM: updateRelation -> [%s]", guidArt));
 
-            RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
+            RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
             Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA());
             Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB());
             // Nothing in cache, ignore this relation only

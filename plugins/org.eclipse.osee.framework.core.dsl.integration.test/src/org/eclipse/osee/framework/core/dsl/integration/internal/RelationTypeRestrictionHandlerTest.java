@@ -83,7 +83,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.Artifact, SoftwareRequirementMsWord);
 
       ArtifactTypeToken artTypeToken1 = SoftwareRequirementMsWord;
@@ -105,7 +105,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.Artifact, SoftwareRequirementMsWord);
 
       ArtifactTypeToken artTypeToken1 = SoftwareRequirementMsWord;
@@ -127,7 +127,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactTypeToken artTypeToken1 = SoftwareRequirementMsWord;
@@ -150,7 +150,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       MockArtifactProxy artData =
@@ -170,7 +170,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactTypeToken artTypeToken1 = SoftwareRequirementMsWord;
@@ -209,7 +209,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeMatch(true);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       MockArtifactProxy artData =
@@ -255,7 +255,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setPredicate(predicate);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactTypeToken artTypeToken1 = SoftwareRequirementMsWord;
@@ -286,7 +286,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       predicate.setArtifactMatcherRef(matcher);
       restriction.setPredicate(predicate);
 
-      RelationType testRelationType =
+      RelationTypeToken testRelationType =
          getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactToken dummy = ArtifactToken.valueOf(43, artifactName, BranchId.SENTINEL);
@@ -308,7 +308,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 
-   private static RelationType getTestRelationType(RelationTypeToken relationType, ArtifactTypeToken aArtTypeToken, ArtifactTypeToken bArtTypeToken) {
+   private static RelationTypeToken getTestRelationType(RelationTypeToken relationType, ArtifactTypeToken aArtTypeToken, ArtifactTypeToken bArtTypeToken) {
       return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
          "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
          LEXICOGRAPHICAL_ASC);

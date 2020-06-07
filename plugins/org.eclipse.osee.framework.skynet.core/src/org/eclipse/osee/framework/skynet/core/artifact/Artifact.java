@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -189,7 +188,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * (or similar variant)
     */
    @Deprecated
-   public final List<Artifact> getRelatedArtifacts(RelationType relationType) {
+   public final List<Artifact> getRelatedArtifacts(RelationTypeToken relationType) {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
@@ -536,7 +535,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return getValidRelationTypes().contains(relationType);
    }
 
-   public final Collection<RelationType> getValidRelationTypes() {
+   public final Collection<RelationTypeToken> getValidRelationTypes() {
       return RelationTypeManager.getValidTypes(getArtifactType(), branch);
    }
 

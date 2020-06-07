@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Jeff C. Phillips
@@ -28,9 +28,9 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private final ArtifactId bArtId;
    private final int relLinkId;
    private final String rationale;
-   private final RelationType relationType;
+   private final RelationTypeToken relationType;
 
-   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, int relLinkId, String rationale, RelationTypeToken relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -50,8 +50,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
       return rationale;
    }
 
-   public RelationType getRelationType() {
+   public RelationTypeToken getRelationType() {
       return relationType;
    }
-
 }

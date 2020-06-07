@@ -40,9 +40,9 @@ public class RelationTypeManager {
       return getCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(ArtifactTypeToken artifactType, BranchId branch) {
+   public static List<RelationTypeToken> getValidTypes(ArtifactTypeToken artifactType, BranchId branch) {
       Collection<RelationType> relationTypes = getAllTypes();
-      List<RelationType> validRelationTypes = new ArrayList<>();
+      List<RelationTypeToken> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
          int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
          int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
@@ -56,10 +56,9 @@ public class RelationTypeManager {
    }
 
    public static int getRelationSideMax(RelationTypeToken relType, ArtifactTypeToken artifactType, RelationSide relationSide) {
-      RelationType relationType = getType(relType);
       int toReturn = 0;
-      if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
-         toReturn = relationType.getMultiplicity().getLimit(relationSide);
+      if (relType.isArtifactTypeAllowed(relationSide, artifactType)) {
+         toReturn = relType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;
    }
@@ -78,8 +77,8 @@ public class RelationTypeManager {
       return getCache().getAll();
    }
 
-   public static RelationType getTypeByGuid(Long guid) {
-      RelationType relationType = getCache().getByGuid(guid);
+   public static RelationTypeToken getTypeByGuid(Long guid) {
+      RelationTypeToken relationType = getCache().getByGuid(guid);
       if (relationType == null) {
          getCacheService().reloadTypes();
          relationType = getCache().getByGuid(guid);
@@ -98,7 +97,7 @@ public class RelationTypeManager {
       return getCache().get(relationType);
    }
 
-   public static RelationType getType(String typeName) {
+   public static RelationTypeToken getType(String typeName) {
       return getCache().getByName(typeName);
    }
 }

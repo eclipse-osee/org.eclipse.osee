@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -86,10 +85,10 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
             }
          }
 
-         Collection<RelationType> relationTypes = getRelationTypes(artifactProxy, restriction);
+         Collection<RelationTypeToken> relationTypes = getRelationTypes(artifactProxy, restriction);
          PermissionEnum permission = OseeUtil.getPermission(restriction);
 
-         for (RelationType relationType : relationTypes) {
+         for (RelationTypeToken relationType : relationTypes) {
             for (RelationSide relationSide : RelationSide.values()) {
                if (OseeUtil.isRestrictedSide(restrictedSide, relationSide)) {
                   collector.collect(
@@ -100,14 +99,14 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       }
    }
 
-   private Collection<RelationType> getRelationTypes(ArtifactProxy artifactProxy, RelationTypeRestriction restriction) {
-      Collection<RelationType> types;
+   private Collection<RelationTypeToken> getRelationTypes(ArtifactProxy artifactProxy, RelationTypeRestriction restriction) {
+      Collection<RelationTypeToken> types;
       if (restriction.isRelationTypeMatch()) {
          types = artifactProxy.getValidRelationTypes();
       } else {
          XRelationType xRelationType = restriction.getRelationTypeRef();
          RelationTypeToken typeToMatch = OseeUtil.toToken(xRelationType);
-         RelationType relationType = getRelationType(typeToMatch, artifactProxy);
+         RelationTypeToken relationType = getRelationType(typeToMatch, artifactProxy);
          if (relationType != null) {
             types = Collections.singleton(relationType);
          } else {
@@ -117,10 +116,10 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       return types;
    }
 
-   private RelationType getRelationType(RelationTypeToken typeToMatch, ArtifactProxy artifactProxy) {
-      RelationType toReturn = null;
-      Collection<RelationType> relationTypes = artifactProxy.getValidRelationTypes();
-      for (RelationType relationType : relationTypes) {
+   private RelationTypeToken getRelationType(RelationTypeToken typeToMatch, ArtifactProxy artifactProxy) {
+      RelationTypeToken toReturn = null;
+      Collection<RelationTypeToken> relationTypes = artifactProxy.getValidRelationTypes();
+      for (RelationTypeToken relationType : relationTypes) {
          if (relationType.equals(typeToMatch)) {
             toReturn = relationType;
             break;

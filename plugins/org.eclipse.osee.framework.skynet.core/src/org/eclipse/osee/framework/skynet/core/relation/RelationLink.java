@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationLink;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -285,7 +283,7 @@ public class RelationLink implements HasBranch, IRelationLink {
       if (isOtherArtifact) {
          side = side.oppositeSide();
       }
-      return "has (" + RelationTypeManager.getType(relationType).getMultiplicity().asLimitLabel(side) + ")";
+      return "has (" + relationType.getMultiplicity().asLimitLabel(side) + ")";
    }
 
    @Override
@@ -379,10 +377,8 @@ public class RelationLink implements HasBranch, IRelationLink {
       RelationOrderData leftData = factory.createRelationOrderData(aArtifact);
       RelationOrderData rightData = factory.createRelationOrderData(bArtifact);
 
-      RelationType relType = RelationTypeManager.getType(relationType);
-
-      RelationSorter leftSorter = leftData.getCurrentSorterGuid(relType, getSide(aArtifact));
-      RelationSorter rightSorter = rightData.getCurrentSorterGuid(relType, getSide(bArtifact));
+      RelationSorter leftSorter = leftData.getCurrentSorterGuid(relationType, getSide(aArtifact));
+      RelationSorter rightSorter = rightData.getCurrentSorterGuid(relationType, getSide(bArtifact));
 
       return rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED);
    }

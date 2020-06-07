@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
  * @author Roberto E. Escobar
@@ -25,7 +25,7 @@ public interface ArtifactDataProvider {
 
    public static interface ArtifactProxy extends ArtifactToken {
 
-      Collection<RelationType> getValidRelationTypes();
+      Collection<RelationTypeToken> getValidRelationTypes();
 
       Collection<ArtifactProxy> getHierarchy();
 

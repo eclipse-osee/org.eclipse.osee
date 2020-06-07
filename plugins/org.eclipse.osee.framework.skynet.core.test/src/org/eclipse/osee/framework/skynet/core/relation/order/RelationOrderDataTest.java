@@ -224,7 +224,7 @@ public class RelationOrderDataTest {
       }
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, RelationSorter sorterId, String... guids) {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter sorterId, String... guids) {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});

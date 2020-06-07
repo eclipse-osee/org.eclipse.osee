@@ -45,5 +45,4 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
    public RelationTypeCacheTest() {
       super(data, cache);
    }
-
 }

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -43,7 +44,7 @@ public class SkynetTransactionTest {
    public static final Artifact artifactA = new Artifact(54L, COMMON);
    public static final Artifact artifactB = new Artifact(55L, COMMON);
 
-   public static final RelationType type =
+   public static final RelationTypeToken type =
       new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(), CoreArtifactTypes.Artifact,
          CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, null);
 

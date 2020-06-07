@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -64,8 +63,8 @@ public class RelationOrderParserTest {
       RelationType dh = new RelationType(DEFAULT_HIERARCHY.getId(), DEFAULT_HIERARCHY.getName(), "parent", "child",
          Artifact, Artifact, ONE_TO_MANY, LEXICOGRAPHICAL_ASC);
       RelationType supportingInfo =
-         new RelationType(SupportingInfo_IsSupportedBy.getId(), SupportingInfo_IsSupportedBy.getName(), "is supported by",
-            "supporting info", Artifact, Artifact, MANY_TO_MANY, UNORDERED);
+         new RelationType(SupportingInfo_IsSupportedBy.getId(), SupportingInfo_IsSupportedBy.getName(),
+            "is supported by", "supporting info", Artifact, Artifact, MANY_TO_MANY, UNORDERED);
       RelationTypeManager.getCache().cache(dh);
       RelationTypeManager.getCache().cache(supportingInfo);
    }

@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
@@ -35,9 +35,9 @@ public final class RelationChange extends Change {
    private final RelationId relLinkId;
    private final String rationale;
    private final String wasValue;
-   private final RelationType relationType;
+   private final RelationTypeToken relationType;
 
-   public RelationChange(BranchId branch, GammaId sourceGamma, ArtifactId aArtId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, RelationId relLinkId, String rationale, String wasValue, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+   public RelationChange(BranchId branch, GammaId sourceGamma, ArtifactId aArtId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, RelationId relLinkId, String rationale, String wasValue, RelationTypeToken relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
       super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -63,7 +63,7 @@ public final class RelationChange extends Change {
       return rationale;
    }
 
-   public RelationType getRelationType() {
+   public RelationTypeToken getRelationType() {
       return relationType;
    }
 

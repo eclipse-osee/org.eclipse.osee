@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -376,8 +375,7 @@ public class RelationManager {
             artifact);
       }
 
-      List<RelationLink> selectedRelations =
-         relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
+      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
@@ -406,9 +404,8 @@ public class RelationManager {
    public static void ensureRelationCanBeAdded(RelationTypeToken relationType, Artifact artifactA, Artifact artifactB) {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       ensureSameBranch(artifactA, artifactB);
-      RelationType relType = RelationTypeManager.getType(relationType);
-      ensureSideWillSupport(artifactA, relType, RelationSide.SIDE_A, 1);
-      ensureSideWillSupport(artifactB, relType, RelationSide.SIDE_B, 1);
+      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, 1);
+      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, 1);
    }
 
    private static void ensureSameBranch(Artifact a, Artifact b) {
@@ -528,8 +525,8 @@ public class RelationManager {
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
-         relation = getOrCreate(artifactA, artifactB, RelationTypeManager.getType(relationType), 0, GammaId.valueOf(0),
-            rationale, ModificationType.NEW, ApplicabilityId.BASE);
+         relation = getOrCreate(artifactA, artifactB, relationType, 0, GammaId.valueOf(0), rationale,
+            ModificationType.NEW, ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -562,7 +559,7 @@ public class RelationManager {
 
    public static RelationTypeSideSorter createTypeSideSorter(Artifact artifact, RelationTypeToken relationType, RelationSide side) {
       RelationOrderData data = createRelationOrderData(artifact);
-      return new RelationTypeSideSorter(RelationTypeManager.getType(relationType), side, relationSorterProvider, data);
+      return new RelationTypeSideSorter(relationType, side, relationSorterProvider, data);
    }
 
    public static RelationOrderData createRelationOrderData(Artifact artifact) {

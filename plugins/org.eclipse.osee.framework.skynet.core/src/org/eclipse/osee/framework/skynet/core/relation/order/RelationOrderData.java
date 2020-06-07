@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -78,7 +77,7 @@ public class RelationOrderData {
       return currentOrder != null ? currentOrder.getSecond() : new ArrayList<>();
    }
 
-   public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side) {
+   public RelationSorter getCurrentSorterGuid(RelationTypeToken type, RelationSide side) {
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getFirst() : type.getOrder();
    }
@@ -105,11 +104,11 @@ public class RelationOrderData {
       return lists.size();
    }
 
-   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<Artifact> relativeSequence) {
+   public void store(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId, List<Artifact> relativeSequence) {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 
-   public void storeFromGuids(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence) {
+   public void storeFromGuids(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence) {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
@@ -129,7 +128,7 @@ public class RelationOrderData {
       }
    }
 
-   protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId) {
+   protected boolean isRevertingToDefaultTypeOrder(RelationTypeToken type, RelationSide side, RelationSorter sorterId) {
       return sorterId.equals(type.getOrder()) && isDifferentSorterId(type, side, sorterId);
    }
 
@@ -137,7 +136,7 @@ public class RelationOrderData {
       return sorterId.equals(USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
-   protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId) {
+   protected boolean isDifferentSorterId(RelationTypeToken type, RelationSide side, RelationSorter sorterId) {
       RelationSorter currentSorterGuid = getCurrentSorterGuid(type, side);
       return !sorterId.equals(currentSorterGuid);
    }

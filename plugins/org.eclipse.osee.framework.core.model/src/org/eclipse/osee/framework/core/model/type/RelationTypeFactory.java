@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
@@ -36,7 +37,7 @@ public class RelationTypeFactory implements IOseeTypeFactory {
          defaultRelationSorter);
    }
 
-   public RelationType createOrUpdate(RelationTypeCache cache, Long guid, String typeName, String sideAName, String sideBName, ArtifactTypeToken artifactTypeSideA, ArtifactTypeToken artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
+   public RelationTypeToken createOrUpdate(RelationTypeCache cache, Long guid, String typeName, String sideAName, String sideBName, ArtifactTypeToken artifactTypeSideA, ArtifactTypeToken artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
       Conditions.checkNotNull(cache, "RelationTypeCache");
       RelationType relationType = cache.getByGuid(guid);
       if (relationType == null) {

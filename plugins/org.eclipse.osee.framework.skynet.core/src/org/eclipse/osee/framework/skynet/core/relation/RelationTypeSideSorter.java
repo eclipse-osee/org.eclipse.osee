@@ -22,9 +22,9 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -35,12 +35,12 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvi
  * @author Ryan Schmitt
  */
 public class RelationTypeSideSorter extends RelationTypeSide {
-   private final RelationType relationType;
+   private final RelationTypeToken relationType;
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
    private final Map<Artifact, RelationLink> artToRelation = new HashMap<>();
 
-   public RelationTypeSideSorter(RelationType relationType, RelationSide side, RelationSorterProvider sorterProvider, RelationOrderData orderData) {
+   public RelationTypeSideSorter(RelationTypeToken relationType, RelationSide side, RelationSorterProvider sorterProvider, RelationOrderData orderData) {
       super(relationType, side);
       this.relationType = relationType;
       this.sorterProvider = sorterProvider;

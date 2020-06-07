@@ -24,6 +24,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -62,8 +63,8 @@ public class RelationCacheTest {
    private List<RelationLink> sourceLinksRelType2;
    private List<RelationLink> sourceLinksRelType1AndType2;
 
-   private RelationType relType1;
-   private RelationType relType2;
+   private RelationTypeToken relType1;
+   private RelationTypeToken relType2;
 
    @OseeLogMonitor
    private SevereLoggingMonitor severeLoggingMonitor;
@@ -342,7 +343,7 @@ public class RelationCacheTest {
       Artifact artifactA = new Artifact(54L, COMMON);
       Artifact artifactB = new Artifact(55L, COMMON);
 
-      RelationType type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
+      RelationTypeToken type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
          CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, null);
       RelationLink link = new RelationLink(artifactA, artifactB, COMMON, type, 77, GammaId.valueOf(88), "",
          ModificationType.MODIFIED, ApplicabilityId.BASE);

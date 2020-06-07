@@ -53,13 +53,13 @@ import org.junit.runners.Parameterized.Parameters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class RelationTypeSideSorterTest {
-   private final RelationType relationType;
+   private final RelationTypeToken relationType;
    private final RelationSide relationSide;
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
    private final RelationTypeSideSorter sorter;
 
-   public RelationTypeSideSorterTest(RelationSorterProvider sorterProvider, RelationType relationType, RelationSide relationSide, RelationOrderData orderData, List<Object[]> expected) {
+   public RelationTypeSideSorterTest(RelationSorterProvider sorterProvider, RelationTypeToken relationType, RelationSide relationSide, RelationOrderData orderData, List<Object[]> expected) {
       this.relationType = relationType;
       this.relationSide = relationSide;
       this.orderData = orderData;
@@ -169,8 +169,8 @@ public class RelationTypeSideSorterTest {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      RelationType relationType1 = createRelationType("Rel 1", LEXICOGRAPHICAL_ASC);
-      RelationType relationType2 = createRelationType("Rel 2", LEXICOGRAPHICAL_DESC);
+      RelationTypeToken relationType1 = createRelationType("Rel 1", LEXICOGRAPHICAL_ASC);
+      RelationTypeToken relationType2 = createRelationType("Rel 2", LEXICOGRAPHICAL_DESC);
 
       RelationOrderData relOrderdata1 = new RelationOrderData(accessor, new MockArtifact("a"));
       RelationOrderData relOrderdata2 = new RelationOrderData(accessor, new MockArtifact("b"));
@@ -215,12 +215,12 @@ public class RelationTypeSideSorterTest {
       }
    }
 
-   private static RelationType createRelationType(String name, RelationSorter defaultRelationSorter) {
+   private static RelationTypeToken createRelationType(String name, RelationSorter defaultRelationSorter) {
       return new RelationType(0x03L, name, name + "_A", name + "_B", Artifact, Artifact, MANY_TO_MANY,
          defaultRelationSorter);
    }
 
-   private static void addData(RelationType relationType1, RelationType relationType2, RelationOrderData data, List<Object[]> expected) {
+   private static void addData(RelationTypeToken relationType1, RelationTypeToken relationType2, RelationOrderData data, List<Object[]> expected) {
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
          LEXICOGRAPHICAL_ASC, "1", "2", "3");
       addData(data, expected, relationType2, RelationSide.SIDE_B, //
@@ -246,7 +246,7 @@ public class RelationTypeSideSorterTest {
       }
    }
 
-   private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, RelationSorter sorterId, String... guids) {
+   private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter sorterId, String... guids) {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
