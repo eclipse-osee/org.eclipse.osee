@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 
 import java.util.Collections;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -29,6 +30,10 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
       return OsgiUtil.getService(getClass(), IOseeCachingService.class);
    }
 
+   private OrcsTokenService getTokenService() {
+      return OsgiUtil.getService(getClass(), OrcsTokenService.class);
+   }
+
    @Override
    public Iterable<? extends NamedId> getBranches() {
       IOseeCachingService caches = getCache();
@@ -37,19 +42,19 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
 
    @Override
    public Iterable<? extends NamedId> getArtifactTypes() {
-      IOseeCachingService caches = getCache();
-      return caches != null ? caches.getArtifactTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
+      OrcsTokenService tokenService = getTokenService();
+      return tokenService != null ? tokenService.getArtifactTypes() : Collections.<NamedIdBase> emptyList();
    }
 
    @Override
    public Iterable<? extends NamedId> getAttributeTypes() {
-      IOseeCachingService caches = getCache();
-      return caches != null ? caches.getAttributeTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
+      OrcsTokenService tokenService = getTokenService();
+      return tokenService != null ? tokenService.getAttributeTypes() : Collections.<NamedIdBase> emptyList();
    }
 
    @Override
    public Iterable<? extends NamedId> getRelationTypes() {
-      IOseeCachingService caches = getCache();
-      return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
+      OrcsTokenService tokenService = getTokenService();
+      return tokenService != null ? tokenService.getRelationTypes() : Collections.<NamedIdBase> emptyList();
    }
 }

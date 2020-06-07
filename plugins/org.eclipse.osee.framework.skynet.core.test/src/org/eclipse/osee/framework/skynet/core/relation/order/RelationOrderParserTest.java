@@ -13,14 +13,9 @@
 
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_IsSupportedBy;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
-import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +23,9 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -57,17 +49,6 @@ public class RelationOrderParserTest {
       "<OrderList>\n<Order relType=\"Default Hierarchical\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
    private static String emptyOrderType =
       "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" />\n</OrderList>";
-
-   @BeforeClass
-   public static void setup() {
-      RelationType dh = new RelationType(DEFAULT_HIERARCHY.getId(), DEFAULT_HIERARCHY.getName(), "parent", "child",
-         Artifact, Artifact, ONE_TO_MANY, LEXICOGRAPHICAL_ASC);
-      RelationType supportingInfo =
-         new RelationType(SupportingInfo_IsSupportedBy.getId(), SupportingInfo_IsSupportedBy.getName(),
-            "is supported by", "supporting info", Artifact, Artifact, MANY_TO_MANY, UNORDERED);
-      RelationTypeManager.getCache().cache(dh);
-      RelationTypeManager.getCache().cache(supportingInfo);
-   }
 
    @Test
    public void testExceptions() {
