@@ -71,7 +71,6 @@ public abstract class AbstractRestTest {
    }
 
    protected String getJson(String url) {
-      url = url.replaceAll("%3F", "?");
       return getAndCheckResponseCode(url, MediaType.APPLICATION_JSON_TYPE);
    }
 
@@ -84,7 +83,6 @@ public abstract class AbstractRestTest {
    }
 
    protected URI toURI(String urlPath) {
-      urlPath = urlPath.replaceAll("%3F", "?");
       return UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path(urlPath).build();
    }
 
