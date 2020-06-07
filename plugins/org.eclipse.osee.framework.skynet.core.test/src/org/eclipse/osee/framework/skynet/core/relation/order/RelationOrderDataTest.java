@@ -19,22 +19,20 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,9 +45,9 @@ public class RelationOrderDataTest {
    private Artifact artifact;
    private MockRelationOrderAccessor accessor;
    private RelationOrderData data;
-   private RelationType relationType1;
-   private RelationType relationType2;
-   private RelationType relationType3;
+   private RelationTypeToken relationType1;
+   private RelationTypeToken relationType2;
+   private RelationTypeToken relationType3;
 
    @Before
    public void setUp() {
@@ -57,21 +55,13 @@ public class RelationOrderDataTest {
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
-      RelationTypeCache cache = new RelationTypeCache();
-
-      relationType1 = createRelationType(1, cache, "Rel 1", USER_DEFINED);
-      relationType2 = createRelationType(2, cache, "Rel 2", UNORDERED);
-      relationType3 = createRelationType(3, cache, "Rel 3", LEXICOGRAPHICAL_ASC);
+      relationType1 = RelationTypeToken.create(9456378923465L, "A Relation Type", MANY_TO_MANY, USER_DEFINED, Artifact,
+         "side A", Artifact, "side B");
+      relationType2 = CoreRelationTypes.ComponentRequirement;
+      relationType3 = CoreRelationTypes.DefaultHierarchical;
 
       Assert.assertFalse(data.hasEntries());
       Assert.assertEquals(0, data.size());
-   }
-
-   @After
-   public void tearDown() {
-      artifact = null;
-      accessor = null;
-      data = null;
    }
 
    @Test
@@ -228,13 +218,6 @@ public class RelationOrderDataTest {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
-   }
-
-   private static RelationType createRelationType(long id, RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) {
-      RelationType relationType = new RelationType(id, name, name + "_A", name + "_B", Artifact, Artifact,
-         RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
-      cache.cache(relationType);
-      return relationType;
    }
 
    private final class MockRelationOrderAccessor implements IRelationOrderAccessor {

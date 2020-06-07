@@ -15,12 +15,9 @@ package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -29,7 +26,6 @@ import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -87,13 +83,5 @@ public final class MockDataFactory {
 
    public static ArtifactType createArtifactType(int index, Long id) {
       return new ArtifactType(id, "art_" + index, index % 2 == 0);
-   }
-
-   public static RelationType createRelationType(int index, ArtifactTypeToken artTypeA, ArtifactTypeToken artTypeB, Long id) {
-      RelationTypeMultiplicity multiplicity =
-         RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];
-      return new RelationType(id, "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA, artTypeB,
-         multiplicity, order);
    }
 }

@@ -16,10 +16,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,10 +25,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -169,8 +167,8 @@ public class RelationTypeSideSorterTest {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      RelationTypeToken relationType1 = createRelationType("Rel 1", LEXICOGRAPHICAL_ASC);
-      RelationTypeToken relationType2 = createRelationType("Rel 2", LEXICOGRAPHICAL_DESC);
+      RelationTypeToken relationType1 = CoreRelationTypes.Users;
+      RelationTypeToken relationType2 = CoreRelationTypes.WorkItem;
 
       RelationOrderData relOrderdata1 = new RelationOrderData(accessor, new MockArtifact("a"));
       RelationOrderData relOrderdata2 = new RelationOrderData(accessor, new MockArtifact("b"));
@@ -213,11 +211,6 @@ public class RelationTypeSideSorterTest {
       public void setRelations(List<Artifact> artifacts) {
          this.artifacts = artifacts;
       }
-   }
-
-   private static RelationTypeToken createRelationType(String name, RelationSorter defaultRelationSorter) {
-      return new RelationType(0x03L, name, name + "_A", name + "_B", Artifact, Artifact, MANY_TO_MANY,
-         defaultRelationSorter);
    }
 
    private static void addData(RelationTypeToken relationType1, RelationTypeToken relationType2, RelationOrderData data, List<Object[]> expected) {

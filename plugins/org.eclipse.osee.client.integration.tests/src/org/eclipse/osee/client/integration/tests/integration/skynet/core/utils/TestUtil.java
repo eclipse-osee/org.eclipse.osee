@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,9 +29,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -98,17 +94,7 @@ public final class TestUtil {
    public static List<RelationLink> createLinks(int total, BranchId branch) {
       List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
-         RelationTypeToken relationType = createRelationType(index);
-         RelationLink link = createRelationLink(index, index + 1, index + 2, branch, relationType);
-         links.add(link);
-      }
-      return links;
-   }
-
-   public static List<RelationLink> createLinks(int total, BranchId branch, RelationTypeToken relationType) {
-      List<RelationLink> links = new ArrayList<>();
-      for (int index = 0; index < total; index++) {
-         RelationLink link = createRelationLink(index, index + 1, index + 2, branch, relationType);
+         RelationLink link = createRelationLink(index, index + 1, index + 2, branch, CoreRelationTypes.Allocation);
          links.add(link);
       }
       return links;
@@ -131,13 +117,5 @@ public final class TestUtil {
       }
       int expected = sourceLinks.isEmpty() ? 0 : sourceLinks.size() / 2;
       Assert.assertEquals("Deleted relation link count did not match", expected, deletedCounts);
-   }
-
-   public static RelationTypeToken createRelationType(int index) {
-      RelationTypeMultiplicity multiplicity =
-         RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];
-      return new RelationType(randomGenerator.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index,
-         Artifact, Artifact, multiplicity, order);
    }
 }

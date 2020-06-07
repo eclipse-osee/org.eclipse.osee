@@ -15,11 +15,10 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementMsWord;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DevelopmentalVerification;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -34,15 +33,12 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,7 +48,6 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<RelationTypeRestriction> {
-   private static final RelationTypeToken relationType = CoreRelationTypes.DefaultHierarchical_Child;
 
    public RelationTypeRestrictionHandlerTest() {
       super(new RelationTypeRestrictionHandler(new ArtifactMatchInterpreter()),
@@ -61,7 +56,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeNoMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      XRelationType relationTypeRef = MockModel.createXRelationType(CoreRelationTypes.Allocation);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -75,15 +70,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideANoMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = CoreRelationTypes.CodeRequirement;
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.Artifact, SoftwareRequirementMsWord);
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
@@ -94,15 +87,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideAMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = CoreRelationTypes.CodeRequirement;
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_A);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, CoreArtifactTypes.Artifact, SoftwareRequirementMsWord);
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
@@ -113,15 +104,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideBNoMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
 
@@ -133,15 +122,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideBMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
@@ -152,15 +139,14 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchBothMatch() {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
+
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeRef(relationTypeRef);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
@@ -195,8 +181,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeMatch(true);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
 
       MockArtifactProxy artData = new MockArtifactProxy(SoftwareRequirementMsWord, testRelationType);
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
@@ -238,8 +223,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setPredicate(predicate);
       restriction.setRestrictedToSide(XRelationSideEnum.SIDE_B);
 
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
 
       ArtifactToken expectedAccessObject = ArtifactToken.valueOf(1, "Another Artifact", SoftwareRequirementMsWord);
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject, testRelationType);
@@ -253,7 +237,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) {
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
+      RelationTypeToken testRelationType = DevelopmentalVerification;
+      XRelationType relationTypeRef = MockModel.createXRelationType(testRelationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -266,9 +251,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationTypeArtifactPredicate predicate = OseeDslFactory.eINSTANCE.createRelationTypeArtifactPredicate();
       predicate.setArtifactMatcherRef(matcher);
       restriction.setPredicate(predicate);
-
-      RelationTypeToken testRelationType =
-         getTestRelationType(relationType, SoftwareRequirementMsWord, CoreArtifactTypes.Artifact);
 
       ArtifactToken dummy = ArtifactToken.valueOf(43, artifactName, SoftwareRequirementMsWord);
       MockArtifactProxy artData = new MockArtifactProxy(dummy, testRelationType);
@@ -286,11 +268,5 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessRelationWithArtifactNoMatch() {
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
-   }
-
-   private static RelationTypeToken getTestRelationType(RelationTypeToken relationType, ArtifactTypeToken aArtTypeToken, ArtifactTypeToken bArtTypeToken) {
-      return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
-         "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
-         LEXICOGRAPHICAL_ASC);
    }
 }

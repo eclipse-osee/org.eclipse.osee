@@ -23,6 +23,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil;
@@ -46,7 +47,7 @@ public class RelationFilterUtilTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private final BranchId branch1 = BranchId.valueOf(100L);
-   private final RelationTypeToken relationType = TestUtil.createRelationType(5);
+   private final RelationTypeToken relationType = CoreRelationTypes.DEFAULT_HIERARCHY;
    private final ArtifactId id55 = ArtifactId.valueOf(55);
    private final ArtifactId id66 = ArtifactId.valueOf(66);
    private final ArtifactId id77 = ArtifactId.valueOf(77);

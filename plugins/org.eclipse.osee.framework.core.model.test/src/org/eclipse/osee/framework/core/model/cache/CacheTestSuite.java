@@ -21,7 +21,6 @@ import org.junit.runners.Suite;
 
    ArtifactTypeCacheTest.class, //
    AttributeTypeCacheTest.class, //
-   RelationTypeCacheTest.class, //
    OseeEnumTypeCacheTest.class, //
    BranchCacheTest.class //
 })

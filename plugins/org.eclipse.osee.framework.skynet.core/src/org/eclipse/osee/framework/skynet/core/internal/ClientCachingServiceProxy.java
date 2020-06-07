@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -57,7 +56,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private OseeEnumTypeCache enumTypeCache;
    private AttributeTypeCache attributeTypeCache;
    private ArtifactTypeCache artifactTypeCache;
-   private RelationTypeCache relationTypeCache;
 
    private List<IOseeCache<?>> caches;
 
@@ -81,13 +79,11 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();
       attributeTypeCache = new AttributeTypeCache();
-      relationTypeCache = new RelationTypeCache();
 
       caches = new ArrayList<>();
       caches.add(branchCache);
       caches.add(artifactTypeCache);
       caches.add(attributeTypeCache);
-      caches.add(relationTypeCache);
       caches.add(enumTypeCache);
    }
 
@@ -96,7 +92,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       enumTypeCache = null;
       attributeTypeCache = null;
-      relationTypeCache = null;
       artifactTypeCache = null;
 
       branchCache = null;
@@ -115,11 +110,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public AttributeTypeCache getAttributeTypeCache() {
       return attributeTypeCache;
-   }
-
-   @Override
-   public RelationTypeCache getRelationTypeCache() {
-      return relationTypeCache;
    }
 
    @Override
@@ -182,7 +172,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private void clearAllTypes() {
       getEnumTypeCache().decacheAll();
       getAttributeTypeCache().decacheAll();
-      getRelationTypeCache().decacheAll();
       getArtifactTypeCache().decacheAll();
    }
 

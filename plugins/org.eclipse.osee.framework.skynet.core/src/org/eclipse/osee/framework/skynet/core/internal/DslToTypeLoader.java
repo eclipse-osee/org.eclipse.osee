@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -45,11 +44,8 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
@@ -57,14 +53,12 @@ import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
-import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -80,7 +74,6 @@ public class DslToTypeLoader implements TypesLoader {
    private final ArtifactTypeFactory artTypeFactory = new ArtifactTypeFactory();
    private final AttributeTypeFactory attrTypeFactory = new AttributeTypeFactory();
    private final OseeEnumTypeFactory enumTypeFactory = new OseeEnumTypeFactory();
-   private final RelationTypeFactory relTypeFactory = new RelationTypeFactory();
 
    private final BranchCache branchCache;
 
@@ -112,7 +105,6 @@ public class DslToTypeLoader implements TypesLoader {
       buffer.copyEnumTypes(caches.getEnumTypeCache());
       buffer.copyAttrTypes(caches.getAttributeTypeCache());
       buffer.copyArtTypes(caches.getArtifactTypeCache());
-      buffer.copyRelTypes(caches.getRelationTypeCache());
    }
 
    private void loadTypes(TypeBuffer buffer, BranchCache branchCache, OseeDsl model) {
@@ -138,10 +130,6 @@ public class DslToTypeLoader implements TypesLoader {
 
       for (XArtifactType xArtifactType : model.getArtifactTypes()) {
          handleXArtifactTypeCrossRef(buffer, branchCache, xArtifactType);
-      }
-
-      for (XRelationType xRelationType : model.getRelationTypes()) {
-         translateXRelationType(buffer, xRelationType);
       }
    }
 
@@ -354,33 +342,10 @@ public class DslToTypeLoader implements TypesLoader {
       return value;
    }
 
-   private void translateXRelationType(TypeBuffer buffer, XRelationType xRelationType) {
-      RelationTypeMultiplicity multiplicity =
-         RelationTypeMultiplicity.getFromString(xRelationType.getMultiplicity().name());
-
-      String sideATypeName = xRelationType.getSideAArtifactType().getName();
-      String sideBTypeName = xRelationType.getSideBArtifactType().getName();
-
-      ArtifactTypeToken sideAType = buffer.getArtTypes().getByName(sideATypeName);
-      ArtifactTypeToken sideBType = buffer.getArtTypes().getByName(sideBTypeName);
-
-      Long relUuid = Long.valueOf(xRelationType.getId());
-      relTypeFactory.createOrUpdate(buffer.getRelTypes(), //
-         relUuid, //
-         xRelationType.getName(), //
-         xRelationType.getSideAName(), //
-         xRelationType.getSideBName(), //
-         sideAType, //
-         sideBType, //
-         multiplicity, //
-         RelationSorter.valueOfName(xRelationType.getDefaultOrderType()));
-   }
-
    private static final class TypeBuffer {
       private final ArtifactTypeCache artTypes = new ArtifactTypeCache();
       private final OseeEnumTypeCache enumTypes = new OseeEnumTypeCache();
       private final AttributeTypeCache attrTypes = new AttributeTypeCache();
-      private final RelationTypeCache relTypes = new RelationTypeCache();
 
       public ArtifactTypeCache getArtTypes() {
          return artTypes;
@@ -394,10 +359,6 @@ public class DslToTypeLoader implements TypesLoader {
          return attrTypes;
       }
 
-      public RelationTypeCache getRelTypes() {
-         return relTypes;
-      }
-
       public void copyArtTypes(ArtifactTypeCache dest) {
          copy(artTypes, dest);
       }
@@ -408,10 +369,6 @@ public class DslToTypeLoader implements TypesLoader {
 
       public void copyAttrTypes(AttributeTypeCache dest) {
          copy(attrTypes, dest);
-      }
-
-      public void copyRelTypes(RelationTypeCache dest) {
-         copy(relTypes, dest);
       }
 
       private <T extends IOseeStorable> void copy(IOseeCache<T> src, IOseeCache<T> dest) {

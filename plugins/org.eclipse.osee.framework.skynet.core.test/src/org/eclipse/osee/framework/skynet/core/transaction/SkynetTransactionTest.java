@@ -14,16 +14,14 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.WorkItem;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.junit.Assert;
@@ -43,13 +41,8 @@ public class SkynetTransactionTest {
 
    public static final Artifact artifactA = new Artifact(54L, COMMON);
    public static final Artifact artifactB = new Artifact(55L, COMMON);
-
-   public static final RelationTypeToken type =
-      new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(), CoreArtifactTypes.Artifact,
-         CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, null);
-
-   public static final RelationLink link = new RelationLink(artifactA, artifactB, COMMON, type, 77, GammaId.valueOf(88),
-      "", ModificationType.MODIFIED, ApplicabilityId.BASE);
+   public static final RelationLink link = new RelationLink(artifactA, artifactB, COMMON, WorkItem, 77,
+      GammaId.valueOf(88), "", ModificationType.MODIFIED, ApplicabilityId.BASE);
 
    @Test
    public void getCheckAccessErrorTest() {

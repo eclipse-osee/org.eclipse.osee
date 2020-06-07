@@ -53,7 +53,6 @@ import org.junit.runners.Suite;
    OseeInfoTest.class,
    PurgeArtifactsTest.class,
    // PurgeTransactionTest moved to LongRunningTestSuite
-   RelationCacheTest.class,
    RelationDeletionTest.class,
    RelationFilterUtilTest.class,
    RelationOrderingTest.class,
