@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -51,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
@@ -117,7 +117,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private final Matcher storageStringMatcher = storageStringPattern.matcher("");
    private final Matcher notSearchPrimitiveMatcher = notSearchPrimitivePattern.matcher("");
    private StyledText textDescription;
-   private final OrcsTokenService tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
+   private final OrcsTokenService tokenService = ServiceUtil.getTokenService();
 
    @Override
    public void createControl(Composite parent) {

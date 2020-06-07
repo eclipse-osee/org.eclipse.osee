@@ -28,14 +28,12 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -122,11 +120,10 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       Set<ArtifactExplorerLinkNode> relationTypes = new HashSet<>();
       for (RelationLink link : relationsAll) {
          if (!link.isOfType(CoreRelationTypes.DefaultHierarchical_Child)) {
-            RelationType relType = RelationTypeManager.getType(link.getRelationType());
             if (link.getArtifactIdA().equals(parentItem)) {
-               relationTypes.add(new ArtifactExplorerLinkNode(parentItem, relType, true));
+               relationTypes.add(new ArtifactExplorerLinkNode(parentItem, link.getRelationType(), true));
             } else {
-               relationTypes.add(new ArtifactExplorerLinkNode(parentItem, relType, false));
+               relationTypes.add(new ArtifactExplorerLinkNode(parentItem, link.getRelationType(), false));
             }
          }
       }

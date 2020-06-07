@@ -30,8 +30,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -41,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
@@ -83,7 +82,7 @@ public final class SkyWalkerOptions {
    public SkyWalkerOptions() {
       loadLayouts();
       layout = defaultLayout;
-      tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
+      tokenService = ServiceUtil.getTokenService();
    }
 
    static {
@@ -316,7 +315,7 @@ public final class SkyWalkerOptions {
       return getSelectedArtTypes().contains(type);
    }
 
-   public boolean isValidRelationType(RelationType type) {
+   public boolean isValidRelationType(RelationTypeToken type) {
       if (!isFilterEnabled()) {
          return true;
       }
@@ -467,14 +466,14 @@ public final class SkyWalkerOptions {
       return showAttributes.keySet();
    }
 
-   public Set<RelationType> getAllRelationLinkDescriptorTypes() {
+   public Set<RelationTypeToken> getAllRelationLinkDescriptorTypes() {
       if (relTypes == null) {
          return new HashSet<>();
       }
-      Set<RelationType> descs = new HashSet<>();
+      Set<RelationTypeToken> descs = new HashSet<>();
       for (Object obj : relTypes.keySet()) {
-         if (obj instanceof RelationType) {
-            descs.add((RelationType) obj);
+         if (obj instanceof RelationTypeToken) {
+            descs.add((RelationTypeToken) obj);
          }
       }
       return descs;

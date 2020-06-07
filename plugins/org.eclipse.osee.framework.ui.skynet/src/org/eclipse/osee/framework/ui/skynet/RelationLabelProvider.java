@@ -18,17 +18,16 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -49,7 +48,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    @Override
    public Image getColumnImage(Object element, int columnIndex) {
       Image toReturn = null;
-      if (element instanceof RelationType && columnIndex == 0) {
+      if (element instanceof RelationTypeToken && columnIndex == 0) {
          toReturn = ImageManager.getImage(FrameworkImage.RELATION);
       } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
          WrapperForRelationLink relationLinkWrapper = (WrapperForRelationLink) element;
@@ -86,8 +85,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
       RelationSide side = relationTypeSide.getSide();
       try {
-         RelationType type = RelationTypeManager.getType(relationTypeSide);
-         RelationTypeMultiplicity multiplicity = type.getMultiplicity();
+         RelationTypeMultiplicity multiplicity = relationTypeSide.getMultiplicity();
 
          if (side == RelationSide.SIDE_A) {
             if (multiplicity.getSideALimit() == 1) {
@@ -129,9 +127,9 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
          return String.valueOf(wrapper.getRelation().getGammaId());
       }
-      if (element instanceof RelationType) {
+      if (element instanceof RelationTypeToken) {
          if (columnIndex == 0) {
-            return ((RelationType) element).getName();
+            return ((RelationTypeToken) element).getName();
          }
       } else if (element instanceof RelationLink) {
          RelationLink link = (RelationLink) element;

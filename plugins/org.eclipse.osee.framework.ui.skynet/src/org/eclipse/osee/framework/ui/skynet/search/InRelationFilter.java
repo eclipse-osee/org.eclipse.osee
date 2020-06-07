@@ -14,7 +14,8 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
@@ -39,10 +40,10 @@ public class InRelationFilter extends SearchFilter {
       String typeName = relationTypeList.getCombo().getText();
       String sideName = relationSideList.getCombo().getText();
 
-      RelationType relationType = (RelationType) relationTypeList.getData(typeName);
+      RelationTypeToken relationType = (RelationTypeToken) relationTypeList.getData(typeName);
       Boolean sideAName = null;
       try {
-         sideAName = relationType.isSideAName(sideName);
+         sideAName = relationType.getSideName(RelationSide.SIDE_A).equals(sideName);
       } catch (OseeArgumentException ex) {
          // do nothing, user wants either
       }

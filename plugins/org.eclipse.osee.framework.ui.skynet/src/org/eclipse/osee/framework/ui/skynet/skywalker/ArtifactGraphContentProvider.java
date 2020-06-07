@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,8 +51,8 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       try {
          Artifact artifact = (Artifact) entity;
          for (Object obj : options.getSelectedRelTypes()) {
-            if (obj instanceof RelationType) {
-               RelationType relationType = (RelationType) obj;
+            if (obj instanceof RelationTypeToken) {
+               RelationTypeToken relationType = (RelationTypeToken) obj;
                if (options.isValidRelationType(relationType)) {
                   for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
                      if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
@@ -99,8 +99,8 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       } else {
          try {
             for (Object obj : options.getSelectedRelTypes()) {
-               if (obj instanceof RelationType) {
-                  RelationType relationType = (RelationType) obj;
+               if (obj instanceof RelationTypeToken) {
+                  RelationTypeToken relationType = (RelationTypeToken) obj;
                   if (options.isValidRelationType(relationType)) {
                      for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
                         if (options.isValidArtifactType(art.getArtifactType())) {

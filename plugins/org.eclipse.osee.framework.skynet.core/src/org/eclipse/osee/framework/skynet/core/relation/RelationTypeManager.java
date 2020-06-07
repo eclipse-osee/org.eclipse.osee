@@ -37,15 +37,7 @@ public class RelationTypeManager {
    /**
     * @return all Relation types
     */
-   public static Collection<RelationType> getAllTypes() {
-      return getCache().getAll();
-   }
-
-   public static RelationType getType(RelationTypeToken relationType) {
-      if (relationType instanceof RelationType) {
-         return (RelationType) relationType;
-      }
-
-      return getCache().get(relationType);
+   public static Collection<RelationTypeToken> getAllTypes() {
+      return getCacheService().getTokenService().getRelationTypes();
    }
 }

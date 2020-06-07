@@ -24,11 +24,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewer;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -82,7 +82,7 @@ public class AddRelationColumnAction extends Action {
 
    private Collection<RelationTypeSide> getInput() {
       List<RelationTypeSide> sides = new ArrayList<>();
-      for (RelationTypeToken type : RelationTypeManager.getAllTypes()) {
+      for (RelationTypeToken type : ServiceUtil.getTokenService().getRelationTypes()) {
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_A));
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_B));
       }

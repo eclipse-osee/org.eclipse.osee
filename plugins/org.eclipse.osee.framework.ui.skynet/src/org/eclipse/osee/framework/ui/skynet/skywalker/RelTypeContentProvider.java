@@ -17,8 +17,8 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
  * @author Donald G. Dunne
@@ -35,11 +35,11 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      if (parentElement instanceof RelationType) {
+      if (parentElement instanceof RelationTypeToken) {
 
          return new Object[] {
-            new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_A),
-            new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_B)};
+            new RelationTypeSide((RelationTypeToken) parentElement, RelationSide.SIDE_A),
+            new RelationTypeSide((RelationTypeToken) parentElement, RelationSide.SIDE_B)};
       }
       return new Object[] {};
    }
@@ -51,7 +51,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
 
    @Override
    public boolean hasChildren(Object element) {
-      return element instanceof RelationType;
+      return element instanceof RelationTypeToken;
    }
 
    @Override

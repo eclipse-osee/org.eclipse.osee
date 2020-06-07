@@ -30,14 +30,12 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -70,7 +68,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       menuItem = new MenuItem(parent, SWT.PUSH);
       menuItem.setText("&New Related");
       this.artifactExplorer = artifactExplorer;
-      tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
+      tokenService = ServiceUtil.getTokenService();
       menuItem.addSelectionListener(this);
    }
 
@@ -269,8 +267,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
    }
 
    private Collection<ArtifactTypeToken> getArtifactTypesFromRelationType(RelationTypeToken relationType) {
-      RelationTypeToken relType = RelationTypeManager.getType(relationType);
-      ArtifactTypeToken artifactTypeSideB = relType.getArtifactType(RelationSide.SIDE_B);
+      ArtifactTypeToken artifactTypeSideB = relationType.getArtifactType(RelationSide.SIDE_B);
       List<ArtifactTypeToken> artifactTypes = artifactTypeSideB.getAllDescendantTypes();
       artifactTypes.add(artifactTypeSideB);
       return artifactTypes;

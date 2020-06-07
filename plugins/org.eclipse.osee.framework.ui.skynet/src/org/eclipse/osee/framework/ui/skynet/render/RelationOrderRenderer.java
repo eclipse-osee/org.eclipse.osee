@@ -18,11 +18,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,14 +32,12 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class RelationOrderRenderer {
    private static final String NO_DATA_TAG = "None";
    private final ArtifactGuidToWordML guidResolver;
-   private final AbstractOseeCache<RelationType> relationCache;
 
-   public RelationOrderRenderer(AbstractOseeCache<RelationType> relationCache, ArtifactGuidToWordML guidResolver) {
-      this.relationCache = relationCache;
+   public RelationOrderRenderer(ArtifactGuidToWordML guidResolver) {
       this.guidResolver = guidResolver;
    }
 
-   private void writeTableRow(WordMLProducer writer, RelationType relationType, RelationSide side, String sorterName, List<String> orderedData) {
+   private void writeTableRow(WordMLProducer writer, RelationTypeToken relationType, RelationSide side, String sorterName, List<String> orderedData) {
       writer.startTableRow();
       String relationName = relationType.getName();
       String relationSideName = relationType.getSideName(side);
@@ -71,13 +66,12 @@ public class RelationOrderRenderer {
          } else {
             writer.addTableRow("Relation Type", "Side Name", "Side", "Order Type", "Related Artifacts");
             for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
-               RelationTypeToken relationTypeId = entry.getKey().getFirst();
+               RelationTypeToken relationType = entry.getKey().getFirst();
                RelationSide relationSide = entry.getKey().getSecond();
                RelationSorter sorterGuid = entry.getValue().getFirst();
 
                List<String> guidList = entry.getValue().getSecond();
                List<String> mlLinks = guidResolver.resolveAsOseeLinks(branch, guidList);
-               RelationType relationType = relationCache.get(relationTypeId);
                try {
                   writeTableRow(writer, relationType, relationSide, sorterGuid.toString(), mlLinks);
                } catch (Exception ex) {

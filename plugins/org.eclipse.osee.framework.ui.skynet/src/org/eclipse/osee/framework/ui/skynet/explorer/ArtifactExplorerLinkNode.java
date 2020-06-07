@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.explorer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactExplorerLinkNode {
    private final Artifact artifact;
-   private final RelationType relationType;
+   private final RelationTypeToken relationType;
    private final boolean parentIsOnSideA;
 
-   public ArtifactExplorerLinkNode(Artifact artifact, RelationType relationType, boolean parentIsOnSideA) {
+   public ArtifactExplorerLinkNode(Artifact artifact, RelationTypeToken relationType, boolean parentIsOnSideA) {
       this.artifact = artifact;
       this.relationType = relationType;
       this.parentIsOnSideA = parentIsOnSideA;
@@ -39,7 +39,7 @@ public class ArtifactExplorerLinkNode {
       return artifact;
    }
 
-   public RelationType getRelationType() {
+   public RelationTypeToken getRelationType() {
       return relationType;
    }
 

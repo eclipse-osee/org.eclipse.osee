@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -91,8 +90,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       if (config.isKeepRelationOrderSettings()) {
          RelationTypeSide relationTypeSide = CoreRelationTypes.DefaultHierarchical_Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
-         RelationSorter order =
-            data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
+         RelationSorter order = data.getCurrentSorterGuid(relationTypeSide, relationTypeSide.getSide());
          if (USER_DEFINED == order) {
             newArtifact.setRelationOrder(relationTypeSide, copiedChildren);
          } else {

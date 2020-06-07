@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
@@ -200,8 +199,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    private String renderRelationOrder(Artifact artifact) {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-      RelationOrderRenderer renderer =
-         new RelationOrderRenderer(ServiceUtil.getOseeCacheService().getRelationTypeCache(), guidResolver);
+      RelationOrderRenderer renderer = new RelationOrderRenderer(guidResolver);
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);

@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.renderer;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.CodeRequirement;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
@@ -24,14 +26,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -47,19 +44,11 @@ import org.junit.Test;
 public class RelationOrderRendererTest {
 
    private static RelationOrderRenderer renderer;
-   private static RelationType relType1;
-   private static RelationType relType2;
-   private static RelationType relType3;
 
    @BeforeClass
    public static void prepareTest() throws Exception {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
-
-      AbstractOseeCache<RelationType> typeCache = new RelationTypeCache();
-      relType1 = createRelationType(1, typeCache, "Relation 1", Artifact, Artifact);
-      relType2 = createRelationType(2, typeCache, "Relation 2", Artifact, Artifact);
-      relType3 = createRelationType(3, typeCache, "Relation 3", Artifact, Artifact);
-      renderer = new RelationOrderRenderer(typeCache, resolver);
+      renderer = new RelationOrderRenderer(resolver);
    }
 
    @Test
@@ -67,9 +56,9 @@ public class RelationOrderRendererTest {
       RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
 
-      addData(orderData, expectedData, relType1, "Relation 1_A", SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2", "3");
-      addData(orderData, expectedData, relType2, "Relation 2_B", SIDE_B, UNORDERED, "4", "5", "6");
-      addData(orderData, expectedData, relType3, "Relation 3_B", SIDE_B, USER_DEFINED, "7", "8", "9");
+      addData(orderData, expectedData, Allocation, SIDE_B, USER_DEFINED, "7", "8", "9");
+      addData(orderData, expectedData, CodeRequirement, SIDE_B, UNORDERED, "4", "5", "6");
+      addData(orderData, expectedData, DEFAULT_HIERARCHY, SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2", "3");
 
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
@@ -78,7 +67,7 @@ public class RelationOrderRendererTest {
    public void testRenderingEmptyGuids() {
       RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
-      addData(orderData, expectedData, relType1, "Relation 1_A", RelationSide.SIDE_A, USER_DEFINED);
+      addData(orderData, expectedData, DEFAULT_HIERARCHY, RelationSide.SIDE_A, USER_DEFINED);
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
@@ -89,12 +78,12 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter expectedSorterId, String... guids) {
       List<String> guidList = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, expectedSorterId, guidList);
       expectedData.add(new Object[] {
          relationType.getName(),
-         relationSideName,
+         relationType.getSideName(side),
          side.name().toLowerCase(),
          expectedSorterId,
          guidList});
@@ -164,13 +153,6 @@ public class RelationOrderRendererTest {
       WordMLProducer producer = new WordMLProducer(builder);
       renderer.toWordML(producer, null, orderData);
       Assert.assertEquals(expected, builder.toString());
-   }
-
-   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, ArtifactTypeToken artifactType1, ArtifactTypeToken artifactType2) {
-      RelationType type = new RelationType(id, name, name + "_A", name + "_B", artifactType1, artifactType2,
-         RelationTypeMultiplicity.MANY_TO_MANY, null);
-      cache.cache(type);
-      return type;
    }
 
    private static final class MockArtifactGuidResolver extends ArtifactGuidToWordML {

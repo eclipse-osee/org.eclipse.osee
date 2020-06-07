@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -48,6 +49,10 @@ public final class ServiceUtil {
 
    public static IOseeCachingService getOseeCacheService() {
       return getService(IOseeCachingService.class);
+   }
+
+   public static OrcsTokenService getTokenService() {
+      return getOseeCacheService().getTokenService();
    }
 
    public static PackageAdmin getPackageAdmin() {

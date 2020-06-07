@@ -26,12 +26,10 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -94,9 +92,9 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    private void resetRelationOrder(Artifact art) throws IOException {
       RelationOrderData currentData = new RelationOrderFactory().createRelationOrderData(art);
       for (Pair<RelationTypeToken, RelationSide> typeSide : currentData.getAvailableTypeSides()) {
-         RelationType type;
+         RelationTypeToken type;
          try {
-            type = RelationTypeManager.getType(typeSide.getFirst());
+            type = typeSide.getFirst();
          } catch (OseeTypeDoesNotExist ex) {
             logf("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName());
             return;

@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -163,7 +162,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return false;
          }
-      } else if (element instanceof RelationType) {
+      } else if (element instanceof RelationTypeToken) {
          return true;
       }
 

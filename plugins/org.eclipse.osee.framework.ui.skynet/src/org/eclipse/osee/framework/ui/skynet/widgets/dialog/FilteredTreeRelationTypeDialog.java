@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -37,7 +37,7 @@ public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
    private Collection<? extends RelationTypeToken> selectable;
 
    public FilteredTreeRelationTypeDialog(String title, String message) {
-      this(title, message, RelationTypeManager.getAllTypes(), new StringLabelProvider());
+      this(title, message, ServiceUtil.getTokenService().getRelationTypes(), new StringLabelProvider());
    }
 
    public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends RelationTypeToken> selectable, ILabelProvider labelProvider) {
