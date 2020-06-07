@@ -164,11 +164,6 @@ public class CreateTasksOperation {
                }
 
                for (JaxRelation relation : task.getRelations()) {
-                  RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
-                  if (relationType == null) {
-                     results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
-                        relation.getRelationTypeName(), task);
-                  }
                   if (relation.getRelatedIds().isEmpty()) {
                      results.errorf("Relation [%s] Ids must be suplied Task creation in %s\n",
                         relation.getRelationTypeName(), task);
@@ -204,15 +199,6 @@ public class CreateTasksOperation {
          }
       }
       return teamWf;
-   }
-
-   private RelationTypeToken getRelationType(AtsApi atsApi, String relationTypeName) {
-      for (RelationTypeToken relation : atsApi.getStoreService().getRelationTypes()) {
-         if (relation.getName().equals(relationTypeName)) {
-            return relation;
-         }
-      }
-      return RelationTypeToken.SENTINEL;
    }
 
    public List<JaxAtsTask> getTasks() {
@@ -306,11 +292,8 @@ public class CreateTasksOperation {
             }
 
             for (JaxRelation relation : jaxTask.getRelations()) {
-               RelationTypeToken relationType = getRelationType(atsApi, relation.getRelationTypeName());
-               if (relationType == null) {
-                  results.errorf("Relation Type [%s] not valid for Task creation in %s\n",
-                     relation.getRelationTypeName(), task);
-               }
+               RelationTypeToken relationType = atsApi.tokenService().getRelationType(relation.getRelationTypeName());
+
                Collection<IAtsWorkItem> items = atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
                   relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItems();
                RelationTypeSide side = null;

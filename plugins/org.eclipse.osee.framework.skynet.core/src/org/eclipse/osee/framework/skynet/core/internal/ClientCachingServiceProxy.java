@@ -132,6 +132,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       return caches;
    }
 
+   @Override
    public OrcsTokenService getTokenService() {
       return tokenService;
    }

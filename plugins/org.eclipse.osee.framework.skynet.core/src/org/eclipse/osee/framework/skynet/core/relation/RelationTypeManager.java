@@ -13,11 +13,8 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
@@ -25,19 +22,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  * @author Andrew M. Finkbeiner
  */
 public class RelationTypeManager {
-
-   private static IOseeCachingService getCacheService() {
-      return ServiceUtil.getOseeCacheService();
-   }
-
    public static AbstractOseeCache<RelationType> getCache() {
-      return getCacheService().getRelationTypeCache();
-   }
-
-   /**
-    * @return all Relation types
-    */
-   public static Collection<RelationTypeToken> getAllTypes() {
-      return getCacheService().getTokenService().getRelationTypes();
+      return ServiceUtil.getOseeCacheService().getRelationTypeCache();
    }
 }

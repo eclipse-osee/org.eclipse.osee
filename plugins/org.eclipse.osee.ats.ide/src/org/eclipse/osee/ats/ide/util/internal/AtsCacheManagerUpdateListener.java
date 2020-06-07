@@ -94,7 +94,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-
          }
       }
    }

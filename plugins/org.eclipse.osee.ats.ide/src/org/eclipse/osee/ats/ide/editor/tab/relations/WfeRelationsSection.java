@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeDragAndDrop;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -74,19 +74,19 @@ public class WfeRelationsSection extends RelationsFormSection implements IWfeEve
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {
       @Override
       public boolean select(Viewer viewer, Object parentElement, Object element) {
-         if (element instanceof RelationType) {
-            return !filteredRelationTypeNames.contains(((RelationType) element).getName());
+         if (element instanceof RelationTypeToken) {
+            return !filteredRelationTypeNames.contains(((RelationTypeToken) element).getName());
          }
          return true;
       }
    };
 
-   private static List<String> filteredRelationTypeNames =
-      Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWorkflow.getName(),
-         AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
-         AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
-         CoreRelationTypes.DefaultHierarchical_Child.getName(), CoreRelationTypes.Users_Artifact.getName());
+   private static List<String> filteredRelationTypeNames = Arrays.asList(
+      AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWorkflow.getName(),
+      AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
+      AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
+      AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
+      CoreRelationTypes.DefaultHierarchical_Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
    @Override
    public IAtsWorkItem getWorkItem() {

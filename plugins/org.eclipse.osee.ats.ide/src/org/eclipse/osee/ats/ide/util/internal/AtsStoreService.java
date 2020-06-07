@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -48,8 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -268,11 +265,6 @@ public class AtsStoreService implements IAtsStoreService {
          arts.addAll(getDescendants(child));
       }
       return arts;
-   }
-
-   @Override
-   public Collection<RelationTypeToken> getRelationTypes() {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(RelationTypeManager.getAllTypes());
    }
 
    @Override
