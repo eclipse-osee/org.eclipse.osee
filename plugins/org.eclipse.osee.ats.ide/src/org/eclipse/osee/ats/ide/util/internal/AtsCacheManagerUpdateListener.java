@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
@@ -53,6 +53,11 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       AtsRelationTypes.TeamActionableItem_TeamDefinition.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
       AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private Boolean singleServerDeployment;
+   private OrcsTokenService tokenService;
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
@@ -81,7 +86,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          // update cache
          for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
             try {
-               RelationTypeToken typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
+               RelationTypeToken typeByGuid = tokenService.getRelationType(guidRel.getRelTypeGuid());
                if (configReloadRelationTypeGuids.contains(typeByGuid.getId())) {
                   AtsClientService.get().reloadServerAndClientCaches();
                   break;

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -75,18 +74,6 @@ public class RelationTypeManager {
     */
    public static Collection<RelationType> getAllTypes() {
       return getCache().getAll();
-   }
-
-   public static RelationTypeToken getTypeByGuid(Long guid) {
-      RelationTypeToken relationType = getCache().getByGuid(guid);
-      if (relationType == null) {
-         getCacheService().reloadTypes();
-         relationType = getCache().getByGuid(guid);
-         if (relationType == null) {
-            throw new OseeTypeDoesNotExist("The relation with type guid [%s] does not exist", guid);
-         }
-      }
-      return relationType;
    }
 
    public static RelationType getType(RelationTypeToken relationType) {

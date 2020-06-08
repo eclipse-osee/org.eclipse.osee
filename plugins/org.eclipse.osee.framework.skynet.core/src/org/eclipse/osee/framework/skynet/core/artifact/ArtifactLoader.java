@@ -25,20 +25,21 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -58,19 +59,8 @@ public final class ArtifactLoader {
    private static final ConcurrentHashMap<ArtifactToken, ReentrantLock> loadingActiveMap =
       new ConcurrentHashMap<>(1000);
 
-   /**
-    * (re)loads the artifacts selected by sql and then returns them in a list
-    */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, LoadLevel loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted, boolean isArchived) {
-      List<ArtifactToken> toLoad = selectArtifacts(sql, queryParameters, artifactCountEstimate);
-      List<Artifact> artifacts =
-         loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId, isArchived);
-
-      if (confirmer != null) {
-         confirmer.canProceed(artifacts.size());
-      }
-      return new LinkedList<>(artifacts);
-   }
+   private static final OrcsTokenService tokenService =
+      OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
 
    public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
@@ -81,11 +71,6 @@ public final class ArtifactLoader {
       for (ArtifactId artId : new HashSet<>(artIds)) {
          toLoad.add(ArtifactToken.valueOf(artId, branch));
       }
-      return loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
-         BranchManager.isArchived(branch));
-   }
-
-   public static List<Artifact> loadArtifacts(List<ArtifactToken> toLoad, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
       return loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
          BranchManager.isArchived(branch));
    }
@@ -314,22 +299,6 @@ public final class ArtifactLoader {
    }
 
    /**
-    * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
-    */
-   public static List<ArtifactToken> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) {
-      long time = System.currentTimeMillis();
-      List<ArtifactToken> toLoad = new LinkedList<>();
-
-      ConnectionHandler.getJdbcClient().runQuery(
-         stmt -> toLoad.add(ArtifactToken.valueOf(stmt.getLong("art_id"), BranchId.valueOf(stmt.getLong("branch_id")))),
-         artifactCountEstimate, sql, queryParameters);
-
-      OseeLog.logf(Activator.class, Level.FINE, "Artifact Selection Time [%s], [%d] artifacts selected",
-         Lib.getElapseString(time), toLoad.size());
-      return toLoad;
-   }
-
-   /**
     * This method is called only after the cache has been checked
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) {
@@ -387,7 +356,7 @@ public final class ArtifactLoader {
       }
 
       AttributeLoader.loadAttributeData(queryId, tempCache, historical, allowDeleted, loadLevel, isArchived);
-      RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel);
+      RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel, tokenService);
 
       if (!historical) {
          for (Artifact artifact : artifacts) {

@@ -65,12 +65,14 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -81,6 +83,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -89,7 +92,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -862,6 +864,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
     * Handle Events for attributes change to this WorkItem or relations against this WorkItem
     */
    public void handleEvent(ArtifactEvent artifactEvent) {
+      OrcsTokenService tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
+
       // Only want to call artHandlers once if an artifact changed for any reason
       Set<String> handledArts = new HashSet<>();
       for (EventBasicGuidArtifact eArt : artifactEvent.getArtifacts()) {
@@ -879,8 +883,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
             getWorkItem().getGuid())) {
 
-            List<IWfeEventHandle> handlers =
-               relHandlers.getValues(RelationTypeManager.getTypeByGuid(eRel.getRelTypeGuid()));
+            List<IWfeEventHandle> handlers = relHandlers.getValues(tokenService.getRelationType(eRel.getRelTypeGuid()));
             if (handlers != null) {
                for (IWfeEventHandle handler : handlers) {
                   Displays.ensureInDisplayThread(new Runnable() {

@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,9 +33,11 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -62,8 +65,10 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public final class RevisionChangeLoader {
 
+   private final OrcsTokenService tokenService;
+
    protected RevisionChangeLoader() {
-      super();
+      this.tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
    }
 
    /**
@@ -180,7 +185,7 @@ public final class RevisionChangeLoader {
                break;
             case relation:
                RelationChangeAcquirer relationChangeAcquirer = new RelationChangeAcquirer(sourceBranch, transactionId,
-                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds, tokenService);
 
                changeBuilders = relationChangeAcquirer.acquireChanges();
                break;

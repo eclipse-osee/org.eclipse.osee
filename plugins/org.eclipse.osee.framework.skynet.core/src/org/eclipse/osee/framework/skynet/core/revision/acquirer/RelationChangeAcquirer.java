@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -37,9 +37,11 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class RelationChangeAcquirer extends ChangeAcquirer {
+   private final OrcsTokenService tokenService;
 
-   public RelationChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<ArtifactId> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<ArtifactId> newAndDeletedArtifactIds) {
+   public RelationChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<ArtifactId> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<ArtifactId> newAndDeletedArtifactIds, OrcsTokenService tokenService) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -88,7 +90,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getChangeBuilders().add(new RelationChangeBuilder(getSourceBranch(),
                   ArtifactTypeId.valueOf(chStmt.getLong("art_type_id")), GammaId.valueOf(chStmt.getLong("gamma_id")),
                   aArtId, txDelta, modificationType, ArtifactId.valueOf(bArtId), relLinkId, rationale,
-                  RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id")), !hasBranch));
+                  tokenService.getRelationType(chStmt.getLong("rel_link_type_id")), !hasBranch));
             }
          }
          if (getMonitor() != null) {

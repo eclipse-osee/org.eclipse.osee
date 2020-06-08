@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -40,10 +41,12 @@ import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -57,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.change.TupleChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -69,11 +71,13 @@ public class ChangeDataLoader extends AbstractOperation {
 
    private final TransactionDelta txDelta;
    private final Collection<Change> changes;
+   private final OrcsTokenService tokenService;
 
    public ChangeDataLoader(Collection<Change> changes, TransactionDelta txDelta) {
       super("Compute Changes", Activator.PLUGIN_ID);
       this.changes = changes;
       this.txDelta = txDelta;
+      this.tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
    }
 
    @Override
@@ -274,7 +278,7 @@ public class ChangeDataLoader extends AbstractOperation {
             }
             break;
          case RELATION_CHANGE:
-            RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId().getId());
+            RelationTypeToken relationType = tokenService.getRelationType(item.getItemTypeId().getId());
 
             TransactionId transaction = txDelta.getStartTx();
             if (txDelta.areOnTheSameBranch()) {

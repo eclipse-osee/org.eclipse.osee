@@ -21,13 +21,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -47,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeRow;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -355,7 +356,7 @@ public final class TransactionManager {
          art.getBranch(), art, trans);
    }
 
-   public static List<RelationRow> getRelationsFromArtifactAndTransaction(Artifact art, TransactionId trans) {
+   private static List<RelationRow> getRelationsFromArtifactAndTransaction(Artifact art, TransactionId trans) {
       List<RelationRow> relationChanges = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -386,7 +387,8 @@ public final class TransactionManager {
    }
 
    private static RelationRow loadRelationChange(JdbcStatement chStmt) {
-      RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
+      OrcsTokenService tokenService = OsgiUtil.getService(TransactionManager.class, OrcsTokenService.class);
+      RelationTypeToken relationType = tokenService.getRelationType(chStmt.getLong("rel_link_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Long aArtId = Long.valueOf(chStmt.getInt("a_art_id"));

@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -74,7 +75,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    private EventTransport eventTransport;
    private ConnectionListenerImpl connectionStatus;
    private ExecutorService executor;
-
+   private OrcsTokenService tokenService;
    private final List<ServiceReference<IEventListener>> pendingServices = new CopyOnWriteArrayList<>();
 
    private Thread thread;
@@ -86,6 +87,10 @@ public class OseeEventServiceImpl implements OseeEventService {
       // TODO Fix initialization of OseeEventManager - These should not be singletons
       this.preferences = Activator.getEventPreferences();
       this.listeners = Activator.getEventListeners();
+   }
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
    }
 
    public void setOseeCoreModelEventService(IOseeCoreModelEventService messagingService) {
@@ -207,7 +212,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       handlers.addLocalHandler(TransactionEvent.class, new TransactionEventHandler());
       handlers.addLocalHandler(TopicEvent.class, new TopicLocalEventHandler());
 
-      handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler());
+      handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler(tokenService));
       handlers.addRemoteHandler(RemoteBranchEvent1.class, new BranchRemoteEventHandler());
       handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler());
       handlers.addRemoteHandler(RemoteTopicEvent1.class, new TopicRemoteEventHandler());

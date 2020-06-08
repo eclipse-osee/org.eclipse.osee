@@ -47,11 +47,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class RevertDuplicateAtsTransitionByIdAction extends Action {
 
    public RevertDuplicateAtsTransitionByIdAction() {
-      this("Revert Duplicate ATS Transition by ID");
-   }
-
-   public RevertDuplicateAtsTransitionByIdAction(String name) {
-      super(name);
+      super("Revert Duplicate ATS Transition by ID");
       setToolTipText(getText());
    }
 

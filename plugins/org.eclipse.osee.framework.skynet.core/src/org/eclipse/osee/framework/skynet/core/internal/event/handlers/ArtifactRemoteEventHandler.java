@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -46,12 +47,16 @@ import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePersistEvent1> {
+   private final OrcsTokenService tokenService;
+
+   public ArtifactRemoteEventHandler(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    @Override
    public void handle(Transport transport, Sender sender, RemotePersistEvent1 remoteEvent) {
@@ -177,7 +182,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
          try {
             EventUtil.eventLog(String.format("REM: updateRelation -> [%s]", guidArt));
 
-            RelationTypeToken relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
+            RelationTypeToken relationType = tokenService.getRelationType(guidArt.getRelTypeGuid());
             Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA());
             Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB());
             // Nothing in cache, ignore this relation only
