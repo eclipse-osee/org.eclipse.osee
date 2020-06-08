@@ -153,7 +153,10 @@ public class NewRoleDialog extends MessageDialog {
    public Collection<AtsUser> getUsers() {
       List<AtsUser> selected = new ArrayList<AtsUser>();
       for (User user : usersLink.getSelectedUsers()) {
-         AtsClientService.get().getUserService().getUserById(user);
+         AtsUser aUser = AtsClientService.get().getUserService().getUserById(user);
+         if (aUser != null) {
+            selected.add(aUser);
+         }
       }
       return selected;
    }
