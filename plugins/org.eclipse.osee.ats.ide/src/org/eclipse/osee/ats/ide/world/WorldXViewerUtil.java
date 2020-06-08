@@ -131,7 +131,6 @@ public class WorldXViewerUtil {
       }
    }
 
-   @SuppressWarnings("unchecked")
    private static boolean isInUserGroup(SkynetXViewerFactory factory) {
       Collection<IUserGroupArtifactToken> userGroups = factory.getUserGroups();
       for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {

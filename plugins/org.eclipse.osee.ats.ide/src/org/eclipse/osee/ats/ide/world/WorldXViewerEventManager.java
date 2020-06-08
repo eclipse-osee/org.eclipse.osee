@@ -64,9 +64,12 @@ public class WorldXViewerEventManager {
       notificationHandler.remove(iWorldEventHandler);
    }
 
+   public static Collection<IWorldViewerEventHandler> getHandlers() {
+      return notificationHandler.handlers;
+   }
+
    private static final class NotificationHandler implements IArtifactEventListener {
-      private final Collection<IWorldViewerEventHandler> handlers =
-         new CopyOnWriteArrayList<>();
+      private final Collection<IWorldViewerEventHandler> handlers = new CopyOnWriteArrayList<>();
 
       public NotificationHandler() {
          OseeEventManager.addListener(this);

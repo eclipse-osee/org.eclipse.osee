@@ -563,6 +563,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             continue;
          }
          boolean isCurrentState = wfeSection.isCurrentState();
+         System.err.println("curr = " + isCurrentState + " - " + wfeSection.getStatePage().getName());
          if (isCurrentState) {
             wfeSection.expand();
          } else {

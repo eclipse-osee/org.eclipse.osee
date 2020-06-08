@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.core.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -79,14 +78,7 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
    @Override
    public void registerAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener, AtsTopicEvent... events) {
       for (AtsTopicEvent event : events) {
-         List<IAtsWorkItemTopicEventListener> listeners = workItemEventListeners.getValues(event.getTopic());
-         if (listeners == null) {
-            listeners = new LinkedList<IAtsWorkItemTopicEventListener>();
-            workItemEventListeners.put(event.getTopic(), listeners);
-         }
-         if (!listeners.contains(listener)) {
-            listeners.add(listener);
-         }
+         workItemEventListeners.put(event.getTopic(), listener);
       }
    }
 
@@ -94,8 +86,8 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
    public void deRegisterAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener) {
       for (Entry<String, List<IAtsWorkItemTopicEventListener>> entry : workItemEventListeners.entrySet()) {
          List<IAtsWorkItemTopicEventListener> listeners = entry.getValue();
-         if (!listeners.contains(listener)) {
-            listeners.remove(listener);
+         if (listeners.contains(listener)) {
+            workItemEventListeners.removeValue(entry.getKey(), listener);
          }
       }
    }
