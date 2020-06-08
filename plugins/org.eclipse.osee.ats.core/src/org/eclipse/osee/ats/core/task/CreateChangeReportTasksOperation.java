@@ -25,15 +25,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.config.WorkType;
-import org.eclipse.osee.ats.api.config.tx.AtsTeamDefinitionArtifactToken;
-import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
-import org.eclipse.osee.ats.api.task.create.ChangeReportOptions;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptionsToTeam;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
@@ -89,6 +86,7 @@ public class CreateChangeReportTasksOperation {
    private final AtsTaskDefToken taskDefToken;
    private final AtsApi atsApi;
    private final ChangeReportTaskData crtd;
+   private final static String TASK_GEN_TAG = "taskgen";
 
    public CreateChangeReportTasksOperation(ChangeReportTaskData crtd, AtsApi atsApi, IAtsChangeSet changes) {
       this.crtd = crtd;
@@ -121,15 +119,19 @@ public class CreateChangeReportTasksOperation {
             rd.errorf("No CreateTasksDefintiion found for Task Def id %s\n", taskDefToken.toStringWithId());
             return crtd;
          }
+         // Multiple TaskSetDefinitions can be declared, ensure this one is applicable to be run
          CreateTasksDefinition setDef = taskSetDefinition.getCreateTasksDef();
+         if (!setDef.getHelper().isApplicable(hostTeamWf, atsApi)) {
+            rd.logf("CreateTaskSetDefinition not applicable for %s", hostTeamWf.toStringWithId());
+            return crtd;
+         }
          rd.logf("Creating tasks for task definition %s\n", setDef.toStringWithId());
 
          crtd.setSetDef(setDef);
 
          // Skip if the program team defs doesn't contain host wf team def
          IAtsProgram program = atsApi.getProgramService().getProgram(hostTeamWf);
-         IAtsTeamDefinition fromSiblingTeamDef =
-            atsApi.getTeamDefinitionService().getTeamDefinitionById(setDef.getChgRptOptions().getFromSiblingTeamDef());
+         IAtsTeamDefinition fromSiblingTeamDef = getFromSiblingTeamDef(setDef, program, rd);
          if (!atsApi.getProgramService().getTeamDefs(program).contains(fromSiblingTeamDef)) {
             rd.logf("Host Team Wf Team Definition %s does not belong to Program %s Team Definitions; skipping",
                hostTeamWf.getTeamDefinition().toStringWithId(), program.toStringWithId());
@@ -141,11 +143,9 @@ public class CreateChangeReportTasksOperation {
          if (crtd.getChgRptTeamWf().isValid()) {
             chgRptTeamWf = atsApi.getQueryService().getTeamWf(crtd.getHostTeamWf());
          } else {
-            ChangeReportOptions opts = setDef.getChgRptOptions();
-            IAtsTeamDefinitionArtifactToken fromSiblingTeam =
-               AtsTeamDefinitionArtifactToken.valueOf(opts.getFromSiblingTeamDef());
+            IAtsTeamDefinition fromSiblingTeamD = getFromSiblingTeamDef(setDef, program, rd);
             Collection<IAtsTeamWorkflow> siblings =
-               atsApi.getWorkItemService().getSiblings(hostTeamWf, fromSiblingTeam);
+               atsApi.getWorkItemService().getSiblings(hostTeamWf, fromSiblingTeamD);
             if (siblings.size() > 1 || siblings.isEmpty()) {
                rd.errorf("Expeceted one source sibling workflow, found %s\n", siblings);
                return crtd;
@@ -169,8 +169,8 @@ public class CreateChangeReportTasksOperation {
          }
          rd.logf("For Sibling Team AIs [%s]\n", Collections.toString(", ", toSiblingTeamDatas));
 
-         boolean reportOnly =
-            getTaskDefinition().getChgRptOptions().getCreateOptions().contains(CreateTasksOption.ReportOnly);
+         boolean reportOnly = crtd.isReportOnly() || getTaskDefinition().getChgRptOptions().getCreateOptions().contains(
+            CreateTasksOption.ReportOnly);
          crtd.setReportOnly(reportOnly);
          rd.logf("Report Only %s\n", reportOnly);
 
@@ -179,35 +179,38 @@ public class CreateChangeReportTasksOperation {
             changes = atsApi.createChangeSet(setDef.getName());
          }
          for (ChangeReportOptionsToTeam toSiblingTeamDef : toSiblingTeamDatas) {
-            IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(
-               ArtifactId.valueOf(toSiblingTeamDef.getTeamId()));
-            rd.logf("\n\nHandling Team %s\n", teamDef.toStringWithId());
+            IAtsTeamDefinition toTeamDef = getToTeamDef(setDef, program, rd, toSiblingTeamDef);
+            if (toTeamDef == null) {
+               rd.errorf("\n\nCan't determine toTeamDef from Team Def or Work Type %s\n", toSiblingTeamDef);
+               return crtd;
+            }
+            rd.logf("\n\nHandling Team %s\n", toTeamDef.toStringWithId());
 
             ChangeReportTaskTeamWfData crttwd = new ChangeReportTaskTeamWfData();
             crtd.addChangeReportData(crttwd);
             crttwd.setReportOnly(reportOnly);
             crttwd.setRd(rd);
             crttwd.setChgRptTeamWf(chgRptTeamWf.getStoreObject());
-            crttwd.setDestTeamDef(teamDef.getStoreObject());
+            crttwd.setDestTeamDef(toTeamDef.getStoreObject());
 
             WorkType workType = WorkType.None;
-            Collection<WorkType> workTypes = teamDef.getWorkTypes();
-            if (workTypes.contains(WorkType.Code) || teamDef.getName().contains("Code")) {
+            Collection<WorkType> workTypes = toTeamDef.getWorkTypes();
+            if (workTypes.contains(WorkType.Code) || toTeamDef.getName().contains("Code")) {
                workType = WorkType.Code;
-            } else if (workTypes.contains(WorkType.Test) || teamDef.getName().contains("Test")) {
+            } else if (workTypes.contains(WorkType.Test) || toTeamDef.getName().contains("Test")) {
                workType = WorkType.Test;
             }
             if (workType == WorkType.None) {
-               rd.errorf("\n\nCan't determine Work Type from Team Def or Name%s\n", teamDef.toStringWithId());
+               rd.errorf("\n\nCan't determine Work Type from Team Def or Name %s\n", toTeamDef.toStringWithId());
                return crtd;
             }
             crttwd.setWorkType(workType);
 
             IAtsVersion targetedVersion = atsApi.getVersionService().getTargetedVersion(chgRptTeamWf);
-            IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(toSiblingTeamDef.getAiId());
+            IAtsActionableItem ai = getToSiblingAi(setDef, program, rd, toSiblingTeamDef);
             if (ai == null || ai.isInvalid()) {
-               rd.errorf("Actionable Item  %s is invalid for team %s\n", toSiblingTeamDef.getAiId(),
-                  toSiblingTeamDef.getTeamId());
+               rd.errorf("Actionable Item  %s is invalid for team %s or work type %s\n", toSiblingTeamDef.getAiId(),
+                  toSiblingTeamDef.getTeamId(), toSiblingTeamDef.getWorkType());
                return crtd;
             }
 
@@ -236,7 +239,7 @@ public class CreateChangeReportTasksOperation {
 
             // Get or create destTeamWf
             IAtsTeamWorkflow destTeamWf =
-               ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, teamDef);
+               ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, toTeamDef);
             if (destTeamWf == null) {
                CreateTasksWorkflow workflowCreator =
                   new CreateTasksWorkflow(hostTeamWf.getName(), setDef.getChgRptOptions().getCreateOptions(), true,
@@ -321,9 +324,7 @@ public class CreateChangeReportTasksOperation {
                }
             }
 
-            if (reportOnly) {
-               return crtd;
-            } else if (!crttwd.getNewTaskData().getNewTasks().isEmpty()) {
+            if (!reportOnly && !crttwd.getNewTaskData().getNewTasks().isEmpty()) {
                crttwd.getNewTaskData().setAsUserId(crtd.getAsUser().getUserId());
                crttwd.getNewTaskData().setCommitComment("Create Change Report Tasks");
                crttwd.getNewTaskData().setTeamWfId(destTeamWf.getId());
@@ -346,7 +347,9 @@ public class CreateChangeReportTasksOperation {
             }
          }
 
-         if (!reportOnly && changes != null) {
+         if (reportOnly) {
+            return crtd;
+         } else if (changes != null) {
             TransactionId transId = changes.executeIfNeeded();
             if (transId != null && transId.isValid()) {
                crtd.setTransaction(transId);
@@ -359,6 +362,89 @@ public class CreateChangeReportTasksOperation {
          crtd.results.errorf("Exception creating tasks %s", Lib.exceptionToString(ex));
       }
       return crtd;
+   }
+
+   private IAtsActionableItem getToSiblingAi(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, ChangeReportOptionsToTeam toSiblingTeamDef) {
+      IAtsActionableItem toSiblingAi = null;
+      if (Strings.isNumeric(toSiblingTeamDef.getAiId())) {
+         toSiblingAi = atsApi.getActionableItemService().getActionableItem(toSiblingTeamDef.getAiId());
+      } else {
+         toSiblingAi = getAiFromWorkType(setDef, program, rd, toSiblingTeamDef.getWorkType());
+      }
+      return toSiblingAi;
+   }
+
+   private IAtsActionableItem getAiFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, WorkType workType) {
+      if (workType == null) {
+         rd.errorf("Team Definition and Work Type invalid in CreateTaskDefinition\n");
+         return null;
+      }
+      Collection<IAtsActionableItem> ais =
+         atsApi.getProgramService().getAis(program, setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+      if (ais.size() == 0) {
+         rd.errorf("No Actionable Item of Work Type [%s] found\n",
+            setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+         return null;
+      } else if (ais.size() > 1) {
+         // Attempt to find configured taskgen team def
+         for (IAtsActionableItem ai : ais) {
+            if (ai.hasTag(TASK_GEN_TAG)) {
+               return ai;
+            }
+         }
+         rd.errorf("Multiple Actionable Item of Work Type [%s] found, only one should be\n",
+            setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+         return null;
+      }
+      return ais.iterator().next();
+   }
+
+   private IAtsTeamDefinition getToTeamDef(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, ChangeReportOptionsToTeam toSiblingTeamDef) {
+      IAtsTeamDefinition toTeamDef = null;
+      if (Strings.isNumeric(toSiblingTeamDef.getTeamId())) {
+         toTeamDef =
+            atsApi.getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(toSiblingTeamDef.getTeamId()));
+      } else {
+         WorkType workType = toSiblingTeamDef.getWorkType();
+         toTeamDef = getTeamDefFromWorkType(setDef, program, rd, workType);
+      }
+      return toTeamDef;
+   }
+
+   private IAtsTeamDefinition getFromSiblingTeamDef(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd) {
+      ArtifactToken fromTeamDefTok = setDef.getChgRptOptions().getFromSiblingTeamDef();
+      IAtsTeamDefinition fromTeamDef = null;
+      if (fromTeamDefTok == null) {
+         WorkType workType = setDef.getChgRptOptions().getFromSiblingTeamDefWorkType();
+         fromTeamDef = getTeamDefFromWorkType(setDef, program, rd, workType);
+      } else {
+         fromTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(fromTeamDefTok);
+      }
+      return fromTeamDef;
+   }
+
+   private IAtsTeamDefinition getTeamDefFromWorkType(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, WorkType workType) {
+      if (workType == null) {
+         rd.errorf("Team Definition and Work Type invalid in CreateTaskDefinition\n");
+         return null;
+      }
+      Collection<IAtsTeamDefinition> teamDefs = atsApi.getProgramService().getTeamDefs(program, workType);
+      if (teamDefs.size() == 0) {
+         rd.errorf("No Team Definitions of Work Type [%s] found\n",
+            setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+         return null;
+      } else if (teamDefs.size() > 1) {
+         // Attempt to find configured taskgen team def
+         for (IAtsTeamDefinition teamDef : teamDefs) {
+            if (teamDef.hasTag(TASK_GEN_TAG)) {
+               return teamDef;
+            }
+         }
+         rd.errorf("Multiple Team Definitions of Work Type [%s] found, only one should be\n",
+            setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+         return null;
+      }
+      return teamDefs.iterator().next();
    }
 
    private void addToNewTaskData(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {

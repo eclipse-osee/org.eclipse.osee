@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -77,32 +79,42 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
          return;
       }
 
+      final IAtsTeamWorkflow teamWf = this.hostTeamWf;
       Job job = new Job(name) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
 
             for (AtsTaskDefToken taskDefToken : taskDefTokens) {
-               ChangeReportTaskData data = new ChangeReportTaskData();
-               data.setTaskDefToken(taskDefToken);
-               data.setHostTeamWf(hostTeamWf);
-               data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
-               data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
-               XResultDataUI.report(data.getResults(), getName());
+               // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
+               CreateTasksDefinitionBuilder taskSetDefinition =
+                  AtsClientService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
+               if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(teamWf,
+                  AtsClientService.get())) {
 
-               // Reload team wfs if tasks created
-               if (data.getTransaction() != null && data.getTransaction().isValid()) {
-                  final ChangeReportTaskData fData = data;
-                  Thread reload = new Thread(new Runnable() {
-                     @Override
-                     public void run() {
-                        for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
-                           ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
-                              AtsClientService.get().getAtsBranch());
+                  ChangeReportTaskData data = new ChangeReportTaskData();
+                  data.setTaskDefToken(taskDefToken);
+                  data.setHostTeamWf(hostTeamWf);
+                  data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
+                  // Un-Comment to debug
+                  //                  data.setReportOnly(true);
+                  data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
+                  XResultDataUI.report(data.getResults(), getName());
+
+                  // Reload team wfs if tasks created
+                  if (data.getTransaction() != null && data.getTransaction().isValid()) {
+                     final ChangeReportTaskData fData = data;
+                     Thread reload = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                           for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
+                              ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
+                                 AtsClientService.get().getAtsBranch());
+                           }
                         }
-                     }
-                  });
-                  reload.start();
+                     });
+                     reload.start();
+                  }
                }
             }
             return Status.OK_STATUS;

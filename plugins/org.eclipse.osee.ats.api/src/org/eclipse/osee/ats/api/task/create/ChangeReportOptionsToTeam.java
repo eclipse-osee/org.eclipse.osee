@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.task.create;
 
+import org.eclipse.osee.ats.api.config.WorkType;
+
 /**
  * Data for creation of workflow/tasks for certain team
  *
@@ -22,6 +24,7 @@ public class ChangeReportOptionsToTeam {
 
    private String teamId;
    private String aiId;
+   private WorkType workType;
    private ChangeReportTaskNameProviderToken nameProviderId;
 
    public ChangeReportOptionsToTeam() {
@@ -48,7 +51,7 @@ public class ChangeReportOptionsToTeam {
    public String toString() {
       String nameProviderStr =
          nameProviderId == null ? IAtsChangeReportTaskNameProvider.class.getSimpleName() : nameProviderId.toStringWithId();
-      return "ChangeReportOptionsToTeam [teamId=" + teamId + ", aiId=" + aiId + ", nameProvider=" + nameProviderStr + "]";
+      return "ChangeReportOptionsToTeam [teamId=" + teamId + ", aiId=" + aiId + ", workType=" + workType + ", " + "nameProvider=" + nameProviderStr + "]";
    }
 
    public ChangeReportTaskNameProviderToken getNameProviderId() {
@@ -57,6 +60,14 @@ public class ChangeReportOptionsToTeam {
 
    public void setNameProviderId(ChangeReportTaskNameProviderToken nameProviderId) {
       this.nameProviderId = nameProviderId;
+   }
+
+   public WorkType getWorkType() {
+      return workType;
+   }
+
+   public void setWorkType(WorkType workType) {
+      this.workType = workType;
    }
 
 }

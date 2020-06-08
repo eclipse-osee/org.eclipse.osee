@@ -118,7 +118,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       IEventListener listener = getService(reference);
       EventQosType qos = getEventQosType(reference);
 
-      EventUtil.eventLog("registering event listener - qos[%s] name[%s]", reference.getProperty("component.name"));
+      EventUtil.eventLog("registering event listener - name[%s]", reference.getProperty("component.name"));
       addListener(qos, listener);
    }
 
@@ -126,7 +126,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       IEventListener listener = getService(reference);
       EventQosType qos = getEventQosType(reference);
 
-      EventUtil.eventLog("deregistering event listener - qos[%s] name[%s]", reference.getProperty("component.name"));
+      EventUtil.eventLog("deregistering event listener - name[%s]", reference.getProperty("component.name"));
       removeListener(qos, listener);
    }
 

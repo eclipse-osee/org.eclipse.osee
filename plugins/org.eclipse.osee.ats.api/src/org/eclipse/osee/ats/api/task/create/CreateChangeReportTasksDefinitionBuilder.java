@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.task.create;
 
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.config.tx.IAtsActionableItemArtifactToken;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
@@ -36,6 +37,15 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
 
    public CreateChangeReportTasksDefinitionBuilder andFromSiblingTeam(IAtsTeamDefinitionArtifactToken siblingTeam) {
       createTasksDef.getChgRptOptions().setFromSiblingTeamDef(siblingTeam);
+      return this;
+   }
+
+   /**
+    * From Team Definition will be determined from Work Type attribute, must only be one in program's confiured team def
+    * hierarchy. This allows a single task def set to be used for multiple programs in single Work Def.
+    */
+   public CreateChangeReportTasksDefinitionBuilder andFromSiblingTeamWorkType(WorkType workType) {
+      createTasksDef.getChgRptOptions().setFromSiblingTeamDefWorkType(workType);
       return this;
    }
 
@@ -74,6 +84,21 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
 
    public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai, ChangeReportTaskNameProviderToken nameProviderId) {
       createTasksDef.getChgRptOptions().andToSiblingTeam(teamDef, ai, nameProviderId);
+      return this;
+   }
+
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingWorkType(WorkType workType) {
+      createTasksDef.getChgRptOptions().andToSiblingWorkType(workType);
+      return this;
+   }
+
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingWorkType(WorkType workType, ChangeReportTaskNameProviderToken nameProviderId) {
+      createTasksDef.getChgRptOptions().andToSiblingWorkType(workType, nameProviderId);
+      return this;
+   }
+
+   public CreateTasksDefinitionBuilder andHelper(IAtsTaskSetDefinitionHelper helper) {
+      createTasksDef.andHelper(helper);
       return this;
    }
 

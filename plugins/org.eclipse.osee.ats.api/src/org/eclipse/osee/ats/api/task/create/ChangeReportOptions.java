@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.api.task.create;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.task.CreateTasksOption;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 public class ChangeReportOptions {
 
    ArtifactToken fromSiblingTeamDef;
+   WorkType fromSiblingTeamDefWorkType;
    List<ChangeReportOptionsToTeam> toSiblingTeamDatas = new ArrayList<>();
    Collection<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    Collection<ArtifactTypeToken> notArtifactTypes = new ArrayList<>();
@@ -133,6 +135,19 @@ public class ChangeReportOptions {
       return toTeamData;
    }
 
+   public ChangeReportOptionsToTeam andToSiblingWorkType(WorkType workType) {
+      ChangeReportOptionsToTeam toTeamData = new ChangeReportOptionsToTeam();
+      toTeamData.setWorkType(workType);
+      this.toSiblingTeamDatas.add(toTeamData);
+      return toTeamData;
+   }
+
+   public ChangeReportOptionsToTeam andToSiblingWorkType(WorkType workType, ChangeReportTaskNameProviderToken nameProviderId) {
+      ChangeReportOptionsToTeam toTeamData = andToSiblingWorkType(workType);
+      toTeamData.setNameProviderId(nameProviderId);
+      return toTeamData;
+   }
+
    public Collection<RelationTypeToken> getRelationTypes() {
       return relationTypes;
    }
@@ -148,4 +163,13 @@ public class ChangeReportOptions {
    public void setNotRelationTypes(Collection<RelationTypeToken> notRelationTypes) {
       this.notRelationTypes = notRelationTypes;
    }
+
+   public WorkType getFromSiblingTeamDefWorkType() {
+      return fromSiblingTeamDefWorkType;
+   }
+
+   public void setFromSiblingTeamDefWorkType(WorkType fromSiblingTeamDefWorkType) {
+      this.fromSiblingTeamDefWorkType = fromSiblingTeamDefWorkType;
+   }
+
 }

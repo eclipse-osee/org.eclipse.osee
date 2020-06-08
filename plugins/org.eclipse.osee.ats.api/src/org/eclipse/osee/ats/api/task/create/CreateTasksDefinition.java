@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.task.create;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
@@ -34,6 +35,8 @@ public class CreateTasksDefinition extends NamedIdBase {
    protected List<StaticTaskDefinition> staticTaskDefs = new ArrayList<StaticTaskDefinition>();
    // Additional options to specify change report items to use or ignore
    private ChangeReportOptions chgRptOptions;
+   @JsonIgnore
+   private IAtsTaskSetDefinitionHelper helper = IAtsTaskSetDefinitionHelper.emptyHelper();
 
    public CreateTasksDefinition() {
       super(Id.SENTINEL, "");
@@ -95,6 +98,14 @@ public class CreateTasksDefinition extends NamedIdBase {
 
    public void setStaticTaskDefs(List<StaticTaskDefinition> staticTaskDefs) {
       this.staticTaskDefs = staticTaskDefs;
+   }
+
+   public IAtsTaskSetDefinitionHelper getHelper() {
+      return helper;
+   }
+
+   public void andHelper(IAtsTaskSetDefinitionHelper helper) {
+      this.helper = helper;
    }
 
 }

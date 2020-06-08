@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -43,13 +44,17 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       Thread thread = new Thread("Create/Update Tasks") {
          @Override
          public void run() {
-            super.run();
-            ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, changes);
-            if (data.getResults().isErrors()) {
-               throw new OseeArgumentException(data.getResults().toString());
+            // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
+            CreateTasksDefinitionBuilder taskSetDefinition =
+               AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
+            if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(workItem,
+               AtsApiService.get())) {
+               ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, changes);
+               if (data.getResults().isErrors()) {
+                  throw new OseeArgumentException(data.getResults().toString());
+               }
             }
          }
-
       };
       if (AtsUtil.isInTest()) {
          thread.run();
@@ -71,6 +76,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       CreateChangeReportTasksOperation operation =
          new CreateChangeReportTasksOperation(data, AtsApiService.get(), changes);
       operation.run();
+
       return data;
    }
 
