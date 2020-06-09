@@ -33,7 +33,6 @@ import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoItemDataCopier;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Rule;
@@ -125,7 +124,6 @@ public class DispoItemDataCopierTest {
 
    private void addAnnotation(String locationRef, List<DispoAnnotationData> annotationsList, Map<String, Discrepancy> discrepanciesList) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
-      newAnnotation.setId(GUID.create());
       newAnnotation.setLocationRefs(locationRef);
       newAnnotation.setResolution("C1234");
       newAnnotation.setResolutionType("C1234");

@@ -456,10 +456,22 @@ public class DispoApiImpl implements DispoApi {
    public boolean deleteAllDispoAnnotation(BranchId branch, String itemId, String userName, boolean isCi) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
-      if (dispoItem != null) {
+      if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
+         Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
-            wasUpdated = deleteDispoAnnotation(branch, itemId, annotation.getGuid(), userName, isCi);
+            annotation.disconnect();
          }
+
+         DispoItem updatedItem = dataFactory.createUpdatedItem(new ArrayList<>(), discrepanciesList);
+
+         UserId author = getQuery().findUserByName(userName);
+         DispoStorageMetadata metadata = new DispoStorageMetadata();
+         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
+         if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
+            updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(updatedItem),
+               getDispoItemParentSet(branch, itemId));
+         }
+         wasUpdated = true;
       }
       return wasUpdated;
    }

@@ -30,7 +30,6 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -110,7 +109,6 @@ public class CoverageAdapter {
             DispoAnnotationData annotationToUpdate = findAnnotation(matchedDiscrepancy.getText(), annotations);
             if (annotationToUpdate == null) {
                annotationToUpdate = new DispoAnnotationData();
-               annotationToUpdate.setId(GUID.create());
                annotationToUpdate.setIndex(annotations.size());
                annotationToUpdate.setLocationRefs(lineNumberFromCoverage);
                annotationToUpdate.setCustomerNotes(textFromCoverage);

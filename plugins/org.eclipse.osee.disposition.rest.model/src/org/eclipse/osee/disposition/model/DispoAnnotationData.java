@@ -13,10 +13,11 @@
 
 package org.eclipse.osee.disposition.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Angel Avila
@@ -42,6 +43,7 @@ public class DispoAnnotationData {
    private String resolutionMethodType;
 
    public DispoAnnotationData() {
+      guid = GUID.create();
       idsOfCoveredDiscrepancies = new ArrayList<>();
    }
 
