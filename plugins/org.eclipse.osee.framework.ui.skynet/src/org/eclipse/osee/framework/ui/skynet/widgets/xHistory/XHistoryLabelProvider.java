@@ -79,7 +79,9 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
                   toReturn = data.getWasValue();
                }
             } else if (cCol.equals(HistoryXViewerFactory.is)) {
-               if (data instanceof AttributeChange && Strings.isValid(((AttributeChange) data).getIsUri())) {
+               if (data.getModificationType().isDeleted()) {
+                  toReturn = "";
+               } else if (data instanceof AttributeChange && Strings.isValid(((AttributeChange) data).getIsUri())) {
                   toReturn = XChangeLabelProvider.LARGE;
                } else {
                   toReturn = data.getIsValue();
