@@ -80,6 +80,7 @@ public class CancelledDateColumnTest {
       results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
+      teamArt = (TeamWorkFlowArtifact) teamArt.reloadAttributesAndRelations();
       Assert.assertEquals("Cancelled date should be blank again", "",
          CancelledDateColumnUI.getInstance().getColumnText(teamArt, CancelledDateColumnUI.getInstance(), 0));
       date = CancelledDateColumn.getCancelledDate(teamArt);

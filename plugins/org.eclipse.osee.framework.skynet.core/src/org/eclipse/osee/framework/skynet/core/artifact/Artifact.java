@@ -1216,12 +1216,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * <br>
     * This will have no effect if the artifact has never been saved.
     */
-   public final void reloadAttributesAndRelations() {
+   public final Artifact reloadAttributesAndRelations() {
       if (!isInDb()) {
-         return;
+         return this;
       }
 
-      ArtifactQuery.reloadArtifactFromId(this, getBranch());
+      return ArtifactQuery.reloadArtifactFromId(this, getBranch());
    }
 
    void prepareForReload() {
