@@ -33,7 +33,16 @@ public class MockArtifactProxy implements ArtifactProxy {
    private final ArtifactToken artifactObject;
 
    public MockArtifactProxy(ArtifactToken artifactObject) {
-      this(null, artifactObject, Collections.emptyList(), Collections.emptyList());
+      this(artifactObject.getArtifactType(), artifactObject, Collections.emptyList(), Collections.emptyList());
+   }
+
+   public MockArtifactProxy(ArtifactToken artifactObject, RelationTypeToken validRelationType) {
+      this(artifactObject.getArtifactType(), artifactObject, Collections.emptyList(),
+         Collections.singleton(validRelationType));
+   }
+
+   public MockArtifactProxy(ArtifactTypeToken artifactType, RelationTypeToken validRelationType) {
+      this(artifactType, null, Collections.emptyList(), Collections.singleton(validRelationType));
    }
 
    public MockArtifactProxy() {
@@ -44,7 +53,7 @@ public class MockArtifactProxy implements ArtifactProxy {
       this(artifactType, null, Collections.emptyList(), Collections.emptyList());
    }
 
-   public MockArtifactProxy(ArtifactTypeToken artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationTypeToken> validRelationTypes) {
+   private MockArtifactProxy(ArtifactTypeToken artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationTypeToken> validRelationTypes) {
       this.artifactType = artifactType;
       this.hierarchy = hierarchy;
       this.validRelationTypes = validRelationTypes;
@@ -69,11 +78,6 @@ public class MockArtifactProxy implements ArtifactProxy {
    @Override
    public Collection<ArtifactProxy> getHierarchy() {
       return hierarchy;
-   }
-
-   @Override
-   public ArtifactToken getObject() {
-      return artifactObject;
    }
 
    @Override

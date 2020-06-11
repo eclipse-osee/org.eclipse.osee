@@ -29,8 +29,6 @@ public interface ArtifactDataProvider {
 
       Collection<ArtifactProxy> getHierarchy();
 
-      ArtifactToken getObject();
-
       IOseeBranch getBranchToken();
    }
 

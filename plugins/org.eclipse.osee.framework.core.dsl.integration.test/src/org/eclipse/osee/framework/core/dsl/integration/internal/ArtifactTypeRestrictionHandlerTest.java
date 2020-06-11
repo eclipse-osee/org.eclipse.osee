@@ -43,7 +43,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataNotMatchesRestriction() {
       ArtifactTypeToken artifactType = Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType);
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -57,7 +57,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessCreateAccessDetail() {
       ArtifactTypeToken artifactType = Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType);
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -72,7 +72,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessArtifactTypeInheritance() {
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(Requirement.getId(), Requirement.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(Requirement);
 
       ArtifactTypeRestriction restriction = MockModel.createArtifactTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -79,8 +78,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      ArtifactTypeToken artifactType = Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(Requirement);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
@@ -96,12 +94,11 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      ArtifactTypeToken artifactType = Requirement;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(Requirement);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactProxy artifactProxy = createArtifactProxy(artifactType, Name, wasIsAttributeTypeValidCalled, true);
+      ArtifactProxy artifactProxy = createArtifactProxy(Requirement, Name, wasIsAttributeTypeValidCalled, true);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, Name, PermissionEnum.WRITE,
          expectedScope);
@@ -114,8 +111,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
 
-      ArtifactTypeToken artifactType = CoreArtifactTypes.Artifact;
-      XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getId(), artifactType.getName());
+      XArtifactType artifactTypeRef = MockModel.createXArtifactType(Artifact);
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactTypeToken artifactType2 = Requirement;

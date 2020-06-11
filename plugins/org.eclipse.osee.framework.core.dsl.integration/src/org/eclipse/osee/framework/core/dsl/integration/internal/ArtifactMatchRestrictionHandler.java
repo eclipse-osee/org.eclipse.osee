@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
@@ -51,7 +50,7 @@ public class ArtifactMatchRestrictionHandler implements RestrictionHandler<Artif
          XArtifactMatcher artifactMatcher = restriction.getArtifactMatcherRef();
          if (matcherInterpreter.matches(artifactMatcher, artifactProxy)) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<>(artifactProxy.getObject(), permission, scope));
+            collector.collect(new AccessDetail<>(artifactProxy, permission, scope));
          }
       }
    }

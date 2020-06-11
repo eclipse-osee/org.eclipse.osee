@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -105,13 +106,13 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XArtifactType createXArtifactType(long uuid, String name) {
+   public static XArtifactType createXArtifactType(ArtifactTypeToken artifactType) {
       XArtifactType toReturn = OseeDslFactory.eINSTANCE.createXArtifactType();
       Assert.assertNotNull(toReturn);
-      toReturn.setId(String.valueOf(uuid));
-      toReturn.setName(name);
-      Assert.assertEquals(uuid, Long.valueOf(toReturn.getId()).longValue());
-      Assert.assertEquals(name, toReturn.getName());
+      toReturn.setId(artifactType.getIdString());
+      toReturn.setName(artifactType.getName());
+      Assert.assertEquals(artifactType.getId(), Long.valueOf(toReturn.getId()));
+      Assert.assertEquals(artifactType.getName(), toReturn.getName());
       return toReturn;
    }
 

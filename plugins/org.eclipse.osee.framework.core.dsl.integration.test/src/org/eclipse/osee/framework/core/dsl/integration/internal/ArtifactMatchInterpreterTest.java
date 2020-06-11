@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -292,11 +291,6 @@ public class ArtifactMatchInterpreterTest {
 
          @Override
          public Collection<ArtifactProxy> getHierarchy() {
-            return null;
-         }
-
-         @Override
-         public ArtifactToken getObject() {
             return null;
          }
 
