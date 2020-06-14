@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.dsl.integration.AccessDataCollector;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.CheckAccessDetailCollectorNotCalled;
-import org.eclipse.osee.framework.core.dsl.integration.mocks.MockAccessDetailCollector;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
@@ -85,12 +85,12 @@ public class AccessModelInterpreterImplTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testComputeAccessNullCheck2() {
-      interpreterNoArtData.computeAccessDetails(new MockAccessDetailCollector(), null, new Object());
+      interpreterNoArtData.computeAccessDetails(new AccessDataCollector(), null, new Object());
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testComputeAccessNullCheck3() {
-      interpreterNoArtData.computeAccessDetails(new MockAccessDetailCollector(), expectedContext1, null);
+      interpreterNoArtData.computeAccessDetails(new AccessDataCollector(), expectedContext1, null);
    }
 
    @Test

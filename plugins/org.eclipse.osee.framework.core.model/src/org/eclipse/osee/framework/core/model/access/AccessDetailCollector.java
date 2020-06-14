@@ -13,9 +13,20 @@
 
 package org.eclipse.osee.framework.core.model.access;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface AccessDetailCollector {
    void collect(AccessDetail<?> accessDetail);
+
+   default List<AccessDetail<?>> getAccessDetails() {
+      return null;
+   }
+
+   default boolean contains(Object expectedAccessObject, PermissionEnum expectedPermission, Scope expectedScopeLevel) {
+      return false;
+   }
 }

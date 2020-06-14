@@ -14,13 +14,10 @@
 package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.model.access.AccessData;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -52,26 +49,9 @@ public class OseeDslAccessModel implements AccessModel {
          "No matching access context was found in access dsl for [%s]", contextId);
 
       for (Object objectToCheck : objectsToCheck) {
-         List<AccessDetail<?>> accessDetail = new LinkedList<>();
-         AccessDetailCollector collector = new AccessDataCollector(accessDetail);
+         AccessDetailCollector collector = new AccessDataCollector();
          interpreter.computeAccessDetails(collector, context, objectToCheck);
-         accessData.addAll(objectToCheck, accessDetail);
+         accessData.addAll(objectToCheck, collector.getAccessDetails());
       }
    }
-
-   private static final class AccessDataCollector implements AccessDetailCollector {
-      private final Collection<AccessDetail<?>> accessDetails;
-
-      public AccessDataCollector(Collection<AccessDetail<?>> accessDetails) {
-         this.accessDetails = accessDetails;
-      }
-
-      @Override
-      public void collect(AccessDetail<?> accessDetail) {
-         if (accessDetail != null) {
-            accessDetails.add(accessDetail);
-         }
-      }
-   }
-
 }

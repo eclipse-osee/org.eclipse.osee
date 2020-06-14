@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.dsl.integration.AccessDataCollector;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
+import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.junit.Assert;
 
@@ -53,16 +56,13 @@ public final class DslAsserts {
    }
 
    public static void assertAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Object expectedAccessObject, PermissionEnum expectedPermission, Scope expectedScopeLevel) {
-      MockAccessDetailCollector collector = new MockAccessDetailCollector();
+      AccessDetailCollector collector = new AccessDataCollector();
       handler.process(restriction, artifactProxy, collector, new Scope());
-      AccessDetail<?> actualDetail = collector.getAccessDetails();
+      List<AccessDetail<?>> actualDetails = collector.getAccessDetails();
       if (expectedAccessObject == null) {
-         Assert.assertNull(actualDetail);
+         Assert.assertTrue(actualDetails.isEmpty());
       } else {
-         Assert.assertNotNull(actualDetail);
-         Assert.assertEquals(expectedPermission, actualDetail.getPermission());
-         Assert.assertEquals(expectedAccessObject, actualDetail.getAccessObject());
-         Assert.assertEquals(expectedScopeLevel, actualDetail.getScope());
+         Assert.assertTrue(collector.contains(expectedAccessObject, expectedPermission, expectedScopeLevel));
       }
    }
 
