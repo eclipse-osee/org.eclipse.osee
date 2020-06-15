@@ -16,8 +16,10 @@ package org.eclipse.osee.ats.core.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.event.IAtsEventService;
@@ -84,10 +86,17 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
 
    @Override
    public void deRegisterAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener) {
-      for (Entry<String, List<IAtsWorkItemTopicEventListener>> entry : workItemEventListeners.entrySet()) {
+      Set<String> toRemove = new HashSet<>();
+      Set<Entry<String, List<IAtsWorkItemTopicEventListener>>> entrySet = workItemEventListeners.entrySet();
+      for (Entry<String, List<IAtsWorkItemTopicEventListener>> entry : entrySet) {
          List<IAtsWorkItemTopicEventListener> listeners = entry.getValue();
          if (listeners.contains(listener)) {
-            workItemEventListeners.removeValue(entry.getKey(), listener);
+            toRemove.add(entry.getKey());
+         }
+      }
+      synchronized (workItemEventListeners) {
+         for (String key : toRemove) {
+            workItemEventListeners.removeValue(key, listener);
          }
       }
    }
