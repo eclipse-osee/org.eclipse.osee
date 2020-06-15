@@ -24,6 +24,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -83,10 +84,14 @@ public class AddSyntheticArtifactChangeData {
 
       Map<Long, Long> artIdToArtTypeid = getArtIdToArtTypeIdMap(branch, artIds);
       for (ChangeItem change : syntheticArtifactChanges.values()) {
+         ArtifactTypeToken artifactTypeToken = ArtifactTypeToken.SENTINEL;
          if (isAllowableChange(change.getIgnoreType())) {
             changeItems.add(change);
             if (change.getChangeType().isArtifactChange()) {
-               change.setItemTypeId(tokenService.getArtifactType(artIdToArtTypeid.get(change.getArtId().getId())));
+               if (artIdToArtTypeid.containsKey(change.getArtId().getId())) {
+                  artifactTypeToken = tokenService.getArtifactType(artIdToArtTypeid.get(change.getArtId().getId()));
+               }
+               change.setItemTypeId(artifactTypeToken);
             }
          }
       }
