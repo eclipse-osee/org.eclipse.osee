@@ -203,7 +203,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
 
    @Override
    public void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes) {
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackage);
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackage.getArtifactId());
    }
 
    @Override
