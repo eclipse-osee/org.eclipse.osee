@@ -27,6 +27,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.JsonArtifact;
+import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -42,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
@@ -50,8 +51,6 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.DropTargetAttr
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.JsonArtifactRepresentation;
-import org.eclipse.osee.framework.skynet.core.utility.JsonAttributeRepresentation;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
@@ -339,15 +338,14 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
       try {
-         List<JsonArtifactRepresentation> reqts =
-            JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifactRepresentation>>() { //
-            });
-         for (JsonArtifactRepresentation item : reqts) {
-            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(item.getArtifactTypeId()),
+         List<JsonArtifact> reqts = JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifact>>() { //
+         });
+         for (JsonArtifact item : reqts) {
+            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(item.getTypeId()),
                parentArtifact.getBranch(), item.getName());
-            List<JsonAttributeRepresentation> attrs = item.getAttrs();
-            for (JsonAttributeRepresentation attr : attrs) {
-               art.addAttributeFromString(AttributeTypeManager.getTypeById(attr.getAttributeTypeId()), attr.getValue());
+            List<JsonAttribute> attrs = item.getAttrs();
+            for (JsonAttribute attr : attrs) {
+               art.addAttributeFromString(attr.getTypeId(), attr.getValue());
             }
             art.persist(transaction);
             parentArtifact.addChild(art);

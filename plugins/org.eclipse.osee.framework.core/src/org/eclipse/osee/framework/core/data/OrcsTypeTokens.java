@@ -56,6 +56,20 @@ public class OrcsTypeTokens {
       return attributeTypes;
    }
 
+   public List<ArtifactTypeToken> getArtifactTypes() {
+      return artifactTypes;
+   }
+
+   public ArtifactTypeToken getArtifactTypeTokenById(Long id) {
+      return artifactTypes.stream().filter(artType -> artType.getId().equals(id)).findAny().orElse(
+         ArtifactTypeToken.SENTINEL);
+   }
+
+   public AttributeTypeToken getAttributeTypeTokenById(Long id) {
+      return attributeTypes.stream().filter(artType -> artType.getId().equals(id)).findAny().orElse(
+         AttributeTypeToken.SENTINEL);
+   }
+
    public ArtifactTypeToken add(AttributeMultiplicity attributeMultiplicity) {
       ArtifactTypeToken artifactType = attributeMultiplicity.get();
       artifactTypes.add(artifactType);

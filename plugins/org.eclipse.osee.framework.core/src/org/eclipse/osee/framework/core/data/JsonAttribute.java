@@ -11,33 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.utility;
-
-import org.eclipse.osee.framework.jdk.core.type.Id;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author David W. Miller
  */
-public class JsonAttributeRepresentation {
-   private long attributeTypeId;
+public class JsonAttribute {
+   private String typeName;
+   private AttributeTypeId typeId;
    private String value;
 
-   public JsonAttributeRepresentation() {
-      attributeTypeId = Id.SENTINEL;
-      value = null;
-   }
-
-   public JsonAttributeRepresentation(long attributeTypeId, String value) {
-      this.attributeTypeId = attributeTypeId;
+   public JsonAttribute(AttributeTypeId typeId, String value) {
+      this.setTypeId(typeId);
       this.value = value;
    }
 
-   public long getAttributeTypeId() {
-      return attributeTypeId;
-   }
-
-   public void setAttributeTypeId(long attributeTypeId) {
-      this.attributeTypeId = attributeTypeId;
+   public JsonAttribute() {
+      this(AttributeTypeId.SENTINEL, null);
    }
 
    public String getValue() {
@@ -47,4 +37,21 @@ public class JsonAttributeRepresentation {
    public void setValue(String value) {
       this.value = value;
    }
+
+   public String getTypeName() {
+      return typeName;
+   }
+
+   public void setTypeName(String typeName) {
+      this.typeName = typeName;
+   }
+
+   public AttributeTypeId getTypeId() {
+      return typeId;
+   }
+
+   public void setTypeId(AttributeTypeId typeId) {
+      this.typeId = typeId;
+   }
+
 }

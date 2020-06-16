@@ -21,6 +21,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Lists;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,14 +37,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.JsonArtifact;
+import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -65,6 +70,8 @@ import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
@@ -213,6 +220,43 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Transaction getBranchTx(BranchId branchUuid, TransactionId txId) {
       return asTransaction(getTxByBranchAndId(branchUuid, txId));
+   }
+
+   @Override
+   public List<JsonArtifact> getArtifactDetailsByType(BranchId branchId, ArtifactId viewId, String artifactTypes) {
+      List<JsonArtifact> arts = new ArrayList<JsonArtifact>();
+      List<Long> typesLong = (Collections.fromString(artifactTypes, ",", Long::valueOf));
+      List<ArtifactTypeToken> types = new ArrayList<ArtifactTypeToken>();
+
+      for (Long typeId : typesLong) {
+         types.add(CoreTypeTokenProvider.osee.getArtifactTypeTokenById(typeId));
+      }
+
+      List<ArtifactReadable> artifacts =
+         orcsApi.getQueryFactory().fromBranch(branchId, viewId).andIsOfType(types).getResults().getList();
+      for (ArtifactReadable art : artifacts) {
+         JsonArtifact jArt = new JsonArtifact();
+         jArt.setTypeId(art.getArtifactType());
+         jArt.setTypeName(art.getArtifactType().getName());
+         jArt.setId(ArtifactId.valueOf(art.getId()));
+         jArt.setName(art.getName());
+         List<JsonAttribute> attrList = new ArrayList<JsonAttribute>();
+         List<? extends AttributeReadable<Object>> list = art.getAttributes().getList();
+         for (AttributeReadable<?> attr : list) {
+            JsonAttribute attrRep = new JsonAttribute();
+            attrRep.setTypeId(attr.getAttributeType());
+            attrRep.setTypeName(attr.getAttributeType().getName());
+            if (attr.getAttributeType().getMediaType().startsWith("application")) {
+               attrRep.setValue("<large>");
+            } else {
+               attrRep.setValue(attr.getDisplayableString());
+            }
+            attrList.add(attrRep);
+         }
+         jArt.setAttrs(attrList);
+         arts.add(jArt);
+      }
+      return arts;
    }
 
    @Override

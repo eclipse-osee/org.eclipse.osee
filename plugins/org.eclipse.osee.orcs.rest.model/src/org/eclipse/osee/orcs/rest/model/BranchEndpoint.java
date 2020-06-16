@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -105,6 +106,11 @@ public interface BranchEndpoint {
    @Path("{branch}/txs/{tx-id}")
    @Produces({MediaType.APPLICATION_JSON})
    Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
+
+   @GET
+   @Path("{branch}/view/{viewId}/artifact/type/{artifactTypes}/attributes")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
 
    @POST
    @Consumes({MediaType.APPLICATION_JSON})

@@ -16,11 +16,11 @@ package org.eclipse.osee.doors.connector.ui.viewer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.doors.connector.core.Requirement;
+import org.eclipse.osee.framework.core.data.JsonArtifact;
+import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.skynet.core.utility.JsonArtifactRepresentation;
-import org.eclipse.osee.framework.skynet.core.utility.JsonAttributeRepresentation;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -74,22 +74,22 @@ public class RdfExplorerDragAndDrop {
    }
 
    public void textTransferDragSetData(DragSourceEvent event) {
-      List<JsonArtifactRepresentation> reqsOut = new ArrayList<>();
+      List<JsonArtifact> reqsOut = new ArrayList<>();
       for (Requirement reqt : reqs) {
          reqsOut.add(makeJsonArtifactRepresentation(reqt));
       }
       event.data = JsonUtil.toJson(reqsOut);
    }
 
-   private JsonArtifactRepresentation makeJsonArtifactRepresentation(Requirement reqt) {
-      JsonArtifactRepresentation artRep = new JsonArtifactRepresentation();
-      artRep.setArtifactTypeId(CoreArtifactTypes.Url.getId());
-      artRep.setName(reqt.getShortName());
-      List<JsonAttributeRepresentation> attrs = new ArrayList<>();
-      attrs.add(new JsonAttributeRepresentation(CoreAttributeTypes.Description.getId(), reqt.getName()));
-      attrs.add(new JsonAttributeRepresentation(CoreAttributeTypes.ContentUrl.getId(), reqt.getPath()));
-      artRep.setAttrs(attrs);
-      return artRep;
+   private JsonArtifact makeJsonArtifactRepresentation(Requirement reqt) {
+      JsonArtifact art = new JsonArtifact();
+      art.setTypeId(CoreArtifactTypes.Url);
+      art.setName(reqt.getShortName());
+      List<JsonAttribute> attrs = new ArrayList<>();
+      attrs.add(new JsonAttribute(CoreAttributeTypes.Description, reqt.getName()));
+      attrs.add(new JsonAttribute(CoreAttributeTypes.ContentUrl, reqt.getPath()));
+      art.setAttrs(attrs);
+      return art;
    }
 
    public void clearRequirements() {
