@@ -13,14 +13,13 @@
 
 package org.eclipse.osee.define.rest.publishing;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -45,14 +44,14 @@ public class SpecifiedTemplatePublisherStreamingOutput implements StreamingOutpu
    }
 
    @Override
-   public void write(OutputStream arg0) throws IOException, WebApplicationException {
-      MSWordSpecifiedTemplatePublisher publisher =
-         new MSWordSpecifiedTemplatePublisher(publishingOptions, logger, orcsApi);
-      writer = new OutputStreamWriter(arg0);
-      writer.write("");
-      String publishOutput = publisher.publish(templateArtId, headArtifact);
-      writer.write(publishOutput);
-      writer.close();
+   public void write(OutputStream opStream) {
+      try (Writer writer = new OutputStreamWriter(opStream)) {
+         MSWordSpecifiedTemplatePublisher publisher =
+            new MSWordSpecifiedTemplatePublisher(publishingOptions, logger, orcsApi, writer);
+         publisher.publish(templateArtId, headArtifact);
+         writer.close();
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
    }
-
 }

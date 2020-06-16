@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +49,6 @@ public class WordMLProducer {
    private static final String HYPER_LINK_DOC =
       "<w:p><w:hlink w:dest=\"fileName\"><w:r wsp:rsidRPr=\"00CE6681\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>fileName</w:t></w:r></w:hlink></w:p>";
    private final Appendable strB;
-   private final Writer writer;
    private final int[] outlineNumber;
    private int outlineLevel;
    private int maxOutlineLevel = 9;
@@ -59,9 +57,8 @@ public class WordMLProducer {
 
    private static final String DEFAULT_FONT = "Times New Roman";
 
-   public WordMLProducer(Appendable str, Writer writer) {
+   public WordMLProducer(Appendable str) {
       strB = str;
-      this.writer = writer;
       outlineNumber = new int[10]; // word supports 9 levels of outlining; index this array from 1 to 9
       outlineLevel = 0;
       flattenedLevelCount = 0;
@@ -71,14 +68,6 @@ public class WordMLProducer {
       alphabetMap.put("A.0", 1);
       alphabetMap.put("B.0", 2);
       alphabetMap.put("C.0", 3);
-   }
-
-   public WordMLProducer(Appendable str) {
-      this(str, null);
-   }
-
-   public WordMLProducer(Writer writer) {
-      this(null, writer);
    }
 
    public CharSequence startOutlineSubSection() {
@@ -102,15 +91,9 @@ public class WordMLProducer {
       }
    }
 
-   private void append(CharSequence value) {
+   protected void append(CharSequence value) {
       try {
-         if (strB == null) {
-            if (writer != null) {
-               writer.append(value);
-            }
-         } else {
-            strB.append(value);
-         }
+         strB.append(value);
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }

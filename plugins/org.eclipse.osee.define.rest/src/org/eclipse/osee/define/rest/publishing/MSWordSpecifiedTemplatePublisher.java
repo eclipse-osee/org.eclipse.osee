@@ -13,12 +13,13 @@
 
 package org.eclipse.osee.define.rest.publishing;
 
+import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.PageOrientation;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -33,12 +34,12 @@ public class MSWordSpecifiedTemplatePublisher extends MSWordTemplatePublisher {
     * old client "Publish With Specified Template" BLAM. This publishes via the hierarchy under the given artifact,
     * using the given template. This REST Operation is currently not in use anywhere.
     */
-   public MSWordSpecifiedTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi) {
-      super(publishingOptions, logger, orcsApi);
+   public MSWordSpecifiedTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi, Writer writer) {
+      super(publishingOptions, logger, orcsApi, writer);
    }
 
    @Override
-   protected void processContent(ArtifactReadable headArtifact, WordMLProducer wordMl) {
+   protected void processContent(ArtifactReadable headArtifact, WordMLWriter wordMl) {
       if (!includeEmptyHeaders) {
          List<ArtifactReadable> artifacts = new LinkedList<>();
          artifacts.add(headArtifact);

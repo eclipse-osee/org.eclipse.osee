@@ -30,6 +30,7 @@ import static org.eclipse.osee.framework.core.util.ReportConstants.CONTINUOUS;
 import static org.eclipse.osee.framework.core.util.ReportConstants.FTR;
 import static org.eclipse.osee.framework.core.util.ReportConstants.PAGE_SZ;
 import static org.eclipse.osee.framework.core.util.ReportConstants.PG_SZ;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +61,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.model.type.LinkType;
-import org.eclipse.osee.framework.core.util.WordMLProducer;
+import org.eclipse.osee.framework.core.util.WordMLWriter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,11 +124,13 @@ public class MSWordTemplatePublisher {
 
    protected final OrcsApi orcsApi;
    protected final Log logger;
+   protected final Writer writer;
 
-   protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi) {
+   protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi, Writer writer) {
       this.publishingOptions = publishingOptions;
       this.logger = logger;
       this.orcsApi = orcsApi;
+      this.writer = writer;
    }
 
    /**
@@ -135,34 +138,30 @@ public class MSWordTemplatePublisher {
     * is based off of, and then the artifact id for the template. This method is where the artifact readable is
     * gathered, and the template options are set up. If everything is valid, move onto the next step for publishing.
     */
-   public String publish(ArtifactId templateArtId, ArtifactId headArtId) {
+   public void publish(ArtifactId templateArtId, ArtifactId headArtId) {
       ArtifactReadable artifact = getArtifactHead(headArtId);
       String template = setUpTemplateWithOptions(templateArtId);
 
       if (artifact.isValid()) {
          if (Strings.isValid(template) && elementType.equals(ARTIFACT)) {
-            StringBuilder wordMlOutput = applyContentToTemplate(artifact, template);
-            return wordMlOutput.toString();
+            applyContentToTemplate(artifact, template);
          } else {
             //TODO handle critical error for invalid template
-            return null;
          }
       } else {
          //TODO handle critical error for invalid artifact head
-         return null;
       }
    }
 
    /**
-    * Second step of the publishing process. This method is where the WordMLProducer is set up and the word xml starts
-    * to be written. The default version changes some elements of the template first. Then is the start of the template
-    * up until the marking where the artifact content should be. The artifacts/content is then inserted in the middle
-    * via processContent. Finally the rest of the template's word content is placed at the end to finish off the
-    * published document.
+    * Second step of the publishing process. This method is where the WordMLWriter is set up and the word xml starts to
+    * be written. The default version changes some elements of the template first. Then is the start of the template up
+    * until the marking where the artifact content should be. The artifacts/content is then inserted in the middle via
+    * processContent. Finally the rest of the template's word content is placed at the end to finish off the published
+    * document.
     */
-   protected StringBuilder applyContentToTemplate(ArtifactReadable headArtifact, String templateContent) {
-      StringBuilder strBuilder = new StringBuilder();
-      WordMLProducer wordMl = new WordMLProducer(strBuilder);
+   protected void applyContentToTemplate(ArtifactReadable headArtifact, String templateContent) {
+      WordMLWriter wordMl = new WordMLWriter(writer);
 
       templateContent =
          setUpTemplateContent(wordMl, headArtifact, templateContent, publishingOptions.msWordHeadingDepth);
@@ -175,8 +174,6 @@ public class MSWordTemplatePublisher {
       }
 
       handleEndOfTemplate(wordMl, templateContent, lastEndIndex);
-
-      return strBuilder;
    }
 
    /**
@@ -185,7 +182,7 @@ public class MSWordTemplatePublisher {
     * starting from our head artifact, then any errors are added in their own final section. This section is likely to
     * be overriden by subclasses.
     */
-   protected void processContent(ArtifactReadable headArtifact, WordMLProducer wordMl) {
+   protected void processContent(ArtifactReadable headArtifact, WordMLWriter wordMl) {
       processArtifact(headArtifact, wordMl);
       addErrorLogToWordMl(wordMl);
    }
@@ -196,7 +193,7 @@ public class MSWordTemplatePublisher {
     * through each artifacts' child recursively if the option is enabled. Within each artifact, the metadata and
     * attributes are published.
     */
-   protected void processArtifact(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected void processArtifact(ArtifactReadable artifact, WordMLWriter wordMl) {
       if (!processedArtifacts.contains(artifact)) {
          boolean startedSection = false;
 
@@ -236,7 +233,7 @@ public class MSWordTemplatePublisher {
     * attributes are processed. The reason this method returns a boolean is to say whether or not the MS Word section
     * was begun with a header.
     */
-   protected boolean renderArtifact(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected boolean renderArtifact(ArtifactReadable artifact, WordMLWriter wordMl) {
       boolean publishInline = artifact.getSoleAttributeValue(PublishInline, false);
       boolean startedSection = false;
       if (outlining && !publishInline) {
@@ -391,7 +388,7 @@ public class MSWordTemplatePublisher {
     * This default version of the method cleans up some pieces of the render template's whole word content, and grabs
     * the paragraph number if needed.
     */
-   protected String setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, String templateContent, int maxOutline) {
+   protected String setUpTemplateContent(WordMLWriter wordMl, ArtifactReadable artifact, String templateContent, int maxOutline) {
       templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
       if (outlineNumber.equals("")) {
          outlineNumber = getParagraphNumber(artifact, templateContent);
@@ -404,7 +401,7 @@ public class MSWordTemplatePublisher {
       return templateContent;
    }
 
-   protected String setUpTemplateContent(WordMLProducer wordMl, ArtifactReadable artifact, String templateContent) {
+   protected String setUpTemplateContent(WordMLWriter wordMl, ArtifactReadable artifact, String templateContent) {
       return setUpTemplateContent(wordMl, artifact, templateContent, 9);
    }
 
@@ -435,7 +432,7 @@ public class MSWordTemplatePublisher {
     * Adds the beginning section of the template to our wordml builder, the end index of the matcher is returned as the
     * lastEndIndex for the default implementation
     */
-   protected int handleStartOfTemplate(WordMLProducer wordMl, String templateContent, Matcher matcher) {
+   protected int handleStartOfTemplate(WordMLWriter wordMl, String templateContent, Matcher matcher) {
       wordMl.addWordMl(templateContent.substring(0, matcher.start()));
       return matcher.end();
    }
@@ -444,7 +441,7 @@ public class MSWordTemplatePublisher {
     * For the default version, now that the content has been inserted the rest of the render template's whole word
     * content is appended to the end after the footer is updated
     */
-   protected void handleEndOfTemplate(WordMLProducer wordMl, String templateContent, int lastEndIndex) {
+   protected void handleEndOfTemplate(WordMLWriter wordMl, String templateContent, int lastEndIndex) {
       String endOfTemplate = templateContent.substring(lastEndIndex);
       // Write out the last of the template
       wordMl.addWordMl(updateFooter(endOfTemplate));
@@ -598,7 +595,7 @@ public class MSWordTemplatePublisher {
     * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact. Also
     * puts the artifact and paragraph number into a hashmap together for potential updating of paragraph numbers
     */
-   protected void setArtifactOutlining(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected void setArtifactOutlining(ArtifactReadable artifact, WordMLWriter wordMl) {
       AttributeTypeToken attrToken = AttributeTypeToken.valueOf(headingAttributeType.getIdString());
       String headingText = artifact.getSoleAttributeAsString(attrToken, "");
       CharSequence paragraphNumber = null;
@@ -615,7 +612,7 @@ public class MSWordTemplatePublisher {
    /**
     * Loops through and processes each metadata item that was parsed from earlier when handling the rendererOptions.
     */
-   protected void renderMetadata(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected void renderMetadata(ArtifactReadable artifact, WordMLWriter wordMl) {
       for (MetadataElement metadataElement : metadataElements) {
          renderMetadata(artifact, wordMl, metadataElement);
       }
@@ -624,7 +621,7 @@ public class MSWordTemplatePublisher {
    /**
     * Adds the metadata element to the artifact, currently the default implementation ignores applicability
     */
-   protected void renderMetadata(ArtifactReadable artifact, WordMLProducer wordMl, MetadataElement element) {
+   protected void renderMetadata(ArtifactReadable artifact, WordMLWriter wordMl, MetadataElement element) {
       wordMl.startParagraph();
       String name = element.getType();
       String format = element.getFormat();
@@ -657,7 +654,7 @@ public class MSWordTemplatePublisher {
     * Otherwise it only runs for the specific attribute element. In this default implementation the presentation type is
     * preview.
     */
-   protected void renderAttributes(ArtifactReadable artifact, WordMLProducer wordMl) {
+   protected void renderAttributes(ArtifactReadable artifact, WordMLWriter wordMl) {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
          if (publishingOptions.allAttributes || attributeName.equals("*")) {
@@ -702,7 +699,7 @@ public class MSWordTemplatePublisher {
     * attributes and calls renderWordTemplateContent if of type Word Template Content, renderAttribute if any other
     * valid attribute
     */
-   protected void renderAttribute(ArtifactReadable artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType) {
+   protected void renderAttribute(ArtifactReadable artifact, WordMLWriter wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType) {
       //Do not publish OleData or RelationOrder
       if (attributeType.equals(WordOleData) || attributeType.equals(RelationOrder)) {
          return;
@@ -723,8 +720,8 @@ public class MSWordTemplatePublisher {
     * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
     * artifacts that are linking to artifacts that aren't included in the publish.
     */
-   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label) {
-      WordMLProducer wordMl = producer;
+   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label) {
+      WordMLWriter wordMl = producer;
       String data = null;
 
       LinkType linkType = publishingOptions.linkType;
@@ -776,10 +773,10 @@ public class MSWordTemplatePublisher {
    }
 
    /**
-    * For non word template content attributes, this method appends the attribute to the WordMLProducer.
+    * For non word template content attributes, this method appends the attribute to the WordMLWriter.
     */
-   protected void renderSpecifiedAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLProducer producer, String format, String label) {
-      WordMLProducer wordMl = producer;
+   protected void renderSpecifiedAttribute(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label) {
+      WordMLWriter wordMl = producer;
 
       wordMl.startParagraph();
 
@@ -809,7 +806,7 @@ public class MSWordTemplatePublisher {
     * Once all of the content has been processed, any errors that have been logged are now appended to the wordml in
     * their own end section.
     */
-   protected void addErrorLogToWordMl(WordMLProducer wordMl) {
+   protected void addErrorLogToWordMl(WordMLWriter wordMl) {
       addLinkNotInPublishErrors(wordMl);
 
       if (!errorLog.isEmpty()) {
@@ -862,7 +859,7 @@ public class MSWordTemplatePublisher {
       }
    }
 
-   protected void addLinkNotInPublishErrors(WordMLProducer wordMl) {
+   protected void addLinkNotInPublishErrors(WordMLWriter wordMl) {
       if (!hyperlinkedIds.isEmpty()) {
          for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
             ArtifactReadable artifact = link.getValue();
