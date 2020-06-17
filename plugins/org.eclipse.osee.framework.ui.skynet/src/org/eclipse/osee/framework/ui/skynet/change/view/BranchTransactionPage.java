@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
+import org.eclipse.osee.framework.ui.skynet.action.CreateBranchFromTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
@@ -139,6 +140,8 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
    public void updateMenuActionsForTable(MenuManager mm) {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new ShowChangeReportSinceAction(getEditorInput().getBranch(), this));
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new ShowChangeReportAction(this));
+      mm.insertBefore(XViewer.MENU_GROUP_PRE,
+         new CreateBranchFromTransactionAction(this.getSelectedTransactionRecords(), this.branch));
       if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new EditTransactionComment(this));
