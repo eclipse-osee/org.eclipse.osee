@@ -22,13 +22,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.zest.layouts.LayoutStyles;
@@ -76,10 +78,12 @@ public final class SkyWalkerOptions {
       Other_Side_Name
    };
    private LinkName linkName = LinkName.Link_Name;
+   private final OrcsTokenService tokenService;
 
    public SkyWalkerOptions() {
       loadLayouts();
       layout = defaultLayout;
+      tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
    }
 
    static {
@@ -150,7 +154,7 @@ public final class SkyWalkerOptions {
       if (relTypes == null) {
          relTypes = new HashMap<>();
          try {
-            for (RelationType relationType : RelationTypeManager.getValidTypes(artifact.getBranch())) {
+            for (RelationTypeToken relationType : tokenService.getRelationTypes()) {
                relTypes.put(relationType, true);
                relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_A), true);
                relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_B), true);

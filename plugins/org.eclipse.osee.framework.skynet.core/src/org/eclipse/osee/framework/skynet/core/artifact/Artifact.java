@@ -94,7 +94,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -529,14 +528,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          return true;
       }
       return ArtifactTypeManager.isValidAttributeType(attributeType, artifactType, branch);
-   }
-
-   public final boolean isRelationTypeValid(RelationTypeToken relationType) {
-      return getValidRelationTypes().contains(relationType);
-   }
-
-   public final Collection<RelationTypeToken> getValidRelationTypes() {
-      return RelationTypeManager.getValidTypes(getArtifactType(), branch);
    }
 
    /**

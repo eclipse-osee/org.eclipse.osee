@@ -31,10 +31,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -42,6 +44,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
@@ -91,6 +94,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    private final Artifact artifact;
    private final RelationLabelProvider relationLabelProvider;
    private final ToolBar toolBar;
+   private final OrcsTokenService tokenService;
 
    public RelationsComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
       this(editor, parent, style, artifact, null);
@@ -100,6 +104,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
       super(parent, style);
       this.artifact = artifact;
       this.editor = editor;
+      tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
       this.relationLabelProvider = new RelationLabelProvider(artifact);
       this.toolBar = toolBar;
 
@@ -135,7 +140,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
       treeViewer.setCellEditors(editors);
       treeViewer.setCellModifier(new RelationCellModifier(treeViewer, editor));
       treeViewer.setColumnProperties(columnNames);
-      treeViewer.setContentProvider(new RelationContentProvider());
+      treeViewer.setContentProvider(new RelationContentProvider(tokenService));
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setUseHashlookup(true);
       treeViewer.setInput(artifact);

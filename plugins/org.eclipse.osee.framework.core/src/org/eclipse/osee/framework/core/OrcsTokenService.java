@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -108,4 +109,6 @@ public interface OrcsTokenService {
     * Get unmodifiable list of AttributeTypes.
     */
    Collection<AttributeTypeGeneric<?>> getAttributeTypes();
+
+   List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType);
 }

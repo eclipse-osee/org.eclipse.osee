@@ -141,10 +141,7 @@ public class IntroduceArtifactOperation {
       List<RelationLink> sourceRelations = sourceArtifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED);
 
       for (RelationLink sourceRelation : sourceRelations) {
-         // must be valid for the destination branch
-         if (destinationArtifact.isRelationTypeValid(sourceRelation.getRelationType())) {
-            introduceRelation(sourceRelation, destinationArtifact);
-         }
+         introduceRelation(sourceRelation, destinationArtifact);
       }
    }
 

@@ -127,22 +127,24 @@ public interface RelationTypeToken extends NamedId {
          public boolean isOrdered() {
             return !RelationSorter.UNORDERED.equals(order);
          }
-
       }
       return new RelationTypeTokenImpl(id, name, relationTypeMultiplicity, order, artifactTypeA, sideAName,
          artifactTypeB, sideBName);
    }
 
-   public RelationTypeMultiplicity getMultiplicity();
+   RelationTypeMultiplicity getMultiplicity();
 
-   public RelationSorter getOrder();
+   RelationSorter getOrder();
 
-   public ArtifactTypeToken getArtifactType(RelationSide relationSide);
+   ArtifactTypeToken getArtifactType(RelationSide relationSide);
 
-   public String getSideName(RelationSide relationSide);
+   String getSideName(RelationSide relationSide);
 
-   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType);
+   boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType);
 
-   public boolean isOrdered();
+   boolean isOrdered();
 
+   default int getRelationSideMax(ArtifactTypeToken artifactType, RelationSide relationSide) {
+      return isArtifactTypeAllowed(relationSide, artifactType) ? getMultiplicity().getLimit(relationSide) : 0;
+   }
 }

@@ -27,12 +27,14 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -116,6 +117,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private final Matcher storageStringMatcher = storageStringPattern.matcher("");
    private final Matcher notSearchPrimitiveMatcher = notSearchPrimitivePattern.matcher("");
    private StyledText textDescription;
+   private final OrcsTokenService tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
 
    @Override
    public void createControl(Composite parent) {
@@ -229,7 +231,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setLabelProvider(new StringLabelProvider());
 
       try {
-         for (RelationTypeToken linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
+         for (RelationTypeToken linkDescriptor : tokenService.getRelationTypes()) {
             relationTypeList.add(linkDescriptor);
             relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }

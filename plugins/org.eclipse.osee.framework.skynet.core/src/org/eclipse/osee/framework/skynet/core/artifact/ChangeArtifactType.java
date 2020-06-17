@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGu
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -195,8 +194,7 @@ public class ChangeArtifactType {
 
    private void deleteInvalidRelations(Artifact artifact, ArtifactTypeToken artifactType) {
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,
-            link.getSide(artifact)) == 0) {
+         if (link.getRelationType().getRelationSideMax(artifactType, link.getSide(artifact)) == 0) {
             link.delete(false);
             relationTypes.add(link.getRelationType());
          }

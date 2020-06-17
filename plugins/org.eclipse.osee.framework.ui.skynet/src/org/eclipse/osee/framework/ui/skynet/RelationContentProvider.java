@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -45,6 +45,11 @@ public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    private Artifact artifactRoot;
    private final Map<Object, Object> childToParentMap = new HashMap<>();
+   private final OrcsTokenService tokenService;
+
+   public RelationContentProvider(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    @Override
    public void dispose() {
@@ -80,19 +85,19 @@ public class RelationContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       try {
          if (parentElement instanceof Artifact) {
-            Collection<RelationTypeToken> relationTypes = artifactRoot.getValidRelationTypes();
+            Collection<RelationTypeToken> relationTypes =
+               tokenService.getValidRelationTypes(artifactRoot.getArtifactType());
             for (RelationTypeToken type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
             Object[] ret = relationTypes.toArray();
             Arrays.sort(ret);
             return ret;
-         } else if (parentElement instanceof RelationType) {
-            RelationType relationType = (RelationType) parentElement;
-            int sideAMax = RelationTypeManager.getRelationSideMax(relationType, artifactRoot.getArtifactType(),
-               RelationSide.SIDE_A);
-            int sideBMax = RelationTypeManager.getRelationSideMax(relationType, artifactRoot.getArtifactType(),
-               RelationSide.SIDE_B);
+         } else if (parentElement instanceof RelationTypeToken) {
+            RelationTypeToken relationType = (RelationTypeToken) parentElement;
+
+            int sideAMax = relationType.getRelationSideMax(artifactRoot.getArtifactType(), RelationSide.SIDE_A);
+            int sideBMax = relationType.getRelationSideMax(artifactRoot.getArtifactType(), RelationSide.SIDE_B);
 
             RelationTypeSideSorter sideA =
                RelationManager.createTypeSideSorter(artifactRoot, relationType, RelationSide.SIDE_A);

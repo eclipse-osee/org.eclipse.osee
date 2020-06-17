@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.access.provider.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -32,8 +33,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class FrameworkAccessModel extends OseeDslAccessModel {
 
-   public FrameworkAccessModel(AccessModelInterpreter interpreter, OseeDslProvider dslProvider) {
+   private final OrcsTokenService tokenService;
+
+   public FrameworkAccessModel(AccessModelInterpreter interpreter, OseeDslProvider dslProvider, OrcsTokenService tokenService) {
       super(interpreter, dslProvider);
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -52,7 +56,8 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
 
    private void addRelationAccess(Object object, AccessData accessData) {
       if (object instanceof Artifact) {
-         for (RelationTypeToken relationType : ((Artifact) object).getValidRelationTypes()) {
+         for (RelationTypeToken relationType : tokenService.getValidRelationTypes(
+            ((Artifact) object).getArtifactType())) {
             for (RelationSide relationSide : RelationSide.values()) {
                accessData.add(object, new AccessDetail<>(new RelationTypeSide(relationType, relationSide),
                   PermissionEnum.READ, Scope.createLegacyScope()));

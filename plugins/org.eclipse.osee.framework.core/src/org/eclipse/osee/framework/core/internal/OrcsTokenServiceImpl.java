@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.core.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -187,6 +190,17 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       return Collections.unmodifiableCollection(attributeTypes.values());
    }
 
-   public void start() {
+   @Override
+   public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
+      Collection<RelationTypeToken> relationTypes = getRelationTypes();
+      List<RelationTypeToken> validRelationTypes = new ArrayList<>();
+      for (RelationTypeToken relationType : relationTypes) {
+         boolean onSideA = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_A) > 0;
+         boolean onSideB = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_B) > 0;
+         if (onSideA || onSideB) {
+            validRelationTypes.add(relationType);
+         }
+      }
+      return validRelationTypes;
    }
 }

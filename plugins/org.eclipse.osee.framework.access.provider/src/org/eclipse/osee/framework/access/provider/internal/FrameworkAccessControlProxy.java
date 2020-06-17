@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
@@ -55,8 +56,13 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    private IEventListener listener;
    private OseeEventService eventService;
    private BundleContext bundleContext;
+   private OrcsTokenService tokenService;
 
    private volatile boolean isInitialized = false;
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    public void setAccessModelInterpreter(ServiceReference<AccessModelInterpreter> reference) {
       this.reference = reference;
@@ -90,7 +96,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
          FrameworkDslProvider frameworkDslProvider = new FrameworkDslProvider("osee:/xtext/framework.access.osee");
          RoleContextProvider roleProvider = new OseeDslRoleContextProvider(frameworkDslProvider);
 
-         accessModel = new FrameworkAccessModel(interpreter, frameworkDslProvider);
+         accessModel = new FrameworkAccessModel(interpreter, frameworkDslProvider, tokenService);
          frameworkAccessControl = new FrameworkAccessControl(roleProvider);
 
          listener = new DslUpdateListener(frameworkDslProvider);

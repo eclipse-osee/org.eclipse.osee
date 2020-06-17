@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,11 +64,13 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
    private final ArtifactExplorer artifactExplorer;
    private final MenuItem menuItem;
+   private final OrcsTokenService tokenService;
 
    public CreateRelatedMenuItem(Menu parent, ArtifactExplorer artifactExplorer) {
       menuItem = new MenuItem(parent, SWT.PUSH);
       menuItem.setText("&New Related");
       this.artifactExplorer = artifactExplorer;
+      tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
       menuItem.addSelectionListener(this);
    }
 
@@ -115,7 +119,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
             }
 
             List<RelationTypeSide> validRelationTypes = new LinkedList<>();
-            for (RelationTypeToken relType : RelationTypeManager.getValidTypes(parentArt.getBranch())) {
+            for (RelationTypeToken relType : tokenService.getRelationTypes()) {
                if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactType())) {
                   validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_B));
                }

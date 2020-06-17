@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -34,6 +35,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Roberto E. Escobar
  */
 public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
+   private OrcsTokenService tokenService;
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    @Override
    public boolean isApplicable(Object object) {
@@ -89,7 +95,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
 
       @Override
       public Collection<RelationTypeToken> getValidRelationTypes() {
-         return org.eclipse.osee.framework.jdk.core.util.Collections.cast(self.getValidRelationTypes());
+         return tokenService.getValidRelationTypes(self.getArtifactType());
       }
 
       @Override
