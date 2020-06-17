@@ -59,7 +59,10 @@ public class ConvertAtsConfigGuidAttributesOperations {
       Collection<ArtifactId> aiArts =
          atsApi.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId id : aiArts) {
-         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(id);
+         IAtsActionableItem ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(id.getId());
+         if (ai == null) {
+            ai = atsApi.getQueryService().getConfigItem(id);
+         }
          if (ai == null) {
             atsApi.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
          } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {

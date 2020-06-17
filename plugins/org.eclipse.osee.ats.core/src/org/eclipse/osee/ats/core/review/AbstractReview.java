@@ -41,8 +41,11 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
       Collection<ArtifactId> artifactIds =
          atsApi.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId aiId : artifactIds) {
-         ArtifactId aiArt = atsApi.getQueryService().getConfigItem(aiId);
-         IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(aiArt);
+         IAtsActionableItem ai = atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId.getId());
+         if (ai == null) {
+            ArtifactId aiArt = atsApi.getQueryService().getConfigItem(aiId);
+            ai = atsApi.getActionableItemService().getActionableItemById(aiArt);
+         }
          ais.add(ai);
       }
       return ais;
