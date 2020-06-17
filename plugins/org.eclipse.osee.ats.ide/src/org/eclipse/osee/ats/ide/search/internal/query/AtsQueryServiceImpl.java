@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
@@ -108,10 +107,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace) {
       ArrayList<AtsSearchData> searches = new ArrayList<>();
-      // Reload if current user
-      if (atsApi.getUserService().getCurrentUser().equals(atsUser) || AtsUtil.isInTest()) {
-         atsUser = atsApi.getUserService().getCurrentUserNoCache();
-      }
       for (String jsonValue : atsUser.getSavedSearches()) {
          if (jsonValue.contains("\"" + namespace + "\"")) {
             try {
@@ -143,6 +138,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          if (!changes.isEmpty()) {
             changes.execute();
          }
+         atsApi.getUserService().getCurrentUserNoCache();
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to store ATS Search", ex);
       }
@@ -176,6 +172,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
             changes.deleteAttribute(userArt, attr);
             changes.execute();
          }
+         atsApi.getUserService().getCurrentUserNoCache();
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to remove ATS Search", ex);
       }

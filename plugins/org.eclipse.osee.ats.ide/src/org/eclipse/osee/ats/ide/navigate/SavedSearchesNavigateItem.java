@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.navigate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
@@ -49,6 +51,7 @@ import org.osgi.service.event.EventHandler;
 public class SavedSearchesNavigateItem extends XNavigateItem implements EventHandler {
 
    private static long SAVED_SEARCH_ID = 824378923L;
+   private static final AtomicBoolean firstTime = new AtomicBoolean(true);
 
    public SavedSearchesNavigateItem() {
       // for jax-rs
@@ -68,6 +71,13 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
          protected IStatus run(IProgressMonitor monitor) {
 
             try {
+               // If current user and not first load, reload user to get latest
+               AtsUser currUser = currentUser;
+               if (!firstTime.getAndSet(
+                  false) && (atsApi.getUserService().getCurrentUser().equals(currentUser) || AtsUtil.isInTest())) {
+                  currUser = atsApi.getUserService().getCurrentUserNoCache();
+               }
+
                if (topSearchItem.getChildren() != null) {
                   topSearchItem.getChildren().clear();
                }
@@ -75,7 +85,7 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
                for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
                   for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
                      ArrayList<AtsSearchData> savedSearches =
-                        atsApi.getQueryService().getSavedSearches(currentUser, item.getNamespace());
+                        atsApi.getQueryService().getSavedSearches(currUser, item.getNamespace());
                      for (AtsSearchData data : savedSearches) {
                         if (!ids.contains(data.getId())) {
                            AtsSearchWorkflowSearchItem searchItem = item.copy();
@@ -111,9 +121,9 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
          public void run() {
             SavedSearchesNavigateItem topSearchItem =
                (SavedSearchesNavigateItem) NavigateView.getNavigateView().getItem(SAVED_SEARCH_ID, true);
-            AtsUser currentUser = AtsClientService.get().getUserService().getCurrentUserNoCache();
             if (topSearchItem != null) {
-               populateSavedSearchesItem(topSearchItem, currentUser, AtsClientService.get());
+               populateSavedSearchesItem(topSearchItem, AtsClientService.get().getUserService().getCurrentUser(),
+                  AtsClientService.get());
             }
          }
       });

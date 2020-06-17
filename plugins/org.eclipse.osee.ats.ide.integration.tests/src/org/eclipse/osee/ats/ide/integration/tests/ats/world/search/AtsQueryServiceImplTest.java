@@ -63,6 +63,7 @@ public class AtsQueryServiceImplTest {
       data.setColorTeam("blue");
       data.setNamespace(namespace);
       AtsClientService.get().getQueryService().saveSearch(user, data);
+      user = AtsClientService.get().getUserService().getCurrentUser();
 
       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
       Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
@@ -71,6 +72,7 @@ public class AtsQueryServiceImplTest {
       data2.setColorTeam("green");
       data2.setNamespace(namespace);
       AtsClientService.get().getQueryService().saveSearch(user, data2);
+      user = AtsClientService.get().getUserService().getCurrentUser();
 
       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
       Assert.assertEquals(savedSearches.toString(), 2, savedSearches.size());
@@ -80,6 +82,7 @@ public class AtsQueryServiceImplTest {
       data.setColorTeam("gold");
       data.setNamespace(namespace2);
       AtsClientService.get().getQueryService().saveSearch(user, data);
+      user = AtsClientService.get().getUserService().getCurrentUser();
 
       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
       Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
@@ -88,6 +91,7 @@ public class AtsQueryServiceImplTest {
       data = savedSearches.iterator().next();
 
       AtsClientService.get().getQueryService().removeSearch(user, data);
+      user = AtsClientService.get().getUserService().getCurrentUser();
 
       savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
       Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
