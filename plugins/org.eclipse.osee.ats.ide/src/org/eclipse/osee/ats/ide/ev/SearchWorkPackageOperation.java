@@ -72,7 +72,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       addAllAisIds(monitor, ais, includeChildrenAis, ids);
 
       for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch())) {
-         for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_WorkPackage)) {
+         for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
             if (activeWorkPkgs == Active.Both || active && activeWorkPkgs == Active.Active || !active && activeWorkPkgs == Active.InActive) {
                results.add(workPkgArt);

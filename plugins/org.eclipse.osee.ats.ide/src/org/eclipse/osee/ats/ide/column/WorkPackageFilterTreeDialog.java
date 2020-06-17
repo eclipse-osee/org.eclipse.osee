@@ -102,7 +102,7 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
 
    private void createRemoveCheckbox(Composite parent) {
 
-      final XCheckBox checkbox = new XCheckBox("Remove from WorkPackage");
+      final XCheckBox checkbox = new XCheckBox("Remove from TeamDefinitionToWorkPackage");
       checkbox.setFillHorizontally(true);
       checkbox.set(removeFromWorkPackage);
       checkbox.createWidgets(parent, 2);
@@ -122,7 +122,7 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
    protected Result isComplete() {
       try {
          if (selection == null && !removeFromWorkPackage) {
-            return new Result("A Work Package or \"Remove From WorkPackage\" must be selected.");
+            return new Result("A Work Package or \"Remove From TeamDefinitionToWorkPackage\" must be selected.");
          }
       } catch (Exception ex) {
          OseeLog.log(org.eclipse.osee.ats.ide.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);

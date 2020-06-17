@@ -203,8 +203,7 @@ public class WfeHeaderComposite extends Composite {
    }
 
    public void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, int horizontalSpan, WorkflowEditor editor) {
-      boolean show = workItem.isTeamWorkflow() && !AtsClientService.get().getEarnedValueService().getWorkPackageOptions(
-         workItem).isEmpty();
+      boolean show = workItem.isTeamWorkflow() && ((IAtsTeamWorkflow) workItem).getTeamDefinition().hasWorkPackages();
 
       if (show) {
          Composite comp = toolkit.createContainer(parent, 6);

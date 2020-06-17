@@ -98,7 +98,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          ArtifactId artifact = atsApi.getQueryService().getArtifact(configObj);
          if (artifact != null) {
             for (ArtifactToken workPackageArt : atsApi.getRelationResolver().getRelated(artifact,
-               AtsRelationTypes.WorkPackage_WorkPackage)) {
+               AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
                workPackageOptions.add(new WorkPackage(logger, atsApi, workPackageArt));
             }
          }

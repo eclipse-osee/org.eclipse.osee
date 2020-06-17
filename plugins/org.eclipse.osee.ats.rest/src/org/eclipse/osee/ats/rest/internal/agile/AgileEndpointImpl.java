@@ -430,7 +430,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(atsTeamId);
          if (teamDef != null) {
             for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(teamDef,
-               AtsRelationTypes.WorkPackage_WorkPackage)) {
+               AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
                IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
                if (wp != null && wp.isActive()) {
                   wps.add(wp);
@@ -439,7 +439,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             for (IAtsActionableItem ai : atsApi.getActionableItemService().getActiveActionableItemsAndChildren(
                teamDef)) {
                for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(ai,
-                  AtsRelationTypes.WorkPackage_WorkPackage)) {
+                  AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
                   IAtsWorkPackage wp = atsApi.getQueryService().getConfigItem(wpArt);
                   if (wp != null && wp.isActive()) {
                      wps.add(wp);

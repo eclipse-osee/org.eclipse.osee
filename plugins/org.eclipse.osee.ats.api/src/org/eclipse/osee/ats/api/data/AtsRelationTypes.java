@@ -210,9 +210,9 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamWorkflowToReview_TeamWorkflow = RelationTypeSide.create(TeamWorkflowToReview, SIDE_A);
    RelationTypeSide TeamWorkflowToReview_Review = RelationTypeSide.create(TeamWorkflowToReview, SIDE_B);
 
-   RelationTypeToken WorkPackage = ats.add(2305843009213694334L, "Work Package", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.WorkPackage, "Work Package", AtsTeamDefinitionOrAi, "ATS Team Def or AI");
-   RelationTypeSide WorkPackage_WorkPackage = RelationTypeSide.create(WorkPackage, SIDE_A);
-   RelationTypeSide WorkPackage_AtsTeamDefOrAi = RelationTypeSide.create(WorkPackage, SIDE_B);
+   RelationTypeToken TeamDefinitionToWorkPackage = ats.add(2305843009213694334L, "TeamDefinitionToWorkPackage", MANY_TO_MANY, UNORDERED, AtsArtifactTypes.WorkPackage, "Work Package", AtsTeamDefinitionOrAi, "ATS Team Def or AI");
+   RelationTypeSide TeamDefinitionToWorkPackage_WorkPackage = RelationTypeSide.create(TeamDefinitionToWorkPackage, SIDE_A);
+   RelationTypeSide TeamDefinitionToWorkPackage_AtsTeamDefOrAi = RelationTypeSide.create(TeamDefinitionToWorkPackage, SIDE_B);
 
    // Program uses supporting info to relate to team.  Use different name for readability and understandability
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;

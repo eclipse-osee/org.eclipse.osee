@@ -78,6 +78,11 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
             return false;
          }
 
+         @Override
+         public boolean hasWorkPackages() {
+            return false;
+         }
+
       }
       return new IAtsTeamDefinitionSentinel();
    }
@@ -85,5 +90,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
    Collection<ActionableItem> getActionableItems();
 
    Collection<TeamDefinition> getChildrenTeamDefs();
+
+   boolean hasWorkPackages();
 
 }
