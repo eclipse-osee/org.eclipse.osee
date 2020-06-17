@@ -20,8 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.ide.column.StateAssigneesColumn;
-import org.eclipse.osee.ats.ide.column.StateCompletedColumn;
+import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
@@ -42,7 +41,6 @@ public class WorldXViewerUtil {
    public static void registerOtherColumns(SkynetXViewerFactory factory) {
       registerAtsAttributeColumns(factory);
       registerPluginColumns(factory);
-      registerStateColumns(factory);
       registerConfigurationsColumns(factory);
    }
 
@@ -71,25 +69,24 @@ public class WorldXViewerUtil {
 
    public static void registerAtsAttributeColumns(SkynetXViewerFactory factory) {
       // Register all ats.* attribute columns
-      if (isInUserGroup(factory)) {
-         try {
+      try {
+         if (AtsClientService.get().getUserService().getCurrentUser().getUserGroups().contains(
+            AtsUserGroups.AtsAddAttrColumns)) {
             for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
                if (attributeType.getName().startsWith("ats.")) {
                   factory.registerColumns(SkynetXViewerFactory.getAttributeColumn(attributeType));
                }
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
    public static void registerConfigurationsColumns(SkynetXViewerFactory factory) {
-      if (isInUserGroup(factory)) {
-         List<XViewerAtsAttributeValueColumn> configColumns = getConfigurationColumns();
-         for (XViewerAtsAttributeValueColumn col : configColumns) {
-            factory.registerColumns(col);
-         }
+      List<XViewerAtsAttributeValueColumn> configColumns = getConfigurationColumns();
+      for (XViewerAtsAttributeValueColumn col : configColumns) {
+         factory.registerColumns(col);
       }
    }
 
@@ -122,25 +119,6 @@ public class WorldXViewerUtil {
       return configColumns;
    }
 
-   public static void registerStateColumns(SkynetXViewerFactory factory) {
-      if (isInUserGroup(factory)) {
-         for (String stateName : AtsClientService.get().getConfigService().getConfigurations().getValidStateNames()) {
-            factory.registerColumns(new StateAssigneesColumn(stateName));
-            factory.registerColumns(new StateCompletedColumn(stateName));
-         }
-      }
-   }
-
-   private static boolean isInUserGroup(SkynetXViewerFactory factory) {
-      Collection<IUserGroupArtifactToken> userGroups = factory.getUserGroups();
-      for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
-         if (userGroups.contains(myUserGroup)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttributeValueColumn> configCols) {
       for (XViewerAtsAttributeValueColumn col : configCols) {
          if (col.getId().equals(columnId)) {
@@ -151,13 +129,11 @@ public class WorldXViewerUtil {
    }
 
    public static void addColumn(SkynetXViewerFactory factory, XViewerColumn taskCol, int width, List<XViewerColumn> sprintCols) {
-      if (isInUserGroup(factory)) {
-         XViewerColumn newCol = taskCol.copy();
-         newCol.setShow(true);
-         newCol.setWidth(width);
-         factory.registerColumns(newCol);
-         sprintCols.add(newCol);
-      }
+      XViewerColumn newCol = taskCol.copy();
+      newCol.setShow(true);
+      newCol.setWidth(width);
+      factory.registerColumns(newCol);
+      sprintCols.add(newCol);
    }
 
 }

@@ -83,7 +83,6 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       }
       WorldXViewerUtil.registerAtsAttributeColumns(this);
       WorldXViewerUtil.registerPluginColumns(this);
-      WorldXViewerUtil.registerStateColumns(this);
       // Add remaining Configuration Columns
       for (XViewerAtsAttributeValueColumn col : configCols) {
          registerColumns(col);

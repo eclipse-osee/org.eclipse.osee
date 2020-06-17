@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
  */
 public class AtsUserGroups {
 
+   public static IUserGroupArtifactToken AtsAddAttrColumns =
+      UserGroupArtifactToken.valueOf(10847751L, "AtsAddAttrColumns");
    public static IUserGroupArtifactToken AtsAdmin = UserGroupArtifactToken.valueOf(136750L, "AtsAdmin");
    public static IUserGroupArtifactToken AtsTempAdmin = UserGroupArtifactToken.valueOf(5367074L, "AtsTempAdmin");
 

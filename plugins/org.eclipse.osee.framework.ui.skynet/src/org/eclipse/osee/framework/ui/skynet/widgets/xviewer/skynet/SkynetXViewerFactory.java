@@ -27,14 +27,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -88,14 +84,6 @@ public abstract class SkynetXViewerFactory extends XViewerFactory {
    public static XViewerColumn getAttributeColumn(AttributeTypeToken attributeType) {
       return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType, 75,
          XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
-   }
-
-   public Collection<IUserGroupArtifactToken> getUserGroups() {
-      List<IUserGroupArtifactToken> userGrps = new ArrayList<>();
-      for (Artifact userGrp : UserManager.getUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-         userGrps.add(new UserGroupImpl(userGrp));
-      }
-      return userGrps;
    }
 
    @Override

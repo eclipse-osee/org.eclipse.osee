@@ -88,7 +88,6 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       }
       WorldXViewerUtil.registerAtsAttributeColumns(this);
       WorldXViewerUtil.registerPluginColumns(this);
-      WorldXViewerUtil.registerStateColumns(this);
       WorldXViewerUtil.registerConfigurationsColumns(this);
    }
 
