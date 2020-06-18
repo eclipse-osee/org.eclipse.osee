@@ -48,8 +48,4 @@ public class RelationTypeManager {
 
       return getCache().get(relationType);
    }
-
-   public static RelationTypeToken getType(String typeName) {
-      return getCache().getByName(typeName);
-   }
 }

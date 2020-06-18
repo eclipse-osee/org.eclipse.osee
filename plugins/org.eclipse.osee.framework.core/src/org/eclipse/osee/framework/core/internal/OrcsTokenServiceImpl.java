@@ -79,6 +79,16 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public RelationTypeToken getRelationType(String name) {
+      for (RelationTypeToken relationType : relationTypes.values()) {
+         if (relationType.getName().equals(name)) {
+            return relationType;
+         }
+      }
+      throw new OseeTypeDoesNotExist("Relation type [%s] is not available.", name);
+   }
+
+   @Override
    public ArtifactTypeToken getArtifactTypeOrSentinel(Long id) {
       ArtifactTypeToken artifactType = artifactTypes.get(id);
       if (artifactType == null) {

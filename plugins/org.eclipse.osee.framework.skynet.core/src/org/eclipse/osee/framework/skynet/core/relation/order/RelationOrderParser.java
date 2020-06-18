@@ -19,14 +19,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -37,7 +39,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Roberto E. Escobar
  */
 public class RelationOrderParser {
-
    private static final Object ROOT_ELEMENT = "OrderList";
    private static final ThreadLocal<XMLReader> localReader = new ThreadLocal<XMLReader>() {
 
@@ -50,8 +51,12 @@ public class RelationOrderParser {
             return null;
          }
       }
-
    };
+   private final OrcsTokenService tokenService;
+
+   public RelationOrderParser() {
+      tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
+   }
 
    public synchronized void loadFromXml(RelationOrderData data, String value) {
       if (data == null) {
@@ -126,7 +131,7 @@ public class RelationOrderParser {
       sb.append("/>");
    }
 
-   private final static class RelationOrderSaxHandlerLite extends AbstractSaxHandler {
+   private final class RelationOrderSaxHandlerLite extends AbstractSaxHandler {
       private final RelationOrderData data;
 
       private RelationOrderSaxHandlerLite(RelationOrderData data) {
@@ -153,7 +158,7 @@ public class RelationOrderParser {
                   Collections.addAll(guidsList, guids);
                }
 
-               data.addOrderList(RelationTypeManager.getType(relationTypeName), RelationSide.valueOf(relationSide),
+               data.addOrderList(tokenService.getRelationType(relationTypeName), RelationSide.valueOf(relationSide),
                   RelationSorter.valueOfGuid(orderType), guidsList);
             }
          }

@@ -20,10 +20,12 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -48,6 +49,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final Artifact destinationArtifact;
    private final RelationSorter importArtifactOrder;
    private final boolean deleteUnmatchedArtifacts;
+   private final OrcsTokenService tokenService;
    private Collection<Artifact> unmatchedArtifacts;
    private final IArtifactExtractor extractor;
    private boolean addRelation = true;
@@ -63,6 +65,8 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.createdArtifacts = new LinkedList<>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       this.extractor = extractor;
+      tokenService = OsgiUtil.getService(OrcsTokenService.class, OrcsTokenService.class);
+
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
 
@@ -156,7 +160,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    }
 
    private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation) {
-      RelationTypeToken relationType = RelationTypeManager.getType(roughRelation.getRelationTypeName());
+      RelationTypeToken relationType = tokenService.getRelationType(roughRelation.getRelationTypeName());
       Artifact aArt = ArtifactQuery.getArtifactFromId(roughRelation.getAartifactGuid(), transaction.getBranch());
       Artifact bArt = ArtifactQuery.getArtifactFromId(roughRelation.getBartifactGuid(), transaction.getBranch());
 

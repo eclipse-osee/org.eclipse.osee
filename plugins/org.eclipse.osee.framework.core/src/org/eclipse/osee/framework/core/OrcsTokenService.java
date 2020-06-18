@@ -40,6 +40,11 @@ public interface OrcsTokenService {
    RelationTypeToken getRelationType(Long id);
 
    /**
+    * @return singleton full relation type token with the given name or throw OseeTypeDoesNotExist if not found
+    */
+   RelationTypeToken getRelationType(String name);
+
+   /**
     * @return singleton full artifact type token with the given id or sentinel if not found
     */
    ArtifactTypeToken getArtifactTypeOrSentinel(Long id);
