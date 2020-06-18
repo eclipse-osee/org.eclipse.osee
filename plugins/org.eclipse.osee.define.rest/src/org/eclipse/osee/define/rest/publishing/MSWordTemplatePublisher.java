@@ -116,8 +116,6 @@ public class MSWordTemplatePublisher {
    protected final Set<ArtifactId> emptyFolders = new HashSet<>();
    protected final Map<ArtifactReadable, CharSequence> artParagraphNumbers = new HashMap<>();
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
-   protected final Map<ArtifactId, String> artifactData = new HashMap<>();
-   protected final List<String> hyperlinkedGuids = new LinkedList<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -722,48 +720,11 @@ public class MSWordTemplatePublisher {
     * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
     * artifacts that are linking to artifacts that aren't included in the publish.
     */
-   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label) {
-      WordMLWriter wordMl = producer;
-      String data = null;
-
-      LinkType linkType = publishingOptions.linkType;
+   protected void renderWordTemplateContent(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter wordMl, String format, String label) {
       String footer = getArtifactFooter(artifact);
 
-      if (label.length() > 0) {
-         wordMl.addParagraph(label);
-      }
-
-      TransactionToken txId = null;
-      if (artifact.isHistorical()) {
-         txId = orcsApi.getTransactionFactory().getTx(artifact.getTransaction());
-      } else {
-         txId = TransactionToken.SENTINEL;
-      }
-
-      WordTemplateContentData wtcData = new WordTemplateContentData();
-      wtcData.setArtId(artifact.getUuid());
-      wtcData.setBranch(artifact.getBranch());
-      wtcData.setFooter(footer);
-      wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
-      wtcData.setLinkType(linkType != null ? linkType.toString() : null);
-      wtcData.setTxId(txId);
-      wtcData.setPresentationType(presentationType);
-      wtcData.setViewId(publishingOptions.view);
-      wtcData.setPermanentLinkUrl(new ArtifactUrlServer(orcsApi).getSelectedPermanentLinkUrl());
-
-      Pair<String, Set<String>> content = null;
-      try {
-         WordTemplateContentRendererHandler rendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
-         content = rendererHandler.renderWordML(wtcData);
-      } catch (Exception ex) {
-         errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
-            ex.toString()));
-      }
-
-      if (content != null) {
-         data = content.getFirst();
-         processLinkErrors(artifact, data, content.getSecond());
-      }
+      String data =
+         getWordTemplateContentData(attributeType, artifact, presentationType, wordMl, format, label, footer);
 
       if (data != null) {
          wordMl.addWordMl(data);
@@ -773,19 +734,11 @@ public class MSWordTemplatePublisher {
       wordMl.resetListValue();
    }
 
-   /**
-    * This is a TEMPORARY test method for publishing. The idea is that this method will be called before any writing is
-    * done for publish, populating the Word Content (artifactData) map, so the word ml can be parsed and create a
-    * seperate data structure of which artifacts will be bookmarked. The artifactData map will then be used later to
-    * write the word ml, removing any un-needed bookmarks. Duplicated code for now for testing this idea, will be
-    * written fully implemented after successful test.
-    */
-   protected void populateArtifactData(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label) {
+   protected String getWordTemplateContentData(AttributeTypeToken attributeType, ArtifactReadable artifact, PresentationType presentationType, WordMLWriter producer, String format, String label, String footer) {
       WordMLWriter wordMl = producer;
       String data = null;
 
       LinkType linkType = publishingOptions.linkType;
-      String footer = getArtifactFooter(artifact);
 
       if (label.length() > 0) {
          wordMl.addParagraph(label);
@@ -823,7 +776,7 @@ public class MSWordTemplatePublisher {
          processLinkErrors(artifact, data, content.getSecond());
       }
 
-      artifactData.put(artifact, data);
+      return data;
    }
 
    /**
@@ -906,10 +859,6 @@ public class MSWordTemplatePublisher {
                } else if (foundMatch.contains("HYPERLINK")) {
                   if (!bookmarkedIds.contains(id) && !hyperlinkedIds.containsKey(id)) {
                      hyperlinkedIds.put(id, artifact);
-                  }
-                  //TEMPORARY Test, this structure stores ALL hyperlinked guids, not just ones that aren't linked
-                  if (!hyperlinkedGuids.contains(id)) {
-                     hyperlinkedGuids.add(id);
                   }
                }
             }
