@@ -869,11 +869,15 @@ public class MSWordTemplatePublisher {
    protected void addLinkNotInPublishErrors(WordMLWriter wordMl) {
       if (!hyperlinkedIds.isEmpty()) {
          for (Map.Entry<String, ArtifactReadable> link : hyperlinkedIds.entrySet()) {
-            ArtifactReadable artifact = link.getValue();
-            String description =
-               "Contains the following GUIDs that are not found in this published document: " + link.getKey();
-            errorLog.add(new PublishingArtifactError(artifact.getId(), artifact.getName(), artifact.getArtifactType(),
-               description));
+            ArtifactReadable artWithLink = link.getValue();
+            String idString = link.getKey();
+            ArtifactReadable linkedArt =
+               orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andGuid(idString).getArtifact();
+            String description = String.format(
+               "Artifact is linking to the following Artifact Id that is not contained in this document: %s (Guid: %s)",
+               linkedArt.getId(), idString);
+            errorLog.add(new PublishingArtifactError(artWithLink.getId(), artWithLink.getName(),
+               artWithLink.getArtifactType(), description));
          }
       }
    }
