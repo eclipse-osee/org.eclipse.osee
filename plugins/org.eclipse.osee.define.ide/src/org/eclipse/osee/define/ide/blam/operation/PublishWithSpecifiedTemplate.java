@@ -185,7 +185,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
       rendererOptionsMap.put(RECURSE, true);
       rendererOptionsMap.put(MAINTAIN_ORDER, true);
-      rendererOptionsMap.put(PROGRESS_MONITOR, true);
+      rendererOptionsMap.put(PROGRESS_MONITOR, monitor);
       rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
       rendererOptionsMap.put(FIRST_TIME, true);
       rendererOptionsMap.put(PUBLISH_DIFF, variableMap.getValue(PUBLISH_DIFF.getKey()));
