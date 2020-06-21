@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -64,8 +65,6 @@ public interface IAtsStoreService {
 
    ArtifactTypeToken getArtifactType(IAtsObject atsObject);
 
-   ArtifactTypeToken getArtifactType(Long artTypeId);
-
    void executeChangeSet(String comment, IAtsObject atsObject);
 
    void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects);
@@ -96,13 +95,13 @@ public interface IAtsStoreService {
 
    JdbcService getJdbcService();
 
-   default Map<ArtifactId, ArtifactTypeToken> getArtifactTypes(Collection<ArtifactId> artIds) {
+   default Map<ArtifactId, ArtifactTypeToken> getArtifactTypes(Collection<ArtifactId> artIds, OrcsTokenService tokenService) {
       String query = String.format(ART_TYPE_FROM_ID_QUERY,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(artIds, ",", ArtifactId::getIdString));
 
       Map<ArtifactId, ArtifactTypeToken> artIdToType = new HashMap<>();
       getJdbcService().getClient().runQuery(stmt -> artIdToType.put(ArtifactId.valueOf(stmt.getLong("art_id")),
-         getArtifactType(stmt.getLong("art_type_id"))), query);
+         tokenService.getArtifactType(stmt.getLong("art_type_id"))), query);
       return artIdToType;
    }
 

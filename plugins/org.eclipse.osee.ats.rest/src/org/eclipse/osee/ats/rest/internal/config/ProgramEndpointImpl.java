@@ -136,7 +136,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
          }
          String artifactTypeId = qp.getFirst("artifactTypeId");
          if (Strings.isNumeric(artifactTypeId)) {
-            artType = atsApi.getStoreService().getArtifactType(Long.valueOf(artifactTypeId));
+            artType = atsApi.tokenService().getArtifactType(Long.valueOf(artifactTypeId));
          }
       }
 

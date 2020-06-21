@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -146,11 +145,6 @@ public class AtsStoreService implements IAtsStoreService {
          changes.add(atsObject);
       }
       changes.execute();
-   }
-
-   @Override
-   public ArtifactTypeToken getArtifactType(Long artTypeId) {
-      return ArtifactTypeManager.getType(artTypeId);
    }
 
    @Override

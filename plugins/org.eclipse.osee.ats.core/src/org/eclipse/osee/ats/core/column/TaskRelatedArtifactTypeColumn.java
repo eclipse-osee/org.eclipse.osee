@@ -56,8 +56,8 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
             public ArtifactTypeToken load(IAtsWorkItem workItem) throws Exception {
                ArtifactId relatedArtId = TaskRelatedArtifactTypeColumn.this.getRelatedArtId(workItem);
                if (relatedArtId.isValid()) {
-                  Map<ArtifactId, ArtifactTypeToken> results =
-                     atsApi.getStoreService().getArtifactTypes(Collections.singleton(relatedArtId));
+                  Map<ArtifactId, ArtifactTypeToken> results = atsApi.getStoreService().getArtifactTypes(
+                     Collections.singleton(relatedArtId), atsApi.tokenService());
                   return results.values().iterator().next();
                }
                return ArtifactTypeToken.SENTINEL;
@@ -78,7 +78,8 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
          }
       }
       if (!relatedArtIds.isEmpty()) {
-         Map<ArtifactId, ArtifactTypeToken> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
+         Map<ArtifactId, ArtifactTypeToken> results =
+            atsApi.getStoreService().getArtifactTypes(relatedArtIds, atsApi.tokenService());
          for (ArtifactId relatedArtId : relatedArtIds) {
             if (relatedArtId.isValid()) {
                ArtifactTypeToken artifactType = results.get(relatedArtId);

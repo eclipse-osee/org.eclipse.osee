@@ -159,11 +159,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public ArtifactTypeToken getArtifactType(Long artTypeId) {
-      return orcsApi.tokenService().getArtifactType(artTypeId);
-   }
-
-   @Override
    public Collection<AttributeTypeGeneric<?>> getAttributeTypes() {
       return orcsApi.tokenService().getAttributeTypes();
    }
