@@ -78,4 +78,9 @@ public class AccessControlServiceImpl implements IAccessControlService {
       return results;
    }
 
+   @Override
+   public void ensurePopulated() {
+      throw new UnsupportedOperationException("Not available on server yet");
+   }
+
 }

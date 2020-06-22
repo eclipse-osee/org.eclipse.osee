@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
@@ -250,5 +250,10 @@ public class AccessPolicyImpl implements AccessPolicy {
    @Override
    public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       return accessControlService.isDeleteableRelation(artifact, relationType, results);
+   }
+
+   @Override
+   public void ensurePopulated() {
+      accessControlService.ensurePopulated();
    }
 }

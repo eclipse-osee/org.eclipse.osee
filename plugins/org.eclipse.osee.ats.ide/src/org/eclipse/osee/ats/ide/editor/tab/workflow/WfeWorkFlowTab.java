@@ -514,10 +514,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       for (WfeWorkflowSection section : sections) {
          section.dispose();
       }
-
-      if (editor.getToolkit() != null) {
-         editor.getToolkit().dispose();
-      }
    }
 
    private WfeHeaderComposite headerComp;

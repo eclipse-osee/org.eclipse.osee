@@ -375,9 +375,6 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       if (worldComposite != null) {
          worldComposite.dispose();
       }
-      if (editor.getToolkit() != null) {
-         editor.getToolkit().dispose();
-      }
    }
 
    private final Control control = null;

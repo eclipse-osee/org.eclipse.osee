@@ -111,6 +111,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -136,7 +137,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private WfeMembersTab membersTab;
    private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
-   int attributesPageIndex;
+   int attributesPageIndex = 0;;
    private AttributesComposite attributesComposite;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
@@ -150,6 +151,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
     */
    private final DoubleKeyHashMap<RelationTypeToken, String, List<IWfeEventHandle>> artRelHandlers =
       new DoubleKeyHashMap<>();
+   private WfeReloadTab reloadTab;
+   private int metricsPageIndex = 0;
+
+   public void loadPages() {
+      addPages();
+   }
 
    @Override
    protected void addPages() {
@@ -236,7 +243,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    private void createReloadTab() throws PartInitException {
-      addPage(new WfeReloadTab(this));
+      reloadTab = new WfeReloadTab(this);
+      addPage(reloadTab);
    }
 
    private void createMembersTab() throws PartInitException {
@@ -345,16 +353,33 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (workItem != null && !workItem.isDeleted() && workItem.isWfeDirty().isTrue()) {
          workItem.revert();
       }
-      if (workFlowTab != null) {
-         workFlowTab.dispose();
-      }
-      if (membersTab != null) {
-         membersTab.dispose();
-      }
-      if (taskTab != null) {
-         taskTab.dispose();
+      disposeTabs();
+      if (getToolkit() != null) {
+         getToolkit().dispose();
       }
       super.dispose();
+   }
+
+   public void disposeTabs() {
+      if (metricsPageIndex > 0) {
+         removePage(metricsPageIndex);
+      }
+      if (attributesPageIndex > 0) {
+         removePage(attributesPageIndex);
+      }
+      if (taskTab != null) {
+         removePage(taskTab.getIndex());
+      }
+      if (workFlowTab != null) {
+         removePage(workFlowTab.getIndex());
+      }
+      if (membersTab != null) {
+         removePage(membersTab.getIndex());
+      }
+      if (reloadTab != null) {
+         removePage(reloadTab.getIndex());
+         reloadTab = null;
+      }
    }
 
    @Override
@@ -364,7 +389,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public Result isDirtyResult() {
-      if (getWfeInput().isReload() || workItem.isDeleted()) {
+      if (workFlowTab == null || getWfeInput().isReload() || (workItem != null && workItem.isDeleted())) {
          return Result.FalseResult;
       }
       try {
@@ -412,7 +437,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          Composite composite = createCommonPageComposite(getContainer());
          createToolBar(composite);
          new AtsMetricsComposite(this, composite, SWT.NONE);
-         int metricsPageIndex = addPage(composite);
+         metricsPageIndex = addPage(composite);
          setPageText(metricsPageIndex, "Metrics");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -988,6 +1013,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    public void setPage(int pageId) {
       setActivePage(pageId);
+   }
+
+   public Button getReloadButton() {
+      if (reloadTab != null) {
+         return reloadTab.getReloadButtion();
+      }
+      return null;
    }
 
 }

@@ -44,4 +44,6 @@ public interface AccessPolicy extends IArtifactCheck {
 
    PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level);
 
+   void ensurePopulated();
+
 }

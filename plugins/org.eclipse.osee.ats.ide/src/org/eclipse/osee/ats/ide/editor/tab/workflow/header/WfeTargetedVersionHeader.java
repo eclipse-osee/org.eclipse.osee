@@ -47,7 +47,6 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
 
    private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
-   Label origLabel;
    Hyperlink link;
    private final IAtsTeamWorkflow teamWf;
 
@@ -135,9 +134,6 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
       super.setBackground(color);
       if (Widgets.isAccessible(valueLabel)) {
          valueLabel.setBackground(color);
-      }
-      if (Widgets.isAccessible(origLabel)) {
-         origLabel.setBackground(color);
       }
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);

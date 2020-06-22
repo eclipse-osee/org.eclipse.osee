@@ -33,4 +33,6 @@ public interface IAccessControlService extends IArtifactCheck {
 
    AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck);
 
+   void ensurePopulated();
+
 }

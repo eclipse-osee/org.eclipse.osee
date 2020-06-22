@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.workflow.AtsWorkItemEventHandler;
 import org.eclipse.osee.ats.ide.world.WorldXViewerEventHandler;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.FrameworkEvents;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;
@@ -45,6 +46,20 @@ public class Activator extends OseeActivator {
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, FrameworkEvents.NAVIGATE_VIEW_LOADED));
       context.registerService(EventHandler.class.getName(), new SavedSearchesNavigateItem(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.SAVED_SEARCHES_MODIFIED));
+
+      // Start loading access control
+      Thread loadAccessControl = new Thread(new Runnable() {
+
+         @Override
+         public void run() {
+            try {
+               ServiceUtil.getAccessPolicy().ensurePopulated();
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }, "Load Access Control");
+      loadAccessControl.start();
    }
 
 }

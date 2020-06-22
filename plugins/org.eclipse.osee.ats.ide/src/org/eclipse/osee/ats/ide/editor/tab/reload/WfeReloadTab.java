@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2020 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -54,10 +55,12 @@ import org.eclipse.ui.forms.editor.FormPage;
 public class WfeReloadTab extends FormPage {
    private IManagedForm managedForm;
    private Composite bodyComp;
-   public final static String ID = "ats.reload.tab";
+   public final static String ID = "ats.attributes.tab";
    private final WorkflowEditor editor;
    private final String title;
    private final BranchId branch;
+   private Button reloadButton;
+   private boolean reloading = false;
 
    public WfeReloadTab(WorkflowEditor editor) {
       super(editor, ID, "Reload");
@@ -86,16 +89,20 @@ public class WfeReloadTab extends FormPage {
             imageLabel.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
             imageLabel.setText("Saved item not on currently configured ATS Branch.  Unable to reload.");
          } else {
-            Button reloadButton = new Button(bodyComp, SWT.PUSH);
+            reloadButton = new Button(bodyComp, SWT.PUSH);
             reloadButton.setText("Reload");
             reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
             reloadButton.addSelectionListener(new SelectionAdapter() {
 
                @Override
                public void widgetSelected(SelectionEvent e) {
-                  loadEditor();
+                  if (reloading) {
+                     AWorkbench.popup("Editor Reloading...");
+                  } else {
+                     reloading = true;
+                     reloadEditor();
+                  }
                }
-
             });
          }
 
@@ -124,13 +131,6 @@ public class WfeReloadTab extends FormPage {
    }
 
    @Override
-   public void dispose() {
-      if (editor.getToolkit() != null) {
-         editor.getToolkit().dispose();
-      }
-   }
-
-   @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
       IManagedForm managedForm = getManagedForm();
@@ -139,7 +139,12 @@ public class WfeReloadTab extends FormPage {
       }
    }
 
-   private void loadEditor() {
+   private void reloadEditor() {
+      LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
+      Jobs.startJob(loadAndRefresh, true);
+   }
+
+   public void reloadEditor(String title) {
       LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
       Jobs.startJob(loadAndRefresh, true);
    }
@@ -152,37 +157,64 @@ public class WfeReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         IAtsWorkItem workItem = editor.getWorkItem();
-         if (workItem == null) {
-            workItem =
-               AtsClientService.get().getWorkItemService().getWorkItem(editor.getWfeInput().getSavedArtUuid().getId());
-         }
-         if (workItem == null) {
-            AWorkbench.popup("Can't reload editor.");
-            editor.closeEditor();
-            return Status.CANCEL_STATUS;
-         }
-         final IAtsWorkItem fWorkItem = workItem;
+
          Displays.ensureInDisplayThread(new Runnable() {
 
             @Override
             public void run() {
-               WorkflowEditor workflowEditor = WorkflowEditor.getWorkflowEditor(fWorkItem);
-               if (workflowEditor != null) {
-                  workflowEditor.closeEditor();
+               if (Widgets.isAccessible(editor.getReloadButton())) {
+                  editor.getReloadButton().setText("Reloading...");
+                  editor.getReloadButton().getParent().layout(true);
+
+               }
+               IManagedForm managedForm = getManagedForm();
+               if (managedForm != null && Widgets.isAccessible(getManagedForm().getForm())) {
+                  getManagedForm().getForm().getForm().setBusy(true);
                }
             }
          });
-         Displays.ensureInDisplayThread(new Runnable() {
+
+         Thread reload = new Thread(new Runnable() {
 
             @Override
             public void run() {
-               WorkflowEditor.edit(fWorkItem);
+               IAtsWorkItem workItem = editor.getWorkItem();
+               if (workItem == null) {
+                  workItem = AtsClientService.get().getWorkItemService().getWorkItem(
+                     editor.getWfeInput().getSavedArtUuid().getId());
+               }
+               if (workItem == null) {
+                  AWorkbench.popup("Can't reload editor.");
+                  editor.closeEditor();
+                  return;
+               }
+               final Artifact artifact = (Artifact) workItem.getStoreObject();
+               try {
+                  // Cause access policy to be loaded if not already
+                  artifact.isReadOnly();
+               } catch (Exception ex) {
+                  // do nothing
+               }
+
+               Displays.ensureInDisplayThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                     editor.getWfeInput().setArtifact(artifact);
+                     editor.disposeTabs();
+                     editor.loadPages();
+                  }
+               });
             }
          });
+         reload.start();
          return Status.OK_STATUS;
       }
 
+   }
+
+   public Button getReloadButtion() {
+      return reloadButton;
    };
 
 }

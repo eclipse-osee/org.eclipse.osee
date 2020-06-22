@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor.WfeSaveListener;
+import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -72,8 +73,6 @@ public class ReloadAction extends AbstractAtsAction {
 
                      @Override
                      public void saved(IAtsWorkItem workItem, IAtsChangeSet changes) {
-                        // Can't close the editor until save or it will do it's own dirty editor save dialog
-                        editor.close(false);
                         try {
                            Thread reloadThread = getReloadThread();
                            reloadThread.start();
@@ -83,7 +82,6 @@ public class ReloadAction extends AbstractAtsAction {
                      }
                   });
                } else {
-                  editor.close(false);
                   try {
                      Thread reloadThread = getReloadThread();
                      reloadThread.start();
@@ -111,7 +109,8 @@ public class ReloadAction extends AbstractAtsAction {
                   }
 
                   ArtifactQuery.reloadArtifacts(relatedArts);
-                  WorkflowEditor.edit(sma);
+                  WfeReloadTab reload = new WfeReloadTab(editor);
+                  reload.reloadEditor("Reload WFE Editor");
                }
             });
             return reloadThread;

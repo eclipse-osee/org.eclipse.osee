@@ -344,9 +344,6 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       if (taskComposite != null) {
          taskComposite.dispose();
       }
-      if (editor.getToolkit() != null) {
-         editor.getToolkit().dispose();
-      }
    }
 
    private final Control control = null;

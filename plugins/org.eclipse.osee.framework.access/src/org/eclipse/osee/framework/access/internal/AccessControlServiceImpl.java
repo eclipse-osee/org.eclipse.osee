@@ -188,7 +188,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
       ensurePopulated.set(false);
    }
 
-   private synchronized void ensurePopulated() {
+   @Override
+   public synchronized void ensurePopulated() {
       if (ensurePopulated.compareAndSet(false, true)) {
          initializeCaches();
          populateAccessControlLists();

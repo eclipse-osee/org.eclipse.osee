@@ -213,4 +213,9 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       return getProxiedObject().isDeleteableRelation(artifact, relationType, results);
    }
+
+   @Override
+   public void ensurePopulated() {
+      accessService.ensurePopulated();
+   }
 }
