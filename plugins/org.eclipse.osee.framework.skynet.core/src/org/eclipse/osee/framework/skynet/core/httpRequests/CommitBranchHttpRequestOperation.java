@@ -217,8 +217,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
 
       // Create a new copy of same event because you can't send same event twice
-      ArtifactEvent artifactEvent2 =
-         FrameworkEventUtil.getPersistEvent(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
+      ArtifactEvent artifactEvent2 = FrameworkEventUtil.getPersistEvent(
+         FrameworkEventUtil.getRemotePersistEvent(artifactEvent), ServiceUtil.getOrcsTokenService());
 
       // Kicks event to this client to update Artifact model with commit changes since commit was on server
       OseeEventManager.kickCommitEvent(getClass(), artifactEvent2);

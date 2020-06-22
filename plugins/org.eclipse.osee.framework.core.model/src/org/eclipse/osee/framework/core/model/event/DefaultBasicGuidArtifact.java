@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -27,7 +28,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
    private final BranchId branch;
    private ArtifactTypeId artifactType;
 
-   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, String artGuid) {
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeToken artifactType, String artGuid) {
       super(artGuid);
       this.branch = branch;
       this.artifactType = artifactType;
@@ -37,12 +38,12 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       return artifactType.equals(this.artifactType);
    }
 
-   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType) {
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeToken artifactType) {
       this(branch, artifactType, GUID.create());
    }
 
-   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, ArtifactToken artifact) {
-      this(branch, artifactType, artifact.getGuid());
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactToken artifact) {
+      this(branch, artifact.getArtifactType(), artifact.getGuid());
    }
 
    @Override

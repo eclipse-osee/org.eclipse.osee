@@ -55,7 +55,8 @@ public final class ArtifactTest {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoOseeTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
+      artifactWithSpecialAttr =
+         ArtifactTypeManager.addArtifact(DemoOseeTypes.DemoArtifactWithSelectivePartition, SAW_Bld_1);
       breakerArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, COMMON);
       breakerArt.setName(BREAKER_NAME);
       breakerArt.persist("ArtifactTest");
@@ -173,14 +174,13 @@ public final class ArtifactTest {
       Artifact art = ArtifactTypeManager.addArtifact(GeneralData, COMMON, ArtifactTest.class.getSimpleName());
       art.persist("test");
 
-      DefaultBasicGuidArtifact equalGuid =
-         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesignMsWord, art);
+      DefaultBasicGuidArtifact equalGuid = new DefaultBasicGuidArtifact(SYSTEM_ROOT, art);
       Assert.assertNotSame(art, equalGuid);
 
-      DefaultBasicGuidArtifact equalGuidArtType = new DefaultBasicGuidArtifact(SYSTEM_ROOT, GeneralData, art);
+      DefaultBasicGuidArtifact equalGuidArtType = new DefaultBasicGuidArtifact(SYSTEM_ROOT, art);
       Assert.assertNotSame(art, equalGuidArtType);
 
-      DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid = new DefaultBasicGuidArtifact(COMMON, GeneralData, art);
+      DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid = new DefaultBasicGuidArtifact(COMMON, art);
       Assert.assertEquals(art, equalGuidArtTypeBranchUuid);
 
       DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid = new DefaultBasicGuidArtifact(COMMON, GeneralData);

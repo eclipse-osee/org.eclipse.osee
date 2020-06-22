@@ -43,7 +43,7 @@ public class EventHandlersTest {
       EventHandlerLocal<?, ?> local1 = new TransactionEventHandler();
       EventHandlerLocal<?, ?> local2 = new ArtifactEventHandler();
 
-      EventHandlerRemote<?> remote1 = new TransactionRemoteEventHandler();
+      EventHandlerRemote<?> remote1 = new TransactionRemoteEventHandler(null);
       EventHandlerRemote<?> remote2 = new BranchRemoteEventHandler();
 
       handlers.addLocalHandler(TransactionEvent.class, local1);

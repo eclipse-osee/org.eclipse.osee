@@ -88,10 +88,8 @@ public class RelationTransactionData extends BaseTransactionData {
    protected void internalAddToEvents(ArtifactEvent artifactEvent) {
       ArtifactToken artifactA = relation.getArtifactA();
       ArtifactToken artifactB = relation.getArtifactB();
-      DefaultBasicGuidArtifact guidArtA =
-         new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA.getArtifactType(), artifactA);
-      DefaultBasicGuidArtifact guidArtB =
-         new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB.getArtifactType(), artifactB);
+      DefaultBasicGuidArtifact guidArtA = new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA);
+      DefaultBasicGuidArtifact guidArtB = new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB);
 
       DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(),
          relation.getRelationType().getId(), relation.getId(), relation.getGammaId(), guidArtA, guidArtB);

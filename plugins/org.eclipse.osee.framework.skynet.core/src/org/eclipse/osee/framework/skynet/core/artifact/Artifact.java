@@ -1719,7 +1719,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranch(), artifactType, this);
+      return new DefaultBasicGuidArtifact(getBranch(), this);
    }
 
    public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {

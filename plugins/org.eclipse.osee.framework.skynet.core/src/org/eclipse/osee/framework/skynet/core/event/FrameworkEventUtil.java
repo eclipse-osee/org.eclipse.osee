@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -99,7 +100,7 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static TransactionEvent getTransactionEvent(RemoteTransactionEvent1 remEvent) {
+   public static TransactionEvent getTransactionEvent(RemoteTransactionEvent1 remEvent, OrcsTokenService tokenService) {
       TransactionEvent event = new TransactionEvent();
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       event.setEventType(TransactionEventType.getByGuid(remEvent.getEventTypeGuid()));
@@ -109,7 +110,7 @@ public final class FrameworkEventUtil {
          change.setTransactionId(remChange.getTransactionId());
          Collection<DefaultBasicGuidArtifact> eventArts = change.getArtifacts();
          for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
-            eventArts.add(getBasicGuidArtifact(remGuidArt));
+            eventArts.add(getBasicGuidArtifact(remGuidArt, tokenService));
          }
          event.addTransactionChange(change);
       }
@@ -145,7 +146,7 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
+   public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent, OrcsTokenService tokenService) {
       ArtifactEvent event = new ArtifactEvent(remEvent.getTransaction());
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
@@ -155,16 +156,16 @@ public final class FrameworkEventUtil {
             OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote artifact [%s]", remGuidArt);
          } else {
             if (modType == EventModType.Modified) {
-               event.addArtifact(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventModifiedBasicGuidArtifact(modType, remGuidArt, tokenService));
             } else if (modType == EventModType.ChangeType) {
-               event.addArtifact(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt, tokenService));
             } else {
-               event.addArtifact(getEventBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventBasicGuidArtifact(modType, remGuidArt, tokenService));
             }
          }
       }
       for (RemoteBasicGuidRelation1 guidRel : remEvent.getRelations()) {
-         EventBasicGuidRelation relEvent = getEventBasicGuidRelation(guidRel);
+         EventBasicGuidRelation relEvent = getEventBasicGuidRelation(guidRel, tokenService);
          // This can happen if new events are added that old releases don't handle
          if (relEvent == null) {
             OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote relation [%s]", guidRel);
@@ -173,15 +174,15 @@ public final class FrameworkEventUtil {
          }
       }
       for (RemoteBasicGuidRelationReorder1 guidReorder : remEvent.getRelationReorders()) {
-         event.getRelationOrderRecords().add(getDefaultBasicGuidRelationReorder(guidReorder));
+         event.getRelationOrderRecords().add(getDefaultBasicGuidRelationReorder(guidReorder, tokenService));
       }
       return event;
    }
 
-   public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder) {
+   public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder, OrcsTokenService tokenService) {
       DefaultBasicUuidRelationReorder guidArt = new DefaultBasicUuidRelationReorder(
          RelationOrderModType.getType(guidRelOrder.getModTypeGuid()), BranchId.valueOf(guidRelOrder.getBranchGuid()),
-         guidRelOrder.getRelTypeGuid(), getBasicGuidArtifact(guidRelOrder.getParentArt()));
+         guidRelOrder.getRelTypeGuid(), getBasicGuidArtifact(guidRelOrder.getParentArt(), tokenService));
       return guidArt;
    }
 
@@ -217,44 +218,44 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel) {
+   public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel, OrcsTokenService tokenService) {
       RelationEventType eventType = RelationEventType.getType(guidRel.getModTypeGuid());
       if (eventType == null) {
          OseeLog.log(Activator.class, Level.WARNING,
             "Can't determine RelationEventType from guid " + guidRel.getModTypeGuid());
       }
-      EventBasicGuidRelation event =
-         new EventBasicGuidRelation(eventType, guidRel.getBranch(), guidRel.getRelTypeGuid(),
-            Long.valueOf(guidRel.getRelationId()), GammaId.valueOf(guidRel.getGammaId()), guidRel.getArtAId(),
-            getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
+      EventBasicGuidRelation event = new EventBasicGuidRelation(eventType, guidRel.getBranch(),
+         guidRel.getRelTypeGuid(), Long.valueOf(guidRel.getRelationId()), GammaId.valueOf(guidRel.getGammaId()),
+         guidRel.getArtAId(), getBasicGuidArtifact(guidRel.getArtA(), tokenService), guidRel.getArtBId(),
+         getBasicGuidArtifact(guidRel.getArtB(), tokenService));
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
          event.setRationale(guidRel.getRationale());
       }
       return event;
    }
 
-   public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(), remGuidArt.getArtifactType(),
-         remGuidArt.getArtGuid());
+   public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(),
+         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
-   public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
+   public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
-         remGuidArt.getToArtifactType(), remGuidArt.getArtGuid());
+         tokenService.getArtifactType(remGuidArt.getToArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
-   public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
+   public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       List<AttributeChange> attributeChanges = new ArrayList<>();
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }
-      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
-         remGuidArt.getArtGuid(), attributeChanges);
+      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(),
+         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid(), attributeChanges);
    }
 
-   public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
-         remGuidArt.getArtGuid());
+   private static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(),
+         tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {

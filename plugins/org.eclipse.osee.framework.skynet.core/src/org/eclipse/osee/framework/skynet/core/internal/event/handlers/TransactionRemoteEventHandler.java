@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
@@ -27,10 +28,15 @@ import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
  * @author Roberto E. Escobar
  */
 public class TransactionRemoteEventHandler implements EventHandlerRemote<RemoteTransactionEvent1> {
+   private final OrcsTokenService tokenService;
+
+   public TransactionRemoteEventHandler(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    @Override
    public void handle(Transport transport, Sender sender, RemoteTransactionEvent1 remoteEvent) {
-      TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(remoteEvent);
+      TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(remoteEvent, tokenService);
       if (transEvent.getEventType() == TransactionEventType.Purged) {
          PurgeTransactionEventUtil.handleRemotePurgeTransactionEvent(transEvent);
          transport.send(sender, transEvent);

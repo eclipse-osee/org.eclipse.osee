@@ -13,16 +13,11 @@
 
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -33,42 +28,30 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    private final EventModType eventModType;
 
    public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
-      this(eventModType, artifact.getBranch(), artifact.getArtifactType(), artifact);
+      this(eventModType, artifact.getBranch(), artifact);
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, ArtifactToken basicGuidArtifact) {
-      this(eventModType, basicGuidArtifact.getBranch(), basicGuidArtifact.getArtifactType(), basicGuidArtifact);
+      this(eventModType, basicGuidArtifact.getBranch(), basicGuidArtifact);
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeId artifactType, String guid) {
+   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeToken artifactType, String guid) {
       super(branch, artifactType, guid);
       this.eventModType = eventModType;
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeId artifactType) {
+   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeToken artifactType) {
       super(branch, artifactType, GUID.create());
       this.eventModType = eventModType;
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeId artifactType, ArtifactToken artifact) {
-      super(branch, artifactType, artifact);
+   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactToken artifact) {
+      super(branch, artifact);
       this.eventModType = eventModType;
    }
 
    public EventModType getModType() {
       return eventModType;
-   }
-
-   public static Set<EventBasicGuidArtifact> getRemoteBasicGuidArtifact1(EventModType eventModType, Collection<? extends RemoteBasicGuidArtifact1> basicGuidArtifacts) {
-      if (eventModType == EventModType.ChangeType) {
-         throw new OseeArgumentException("Can't be used for ChangeType");
-      }
-      Set<EventBasicGuidArtifact> eventArts = new HashSet<>();
-      for (RemoteBasicGuidArtifact1 guidArt : basicGuidArtifacts) {
-         eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt.getBranch(), guidArt.getArtifactType(),
-            guidArt.getArtGuid()));
-      }
-      return eventArts;
    }
 
    @Override

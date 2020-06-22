@@ -89,6 +89,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       this.listeners = Activator.getEventListeners();
    }
 
+   //TODO: Is this even set at any point?
    public void setOrcsTokenService(OrcsTokenService tokenService) {
       this.tokenService = tokenService;
    }
@@ -214,7 +215,7 @@ public class OseeEventServiceImpl implements OseeEventService {
 
       handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler(tokenService));
       handlers.addRemoteHandler(RemoteBranchEvent1.class, new BranchRemoteEventHandler());
-      handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler());
+      handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler(tokenService));
       handlers.addRemoteHandler(RemoteTopicEvent1.class, new TopicRemoteEventHandler());
    }
 

@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -54,6 +55,10 @@ public final class ServiceUtil {
          cacheService = getService(IOseeCachingService.class);
       }
       return cacheService;
+   }
+
+   public static OrcsTokenService getOrcsTokenService() {
+      return getOseeCacheService().getTokenService();
    }
 
    public static OseeClient getOseeClient() {

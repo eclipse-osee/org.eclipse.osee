@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -25,7 +26,7 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
    private final ArtifactTypeId fromArtTypeGuid;
 
-   public EventChangeTypeBasicGuidArtifact(BranchId branch, ArtifactTypeId fromArtifactType, ArtifactTypeId artifactType, String guid) {
+   public EventChangeTypeBasicGuidArtifact(BranchId branch, ArtifactTypeId fromArtifactType, ArtifactTypeToken artifactType, String guid) {
       super(EventModType.ChangeType, branch, artifactType, guid);
       this.fromArtTypeGuid = fromArtifactType;
    }

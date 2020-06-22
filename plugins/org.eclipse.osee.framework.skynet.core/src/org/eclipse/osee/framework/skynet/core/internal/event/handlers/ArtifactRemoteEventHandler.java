@@ -61,7 +61,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
    @Override
    public void handle(Transport transport, Sender sender, RemotePersistEvent1 remoteEvent) {
       RemotePersistEvent1 event1 = remoteEvent;
-      ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+      ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1, tokenService);
       updateArtifacts(sender, transEvent.getArtifacts(), remoteEvent.getTransaction());
       updateRelations(sender, transEvent.getRelations());
       transport.send(sender, transEvent);
