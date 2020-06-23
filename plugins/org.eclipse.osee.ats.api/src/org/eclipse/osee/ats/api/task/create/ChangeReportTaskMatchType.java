@@ -21,11 +21,11 @@ public enum ChangeReportTaskMatchType {
    Manual("User Manually added task.- No Change Needed."),
    Match("Computed task needed matches existing task. - No Change Needed."),
    //
-   ChangedReportTaskComputedAsNeeded("Change Report task computed as needed. - Awaiting determination if task exists or Create Task"),
-   StaticTaskComputedAsNeeded("Statically defined task from StaticTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
+   ChgRptTskCompAsNeeded("Change Report task computed as needed. - Awaiting determination if task exists or Create Task"),
+   StaticTskCompAsNeeded("Statically defined task from StaticTaskDefinition computed as needed. - Awaiting determination if task exists or Create Task"),
    //
    TaskRefAttrMissing("Task Referenced Attr was not found. - Delete Task."),
-   TaskRefAttrValidButRefChgArtMissing("Task Referenced Attr found but no matching changed art. - Delete Task");
+   TaskRefAttrButNoRefChgArt("Task Referenced Attr found but no matching changed art. - Delete Task");
 
    private final String description;
 

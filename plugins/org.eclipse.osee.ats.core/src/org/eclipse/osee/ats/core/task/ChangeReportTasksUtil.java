@@ -81,7 +81,7 @@ public class ChangeReportTasksUtil {
    }
 
    /**
-    * Compare already ChangedReportTaskComputedAsNeeded task matches with existing tasks and determine fate.
+    * Compare already ChgRptTskCompAsNeeded task matches with existing tasks and determine fate.
     */
    public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactToken> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
@@ -141,7 +141,7 @@ public class ChangeReportTasksUtil {
                newTaskMatch.setTaskName(task.getName());
                newTaskMatch.setTaskWf(task);
                newTaskMatch.setTaskTok(task.getArtifactToken());
-               newTaskMatch.setType(ChangeReportTaskMatchType.TaskRefAttrValidButRefChgArtMissing);
+               newTaskMatch.setType(ChangeReportTaskMatchType.TaskRefAttrButNoRefChgArt);
                crttwd.addTaskMatch(newTaskMatch);
             }
          } else {

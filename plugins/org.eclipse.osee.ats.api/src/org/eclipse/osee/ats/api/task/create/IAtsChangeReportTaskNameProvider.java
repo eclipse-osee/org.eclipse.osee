@@ -60,7 +60,7 @@ public interface IAtsChangeReportTaskNameProvider {
          ChangeReportTaskMatch match = new ChangeReportTaskMatch();
          match.setTaskName(taskDef.getName());
          match.setCreateTaskDef(taskDef);
-         match.setType(ChangeReportTaskMatchType.StaticTaskComputedAsNeeded);
+         match.setType(ChangeReportTaskMatchType.StaticTskCompAsNeeded);
          crttwd.getTaskMatches().add(match);
       }
    }
@@ -97,7 +97,7 @@ public interface IAtsChangeReportTaskNameProvider {
          ChangeReportTaskMatch match = new ChangeReportTaskMatch();
          match.setChgRptArt(chgRptArt);
          match.setTaskName(safeName);
-         match.setType(ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded);
+         match.setType(ChangeReportTaskMatchType.ChgRptTskCompAsNeeded);
          crttwd.getTaskMatches().add(match);
       }
    }

@@ -276,7 +276,7 @@ public class CreateChangeReportTasksOperation {
                }
 
                // Create if no task was found
-               else if (matchType == ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded) {
+               else if (matchType == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
                      crtd.getResults().warningf("Create new chg rpt task [%s]\n", taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
@@ -285,7 +285,7 @@ public class CreateChangeReportTasksOperation {
                }
 
                // Create if no task was found
-               else if (matchType == ChangeReportTaskMatchType.StaticTaskComputedAsNeeded) {
+               else if (matchType == ChangeReportTaskMatchType.StaticTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
                      crtd.getResults().warningf("Create new static task [%s]\n", taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
@@ -294,7 +294,7 @@ public class CreateChangeReportTasksOperation {
                }
 
                // Mark as de-referenced if no reference or referenced artifact not there anymore
-               else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrValidButRefChgArtMissing)) {
+               else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrButNoRefChgArt)) {
                   if (!deletedTaskNames.contains(taskMatch.getTaskName())) {
                      crtd.getResults().warningf(
                         "No matching artifact for Task %s; De-referenced task can be deleted.\n",
@@ -450,7 +450,7 @@ public class CreateChangeReportTasksOperation {
    private void addToNewTaskData(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, Date createdDate) {
       JaxAtsTask task = new JaxAtsTask();
       task.setName(taskMatch.getTaskName());
-      if (taskMatch.getMatchType() == ChangeReportTaskMatchType.StaticTaskComputedAsNeeded) {
+      if (taskMatch.getMatchType() == ChangeReportTaskMatchType.StaticTskCompAsNeeded) {
          StaticTaskDefinition createTaskDef = taskMatch.getCreateTaskDef();
          List<ArtifactId> assigneeeAccountIds = new LinkedList<>();
          for (Long id : createTaskDef.getAssigneeAccountIds()) {
@@ -463,7 +463,7 @@ public class CreateChangeReportTasksOperation {
          if (Strings.isValid(createTaskDef.getRelatedToState())) {
             task.setRelatedToState(createTaskDef.getRelatedToState());
          }
-      } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChangedReportTaskComputedAsNeeded) {
+      } else if (taskMatch.getMatchType() == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
          task.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, taskMatch.getChgRptArt());
          task.setAssigneeUserIds(Arrays.asList(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
       } else {
