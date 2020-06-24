@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -101,6 +102,8 @@ public class DataLoaderFactoryImplTest {
 
    @Before
    public void setUp() {
+      Lib.setInTest(true);
+
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();
@@ -114,8 +117,7 @@ public class DataLoaderFactoryImplTest {
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(
-         EXPECTED_HEAD_TX);
+      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
       when(jdbcClient.getDbType()).thenReturn(JdbcDbType.h2);
       when(jdbcClient.getOrderedHint()).thenReturn("");
    }

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -59,6 +60,7 @@ public class PurgeAttributeTest {
    @After
    @Before
    public void setupAndTeardown() {
+      Lib.setInTest(true);
       TransactionBuilder tx = null;
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(COMMON).andAttributeIs(
          CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE).getResults()) {
