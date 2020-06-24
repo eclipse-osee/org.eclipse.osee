@@ -49,11 +49,6 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
-								<id>org.eclipse.osee.orcs.db.mock</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.registry</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>							

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2013 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,18 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.db.intergration;
+package org.eclipse.osee.disposition.rest;
 
+import org.eclipse.osee.disposition.rest.importer.ImporterTestSuite;
+import org.eclipse.osee.disposition.rest.internal.InternalTestSuite;
+import org.eclipse.osee.disposition.rest.report.ReportTestSuite;
+import org.eclipse.osee.disposition.rest.resources.ResourcesTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Integration test suite. DO NOT RUN WITH PDE JUnit launch. Use OrcsDbTestSuite.launch instead.
- *
- * @author Roberto E. Escobar
+ * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OseeInfoDataAccessorTest.class, PurgeAttributeTest.class})
-public class OrcsDb_Integration_TestSuites {
+@Suite.SuiteClasses({ResourcesTestSuite.class, InternalTestSuite.class, ImporterTestSuite.class, ReportTestSuite.class})
+public class Disposition_JUnit_TestSuite {
    // Test Suite
 }

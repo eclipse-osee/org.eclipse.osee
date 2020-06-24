@@ -27,7 +27,6 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
-import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,6 @@ import org.junit.Test;
  */
 public class DispoSetCopierTest {
 
-   @OsgiService
    public DispoConnector dispoConnector;
 
    private final String discrepancyId1 = "135rrf";

@@ -23,22 +23,16 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
-import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegrationRule;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoItemDataCopier;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.db.mock.OsgiService;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.mockito.Mock;
 
 /**
  * @author Angel Avila
@@ -46,17 +40,11 @@ import org.mockito.Mock;
 
 public class DispoItemDataCopierTest {
 
-   @Mock
-   DispoItem oldItem;
-
-   @OsgiService
-   public DispoConnector dispoConnector;
-
-   @Rule
-   public TestRule rule = DispositionIntegrationRule.integrationRule(this);
+   private DispoConnector dispoConnector;
 
    @Test
    public void testCopyItemData() throws Exception {
+      dispoConnector = new DispoConnector();
       MutableBoolean stoppedParsing = new MutableBoolean(false);
       MutableBoolean isException = new MutableBoolean(false);
       MutableString exMessage = new MutableString();

@@ -22,7 +22,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.orcs.test</testSuite>
-					<testClass>org.eclipse.osee.orcs.OrcsIntegrationTestSuite</testClass>
+					<testClass>org.eclipse.osee.orcs.OrcsIntegration_JUnit_TestSuite</testClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -41,11 +41,6 @@
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.ds</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.osee.orcs.db.mock</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>

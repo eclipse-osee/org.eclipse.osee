@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2012 Boeing
+ * Copyright (c) 2004, 2007 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,17 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.db.mock;
+package org.eclipse.osee.orcs;
 
-import static java.lang.annotation.ElementType.FIELD;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.eclipse.osee.orcs.api.OrcsWriterTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-@Target({FIELD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface OsgiService {
-   //
+/**
+ * @author Roberto E. Escobar
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({OrcsWriterTest.class, //
+})
+public class OrcsIntegration_JUnit_TestSuite {
+   // Test Suite
 }

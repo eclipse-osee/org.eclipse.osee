@@ -79,7 +79,6 @@
 
 
 			<module>../../plugins/org.eclipse.osee.server.p2</module>
-			<module>../../plugins/org.eclipse.osee.server.integration.tests</module>
 
 		</modules>
 	</profile>

@@ -22,7 +22,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.disposition.rest.test</testSuite>
-					<testClass>org.eclipse.osee.disposition.rest.DispositionTestSuite</testClass>
+					<testClass>org.eclipse.osee.disposition.rest.Disposition_JUnit_TestSuite</testClass>
 					<systemProperties combine.children="append">
 						<javax.ws.rs.ext.RuntimeDelegate>org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl</javax.ws.rs.ext.RuntimeDelegate>
 					</systemProperties>
@@ -54,11 +54,6 @@
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.ds</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.osee.orcs.db.mock</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>
