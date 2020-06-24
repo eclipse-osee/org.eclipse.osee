@@ -131,24 +131,40 @@ public class WordMLProducer {
       append("</wx:sub-section>");
    }
 
-   public void setPageBreak(boolean chapterNumbering, int chapterStyle) {
+   /**
+    * @param chapterNumbering - Whether or not chapter number (1-1) will be applied
+    * @param chapterStyle = Which style to use (1-1, 1.1-1, 1.2.3-1 etc)
+    * @param restartNumbering - Restart the numbering from the previous section
+    * @param pageLayout - Set to landscape if needed
+    */
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering, String pageLayout) {
+      boolean landscape = pageLayout != null && pageLayout.equals("Landscape");
+
       append("<w:p>");
       append("<w:pPr>");
       append("<w:sectPr>");
-      append("<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
-      if (chapterNumbering) {
-         append(
-            "<w:pgMar w:top=\"1440\" w:right=\"1296\" w:bottom=\"1440\" w:left=\"1296\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/>");
+      if (landscape) {
+         append("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />");
+      } else {
+         append("<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
       }
-      append("<w:pgNumType w:start=\"1\" w:chap-style=\"" + chapterStyle + "\"/>");
+      append(
+         "<w:pgMar w:top=\"1440\" w:right=\"1296\" w:bottom=\"1440\" w:left=\"1296\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/>");
+      if (chapterNumbering) {
+         append("<w:pgNumType ");
+         if (restartNumbering) {
+            append("w:start=\"1\" ");
+         }
+         append(String.format("w:chap-style=\"%s\"/>", chapterStyle));
+      }
       append("</w:sectPr>");
       append("</w:pPr>");
       append("</w:p>");
    }
 
-   public void setPageBreak(boolean chapterNumbering) {
-      //Defaults to Heading1
-      setPageBreak(chapterNumbering, 1);
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering) {
+      // Default to no page layout style which will stay with portrait
+      setPageBreak(chapterNumbering, chapterStyle, restartNumbering, null);
    }
 
    private void writeParagraphStyle(CharSequence style) {
@@ -451,7 +467,7 @@ public class WordMLProducer {
       endTable();
       addTableCaption("Error Log");
       endAppendixSubSection();
-      setPageBreak(true);
+      setPageBreak(true, 1, true);
    }
 
 }
