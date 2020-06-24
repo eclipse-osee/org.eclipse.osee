@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
@@ -190,4 +191,10 @@ public class ArtifactEndpointTest {
       return artifactToken;
    }
 
+   @Test
+   public void getChangedArtifactTokens() {
+      List<ArtifactToken> changedArtifactTokens =
+         artifactEndpoint.getChangedArtifactTokens(Artifact.SENTINEL, CoreAttributeTypes.NameWord, ".*[a-z].*");
+      Assert.assertFalse(changedArtifactTokens.isEmpty());
+   }
 }

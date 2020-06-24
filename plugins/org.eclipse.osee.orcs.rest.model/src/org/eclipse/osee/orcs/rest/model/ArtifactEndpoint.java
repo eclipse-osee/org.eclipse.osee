@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -89,6 +90,11 @@ public interface ArtifactEndpoint {
    @Path("exp")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> expGetArtifactTokens(@DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("parent") ArtifactId parent, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+
+   @GET
+   @Path("changed_artifacts/{attributeTypeJoin}/{commentPattern}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getChangedArtifactTokens(@DefaultValue("-1") @QueryParam("view") ArtifactId view, @PathParam("attributeTypeJoin") AttributeTypeJoin typeJoin, @PathParam("commentPattern") String commentPattern);
 
    @GET
    @Path("type/{artifactType}/id")

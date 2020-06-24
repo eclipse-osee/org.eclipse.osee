@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -98,6 +99,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);
       handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);
+      handleMap.put(CriteriaArtifactTxComment.class, ArtifactTxCommentSqlHandler.class);
       handleMap.put(CriteriaRelatedTo.class, RelatedToSqlHandler.class);
       handleMap.put(CriteriaRelatedRecursive.class, RelatedRecursiveHandler.class);
       handleMap.put(CriteriaRelationTypeExists.class, RelationTypeExistsSqlHandler.class);

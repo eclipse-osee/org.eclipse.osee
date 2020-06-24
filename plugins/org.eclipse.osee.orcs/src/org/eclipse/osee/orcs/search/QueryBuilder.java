@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -162,6 +163,8 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andIsOfType(Collection<ArtifactTypeToken> artifactType);
 
+   QueryBuilder andTxComment(String commentPattern, AttributeTypeJoin typeJoin);
+
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
@@ -206,6 +209,7 @@ public interface QueryBuilder extends Query {
 
    /**
     * Search criteria that checks for non-existence of a relation type
+    *
     * @param relationTypeSide the type to check for non-existence
     */
    QueryBuilder andRelationNotExists(RelationTypeSide relationType);

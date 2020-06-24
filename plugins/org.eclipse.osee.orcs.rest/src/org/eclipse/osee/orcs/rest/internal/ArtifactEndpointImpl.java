@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -206,6 +207,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(DefaultHierarchical_Child,
             parent).follow(SupportingRequirement_LowerLevelRequirement).asArtifacts();
       return Collections.cast(artifacts);
+   }
+
+   @Override
+   public List<ArtifactToken> getChangedArtifactTokens(ArtifactId view, AttributeTypeJoin typeJoin, String commentPattern) {
+      return orcsApi.getQueryFactory().fromBranch(branch, view).andTxComment(commentPattern,
+         typeJoin).asArtifactTokens();
    }
 
    @Override

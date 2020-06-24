@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeDate;
 import org.eclipse.osee.framework.core.data.AttributeTypeDouble;
 import org.eclipse.osee.framework.core.data.AttributeTypeInputStream;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DynamicEnumAttributeType;
@@ -190,4 +191,6 @@ public interface CoreAttributeTypes {
    AttributeTypeString XViewerDefaults = osee.createString(1152921504606847078L, "XViewer Defaults", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Zip = osee.createString(1152921504606847071L, "Zip", MediaType.TEXT_PLAIN, "");
    // @formatter:on
+
+   AttributeTypeJoin NameWord = osee.attributeTypeJoin("Name and Word", Name, WordTemplateContent);
 }

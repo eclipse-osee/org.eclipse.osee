@@ -41,12 +41,12 @@ public class BranchNameSqlHandler extends SqlHandler<CriteriaBranchName> {
    public void addPredicates(AbstractSqlWriter writer) {
       String value = criteria.getValue();
       if (criteria.isPattern()) {
-         writer.writePatternMatch(brAlias + ".branch_name", "?");
+         writer.writePatternMatch(brAlias, "branch_name", value);
       } else {
          writer.write(brAlias);
          writer.write(".branch_name = ?");
+         writer.addParameter(value);
       }
-      writer.addParameter(value);
    }
 
    @Override

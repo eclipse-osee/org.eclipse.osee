@@ -78,15 +78,15 @@ public class JdbcDbType extends BaseId {
       return hintsSupported;
    }
 
-   public String getRegularExpMatchSql() {
+   public String getRegularExpMatchSql(String field) {
       if (equals(oracle)) {
-         return "REGEXP_LIKE (%s, %s)";
+         return "REGEXP_LIKE (" + field + ", ?)";
       }
       if (matches(postgresql, hsql)) {
-         return "REGEXP_MATCHES (%s, %s)";
+         return "REGEXP_MATCHES (" + field + ", ?)";
       }
       if (equals(mysql)) {
-         return "(%s REGEXP %s)";
+         return "(" + field + " REGEXP ?)";
       }
       throw newJdbcException("RegExp matching is not supported for db [%s]", this);
    }

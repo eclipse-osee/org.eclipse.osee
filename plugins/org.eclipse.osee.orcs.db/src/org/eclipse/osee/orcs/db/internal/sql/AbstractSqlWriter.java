@@ -230,13 +230,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       writeTxFilter(txsAlias, allowDeleted);
+      writeBranchFilter(txsAlias);
+   }
 
+   public void writeBranchFilter(String txsAlias) {
       BranchId branch = rootQueryData.getBranch();
       if (branch.isValid()) {
          write(" AND ");
          writeEqualsParameter(txsAlias, "branch_id", branch);
       } else {
-         throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
+         throw new OseeArgumentException("writeBranchFilter: branch id must be valid not:" + branch);
       }
    }
 
@@ -336,6 +339,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected boolean mainTableAliasExists(TableEnum table) {
       return queryDataCursor.mainTableAliasExists(table);
+   }
+
+   public void writeAnd() {
+      write(" AND ");
    }
 
    public void writeAndLn() {
@@ -513,9 +520,13 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return output.toString();
    }
 
-   public void writePatternMatch(String field, String expression) {
-      String pattern = jdbcClient.getDbType().getRegularExpMatchSql();
-      write(pattern, field, expression);
+   public void writePatternMatch(String table, String column, String pattern) {
+      writePatternMatch(table + "." + column, pattern);
+   }
+
+   public void writePatternMatch(String field, String pattern) {
+      write(jdbcClient.getDbType().getRegularExpMatchSql(field));
+      addParameter(pattern);
    }
 
    public JdbcClient getJdbcClient() {
