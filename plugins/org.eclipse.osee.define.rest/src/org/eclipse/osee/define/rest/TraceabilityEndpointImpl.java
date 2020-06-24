@@ -29,6 +29,7 @@ import org.eclipse.osee.define.api.TraceData;
 import org.eclipse.osee.define.api.TraceabilityEndpoint;
 import org.eclipse.osee.define.api.TraceabilityOperations;
 import org.eclipse.osee.define.rest.internal.PublishLowHighReqStreamingOutput;
+import org.eclipse.osee.define.rest.internal.PublishMasterTemplateReport;
 import org.eclipse.osee.define.rest.internal.PublishPidsVerificationReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -135,5 +137,19 @@ public final class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    public CertBaselineData getBaselineData(BranchId branch, ArtifactId certBaselineData) {
       ArtifactReadable baselineArtifact = queryFactory.fromBranch(branch).andId(certBaselineData).getArtifact();
       return traceOps.getBaselineData(baselineArtifact);
+   }
+
+   @Override
+   public Response getTraceFromMasterTemplate(BranchId branch, ArtifactId view, ArtifactId templateArt) {
+      Conditions.checkNotNull(branch, "branch query param");
+      Conditions.checkNotNull(templateArt, "selected_types query param");
+
+      StreamingOutput streamingOutput =
+         new PublishMasterTemplateReport(activityLog, orcsApi, branch, view, templateArt);
+      String fileName = String.format("Master_Template_Trace_Report_%s.xml", Lib.getDateTimeString());
+
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + fileName);
+      return builder.build();
    }
 }

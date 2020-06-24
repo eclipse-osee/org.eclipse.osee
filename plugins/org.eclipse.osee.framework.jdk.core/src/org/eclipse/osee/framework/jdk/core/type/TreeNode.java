@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TreeNode<TreeType> {
@@ -48,6 +49,14 @@ public class TreeNode<TreeType> {
 
    public List<TreeNode<TreeType>> getChildren() {
       return children;
+   }
+
+   public List<TreeType> getChildContents() {
+      List<TreeType> contents = new LinkedList<>();
+      for (TreeNode<TreeType> item : children) {
+         contents.add(item.getSelf());
+      }
+      return contents;
    }
 
    public TreeNode<TreeType> addChild(TreeType child) {

@@ -166,6 +166,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken RendererTemplateWholeWord = osee.add(osee.artifactType(9L, "Renderer Template - Whole Word", false, MsWordWholeDocument)
       .exactlyOne(RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}")
       .any(TemplateMatchCriteria, ""));
+   ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)
+      .zeroOrOne(CoreAttributeTypes.JavaCode, ""));
    ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, Artifact)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified")

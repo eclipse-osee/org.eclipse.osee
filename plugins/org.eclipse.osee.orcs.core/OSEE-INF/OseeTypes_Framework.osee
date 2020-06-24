@@ -941,6 +941,11 @@ artifactType "Implementation Details Data Definition - MS Word" extends "Impleme
 	id 279578
 }
 
+artifactType "Report Template" extends "Artifact" {
+	id 63228787744062
+	attribute "Java Code"
+}
+
 artifactType "Software Requirement Procedure - MS Word" extends "Indirect Software Requirement - MS Word" {
 	id 27
 }
@@ -1170,6 +1175,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 	defaultValue "false"
 	mediaType "text/plain"
 }
+
 
 oseeEnumType "enum.req.partition" {
 	id 3458764513820541309
@@ -2412,4 +2418,15 @@ relationType "AbstractSpecRequirementToUnitOfConformance" {
 	sideBArtifactType "Unit of Conformance"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity MANY_TO_MANY
+}
+
+attributeType "Java Code" extends StringAttribute {
+	id 1253931606616948117
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "code that can be compiled into java"
+	fileExtension "java"
+	mediaType "text/plain"
 }
