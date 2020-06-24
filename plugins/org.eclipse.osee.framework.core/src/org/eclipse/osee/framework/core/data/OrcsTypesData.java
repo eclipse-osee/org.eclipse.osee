@@ -24,7 +24,7 @@ public class OrcsTypesData {
     * model/sheets while the current code base works of this specified version.</br>
     * </br>
     * Version 1 = Corresponds to 0.23.1 and earlier code base</br>
-    * Version 2 = Corresponds to 0.24.0 code base Version 3 = Corresponds to 0.25.0 code base
+    * Version 2 = Corresponds to 0.24.0 code base
     */
-   public static final Long OSEE_TYPE_VERSION = 4L; // Corresponds to 0.26.0 code base
+   public static final Long OSEE_TYPE_VERSION = 3L; // Corresponds to 0.25.0 code base
 }
