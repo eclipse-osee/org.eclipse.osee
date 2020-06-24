@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.orcs.db.internal.loader.executors;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -78,11 +80,16 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
          }
          TransactionId transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
          ArtifactId viewId = OptionsUtil.getFromBranchView(queryContext.getOptions());
+         Set<ArtifactId> ids = new HashSet<>();
          Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
-            ArtifactId artiafct = ArtifactId.valueOf(stmt.getLong("art_id"));
+            ArtifactId artifact = ArtifactId.valueOf(stmt.getLong("art_id"));
             BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
-            artifactJoin.add(branch, artiafct, transactionId, viewId);
+            // Do not add more than once to join table
+            if (!ids.contains(artifact)) {
+               artifactJoin.add(branch, artifact, transactionId, viewId);
+               ids.add(artifact);
+            }
             checkCancelled(cancellation);
          };
          checkCancelled(cancellation);
