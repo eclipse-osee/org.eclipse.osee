@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
@@ -51,6 +52,9 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
    // Team Workflow hosting this button (not necessarily one holding branch/commit
    private TeamWorkFlowArtifact hostTeamWf;
    private final List<AtsTaskDefToken> taskDefTokens = new ArrayList<>();
+   boolean creating = false;
+   boolean debug = false; // true to display more detail regarding task matches
+   boolean reportOnly = false; // true to not persist; used for debugging
 
    public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken... taskDefTokens) {
       super(name);
@@ -74,10 +78,25 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
    };
 
    protected void createUpdateTasks(String name) {
-
+      final String fName = name;
+      if (creating) {
+         AWorkbench.popup("Creating Tasks, Please Wait");
+         return;
+      }
+      creating = true;
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), name, name + "?")) {
          return;
       }
+
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            setLabel(fName + " - Creating...");
+            bComp.layout(true);
+            parent.layout(true);
+         }
+      });
 
       final IAtsTeamWorkflow teamWf = this.hostTeamWf;
       Job job = new Job(name) {
@@ -85,38 +104,52 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
          @Override
          protected IStatus run(IProgressMonitor monitor) {
 
-            for (AtsTaskDefToken taskDefToken : taskDefTokens) {
-               // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
-               CreateTasksDefinitionBuilder taskSetDefinition =
-                  AtsClientService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
-               if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(teamWf,
-                  AtsClientService.get())) {
+            try {
+               for (AtsTaskDefToken taskDefToken : taskDefTokens) {
+                  // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
+                  CreateTasksDefinitionBuilder taskSetDefinition =
+                     AtsClientService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
+                  if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(
+                     teamWf, AtsClientService.get())) {
 
-                  ChangeReportTaskData data = new ChangeReportTaskData();
-                  data.setTaskDefToken(taskDefToken);
-                  data.setHostTeamWf(hostTeamWf);
-                  data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
-                  // Un-Comment to debug
-                  //                  data.setReportOnly(true);
-                  data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
-                  XResultDataUI.report(data.getResults(), getName());
+                     ChangeReportTaskData data = new ChangeReportTaskData();
+                     data.setTaskDefToken(taskDefToken);
+                     data.setHostTeamWf(hostTeamWf);
+                     data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
 
-                  // Reload team wfs if tasks created
-                  if (data.getTransaction() != null && data.getTransaction().isValid()) {
-                     final ChangeReportTaskData fData = data;
-                     Thread reload = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                           for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
-                              ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
-                                 AtsClientService.get().getAtsBranch());
+                     // Use booleans above to debug task matches
+                     data.setDebug(debug);
+                     data.setReportOnly(reportOnly);
+
+                     data = AtsClientService.get().getServerEndpoints().getTaskEp().create(data);
+                     XResultDataUI.report(data.getResults(), getName());
+
+                     // Reload team wfs if tasks created
+                     if (data.getTransaction() != null && data.getTransaction().isValid()) {
+                        final ChangeReportTaskData fData = data;
+                        Thread reload = new Thread(new Runnable() {
+                           @Override
+                           public void run() {
+                              for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
+                                 ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
+                                    AtsClientService.get().getAtsBranch());
+                              }
                            }
-                        }
-                     });
-                     reload.start();
+                        });
+                        reload.start();
+                     }
                   }
                }
+            } finally {
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     setLabel(fName);
+                     creating = false;
+                  }
+               });
             }
+
             return Status.OK_STATUS;
          }
       };

@@ -241,6 +241,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
    }
 
    public List<ChangeItem> compareTransactions() {
+
+      // Get initial change items from database
       List<ChangeItem> changes;
       if (sourceTx.isOnSameBranch(destinationTx)) {
          changes = loadDeltasBetweenTxsOnTheSameBranch();
@@ -252,10 +254,14 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             missingChangeItemFactory).call();
       }
 
+      // Calculate and set the mod types
       ChangeItemUtil.computeNetChanges(changes);
 
+      // Add a synthetic artifact change for any set of attr/rel changes
       AddSyntheticArtifactChangeData addArtifactData =
          new AddSyntheticArtifactChangeData(changes, jdbcClient, sourceTx.getBranch(), tokenService);
-      return addArtifactData.doWork();
+      changes = addArtifactData.doWork();
+      return changes;
+
    }
 }

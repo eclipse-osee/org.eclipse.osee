@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Listener;
 public class XButton extends XButtonCommon {
 
    protected Label button;
-   private Composite parent;
+   protected Composite parent;
    protected Composite bComp;
    private boolean labelAfter = true;
    protected int numColumns = 2;

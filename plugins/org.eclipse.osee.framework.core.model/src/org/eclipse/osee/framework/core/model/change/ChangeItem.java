@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.framework.core.model.change;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -282,5 +287,26 @@ public class ChangeItem implements Comparable<ChangeItem> {
       return getNetChange().getModType().equals(ModificationType.DELETED) || getNetChange().getModType().equals(
          ModificationType.ARTIFACT_DELETED) || getCurrentVersion().getModType().equals(
             ModificationType.DELETED) || getCurrentVersion().getModType().equals(ModificationType.ARTIFACT_DELETED);
+   }
+
+   public static StringBuilder toString(Collection<ChangeItem> items) {
+      List<ChangeItem> sItems = new ArrayList<>(items);
+      Collections.sort(sItems, new Comparator<ChangeItem>() {
+
+         @Override
+         public int compare(ChangeItem o1, ChangeItem o2) {
+            if (o1.getArtId().equals(o2.getArtId())) {
+               return o1.getItemId().getId().compareTo(o2.getItemId().getId());
+            } else {
+               return o1.getArtId().getId().compareTo(o2.getArtId().getId());
+            }
+         }
+      });
+      StringBuilder sb = new StringBuilder();
+      for (ChangeItem item : sItems) {
+         sb.append(item.toString());
+         sb.append("\n");
+      }
+      return sb;
    }
 }
