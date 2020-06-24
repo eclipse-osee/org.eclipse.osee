@@ -94,14 +94,6 @@ public final class Lib {
 
    public final static String lineSeparator = System.getProperty("line.separator");
 
-   public static boolean isInTest() {
-      return Boolean.valueOf(System.getProperty("osee.isInTest"));
-   }
-
-   public static void setInTest(boolean inTest) {
-      System.setProperty("osee.isInTest", String.valueOf(inTest));
-   }
-
    public static String getFileAtsClass(String filename, Class<?> clazz) {
       URL url = clazz.getResource(filename);
       File file = new File(url.getPath());
@@ -1800,5 +1792,4 @@ public final class Lib {
       return baseUri.resolve(uriPath).getPath();
 
    }
-
 }

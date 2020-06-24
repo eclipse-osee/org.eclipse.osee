@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-
 /**
  * @author Donald G. Dunne
  */
@@ -28,5 +26,5 @@ public class OrcsTypesData {
     * Version 1 = Corresponds to 0.23.1 and earlier code base</br>
     * Version 2 = Corresponds to 0.24.0 code base Version 3 = Corresponds to 0.25.0 code base
     */
-   public static final Long OSEE_TYPE_VERSION = Lib.isInTest() ? 3L : 4L; // Corresponds to 0.26.0 code base
+   public static final Long OSEE_TYPE_VERSION = 4L; // Corresponds to 0.26.0 code base
 }
