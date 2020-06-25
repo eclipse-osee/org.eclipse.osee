@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -739,7 +739,7 @@ public class ArtifactQuery {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Long artId = chStmt.getLong("art_id");
-         ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artTypeId = ServiceUtil.getOrcsTokenService().getArtifactType(chStmt.getLong("art_type_id"));
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
          ArtifactToken token = ArtifactToken.valueOf(artId, guid, name, branch, artTypeId);
@@ -826,7 +826,8 @@ public class ArtifactQuery {
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
 
-            ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+            ArtifactTypeToken artTypeId =
+               ServiceUtil.getOrcsTokenService().getArtifactType(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
             ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);

@@ -38,19 +38,6 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes).get();
    }
 
-   default boolean inheritsFrom(ArtifactTypeToken otherType) {
-      if (equals(otherType)) {
-         return true;
-      } else {
-         for (ArtifactTypeToken superType : getSuperTypes()) {
-            if (superType.inheritsFrom(otherType)) {
-               return true;
-            }
-         }
-      }
-      return false;
-   }
-
    default boolean inheritsFromAny(Collection<ArtifactTypeToken> artTypes) {
       for (ArtifactTypeToken inheritType : artTypes) {
          if (this.inheritsFrom(inheritType)) {

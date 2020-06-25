@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -23,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 public class RecentlyVisistedItem {
 
    ArtifactToken idToken;
-   ArtifactTypeId typeId;
+   ArtifactTypeToken artifactType;
 
    public ArtifactToken getIdToken() {
       return idToken;
@@ -75,11 +74,11 @@ public class RecentlyVisistedItem {
       return true;
    }
 
-   public ArtifactTypeId getTypeId() {
-      return typeId;
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
    }
 
-   public void setTypeId(ArtifactTypeId typeId) {
-      this.typeId = typeId;
+   public void setTypeId(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
    }
 }

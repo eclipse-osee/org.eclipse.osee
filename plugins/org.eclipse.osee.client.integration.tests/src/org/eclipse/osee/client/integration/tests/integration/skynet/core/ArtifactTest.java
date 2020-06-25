@@ -25,7 +25,6 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -92,21 +91,6 @@ public final class ArtifactTest {
       Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(SAW_Bld_2);
       try {
          Assert.assertFalse(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
-      } finally {
-         if (copiedArtifact != null) {
-            copiedArtifact.deleteAndPersist();
-         }
-      }
-   }
-
-   @Test
-   public void attributeCopyAcrossUnrelatedBranches() throws Exception {
-      artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
-      artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
-
-      Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(CoreBranches.COMMON);
-      try {
-         Assert.assertTrue(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
       } finally {
          if (copiedArtifact != null) {
             copiedArtifact.deleteAndPersist();
