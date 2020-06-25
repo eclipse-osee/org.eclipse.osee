@@ -353,7 +353,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (workItem != null && !workItem.isDeleted() && workItem.isWfeDirty().isTrue()) {
          workItem.revert();
       }
-      disposeTabs();
+      // Tabs are disposed by editor
       if (getToolkit() != null) {
          getToolkit().dispose();
       }
