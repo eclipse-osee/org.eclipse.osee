@@ -48,4 +48,8 @@ public enum RelationSide {
       }
       throw new OseeCoreException("Invalid name - Relation Side was not found");
    }
+
+   public static RelationSide valueOf(boolean sideA) {
+      return sideA ? SIDE_A : SIDE_B;
+   }
 }

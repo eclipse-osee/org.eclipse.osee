@@ -349,9 +349,10 @@ public class OrcsCollectorWriter {
    }
 
    private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
+      OrcsTokenService tokenService = orcsApi.tokenService();
       for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
-         RelationTypeToken relType = orcsApi.tokenService().getRelationTypeOrCreate(owRelType.getId());
+         RelationTypeToken relType = tokenService.getRelationTypeOrCreate(owRelType.getId());
 
          ArtifactToken artToken = relation.getArtToken();
 
@@ -364,15 +365,14 @@ public class OrcsCollectorWriter {
                orcsApi.getQueryFactory().fromBranch(branch).andUuid(artToken.getId()).getResults().getExactlyOne();
             idToArtifact.put(artToken.getId(), otherArtifact);
          }
+
+         RelationTypeSide relTypeSide =
+            RelationTypeSide.create(relType, RelationSide.valueOf(relation.getType().isSideA()));
          if (relation.getType().isSideA()) {
-            RelationTypeSide relTypeSide =
-               RelationTypeSide.create(RelationSide.SIDE_A, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(otherArtifact, relType, artifact, RelationSorter.USER_DEFINED);
             }
          } else {
-            RelationTypeSide relTypeSide =
-               RelationTypeSide.create(RelationSide.SIDE_B, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(artifact, relType, otherArtifact, RelationSorter.USER_DEFINED);
             }

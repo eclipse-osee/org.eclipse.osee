@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 public class OrphanSearchFilter extends NotInRelationFilter {
 
    public OrphanSearchFilter(Control optionsControl) {
-      super(optionsControl, null, null);
+      super(optionsControl, null, null, null);
    }
 
    @Override
@@ -36,8 +36,7 @@ public class OrphanSearchFilter extends NotInRelationFilter {
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
       ISearchPrimitive primitive = new NotInRelationSearch(CoreRelationTypes.DefaultHierarchical_Child, false);
-      filterViewer.addItem(primitive, getFilterName(), CoreRelationTypes.DefaultHierarchical_Child.getName(),
-         "Child");
+      filterViewer.addItem(primitive, getFilterName(), CoreRelationTypes.DefaultHierarchical_Child.getName(), "Child");
    }
 
    @Override
@@ -49,5 +48,4 @@ public class OrphanSearchFilter extends NotInRelationFilter {
    public String getSearchDescription() {
       return "Find all artifacts that have no parent default hierarchy relation.";
    }
-
 }

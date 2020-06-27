@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -28,11 +29,13 @@ import org.eclipse.swt.widgets.Control;
 public class NotInRelationFilter extends SearchFilter {
    private final ComboViewer relationTypeList;
    private final ComboViewer relationSideList;
+   private final OrcsTokenService tokenService;
 
-   public NotInRelationFilter(Control optionsControl, ComboViewer relationTypeList, ComboViewer relationSideList) {
+   public NotInRelationFilter(Control optionsControl, ComboViewer relationTypeList, ComboViewer relationSideList, OrcsTokenService tokenService) {
       super("Artifact not in Relation", optionsControl);
       this.relationTypeList = relationTypeList;
       this.relationSideList = relationSideList;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -59,7 +62,7 @@ public class NotInRelationFilter extends SearchFilter {
 
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
-      ISearchPrimitive primitive = NotInRelationSearch.getPrimitive(storageString);
+      ISearchPrimitive primitive = NotInRelationSearch.getPrimitive(storageString, tokenService);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 

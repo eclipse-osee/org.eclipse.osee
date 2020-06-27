@@ -14,10 +14,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 
 /**
@@ -54,12 +53,12 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    @Override
    public void addToQueryBuilder(QueryBuilder builder) {
       if (artifactId.isValid()) {
-         RelationTypeSide rts = RelationTypeSide.create(relationSide, relationType.getId(), Strings.EMPTY_STRING);
+         RelationTypeSide rts = RelationTypeSide.create(relationType, relationSide);
          builder.andRelatedTo(rts, artifactId);
       } else if (relationSide == null) {
          builder.andExists(relationType);
       } else {
-         RelationTypeSide rts = RelationTypeSide.create(relationSide, relationType.getId(), "SearchRelationTypeSide");
+         RelationTypeSide rts = RelationTypeSide.create(relationType, relationSide);
          builder.andExists(rts);
       }
    }

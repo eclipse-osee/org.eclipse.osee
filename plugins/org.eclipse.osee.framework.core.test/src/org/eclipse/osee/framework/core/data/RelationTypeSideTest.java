@@ -13,9 +13,13 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Component;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation_Requirement;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHierarchical_Parent;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,15 +28,10 @@ import org.junit.Test;
  */
 public class RelationTypeSideTest {
 
-   private static final long uuid1 = 123123421493L;
-   private static final long uuid2 = 867847363221L;
-   private static final RelationSide sideA = RelationSide.SIDE_A;
-   private static final RelationSide sideB = RelationSide.SIDE_B;
-
    @Test
    public void testHashCodeEquals() {
-      RelationTypeToken relType1 = RelationTypeToken.create(uuid1, "X");
-      RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
+      RelationTypeToken relType1 = DefaultHierarchical;
+      RelationTypeSide relTypeSide1 = DefaultHierarchical_Parent;
 
       Assert.assertTrue(relType1.equals(relTypeSide1));
       Assert.assertTrue(relTypeSide1.equals(relType1));
@@ -42,10 +41,10 @@ public class RelationTypeSideTest {
 
    @Test
    public void testMap() {
-      RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
-      RelationTypeSide relTypeSide2 = RelationTypeSide.create(sideB, uuid1, uuid1 + "_sideB");
-      RelationTypeSide relTypeSide3 = RelationTypeSide.create(sideA, uuid2, uuid2 + "_sideA");
-      RelationTypeSide relTypeSide4 = RelationTypeSide.create(sideB, uuid2, uuid2 + "_sideB");
+      RelationTypeSide relTypeSide1 = DefaultHierarchical_Parent;
+      RelationTypeSide relTypeSide2 = DefaultHierarchical_Child;
+      RelationTypeSide relTypeSide3 = Allocation_Requirement;
+      RelationTypeSide relTypeSide4 = Allocation_Component;
 
       Map<RelationTypeToken, String> data = new HashMap<>();
       data.put(relTypeSide1, "a1");
@@ -60,7 +59,7 @@ public class RelationTypeSideTest {
       Assert.assertEquals("c3", data.get(relTypeSide3));
       Assert.assertEquals("d4", data.get(relTypeSide4));
 
-      RelationTypeToken relType1 = RelationTypeSide.create(sideB, uuid1, "");
+      RelationTypeToken relType1 = DefaultHierarchical_Child;
       String removed = data.put(relType1, "hello");
       Assert.assertEquals("b2", removed);
 

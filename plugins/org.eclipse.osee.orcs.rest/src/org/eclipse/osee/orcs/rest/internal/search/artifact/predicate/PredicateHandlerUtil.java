@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -48,7 +49,7 @@ public class PredicateHandlerUtil {
       return types;
    }
 
-   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels) {
+   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels, OrcsTokenService orcsTokenService) {
       Collection<RelationTypeSide> relSides = new LinkedHashSet<>();
       for (String value : rels) {
          char sideChar = value.charAt(0);
@@ -57,9 +58,9 @@ public class PredicateHandlerUtil {
          if (sideChar == 'B') {
             side = RelationSide.SIDE_B;
          }
-         long longUuid = parseUuid(uuid);
-         if (longUuid != -1L) {
-            relSides.add(RelationTypeSide.create(side, longUuid, "SearchRelationTypeSide"));
+         long relationTypeId = parseUuid(uuid);
+         if (relationTypeId != -1L) {
+            relSides.add(RelationTypeSide.create(orcsTokenService.getRelationType(relationTypeId), side));
          }
       }
       return relSides;

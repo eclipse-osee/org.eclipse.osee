@@ -43,7 +43,8 @@ public class RelatedToPredicateHandler implements PredicateHandler {
       Conditions.checkNotNull(typeParameters, "typeParameters");
       Conditions.checkNotNull(values, "values");
 
-      Collection<RelationTypeSide> types = PredicateHandlerUtil.getRelationTypeSides(typeParameters);
+      Collection<RelationTypeSide> types =
+         PredicateHandlerUtil.getRelationTypeSides(typeParameters, orcsApi.tokenService());
       Collection<ArtifactId> artIds = new LinkedList<>();
 
       for (String value : values) {

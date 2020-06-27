@@ -146,17 +146,6 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
    }
 
-   private RelationTypeToken getRelationType(String name) {
-      RelationTypeToken toReturn = null;
-      for (RelationTypeToken type : tokenService.getRelationTypes()) {
-         if (type.getName().equals(name)) {
-            toReturn = type;
-            break;
-         }
-      }
-      return toReturn;
-   }
-
    private ArtifactTypeToken getArtifactType(String name) {
       ArtifactTypeToken toReturn = null;
       for (ArtifactTypeToken type : tokenService.getArtifactTypes()) {
@@ -686,7 +675,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          Class<?> clazz = resolver.resolveTypeSingle(expression);
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);
-            toReturn = getRelationType(name);
+            toReturn = tokenService.getRelationType(name);
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
             toReturn = tokenService.getRelationType(typeId);
@@ -699,11 +688,12 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          Class<?> clazz = resolver.resolveTypeSingle(expression);
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);
-            RelationTypeToken type = getRelationType(name);
+            RelationTypeToken type = tokenService.getRelationType(name);
             toReturn = RelationTypeSide.create(type, asSide(side));
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
-            toReturn = RelationTypeSide.create(asSide(side), typeId, "N/A");
+            RelationTypeToken type = tokenService.getRelationType(typeId);
+            toReturn = RelationTypeSide.create(type, asSide(side));
          }
          return toReturn;
       }

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -41,13 +41,13 @@ public class InRelationSearch implements ISearchPrimitive {
       return sideA + TOKEN + relationType.getId();
    }
 
-   public static InRelationSearch getPrimitive(String storageString) {
+   public static InRelationSearch getPrimitive(String storageString, OrcsTokenService tokenService) {
       String[] values = storageString.split(TOKEN);
       if (values.length < 2) {
          throw new IllegalStateException("Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
       }
 
-      RelationTypeToken type = RelationTypeToken.create(Long.valueOf(values[1]), "SearchRelType");
+      RelationTypeToken type = tokenService.getRelationType(Long.valueOf(values[1]));
       return new InRelationSearch(type, Boolean.parseBoolean(values[0]));
    }
 
@@ -57,9 +57,8 @@ public class InRelationSearch implements ISearchPrimitive {
          builder.andExists(relationType);
       } else {
          RelationSide side = sideA.booleanValue() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-         RelationTypeSide rts = RelationTypeSide.create(side, relationType.getId(), "SearchRelTypeSide");
+         RelationTypeSide rts = RelationTypeSide.create(relationType, side);
          builder.andExists(rts);
       }
    }
-
 }

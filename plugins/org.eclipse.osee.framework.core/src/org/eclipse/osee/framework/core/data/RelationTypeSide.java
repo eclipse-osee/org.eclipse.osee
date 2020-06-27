@@ -33,10 +33,6 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
       this.side = side;
    }
 
-   public static RelationTypeSide create(RelationSide side, long id, String name) {
-      return new RelationTypeSide(RelationTypeToken.create(id, name), side);
-   }
-
    public static RelationTypeSide create(RelationTypeToken type, RelationSide side) {
       return new RelationTypeSide(type, side);
    }

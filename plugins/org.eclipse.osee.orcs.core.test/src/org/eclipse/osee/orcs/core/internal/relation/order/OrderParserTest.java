@@ -30,6 +30,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -52,11 +53,8 @@ import org.mockito.stubbing.Answer;
  * @author Roberto E. Escobar
  */
 public class OrderParserTest {
-
-   private static final String REL_TYPE_1_NAME = "Default Hierarchical";
-   private static final Long REL_TYPE_1_ID = 4L;
-   private static final String REL_TYPE_2_NAME = "Another Type";
-   private static final Long REL_TYPE_2_ID = 1231L;
+   private static final RelationTypeSide relationType1 = CoreRelationTypes.DefaultHierarchical_Child;
+   private static final RelationTypeSide relationType2 = CoreRelationTypes.Allocation_Requirement;
 
    private static final List<String> ORDER_LIST_1 =
       Arrays.asList("AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
@@ -70,12 +68,12 @@ public class OrderParserTest {
    private static final String ONE_ENTRY_NO_LIST_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_NO_LIST_PATTERN);
    private static final String TWO_ENTRY_PATTERN = String.format("<OrderList>%s%s</OrderList>", ENTRY_PATTERN, ENTRY_PATTERN);
 
-   private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
-   private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
+   private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, relationType1.getName(), RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
+   private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, relationType1.getName(), RelationSide.SIDE_B, USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
    private static final String DATA_3 = String.format(TWO_ENTRY_PATTERN,
-      REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
-      REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
-   private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC.getGuid());
+      relationType1.getName(), RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
+      relationType2.getName(), RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
+   private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, relationType2.getName(), RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC.getGuid());
 
    private static final String EMPTY_TYPE = "<OrderList><Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_SIDE = "<OrderList><Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
@@ -92,9 +90,6 @@ public class OrderParserTest {
 
    @Captor private ArgumentCaptor<RelationTypeSide> typeSideCaptor;
    @Captor private ArgumentCaptor<OrderData> orderDataCaptor;
-
-   @Mock private RelationTypeToken relationType1;
-   @Mock private RelationTypeToken relationType2;
    // @formatter:on
 
    private OrderParser parser;
@@ -104,12 +99,6 @@ public class OrderParserTest {
       MockitoAnnotations.initMocks(this);
 
       parser = new OrderParser(tokenService);
-
-      when(relationType1.getName()).thenReturn(REL_TYPE_1_NAME);
-      when(relationType1.getId()).thenReturn(REL_TYPE_1_ID);
-
-      when(relationType2.getName()).thenReturn(REL_TYPE_2_NAME);
-      when(relationType2.getId()).thenReturn(REL_TYPE_2_ID);
 
       final Collection<? extends RelationTypeToken> types = Arrays.asList(relationType1, relationType2);
 
@@ -176,7 +165,7 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_1);
+      verifyData(0, relationType1, USER_DEFINED, ORDER_LIST_1);
    }
 
    @Test
@@ -185,7 +174,7 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
+      verifyData(0, relationType1, USER_DEFINED, ORDER_LIST_2);
    }
 
    @Test
@@ -194,8 +183,8 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(2)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
-      verifyData(1, REL_TYPE_2_ID, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
+      verifyData(0, relationType1, USER_DEFINED, ORDER_LIST_2);
+      verifyData(1, relationType2, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
    }
 
    @Test
@@ -204,15 +193,15 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_2_ID, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
+      verifyData(0, relationType2, LEXICOGRAPHICAL_DESC);
    }
 
    @Test
    public void testToXml() {
       //@formatter:off
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
-      add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
-      add(data, REL_TYPE_2_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
+      add(relationType1, data, USER_DEFINED, ORDER_LIST_2);
+      add(relationType2, data, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
       //@formatter:on
 
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
@@ -234,7 +223,7 @@ public class OrderParserTest {
    @Test
    public void testToXmlEmptyList() {
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
-      add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
+      add(relationType2, data, LEXICOGRAPHICAL_DESC);
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 
       String actual = parser.toXml(hasOrderData);
@@ -242,26 +231,25 @@ public class OrderParserTest {
       assertEquals(DATA_4, actual);
    }
 
-   private void add(Map<RelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter) {
-      add(data, typeId, typeName, side, sorter, java.util.Collections.<String> emptyList());
+   private void add(RelationTypeSide typeSide, Map<RelationTypeSide, OrderData> data, RelationSorter sorter) {
+      add(typeSide, data, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void add(Map<RelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter, List<String> list) {
-      RelationTypeSide typeSide = RelationTypeSide.create(side, typeId, typeName);
+   private void add(RelationTypeSide typeSide, Map<RelationTypeSide, OrderData> data, RelationSorter sorter, List<String> list) {
       OrderData orderData = new OrderData(sorter, list);
       data.put(typeSide, orderData);
    }
 
-   private void verifyData(int index, Long typeId, RelationSide side, RelationSorter sorter) {
-      verifyData(index, typeId, side, sorter, java.util.Collections.<String> emptyList());
+   private void verifyData(int index, RelationTypeSide relationType, RelationSorter sorter) {
+      verifyData(index, relationType, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void verifyData(int index, Long typeId, RelationSide side, RelationSorter sorter, List<String> list) {
+   private void verifyData(int index, RelationTypeSide relationType, RelationSorter sorter, List<String> list) {
       RelationTypeSide actualTypeSide = typeSideCaptor.getAllValues().get(index);
       OrderData actualData = orderDataCaptor.getAllValues().get(index);
 
-      assertEquals(side, actualTypeSide.getSide());
-      assertEquals(typeId, actualTypeSide.getGuid());
+      assertEquals(relationType.getSide(), actualTypeSide.getSide());
+      assertEquals(relationType.getId(), actualTypeSide.getId());
       assertEquals(sorter, actualData.getSorterId());
 
       List<String> actualIds = actualData.getOrderIds();

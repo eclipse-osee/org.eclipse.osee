@@ -264,8 +264,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          relationSideList.getCombo().select(0);
       }
 
-      addToSearchTypeList(new InRelationFilter(relationControls, relationTypeList, relationSideList));
-      addToSearchTypeList(new NotInRelationFilter(relationControls, relationTypeList, relationSideList));
+      addToSearchTypeList(new InRelationFilter(relationControls, relationTypeList, relationSideList, tokenService));
+      addToSearchTypeList(new NotInRelationFilter(relationControls, relationTypeList, relationSideList, tokenService));
    }
 
    private void createOrphanSearchControls(Composite optionsComposite) {
