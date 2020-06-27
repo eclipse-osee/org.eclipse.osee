@@ -45,6 +45,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_E1_FROM_E2 =
       "select e1 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ?  and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = ?";
 
+   private static final String SELECT_E1_UNIQUE =
+      "SELECT DISTINCT e1 FROM osee_tuple2 tp2, osee_txs txs where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
+
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
@@ -107,6 +110,11 @@ public class TupleQueryImpl implements TupleQuery {
       Map<Long, String> consumer = new TreeMap<>();
       getTuple2NamedId(tupleType, branchId, e1, (e2, value) -> consumer.put(e2, value));
       return (Iterable<E2>) consumer.values();
+   }
+
+   @Override
+   public <E1, E2> void getTuple2UniqueE1(Tuple2Type<E1, E2> tupleType, BranchId branchId, Consumer<E1> consumer) {
+      jdbcClient.runQuery(stmt -> consumer.accept(e1FromLong(tupleType, stmt)), SELECT_E1_UNIQUE, tupleType, branchId);
    }
 
    @Override
@@ -218,13 +226,21 @@ public class TupleQueryImpl implements TupleQuery {
          SELECT_TUPLE4_E2_E3_E4_FROM_E1, tupleType, toLong(e1), branchId);
    }
 
-   private <E> E fromLong(Function<Long, E> valueOfE1, JdbcStatement stmt, String column) {
+   private <E> E fromLong(Function<Long, E> valueOfElement, JdbcStatement stmt, String column) {
       Long rawValue = stmt.getLong(column);
-      if (valueOfE1 == TupleTypeImpl.KeyedString) {
+      if (valueOfElement == TupleTypeImpl.KeyedString) {
          return (E) keyValue.getByKey(rawValue);
       } else {
-         return valueOfE1.apply(rawValue);
+         return valueOfElement.apply(rawValue);
       }
+   }
+
+   private <E1, E2> E1 e1FromLong(Tuple2Type<E1, E2> tupleType, JdbcStatement stmt) {
+      return fromLong(tupleType.getValueOfE1(), stmt, "e1");
+   }
+
+   private <E1, E2> E2 e2FromLong(Tuple2Type<E1, E2> tupleType, JdbcStatement stmt) {
+      return fromLong(tupleType.getValueOfE2(), stmt, "e2");
    }
 
    private <E1, E2, E3> E1 e1FromLong(Tuple3Type<E1, E2, E3> tupleType, JdbcStatement stmt) {

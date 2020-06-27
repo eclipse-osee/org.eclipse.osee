@@ -13,21 +13,36 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import java.util.function.Function;
 
 /**
  * @author Ryan D. Brooks
  */
 public interface Tuple2Type<E1, E2> extends TupleTypeId {
 
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(TupleFamilyId family, Long tupleTypeId) {
+   Function<Long, E1> getValueOfE1();
+
+   Function<Long, E2> getValueOfE2();
+
+   public static <E1, E2> Tuple2Type<E1, E2> valueOf(TupleFamilyId family, Long tupleTypeId, Function<Long, E1> valueOfE1, Function<Long, E2> valueOfE2) {
       final class Tuple2TypeImpl extends TupleTypeImpl implements Tuple2Type<E1, E2> {
-         public Tuple2TypeImpl(TupleFamilyId family, Long tupleTypeId) {
+         private final Function<Long, E1> valueOfE1;
+         private final Function<Long, E2> valueOfE2;
+
+         public Tuple2TypeImpl(TupleFamilyId family, Long tupleTypeId, Function<Long, E1> valueOfE1, Function<Long, E2> valueOfE2) {
             super(family, tupleTypeId);
+            this.valueOfE1 = valueOfE1;
+            this.valueOfE2 = valueOfE2;
          }
 
-         public Tuple2TypeImpl(Long tupleTypeId) {
-            super(tupleTypeId);
+         @Override
+         public Function<Long, E1> getValueOfE1() {
+            return valueOfE1;
+         }
+
+         @Override
+         public Function<Long, E2> getValueOfE2() {
+            return valueOfE2;
          }
 
          @Override
@@ -35,14 +50,6 @@ public interface Tuple2Type<E1, E2> extends TupleTypeId {
             return tupleTypeId;
          }
       }
-      return new Tuple2TypeImpl(family, tupleTypeId);
-   }
-
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(Long tupleType) {
-      return valueOf(DefaultFamily, tupleType);
-   }
-
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(String tupleType) {
-      return valueOf(DefaultFamily, Long.parseLong(tupleType));
+      return new Tuple2TypeImpl(family, tupleTypeId, valueOfE1, valueOfE2);
    }
 }

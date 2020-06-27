@@ -29,6 +29,8 @@ public interface TupleQuery {
 
    <E1, E2> Iterable<E2> getTuple2(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1);
 
+   <E1, E2> void getTuple2UniqueE1(Tuple2Type<E1, E2> tupleType, BranchId branchId, Consumer<E1> consumer);
+
    <E1, E2> Iterable<Long> getTuple2Raw(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1);
 
    /**

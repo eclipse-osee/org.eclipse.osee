@@ -45,11 +45,7 @@ import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_ONE;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.Tuple2Type;
-import org.eclipse.osee.framework.core.data.TupleFamilyId;
-import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 
 /**
  * @author Donald G. Dunne
@@ -57,9 +53,6 @@ import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 public interface AtsRelationTypes {
 
    //@formatter:off
-
-   // tuple relations
-   Tuple2Type<TupleFamilyId, TupleTypeId> WorkItem_To_WorkDefinition =  Tuple2Type.valueOf(CoreTupleFamilyTypes.AttribueFamily, 1457L);
 
    // relation links
    RelationTypeToken ActionToWorkflow = ats.add(2305843009213694317L, "ActionToWorkflow", ONE_TO_MANY, UNORDERED, Action, "Action", TeamWorkflow, "Team Workflow");

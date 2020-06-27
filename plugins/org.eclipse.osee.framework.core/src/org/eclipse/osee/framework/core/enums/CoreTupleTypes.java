@@ -31,13 +31,18 @@ import org.eclipse.osee.framework.core.data.TupleTypeImpl;
  */
 public final class CoreTupleTypes {
 
-   public static final Tuple2Type<TupleFamilyId, TupleTypeId> TupleMetaType = Tuple2Type.valueOf(DefaultFamily, 1L);
-   public static final Tuple2Type<ArtifactId, String> ViewApplicability = Tuple2Type.valueOf(ProductLineFamily, 2L);
-   public static final Tuple2Type<Long, AttributeId> OseeTypeDef = Tuple2Type.valueOf(DefaultFamily, 4L);
+   public static final Tuple2Type<TupleFamilyId, TupleTypeId> TupleMetaType =
+      Tuple2Type.valueOf(DefaultFamily, 1L, TupleFamilyId::valueOf, TupleTypeId::valueOf);
+   public static final Tuple2Type<ArtifactId, String> ViewApplicability =
+      Tuple2Type.valueOf(ProductLineFamily, 2L, ArtifactId::valueOf, TupleTypeImpl.KeyedString);
+   public static final Tuple2Type<Long, AttributeId> OseeTypeDef =
+      Tuple2Type.valueOf(DefaultFamily, 4L, Function.identity(), AttributeId::valueOf);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
-      Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L);
-   public static final Tuple2Type<BranchId, ArtifactId> BranchView = Tuple2Type.valueOf(ProductLineFamily, 11L);
-   public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig = Tuple2Type.valueOf(ProductLineFamily, 12L);
+      Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L, ArtifactId::valueOf, ApplicabilityId::valueOf);
+   public static final Tuple2Type<BranchId, ArtifactId> BranchView =
+      Tuple2Type.valueOf(ProductLineFamily, 11L, BranchId::valueOf, ArtifactId::valueOf);
+   public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig =
+      Tuple2Type.valueOf(ProductLineFamily, 12L, ArtifactId::valueOf, ArtifactId::valueOf);
 
    // Data Maintenance
    public static final Tuple3Type<String, Long, Long> FixedMaintenanceData =
