@@ -143,7 +143,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public RelationTypeToken getRelationTypeOrCreate(Long id) {
       RelationTypeToken relationType = getRelationTypeOrSentinel(id);
       if (relationType.isInvalid()) {
-         relationType = RelationTypeToken.create(id, "Mising Artifact Type " + id);
+         relationType = RelationTypeToken.create(id, "Mising Artifact Type " + id, null, null, null, null, null, null);
          registerRelationType(relationType);
       }
       return relationType;

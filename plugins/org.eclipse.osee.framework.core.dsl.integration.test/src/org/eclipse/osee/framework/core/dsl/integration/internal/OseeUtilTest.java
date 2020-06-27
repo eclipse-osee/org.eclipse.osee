@@ -13,9 +13,8 @@
 
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -23,10 +22,8 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -94,21 +91,6 @@ public class OseeUtilTest {
    public void testToTokenAttributeType() {
       XAttributeType type = OseeDslFactory.eINSTANCE.createXAttributeType();
       AttributeTypeId expected = CoreAttributeTypes.Description;
-
-      setupToToken(type, expected);
-
-      Object actual = OseeUtil.toToken(type);
-      Assert.assertEquals(expected, actual);
-
-      type.setId("1111111111111111");
-      actual = OseeUtil.toToken(type);
-      Assert.assertFalse(expected.equals(actual));
-   }
-
-   @Test
-   public void testToTokenRelationType() {
-      XRelationType type = OseeDslFactory.eINSTANCE.createXRelationType();
-      RelationTypeToken expected = CoreRelationTypes.Allocation_Component;
 
       setupToToken(type, expected);
 

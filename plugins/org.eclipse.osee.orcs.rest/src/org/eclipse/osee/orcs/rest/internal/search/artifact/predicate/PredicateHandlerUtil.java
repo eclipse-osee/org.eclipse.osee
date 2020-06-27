@@ -38,12 +38,12 @@ public class PredicateHandlerUtil {
       return attrTypes;
    }
 
-   public static Collection<RelationTypeToken> getIRelationTypes(Collection<String> rels) {
+   public static Collection<RelationTypeToken> getIRelationTypes(Collection<String> rels, OrcsTokenService tokenService) {
       Collection<RelationTypeToken> types = new LinkedHashSet<>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
          if (longUuid != -1L) {
-            types.add(RelationTypeToken.create(longUuid, "SearchRelationType"));
+            types.add(tokenService.getRelationType(longUuid));
          }
       }
       return types;

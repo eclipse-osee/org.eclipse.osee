@@ -105,7 +105,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          types = artifactProxy.getValidRelationTypes();
       } else {
          XRelationType xRelationType = restriction.getRelationTypeRef();
-         RelationTypeToken typeToMatch = OseeUtil.toToken(xRelationType);
+         Long typeToMatch = OseeUtil.checkAndGetUuid(xRelationType);
          RelationTypeToken relationType = getRelationType(typeToMatch, artifactProxy);
          if (relationType != null) {
             types = Collections.singleton(relationType);
@@ -116,7 +116,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       return types;
    }
 
-   private RelationTypeToken getRelationType(RelationTypeToken typeToMatch, ArtifactProxy artifactProxy) {
+   private RelationTypeToken getRelationType(Long typeToMatch, ArtifactProxy artifactProxy) {
       RelationTypeToken toReturn = null;
       Collection<RelationTypeToken> relationTypes = artifactProxy.getValidRelationTypes();
       for (RelationTypeToken relationType : relationTypes) {

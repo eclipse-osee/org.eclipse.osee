@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -35,6 +36,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
 
    @Override
    public QueryBuilder handle(OrcsApi orcsApi, QueryBuilder builder, Predicate predicate) {
+      OrcsTokenService tokenService = orcsApi.tokenService();
       if (!predicate.getType().isOfType(SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE)) {
          throw new OseeArgumentException("This predicate handler only supports [%s] and [%s]", SearchMethod.EXISTS_TYPE,
             SearchMethod.NOT_EXISTS_TYPE);
@@ -57,7 +59,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
                }
             }
          } else if ("relType".equals(existsType)) {
-            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values, tokenService)) {
                if (checkExists(predicate.getType())) {
                   builder.andRelationExists(rt);
                } else {
@@ -66,7 +68,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
             }
          } else if ("relTypeSide".equals(existsType)) {
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+            for (RelationTypeToken rt : PredicateHandlerUtil.getIRelationTypes(values, tokenService)) {
                RelationTypeSide relationTypeSide = new RelationTypeSide(rt, side);
                if (checkExists(predicate.getType())) {
                   builder.andRelationExists(relationTypeSide);

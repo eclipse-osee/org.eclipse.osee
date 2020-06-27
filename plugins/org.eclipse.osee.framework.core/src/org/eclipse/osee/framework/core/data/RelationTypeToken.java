@@ -26,52 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  * @author Ryan D. Brooks
  */
 public interface RelationTypeToken extends NamedId {
-   RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
-
-   public static RelationTypeToken create(long id, String name) {
-      return create(Long.valueOf(id), name);
-   }
-
-   public static RelationTypeToken create(Long id, String name) {
-      final class RelationTypeTokenImpl extends NamedIdBase implements RelationTypeToken {
-
-         public RelationTypeTokenImpl(Long id, String name) {
-            super(id, name);
-         }
-
-         @Override
-         public RelationTypeMultiplicity getMultiplicity() {
-            return null;
-         }
-
-         @Override
-         public RelationSorter getOrder() {
-            return null;
-         }
-
-         @Override
-         public ArtifactTypeToken getArtifactType(RelationSide relationSide) {
-            return null;
-         }
-
-         @Override
-         public String getSideName(RelationSide relationSide) {
-            return null;
-         }
-
-         @Override
-         public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactTypeToken artifactType) {
-            return false;
-         }
-
-         @Override
-         public boolean isOrdered() {
-            return false;
-         }
-
-      }
-      return new RelationTypeTokenImpl(id, name);
-   }
+   RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, null, null, null, null, null, null);
 
    public static @NonNull RelationTypeToken create(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
       final class RelationTypeTokenImpl extends NamedIdBase implements RelationTypeToken {

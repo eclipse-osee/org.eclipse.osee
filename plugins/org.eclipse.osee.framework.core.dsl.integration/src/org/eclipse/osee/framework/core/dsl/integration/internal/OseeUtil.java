@@ -16,15 +16,12 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,7 +36,7 @@ public final class OseeUtil {
       // Utility Class
    }
 
-   private static long checkAndGetUuid(OseeType type) {
+   public static long checkAndGetUuid(OseeType type) {
       String uuid = type.getId();
       Conditions.checkNotNull(uuid, "uuid", "for type [%s]", type.getName());
       return Long.valueOf(uuid);
@@ -51,10 +48,6 @@ public final class OseeUtil {
 
    public static AttributeTypeId toToken(XAttributeType model) {
       return AttributeTypeToken.valueOf(checkAndGetUuid(model), Strings.unquote(model.getName()));
-   }
-
-   public static RelationTypeToken toToken(XRelationType model) {
-      return RelationTypeToken.create(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
    public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) {

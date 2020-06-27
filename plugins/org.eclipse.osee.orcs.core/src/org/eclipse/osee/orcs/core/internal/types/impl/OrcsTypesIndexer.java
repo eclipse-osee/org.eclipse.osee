@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
@@ -48,7 +47,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -107,10 +105,6 @@ public class OrcsTypesIndexer {
       for (XArtifactType dslType : model.getArtifactTypes()) {
          indexSuperTypes(artifactTypeIndex, dslType);
          indexAttributes(artifactTypeIndex, attributeTypeIndex, dslType);
-      }
-
-      for (XRelationType dslType : model.getRelationTypes()) {
-         getOrCreateToken(relationTypeIndex, dslType);
       }
 
       for (XOseeEnumType dslType : model.getEnumTypes()) {
@@ -182,16 +176,6 @@ public class OrcsTypesIndexer {
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
          token = AttributeTypeToken.valueOf(id, dslType.getName());
-         index.put(token, dslType);
-      }
-      return token;
-   }
-
-   private RelationTypeToken getOrCreateToken(RelationTypeIndex index, XRelationType dslType) {
-      RelationTypeToken token = index.getTokenByDslType(dslType);
-      if (token == null) {
-         long id = Long.valueOf(dslType.getId());
-         token = RelationTypeToken.create(id, dslType.getName());
          index.put(token, dslType);
       }
       return token;
