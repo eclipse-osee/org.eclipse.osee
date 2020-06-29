@@ -154,7 +154,7 @@ public class DefaultArtifactRenderer implements IRenderer {
 
       if (allAttrs) {
          if (!attributeType.matches(CoreAttributeTypes.PlainTextContent)) {
-            wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getName()) + ": </w:t></w:r>");
+            wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeType.getUnqualifiedName()) + ": </w:t></w:r>");
          } else {
             wordMl.addWordMl("<w:r><w:t> </w:t></w:r>");
          }
