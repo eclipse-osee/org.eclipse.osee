@@ -223,6 +223,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public List<JsonArtifact> getArtifactDetailsByType(BranchId branchId, String artifactTypes) {
+      return getArtifactDetailsByType(branchId, ArtifactId.SENTINEL, artifactTypes);
+   }
+
+   @Override
    public List<JsonArtifact> getArtifactDetailsByType(BranchId branchId, ArtifactId viewId, String artifactTypes) {
       List<JsonArtifact> arts = new ArrayList<JsonArtifact>();
       List<Long> typesLong = (Collections.fromString(artifactTypes, ",", Long::valueOf));
@@ -232,8 +237,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
          types.add(CoreTypeTokenProvider.osee.getArtifactTypeTokenById(typeId));
       }
 
-      List<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory().fromBranch(branchId, viewId).andIsOfType(types).getResults().getList();
+      List<ArtifactReadable> artifacts = null;
+      if (viewId.isValid()) {
+         artifacts = orcsApi.getQueryFactory().fromBranch(branchId, viewId).andIsOfType(types).getResults().getList();
+      } else {
+         artifacts = orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(types).getResults().getList();
+      }
       for (ArtifactReadable art : artifacts) {
          JsonArtifact jArt = new JsonArtifact();
          jArt.setTypeId(art.getArtifactType());

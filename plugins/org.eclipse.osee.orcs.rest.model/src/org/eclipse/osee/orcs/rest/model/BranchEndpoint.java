@@ -112,6 +112,11 @@ public interface BranchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("artifactTypes") String artifactTypes);
 
+   @GET
+   @Path("{branch}/artifact/type/{artifactTypes}/attributes")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<JsonArtifact> getArtifactDetailsByType(@PathParam("branch") BranchId branch, @PathParam("artifactTypes") String artifactTypes);
+
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})

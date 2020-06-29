@@ -52,9 +52,15 @@ public class BranchEndpointTest {
    }
 
    @Test
-   public void getArtifactDetailsByType() {
+   public void getArtifactDetailsByTypeWithView() {
       List<JsonArtifact> artifacts =
          branchEndpoint.getArtifactDetailsByType(DemoBranches.SAW_Bld_1, ArtifactId.SENTINEL, "23");
+      Assert.assertFalse(artifacts.isEmpty());
+   }
+
+   @Test
+   public void getArtifactDetailsByType() {
+      List<JsonArtifact> artifacts = branchEndpoint.getArtifactDetailsByType(DemoBranches.SAW_Bld_1, "23");
       Assert.assertFalse(artifacts.isEmpty());
    }
 
