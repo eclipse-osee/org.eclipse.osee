@@ -114,6 +114,8 @@ public interface IAtsWorkItemService {
     */
    Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf, IAtsTeamDefinition fromSiblingTeam);
 
+   Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf);
+
    void addTransitionHook(IAtsTransitionHook hook);
 
    void addWorkflowHook(IAtsWorkflowHook hook);

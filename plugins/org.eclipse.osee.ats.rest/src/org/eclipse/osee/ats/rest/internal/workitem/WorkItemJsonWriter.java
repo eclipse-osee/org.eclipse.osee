@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -129,6 +130,10 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeStringField("Name", workItem.getName());
       String atsId = workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
+      IAtsAction action = workItem.getParentAction();
+      writer.writeStringField("ActionAtsId", action == null ? "" : action.getAtsId());
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      writer.writeStringField("TeamWfAtsId", teamWf == null ? "" : teamWf.getAtsId());
       writer.writeStringField("ArtifactType", workItemArt.getArtifactType().getName());
       String actionUrl = AtsUtil.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsApi);
       writer.writeStringField("actionLocation", actionUrl);
@@ -157,7 +162,6 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
       }
       if (!identityView || matches(TargetedVersion.class, annotations)) {
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
             IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
             writer.writeStringField("TargetedVersion", version == null ? "" : version.getName());

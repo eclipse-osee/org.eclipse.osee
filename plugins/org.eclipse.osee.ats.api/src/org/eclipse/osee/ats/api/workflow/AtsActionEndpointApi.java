@@ -77,6 +77,11 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids);
 
+   @Path("{ids}/sibling")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> getSiblings(@PathParam("ids") String ids);
+
    /**
     * @param ids (ats.Legacy PCR Id) of action to display
     * @return html representation of the stateType;state

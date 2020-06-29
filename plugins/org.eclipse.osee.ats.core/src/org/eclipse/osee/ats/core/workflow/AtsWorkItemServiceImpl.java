@@ -452,6 +452,18 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf) {
+      List<IAtsTeamWorkflow> siblings = new ArrayList<IAtsTeamWorkflow>();
+      IAtsAction action = teamWf.getParentAction();
+      for (IAtsTeamWorkflow child : action.getTeamWorkflows()) {
+         if (!child.equals(teamWf)) {
+            siblings.add(child);
+         }
+      }
+      return siblings;
+   }
+
+   @Override
    public String getChangeTypeStr(IAtsWorkItem workItem) {
       return ChangeTypeUtil.getChangeTypeStr(workItem, atsApi);
    }

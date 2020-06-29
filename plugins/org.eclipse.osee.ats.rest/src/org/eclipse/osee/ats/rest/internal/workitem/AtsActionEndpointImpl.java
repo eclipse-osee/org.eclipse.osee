@@ -178,6 +178,24 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return children;
    }
 
+   @Override
+   @Path("{ids}/sibling")
+   @TargetedVersion
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> getSiblings(@PathParam("ids") String ids) {
+      List<IAtsWorkItem> siblings = new LinkedList<>();
+      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsByIds(ids)) {
+         IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
+         if (teamWf != null) {
+            for (IAtsTeamWorkflow sibTeamWf : atsApi.getWorkItemService().getSiblings(teamWf)) {
+               siblings.add(sibTeamWf);
+            }
+         }
+      }
+      return siblings;
+   }
+
    /**
     * @return valid unreleased versions to select
     */

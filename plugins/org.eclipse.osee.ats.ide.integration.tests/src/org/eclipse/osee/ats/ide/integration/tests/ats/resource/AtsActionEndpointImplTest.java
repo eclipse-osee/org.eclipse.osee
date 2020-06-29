@@ -232,6 +232,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          DemoBranches.SAW_Bld_2.toString());
    }
 
+   @Test
+   public void testAtsActionsSiblingsRestCall() {
+      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/sibling";
+      JsonNode action = testActionRestCall(url, 2);
+      Assert.assertEquals(action.get("TargetedVersion").asText().replaceAll("\n", ""),
+         DemoBranches.SAW_Bld_2.toString());
+   }
+
    private JsonNode testAction(JsonNode action) {
       Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, action.get("Name").asText());
       Assert.assertNotNull(action.has("id"));
