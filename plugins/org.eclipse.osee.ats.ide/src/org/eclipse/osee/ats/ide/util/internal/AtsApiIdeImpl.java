@@ -71,7 +71,6 @@ import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -210,7 +209,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public Collection<ArtifactTypeToken> getArtifactTypes() {
       List<ArtifactTypeToken> types = new ArrayList<>();
-      types.addAll(ArtifactTypeManager.getAllTypes());
+      types.addAll(tokenService().getArtifactTypes());
       return types;
    }
 

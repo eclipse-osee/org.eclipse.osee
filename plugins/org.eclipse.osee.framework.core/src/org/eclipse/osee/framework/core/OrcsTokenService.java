@@ -110,7 +110,7 @@ public interface OrcsTokenService {
    void registerRelationType(RelationTypeToken relationType);
 
    /**
-    * @return Iterable List of ids of Attributes that are taggable
+    * Get Iterable List of ids of Attributes that are taggable
     */
    Iterable<AttributeTypeGeneric<?>> getTaggedAttrs();
 
@@ -129,6 +129,19 @@ public interface OrcsTokenService {
     */
    Collection<AttributeTypeGeneric<?>> getAttributeTypes();
 
+   /**
+    * Get List of non-abstract Artifact Types
+    */
+   List<ArtifactTypeToken> getConcreteArtifactTypes();
+
+   /**
+    * Get List of valid artifact types that contain a given attribute type
+    */
+   Set<ArtifactTypeToken> getValidArtifactTypes(AttributeTypeToken attributeType);
+
+   /**
+    * Get List of valid relation types that relate a given artifact type
+    */
    List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType);
 
    /**

@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -127,7 +126,7 @@ public final class SkyWalkerOptions {
       if (artTypes == null) {
          artTypes = new HashMap<>();
          try {
-            for (ArtifactTypeToken descriptor : ArtifactTypeManager.getValidArtifactTypes(artifact.getBranch())) {
+            for (ArtifactTypeToken descriptor : tokenService.getArtifactTypes()) {
                artTypes.put(descriptor, true);
             }
          } catch (Exception ex) {

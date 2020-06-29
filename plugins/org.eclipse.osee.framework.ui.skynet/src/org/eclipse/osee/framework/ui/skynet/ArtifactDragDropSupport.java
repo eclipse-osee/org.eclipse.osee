@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
@@ -199,7 +200,7 @@ public class ArtifactDragDropSupport {
             artifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.ContentUrl, location, branch);
          } catch (ArtifactDoesNotExist ex) {
             Collection<ArtifactTypeToken> artifactTypes =
-               ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentUrl);
+               ServiceUtil.getTokenService().getValidArtifactTypes(CoreAttributeTypes.ContentUrl);
             FilteredTreeDialog dialog = new FilteredTreeDialog("Artifact Types",
                "No Artifact could be found for this file. To create one, please select an artifact type.",
                new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());
@@ -215,4 +216,5 @@ public class ArtifactDragDropSupport {
 
       return artifact;
    }
+
 }

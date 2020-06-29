@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -199,9 +198,9 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.getViewer().setContentProvider(new ArrayTreeContentProvider());
       artifactTypeList.getViewer().setLabelProvider(new StringLabelProvider());
       artifactTypeList.getViewer().setSorter(new ToStringViewerSorter());
-      artifactTypeList.getViewer().setInput(ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch()));
+      artifactTypeList.getViewer().setInput(tokenService.getArtifactTypes());
       try {
-         for (ArtifactTypeToken artType : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
+         for (ArtifactTypeToken artType : tokenService.getArtifactTypes()) {
             artifactTypeList.getViewer().add(artifactTypeControls, artType);
             artifactTypeList.getViewer().setData(artType.getName(), artType);
          }

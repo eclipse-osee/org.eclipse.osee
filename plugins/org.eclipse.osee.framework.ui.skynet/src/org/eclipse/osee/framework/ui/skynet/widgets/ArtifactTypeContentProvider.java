@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +35,7 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof BranchId) {
          try {
-            return ArtifactTypeManager.getValidArtifactTypes((BranchId) parentElement).toArray();
+            return ServiceUtil.getTokenService().getArtifactTypes().toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -38,11 +37,6 @@ import org.eclipse.swt.widgets.Control;
 public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDialog<ArtifactTypeToken> {
 
    private Collection<? extends ArtifactTypeToken> selectable;
-
-   public FilteredCheckboxArtifactTypeDialog(String title, String message) {
-      this(title, message, ArtifactTypeManager.getAllTypes(), new ArrayTreeContentProvider(),
-         new ArtifactTypeLabelProvider());
-   }
 
    public FilteredCheckboxArtifactTypeDialog(String title, String message, Collection<? extends ArtifactTypeToken> selectable) {
       this(title, message, selectable, new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());

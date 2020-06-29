@@ -294,6 +294,28 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public List<ArtifactTypeToken> getConcreteArtifactTypes() {
+      List<ArtifactTypeToken> concreteArtifactTypes = new ArrayList<>();
+      for (ArtifactTypeToken artifactType : getArtifactTypes()) {
+         if (!artifactType.isAbstract()) {
+            concreteArtifactTypes.add(artifactType);
+         }
+      }
+      return concreteArtifactTypes;
+   }
+
+   @Override
+   public Set<ArtifactTypeToken> getValidArtifactTypes(AttributeTypeToken attributeType) {
+      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
+      for (ArtifactTypeToken artifactType : getArtifactTypes()) {
+         if (artifactType.isValidAttributeType(attributeType)) {
+            artifactTypes.add(artifactType);
+         }
+      }
+      return artifactTypes;
+   }
+
+   @Override
    public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Collection<RelationTypeToken> relationTypes = getRelationTypes();
       List<RelationTypeToken> validRelationTypes = new ArrayList<>();

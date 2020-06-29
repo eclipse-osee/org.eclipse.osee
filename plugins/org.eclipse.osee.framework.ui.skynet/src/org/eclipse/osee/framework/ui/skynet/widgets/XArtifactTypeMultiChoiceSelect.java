@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
@@ -36,7 +36,7 @@ public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTy
    public XArtifactTypeMultiChoiceSelect() {
       super("Select Artifact Type(s)");
       try {
-         setSelectableItems(ArtifactTypeManager.getAllTypes());
+         setSelectableItems(ServiceUtil.getTokenService().getArtifactTypes());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -47,7 +47,7 @@ public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTy
       FilteredCheckboxTreeDialog<ArtifactTypeToken> dialog =
          new FilteredCheckboxTreeDialog<ArtifactTypeToken>(getLabel(), "Select from the items below",
             new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
-      dialog.setInput(ArtifactTypeManager.getAllTypes());
+      dialog.setInput(ServiceUtil.getTokenService().getArtifactTypes());
       return dialog;
    }
 }

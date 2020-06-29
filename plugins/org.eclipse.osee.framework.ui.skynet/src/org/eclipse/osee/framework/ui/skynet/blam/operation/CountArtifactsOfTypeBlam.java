@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -48,7 +48,7 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
          rd.log(String.format("Aritfact Count for Type for Branch [%s]\n", variableMap.getBranch("Branch")));
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "Count")));
-         for (ArtifactTypeToken artType : ArtifactTypeManager.getAllTypes()) {
+         for (ArtifactTypeToken artType : ServiceUtil.getTokenService().getArtifactTypes()) {
             int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
                DeletionFlag.EXCLUDE_DELETED);
             rd.addRaw(AHTML.addRowMultiColumnTable(artType.toString(), String.valueOf(count)));

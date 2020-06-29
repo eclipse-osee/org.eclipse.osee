@@ -562,7 +562,7 @@ public class QuickSearchOptionComposite extends Composite {
          try {
             Collection<ArtifactTypeToken> artifactTypes = tokenService.getArtifactTypes();
             FilteredCheckboxArtifactTypeDialog dialog = new FilteredCheckboxArtifactTypeDialog(
-               "Artifact Type Filter Selection", "Select artifact types to search in.");
+               "Artifact Type Filter Selection", "Select artifact types to search in.", artifactTypes);
             dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 

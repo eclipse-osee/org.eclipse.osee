@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * Usually used as part of the import process to filter items found by the {@link RoughArtifactCollector}
@@ -68,7 +68,7 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          requiredTypes.add(AttributeTypeManager.getType(name));
       }
 
-      for (ArtifactTypeToken artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
+      for (ArtifactTypeToken artifactType : ServiceUtil.getOrcsTokenService().getConcreteArtifactTypes()) {
          Collection<? extends AttributeTypeId> attributeTypes = artifactType.getValidAttributeTypes();
          if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
             selectedArtifactTypes.add(artifactType);

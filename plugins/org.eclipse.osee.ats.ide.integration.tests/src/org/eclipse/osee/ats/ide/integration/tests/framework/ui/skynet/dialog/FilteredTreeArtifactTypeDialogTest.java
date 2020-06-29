@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog;
 
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeDialog;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,18 +26,23 @@ import org.junit.Test;
  */
 public class FilteredTreeArtifactTypeDialogTest {
 
+   private static Collection<ArtifactTypeToken> artifactTypes;
+
    @Test
    public void test() {
-      FilteredTreeArtifactTypeDialog dialog = new FilteredTreeArtifactTypeDialog("title", "message");
+      artifactTypes = Arrays.asList(CoreArtifactTypes.Artifact, CoreArtifactTypes.AbstractAccessControlled,
+         CoreArtifactTypes.AbstractHeading, CoreArtifactTypes.AbstractImplementationDetails,
+         CoreArtifactTypes.AbstractTestResult, CoreArtifactTypes.BranchView);
+      FilteredTreeArtifactTypeDialog dialog = new FilteredTreeArtifactTypeDialog("title", "message", artifactTypes);
       dialog.setMultiSelect(false);
-      dialog.setInput(ArtifactTypeManager.getAllTypes());
+      dialog.setInput(artifactTypes);
 
       try {
          dialog.setBlockOnOpen(false);
          dialog.open();
 
          int count = dialog.getTreeViewer().getViewer().getTree().getItemCount();
-         Assert.assertTrue(count >= 5);
+         Assert.assertTrue(count >= 6);
       } finally {
          dialog.close();
       }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -44,13 +43,13 @@ public class AttributeTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   private static OrcsTokenService getTokenService() {
+   public static OrcsTokenService getTokenService() {
       return getCacheService().getTokenService();
    }
 
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
-      for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
+      for (ArtifactTypeToken artifactType : getCacheService().getTokenService().getArtifactTypes()) {
          attributeTypes.addAll(artifactType.getValidAttributeTypes());
       }
       return attributeTypes;

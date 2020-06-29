@@ -14,25 +14,20 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -53,45 +48,6 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
-
-   private static IOseeCachingService getCacheService() {
-      return ServiceUtil.getOseeCacheService();
-   }
-
-   private static OrcsTokenService getOrcsTokenService() {
-      return getCacheService().getTokenService();
-   }
-
-   public static Collection<ArtifactTypeToken> getArtifactTypesFromAttributeType(AttributeTypeToken attributeType) {
-      Set<ArtifactTypeToken> artifactTypes = new HashSet<>();
-      for (ArtifactTypeToken artifactType : getAllTypes()) {
-         if (artifactType.isValidAttributeType(attributeType)) {
-            artifactTypes.add(artifactType);
-         }
-      }
-      return artifactTypes;
-   }
-
-   public static Collection<ArtifactTypeToken> getValidArtifactTypes(BranchId branch) {
-      // TODO Filter artifact types by branch
-      return getAllTypes();
-   }
-
-   public static Collection<ArtifactTypeToken> getConcreteArtifactTypes(BranchId branch) {
-      Collection<ArtifactTypeToken> types = new ArrayList<>(getAllTypes());
-      Iterator<ArtifactTypeToken> iterator = types.iterator();
-      while (iterator.hasNext()) {
-         ArtifactTypeToken type = iterator.next();
-         if (type.isAbstract()) {
-            iterator.remove();
-         }
-      }
-      return types;
-   }
-
-   public static Collection<ArtifactTypeToken> getAllTypes() {
-      return getOrcsTokenService().getArtifactTypes();
-   }
 
    public static Artifact addArtifact(ArtifactToken artifactToken) {
       Conditions.assertTrue(artifactToken.getBranch().isValid(), "Branch must be specified.");

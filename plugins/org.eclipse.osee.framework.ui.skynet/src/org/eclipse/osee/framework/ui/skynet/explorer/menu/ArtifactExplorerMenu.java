@@ -311,7 +311,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    }
 
    private static Artifact handleCreateChild(Artifact parent, TreeViewer treeViewer) {
-      return handleCreateChild(parent, ArtifactTypeManager.getConcreteArtifactTypes(parent.getBranch()), treeViewer,
+      return handleCreateChild(parent, ServiceUtil.getTokenService().getConcreteArtifactTypes(), treeViewer,
          CoreRelationTypes.DefaultHierarchical_Child);
    }
 

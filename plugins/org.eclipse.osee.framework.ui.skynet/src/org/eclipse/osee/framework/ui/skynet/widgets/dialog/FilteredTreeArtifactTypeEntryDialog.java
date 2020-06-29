@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -33,7 +34,7 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
    private XText xText = null;
 
    public FilteredTreeArtifactTypeEntryDialog(String title, String message, String entryName) {
-      super(title, message);
+      super(title, message, ServiceUtil.getTokenService().getArtifactTypes());
       this.entryName = entryName;
    }
 
