@@ -34,11 +34,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -110,6 +112,14 @@ public class PolicyDialog extends Dialog {
       chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
 
       new Label(mainComposite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
+      Label baseNote = new Label(mainComposite, SWT.NONE);
+      baseNote.setText("  NOTE: Baseline Branches are Read-Only by default.");
+      if (accessControlledObject instanceof IOseeBranch) {
+         IOseeBranch branch = (IOseeBranch) accessControlledObject;
+         if (BranchManager.getType(branch).isBaselineBranch()) {
+            baseNote.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         }
+      }
 
       try {
          populateInputWidgets();

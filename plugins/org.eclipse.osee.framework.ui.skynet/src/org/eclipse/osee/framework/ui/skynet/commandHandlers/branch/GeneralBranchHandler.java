@@ -13,18 +13,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -43,7 +40,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
       private OpTypeEnum(String type, String title) {
          dialogType = type;
-         dialogTitle = Strings.capitalize(type);
+         dialogTitle = title;
       }
    };
    private final OpTypeEnum type;
@@ -56,58 +53,28 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection) {
-      List<IOseeBranch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      Iterator<IOseeBranch> iterator = selectedBranches.iterator();
-      List<BranchId> hasChildren = new LinkedList<>();
-      List<BranchId> hasNoPermission = new LinkedList<>();
-      while (iterator.hasNext()) {
-         BranchId branch = iterator.next();
-         boolean removed = false;
+      XResultData errorResults = new XResultData();
+      errorResults.log(type.dialogTitle + "\n\n");
+
+      XResultData confirmDialogResults = new XResultData();
+      confirmDialogResults.logf("Are you sure you want to %s branch(es):\n\n", type.dialogType);
+
+      List<IOseeBranch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
+      for (IOseeBranch branch : selectedBranches) {
+         confirmDialogResults.logf("Branch: %s\n", branch.toStringWithId());
          if (!AccessControlManager.hasPermission(branch, PermissionEnum.WRITE)) {
-            iterator.remove();
-            hasNoPermission.add(branch);
-            removed = true;
+            errorResults.errorf("No write permission for Branch %s.\n\n", branch.toStringWithId());
          }
          if (BranchManager.hasChildren(branch)) {
-            if (!removed) {
-               iterator.remove();
-            }
-            hasChildren.add(branch);
+            errorResults.errorf("Branch %s has children.\n\n", branch.toStringWithId());
          }
       }
 
-      if (!hasNoPermission.isEmpty()) {
-         StringBuilder noPermission = new StringBuilder();
-         noPermission.append(String.format(
-            "User does not have permission on the following branches and cannot be %sd:\n", type.dialogType));
-         noPermission.append(String.format("%s", hasNoPermission.toString()));
-
-         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, noPermission.toString());
-      }
-
-      if (!hasChildren.isEmpty()) {
-         StringBuilder children = new StringBuilder();
-         children.append(String.format("The following branches have children and cannot be %sd:\n", type.dialogType));
-         for (BranchId branch : hasChildren) {
-            List<BranchId> branches = new LinkedList<>(BranchManager.getChildBranches(branch, true));
-            children.append(
-               String.format("Branch Id %s has children: %s\n", branch.getId(), Strings.buildStatment(branches)));
-         }
-         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, children.toString());
-      }
-
-      if (!selectedBranches.isEmpty()) {
-         StringBuilder branchesStatement = new StringBuilder();
-         branchesStatement.append(String.format("Are you sure you want to %s branch(es):\n\n", type.dialogType));
-         branchesStatement.append(Strings.buildStatment(selectedBranches));
-         branchesStatement.append(" \u003F");
-
-         MessageDialog dialog =
-            new MessageDialog(Displays.getActiveShell(), type.dialogTitle, null, branchesStatement.toString(),
-               MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
-
-         if (dialog.open() == 0) {
+      if (errorResults.isErrors()) {
+         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, errorResults.toString());
+      } else {
+         if (MessageDialog.openQuestion(Displays.getActiveShell(), type.dialogTitle, confirmDialogResults.toString())) {
             performOperation(selectedBranches);
          }
       }
