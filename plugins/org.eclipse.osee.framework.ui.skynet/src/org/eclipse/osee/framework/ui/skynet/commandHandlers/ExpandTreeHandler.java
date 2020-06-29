@@ -15,11 +15,12 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.Iterator;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 
 /**
  * @author Theron Virgin
@@ -39,8 +40,18 @@ public class ExpandTreeHandler extends CommandHandler {
    protected Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
+         Object obj = iter.next();
+         expandAll(obj);
       }
       return null;
+   }
+
+   private void expandAll(Object object) {
+      if (!(object instanceof ArtifactExplorerLinkNode)) {
+         treeViewer.expandToLevel(object, 1);
+         for (Object child : ((ArtifactContentProvider) treeViewer.getContentProvider()).getChildren(object)) {
+            expandAll(child);
+         }
+      }
    }
 }
