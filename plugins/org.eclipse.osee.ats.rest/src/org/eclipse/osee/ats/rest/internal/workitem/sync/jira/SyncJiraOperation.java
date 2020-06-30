@@ -59,7 +59,8 @@ public class SyncJiraOperation {
    private List<JiraTask> jTasks;
    private final Set<String> atsIds = new HashSet<>();
    private final SyncTeam syncTeam;
-   private final boolean fixSprint = false;
+   private final boolean fixSprint = true;
+   private final boolean debugJiraTextCleanup = false;
 
    public SyncJiraOperation(AtsApi atsApi, SyncTeam syncTeam, boolean reportOnly) {
       this.atsApi = atsApi;
@@ -112,22 +113,8 @@ public class SyncJiraOperation {
       printSprints();
       time.end();
 
-      time.start("orderBacklog");
-      orderBacklog();
-      time.end();
-
       allTime.end(Units.MIN);
       return results;
-   }
-
-   private void orderBacklog() {
-      IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(syncTeam.getAgileTeam());
-      // This is returned in backlog order
-      Collection<IAgileItem> aItems = atsApi.getAgileService().getItems(backlog);
-      // sort by sprint 1-5
-      //   each sprint -> Cancelled,Completed,Review,Implement,Analyze
-      // after sprints, order by backlog order
-
    }
 
    private void printSprints() {
@@ -232,20 +219,40 @@ public class SyncJiraOperation {
                      sSprint = syncTeam.getSyncSprint(jTask.getjSprint());
                   }
                   if (atsSprint == null && sSprint != null) {
+
                      results.logf("   ERROR: Workflow Sprint [%s] doesn't match JIRA sprint [%s] for workflow %s",
                         atsSprint, jTask.getjSprint(), teamWf.toStringWithId());
+                     results.logf("      FIX: SET ATS Sprint to %s", jTask.getjSprint());
+                     if (fixSprint) {
+                        if (sSprint.getSprint() == null) {
+                           results.errorf("No matching ATS Sprint for JIRA Sprint [%s]", sSprint.getJiraSprintName());
+                        } else {
+                           atsApi.getAgileService().setSprint(teamWf, sSprint.getSprint(), changes);
+                        }
+                     }
 
                   } else if (sSprint == null && atsSprint != null) {
+
                      results.logf("   ERROR: Workflow Sprint [%s] doesn't match JIRA sprint [%s] for workflow %s",
                         atsSprint, jTask.getjSprint(), teamWf.toStringWithId());
+                     results.logf("      FIX: REMOVE ATS workflow from sprint %s", atsSprint);
+                     if (fixSprint) {
+                        atsApi.getAgileService().setSprint(teamWf, null, changes);
+                     }
 
                   } else if (sSprint != null && atsSprint != null) {
                      // If match, it is good; else error that wrong sprint
                      if (!sSprint.getSprint().equals(atsSprint)) {
                         results.logf("   ERROR: Workflow Sprint [%s] doesn't match JIRA sprint [%s] for workflow %s",
                            atsSprint, jTask.getjSprint(), teamWf.toStringWithId());
+                        results.logf("      FIX: MOVE ATS workflow to sprint %s", sSprint.getSprint());
                         if (fixSprint) {
-                           atsApi.getAgileService().setSprint(teamWf, sSprint.getSprint(), changes);
+                           if (sSprint.getSprint() == null) {
+                              results.errorf("No matching ATS Sprint for JIRA Sprint [%s]",
+                                 sSprint.getJiraSprintName());
+                           } else {
+                              atsApi.getAgileService().setSprint(teamWf, sSprint.getSprint(), changes);
+                           }
                         }
                      }
                   }
@@ -253,8 +260,12 @@ public class SyncJiraOperation {
             }
          }
       }
+      if (results.isErrors()) {
+         return;
+      }
       if (fixSprint) {
          changes.executeIfNeeded();
+         results.log("Sprints Fixed");
       }
    }
 
@@ -300,8 +311,7 @@ public class SyncJiraOperation {
 
    private final static Pattern ITEM_CHECKED_PATTERN =
       Pattern.compile("<item checked.*?</item>", Pattern.MULTILINE | Pattern.DOTALL);
-   private final static Pattern ITEM_PATTERN =
-      Pattern.compile("<item>(.*?)</item>", Pattern.MULTILINE | Pattern.DOTALL);
+   private final static Pattern ITEM_PATTERN = Pattern.compile("<item(.*?)</item>", Pattern.MULTILINE | Pattern.DOTALL);
 
    public XResultData loadJiraTasks() {
       results = syncTeam.getResults();
@@ -312,10 +322,19 @@ public class SyncJiraOperation {
             results.errorf("File [%s] does not exist", file2.getAbsolutePath());
             return results;
          }
+
+         // Get rid of all tags/contents that include "item" tags so "item" matcher matches correctly
          String fileXml = Lib.fileToString(file2);
          int preSize = fileXml.length();
          Matcher m = ITEM_CHECKED_PATTERN.matcher(fileXml);
          fileXml = m.replaceAll("");
+
+         // Write to a file that can be compared
+         if (debugJiraTextCleanup) {
+            File file3 = new File(home + "\\Desktop\\jira2.xml");
+            Lib.writeStringToFile(fileXml, file3);
+         }
+
          // These collide with search for <item></item> blocks
          int postSize = fileXml.length();
          if (preSize == postSize) {
