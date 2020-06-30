@@ -140,30 +140,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
-      /**
-       * Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
-       * 0.26.0 where analysis can be done and all action creation can be moved to the server. Same change in both
-       * AtsChangeSets. See action TW1864.
-       */
-      //      if (!workItemsCreated.isEmpty()) {
-      //         RunRuleData runRuleData = new RunRuleData();
-      //         runRuleData.setRuleEventType(RuleEventType.CreateWorkflow);
-      //         runRuleData.getWorkItemIds().addAll(AtsObjects.toIds(workItemsCreated));
-      //         ElapsedTime time2 = new ElapsedTime("AtsChangeSet.runWorkflowRules");
-      //         RunRuleResults results = AtsClientService.getRuleEp().runWorkflowRules(runRuleData);
-      //         time2.end();
-      //
-      //         List<Artifact> changedArts = new LinkedList<>();
-      //         for (Long changedId : results.getChangedWorkitemIds()) {
-      //            Artifact artifact = ArtifactCache.getActive(changedId, AtsClientService.get().getAtsBranch());
-      //            if (artifact != null) {
-      //               changedArts.add(artifact);
-      //            }
-      //         }
-      //         if (!changedArts.isEmpty()) {
-      //            ArtifactQuery.reloadArtifacts(changedArts);
-      //         }
-      //      }
       return transactionRecord;
    }
 
