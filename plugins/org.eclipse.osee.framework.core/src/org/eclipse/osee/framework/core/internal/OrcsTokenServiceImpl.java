@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -44,6 +45,9 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
     * Register core types first to prevent their ids from being registered by mistaken or malicious code
     */
    public OrcsTokenServiceImpl() {
+      artifactTypes.put(ArtifactTypeToken.SENTINEL.getId(), ArtifactTypeToken.SENTINEL);
+      attributeTypes.put(AttributeTypeToken.SENTINEL.getId(), AttributeTypeToken.SENTINEL);
+      relationTypes.put(RelationTypeToken.SENTINEL.getId(), RelationTypeToken.SENTINEL);
       new CoreTypeTokenProvider().registerTypes(this);
    }
 
@@ -90,29 +94,28 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
 
    @Override
    public ArtifactTypeToken getArtifactTypeOrSentinel(Long id) {
-      ArtifactTypeToken artifactType = artifactTypes.get(id);
-      if (artifactType == null) {
-         return ArtifactTypeToken.SENTINEL;
-      }
-      return artifactType;
+      return getXTypeOrSentinel(artifactTypes, id, ArtifactTypeToken.SENTINEL);
    }
 
    @Override
    public AttributeTypeGeneric<?> getAttributeTypeOrSentinel(Long id) {
-      AttributeTypeGeneric<?> attributeType = attributeTypes.get(id);
-      if (attributeType == null) {
-         return AttributeTypeGeneric.SENTINEL;
-      }
-      return attributeType;
+      return getXTypeOrSentinel(attributeTypes, id, AttributeTypeGeneric.SENTINEL);
    }
 
    @Override
    public RelationTypeToken getRelationTypeOrSentinel(Long id) {
-      RelationTypeToken relationType = relationTypes.get(id);
-      if (relationType == null) {
-         return RelationTypeToken.SENTINEL;
+      return getXTypeOrSentinel(relationTypes, id, RelationTypeToken.SENTINEL);
+   }
+
+   private <T extends NamedId> T getXTypeOrSentinel(Map<Long, T> types, Long id, T sentinel) {
+      if (id == null) {
+         return sentinel;
       }
-      return relationType;
+      T type = types.get(id);
+      if (type == null) {
+         return sentinel;
+      }
+      return type;
    }
 
    @Override
