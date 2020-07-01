@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -49,6 +50,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.core.agile.AgileItem;
 import org.eclipse.osee.ats.core.workdef.operations.ValidateWorkDefinitionsOperation;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -61,6 +63,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -71,6 +74,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final Map<String, IAtsWorkDefinition> workDefNameToWorkDef = new HashMap<>();
    private final Map<IAtsWorkItem, IAtsWorkDefinition> bootstrappingWorkItemToWorkDefCache = new HashMap<>();
+   private final Set<IAtsWorkItem> logOnce = new HashSet<>();
 
    public AtsWorkDefinitionServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -233,6 +237,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
       }
       if (workDef == null) {
+         if (!logOnce.contains(workItem)) {
+            OseeLog.log(AtsWorkDefinitionServiceImpl.class, Level.INFO,
+               "No WorkDef attr for " + workItem.toStringWithId());
+            logOnce.add(workItem);
+         }
          // Tasks should never be needed once a database is converted to store work def as attribute
          if (workItem instanceof IAtsTask && ((IAtsTask) workItem).getParentTeamWorkflow() != null) {
             workDef = computedWorkDefinitionForTaskNotYetCreated(((IAtsTask) workItem).getParentTeamWorkflow());
@@ -246,6 +255,10 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
                }
             }
             if (workDef == null) {
+               if (workItem instanceof AgileItem) {
+                  workItem = atsApi.getWorkItemService().getWorkItem(((AgileItem) workItem).getId());
+               }
+
                // Otherwise, use workflow defined by attribute of WorkflowDefinition
                // Note: This is new.  Old TeamDefs got workflow off relation
                if (workItem instanceof IAtsTeamWorkflow) {

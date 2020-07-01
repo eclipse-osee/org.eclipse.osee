@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,6 +26,12 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -34,6 +41,10 @@ import org.eclipse.swt.widgets.Control;
 public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    private Collection<? extends Artifact> selectable;
+   XCheckBox checkbox;
+   private String checkBoxLabel;
+   private boolean defaultChecked;
+   private boolean checked;
 
    public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
@@ -54,12 +65,30 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
+
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(selectable);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
+      if (Strings.isValid(checkBoxLabel)) {
+         Composite comp1 = new Composite(container, SWT.NONE);
+         comp1.setLayout(new GridLayout(2, false));
+         comp1.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         checkbox = new XCheckBox(checkBoxLabel);
+         checkbox.createWidgets(comp1, 2);
+         checkbox.set(defaultChecked);
+         checkbox.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               checked = checkbox.isChecked();
+            };
+         });
+      }
+
       return comp;
    }
 
@@ -77,10 +106,23 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
       getTreeViewer().getViewer().setComparator(comparator);
    }
 
+   public void addCheckbox(String label, boolean defaultChecked) {
+      checkBoxLabel = label;
+      this.defaultChecked = defaultChecked;
+   }
+
    @SuppressWarnings("unchecked")
    @Override
    public Artifact getSelectedFirst() {
       return (Artifact) super.getSelectedFirst();
+   }
+
+   public boolean isChecked() {
+      return checked;
+   }
+
+   public void setChecked(boolean checked) {
+      this.checked = checked;
    }
 
 }
