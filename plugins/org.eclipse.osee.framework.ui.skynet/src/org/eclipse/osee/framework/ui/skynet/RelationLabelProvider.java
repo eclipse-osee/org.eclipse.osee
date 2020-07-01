@@ -48,7 +48,9 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    @Override
    public Image getColumnImage(Object element, int columnIndex) {
       Image toReturn = null;
-      if (element instanceof RelationTypeToken && columnIndex == 0) {
+      if (element instanceof RelationTypeSide && columnIndex == 0) {
+         toReturn = getImage((RelationTypeSide) element);
+      } else if (element instanceof RelationTypeToken && columnIndex == 0) {
          toReturn = ImageManager.getImage(FrameworkImage.RELATION);
       } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
          WrapperForRelationLink relationLinkWrapper = (WrapperForRelationLink) element;
@@ -57,8 +59,6 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-      } else if (element instanceof RelationTypeSide && columnIndex == 0) {
-         toReturn = getImage((RelationTypeSide) element);
       }
       return toReturn;
    }

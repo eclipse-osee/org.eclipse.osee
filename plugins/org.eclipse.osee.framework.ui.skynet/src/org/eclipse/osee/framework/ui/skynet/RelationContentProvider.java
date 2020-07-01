@@ -92,6 +92,22 @@ public class RelationContentProvider implements ITreeContentProvider {
             Object[] ret = relationTypes.toArray();
             Arrays.sort(ret);
             return ret;
+         } else if (parentElement instanceof RelationTypeSideSorter) {
+            RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
+            List<RelationLink> relations = artifactRoot.getRelations(relationSorter);
+            WrapperForRelationLink[] wrapper = new WrapperForRelationLink[relations.size()];
+            for (int i = 0; i < relations.size(); i++) {
+               RelationLink relation = relations.get(i);
+               if (relationSorter.getSide().isSideA()) {
+                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
+                     relation.getArtifactA(), relation.getArtifactA(), relationSorter.getArtifact());
+               } else {
+                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
+                     relation.getArtifactB(), relationSorter.getArtifact(), relation.getArtifactB());
+               }
+               childToParentMap.put(wrapper[i], parentElement);
+            }
+            return wrapper;
          } else if (parentElement instanceof RelationTypeToken) {
             RelationTypeToken relationType = (RelationTypeToken) parentElement;
 
@@ -115,22 +131,6 @@ public class RelationContentProvider implements ITreeContentProvider {
             } else if (onSideB) {
                return new Object[] {sideB};
             }
-         } else if (parentElement instanceof RelationTypeSideSorter) {
-            RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
-            List<RelationLink> relations = artifactRoot.getRelations(relationSorter);
-            WrapperForRelationLink[] wrapper = new WrapperForRelationLink[relations.size()];
-            for (int i = 0; i < relations.size(); i++) {
-               RelationLink relation = relations.get(i);
-               if (relationSorter.getSide().isSideA()) {
-                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
-                     relation.getArtifactA(), relation.getArtifactA(), relationSorter.getArtifact());
-               } else {
-                  wrapper[i] = new WrapperForRelationLink(relation, relationSorter.getRelationType(),
-                     relation.getArtifactB(), relationSorter.getArtifact(), relation.getArtifactB());
-               }
-               childToParentMap.put(wrapper[i], parentElement);
-            }
-            return wrapper;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
