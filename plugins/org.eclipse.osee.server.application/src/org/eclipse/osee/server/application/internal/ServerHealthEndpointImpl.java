@@ -28,12 +28,12 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.server.application.internal.model.ServerStatus;
 import org.eclipse.osee.server.application.internal.model.StatusKey;
@@ -104,26 +104,14 @@ public final class ServerHealthEndpointImpl {
 
    private String serverStatusAsll(boolean details) {
 
-      // Retrieve servers from osee.json
-      final JdbcClientConfig config = jdbcServices.values().iterator().next().getClient().getConfig();
-      Object serverObj = config.getDbProps().get("application.servers");
-      if (serverObj == null || !(serverObj instanceof String)) {
-         throw new IllegalStateException("No application.servers configured in osee.json file");
-      }
-      String serversStr = ((String) serverObj).replaceAll("[\\[\\]]", "");
+      // Retrieve servers from OseeInfo
+      String serversStr =
+         OseeInfo.getValue(jdbcServices.values().iterator().next().getClient(), OSEE_HEALTH_SERVERS_KEY);
       serversStr = serversStr.replaceAll(" ", "");
       List<String> servers = new ArrayList<>();
       for (String server : serversStr.split(",")) {
          servers.add(server);
       }
-
-      // Retrieve servers from OseeInfo
-      serversStr = getValue(jdbcServices.values().iterator().next().getClient(), OSEE_HEALTH_SERVERS_KEY);
-      serversStr = serversStr.replaceAll(" ", "");
-      for (String server : serversStr.split(",")) {
-         servers.add(server);
-      }
-
       if (servers.size() == 0) {
          throw new IllegalStateException("No application.servers configured in osee.json file");
       }
@@ -160,7 +148,7 @@ public final class ServerHealthEndpointImpl {
       try {
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          URL url = new URL(String.format("http://%s%s", server, "/server/health/status"));
-         AcquireResult result = HttpProcessor.acquire(url, outputStream, 5000);
+         AcquireResult result = HttpProcessor.acquire(url, outputStream, 10000);
          if (result.wasSuccessful()) {
             values.add("Ok");
             String json = outputStream.toString(result.getEncoding());
