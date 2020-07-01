@@ -75,7 +75,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
                if (storedArt == null) {
                   return dirty;
                }
-               if (widgetArt.equals(storedArt)) {
+               if (!widgetArt.equals(storedArt)) {
                   return dirty;
                }
             }

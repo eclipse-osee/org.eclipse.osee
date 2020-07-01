@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
 
 /**
@@ -37,6 +38,12 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
    public XProgramSelectionWidget() {
       super("Program");
       setupPrograms();
+   }
+
+   @Override
+   public Artifact getStored() {
+      ArtifactId artId = getArtifact().getSoleAttributeValue(AtsAttributeTypes.ProgramId, null);
+      return ArtifactQuery.getArtifactFromId(artId, getArtifact().getBranch());
    }
 
    public void setupPrograms() {
