@@ -13,13 +13,24 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import static org.eclipse.osee.framework.core.data.TupleTypeImpl.ArtifactType;
+import static org.eclipse.osee.framework.core.data.TupleTypeImpl.AttributeType;
+import static org.eclipse.osee.framework.core.data.TupleTypeImpl.KeyedString;
+import static org.eclipse.osee.framework.core.data.TupleTypeImpl.RelationType;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.JoinFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
 import java.util.function.Function;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeJoin;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
@@ -34,7 +45,7 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<TupleFamilyId, TupleTypeId> TupleMetaType =
       Tuple2Type.valueOf(DefaultFamily, 1L, TupleFamilyId::valueOf, TupleTypeId::valueOf);
    public static final Tuple2Type<ArtifactId, String> ViewApplicability =
-      Tuple2Type.valueOf(ProductLineFamily, 2L, ArtifactId::valueOf, TupleTypeImpl.KeyedString);
+      Tuple2Type.valueOf(ProductLineFamily, 2L, ArtifactId::valueOf, KeyedString);
    public static final Tuple2Type<Long, AttributeId> OseeTypeDef =
       Tuple2Type.valueOf(DefaultFamily, 4L, Function.identity(), AttributeId::valueOf);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
@@ -43,6 +54,13 @@ public final class CoreTupleTypes {
       Tuple2Type.valueOf(ProductLineFamily, 11L, BranchId::valueOf, ArtifactId::valueOf);
    public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig =
       Tuple2Type.valueOf(ProductLineFamily, 12L, ArtifactId::valueOf, ArtifactId::valueOf);
+
+   public static final Tuple2Type<ArtifactTypeJoin, ArtifactTypeToken> ArtifactTypeJoin =
+      Tuple2Type.valueOf(JoinFamily, 14L, TupleTypeImpl.ArtifactTypeJoin, ArtifactType);
+   public static final Tuple2Type<AttributeTypeJoin, AttributeTypeToken> AttributeTypeJoin =
+      Tuple2Type.valueOf(JoinFamily, 15L, TupleTypeImpl.AttributeTypeJoin, AttributeType);
+   public static final Tuple2Type<RelationTypeJoin, RelationTypeToken> RelationTypeJoin =
+      Tuple2Type.valueOf(JoinFamily, 16L, TupleTypeImpl.RelationTypeJoin, RelationType);
 
    // Data Maintenance
    public static final Tuple3Type<String, Long, Long> FixedMaintenanceData =

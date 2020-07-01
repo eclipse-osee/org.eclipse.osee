@@ -22,10 +22,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
+import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -40,6 +43,10 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    private final Map<Long, ArtifactTypeToken> artifactTypes = new ConcurrentHashMap<>();
    private final Map<Long, AttributeTypeGeneric<?>> attributeTypes = new ConcurrentHashMap<>();
    private final Map<Long, RelationTypeToken> relationTypes = new ConcurrentHashMap<>();
+
+   private final Map<Long, ArtifactTypeJoin> artifactTypeJoins = new ConcurrentHashMap<>();
+   private final Map<Long, AttributeTypeJoin> attributeTypeJoins = new ConcurrentHashMap<>();
+   private final Map<Long, RelationTypeJoin> relationTypeJoins = new ConcurrentHashMap<>();
 
    /**
     * Register core types first to prevent their ids from being registered by mistaken or malicious code
@@ -173,6 +180,71 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       if (existingType != null) {
          throw new OseeArgumentException("The relation type %s with the same id as %s has already been registered.",
             existingType, relationType);
+      }
+   }
+
+   @Override
+   public void registerArtifactTypeJoin(ArtifactTypeJoin typeJoin) {
+      registerOrcsTypeJoin(typeJoin, artifactTypeJoins);
+   }
+
+   @Override
+   public void registerAttributeTypeJoin(AttributeTypeJoin typeJoin) {
+      registerOrcsTypeJoin(typeJoin, attributeTypeJoins);
+   }
+
+   @Override
+   public void registerRelationTypeJoin(RelationTypeJoin typeJoin) {
+      registerOrcsTypeJoin(typeJoin, relationTypeJoins);
+   }
+
+   @Override
+   public ArtifactTypeJoin getArtifactTypeJoin(Long id) {
+      ArtifactTypeJoin typeJoin = artifactTypeJoins.get(id);
+      if (typeJoin == null) {
+         throw new OseeTypeDoesNotExist("Artifact type join [%s] is not available.", id);
+      }
+      return typeJoin;
+   }
+
+   @Override
+   public AttributeTypeJoin getAttributeTypeJoin(Long id) {
+      AttributeTypeJoin typeJoin = attributeTypeJoins.get(id);
+      if (typeJoin == null) {
+         throw new OseeTypeDoesNotExist("Attribute type join [%s] is not available.", id);
+      }
+      return typeJoin;
+   }
+
+   @Override
+   public RelationTypeJoin getRelationTypeJoin(Long id) {
+      RelationTypeJoin typeJoin = relationTypeJoins.get(id);
+      if (typeJoin == null) {
+         throw new OseeTypeDoesNotExist("Relation type join [%s] is not available.", id);
+      }
+      return typeJoin;
+   }
+
+   @Override
+   public Collection<ArtifactTypeJoin> getArtifactTypeJoins() {
+      return artifactTypeJoins.values();
+   }
+
+   @Override
+   public Collection<AttributeTypeJoin> getAttributeTypeJoins() {
+      return attributeTypeJoins.values();
+   }
+
+   @Override
+   public Collection<RelationTypeJoin> getRelationTypeJoins() {
+      return relationTypeJoins.values();
+   }
+
+   private <T extends NamedId> void registerOrcsTypeJoin(T orcsTypeJoin, Map<Long, T> orcsTypeJoins) {
+      T existingType = orcsTypeJoins.putIfAbsent(orcsTypeJoin.getId(), orcsTypeJoin);
+      if (existingType != null) {
+         throw new OseeArgumentException("The join type %s with the same id as %s has already been registered.",
+            existingType, orcsTypeJoin);
       }
    }
 

@@ -18,8 +18,11 @@ import java.lang.reflect.Type;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
@@ -31,6 +34,11 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
    private final ParamConverter<ArtifactTypeToken> artifactTypeConverter;
    private final ParamConverter<AttributeTypeToken> attributeTypeConverter;
    private final ParamConverter<RelationTypeToken> relationTypeConverter;
+
+   private final ParamConverter<ArtifactTypeJoin> artifactTypeJoinConverter;
+   private final ParamConverter<AttributeTypeJoin> attributeTypeJoinConverter;
+   private final ParamConverter<RelationTypeJoin> relationTypeJoinConverter;
+
    private final ParamConverter<Id> idConverter = new IdParamConverter<>(null);
 
    public OrcsParamConverterProvider(OrcsTokenService tokenService) {
@@ -38,10 +46,18 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
          artifactTypeConverter = null;
          attributeTypeConverter = null;
          relationTypeConverter = null;
+
+         artifactTypeJoinConverter = null;
+         attributeTypeJoinConverter = null;
+         relationTypeJoinConverter = null;
       } else {
          artifactTypeConverter = new IdParamConverter<>(tokenService::getArtifactType);
          attributeTypeConverter = new IdParamConverter<>(tokenService::getAttributeType);
          relationTypeConverter = new IdParamConverter<>(tokenService::getRelationType);
+
+         artifactTypeJoinConverter = new IdParamConverter<>(tokenService::getArtifactTypeJoin);
+         attributeTypeJoinConverter = new IdParamConverter<>(tokenService::getAttributeTypeJoin);
+         relationTypeJoinConverter = new IdParamConverter<>(tokenService::getRelationTypeJoin);
       }
    }
 
@@ -57,6 +73,17 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       if (RelationTypeToken.class.equals(rawType)) {
          return (ParamConverter<T>) relationTypeConverter;
       }
+
+      if (ArtifactTypeJoin.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) artifactTypeJoinConverter;
+      }
+      if (AttributeTypeJoin.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) attributeTypeJoinConverter;
+      }
+      if (RelationTypeJoin.class.isAssignableFrom(rawType)) {
+         return (ParamConverter<T>) relationTypeJoinConverter;
+      }
+
       if (Id.class.isAssignableFrom(rawType)) {
          return (ParamConverter<T>) idConverter;
       }

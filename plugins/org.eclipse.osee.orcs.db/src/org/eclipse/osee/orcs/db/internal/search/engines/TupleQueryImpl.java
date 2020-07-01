@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -98,10 +99,12 @@ public class TupleQueryImpl implements TupleQuery {
 
    private final JdbcClient jdbcClient;
    private final KeyValueStore keyValue;
+   private final OrcsTokenService tokenService;
 
-   TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, KeyValueStore keyValue) {
+   TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, KeyValueStore keyValue, OrcsTokenService tokenService) {
       this.jdbcClient = jdbcClient;
       this.keyValue = keyValue;
+      this.tokenService = tokenService;
    }
 
    @SuppressWarnings("unchecked")
@@ -230,6 +233,18 @@ public class TupleQueryImpl implements TupleQuery {
       Long rawValue = stmt.getLong(column);
       if (valueOfElement == TupleTypeImpl.KeyedString) {
          return (E) keyValue.getByKey(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.ArtifactType) {
+         return (E) tokenService.getArtifactType(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.AttributeType) {
+         return (E) tokenService.getAttributeType(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.RelationType) {
+         return (E) tokenService.getRelationType(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.ArtifactTypeJoin) {
+         return (E) tokenService.getArtifactTypeJoin(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.AttributeTypeJoin) {
+         return (E) tokenService.getAttributeTypeJoin(rawValue);
+      } else if (valueOfElement == TupleTypeImpl.RelationTypeJoin) {
+         return (E) tokenService.getRelationTypeJoin(rawValue);
       } else {
          return valueOfElement.apply(rawValue);
       }

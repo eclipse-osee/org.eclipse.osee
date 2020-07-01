@@ -82,6 +82,11 @@ public class CreateSystemBranches {
 
    private void populateCommonBranch(String typeModel) {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
+
+      orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
+      orcsApi.tokenService().getAttributeTypeJoins().forEach(tx::addOrcsTypeJoin);
+      orcsApi.tokenService().getRelationTypeJoins().forEach(tx::addOrcsTypeJoin);
+
       ArtifactReadable root = query.andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 
       ArtifactId oseeConfig = query.andId(CoreArtifactTokens.OseeConfiguration).getArtifactOrSentinal();
@@ -146,8 +151,8 @@ public class CreateSystemBranches {
       tx.createAttribute(templateArtPrev, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer DIFF");
 
-      ArtifactId templateArtPrevNoAttr =
-         tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord, "PREVIEW_ALL_NO_ATTRIBUTES");
+      ArtifactId templateArtPrevNoAttr = tx.createArtifact(documentTemplateFolder,
+         CoreArtifactTypes.RendererTemplateWholeWord, "PREVIEW_ALL_NO_ATTRIBUTES");
       tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.RendererOptions,
          PREVIEW_ALL_NO_ATTR_RENDERER_OPTIONS);
       tx.setSoleAttributeValue(templateArtPrevNoAttr, CoreAttributeTypes.WholeWordContent,
@@ -166,8 +171,8 @@ public class CreateSystemBranches {
       tx.createAttribute(templateArtPar, CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE");
 
-      ArtifactId templateArtParna = tx.createArtifact(documentTemplateFolder, CoreArtifactTypes.RendererTemplateWholeWord,
-         "PREVIEW_ALL_RECURSE_NO_ATTRIBUTES");
+      ArtifactId templateArtParna = tx.createArtifact(documentTemplateFolder,
+         CoreArtifactTypes.RendererTemplateWholeWord, "PREVIEW_ALL_RECURSE_NO_ATTRIBUTES");
       tx.setSoleAttributeValue(templateArtParna, CoreAttributeTypes.RendererOptions,
          RECURSIVE_NO_ATTR_RENDERER_OPTIONS);
       tx.setSoleAttributeValue(templateArtParna, CoreAttributeTypes.WholeWordContent,
@@ -189,8 +194,7 @@ public class CreateSystemBranches {
    }
 
    private void addFrameworkAccessModel(TransactionBuilder tx, ArtifactId typesAccessFolder) {
-      try (InputStream stream =
-         OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass())) {
+      try (InputStream stream = OseeInf.getResourceAsStream("access/OseeAccess_FrameworkAccess.osee", getClass())) {
          ArtifactId accessModel = tx.createArtifact(typesAccessFolder, CoreArtifactTokens.FrameworkAccessModel);
          tx.setSoleAttributeFromStream(accessModel, CoreAttributeTypes.GeneralStringData, stream);
       } catch (IOException ex) {

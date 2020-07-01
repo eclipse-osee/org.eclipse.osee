@@ -151,7 +151,7 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public TupleQuery createTupleQuery() {
-      return new TupleQueryImpl(jdbcClient, sqlJoinFactory, keyValue);
+      return new TupleQueryImpl(jdbcClient, sqlJoinFactory, keyValue, tokenService);
    }
 
    @Override

@@ -48,4 +48,6 @@ public interface OrcsAdmin {
 
    void updateBootstrapUser(UserId accountId);
 
+   void registerMissingOrcsTypeJoins();
+
 }

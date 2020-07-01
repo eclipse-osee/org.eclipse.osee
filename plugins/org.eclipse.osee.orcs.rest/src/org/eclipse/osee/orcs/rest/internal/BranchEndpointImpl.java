@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -234,7 +233,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       List<ArtifactTypeToken> types = new ArrayList<ArtifactTypeToken>();
 
       for (Long typeId : typesLong) {
-         types.add(CoreTypeTokenProvider.osee.getArtifactTypeTokenById(typeId));
+         types.add(orcsApi.tokenService().getArtifactType(typeId));
       }
 
       List<ArtifactReadable> artifacts = null;

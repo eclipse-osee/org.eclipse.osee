@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -31,11 +34,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -86,6 +91,29 @@ public class OrcsAdminImpl implements OrcsAdmin {
          new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
       } finally {
          activityLog.setEnabled(true);
+      }
+   }
+
+   @Override
+   public void registerMissingOrcsTypeJoins() {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
+         "Add missing orcs type joins.");
+
+      addMissingJoins(tx, CoreTupleTypes.ArtifactTypeJoin, orcsApi.tokenService().getArtifactTypeJoins());
+      addMissingJoins(tx, CoreTupleTypes.AttributeTypeJoin, orcsApi.tokenService().getAttributeTypeJoins());
+      addMissingJoins(tx, CoreTupleTypes.RelationTypeJoin, orcsApi.tokenService().getRelationTypeJoins());
+
+      tx.commit();
+   }
+
+   private <J extends OrcsTypeJoin<J, T>, T extends NamedId> void addMissingJoins(TransactionBuilder tx, Tuple2Type<J, T> tupleType, Collection<J> registeredJoins) {
+      List<J> joinsInDb = new ArrayList<>();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2UniqueE1(tupleType, COMMON, joinsInDb::add);
+
+      for (J join : registeredJoins) {
+         if (!joinsInDb.contains(join)) {
+            tx.addOrcsTypeJoin(join);
+         }
       }
    }
 

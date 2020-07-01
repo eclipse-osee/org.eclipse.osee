@@ -201,6 +201,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<ArtifactToken> expGetArtifactTokens(ArtifactTypeToken artifactType, ArtifactId parent, ArtifactId view) {
+      orcsApi.getAdminOps().registerMissingOrcsTypeJoins();
       List<ArtifactReadable> artifacts =
          orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(DefaultHierarchical_Child,
             parent).follow(SupportingRequirement_LowerLevelRequirement).asArtifacts();

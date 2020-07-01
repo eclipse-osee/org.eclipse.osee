@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.QuinFunction;
 import org.eclipse.osee.framework.jdk.core.type.TriFunction;
 
@@ -35,6 +36,7 @@ public class OrcsTypeTokens {
    private final List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
    private final ChainingArrayList<@NonNull AttributeTypeGeneric<?>> attributeTypes = new ChainingArrayList<>();
    private final ChainingArrayList<@NonNull RelationTypeToken> relationTypes = new ChainingArrayList<>();
+   private final List<OrcsTypeJoin<?, ?>> orcsTypeJoins = new ArrayList<>();
    private final NamespaceToken namespace;
 
    /**
@@ -60,16 +62,6 @@ public class OrcsTypeTokens {
       return artifactTypes;
    }
 
-   public ArtifactTypeToken getArtifactTypeTokenById(Long id) {
-      return artifactTypes.stream().filter(artType -> artType.getId().equals(id)).findAny().orElse(
-         ArtifactTypeToken.SENTINEL);
-   }
-
-   public AttributeTypeToken getAttributeTypeTokenById(Long id) {
-      return attributeTypes.stream().filter(artType -> artType.getId().equals(id)).findAny().orElse(
-         AttributeTypeToken.SENTINEL);
-   }
-
    public ArtifactTypeToken add(AttributeMultiplicity attributeMultiplicity) {
       ArtifactTypeToken artifactType = attributeMultiplicity.get();
       artifactTypes.add(artifactType);
@@ -90,6 +82,18 @@ public class OrcsTypeTokens {
       artifactTypes.forEach(tokenService::registerArtifactType);
       attributeTypes.forEach(tokenService::registerAttributeType);
       relationTypes.forEach(tokenService::registerRelationType);
+
+      for (OrcsTypeJoin<?, ?> typeJoin : orcsTypeJoins) {
+         if (typeJoin instanceof ArtifactTypeJoin) {
+            tokenService.registerArtifactTypeJoin((ArtifactTypeJoin) typeJoin);
+         } else if (typeJoin instanceof AttributeTypeJoin) {
+            tokenService.registerAttributeTypeJoin((AttributeTypeJoin) typeJoin);
+         } else if (typeJoin instanceof RelationTypeJoin) {
+            tokenService.registerRelationTypeJoin((RelationTypeJoin) typeJoin);
+         } else {
+            throw new OseeArgumentException("Unexpected join type: ", typeJoin);
+         }
+      }
    }
 
    public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
@@ -258,5 +262,23 @@ public class OrcsTypeTokens {
    @Override
    public String toString() {
       return namespace + ": " + size();
+   }
+
+   public ArtifactTypeJoin artifactTypeJoin(String name, ArtifactTypeToken... artifactTypes) {
+      ArtifactTypeJoin typeJoin = new ArtifactTypeJoin(name, artifactTypes);
+      orcsTypeJoins.add(typeJoin);
+      return typeJoin;
+   }
+
+   public AttributeTypeJoin attributeTypeJoin(String name, AttributeTypeToken... attributeTypes) {
+      AttributeTypeJoin typeJoin = new AttributeTypeJoin(name, attributeTypes);
+      orcsTypeJoins.add(typeJoin);
+      return typeJoin;
+   }
+
+   public RelationTypeJoin relationTypeJoin(String name, RelationTypeToken... relationTypes) {
+      RelationTypeJoin typeJoin = new RelationTypeJoin(name, relationTypes);
+      orcsTypeJoins.add(typeJoin);
+      return typeJoin;
    }
 }

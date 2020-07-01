@@ -15,8 +15,11 @@ package org.eclipse.osee.framework.core;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
+import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
@@ -78,20 +81,19 @@ public interface OrcsTokenService {
    RelationTypeToken getRelationTypeOrCreate(Long id);
 
    /**
-    * Register the given artifact type token based on its id. Throws OseeArgumentException if the types id is already
+    * Register the given artifact type token by its id. Throws OseeArgumentException if the types id is already
     * registered.
     */
    void registerArtifactType(ArtifactTypeToken artifactType);
 
    /**
-    * Register the given attribute type token based on its id. Throws OseeArgumentException if the types id is already
+    * Register the given attribute type token by its id. Throws OseeArgumentException if the types id is already
     * registered.
     */
    void registerAttributeType(AttributeTypeGeneric<?> attributeType);
 
    /**
-    * Register the given relation type token based on its id. Throws OseeArgumentException if the types id is already
-    * registered.
+    * Register the given relation type token by its id. Throws OseeArgumentException if that id is already registered.
     */
    void registerRelationType(RelationTypeToken relationType);
 
@@ -116,4 +118,31 @@ public interface OrcsTokenService {
    Collection<AttributeTypeGeneric<?>> getAttributeTypes();
 
    List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType);
+
+   /**
+    * Register the given type join by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerArtifactTypeJoin(ArtifactTypeJoin typeJoin);
+
+   /**
+    * Register the given type join by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerAttributeTypeJoin(AttributeTypeJoin typeJoin);
+
+   /**
+    * Register the given type join by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerRelationTypeJoin(RelationTypeJoin typeJoin);
+
+   ArtifactTypeJoin getArtifactTypeJoin(Long id);
+
+   AttributeTypeJoin getAttributeTypeJoin(Long id);
+
+   RelationTypeJoin getRelationTypeJoin(Long id);
+
+   Collection<ArtifactTypeJoin> getArtifactTypeJoins();
+
+   Collection<AttributeTypeJoin> getAttributeTypeJoins();
+
+   Collection<RelationTypeJoin> getRelationTypeJoins();
 }

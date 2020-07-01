@@ -21,7 +21,14 @@ import org.eclipse.osee.framework.jdk.core.type.BaseId;
  * @author Ryan D. Brooks
  */
 public class TupleTypeImpl extends BaseId implements TupleTypeToken {
-   public static final Function<Long, String> KeyedString = l -> "";
+   public static final Function<Long, String> KeyedString = l -> null;
+   public static final Function<Long, ArtifactTypeToken> ArtifactType = l -> null;
+   public static final Function<Long, AttributeTypeToken> AttributeType = l -> null;
+   public static final Function<Long, RelationTypeToken> RelationType = l -> null;
+   public static final Function<Long, ArtifactTypeJoin> ArtifactTypeJoin = l -> null;
+   public static final Function<Long, AttributeTypeJoin> AttributeTypeJoin = l -> null;
+   public static final Function<Long, RelationTypeJoin> RelationTypeJoin = l -> null;
+
    private final TupleFamilyId family;
 
    public TupleTypeImpl(Long tupleTypeId) {
