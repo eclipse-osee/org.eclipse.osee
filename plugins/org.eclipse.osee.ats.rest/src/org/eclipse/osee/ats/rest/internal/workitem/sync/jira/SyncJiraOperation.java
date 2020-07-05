@@ -59,8 +59,9 @@ public class SyncJiraOperation {
    private List<JiraTask> jTasks;
    private final Set<String> atsIds = new HashSet<>();
    private final SyncTeam syncTeam;
-   private final boolean fixSprint = true;
+   private final boolean fixSprint = false;
    private final boolean debugJiraTextCleanup = false;
+   private final String SKIP_JIRA_SYNC = "skipJiraSync";
 
    public SyncJiraOperation(AtsApi atsApi, SyncTeam syncTeam, boolean reportOnly) {
       this.atsApi = atsApi;
@@ -119,36 +120,47 @@ public class SyncJiraOperation {
 
    private void printSprints() {
       results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.logf("Sprints");
       results.logf("");
       for (SyncSprint sSprint : syncTeam.getSyncSprints()) {
-         results.logf("");
-         results.logf("Sprint [%s]", sSprint.getJiraSprintName());
-         Set<String> ids = new HashSet<>();
-         for (JiraTask jTask : sSprint.getJiraTasksInSprint()) {
-            results.logf("[%s] - %s-[%s]", jTask.getjSprint(), jTask.getAtsIds(), jTask.getSummary());
-            ids.addAll(jTask.getAtsIds());
+         if (!atsApi.getAttributeResolver().getAttributesToStringList(sSprint.sprint.getStoreObject(),
+            AtsAttributeTypes.Category1).contains(SKIP_JIRA_SYNC)) {
+            results.logf("");
+            results.logf("Sprint [%s]", sSprint.getJiraSprintName());
+            Set<String> ids = new HashSet<>();
+            for (JiraTask jTask : sSprint.getJiraTasksInSprint()) {
+               results.logf("[%s] - %s-[%s]", jTask.getjSprint(), jTask.getAtsIds(), jTask.getSummary());
+               ids.addAll(jTask.getAtsIds());
+            }
+            results.logf("Ids: %s", Collections.toString(",", ids));
          }
-         results.logf("Ids: %s", Collections.toString(",", ids));
       }
+      results.logf("================================================================");
    }
 
    private void validateWorkflowsNotInJira() {
       results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.logf("Validate Workflows Not in JIRA don't belong to Sprint");
       results.logf("");
       Collection<IAtsTeamWorkflow> teamWfsNotInJira =
          Collections.setComplement(syncTeam.getBacklogTeamWfs(), syncTeam.getJiraTeamWfs());
       StringBuilder ids = new StringBuilder();
       for (IAtsTeamWorkflow teamWf : teamWfsNotInJira) {
-         IAgileSprint sprint = atsApi.getAgileService().getSprint(teamWf);
-         if (sprint != null) {
-            results.logf("   ERROR: Workflow shouldn't belong to sprint [%s] - %s", sprint.getName(),
-               teamWf.toStringWithId());
-            ids.append(teamWf.getAtsId() + ",");
+         if (!skipJiraSync(teamWf)) {
+            IAgileSprint sprint = atsApi.getAgileService().getSprint(teamWf);
+            if (sprint != null) {
+               results.logf("   ERROR: Workflow shouldn't belong to sprint [%s] - %s", sprint.getName(),
+                  teamWf.toStringWithId());
+               ids.append(teamWf.getAtsId() + ",");
+            }
          }
       }
       results.logf("Ids: %s", ids.toString().replaceFirst(",$", ""));
+      results.logf("================================================================");
    }
 
    private void loadTeamDefsAndSprints() {
@@ -174,23 +186,29 @@ public class SyncJiraOperation {
             syncTeam.addBacklogTeamWf(teamWf);
          }
       }
+      StringBuilder ids = new StringBuilder();
 
       results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.log("Ignoring non OSEE Workflows (spot check): ");
       results.logf("");
       for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactListFromAttributeValues(
          AtsAttributeTypes.AtsId, atsIds, 500)) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
-         if (teamWf != null) {
+         if (teamWf != null && !skipJiraSync(teamWf)) {
             syncTeam.addJiraTeamWf(teamWf);
             if (syncTeam.getTeamDefs().contains(teamWf.getTeamDefinition())) {
                JiraTask jTask = getJiraTask(teamWf.getAtsId());
                jTask.setTeamWf(teamWf);
             } else {
                results.logf("   INFO: Ignoring non OSEE wf %s", teamWf.toStringWithId());
+               ids.append(teamWf.getAtsId() + ",");
             }
          }
       }
+      results.logf("Ids: %s", ids.toString().replaceFirst(",$", ""));
+      results.logf("================================================================");
       return results;
    }
 
@@ -200,6 +218,8 @@ public class SyncJiraOperation {
 
    private void validateSprints() {
       results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.logf("Sprints Do Not Match, update ATS");
       results.logf("");
       IAtsChangeSet changes = atsApi.createChangeSet("Sync OSEE with JIRA Sprints");
@@ -267,17 +287,20 @@ public class SyncJiraOperation {
          changes.executeIfNeeded();
          results.log("Sprints Fixed");
       }
+      results.logf("================================================================");
    }
 
    private void checkJiraOpenToOseeClosed() {
-      results.log("");
+      results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.logf("JIRA Open and OSEE Closed (close in JIRA)", syncTeam.getJiraTeamWfs().size());
-      results.log("");
+      results.logf("");
       StringBuilder ids = new StringBuilder();
       for (JiraTask jTask : jTasks) {
          IAtsTeamWorkflow teamWf = jTask.getTeamWf();
          if (teamWf != null) {
-            if (teamWf.isCompletedOrCancelled() && !jTask.getStatus().equals("Closed")) {
+            if (!skipJiraSync(teamWf) && teamWf.isCompletedOrCancelled() && !jTask.getStatus().equals("Closed")) {
                results.logf("   ERROR: JIRA Task Open, Team Wf Closed [%s] %s", teamWf.getStateDefinition().getName(),
                   teamWf.toStringWithId());
                for (String atsId : jTask.getAtsIds()) {
@@ -287,17 +310,20 @@ public class SyncJiraOperation {
          }
       }
       results.logf("Ids: %s", ids.toString().replaceFirst(",$", ""));
+      results.logf("================================================================");
    }
 
    private void checkJiraClosedToOseeOpen() {
-      results.log("");
+      results.logf("");
+      results.logf("");
+      results.logf("================================================================");
       results.logf("JIRA Closed and OSEE Open (spot check; close in OSEE)", syncTeam.getJiraTeamWfs().size());
-      results.log("");
+      results.logf("");
       StringBuilder ids = new StringBuilder();
       for (JiraTask jTask : jTasks) {
          IAtsTeamWorkflow teamWf = jTask.getTeamWf();
          if (teamWf != null) {
-            if (jTask.getStatus().equals("Closed") && teamWf.isInWork()) {
+            if (!skipJiraSync(teamWf) && jTask.getStatus().equals("Closed") && teamWf.isInWork()) {
                results.logf("   ERROR: JIRA Task Closed, OSEE is Open [%s] %s", teamWf.getStateDefinition().getName(),
                   teamWf.toStringWithId());
                for (String atsId : jTask.getAtsIds()) {
@@ -307,6 +333,12 @@ public class SyncJiraOperation {
          }
       }
       results.logf("Ids: %s", ids.toString().replaceFirst(",$", ""));
+      results.logf("================================================================");
+   }
+
+   private boolean skipJiraSync(IAtsTeamWorkflow teamWf) {
+      return atsApi.getAttributeResolver().getAttributesToStringList(teamWf, AtsAttributeTypes.Category1).contains(
+         SKIP_JIRA_SYNC);
    }
 
    private final static Pattern ITEM_CHECKED_PATTERN =
