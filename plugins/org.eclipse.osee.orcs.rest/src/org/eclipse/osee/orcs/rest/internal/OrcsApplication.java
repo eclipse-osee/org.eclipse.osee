@@ -61,7 +61,6 @@ public class OrcsApplication extends Application {
 
    public void start() {
       resources.add(new BranchesResource(orcsApi));
-      resources.add(new OrcsScriptEndpointImpl(orcsApi.getScriptEngine()));
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
       resources.add(new ApplicabilityUiEndpointImpl(orcsApi));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));

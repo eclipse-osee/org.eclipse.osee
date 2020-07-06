@@ -38,9 +38,6 @@
 
 				<module>../../plugins/org.eclipse.osee.activity</module>
 
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>
-
 				<module>../../plugins/org.eclipse.osee.orcs</module>
 				<module>../../plugins/org.eclipse.osee.orcs.core</module>
 				<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
@@ -80,9 +77,6 @@
 				<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
 
 				<module>../../plugins/org.eclipse.osee.activity</module>
-
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>
 
 				<module>../../plugins/org.eclipse.osee.orcs</module>
 				<module>../../plugins/org.eclipse.osee.orcs.core</module>

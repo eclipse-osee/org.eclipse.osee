@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
@@ -53,9 +52,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManagerFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNodeLoader;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeLoaderImpl;
-import org.eclipse.osee.orcs.core.internal.script.OrcsScriptCompiler;
-import org.eclipse.osee.orcs.core.internal.script.ScriptEngines;
-import org.eclipse.osee.orcs.core.internal.script.impl.OrcsScriptCompilerImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.core.internal.session.OrcsSessionImpl;
@@ -186,9 +182,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), tokenService());
 
-      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, tokenService(), queryModule);
-      manager = ScriptEngines.newScriptEngineManager(compiler);
-
       applicability = new OrcsApplicabilityOps(this);
       accessControlService = new AccessControlServiceImpl();
    }
@@ -275,11 +268,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private OrcsSession createSession() {
       String sessionId = GUID.create();
       return new OrcsSessionImpl(sessionId);
-   }
-
-   @Override
-   public ScriptEngine getScriptEngine() {
-      return manager.getEngineByName(ScriptEngines.ORCS_SCRIPT_ENGINE_ID);
    }
 
    @Override

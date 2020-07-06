@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -176,8 +175,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
       for (AttributeTypeToken attributeType : attributeTypes) {
          Composite internalComposite;
-         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType) || DslGrammarManager.isDslAttributeType(
-            attributeType)) {
+         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType)) {
             internalComposite = createAttributeTypeControlsInSection(composite, attributeType, isEditable, 15);
          } else {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);

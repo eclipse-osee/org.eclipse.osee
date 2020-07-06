@@ -62,7 +62,6 @@ public enum RendererOption {
    TRANSACTION_OPTION("Transaction Option", OptionType.Transaction),
 
    // String
-   ORCS_QUERY("Orcs Query", OptionType.String),
    OVERRIDE_DATA_RIGHTS("Override Data Rights", OptionType.String),
    ATTRIBUTE_NAME("Attribute Name", OptionType.String),
    PARAGRAPH_NUMBER("Paragraph Number", OptionType.String),

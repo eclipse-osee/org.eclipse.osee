@@ -13,15 +13,11 @@
 
 package org.eclipse.osee.orcs.rest.client.internal;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
@@ -30,8 +26,6 @@ import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
@@ -51,7 +45,6 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
-import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -144,39 +137,6 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public String runOrcsScript(String script, Object... data) {
-      for (int i = 0; i < data.length; i++) {
-         if (data[i] instanceof Id) {
-            data[i] = ((Id) data[i]).getIdString();
-         }
-      }
-      return getOrcsScriptEndpoint().getScriptResult(String.format(script, data));
-   }
-
-   @Override
-   public void runOrcsScript(String script, Properties properties, boolean debug, MediaType mediaType, Writer writer) {
-      String props = null;
-      try {
-         if (properties != null && !properties.isEmpty()) {
-            StringWriter strWriter = new StringWriter();
-            properties.store(strWriter, "");
-            props = strWriter.toString();
-         }
-         Form form = new Form();
-         form.param("script", script);
-         form.param("debug", Boolean.toString(debug));
-         if (props != null && props.length() > 0) {
-            form.param("parameters", props);
-         }
-         URI uri = UriBuilder.fromUri(orcsUri).path("script").build();
-         String result = JaxRsClient.newClient().target(uri).request(mediaType).post(Entity.form(form), String.class);
-         writer.write(result);
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-   }
-
-   @Override
    public BranchEndpoint getBranchEndpoint() {
       return getOrcsEndpoint(BranchEndpoint.class);
    }
@@ -244,11 +204,6 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public ActivityLogEndpoint getActivityLogEndpoint() {
       return jaxRsApi.newProxy("", ActivityLogEndpoint.class);
-   }
-
-   @Override
-   public OrcsScriptEndpoint getOrcsScriptEndpoint() {
-      return getOrcsEndpoint(OrcsScriptEndpoint.class);
    }
 
    @Override

@@ -1476,12 +1476,6 @@
       </Operation>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.OrcsScriptBlam">
-      </Operation>
-   </extension>      
-   <extension
          id="ExampleBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation

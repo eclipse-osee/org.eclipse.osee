@@ -256,13 +256,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.osee.orcs.script.dsl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-      
     <plugin
          id="org.postgresql.driver"
          download-size="0"

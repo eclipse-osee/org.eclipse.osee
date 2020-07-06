@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -319,8 +318,6 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             ((XFloat) xWidget).setText(value);
          } else if (xWidget instanceof XLabel) {
             ((XLabel) xWidget).setLabel(value);
-         } else if (xWidget instanceof XDslEditorWidgetDam) {
-            ((XDslEditorWidgetDam) xWidget).setText(value);
          } else if (xWidget instanceof XText) {
             ((XText) xWidget).setText(value);
          }
@@ -371,14 +368,6 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             xLabel.setLabel(initialInput);
          }
          xWidget = xLabel;
-      } else if (DslGrammarManager.isDslAttributeType(attributeType)) {
-         XDslEditorWidgetDam xEditor = new XDslEditorWidgetDam("");
-         xEditor.setFillHorizontally(true);
-         xEditor.setFillVertically(true);
-         xEditor.createWidgets(getManagedForm(), parent, 2);
-         if (Strings.isValid(initialInput)) {
-            xEditor.setText(initialInput);
-         }
       }
 
       if (xWidget == null) {

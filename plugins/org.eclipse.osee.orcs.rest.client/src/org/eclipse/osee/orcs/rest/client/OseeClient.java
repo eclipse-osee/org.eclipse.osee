@@ -13,9 +13,6 @@
 
 package org.eclipse.osee.orcs.rest.client;
 
-import java.io.Writer;
-import java.util.Properties;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
@@ -28,7 +25,6 @@ import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
-import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -42,10 +38,6 @@ public interface OseeClient {
    String OSEE_APPLICATION_SERVER = org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 
    QueryBuilder createQueryBuilder(BranchId branch);
-
-   String runOrcsScript(String script, Object... data);
-
-   void runOrcsScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
 
    BranchEndpoint getBranchEndpoint();
 
@@ -77,5 +69,4 @@ public interface OseeClient {
 
    DefineBranchEndpointApi getDefineBranchEndpoint();
 
-   OrcsScriptEndpoint getOrcsScriptEndpoint();
 }

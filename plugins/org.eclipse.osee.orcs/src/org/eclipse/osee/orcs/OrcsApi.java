@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs;
 
-import javax.script.ScriptEngine;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
@@ -44,8 +43,6 @@ public interface OrcsApi extends OseeApi {
    OrcsPerformance getOrcsPerformance();
 
    OrcsTypes getOrcsTypes();
-
-   ScriptEngine getScriptEngine();
 
    SystemProperties getSystemProperties();
 

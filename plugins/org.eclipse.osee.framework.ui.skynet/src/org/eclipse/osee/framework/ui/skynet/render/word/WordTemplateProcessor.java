@@ -435,7 +435,6 @@ public class WordTemplateProcessor {
 
             String artifactName = (String) renderer.getRendererOptionValue(RendererOption.NAME);
             String artifactId = (String) renderer.getRendererOptionValue(RendererOption.ID);
-            String orcsQuery = (String) renderer.getRendererOptionValue(RendererOption.ORCS_QUERY);
             BranchId branch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
             List<Artifact> artifacts = null;
 
@@ -444,8 +443,6 @@ public class WordTemplateProcessor {
                artifacts = ArtifactQuery.getArtifactListFrom(artIds, branch, EXCLUDE_DELETED);
             } else if (Strings.isValid(artifactName)) {
                artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch);
-            } else if (Strings.isValid(orcsQuery)) {
-               artifacts = parseOrcsQueryResult(ServiceUtil.getOseeClient().runOrcsScript(orcsQuery), branch);
             }
 
             String subDocFileName = subDocName + ".xml";

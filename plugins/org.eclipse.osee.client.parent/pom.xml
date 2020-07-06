@@ -63,9 +63,6 @@
 				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration.test</module>
 
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.ui</module>
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.ui.integration</module>
-
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
@@ -140,9 +137,6 @@
 				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration.test</module>
-
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.ui</module>
-				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.ui.integration</module>
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
