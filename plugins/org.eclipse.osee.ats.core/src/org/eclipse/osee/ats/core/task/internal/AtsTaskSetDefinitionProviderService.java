@@ -40,7 +40,7 @@ public class AtsTaskSetDefinitionProviderService implements IAtsTaskSetDefinitio
       AtsTaskSetDefinitionProviderService.taskSetDefProviders.add(taskSetDefProvider);
    }
 
-   public void ensureLoaded() {
+   public synchronized void ensureLoaded() {
       // Add default
       if (!taskSetDefProviderProcessed.contains(atsTaskSetDefProv)) {
          atsTaskSetDefProv = new AtsTaskSetDefinitionProvider();

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -36,5 +37,9 @@ public final class HashCollectionSet<K, V> extends HashCollectionGeneric<K, V, S
 
    public HashCollectionSet(Supplier<Set<V>> collectionSupplier) {
       this(false, 16, 0.75f, collectionSupplier);
+   }
+
+   public HashCollectionSet() {
+      this(false, 16, 0.75f, HashSet::new);
    }
 }

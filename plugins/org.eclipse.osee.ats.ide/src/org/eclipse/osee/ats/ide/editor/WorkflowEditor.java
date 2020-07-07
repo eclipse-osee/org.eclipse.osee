@@ -75,7 +75,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -141,10 +141,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private AttributesComposite attributesComposite;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
-   private final HashCollection<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollection<>();
-   private final HashCollection<RelationTypeToken, IWfeEventHandle> relHandlers = new HashCollection<>();
+   private final HashCollectionSet<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollectionSet<>();
+   private final HashCollectionSet<RelationTypeToken, IWfeEventHandle> relHandlers = new HashCollectionSet<>();
    // This MUST be string guid until types are converted to id all at once and events use id
-   private final HashCollection<String, IWfeEventHandle> artHandlers = new HashCollection<>();
+   private final HashCollectionSet<String, IWfeEventHandle> artHandlers = new HashCollectionSet<>();
    /**
     * This MUST be string guid until types are converted to id all at once and events use id. Used when want to listen
     * for rel events for a artifact other than the editor workItem.
@@ -908,7 +908,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          if (eRel.getArtA().getGuid().equals(getWorkItem().getGuid()) || eRel.getArtB().getGuid().equals(
             getWorkItem().getGuid())) {
 
-            List<IWfeEventHandle> handlers = relHandlers.getValues(tokenService.getRelationType(eRel.getRelTypeGuid()));
+            Set<IWfeEventHandle> handlers = relHandlers.getValues(tokenService.getRelationType(eRel.getRelTypeGuid()));
             if (handlers != null) {
                for (IWfeEventHandle handler : handlers) {
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -922,7 +922,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             }
             handledArts.clear();
             if (!handledArts.contains(getWorkItem().getGuid())) {
-               List<IWfeEventHandle> handlers2 = artHandlers.getValues(getWorkItem().getStoreObject().getGuid());
+               Set<IWfeEventHandle> handlers2 = artHandlers.getValues(getWorkItem().getStoreObject().getGuid());
                if (handlers2 != null) {
                   for (IWfeEventHandle handler : handlers2) {
                      Displays.ensureInDisplayThread(new Runnable() {
@@ -997,7 +997,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public void handleEvent(AttributeTypeToken attrType) {
-      List<IWfeEventHandle> handlers = attrHandlers.getValues(attrType);
+      Set<IWfeEventHandle> handlers = attrHandlers.getValues(attrType);
       if (handlers != null && !handlers.isEmpty()) {
          for (IWfeEventHandle handler : handlers) {
             Displays.ensureInDisplayThread(new Runnable() {

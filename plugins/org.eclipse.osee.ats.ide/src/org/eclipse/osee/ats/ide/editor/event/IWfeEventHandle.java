@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.editor.event;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 
 /**
@@ -30,6 +31,10 @@ public interface IWfeEventHandle {
    }
 
    default void refresh(ArtifactEvent artifactEvent) {
+      // do nothing
+   }
+
+   default void setEditor(WorkflowEditor editor) {
       // do nothing
    }
 

@@ -49,6 +49,7 @@ public abstract class XButtonWithLabelDam extends XButton implements IArtifactWi
          @Override
          public void run() {
             resultsLabelWidget.setText(getResultsText());
+            resultsLabelWidget.getParent().layout(true);
          }
       });
    }

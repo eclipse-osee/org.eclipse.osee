@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidget;
@@ -226,10 +227,14 @@ public class WfeWorkflowSection extends SectionPart {
       createTaskFooter(workComp, statePage);
       createReviewFooter(workComp, statePage);
 
-      // Set all XWidget labels to bold font
       for (XWidget xWidget : allXWidgets) {
          if (xWidget.getLabelWidget() != null) {
+            // Set all XWidget labels to bold font
             WorkflowEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
+            // Set editor if applicable
+            if (xWidget instanceof IWfeEventHandle) {
+               ((IWfeEventHandle) xWidget).setEditor(editor);
+            }
          }
       }
 
