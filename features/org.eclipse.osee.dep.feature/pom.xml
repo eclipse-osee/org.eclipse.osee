@@ -49,7 +49,7 @@
 								<plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple" />
 								<plugin id="org.eclipse.xtext" />
 								<plugin id="org.antlr.runtime" />
-								<plugin id="com.google.guava" />
+								
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
 								<plugin id="org.apache.commons.cli" />

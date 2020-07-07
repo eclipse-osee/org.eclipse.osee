@@ -29,7 +29,6 @@
 							   <plugin id="javaewah" />
 							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.eclipse.egit" />
-							   <plugin id="com.google.guava" />
 							   <plugin id="javax.servlet" />
 							   <plugin id="javax.ws.rs" />
 							   <plugin id="javax.wsdl" />
