@@ -32,12 +32,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -138,7 +138,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             importingRelations = true;
             return;
          }
-         primaryDescriptor = ServiceUtil.getOrcsTokenService().getArtifactType(sheetName);
+         primaryDescriptor = ArtifactTypeManager.getType(sheetName);
          if (primaryDescriptor == null) {
             throw new OseeArgumentException("The sheet [%s] is not a valid artifact type name.", sheetName);
          }

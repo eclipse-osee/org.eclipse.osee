@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImages;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -137,12 +137,10 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
                         // get artifact type
                         ArtifactTypeToken artifactType = null;
                         if (Strings.isNumeric(dynamicImage.getArtifactTypeUuid())) {
-                           artifactType = ServiceUtil.getTokenService().getArtifactType(
-                              Long.valueOf(dynamicImage.getArtifactTypeUuid()));
+                           artifactType = ArtifactTypeManager.getType(Long.valueOf(dynamicImage.getArtifactTypeUuid()));
                         }
                         if (artifactType == null && Strings.isValid(dynamicImage.getArtifactTypeName())) {
-                           artifactType =
-                              ServiceUtil.getTokenService().getArtifactType(dynamicImage.getArtifactTypeName());
+                           artifactType = ArtifactTypeManager.getType(dynamicImage.getArtifactTypeName());
                         }
                         if (artifactType != null) {
                            // register image for artifact type

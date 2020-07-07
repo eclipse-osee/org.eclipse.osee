@@ -72,16 +72,6 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
-   public ArtifactTypeToken getArtifactType(String name) {
-      for (ArtifactTypeToken artifactType : artifactTypes.values()) {
-         if (artifactType.getName().equals(name)) {
-            return artifactType;
-         }
-      }
-      throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", name);
-   }
-
-   @Override
    public AttributeTypeGeneric<?> getAttributeType(Long id) {
       AttributeTypeGeneric<?> attributeType = attributeTypes.get(id);
       if (attributeType == null) {

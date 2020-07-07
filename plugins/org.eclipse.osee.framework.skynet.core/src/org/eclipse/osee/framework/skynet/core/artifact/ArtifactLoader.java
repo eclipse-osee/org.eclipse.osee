@@ -313,7 +313,7 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         ArtifactTypeToken artifactType = tokenService.getArtifactType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact = factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,

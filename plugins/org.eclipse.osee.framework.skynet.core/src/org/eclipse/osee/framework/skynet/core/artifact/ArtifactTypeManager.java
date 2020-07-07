@@ -14,27 +14,30 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -54,12 +57,12 @@ public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
-   private static IOseeCachingService getCacheService() {
-      return ServiceUtil.getOseeCacheService();
+   private static ArtifactTypeCache getCache() {
+      return getCacheService().getArtifactTypeCache();
    }
 
-   private static OrcsTokenService getOrcsTokenService() {
-      return getCacheService().getTokenService();
+   private static IOseeCachingService getCacheService() {
+      return ServiceUtil.getOseeCacheService();
    }
 
    public static Collection<ArtifactTypeToken> getArtifactTypesFromAttributeType(AttributeTypeToken attributeType) {
@@ -78,7 +81,7 @@ public class ArtifactTypeManager {
    }
 
    public static Collection<ArtifactTypeToken> getConcreteArtifactTypes(BranchId branch) {
-      Collection<ArtifactTypeToken> types = new ArrayList<>(getAllTypes());
+      Collection<ArtifactTypeToken> types = getAllTypes();
       Iterator<ArtifactTypeToken> iterator = types.iterator();
       while (iterator.hasNext()) {
          ArtifactTypeToken type = iterator.next();
@@ -90,7 +93,49 @@ public class ArtifactTypeManager {
    }
 
    public static Collection<ArtifactTypeToken> getAllTypes() {
-      return getOrcsTokenService().getArtifactTypes();
+      return Collections.cast(getCache().getAll());
+   }
+
+   public static ArtifactTypeToken getType(Long id) {
+      if (id == null) {
+         throw new OseeArgumentException("[%s] is not a valid guid", id);
+      }
+      ArtifactTypeToken artifactType = getCache().getByGuid(id);
+      if (artifactType == null) {
+         getCacheService().reloadTypes();
+         artifactType = getCache().getByGuid(id);
+         if (artifactType == null) {
+            throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", id);
+         }
+      }
+      return artifactType;
+   }
+
+   /**
+    * @return the artifact type matching the name
+    * @param name artifact type name to match
+    */
+   public static ArtifactTypeToken getType(String name) {
+      return getCache().getByName(name);
+   }
+
+   public static ArtifactTypeToken getType(ArtifactTypeId artifactType) {
+      return getFullType(artifactType);
+   }
+
+   public static ArtifactType getFullType(ArtifactTypeId artifactType) {
+      if (artifactType instanceof ArtifactType) {
+         return (ArtifactType) artifactType;
+      }
+      return getCache().getByGuid(artifactType.getId());
+   }
+
+   public static Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeToken artifactType, BranchId branch) {
+      return getFullType(artifactType).getAttributeTypes(BranchManager.getBranch(branch));
+   }
+
+   public static boolean isValidAttributeType(AttributeTypeId attributeType, ArtifactTypeToken artifactType, BranchId branch) {
+      return getAttributeTypes(artifactType, branch).contains(attributeType);
    }
 
    public static Artifact addArtifact(ArtifactToken artifactToken) {

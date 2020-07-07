@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements HasBranch {
    private final BranchId branch;
-   private ArtifactTypeToken artifactType;
+   private ArtifactTypeId artifactType;
 
    public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeToken artifactType, String artGuid) {
       super(artGuid);
@@ -33,7 +34,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       this.artifactType = artifactType;
    }
 
-   public boolean isTypeEqual(ArtifactTypeToken artifactType) {
+   public boolean isTypeEqual(ArtifactTypeId artifactType) {
       return artifactType.equals(this.artifactType);
    }
 
@@ -54,7 +55,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       return artifactType.getId();
    }
 
-   public ArtifactTypeToken getArtifactType() {
+   public ArtifactTypeId getArtifactType() {
       return artifactType;
    }
 
@@ -78,7 +79,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       return equals;
    }
 
-   public void setArtTypeGuid(ArtifactTypeToken artifactType) {
+   public void setArtTypeGuid(ArtifactTypeId artifactType) {
       this.artifactType = artifactType;
    }
 }

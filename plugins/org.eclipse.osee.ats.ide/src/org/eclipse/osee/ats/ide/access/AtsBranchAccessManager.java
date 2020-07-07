@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -253,7 +254,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
             return;
          }
          try {
-            if (guidArt.getArtifactType().inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
+            if (ArtifactTypeManager.getType(guidArt.getArtifactType()).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ArtifactCache.getActive(guidArt);
                if (teamArt != null && teamArt.getWorkingBranch().isValid()) {
                   branchIdToContextIdCache.remove(teamArt.getWorkingBranch());

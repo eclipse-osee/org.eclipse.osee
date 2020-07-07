@@ -16,6 +16,8 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Donald G. Dunne
@@ -35,8 +37,14 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
    @Override
    public String toString() {
-      return String.format("[%s - %s from type [%s][%s] to [%s][%s]]", EventModType.ChangeType.name(), getGuid(),
-         fromArtTypeGuid.getIdString(), fromArtTypeGuid, getArtifactType().getIdString(), getArtifactType());
+      try {
+         return String.format("[%s - %s from type [%s][%s] to [%s][%s]]", EventModType.ChangeType.name(), getGuid(),
+            fromArtTypeGuid, ArtifactTypeManager.getType(fromArtTypeGuid), getArtifactType(),
+            ArtifactTypeManager.getType(getArtifactType()));
+      } catch (OseeCoreException ex) {
+         return String.format("[%s - %s from type [%s] to [%s]]", EventModType.ChangeType.name(), getGuid(),
+            fromArtTypeGuid, getArtifactType());
+      }
    }
 
    @Override

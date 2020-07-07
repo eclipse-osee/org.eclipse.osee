@@ -33,11 +33,6 @@ public interface OrcsTokenService {
    ArtifactTypeToken getArtifactType(Long id);
 
    /**
-    * @return singleton full artifact type token with the given name or throw OseeTypeDoesNotExist if not found
-    */
-   ArtifactTypeToken getArtifactType(String name);
-
-   /**
     * @return singleton full attribute type token with the given id or throw OseeTypeDoesNotExist if not found
     */
    AttributeTypeGeneric<?> getAttributeType(Long id);

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
@@ -47,14 +49,18 @@ public class AttributeTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   private static AbstractOseeCache<AttributeType> getCache() {
+   public static AbstractOseeCache<AttributeType> getCache() {
       return getCacheService().getAttributeTypeCache();
+   }
+
+   public static BranchCache getBranchCache() {
+      return getCacheService().getBranchCache();
    }
 
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
       for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
-         attributeTypes.addAll(artifactType.getValidAttributeTypes());
+         attributeTypes.addAll(ArtifactTypeManager.getAttributeTypes(artifactType, BranchManager.getBranch(branch)));
       }
       return attributeTypes;
    }

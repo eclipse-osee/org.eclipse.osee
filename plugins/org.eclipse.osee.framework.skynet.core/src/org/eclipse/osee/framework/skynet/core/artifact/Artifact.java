@@ -527,7 +527,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
-      return artifactType.isValidAttributeType(attributeType);
+      return ArtifactTypeManager.isValidAttributeType(attributeType, artifactType, branch);
    }
 
    /**
@@ -611,7 +611,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final Collection<AttributeTypeToken> getAttributeTypes() {
-      return artifactType.getValidAttributeTypes();
+      return ArtifactTypeManager.getAttributeTypes(artifactType, branch);
    }
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
@@ -1558,9 +1558,9 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * Changes the artifact type.
     */
-   public final void setArtifactType(ArtifactTypeToken artifactType) {
-      if (this.artifactType.notEqual(artifactType)) {
-         this.artifactType = artifactType;
+   public final void setArtifactType(ArtifactTypeId artifactTypeId) {
+      if (this.artifactType.notEqual(artifactTypeId)) {
+         this.artifactType = ArtifactTypeManager.getType(artifactTypeId);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {
             internalSetModType(ModificationType.MODIFIED, false);

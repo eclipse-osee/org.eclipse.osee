@@ -23,7 +23,7 @@ public class JsonArtifact {
    private String name;
    private ArtifactId id;
    private String typeName;
-   private ArtifactTypeToken artifactType;
+   private ArtifactTypeId typeId;
 
    private List<JsonAttribute> attrs;
 
@@ -59,12 +59,12 @@ public class JsonArtifact {
       this.typeName = typeName;
    }
 
-   public ArtifactTypeToken getType() {
-      return artifactType;
+   public ArtifactTypeId getTypeId() {
+      return typeId;
    }
 
-   public void setType(ArtifactTypeToken artifactType) {
-      this.artifactType = artifactType;
+   public void setTypeId(ArtifactTypeId typeId) {
+      this.typeId = typeId;
    }
 
 }

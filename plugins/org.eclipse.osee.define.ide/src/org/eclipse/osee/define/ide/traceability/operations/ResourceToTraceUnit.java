@@ -34,6 +34,7 @@ import org.eclipse.osee.define.ide.utility.UriResourceContentFinder;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -206,7 +207,7 @@ public class ResourceToTraceUnit {
                TraceUnit unit = traceUnits.get(name);
                if (unit == null) {
 
-                  unit = new TraceUnit(traceUnitType, name);
+                  unit = new TraceUnit(ArtifactTypeManager.getType(traceUnitType), name);
                   traceUnits.put(name, unit);
                }
                unit.setUriPath(uriPath);

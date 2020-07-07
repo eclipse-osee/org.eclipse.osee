@@ -185,7 +185,7 @@ public class ChangeArtifactType {
 
    private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeToken artifactType) {
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
-         if (!artifactType.isValidAttributeType(attributeType)) {
+         if (!ArtifactTypeManager.isValidAttributeType(attributeType, artifactType, artifact.getBranch())) {
             artifact.deleteAttributes(attributeType);
             attributeTypes.add(attributeType);
          }

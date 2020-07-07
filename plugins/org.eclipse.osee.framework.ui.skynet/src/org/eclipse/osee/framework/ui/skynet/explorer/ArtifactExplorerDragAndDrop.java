@@ -341,7 +341,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          List<JsonArtifact> reqts = JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifact>>() { //
          });
          for (JsonArtifact item : reqts) {
-            Artifact art = ArtifactTypeManager.addArtifact(item.getType(), parentArtifact.getBranch(), item.getName());
+            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(item.getTypeId()),
+               parentArtifact.getBranch(), item.getName());
             List<JsonAttribute> attrs = item.getAttrs();
             for (JsonAttribute attr : attrs) {
                art.addAttributeFromString(attr.getTypeId(), attr.getValue());
@@ -368,7 +369,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
    public static IArtifactExtractor getArtifactExtractor(ArtifactTypeToken artifactType) {
       IArtifactExtractor extractor = null;
-      if (artifactType.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
+      if (ArtifactTypeManager.getType(artifactType).inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
          extractor = new NativeDocumentExtractor();
       } else {
          extractor = new WholeWordDocumentExtractor();

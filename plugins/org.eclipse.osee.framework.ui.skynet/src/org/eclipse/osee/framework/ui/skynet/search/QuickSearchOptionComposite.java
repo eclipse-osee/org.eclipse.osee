@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -37,11 +36,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxArtifactTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
@@ -77,8 +76,6 @@ public class QuickSearchOptionComposite extends Composite {
    private final Map<SearchOption, Text> textAreas;
    private final Map<SearchOption, Boolean> optionsMap;
 
-   private static OrcsTokenService tokenService;
-
    private final Map<SearchOption, IOptionConfigurationHandler<?>> configurableOptionSet;
 
    private Text attributeSearchText;
@@ -92,7 +89,7 @@ public class QuickSearchOptionComposite extends Composite {
       this.textAreas = new HashMap<>();
       this.optionsMap = new LinkedHashMap<>();
       this.configurableOptionSet = new HashMap<>();
-      QuickSearchOptionComposite.tokenService = ServiceUtil.getTokenService();
+
       for (SearchOption option : SearchOption.values()) {
          this.optionsMap.put(option, false);
       }
@@ -561,7 +558,7 @@ public class QuickSearchOptionComposite extends Composite {
       @Override
       public void configure() {
          try {
-            Collection<ArtifactTypeToken> artifactTypes = tokenService.getArtifactTypes();
+            Collection<ArtifactTypeToken> artifactTypes = ArtifactTypeManager.getAllTypes();
             FilteredCheckboxArtifactTypeDialog dialog = new FilteredCheckboxArtifactTypeDialog(
                "Artifact Type Filter Selection", "Select artifact types to search in.");
             dialog.setShowSelectButtons(true);
@@ -606,7 +603,7 @@ public class QuickSearchOptionComposite extends Composite {
             for (String entry : items) {
                try {
                   Long id = Long.parseLong(entry);
-                  ArtifactTypeToken type = tokenService.getArtifactType(id);
+                  ArtifactTypeToken type = ArtifactTypeManager.getType(id);
                   configuration.add(type);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
