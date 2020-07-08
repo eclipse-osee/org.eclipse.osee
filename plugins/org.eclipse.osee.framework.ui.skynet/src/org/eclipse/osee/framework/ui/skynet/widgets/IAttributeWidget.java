@@ -33,4 +33,9 @@ public interface IAttributeWidget extends IArtifactStoredWidget {
     */
    public AttributeTypeToken getAttributeType();
 
+   /**
+    * Reload widget from current attr value
+    */
+   public void reSet();
+
 }

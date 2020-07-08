@@ -45,9 +45,14 @@ public class XLongDam extends XLong implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
-      this.attributeType = attrName;
+      this.attributeType = attributeType;
       try {
          Long value = artifact.getSoleAttributeValue(getAttributeType());
          super.set(value.toString());

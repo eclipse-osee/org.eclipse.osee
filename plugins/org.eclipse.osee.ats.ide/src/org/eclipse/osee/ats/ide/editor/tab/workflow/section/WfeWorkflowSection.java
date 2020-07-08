@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -231,10 +233,25 @@ public class WfeWorkflowSection extends SectionPart {
          if (xWidget.getLabelWidget() != null) {
             // Set all XWidget labels to bold font
             WorkflowEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
-            // Set editor if applicable
-            if (xWidget instanceof IWfeEventHandle) {
-               ((IWfeEventHandle) xWidget).setEditor(editor);
-            }
+         }
+         // Set editor if applicable
+         if (xWidget instanceof IWfeEventHandle) {
+            ((IWfeEventHandle) xWidget).setEditor(editor);
+         } else if (xWidget instanceof IAttributeWidget) {
+            IAttributeWidget attrWidget = (IAttributeWidget) xWidget;
+            editor.registerEvent(new IWfeEventHandle() {
+
+               @Override
+               public IAtsWorkItem getWorkItem() {
+                  return sma;
+               }
+
+               @Override
+               public void refresh() {
+                  attrWidget.reSet();
+               }
+
+            }, attrWidget.getAttributeType());
          }
       }
 

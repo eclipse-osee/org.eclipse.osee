@@ -67,6 +67,11 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements IAttr
    }
 
    @Override
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;

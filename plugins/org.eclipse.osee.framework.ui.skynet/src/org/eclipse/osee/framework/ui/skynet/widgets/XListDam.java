@@ -42,6 +42,11 @@ public class XListDam extends XList implements IAttributeWidget {
    }
 
    @Override
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
       this.artifact = artifact;
       this.attributeType = attrName;

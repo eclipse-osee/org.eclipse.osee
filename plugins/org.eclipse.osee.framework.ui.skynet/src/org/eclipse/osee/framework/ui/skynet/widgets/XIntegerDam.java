@@ -46,9 +46,14 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
-      this.attributeType = attrName;
+      this.attributeType = attributeType;
       try {
          Integer value = artifact.getSoleAttributeValue(getAttributeType());
          if (value != null) {

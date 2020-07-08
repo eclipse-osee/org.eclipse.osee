@@ -48,9 +48,14 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
-      this.attributeType = attributeTypeName;
+      this.attributeType = attributeType;
       List<Artifact> storedArtifacts = getStored();
       if (!storedArtifacts.isEmpty()) {
          setSelected(storedArtifacts);

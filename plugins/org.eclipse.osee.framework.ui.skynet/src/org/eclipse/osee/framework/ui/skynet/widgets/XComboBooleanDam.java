@@ -48,6 +48,11 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;

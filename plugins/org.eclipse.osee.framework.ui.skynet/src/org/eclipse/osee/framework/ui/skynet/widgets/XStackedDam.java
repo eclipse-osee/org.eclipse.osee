@@ -92,6 +92,11 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;

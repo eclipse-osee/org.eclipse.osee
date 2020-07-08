@@ -49,6 +49,11 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken AttributeTypeId) {
       this.artifact = artifact;
       this.attributeType = AttributeTypeId;

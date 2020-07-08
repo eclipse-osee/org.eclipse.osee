@@ -87,10 +87,15 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
-      setLabel(attributeTypeName.getUnqualifiedName());
+   public void reSet() {
+      setAttributeType(artifact, attributeType);
+   }
+
+   @Override
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
+      setLabel(attributeType.getUnqualifiedName());
       this.artifact = artifact;
-      this.attributeType = attributeTypeName;
+      this.attributeType = attributeType;
       Long storedUuid = getStoredUuid();
       if (storedUuid != null && storedUuid > 0) {
          setSelection(BranchManager.getBranchToken(storedUuid));

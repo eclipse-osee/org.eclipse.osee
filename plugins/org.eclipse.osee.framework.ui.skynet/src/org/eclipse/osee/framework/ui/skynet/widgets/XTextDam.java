@@ -80,6 +80,11 @@ public class XTextDam extends XText implements IAttributeWidget {
       onAttributeTypeSet();
    }
 
+   @Override
+   public void reSet() {
+      onAttributeTypeSet();
+   }
+
    public void onAttributeTypeSet() {
       super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
    }
