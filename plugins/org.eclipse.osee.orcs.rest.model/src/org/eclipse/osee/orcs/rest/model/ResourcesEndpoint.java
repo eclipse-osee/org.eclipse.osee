@@ -21,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,5 +49,13 @@ public interface ResourcesEndpoint {
 
    @DELETE
    Response deleteResource(@QueryParam("path") String path);
+
+   /**
+    * @return file located in main publish dir
+    */
+   @GET
+   @Path("publish")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response getPublishResource(@QueryParam("path") String path);
 
 }

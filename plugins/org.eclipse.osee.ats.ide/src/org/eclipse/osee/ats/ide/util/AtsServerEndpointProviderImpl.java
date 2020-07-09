@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
 /**
@@ -56,10 +57,20 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private InsertionEndpointApi insertionEp;
    private InsertionActivityEndpointApi insertionActivityEp;
    private AtsHealthEndpointApi healthEp;
+   private ResourcesEndpoint resourcesEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
       jaxRsApi = atsApi.jaxRsApi();
+   }
+
+   @Override
+   public ResourcesEndpoint getResourcesEp() {
+      if (resourcesEp == null) {
+         WebTarget target = jaxRsApi.newTarget(String.format("orcs/resources"));
+         resourcesEp = jaxRsApi.newProxy(target, ResourcesEndpoint.class);
+      }
+      return resourcesEp;
    }
 
    public static WebTarget createAtsTarget(JaxRsApi jaxRsApi) {
@@ -197,4 +208,5 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
       }
       return healthEp;
    }
+
 }

@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -69,6 +70,23 @@ public class ResourcesEndpointImpl implements ResourcesEndpoint {
 
    public void setHeaders(HttpHeaders httpHeaders) {
       this.httpHeaders = httpHeaders;
+   }
+
+   @Override
+   public Response getPublishResource(String filename) {
+      String dataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      File publishDir = new File(dataPath + "/publish");
+      if (!publishDir.isDirectory()) {
+         return Response.noContent().build();
+      }
+      // Loop through to confirm resource is in main publish dir
+      for (File file : publishDir.listFiles()) {
+         if (file.getName().equals(filename)) {
+            return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM).header("Content-Disposition",
+               "attachment; filename=\"" + file.getName() + "\"").build();
+         }
+      }
+      return Response.noContent().build();
    }
 
    @Override
