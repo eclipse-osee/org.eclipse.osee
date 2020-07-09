@@ -184,6 +184,23 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
+   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body) {
+      if (isEmailEnabled()) {
+         Thread thread = new Thread("ATS Emailer") {
+
+            @Override
+            public void run() {
+               for (IAtsNotifierServer notifier : notifiers) {
+                  notifier.sendNotifications(fromUserEmail, toUserEmails, subject, body);
+               }
+            }
+
+         };
+         thread.start();
+      }
+   }
+
+   @Override
    public void sendNotifications(AtsNotificationCollector notifications) {
       if (isEmailEnabled()) {
          if (notifiers.isEmpty() || !getStoreService().isProductionDb()) {

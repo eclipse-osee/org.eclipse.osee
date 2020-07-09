@@ -14,11 +14,14 @@
 package org.eclipse.osee.ats.rest.internal.notify;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
+import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Donald G. Dunne
@@ -49,6 +52,18 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
       SendNotificationEvents job = new SendNotificationEvents(logger, mailService, fromUserEmail, testingUserEmail,
          subject, body, notificationEvents, userService);
       job.run();
+   }
+
+   @Override
+   public List<MailStatus> sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String htmlBody) {
+      MailMessage msg = MailMessage.newBuilder() //
+         .from(fromUserEmail) //
+         .recipients(toUserEmails) //
+         .subject(subject) //
+         .addHtml(htmlBody)//
+         .build();
+      List<MailStatus> status = mailService.sendMessages(msg);
+      return status;
    }
 
 }

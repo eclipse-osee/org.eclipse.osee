@@ -151,6 +151,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    void sendNotifications(AtsNotificationCollector notifications);
 
+   void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body);
+
    IAgileService getAgileService();
 
    JdbcService getJdbcService();

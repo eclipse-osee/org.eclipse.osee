@@ -176,6 +176,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
+   public synchronized void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body) {
+      throw new UnsupportedOperationException("Not supported on client");
+   }
+
+   @Override
    public boolean isNotificationsEnabled() {
       return AtsUtilClient.isEmailEnabled();
    }

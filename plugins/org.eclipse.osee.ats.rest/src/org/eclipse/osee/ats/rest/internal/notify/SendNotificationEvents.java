@@ -183,9 +183,10 @@ public class SendNotificationEvents {
       } else {
 
          String useEmail = isTesting() ? testingUserEmail : email;
+         String useFromEmail = Strings.isValid(fromUserEmail) ? fromUserEmail : "no-reply@boeing.com";
 
          MailMessage msg = MailMessage.newBuilder() //
-            .from(fromUserEmail) //
+            .from(useFromEmail) //
             .recipients(Arrays.asList(useEmail)) //
             .subject(getNotificationEmailSubject(notificationEvents)) //
             .addHtml(html)//
