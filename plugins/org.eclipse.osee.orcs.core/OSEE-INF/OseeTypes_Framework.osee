@@ -18,6 +18,7 @@ artifactType "Enumerated Artifact" extends "Artifact" {
 
 artifactType "Branch View" extends "Artifact" {
 	id 5849078277209560034
+	attribute "Product Applicability"
 }
 
 artifactType "Feature Definition" extends "General Data" {
@@ -136,6 +137,21 @@ attributeType "Feature Value Type" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	defaultValue "String"
 }
+
+oseeEnumType "enum.product.applicability.type" {
+	id 7652865133830378131
+	entry "OFP"
+}
+
+attributeType "Product Applicability" extends EnumeratedAttribute {
+	id 4522673803793808650
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	enumType "enum.product.applicability.type"
+	mediaType "text/plain"
+	taggerId DefaultAttributeTaggerProvider
+}  
 
 artifactType "User" extends "Artifact" {
 	id 5
@@ -2084,6 +2100,7 @@ artifactType "Feature" extends "Artifact" {
 	attribute "Value"
 	attribute "Feature Multivalued"
 	attribute "Feature Value Type"
+	attribute "Product Applicability"
 }
 
 relationType "Related Feature" {

@@ -32,19 +32,21 @@ public class FeatureDefinition extends NamedIdBase {
    private String valueType;
    private Object data;
    private String type; //legacy
+   private List<String> productApplicabilities;
 
    public FeatureDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
    }
 
-   public FeatureDefinition(Long id, String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description) {
+   public FeatureDefinition(Long id, String name, String valueType, List<String> values, String defaultValue, boolean multiValued, String description, List<String> productApplicabilities) {
       super(id, name);
       this.valueType = valueType;
       this.values = values;
       this.defaultValue = defaultValue;
       this.multiValued = multiValued;
       this.description = description;
+      this.productApplicabilities = productApplicabilities;
    }
 
    public List<String> getValues() {
@@ -102,5 +104,13 @@ public class FeatureDefinition extends NamedIdBase {
 
    public void setType(String type) {
       this.type = type;
+   }
+
+   public List<String> getProductApplicabilities() {
+      return productApplicabilities;
+   }
+
+   public void setProductApplicabilities(List<String> productApplicabilities) {
+      this.productApplicabilities = productApplicabilities;
    }
 }

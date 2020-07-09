@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
+import org.eclipse.osee.framework.core.enums.token.ProductApplicabilityAttributeType;
 import org.eclipse.osee.framework.core.enums.token.QualificationMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.SafetySeverityAttributeType;
 import org.eclipse.osee.framework.core.enums.token.SeverityCategoryAttributeType;
@@ -99,6 +100,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString FdalRationale = osee.createStringNoTag(926274413268034710L, "FDAL Rationale", MediaType.TEXT_PLAIN, "Functional Development Assurance Level Rationale");
    AttributeTypeBoolean FeatureMultivalued = osee.createBoolean(3641431177461038717L, "Feature Multivalued", MediaType.TEXT_PLAIN, "");
    FeatureValueAttributeType FeatureValueType = osee.createEnum(FeatureValueAttributeType::new, MediaType.TEXT_PLAIN);
+   ProductApplicabilityAttributeType ProductApplicability = osee.createEnum(ProductApplicabilityAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString FileSystemPath = osee.createString(1152921504606847707L, "File System Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeDouble FtaResults = osee.createDouble(1152921504606847143L, "FTA Results", MediaType.TEXT_PLAIN, "");
    AttributeTypeString FunctionalCategory = osee.createString(1152921504606847871L, "Functional Category", MediaType.TEXT_PLAIN, "Functional Category in support of System Safety Report");

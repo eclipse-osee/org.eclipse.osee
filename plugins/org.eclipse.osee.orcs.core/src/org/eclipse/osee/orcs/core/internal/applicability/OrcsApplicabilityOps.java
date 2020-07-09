@@ -147,6 +147,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       ViewDefinition view = new ViewDefinition();
       view.setId(art.getId());
       view.setName(art.getName());
+      view.setProductApplicabilities(art.getAttributeValues(CoreAttributeTypes.ProductApplicability));
       view.setData(art);
       return view;
    }
@@ -160,6 +161,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       feature.setName(art.getName());
       feature.setDefaultValue(art.getSoleAttributeValue(CoreAttributeTypes.DefaultValue, ""));
       feature.setValues(art.getAttributeValues(CoreAttributeTypes.Value));
+      feature.setProductApplicabilities(art.getAttributeValues(CoreAttributeTypes.ProductApplicability));
       feature.setValueType(art.getSoleAttributeAsString(CoreAttributeTypes.FeatureValueType, ""));
       feature.setMultiValued(art.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued, false));
       feature.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
@@ -236,6 +238,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       tx.setSoleAttributeValue(fDefArt, CoreAttributeTypes.FeatureValueType, featureDef.getValueType());
       tx.setSoleAttributeValue(fDefArt, CoreAttributeTypes.FeatureMultivalued, featureDef.isMultiValued());
       tx.setSoleAttributeValue(fDefArt, CoreAttributeTypes.Description, featureDef.getDescription());
+      if (featureDef.getProductApplicabilities() != null) {
+         tx.setAttributesFromValues(fDefArt, CoreAttributeTypes.ProductApplicability,
+            featureDef.getProductApplicabilities());
+      }
    }
 
    @Override

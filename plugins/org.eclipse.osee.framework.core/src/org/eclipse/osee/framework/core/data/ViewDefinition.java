@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -22,14 +23,16 @@ public class ViewDefinition extends NamedIdBase {
 
    public Object data;
    public ArtifactId copyFrom;
+   private List<String> productApplicabilities;
 
    public ViewDefinition() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
    }
 
-   public ViewDefinition(Long id, String name) {
+   public ViewDefinition(Long id, String name, List<String> productApplicabilities) {
       super(id, name);
+      this.productApplicabilities = productApplicabilities;
    }
 
    public Object getData() {
@@ -50,6 +53,14 @@ public class ViewDefinition extends NamedIdBase {
 
    public void setCopyFrom(ArtifactId copyFrom) {
       this.copyFrom = copyFrom;
+   }
+
+   public List<String> getProductApplicabilities() {
+      return productApplicabilities;
+   }
+
+   public void setProductApplicabilities(List<String> productApplicabilities) {
+      this.productApplicabilities = productApplicabilities;
    }
 
 }

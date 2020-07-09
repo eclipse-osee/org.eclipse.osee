@@ -898,6 +898,7 @@ app
                                        
                                        $scope.feature = response.data;
                                        $scope.feature.valueStr = feature.values.join();
+                                       $scope.feature.productAppStr = feature.productApplicabilities.join();
                                        
                                     });
                      	} else {
@@ -938,7 +939,9 @@ app
                                  .split(",");
                            //feature.valueStr = "";
                         }
-
+                        if (feature.productAppStr) {
+                        	feature.productApplicabilities = feature.productAppStr.split(",");
+                        }
                         var url = '/orcs/branch/'
                               + $scope.selectedBranch.id
                               + '/applic/feature';
@@ -1176,6 +1179,13 @@ app
                             .push({
                                field : "values",
                                displayName : "Values",
+                               enableSorting : true,
+                               width : 125
+                            });
+                            $scope.columns
+                            .push({
+                               field : "productApplicabilities",
+                               displayName : "Product Applicability",
                                enableSorting : true,
                                width : 125
                             });
