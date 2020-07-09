@@ -734,19 +734,41 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          tx.commit();
          return results;
       }
-      if (applicability.contains("|")) {
-         boolean validApplicability = true;
-         for (String value : applicability.split("|")) {
-            /**
-             * loop through existing applicabilities for view and see if new applicability exists if so, stop else check
-             * that at least one of the | separated applicability exists
-             **/
-            Iterable<String> existingApps =
-               orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
-            for (String appl : existingApps) {
-               if (appl.equals(value)) {
-                  validApplicability = true;
+      if (applicability.contains("|") || applicability.contains("&")) {
+         boolean validApplicability = false;
+         if (applicability.contains("|")) {
+            for (String value : applicability.split("\\|")) {
+               /**
+                * loop through existing applicabilities for view and see if new applicability exists if so, stop else
+                * check that at least one of the | separated applicability exists
+                **/
+               Iterable<String> existingApps =
+                  orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+               for (String appl : existingApps) {
+                  if (appl.equals(value.trim())) {
+                     validApplicability = true;
+                  }
                }
+            }
+         } else {
+            int cnt = applicability.split("&").length;
+            int validCnt = 0;
+            for (String value : applicability.split("&")) {
+               /**
+                * loop through existing applicabilities for view and see if new applicability exists if so, stop else
+                * check that ALL of the & separated applicability exist
+                **/
+               Iterable<String> existingApps =
+                  orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+               for (String appl : existingApps) {
+                  if (appl.equals(value.trim())) {
+                     validCnt++;
+                  }
+               }
+
+            }
+            if (cnt == validCnt) {
+               validApplicability = true;
             }
          }
          if (validApplicability) {
@@ -754,6 +776,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                "Apply " + applicability + " applicability");
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
+         } else {
+            results.error(
+               "Invalid applicability tag.  One of the applicabilities used is not valid for the given view.");
          }
 
       } else {
