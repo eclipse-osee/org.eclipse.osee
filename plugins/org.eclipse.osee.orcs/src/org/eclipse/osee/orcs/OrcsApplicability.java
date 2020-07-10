@@ -46,7 +46,7 @@ public interface OrcsApplicability {
 
    ArtifactToken getProductsFolder(BranchId branch);
 
-   String convertConfigToArtifact(BranchId branch);
+   XResultData convertConfigToArtifact(BranchId branch);
 
    ViewDefinition getViewDefinition(ArtifactToken artifact);
 

@@ -34,11 +34,11 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -172,11 +172,12 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, String action, TransactionBuilder tx, XResultData results) {
       ArtifactToken fDefArt = null;
+
       if (Strings.isInValid(featureDef.getName())) {
          results.error("Feature must have a name.");
       }
-      if (!featureDef.getName().matches("^[A-Z0-9_()]+$")) {
-         results.error("Feature name must be all caps with no special characters");
+      if (!featureDef.getName().matches("^[A-Z0-9_()\\s\\-]+$")) {
+         results.error("Feature name must be all caps with no special characters except underscore, dash, and space");
       }
       if (Strings.isInValid(featureDef.getDescription())) {
          results.error("Description is required.");
@@ -200,6 +201,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.error("Value type is required.");
       }
       FeatureDefinition lFeature = getFeature(featureDef.getName(), tx.getBranch());
+
       if (action != null && action.equals("add") && lFeature.isValid()) {
          results.error("Feature: " + lFeature.getName() + " already exists.");
       }
@@ -225,6 +227,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       } else {
          fDefArt = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
             ArtifactId.valueOf(lFeature.getId())).getResults().getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+
       }
       updateFeatureDefinition(fDefArt, featureDef, tx);
 
@@ -286,12 +289,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public ArtifactToken getFeaturesFolder(BranchId branch) {
       if (featureFolder.isInvalid()) {
-         featureFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
-            CoreArtifactTokens.FeaturesFolder).getArtifactOrSentinal();
-      }
-      if (featureFolder.isInvalid()) {
-         featureFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
-            CoreArtifactTokens.FeaturesFolder.getName()).asArtifactTokenOrSentinel();
+         featureFolder =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Folder).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.ProductLineFolder).andNameEquals(
+                  "Features").getArtifactOrSentinal();
       }
       return featureFolder;
    }
@@ -299,16 +300,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public ArtifactToken getProductsFolder(BranchId branch) {
       if (productsFolder.isInvalid()) {
-         productsFolder = orcsApi.getQueryFactory().fromBranch(branch).andId(
-            CoreArtifactTokens.ProductsFolder).getArtifactOrSentinal();
-      }
-      if (productsFolder.isInvalid()) {
-         productsFolder = orcsApi.getQueryFactory().fromBranch(branch).andNameEquals(
-            CoreArtifactTokens.ProductsFolder.getName()).asArtifactTokenOrSentinel();
-      }
-      if (productsFolder.isInvalid()) {
          productsFolder =
-            orcsApi.getQueryFactory().fromBranch(branch).andNameEquals("Products").asArtifactTokenOrSentinel();
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Folder).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.ProductLineFolder).andNameEquals(
+                  "Products").getArtifactOrSentinal();
       }
       return productsFolder;
    }
@@ -327,7 +322,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String convertConfigToArtifact(BranchId branch) {
+   public XResultData convertConfigToArtifact(BranchId branch) {
+      XResultData results = new XResultData();
+      BranchId ah64eRootBranch = BranchId.valueOf("5968659056771480963");
+      BranchId aopRootBranch = BranchId.valueOf("6155750414142653974");
+      BranchId rootBranch = BranchId.SENTINEL;
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem,
          "Convert Feature Defs to Artifact");
       List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
@@ -340,33 +339,63 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          FeatureDefinition[] readValue = JsonUtil.readValue(json, FeatureDefinition[].class);
          featureDefinitionFromJson.addAll(Arrays.asList(readValue));
       }
-      XResultData results = null;
       for (FeatureDefinition feature : featureDefinitionFromJson) {
-         FeatureDefinition featureArt = orcsApi.getApplicabilityOps().getFeature(feature.getName(), branch);
-         if (featureArt.isValid()) {
-            if (!featureArt.equals(feature)) {
-               // type goes to multivalued
-               if (feature.getType().equals("single")) {
-                  feature.setMultiValued(false);
-               } else if (feature.getType().equals("multiple")) {
-                  feature.setMultiValued(true);
-               } else {
-                  throw new IllegalArgumentException(
-                     String.format("Unexpected value type [%s]", feature.getValueType()));
+         ArtifactToken featureArt = ArtifactToken.SENTINEL;
+         boolean introduce = false;
+         if (feature.getDescription().isEmpty()) {
+            feature.setDescription(feature.getName());
+         }
+         if (feature.getDefaultValue().isEmpty()) {
+            feature.setDefaultValue(feature.getValues().iterator().next());
+         }
+         FeatureDefinition featureDef = orcsApi.getApplicabilityOps().getFeature(feature.getName(), branch);
+         if (featureDef.isInvalid()) {
+            //see if feature is on ah64e product line or aop product line... if so, introduce
+            featureArt = orcsApi.getQueryFactory().fromBranch(ah64eRootBranch).andIsOfType(
+               CoreArtifactTypes.Feature).andNameEquals(feature.getName()).getResults().getAtMostOneOrNull();
+            if (featureArt.isValid()) {
+               results.warning("Introduce " + feature.getName() + " from AH64E Product Line");
+               introduce = true;
+            } else {
+               featureArt = orcsApi.getQueryFactory().fromBranch(aopRootBranch).andIsOfType(
+                  CoreArtifactTypes.Feature).andNameEquals(feature.getName()).getResults().getAtMostOneOrNull();
+               if (featureArt.isValid()) {
+                  results.warning("Introduce " + feature.getName() + " from AOP Product Line");
+                  introduce = true;
                }
-
-               // set feature type
-               feature.setValueType("String");
-               createUpdateFeatureDefinition(feature, "update", tx, results);
             }
+
+         }
+         if (feature.getType().equals("single")) {
+            feature.setMultiValued(false);
+         } else if (feature.getType().equals("multiple")) {
+            feature.setMultiValued(true);
          } else {
-            feature.setType("String");
-            createUpdateFeatureDefinition(feature, "add", tx, results);
+            throw new IllegalArgumentException(String.format("Unexpected value type [%s]", feature.getValueType()));
          }
 
+         if (featureDef.isValid()) {
+            // set feature value type
+            feature.setValueType("String");
+            createUpdateFeatureDefinition(feature, "update", tx, results);
+
+         } else {
+            if (!introduce) {
+               feature.setValueType("String");
+               createUpdateFeatureDefinition(feature, "add", tx, results);
+            }
+         }
+         if (results.isErrors()) {
+            results.error("Errors on branch: " + orcsApi.getQueryFactory().branchQuery().andId(
+               branch).getResults().getOneOrNull().getName() + " creating feature: " + feature.getName());
+            return results;
+         }
       }
-      tx.commit();
-      return AHTML.simplePage("Completed");
+
+      if (!results.isErrors()) {
+         tx.commit();
+      }
+      return results;
    }
 
    @Override

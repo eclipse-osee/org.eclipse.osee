@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
@@ -109,7 +110,7 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Path("branch/convert/{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.TEXT_HTML})
-   public String convertConfigToArtifact(@PathParam("branch") BranchId branch) {
+   public XResultData convertConfigToArtifact(@PathParam("branch") BranchId branch) {
       return ops.convertConfigToArtifact(branch);
    }
 

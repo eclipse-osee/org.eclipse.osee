@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewToken;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +63,7 @@ public interface ApplicabilityUiEndpoint {
    @Path("branch/{branch}/convert")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.TEXT_HTML})
-   public String convertConfigToArtifact(@PathParam("branch") BranchId branch);
+   public XResultData convertConfigToArtifact(@PathParam("branch") BranchId branch);
 
    @GET
    @Produces({MediaType.TEXT_HTML})

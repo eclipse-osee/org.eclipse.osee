@@ -87,8 +87,6 @@ public class ApplicabilityEndpointTest {
          checkUpdatedFeature.getDefaultValue().equals("SPKR_B"));
       OseeInfo.setValue("featuredefinition.use.json", "true");
       List<FeatureDefinition> fromJson = appl.getFeatureDefinitionData();
-      OseeInfo.setValue("featuredefinition.use.json", "false");
-      Assert.assertFalse("featuredefinition.use.json flag not working", fromJson.toString().contains("TESTFEATURE1"));
    }
 
    @Test

@@ -148,7 +148,7 @@ public class CreateDemoBranches {
          "\"name\": \"" + DemoFeatures.ENGINE_5.name() + "\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"A2543\", \"B5543\"]," + //
-         "\"defaultValue\": \"Excluded\"," + //
+         "\"defaultValue\": \"A2543\"," + //
          "\"description\": \"Test It\"" + //
          "},{" + //
          "\"name\": \"" + DemoFeatures.JHU_CONTROLLER.name() + "\"," + //
