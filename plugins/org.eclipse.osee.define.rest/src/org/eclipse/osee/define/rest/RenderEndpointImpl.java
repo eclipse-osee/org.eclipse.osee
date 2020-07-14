@@ -46,8 +46,8 @@ public final class RenderEndpointImpl implements RenderEndpoint {
    }
 
    @Override
-   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact) {
-      return defineApi.getMSWordOperations().msWordTemplatePublish(branch, template, headArtifact);
+   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, String userEmail) {
+      return defineApi.getMSWordOperations().msWordTemplatePublish(branch, template, headArtifact, userEmail);
    }
 
    @Override

@@ -30,7 +30,7 @@ public interface MSWordOperations {
 
    public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data);
 
-   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact);
+   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, String userEmail);
 
    public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal);
 

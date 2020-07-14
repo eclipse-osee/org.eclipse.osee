@@ -44,10 +44,10 @@ public interface RenderEndpoint {
    Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
 
    @GET
-   @Path("msWordTemplatePublish/{branch}/{template}/{artifact}")
+   @Path("msWordTemplatePublish/{branch}/{template}/{artifact}/{userEmail}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
-   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact);
+   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("userEmail") String userEmail);
 
    @GET
    @Path("goalWorkflowPublish/{template}/{goal}")
