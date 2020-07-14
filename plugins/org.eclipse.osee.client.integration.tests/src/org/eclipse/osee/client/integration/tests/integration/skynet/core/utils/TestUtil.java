@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -40,8 +39,6 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public final class TestUtil {
-
-   private final static Random randomGenerator = new Random();
 
    private TestUtil() {
       // Utility Class - class should only have static methods

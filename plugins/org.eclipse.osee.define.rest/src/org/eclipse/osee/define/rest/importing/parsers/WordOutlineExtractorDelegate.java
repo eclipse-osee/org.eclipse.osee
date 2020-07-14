@@ -46,9 +46,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       Pattern.compile(".*<w:pStyle w:val=\"TOC\\d+?\"/>.*", Pattern.DOTALL);
    private boolean possibleTableOfContents;
 
-   private static String detectedTableOfContentsReportError =
-      "Table of Contents found in document. Please remove per the spec on: \n http://wiki.eclipse.org/OSEE/HowTo/ImportArtifacts";
-
    public enum ContentType {
       CONTENT,
       OUTLINE_TITLE

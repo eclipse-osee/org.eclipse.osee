@@ -162,8 +162,10 @@ public abstract class Rule {
                }
             }
          } else {
+            classLoader.close();
             throw new IllegalArgumentException(ruleName + " is not of type text.Rule.");
          }
+         classLoader.close();
       } catch (InstantiationException ex) {
          System.out.println(ex);
       } catch (IllegalAccessException ex) {

@@ -17,5 +17,5 @@ package org.eclipse.osee.orcs.core.internal.tuple;
  * @author Angel Avila
  */
 public class Tuple {
-
+   //do nothing
 }

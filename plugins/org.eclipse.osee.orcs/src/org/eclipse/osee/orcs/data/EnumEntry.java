@@ -20,5 +20,5 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
  * @author Roberto E. Escobar
  */
 public interface EnumEntry extends NamedId, HasDescription {
-
+   //do nothing
 }

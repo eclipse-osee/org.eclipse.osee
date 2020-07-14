@@ -53,6 +53,7 @@ public class OrcsApplication extends Application {
    }
 
    public void setEventAdmin(EventAdmin eventAdmin) {
+      //do nothing
    }
 
    public void setResourceManager(IResourceManager resourceManager) {

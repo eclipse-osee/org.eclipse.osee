@@ -129,8 +129,8 @@ public final class ValidatingSafetyInformationAccumulator {
       while (ssrIter.hasNext()) {
          ArtifactReadable subsystemRequirement = ssrIter.next();
 
-         List<ArtifactReadable> unfilteredSoftwareRequirements =
-            Lists.newArrayList(subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
+         List<ArtifactReadable> unfilteredSoftwareRequirements = Lists.newArrayList(
+            subsystemRequirement.getRelated(CoreRelationTypes.RequirementTrace_LowerLevelRequirement));
 
          List<ArtifactReadable> localSoftwareRequirements = new ArrayList<>();
          for (ArtifactReadable art : unfilteredSoftwareRequirements) {
@@ -275,9 +275,6 @@ public final class ValidatingSafetyInformationAccumulator {
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat, String[] currentRowValues) throws IOException {
       writeCell(softwareRequirement.getName(), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
-      String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, sevCat,
-         CoreAttributeTypes.IDAL, CoreRelationTypes.RequirementTrace_HigherLevelRequirement, CoreAttributeTypes.IDAL,
-         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""),

@@ -40,7 +40,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Branden W. Phillips
  */
 public class RelationOrderCompareItem extends CompareItem {
-   private static final Pattern orderListPattern = Pattern.compile("<OrderList>");
    private static final Pattern editPattern = Pattern.compile("EDIT START[\\s\\S]+?EDIT END");
    private static final Pattern idPattern = Pattern.compile("'\\d+'");
    private final XResultData results;

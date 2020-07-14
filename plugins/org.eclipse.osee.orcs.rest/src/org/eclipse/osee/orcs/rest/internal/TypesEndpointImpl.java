@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -53,13 +52,11 @@ public class TypesEndpointImpl implements TypesEndpoint {
    private final OrcsApi orcsApi;
    private final JdbcService jdbcService;
    private final OrcsTypes orcsTypes;
-   private final OrcsTokenService tokenService;
 
    public TypesEndpointImpl(OrcsApi orcsApi, JdbcService jdbcService) {
       this.orcsApi = orcsApi;
       this.jdbcService = jdbcService;
       this.orcsTypes = orcsApi.getOrcsTypes();
-      this.tokenService = orcsApi.tokenService();
    }
 
    @Override

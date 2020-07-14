@@ -80,7 +80,6 @@ public class RoughToRealArtifactOperation {
       if (deleteUnmatchedArtifacts) {
          this.unmatchedArtifacts = destinationArtifact.getDescendants();
       }
-      int count = 0;
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          ArtifactId child = createArtifact(roughArtifact, destinationArtifact);
          createdArtifacts.add(child);
