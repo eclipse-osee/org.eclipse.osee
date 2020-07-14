@@ -33,6 +33,9 @@ import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRA
 import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
 import static org.eclipse.osee.framework.core.util.RendererOption.VIEW;
 import static org.eclipse.osee.framework.core.util.RendererOption.WAS_BRANCH;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,9 +84,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Jeff C. Phillips
@@ -240,19 +240,19 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
          String result = ServiceUtil.getOseeClient().runOrcsScript(orcsQuery);
-         JSONObject jsonObject = new JSONObject(result);
-         JSONArray results = jsonObject.getJSONArray("results");
-         if (results.length() >= 1 && branch != null) {
-            JSONArray artifactIds = results.getJSONObject(0).getJSONArray("artifacts");
-            JSONObject id = null;
-            for (int i = 0; i < artifactIds.length(); i++) {
-               id = artifactIds.getJSONObject(i);
-               ArtifactId artifactId = ArtifactId.valueOf(id.getLong("id"));
-               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
-               artifacts.add(artifact);
-            }
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(result);
+         JsonNode results = OM.readTree(jsonObject.findValue("results").toString());
+         if (results != null && branch != null) {
+            JsonNode artifactsIds = results.findValue("artifacts");
+            JsonNode id = null;
+
+            id = OM.readTree(artifactsIds.toString());
+            ArtifactId artifactId = ArtifactId.valueOf(id.findValue("id").asLong());
+            Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
+            artifacts.add(artifact);
          }
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
       return artifacts;

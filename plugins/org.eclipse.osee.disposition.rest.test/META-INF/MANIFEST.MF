@@ -9,7 +9,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.disposition.rest
 Require-Bundle: org.hamcrest.core,
  org.mockito;visibility:=reexport
-Import-Package: org.apache.cxf.jaxrs.impl,
+Import-Package: com.fasterxml.jackson.databind,
+ org.apache.cxf.jaxrs.impl,
  org.eclipse.osee.framework.core.executor,
  org.json,
  org.junit,

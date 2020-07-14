@@ -69,6 +69,16 @@ public final class JaxRsApiImpl implements JaxRsApi {
       baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
    }
 
+   public void instantiate() {
+      SimpleModule module = JsonUtil.createModule();
+
+      mapper = JsonUtil.createStandardDateObjectMapper(module);
+      typeFactory = mapper.getTypeFactory();
+      factory = JaxRsClientRuntime.getClientFactoryInstance(mapper, tokenService);
+      baseUrl = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, OseeClient.DEFAULT_URL);
+
+   }
+
    @Override
    public JsonNode readTree(String json) {
       return JsonUtil.readTree(mapper, json);

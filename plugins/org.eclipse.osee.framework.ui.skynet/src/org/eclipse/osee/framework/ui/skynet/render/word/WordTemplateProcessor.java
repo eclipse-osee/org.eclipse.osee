@@ -19,6 +19,9 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTempl
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -81,9 +84,6 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.swt.program.Program;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Robert A. Fisher
@@ -201,14 +201,18 @@ public class WordTemplateProcessor {
       try {
          attributeElements.clear();
          metadataElements.clear();
-         JSONObject jsonObject = new JSONObject(masterTemplateOptions);
-         elementType = jsonObject.getString("ElementType");
+         //JSONObject jsonObject = new JSONObject(masterTemplateOptions);
+         HashMap jsonMap = new HashMap();
+         ObjectMapper OM = new ObjectMapper();
+
+         JsonNode node = OM.readTree(masterTemplateOptions);
+         elementType = node.get("ElementType").asText();
          if (elementType.equals(ARTIFACT)) {
             parseAttributeOptions(masterTemplateOptions);
             parseMetadataOptions(masterTemplateOptions);
             parseOutliningOptions(masterTemplateOptions);
          }
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
       // Need to check if all attributes will be published.  If so set the AllAttributes option.
@@ -372,9 +376,9 @@ public class WordTemplateProcessor {
             wordMl.addWordMl(templateContent.substring(lastEndIndex, matcher.start()));
             lastEndIndex = matcher.end();
 
-            JSONObject jsonObject = new JSONObject(templateOptions);
-            elementType = jsonObject.getString("ElementType");
-
+            ObjectMapper OM = new ObjectMapper();
+            JsonNode node = OM.readTree(templateOptions);
+            elementType = node.get("ElementType").asText();
             if (elementType.equals(ARTIFACT)) {
                parseOutliningOptions(templateOptions);
 
@@ -400,7 +404,7 @@ public class WordTemplateProcessor {
 
       } catch (CharacterCodingException ex) {
          OseeCoreException.wrapAndThrow(ex);
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
 
@@ -409,23 +413,24 @@ public class WordTemplateProcessor {
 
    private void parseNestedTemplateOptions(String templateOptions, IContainer folder, WordMLProducer wordMl, PresentationType presentationType) {
       try {
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         JSONArray nestedTemplateOptions = jsonObject.getJSONArray("NestedTemplates");
-         JSONObject options = null;
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         JsonNode nestedTemplateOptions = jsonObject.findValue("NestedTemplates");
+         JsonNode options = null;
 
-         if (nestedCount < nestedTemplateOptions.length()) {
-            options = nestedTemplateOptions.getJSONObject(nestedCount);
+         if (nestedTemplateOptions != null) {
+
             nestedCount++;
-            outlineType = options.getString("OutlineType");
+            outlineType = nestedTemplateOptions.findValue("OutlineType").asText();
             if (outlineType.isEmpty()) {
                outlineType = null;
             }
-            sectionNumber = options.getString("SectionNumber");
-            subDocName = options.getString("SubDocName");
-            key = options.getString("Key");
+            sectionNumber = nestedTemplateOptions.findValue("SectionNumber").asText();
+            subDocName = nestedTemplateOptions.findValue("SubDocName").asText();
+            key = nestedTemplateOptions.findValue("Key").asText();
             // rendererOption is either ID or NAME
             RendererOption rendererOption = RendererOption.valueOf(key.toUpperCase());
-            value = options.getString("Value");
+            value = nestedTemplateOptions.findValue("Value").asText();
 
             renderer.updateOption(rendererOption, value);
 
@@ -458,7 +463,7 @@ public class WordTemplateProcessor {
             wordMl.createHyperLinkDoc(subDocFileName);
          }
 
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
@@ -466,19 +471,19 @@ public class WordTemplateProcessor {
    private List<Artifact> parseOrcsQueryResult(String result, BranchId branch) {
       ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
-         JSONObject jsonObject = new JSONObject(result);
-         JSONArray results = jsonObject.getJSONArray("results");
-         if (results.length() >= 1) {
-            JSONArray artifactIds = results.getJSONObject(0).getJSONArray("artifacts");
-            JSONObject id = null;
-            for (int i = 0; i < artifactIds.length(); i++) {
-               id = artifactIds.getJSONObject(i);
-               ArtifactId artifactId = ArtifactId.valueOf(id.getLong("id"));
-               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
-               artifacts.add(artifact);
-            }
+
+         HashMap jsonMap = new HashMap();
+         ObjectMapper OM = new ObjectMapper();
+
+         JsonNode jsonObject = OM.readTree(result);
+         JsonNode results = jsonObject.findValue("results");
+         if (results != null) {
+            JsonNode artifactIds = results.findValue("artifacts");
+            ArtifactId artifactId = ArtifactId.valueOf(artifactIds.findValue("id").asLong());
+            Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
+            artifacts.add(artifact);
          }
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
 
@@ -489,75 +494,70 @@ public class WordTemplateProcessor {
       try {
          attributeElements.clear();
 
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         JSONArray attributeOptions = jsonObject.getJSONArray("AttributeOptions");
-         JSONObject options = null;
+         ObjectMapper OM = new ObjectMapper();
 
-         for (int i = 0; i < attributeOptions.length(); i++) {
-            options = attributeOptions.getJSONObject(i);
-            attributeType = options.getString("AttrType");
-            attributeLabel = options.getString("Label");
-            formatPre = options.getString("FormatPre");
-            formatPost = options.getString("FormatPost");
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         JsonNode attributeOptions = jsonObject.findValue("AttributeOptions");
+         attributeType = attributeOptions.findValue("AttrType").asText();
+         attributeLabel = attributeOptions.findValue("Label").asText();
+         formatPre = attributeOptions.findValue("FormatPre").asText();
+         formatPost = attributeOptions.findValue("FormatPost").asText();
 
-            AttributeElement attrElement = new AttributeElement();
+         AttributeElement attrElement = new AttributeElement();
 
-            if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
-               attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
-               attributeElements.add(attrElement);
-            }
-
+         if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
+            attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
+            attributeElements.add(attrElement);
          }
-      } catch (JSONException ex) {
+
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
 
    private void parseOutliningOptions(String templateOptions) {
       try {
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         JSONArray optionsArray = jsonObject.getJSONArray("OutliningOptions");
-         JSONObject options = optionsArray.getJSONObject(0);
+         ObjectMapper OM = new ObjectMapper();
 
-         outlining = options.getBoolean("Outlining");
-         recurseChildren = options.getBoolean("RecurseChildren");
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         JsonNode attributeOptions = jsonObject.findValue("OutliningOptions");
+         outlining = attributeOptions.findValue("Outlining").asBoolean();
+         recurseChildren = attributeOptions.findValue("RecurseChildren").asBoolean();
          try {
-            includeEmptyHeaders = options.getBoolean("IncludeEmptyHeaders");
-         } catch (JSONException ex) {
+            includeEmptyHeaders = attributeOptions.findValue("IncludeEmptyHeaders").asBoolean();
+         } catch (Exception ex) {
             // The template file json may not have this defined, default is false
             includeEmptyHeaders = false;
          }
-         outlineNumber = options.getString("OutlineNumber");
-         String headingAttrType = options.getString("HeadingAttributeType");
+         outlineNumber = attributeOptions.findValue("OutlineNumber").asText();
+         String headingAttrType = attributeOptions.findValue("HeadingAttributeType").asText();
          headingAttributeType = AttributeTypeManager.getType(headingAttrType);
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
 
    private void parseMetadataOptions(String metadataOptions) {
       try {
-         JSONObject jsonObject = new JSONObject(metadataOptions);
-         JSONObject options = null;
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(metadataOptions);
+         JsonNode options = null;
 
          if (!jsonObject.has("MetadataOptions")) {
             return;
          }
 
-         JSONArray optionsArray = jsonObject.getJSONArray("MetadataOptions");
-         for (int i = 0; i < optionsArray.length(); i++) {
-            options = optionsArray.getJSONObject(i);
+         JsonNode optionsArray = jsonObject.findValue("MetadataOptions");
 
-            metadataType = options.getString("Type");
-            metadataFormat = options.getString("Format");
-            metadataLabel = options.getString("Label");
+         metadataType = optionsArray.findValue("Type").asText();
+         metadataFormat = optionsArray.findValue("Format").asText();
+         metadataLabel = optionsArray.findValue("Label").asText();
 
-            MetadataElement metadataElement = new MetadataElement();
+         MetadataElement metadataElement = new MetadataElement();
 
-            metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
-            metadataElements.add(metadataElement);
-         }
-      } catch (JSONException ex) {
+         metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
+         metadataElements.add(metadataElement);
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
@@ -768,7 +768,7 @@ public class WordTemplateProcessor {
                      publishInLine, footer);
                }
             }
-         } else {            
+         } else {
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,

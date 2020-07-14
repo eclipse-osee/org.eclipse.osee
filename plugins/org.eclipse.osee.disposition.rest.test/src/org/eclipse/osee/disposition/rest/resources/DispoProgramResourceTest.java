@@ -16,12 +16,11 @@ package org.eclipse.osee.disposition.rest.resources;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,7 +42,7 @@ public class DispoProgramResourceTest {
    }
 
    @Test
-   public void testGetAll() throws JSONException {
+   public void testGetAll() throws Exception {
       // No Sets
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.emptyList());
 
@@ -55,9 +54,12 @@ public class DispoProgramResourceTest {
       when(dispoApi.getDispoPrograms()).thenReturn(Collections.singletonList(SYSTEM_ROOT));
 
       Response oneSetResponse = resource.getAllPrograms();
-      JSONArray entity = new JSONArray((String) oneSetResponse.getEntity());
-      JSONObject programFromEntity = entity.getJSONObject(0);
+      ObjectMapper OM = new ObjectMapper();
+      String entityString = (String) oneSetResponse.getEntity();
+      String noBrackets = entityString.substring(1, entityString.length() - 1);
+      JsonNode programFromEntity = OM.readTree(noBrackets);
+
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(SYSTEM_ROOT.getIdString(), programFromEntity.getString("value"));
+      assertEquals(SYSTEM_ROOT.getIdString(), programFromEntity.get("value").asText());
    }
 }

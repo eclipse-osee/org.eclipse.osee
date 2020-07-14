@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,10 +22,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.eclipse.osee.jaxrs.client.JaxRsApiImpl;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +34,7 @@ import org.json.JSONObject;
 public final class UserResource {
 
    private final IAtsUserService userService;
+   private static JaxRsApi jaxRsApi;
 
    public UserResource(IAtsUserService userService) {
       this.userService = userService;
@@ -44,16 +47,26 @@ public final class UserResource {
       if (Strings.isValid(activeStr)) {
          active = Active.valueOf(activeStr);
       }
-      JSONArray arr = new JSONArray();
+
+      JaxRsApiImpl impl = new JaxRsApiImpl();
+      impl.instantiate();
+      String implJson = "";
+
+      HashMap jsonArray = new HashMap();
+      LinkedList jsonList = new LinkedList();
       for (AtsUser user : userService.getUsers(active)) {
-         JSONObject obj = new JSONObject();
-         obj.put("id", user.getUserId());
-         obj.put("name", user.getName());
-         obj.put("email", user.getEmail());
-         obj.put("active", user.isActive());
-         obj.put("accountId", user.getStoreObject().getId());
-         arr.put(obj);
+
+         jsonArray.put("id", user.getUserId());
+         jsonArray.put("name", user.getName());
+         jsonArray.put("email", user.getEmail());
+         jsonArray.put("active", user.isActive());
+         jsonArray.put("accountId", user.getStoreObject().getId());
+         String jsonString = impl.toJson(jsonArray);
+         implJson = impl.toJson(jsonList);
+         jsonList.add(jsonString);
+
       }
-      return arr.toString();
+
+      return jsonList.toString();
    }
 }

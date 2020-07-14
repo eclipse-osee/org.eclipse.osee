@@ -30,6 +30,9 @@ import static org.eclipse.osee.framework.core.util.ReportConstants.CONTINUOUS;
 import static org.eclipse.osee.framework.core.util.ReportConstants.FTR;
 import static org.eclipse.osee.framework.core.util.ReportConstants.PAGE_SZ;
 import static org.eclipse.osee.framework.core.util.ReportConstants.PG_SZ;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,9 +73,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Branden W. Phillips
@@ -290,31 +290,37 @@ public class MSWordTemplatePublisher {
 
    protected void setElementType(String templateOptions) {
       try {
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         elementType = jsonObject.getString("ElementType");
-      } catch (JSONException ex) {
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         //   JSONObject jsonObject = new JSONObject(templateOptions);
+
+         elementType = jsonObject.findValue("ElementType").toString();
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
 
    protected void parseOutliningOptions(String templateOptions) {
       try {
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         JSONArray optionsArray = jsonObject.getJSONArray("OutliningOptions");
-         JSONObject options = optionsArray.getJSONObject(0);
+         //JSONObject jsonObject = new JSONObject(templateOptions);
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         JsonNode optionsArray = jsonObject.findValue("OutliningOptions");
+         //JSONArray optionsArray = jsonObject.getJSONArray("OutliningOptions");
+         //JSONObject options = optionsArray.getJSONObject(0);
 
-         outlining = options.getBoolean("Outlining");
-         recurseChildren = options.getBoolean("RecurseChildren");
+         outlining = optionsArray.findValue("Outlining").asBoolean();
+         recurseChildren = optionsArray.findValue("RecurseChildren").asBoolean();
          try {
-            includeEmptyHeaders = options.getBoolean("IncludeEmptyHeaders");
-         } catch (JSONException ex) {
+            includeEmptyHeaders = optionsArray.findValue("IncludeEmptyHeaders").asBoolean();
+         } catch (Exception ex) {
             // The template file json may not have this defined, default is false
             includeEmptyHeaders = false;
          }
-         outlineNumber = options.getString("OutlineNumber");
-         String headingAttrType = options.getString("HeadingAttributeType");
+         outlineNumber = optionsArray.findValue("OutlineNumber").toString();
+         String headingAttrType = optionsArray.findValue("HeadingAttributeType").toString();
          headingAttributeType = orcsApi.getOrcsTypes().getAttributeTypes().getByName(headingAttrType);
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
@@ -322,25 +328,27 @@ public class MSWordTemplatePublisher {
    protected void parseAttributeOptions(String templateOptions) {
       try {
          attributeElements.clear();
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(templateOptions);
+         // JSONObject jsonObject = new JSONObject(templateOptions);
+         JsonNode options = jsonObject.findValue("AttributeOptions");
+         //JSONArray attributeOptions = jsonObject.getJSONArray("AttributeOptions");
+         //JSONObject options = null;
 
-         JSONObject jsonObject = new JSONObject(templateOptions);
-         JSONArray attributeOptions = jsonObject.getJSONArray("AttributeOptions");
-         JSONObject options = null;
+         //for (int i = 0; i < attributeOptions.length(); i++) {
+         // options = attributeOptions.getJSONObject(i);
+         String attributeType = options.findValue("AttrType").toString();
+         String attributeLabel = options.findValue("Label").toString();
+         String formatPre = options.findValue("FormatPre").toString();
+         String formatPost = options.findValue("FormatPost").toString();
 
-         for (int i = 0; i < attributeOptions.length(); i++) {
-            options = attributeOptions.getJSONObject(i);
-            String attributeType = options.getString("AttrType");
-            String attributeLabel = options.getString("Label");
-            String formatPre = options.getString("FormatPre");
-            String formatPost = options.getString("FormatPost");
-
-            AttributeElement attrElement = new AttributeElement();
-            boolean typeExists = orcsApi.getOrcsTypes().getAttributeTypes().typeExists(attributeType);
-            if (attributeType.equals("*") || typeExists) {
-               attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
-               attributeElements.add(attrElement);
-            }
+         AttributeElement attrElement = new AttributeElement();
+         boolean typeExists = orcsApi.getOrcsTypes().getAttributeTypes().typeExists(attributeType);
+         if (attributeType.equals("*") || typeExists) {
+            attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
+            attributeElements.add(attrElement);
          }
+         //}
          // Need to check if all attributes will be published.  If so set the AllAttributes option.
          // Assumes that all (*) will not be used when other attributes are specified
          publishingOptions.allAttributes = false;
@@ -350,34 +358,35 @@ public class MSWordTemplatePublisher {
                publishingOptions.allAttributes = true;
             }
          }
-      } catch (JSONException ex) {
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
 
    protected void parseMetadataOptions(String metadataOptions) {
       try {
-         JSONObject jsonObject = new JSONObject(metadataOptions);
-         JSONObject options = null;
-
+         // JSONObject jsonObject = new JSONObject(metadataOptions);
+         //    JSONObject options = null;
+         ObjectMapper OM = new ObjectMapper();
+         JsonNode jsonObject = OM.readTree(metadataOptions);
          if (!jsonObject.has("MetadataOptions")) {
             return;
          }
 
-         JSONArray optionsArray = jsonObject.getJSONArray("MetadataOptions");
-         for (int i = 0; i < optionsArray.length(); i++) {
-            options = optionsArray.getJSONObject(i);
+         JsonNode optionsArray = jsonObject.findValue("MetadataOptions");
+         // for (int i = 0; i < optionsArray.length(); i++) {
+         //  options = optionsArray.getJSONObject(i);
 
-            String metadataType = options.getString("Type");
-            String metadataFormat = options.getString("Format");
-            String metadataLabel = options.getString("Label");
+         String metadataType = optionsArray.findValue("Type").toString();
+         String metadataFormat = optionsArray.findValue("Format").toString();
+         String metadataLabel = optionsArray.findValue("Label").toString();
 
-            MetadataElement metadataElement = new MetadataElement();
+         MetadataElement metadataElement = new MetadataElement();
 
-            metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
-            metadataElements.add(metadataElement);
-         }
-      } catch (JSONException ex) {
+         metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
+         metadataElements.add(metadataElement);
+         //}
+      } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
    }
