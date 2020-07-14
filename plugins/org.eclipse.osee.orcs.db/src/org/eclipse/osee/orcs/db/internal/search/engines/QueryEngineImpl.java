@@ -197,6 +197,10 @@ public class QueryEngineImpl implements QueryEngine {
          String value = stmt.getString("value");
          String uri = stmt.getString("uri");
 
+         if (artId.equals(96)) {
+            System.err.println(getClass().getSimpleName());
+         }
+
          if (otherArtId == 0) {
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             Attribute<?> attribute =

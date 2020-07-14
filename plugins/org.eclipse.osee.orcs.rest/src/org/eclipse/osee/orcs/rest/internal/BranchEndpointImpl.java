@@ -23,8 +23,12 @@ import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -43,6 +47,9 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonAttribute;
+import org.eclipse.osee.framework.core.data.JsonRelation;
+import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -64,6 +71,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -829,5 +837,52 @@ public class BranchEndpointImpl implements BranchEndpoint {
       IOseeBranch branchToken =
          branch.isValid() ? IOseeBranch.create(branch, branchName) : IOseeBranch.create(branchName);
       return branchOps.createProgramBranch(branchToken, account);
+   }
+
+   @Override
+   public JsonRelations getRelationsByType(BranchId branch, String relationTypes) {
+
+      String query = "select * from osee_relation_link rel, osee_txs txs " //
+         + "where txs.branch_id = ? " //
+         + "and rel.gamma_id = txs.gamma_id " //
+         + "and rel_link_type_id = ? " //
+         + "and txs.mod_type in (1,2,6) " //
+         + "and tx_current = 1";
+
+      JsonRelations relations = new JsonRelations();
+      Set<ArtifactId> artIds = new HashSet<>();
+      for (String relTypeId : relationTypes.split(",")) {
+         relTypeId = relTypeId.replaceAll(" ", "");
+         if (Strings.isNumeric(relTypeId)) {
+            orcsApi.getJdbcService().getClient().runQuery(chStmt -> relations.add(getJaxRelation(chStmt, artIds)),
+               query, branch.getIdString(), relTypeId);
+         }
+      }
+
+      Map<ArtifactId, ArtifactReadable> artifactMap = new HashMap<ArtifactId, ArtifactReadable>();
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(branch).andIds(artIds).getResults().getList()) {
+         artifactMap.put(art, art);
+      }
+      for (JsonRelation rel : relations.getRelations()) {
+         RelationTypeToken relationType = orcsApi.tokenService().getRelationType(Long.valueOf(rel.getTypeId()));
+         rel.setTypeName(relationType.getName());
+         ArtifactReadable art = artifactMap.get(ArtifactId.valueOf(rel.getArtA()));
+         rel.setArtAName(art.getName());
+         ArtifactReadable art2 = artifactMap.get(ArtifactId.valueOf(rel.getArtB()));
+         rel.setArtBName(art2.getName());
+      }
+      return relations;
+   }
+
+   private JsonRelation getJaxRelation(JdbcStatement chStmt, Set<ArtifactId> artIds) {
+      JsonRelation rel = new JsonRelation();
+      String artA = chStmt.getString("a_art_id");
+      artIds.add(ArtifactId.valueOf(artA));
+      rel.setArtA(artA);
+      String artB = chStmt.getString("b_art_id");
+      artIds.add(ArtifactId.valueOf(artB));
+      rel.setArtB(artB);
+      rel.setTypeId(chStmt.getString("rel_link_type_id"));
+      return rel;
    }
 }

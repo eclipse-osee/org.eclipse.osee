@@ -20,8 +20,16 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
+import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.junit.Assert;
@@ -62,6 +70,26 @@ public class BranchEndpointTest {
    public void getArtifactDetailsByType() {
       List<JsonArtifact> artifacts = branchEndpoint.getArtifactDetailsByType(DemoBranches.SAW_Bld_1, "23");
       Assert.assertFalse(artifacts.isEmpty());
+   }
+
+   @Test
+   public void getRelationsByType() {
+      JsonRelations relations =
+         branchEndpoint.getRelationsByType(CoreBranches.COMMON, CoreRelationTypes.SupportingInfo.getIdString());
+      Assert.assertTrue(relations.getRelations().isEmpty());
+
+      User joe = UserManager.getUser();
+      Artifact folder = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.OseeConfiguration, CoreBranches.COMMON);
+      joe.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, folder);
+      joe.persist(getClass().getSimpleName());
+
+      relations =
+         branchEndpoint.getRelationsByType(CoreBranches.COMMON, CoreRelationTypes.SupportingInfo.getIdString());
+      Assert.assertEquals(1, relations.getRelations().size());
+      Assert.assertEquals(joe.getIdString(), relations.getRelations().iterator().next().getArtA());
+      Assert.assertEquals(joe.getName(), relations.getRelations().iterator().next().getArtAName());
+      Assert.assertEquals(folder.getIdString(), relations.getRelations().iterator().next().getArtB());
+      Assert.assertEquals(folder.getName(), relations.getRelations().iterator().next().getArtBName());
    }
 
 }
