@@ -25,6 +25,7 @@ import org.eclipse.osee.define.rest.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.GitEndpointImpl;
 import org.eclipse.osee.define.rest.ImportEndpointImpl;
 import org.eclipse.osee.define.rest.RenderEndpointImpl;
+import org.eclipse.osee.define.rest.ReportEndpointImpl;
 import org.eclipse.osee.define.rest.TraceabilityEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -71,6 +72,7 @@ public final class DefineApplication extends Application {
       singletons.add(new RenderEndpointImpl(defineApi));
       singletons.add(new DefineBranchEndpointImpl(jdbcClient, orcsApi));
       singletons.add(new ImportEndpointImpl(defineApi));
+      singletons.add(new ReportEndpointImpl(defineApi));
    }
 
    @Override

@@ -60,11 +60,6 @@ public interface TraceabilityEndpoint {
    String getSinglePageApp();
 
    @GET
-   @Path("master/{branch}/view/{view}/template/{templateArt}")
-   @Produces(MediaType.APPLICATION_XML)
-   Response getTraceFromMasterTemplate(@PathParam("branch") BranchId branch, @DefaultValue("-1") @PathParam("view") ArtifactId view, @DefaultValue("-1") @PathParam("templateArt") ArtifactId templateArt);
-
-   @GET
    @Path("pidsVerification")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_XML)

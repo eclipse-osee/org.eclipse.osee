@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  * @author David W. Miller
  */
 
-public final class PublishMasterTemplateReport implements StreamingOutput {
+public final class PublishTemplateReport implements StreamingOutput {
    private final QueryFactory queryApi;
    private final IOseeBranch branch;
    private final ArtifactId view;
@@ -45,7 +45,7 @@ public final class PublishMasterTemplateReport implements StreamingOutput {
    private ExcelXmlWriter writer;
    private final GenericReportBuilder report;
 
-   public PublishMasterTemplateReport(ActivityLog activityLog, OrcsApi orcsApi, BranchId branch, ArtifactId view, ArtifactId templateArt) {
+   public PublishTemplateReport(ActivityLog activityLog, OrcsApi orcsApi, BranchId branch, ArtifactId view, ArtifactId templateArt) {
       this.activityLog = activityLog;
       this.queryApi = orcsApi.getQueryFactory();
       this.branch = orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().getExactlyOne();
