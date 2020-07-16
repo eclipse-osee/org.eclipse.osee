@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.OrcsTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +23,7 @@ public interface OrcsDataStore {
 
    OrcsTypesDataStore getTypesDataStore();
 
-   DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService);
+   DataModule createDataModule(OrcsTokenService tokenService);
 
    QueryEngineIndexer getQueryEngineIndexer();
 

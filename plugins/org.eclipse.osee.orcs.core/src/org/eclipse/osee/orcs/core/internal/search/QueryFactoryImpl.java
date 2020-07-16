@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -40,10 +39,9 @@ public class QueryFactoryImpl implements QueryFactory {
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
-   private final OrcsTypes orcsTypes;
    private final OrcsApi orcsApi;
 
-   public QueryFactoryImpl(OrcsApi orcsApi, CallableQueryFactory artQueryFactory, BranchCriteriaFactory branchCriteriaFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
+   public QueryFactoryImpl(OrcsApi orcsApi, CallableQueryFactory artQueryFactory, BranchCriteriaFactory branchCriteriaFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine, OrcsTokenService tokenService) {
       this.orcsApi = orcsApi;
       this.artQueryFactory = artQueryFactory;
       this.branchCriteriaFactory = branchCriteriaFactory;
@@ -51,7 +49,6 @@ public class QueryFactoryImpl implements QueryFactory {
       this.tupleQuery = tupleQuery;
       this.applicabilityDsQuery = applicabilityDsQuery;
       this.queryEngine = queryEngine;
-      this.orcsTypes = orcsTypes;
       this.tokenService = tokenService;
    }
 

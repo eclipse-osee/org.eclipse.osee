@@ -90,14 +90,11 @@ public class OrcsTypeChangeListener implements IArtifactEventListener {
          JaxRsWebTarget target = jaxRsClient.target(atsUri);
          if (target != null) {
             TypesEndpoint typesEndpoint = target.newProxy(TypesEndpoint.class);
-            if (typesEndpoint != null) {
-               typesEndpoint.invalidateCaches();
-            }
+            typesEndpoint.invalidateCaches();
          }
          ServiceUtil.getOseeCacheService().reloadTypes();
       } catch (Exception ex) {
          // do nothing
       }
    }
-
 }

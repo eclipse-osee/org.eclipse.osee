@@ -24,13 +24,11 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.MetadataExportItem;
-import org.eclipse.osee.orcs.db.internal.exchange.export.OseeTypeModelExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 public class ExportItemFactory {
@@ -72,14 +70,12 @@ public class ExportItemFactory {
    private final SystemProperties preferences;
    private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
-   private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, SystemProperties preferences, JdbcClient jdbcClient, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, SystemProperties preferences, JdbcClient jdbcClient, IResourceManager resourceManager) {
       this.logger = logger;
       this.preferences = preferences;
       this.jdbcClient = jdbcClient;
       this.resourceManager = resourceManager;
-      this.orcsTypes = orcsTypes;
    }
 
    public Log getLogger() {
@@ -94,10 +90,6 @@ public class ExportItemFactory {
       return resourceManager;
    }
 
-   private OrcsTypes getOrcsTypes() {
-      return orcsTypes;
-   }
-
    public List<AbstractExportItem> createTaskList(Long branchJoinId, PropertyStore options) {
       List<AbstractExportItem> items = new ArrayList<>();
 
@@ -107,7 +99,6 @@ public class ExportItemFactory {
 
       items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getDbService()));
-      items.add(new OseeTypeModelExportItem(logger, getOrcsTypes()));
 
       addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
       addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);

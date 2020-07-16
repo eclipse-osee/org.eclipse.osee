@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
@@ -41,13 +40,12 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
-   private final OrcsTypes orcsTypes;
    private final OrcsApi orcsApi;
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
    }
 
-   public QueryModule(OrcsApi orcsApi, Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTypes orcsTypes, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
+   public QueryModule(OrcsApi orcsApi, Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, OrcsTokenService tokenService, ExternalArtifactManager proxyManager) {
       this.orcsApi = orcsApi;
       this.queryEngine = queryEngine;
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
@@ -58,12 +56,11 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       tupleQuery = queryEngine.createTupleQuery();
       applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
       this.tokenService = tokenService;
-      this.orcsTypes = orcsTypes;
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
       return new QueryFactoryImpl(orcsApi, artQueryFactory, branchCriteriaFactory, txCriteriaFactory, tupleQuery,
-         applicabilityDsQuery, queryEngine, orcsTypes, tokenService);
+         applicabilityDsQuery, queryEngine, tokenService);
    }
 
    public CallableQueryFactory getArtQueryFactory() {

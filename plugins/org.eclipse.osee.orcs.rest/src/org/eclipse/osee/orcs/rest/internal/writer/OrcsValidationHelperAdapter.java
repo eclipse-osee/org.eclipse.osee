@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -28,12 +27,10 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    private final QueryFactory queryFactory;
-   private final OrcsTypes orcsTypes;
    private final OrcsTokenService tokenService;
 
    public OrcsValidationHelperAdapter(OrcsApi orcsApi) {
       queryFactory = orcsApi.getQueryFactory();
-      orcsTypes = orcsApi.getOrcsTypes();
       tokenService = orcsApi.tokenService();
    }
 

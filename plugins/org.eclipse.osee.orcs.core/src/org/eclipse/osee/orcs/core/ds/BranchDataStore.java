@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -51,9 +50,9 @@ public interface BranchDataStore {
 
    List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, QueryFactory queryFactory);
 
-   Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName);
+   Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options, String exportName);
 
-   Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
+   Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
 
    Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
 

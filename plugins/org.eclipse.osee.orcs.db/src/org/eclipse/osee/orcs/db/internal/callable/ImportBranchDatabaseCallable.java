@@ -13,12 +13,8 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -39,7 +34,6 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -66,12 +60,8 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI> {
 
    private final SystemProperties preferences;
-
    private final IResourceManager resourceManager;
-   private final OrcsTypes orcsTypes;
-
    private final SavePointManager savePointManager;
-
    private final URI exchangeFile;
    private final List<? extends BranchId> selectedBranches;
    private final PropertyStore options;
@@ -83,11 +73,10 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private IOseeExchangeDataProvider exportDataProvider;
    private ExchangeDataProcessor exchangeDataProcessor;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemProperties preferences, IResourceManager resourceManager, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.resourceManager = resourceManager;
-      this.orcsTypes = orcsTypes;
       this.savePointManager = new SavePointManager(jdbcClient);
       this.exchangeFile = exchangeFile;
       this.selectedBranches = selectedBranches;
@@ -105,9 +94,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          savePointManager.addCurrentSavePointToProcessed();
 
          setup();
-
-         URI modelUri = exportDataProvider.getFile(manifestHandler.getTypeModel()).toURI();
-         loadTypeModel(modelUri);
 
          ImportBranchesTx importBranchesTx = new ImportBranchesTx(getLogger(), getSession(), getJdbcClient(),
             savePointManager, manifestHandler.getBranchFile());
@@ -252,44 +238,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
    }
 
-   private void loadTypeModel(final URI modelUri) throws Exception {
-      IResource typesResource = new IResource() {
-
-         @Override
-         public InputStream getContent() {
-            try {
-               URL url = modelUri.toURL();
-               return new BufferedInputStream(url.openStream());
-            } catch (IOException ex) {
-               throw OseeCoreException.wrap(ex);
-            }
-         }
-
-         @Override
-         public URI getLocation() {
-            return modelUri;
-         }
-
-         @Override
-         public String getName() {
-            String name = modelUri.toASCIIString();
-            int index = name.lastIndexOf("/");
-            if (index > 0) {
-               name = name.substring(index + 1, name.length());
-            }
-            return name;
-         }
-
-         @Override
-         public boolean isCompressed() {
-            return false;
-         }
-      };
-
-      getLogger().info("Updating Type Model with [%s]", typesResource.getLocation());
-      orcsTypes.loadTypes(typesResource);
-      getLogger().info("Type Model Import complete");
-   }
    private final class CommitImportSavePointsTx extends AbstractDatastoreTxCallable<Boolean> {
 
       private static final String IMPORT_ID_SEQ = "SKYNET_IMPORT_ID_SEQ";

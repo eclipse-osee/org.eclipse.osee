@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -157,17 +156,16 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName) {
-            ExportItemFactory factory =
-               new ExportItemFactory(logger, preferences, jdbcClient, resourceManager, orcsTypes);
+         public Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options, String exportName) {
+            ExportItemFactory factory = new ExportItemFactory(logger, preferences, jdbcClient, resourceManager);
             return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin, branches,
                options, exportName);
          }
 
          @Override
-         public Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
+         public Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
             ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
-               preferences, resourceManager, orcsTypes, fileToImport, branches, options);
+               preferences, resourceManager, fileToImport, branches, options);
             return callable;
          }
 

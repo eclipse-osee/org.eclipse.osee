@@ -124,10 +124,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       typesModule = new OrcsTypesModule(logger, dataStore.getTypesDataStore());
       typesModule.start(getSystemSession());
 
+      module = dataStore.createDataModule(tokenService());
+
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
-
-      module = dataStore.createDataModule(orcsTypes, tokenService());
-
       AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), tokenService());
 
       ArtifactFactory artifactFactory = new ArtifactFactory(module.getDataFactory(), attributeFactory);
@@ -176,7 +175,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
       queryModule = new QueryModule(this, logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
-         orcsTypes, tokenService(), proxyManager);
+         tokenService(), proxyManager);
 
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), tokenService());
@@ -214,8 +213,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public OrcsBranch getBranchOps() {
       OrcsSession session = getSession();
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes(),
-         tokenService());
+      return new OrcsBranchImpl(this, logger, session, module.getBranchDataStore(), queryFactory);
    }
 
    @Override

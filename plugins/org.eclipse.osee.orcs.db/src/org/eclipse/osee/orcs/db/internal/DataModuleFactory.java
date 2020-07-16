@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.db.internal;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -61,7 +60,7 @@ public class DataModuleFactory {
       this.resourceManager = resourceManager;
    }
 
-   public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
+   public DataModule createDataModule(OrcsTokenService tokenService) {
       logger.debug("Creating DataModule");
 
       final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
@@ -70,11 +69,11 @@ public class DataModuleFactory {
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(tokenService, proxyFactory);
       SqlObjectLoader sqlObjectLoader =
-         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, orcsTypes, tokenService);
+         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, tokenService);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
-      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, orcsTypes, tokenService,
-         sqlObjectLoader, keyValueStore, resourceManager);
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, tokenService, sqlObjectLoader,
+         keyValueStore, resourceManager);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, tokenService);
       return new DataModule() {

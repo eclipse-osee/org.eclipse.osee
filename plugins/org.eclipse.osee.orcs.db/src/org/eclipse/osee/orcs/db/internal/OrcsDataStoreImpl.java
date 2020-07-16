@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
@@ -114,8 +113,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    }
 
    @Override
-   public DataModule createDataModule(OrcsTypes orcsTypes, OrcsTokenService tokenService) {
-      return dataModuleFactory.createDataModule(orcsTypes, tokenService);
+   public DataModule createDataModule(OrcsTokenService tokenService) {
+      return dataModuleFactory.createDataModule(tokenService);
    }
 
    @Override
