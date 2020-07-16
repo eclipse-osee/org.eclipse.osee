@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GeneralStringData;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PublishInline;
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
@@ -90,10 +93,9 @@ public class ArtifactTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      artifact = new ArtifactImpl(new OrcsTokenServiceImpl(), artifactData, attributeFactory);
+      artifact = new ArtifactImpl(artifactData, attributeFactory);
       artifact.setGraph(graph);
 
-      Assert.assertTrue(CoreArtifactTypes.Artifact.isValidAttributeType(attributeType));
       when(attributeFactory.getMaxOccurrenceLimit(any())).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(), any())).thenReturn(attribute);
@@ -153,9 +155,8 @@ public class ArtifactTest {
 
    @Test
    public void testCreateAttribute() {
-      artifact.createAttribute(CoreAttributeTypes.GeneralStringData);
-      verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData,
-         CoreAttributeTypes.GeneralStringData);
+      artifact.createAttribute(GeneralStringData);
+      verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData, GeneralStringData);
    }
 
    @Test
@@ -252,16 +253,14 @@ public class ArtifactTest {
 
    @Test
    public void testIsAttributeTypeValid() {
-      artifact.isAttributeTypeValid(CoreAttributeTypes.AFHA);
-      Assert.assertTrue(CoreArtifactTypes.GeneralData.isValidAttributeType(CoreAttributeTypes.GeneralStringData));
+      Assert.assertTrue(artifact.isAttributeTypeValid(GeneralStringData));
    }
 
    @Test
    public void testGetValidAttributeTypes() {
-      artifact.getValidAttributeTypes();
-      Assert.assertTrue(CoreArtifactTypes.GeneralData.getValidAttributeTypes().size() > 1);
-      Assert.assertTrue(
-         CoreArtifactTypes.GeneralData.getValidAttributeTypes().contains(CoreAttributeTypes.GeneralStringData));
+      Assert.assertTrue(artifact.getValidAttributeTypes().contains(GeneralStringData));
+      Assert.assertTrue(artifact.getValidAttributeTypes().contains(PublishInline));
+      Assert.assertTrue(artifact.getValidAttributeTypes().contains(Name));
    }
 
    @Test

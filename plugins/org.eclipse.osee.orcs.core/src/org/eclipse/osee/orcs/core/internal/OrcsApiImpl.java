@@ -135,7 +135,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       AttributeFactory attributeFactory =
          new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes(), tokenService());
 
-      ArtifactFactory artifactFactory = new ArtifactFactory(module.getDataFactory(), attributeFactory, tokenService());
+      ArtifactFactory artifactFactory = new ArtifactFactory(module.getDataFactory(), attributeFactory);
 
       RelationFactory relationFactory = new RelationFactory(module.getDataFactory());
 

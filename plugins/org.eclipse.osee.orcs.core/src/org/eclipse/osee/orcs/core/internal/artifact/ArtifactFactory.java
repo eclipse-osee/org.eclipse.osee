@@ -39,16 +39,14 @@ public class ArtifactFactory {
 
    private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
-   private final OrcsTokenService tokenService;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, OrcsTokenService tokenService) {
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory) {
       this.factory = factory;
       this.attributeFactory = attributeFactory;
-      this.tokenService = tokenService;
    }
 
    public Artifact createArtifact(final OrcsSession session, ArtifactData artifactData) {
-      return new ArtifactImpl(tokenService, artifactData, attributeFactory);
+      return new ArtifactImpl(artifactData, attributeFactory);
    }
 
    public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid) {

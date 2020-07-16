@@ -37,15 +37,12 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
-
-   private final OrcsTokenService tokenService;
    private EditState objectEditState;
    private ArtifactData artifactData;
    private GraphData graph;
 
-   public ArtifactImpl(OrcsTokenService tokenService, ArtifactData artifactData, AttributeFactory attributeFactory) {
+   public ArtifactImpl(ArtifactData artifactData, AttributeFactory attributeFactory) {
       super(artifactData, attributeFactory);
-      this.tokenService = tokenService;
       this.artifactData = artifactData;
       this.objectEditState = EditState.NO_CHANGE;
    }
@@ -146,13 +143,13 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
-      return artifactData.getType().isValidAttributeType(attributeType);
+      return getArtifactType().isValidAttributeType(attributeType);
       //return tokenService.getArtifactTypeOrSentinel(getArtifactType().getId()).isValidAttributeType(attributeType);
    }
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
-      return tokenService.getArtifactTypeOrSentinel(getArtifactType().getId()).getValidAttributeTypes();
+      return getArtifactType().getValidAttributeTypes();
    }
 
    @Override

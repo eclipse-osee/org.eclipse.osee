@@ -48,7 +48,6 @@ public class OrcsMockUtility {
 
    public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
-      OrcsTokenService tokenService = mock(OrcsTokenService.class);
 
       VersionData version = new VersionDataImpl();
       version.setBranch(branch);
@@ -58,8 +57,7 @@ public class OrcsMockUtility {
       artifactData.setLocalId(artifactId.intValue());
       artifactData.setModType(ModificationType.NEW);
 
-      when(tokenService.getArtifactType(artifactType.getId())).thenReturn(artifactType);
-      Artifact artifact = new ArtifactImpl(tokenService, artifactData, attributeFactory);
+      Artifact artifact = new ArtifactImpl(artifactData, attributeFactory);
 
       when(attributeFactory.getMaxOccurrenceLimit(Matchers.any(AttributeTypeId.class))).thenReturn(1);
 

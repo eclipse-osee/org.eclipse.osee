@@ -73,4 +73,9 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
       }
       return value;
    }
+
+   @Override
+   public String toString() {
+      return attributeType.getName() + ": " + String.valueOf(value);
+   }
 }

@@ -85,7 +85,7 @@ public class ArtifactFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, new OrcsTokenServiceImpl());
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory);
 
       guid = GUID.create();
 
@@ -147,8 +147,6 @@ public class ArtifactFactoryTest {
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
-      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
-
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
       Artifact actual = artifactFactory.copyArtifact(session, source, types, COMMON);
@@ -169,7 +167,6 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
       when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
       when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
@@ -186,8 +183,6 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-
-      Assert.assertTrue(Artifact.isValidAttributeType(CoreAttributeTypes.Annotation));
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
