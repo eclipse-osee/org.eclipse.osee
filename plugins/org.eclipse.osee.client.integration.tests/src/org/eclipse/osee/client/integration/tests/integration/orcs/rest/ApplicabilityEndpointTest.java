@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.junit.Assert;
@@ -85,8 +84,6 @@ public class ApplicabilityEndpointTest {
       FeatureDefinition checkUpdatedFeature = appl.getFeature("ROBOT_SPEAKER");
       Assert.assertTrue("ApplicabilityEntpoint.updateFeature failure",
          checkUpdatedFeature.getDefaultValue().equals("SPKR_B"));
-      OseeInfo.setValue("featuredefinition.use.json", "true");
-      List<FeatureDefinition> fromJson = appl.getFeatureDefinitionData();
    }
 
    @Test
