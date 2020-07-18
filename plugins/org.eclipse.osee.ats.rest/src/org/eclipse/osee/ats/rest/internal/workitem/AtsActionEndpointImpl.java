@@ -407,7 +407,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          workItem.getStateMgr().setAssignees(assignees);
          changes.add(workItem);
       } else {
-         attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
+         attrTypeId = atsApi.tokenService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
          if (attrTypeId != null) {
             changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
          }
@@ -550,10 +550,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             String key = entry.getKey();
             AttributeTypeId attrType = null;
             if (Strings.isNumeric(key)) {
-               attrType = atsApi.getStoreService().getAttributeType(Long.valueOf(key));
+               attrType = atsApi.tokenService().getAttributeType(Long.valueOf(key));
             }
             if (attrType == null) {
-               attrType = atsApi.getStoreService().getAttributeType(key);
+               attrType = atsApi.tokenService().getAttributeType(key);
             }
             if (attrType != null) {
                query.andAttr(attrType, entry.getValue());

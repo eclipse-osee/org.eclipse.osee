@@ -177,7 +177,7 @@ public interface IAtsChangeReportTaskNameProvider {
          }
 
          Id typeId = item.getItemTypeId();
-         AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(typeId.getId());
+         AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(typeId.getId());
 
          // Set to include if no include types specified
          boolean incAttrType = incAttrTypes.isEmpty();

@@ -17,68 +17,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
-import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverService {
-
-   @Override
-   public boolean isAttributeNamed(String attributeName) {
-      return AttributeTypeManager.typeExists(attributeName);
-   }
-
-   @Override
-   public String getUnqualifiedName(String attributeName) {
-      return getAttributeType(attributeName).getUnqualifiedName();
-   }
-
-   @Override
-   public void setXWidgetNameBasedOnAttributeName(String attributeName, IAtsWidgetDefinition widgetDef) {
-      try {
-         if (!Strings.isValid(widgetDef.getXWidgetName())) {
-            widgetDef.setXWidgetName(AttributeTypeToXWidgetName.getXWidgetName(getAttributeType(attributeName)));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public String getDescription(String attributeName) {
-      return getAttributeType(attributeName).getDescription();
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType(String attributeName) {
-      try {
-         return AttributeTypeManager.getType(attributeName);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return null;
-   }
+public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {

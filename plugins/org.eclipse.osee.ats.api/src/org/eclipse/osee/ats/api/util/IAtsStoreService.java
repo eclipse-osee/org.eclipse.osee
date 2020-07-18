@@ -59,8 +59,6 @@ public interface IAtsStoreService {
       return AtsArtifactTypes.TeamWorkflow.getAllDescendantTypes();
    }
 
-   AttributeTypeToken getAttributeType(String attrTypeName);
-
    ArtifactTypeToken getArtifactType(ArtifactId artifact);
 
    ArtifactTypeToken getArtifactType(IAtsObject atsObject);
@@ -74,8 +72,6 @@ public interface IAtsStoreService {
    boolean isChangedInDb(IAtsWorkItem workItem);
 
    void clearCaches(IAtsWorkItem workItem);
-
-   AttributeTypeToken getAttributeType(Long attrTypeId);
 
    Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf);
 

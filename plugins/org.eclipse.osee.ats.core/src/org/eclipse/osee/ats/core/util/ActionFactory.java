@@ -175,7 +175,7 @@ public class ActionFactory implements IAtsActionFactory {
                   "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
                   agileTeam.toStringWithId());
             }
-            AttributeTypeToken attributeType = atsApi.getAttributeResolver().getAttributeType(pointsAttrType);
+            AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
 
             changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
          }
@@ -309,7 +309,7 @@ public class ActionFactory implements IAtsActionFactory {
          if (!Strings.isNumeric(attr.getKey())) {
             throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
          }
-         AttributeTypeToken attributeType = atsApi.getStoreService().getAttributeType(Long.valueOf(attr.getKey()));
+         AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(Long.valueOf(attr.getKey()));
          if (attributeType == null) {
             throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
          }

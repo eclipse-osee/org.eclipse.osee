@@ -231,7 +231,7 @@ public class SprintDataBuilder {
    }
 
    private double getPoints(AgileSprintData burn, IAgileItem item) {
-      AttributeTypeToken pointsType = atsApi.getStoreService().getAttributeType(burn.getPointsAttrTypeName());
+      AttributeTypeToken pointsType = atsApi.tokenService().getAttributeType(burn.getPointsAttrTypeName());
       Object value = atsApi.getAttributeResolver().getSoleAttributeValue(item, pointsType, "");
       if (value instanceof Double) {
          return (Double) value;

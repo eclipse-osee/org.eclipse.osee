@@ -112,11 +112,6 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public AttributeTypeToken getAttributeType(String attrTypeName) {
-      return AttributeTypeManager.getType(attrTypeName);
-   }
-
-   @Override
    public ArtifactTypeToken getArtifactType(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
          return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getArtifactType();
@@ -161,11 +156,6 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
       return getArtifactType(AtsClientService.get().getQueryService().getArtifact(atsObject));
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType(Long attrTypeId) {
-      return AttributeTypeManager.getTypeById(attrTypeId);
    }
 
    @Override

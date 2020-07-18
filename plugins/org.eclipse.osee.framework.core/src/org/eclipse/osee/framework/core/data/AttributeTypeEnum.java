@@ -39,6 +39,15 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       return Collections.unmodifiableCollection(enumTokens);
    }
 
+   public boolean isValidEnum(String enumName) {
+      for (T enumToken : enumTokens) {
+         if (enumToken.getName().equals(enumName)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    @Override
    public T valueFromStorageString(String storedValue) {
       for (T enumToken : enumTokens) {

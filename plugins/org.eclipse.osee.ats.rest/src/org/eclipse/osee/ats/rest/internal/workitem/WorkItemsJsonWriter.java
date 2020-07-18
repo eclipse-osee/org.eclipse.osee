@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -93,10 +92,6 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
       return false;
    }
 
-   private AttributeTypes getAttributeTypes() {
-      return orcsApi.getOrcsTypes().getAttributeTypes();
-   }
-
    @Override
    public void writeTo(Collection<IAtsWorkItem> workItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
@@ -129,7 +124,7 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
                   matches(IdentityView.class, annotations), options);
             } else {
                WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, workItem, annotations, writer,
-                  matches(IdentityView.class, annotations), getAttributeTypes(), options);
+                  matches(IdentityView.class, annotations), options);
             }
          }
          writer.writeEndArray();

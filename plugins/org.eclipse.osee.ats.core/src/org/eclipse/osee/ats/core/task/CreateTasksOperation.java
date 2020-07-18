@@ -158,7 +158,7 @@ public class CreateTasksOperation {
             Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
 
             for (JaxAttribute attribute : task.getAttributes()) {
-               AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
+               AttributeTypeId attrType = atsApi.tokenService().getAttributeType(attribute.getAttrTypeName());
                if (attrType == null || attrType.isInvalid()) {
                   results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, task);
                }
@@ -287,7 +287,7 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
-               AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
+               AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(attribute.getAttrTypeName());
                changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 

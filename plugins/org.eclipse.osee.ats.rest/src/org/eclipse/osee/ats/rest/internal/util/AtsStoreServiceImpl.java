@@ -119,15 +119,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public AttributeTypeToken getAttributeType(String attrTypeName) {
-      AttributeTypeToken token = orcsApi.getOrcsTypes().getAttributeTypes().getByNameOrSentinel(attrTypeName);
-      if (token.isValid()) {
-         return token;
-      }
-      return null;
-   }
-
-   @Override
    public ArtifactTypeToken getArtifactType(ArtifactId artifact) {
       if (artifact instanceof ArtifactReadable) {
          return ((ArtifactReadable) artifact).getArtifactType();
@@ -179,11 +170,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public void clearCaches(IAtsWorkItem workItem) {
       ((WorkItem) workItem).clearCaches();
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType(Long attrTypeId) {
-      return orcsApi.tokenService().getAttributeType(attrTypeId);
    }
 
    @Override

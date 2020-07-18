@@ -22,17 +22,14 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -41,7 +38,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverService {
+public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    private OrcsApi orcsApi;
    private Log logger;
@@ -70,43 +67,6 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    public void stop() {
       //
-   }
-
-   @Override
-   public boolean isAttributeNamed(String attributeName) {
-      return getAttributeType(attributeName) != null;
-   }
-
-   @Override
-   public String getUnqualifiedName(String attributeName) {
-      return getAttributeType(attributeName).getUnqualifiedName();
-   }
-
-   @Override
-   public void setXWidgetNameBasedOnAttributeName(String attributeName, IAtsWidgetDefinition widgetDef) {
-      try {
-         if (!Strings.isValid(widgetDef.getXWidgetName())) {
-            widgetDef.setXWidgetName(
-               AttributeTypeToXWidgetName.getXWidgetName(orcsApi, getAttributeType(attributeName)));
-         }
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error setXWidgetNameBasedOnAttributeName - attributeName [%s] widgetDef[%s]", attributeName,
-            widgetDef);
-      }
-   }
-
-   @Override
-   public String getDescription(String attributeName) {
-      return getAttributeType(attributeName).getDescription();
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType(String attributeName) {
-      AttributeTypeToken token = orcsApi.getOrcsTypes().getAttributeTypes().getByNameOrSentinel(attributeName);
-      if (token.isValid()) {
-         return token;
-      }
-      return null;
    }
 
    @Override

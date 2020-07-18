@@ -38,6 +38,11 @@ public interface OrcsTokenService {
    AttributeTypeGeneric<?> getAttributeType(Long id);
 
    /**
+    * @return singleton full attribute type token with the given name or throw OseeTypeDoesNotExist if not found
+    */
+   AttributeTypeGeneric<?> getAttributeType(String name);
+
+   /**
     * @return singleton full relation type token with the given id or throw OseeTypeDoesNotExist if not found
     */
    RelationTypeToken getRelationType(Long id);

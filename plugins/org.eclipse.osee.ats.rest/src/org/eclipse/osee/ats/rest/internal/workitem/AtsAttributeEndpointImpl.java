@@ -17,26 +17,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributeEndpointApi;
 import org.eclipse.osee.ats.api.workflow.attr.AtsAttributes;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.EnumEntry;
 
 /**
  * @author Donald G. Dunne
@@ -56,8 +51,6 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
    }
 
    @Override
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
    public AtsAttributes get() {
       AtsAttributes attrs = new AtsAttributes();
       for (AttributeKey key : AttributeKey.values()) {
@@ -73,40 +66,36 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
       return attrs;
    }
 
-   @Path("{id}")
    @Override
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getValidValues(@PathParam("id") String id) {
+   public List<String> getValidValues(String idOrName) {
       List<String> values = new LinkedList<>();
-      if (id.equals(AttributeKey.Assignee.name()) || id.equals(AttributeKey.Originator.name())) {
+      if (idOrName.equals(AttributeKey.Assignee.name()) || idOrName.equals(AttributeKey.Originator.name())) {
          Collection<AtsUser> active = atsApi.getUserService().getUsers(Active.Active);
          for (AtsUser user : active) {
             values.add(user.getName());
          }
-      } else if (id.equals(AttributeKey.ColorTeam.name())) {
-         getEnumValues(values, AtsAttributeTypes.ColorTeam.getId());
-      } else if (id.equals(AttributeKey.IPT.name())) {
-         getEnumValues(values, AtsAttributeTypes.IPT.getId());
-      } else if (id.equals(AttributeKey.Priority.name())) {
-         getEnumValues(values, AtsAttributeTypes.Priority.getId());
-      } else if (Strings.isNumeric(id)) {
-         getEnumValues(values, Long.valueOf(id));
+      } else {
+         AttributeTypeToken attrType;
+         if (Strings.isNumeric(idOrName)) {
+            attrType = orcsApi.tokenService().getAttributeType(Long.valueOf(idOrName));
+         } else {
+            attrType = orcsApi.tokenService().getAttributeType(idOrName);
+         }
+         getEnumValues(values, attrType);
       }
+
       if (!values.isEmpty()) {
          Collections.sort(values);
       }
       return values;
    }
 
-   private void getEnumValues(List<String> values, Long id) {
-      AttributeTypes attrTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeType(id);
+   private void getEnumValues(List<String> values, AttributeTypeToken attrType) {
       if (attrType.isEnumerated()) {
-         for (EnumEntry entry : attrTypes.getEnumType(attrType).values()) {
+         AttributeTypeEnum<?> enumeratedType = (AttributeTypeEnum<?>) attrType;
+         for (EnumToken entry : enumeratedType.getEnumValues()) {
             values.add(entry.getName());
          }
       }
    }
-
 }

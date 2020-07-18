@@ -66,7 +66,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
 
-            AttributeTypeToken attributeType = atsApi.getStoreService().getAttributeType(attrTypeId);
+            AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(attrTypeId);
             String result = atsApi.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
             if (Strings.isValid(result)) {
                return result;

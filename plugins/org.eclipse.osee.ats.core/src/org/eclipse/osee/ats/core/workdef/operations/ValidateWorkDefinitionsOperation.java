@@ -52,7 +52,7 @@ public class ValidateWorkDefinitionsOperation {
          WidgetDefinition widgetDef = (WidgetDefinition) layoutItem;
          AttributeTypeToken attrTypeTok = widgetDef.getAttributeType();
          if (attrTypeTok != null) {
-            AttributeTypeToken attrType = atsApi.getStoreService().getAttributeType(attrTypeTok.getId());
+            AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(attrTypeTok.getId());
             if (attrType == null) {
                results.errorf("      Type [%s] for widget [%s] is not valid.\n", attrTypeTok.toStringWithId(),
                   widgetDef.toStringWithId());

@@ -33,6 +33,5 @@ public interface AtsAttributeEndpointApi {
    @Path("{id}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getValidValues(@PathParam("ids") String ids);
-
+   public List<String> getValidValues(@PathParam("id") String idOrName);
 }

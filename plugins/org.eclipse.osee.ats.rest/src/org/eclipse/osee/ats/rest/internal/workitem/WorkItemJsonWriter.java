@@ -55,7 +55,6 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -104,17 +103,13 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       return false;
    }
 
-   private AttributeTypes getAttributeTypes() {
-      return orcsApi.getOrcsTypes().getAttributeTypes();
-   }
-
    @Override
    public void writeTo(IAtsWorkItem config, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createGenerator(entityStream);
          addWorkItem(atsApi, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations),
-            getAttributeTypes(), Collections.emptyList());
+            Collections.emptyList());
       } finally {
          if (writer != null) {
             writer.flush();
@@ -122,7 +117,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       }
    }
 
-   protected static void addWorkItem(AtsApi atsApi, OrcsApi orcsApi, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
+   protected static void addWorkItem(AtsApi atsApi, OrcsApi orcsApi, IAtsWorkItem workItem, Annotation[] annotations, JsonGenerator writer, boolean identityView, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
 
       ArtifactReadable workItemArt = (ArtifactReadable) workItem.getStoreObject();
       writer.writeStartObject();

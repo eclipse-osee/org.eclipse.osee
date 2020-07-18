@@ -31,13 +31,17 @@ import org.eclipse.osee.framework.core.data.IAttribute;
  */
 public interface IAttributeResolver {
 
-   boolean isAttributeNamed(String attributeName);
+   default ArtifactId getSoleArtifactIdReference(IAtsObject atsObject, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
+      return getSoleAttributeValue(atsObject, artifactReferencedAttributeType, ArtifactId.SENTINEL);
+   }
 
-   String getUnqualifiedName(String attributeName);
+   default ArtifactId getSoleArtifactIdReference(ArtifactToken art, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
+      return getSoleAttributeValue(art, artifactReferencedAttributeType, defaultValue);
+   }
 
-   void setXWidgetNameBasedOnAttributeName(String attributeName, IAtsWidgetDefinition widgetDef);
-
-   String getDescription(String attributeName);
+   default Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact, AttributeTypeToken artifactReferencedAttributeType) {
+      return getAttributeValues(artifact, artifactReferencedAttributeType);
+   }
 
    <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue);
 
@@ -79,8 +83,6 @@ public interface IAttributeResolver {
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes);
 
-   AttributeTypeToken getAttributeType(String atrributeName);
-
    void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
 
    <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attributeType, T defaultValue);
@@ -100,12 +102,6 @@ public interface IAttributeResolver {
    }
 
    List<String> getAttributesToStringList(ArtifactId customizeStoreArt, AttributeTypeToken attributeType);
-
-   ArtifactId getSoleArtifactIdReference(IAtsObject atsObject, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue);
-
-   ArtifactId getSoleArtifactIdReference(ArtifactToken art, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue);
-
-   Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact, AttributeTypeToken artifactReferencedAttributeType);
 
    List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType);
 
