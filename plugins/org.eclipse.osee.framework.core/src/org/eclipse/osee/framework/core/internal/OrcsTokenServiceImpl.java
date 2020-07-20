@@ -298,4 +298,14 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       }
       return validRelationTypes;
    }
+
+   @Override
+   public boolean attributeTypeExists(String name) {
+      for (AttributeTypeGeneric<?> attributeType : attributeTypes.values()) {
+         if (attributeType.getName().equals(name)) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

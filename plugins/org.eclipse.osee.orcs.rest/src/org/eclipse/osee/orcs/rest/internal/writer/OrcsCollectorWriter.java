@@ -221,8 +221,7 @@ public class OrcsCollectorWriter {
                      logChange(artifact, attrType, currValue, newValue);
                      getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
                   }
-               } else if (owAttribute.getValues().size() > 1 && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
-                  attrType) > 1) {
+               } else if (owAttribute.getValues().size() > 1 && artifact.getArtifactType().getMax(attrType) > 1) {
                   if (attrType.isDate()) {
                      throw new OseeArgumentException(
                         "Date attributes not supported for multi-value set for OwAttribute %s Exception %s",
@@ -293,7 +292,7 @@ public class OrcsCollectorWriter {
 
          long artifactId = owArtifact.getId();
          String name = owArtifact.getName();
-         ArtifactId artifact;
+         ArtifactToken artifact;
          ApplicabilityId appId = ApplicabilityId.BASE;
          if (owArtifact.getAppId() != null) {
             try {
@@ -380,7 +379,7 @@ public class OrcsCollectorWriter {
       }
    }
 
-   private void createAttributes(OwArtifact owArtifact, ArtifactId artifact, XResultData results) {
+   private void createAttributes(OwArtifact owArtifact, ArtifactToken artifact, XResultData results) {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
@@ -414,7 +413,7 @@ public class OrcsCollectorWriter {
                      }
                      getTransaction().createAttribute(artifact, attrType, valueOf);
 
-                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attrType) == 1) {
+                  } else if (artifact.getArtifactType().getMax(attrType) == 1) {
                      getTransaction().setSoleAttributeValue(artifact, attrType, value);
                   } else {
                      getTransaction().createAttribute(artifact, attrType, value);

@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -175,7 +174,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       deleteAttributesByArtifact();
    }
 
-   @Override
    public boolean isDeleteAllowed() {
       return !isDeleted();
    }

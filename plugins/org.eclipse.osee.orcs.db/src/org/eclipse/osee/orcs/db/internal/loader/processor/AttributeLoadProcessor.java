@@ -29,7 +29,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 
 /**
@@ -38,13 +37,11 @@ import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory> {
 
    private final Log logger;
-   private final AttributeTypes attributeTypes;
    private final OrcsTokenService tokenService;
 
-   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory, AttributeTypes attributeTypes, OrcsTokenService tokenService) {
+   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory, OrcsTokenService tokenService) {
       super(factory);
       this.logger = logger;
-      this.attributeTypes = attributeTypes;
       this.tokenService = tokenService;
    }
 

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -52,7 +51,6 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    private final BranchId branch;
    private final ArtifactId artifactId;
    private final OrcsApi orcsApi;
-   private final AttributeTypes attributeTypes;
    private final OrcsTokenService tokenService;
 
    public AttributeEndpointImpl(ArtifactId artifactId, BranchId branch, OrcsApi orcsApi, QueryBuilder query, UriInfo uriInfo) {
@@ -61,7 +59,6 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
       this.uriInfo = uriInfo;
       this.branch = branch;
       this.orcsApi = orcsApi;
-      attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
       tokenService = orcsApi.tokenService();
    }
 

@@ -18,8 +18,6 @@ package org.eclipse.osee.orcs.data;
  */
 public interface CanDelete extends HasDeleteState {
 
-   boolean isDeleteAllowed();
-
    void delete();
 
    void unDelete();

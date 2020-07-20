@@ -17,7 +17,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,21 +47,6 @@ public interface TypesEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    Response setConfigSheets(OrcsTypesVersion version);
-
-   @GET
-   @Path("attribute/enum")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getEnums();
-
-   @GET
-   @Path("attribute/enum/{uuid}")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getEnums(@PathParam("uuid") Long uuid);
-
-   @GET
-   @Path("attribute/enum/{uuid}/entry")
-   @Produces({MediaType.APPLICATION_JSON})
-   Response getEnumEntries(@PathParam("uuid") Long uuid);
 
    @POST
    @Path("invalidate-caches")

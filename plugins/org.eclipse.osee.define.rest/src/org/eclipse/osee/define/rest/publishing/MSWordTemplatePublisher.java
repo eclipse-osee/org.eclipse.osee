@@ -54,9 +54,9 @@ import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
@@ -97,7 +97,7 @@ public class MSWordTemplatePublisher {
    protected String elementType;
 
    //Outlining Options
-   protected AttributeTypeId headingAttributeType;
+   protected AttributeTypeToken headingAttributeType;
    protected boolean outlining;
    protected boolean recurseChildren;
    protected String outlineNumber = "";
@@ -125,11 +125,13 @@ public class MSWordTemplatePublisher {
    protected final OrcsApi orcsApi;
    protected final Log logger;
    protected final Writer writer;
+   private final OrcsTokenService tokenService;
 
    protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi, Writer writer) {
       this.publishingOptions = publishingOptions;
       this.logger = logger;
       this.orcsApi = orcsApi;
+      tokenService = orcsApi.tokenService();
       this.writer = writer;
    }
 
@@ -316,7 +318,7 @@ public class MSWordTemplatePublisher {
          }
          outlineNumber = optionsArray.findValue("OutlineNumber").asText();
          String headingAttrType = optionsArray.findValue("HeadingAttributeType").asText();
-         headingAttributeType = orcsApi.getOrcsTypes().getAttributeTypes().getByName(headingAttrType);
+         headingAttributeType = tokenService.getAttributeType(headingAttrType);
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -339,7 +341,7 @@ public class MSWordTemplatePublisher {
             String formatPost = options.findValue("FormatPost").asText();
 
             AttributeElement attrElement = new AttributeElement();
-            boolean typeExists = orcsApi.getOrcsTypes().getAttributeTypes().typeExists(attributeType);
+            boolean typeExists = tokenService.attributeTypeExists(attributeType);
             if (attributeType.equals("*") || typeExists) {
                attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
                attributeElements.add(attrElement);
@@ -669,7 +671,7 @@ public class MSWordTemplatePublisher {
                }
             }
          } else {
-            AttributeTypeToken attributeType = orcsApi.getOrcsTypes().getAttributeTypes().getByName(attributeName);
+            AttributeTypeToken attributeType = tokenService.getAttributeType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
                renderAttribute(artifact, wordMl, attributeElement, attributeType, false, PREVIEW);
             }

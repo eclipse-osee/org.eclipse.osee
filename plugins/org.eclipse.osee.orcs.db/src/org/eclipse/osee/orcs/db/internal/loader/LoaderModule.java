@@ -65,6 +65,6 @@ public class LoaderModule {
    public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory();
       return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor,
-         orcsTypes, tokenService);
+         tokenService);
    }
 }

@@ -21,12 +21,12 @@ import java.util.Map.Entry;
 import org.eclipse.define.api.importing.RoughArtifact;
 import org.eclipse.define.api.importing.RoughAttributeSet;
 import org.eclipse.define.api.importing.RoughAttributeSet.RoughAttribute;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
@@ -34,11 +34,10 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
    @Override
    public void translate(TransactionBuilder transaction, RoughArtifact roughArtifact, ArtifactId artifact) {
       RoughAttributeSet attributeSet = roughArtifact.getAttributes();
+      OrcsTokenService tokenService = roughArtifact.getOrcsApi().tokenService();
 
       for (Entry<CaseInsensitiveString, Collection<RoughAttribute>> entry : attributeSet) {
-         String attributeTypeName = entry.getKey().toString();
-         AttributeTypes attrTypes = roughArtifact.getOrcsApi().getOrcsTypes().getAttributeTypes();
-         AttributeTypeToken attributeType = attrTypes.getByName(attributeTypeName);
+         AttributeTypeToken attributeType = tokenService.getAttributeType(entry.getKey().toString());
 
          Collection<String> values = attributeSet.getAttributeValueList(attributeType);
          if (!values.isEmpty()) {

@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,20 +86,6 @@ public class TypesEndpointImpl implements TypesEndpoint {
       return Response.ok().build();
    }
 
-   @Override
-   public Response getEnums() {
-      List<JaxEnumAttribute> attributes = new ArrayList<>();
-      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-      for (AttributeTypeToken type : orcsApi.tokenService().getAttributeTypes()) {
-         if (type.isEnumerated()) {
-            JaxEnumAttribute enumAttr = createJaxEnumAttribute(attributeTypes, type);
-            attributes.add(enumAttr);
-         }
-      }
-      return Response.ok(attributes).build();
-
-   }
-
    private JaxEnumAttribute createJaxEnumAttribute(AttributeTypes attributeTypes, AttributeTypeToken type) {
       JaxEnumAttribute enumAttr = new JaxEnumAttribute();
       enumAttr.setName(type.getName());
@@ -120,20 +105,6 @@ public class TypesEndpointImpl implements TypesEndpoint {
          enumAttr.getEntries().add(entry);
       }
       return enumAttr;
-   }
-
-   @Override
-   public Response getEnums(Long uuid) {
-      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeTypeOrCreate(uuid);
-      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsTypes.getAttributeTypes(), attrType);
-      return Response.ok().entity(jaxEnumAttribute).build();
-   }
-
-   @Override
-   public Response getEnumEntries(Long uuid) {
-      AttributeTypeToken attrType = orcsApi.tokenService().getAttributeTypeOrCreate(uuid);
-      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsTypes.getAttributeTypes(), attrType);
-      return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }
 
    public static final String LOAD_OSEE_TYPE_DEF_NAME_AND_ID =

@@ -150,4 +150,6 @@ public interface OrcsTokenService {
    Collection<AttributeTypeJoin> getAttributeTypeJoins();
 
    Collection<RelationTypeJoin> getRelationTypeJoins();
+
+   boolean attributeTypeExists(String name);
 }

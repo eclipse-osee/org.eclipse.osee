@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @see RoughArtifactTest
@@ -128,7 +127,7 @@ public class RoughArtifact {
 
    public void addAttribute(String typeName, String value) {
       if (Strings.isValid(value)) {
-         if (isEnumeration(typeName)) {
+         if (orcsApi.tokenService().getAttributeType(typeName).isEnumerated()) {
             if (isMultipleEnum(typeName, value)) {
                attributes.addAttribute(typeName, getEnumValues(value));
             } else {
@@ -160,20 +159,11 @@ public class RoughArtifact {
       return data;
    }
 
-   private boolean isEnumeration(String typeName) {
-      boolean result = false;
-      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      AttributeTypeToken type = attributeTypes.getByName(typeName);
-      result = type.isEnumerated();
-      return result;
-   }
-
    private boolean isMultipleEnum(String typeName, String value) {
       boolean result = false;
       try {
-         AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-         AttributeTypeToken type = attributeTypes.getByName(typeName);
-         if (type.isEnumerated() && attributeTypes.getMaxOccurrences(type) > 1 && value.contains(",")) {
+         AttributeTypeToken attributeType = orcsApi.tokenService().getAttributeType(typeName);
+         if (attributeType.isEnumerated() && type.getMax(attributeType) > 1 && value.contains(",")) {
             result = true;
          }
       } catch (OseeCoreException ex) {

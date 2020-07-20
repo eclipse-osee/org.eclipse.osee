@@ -246,16 +246,6 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
       return getOrcsData().getModType();
    }
 
-   @Override
-   public boolean isDeleteAllowed() {
-      try {
-         return !isDeleted() && getContainer().getAttributeCount(
-            getAttributeType()) > attributeTypeCache.getMinOccurrences(getAttributeType());
-      } catch (OseeCoreException ex) {
-         return false;
-      }
-   }
-
    /**
     * Purges the attribute from the database.
     */

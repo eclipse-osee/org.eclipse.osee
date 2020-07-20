@@ -148,7 +148,6 @@ public class Relation implements IRelationLink, HasOrcsData<RelationTypeToken, R
       return getOrcsData().getArtIdOn(side);
    }
 
-   @Override
    public boolean isDeleteAllowed() {
       return !isDeleted();
    }

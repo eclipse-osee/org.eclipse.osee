@@ -38,4 +38,5 @@ public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisi
 
    Integer getLocalId();
 
+   boolean isDeleteAllowed();
 }

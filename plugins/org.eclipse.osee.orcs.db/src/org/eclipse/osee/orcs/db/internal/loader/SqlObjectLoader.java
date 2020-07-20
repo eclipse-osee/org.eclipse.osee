@@ -32,7 +32,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -75,7 +74,7 @@ public class SqlObjectLoader {
    private final SqlHandlerFactory handlerFactory;
    private final OrcsTokenService tokenService;
 
-   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, OrcsTypes orcsTypes, OrcsTokenService tokenService) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, OrcsTokenService tokenService) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
@@ -84,8 +83,7 @@ public class SqlObjectLoader {
       this.tokenService = tokenService;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
-      attributeProcessor =
-         new AttributeLoadProcessor(logger, objectFactory, orcsTypes.getAttributeTypes(), tokenService);
+      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, tokenService);
       relationProcessor = new RelationLoadProcessor(logger, objectFactory, tokenService);
    }
 
