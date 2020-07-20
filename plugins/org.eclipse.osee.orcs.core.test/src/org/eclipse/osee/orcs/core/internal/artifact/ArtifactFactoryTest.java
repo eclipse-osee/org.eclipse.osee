@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.internal.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;

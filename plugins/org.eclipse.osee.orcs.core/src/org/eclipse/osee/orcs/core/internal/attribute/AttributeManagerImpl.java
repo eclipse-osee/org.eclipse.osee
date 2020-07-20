@@ -520,7 +520,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       checkMultiplicity(attributeType, getAttributeCount(attributeType) - 1);
    }
 
-   private void checkMultiplicity(AttributeTypeId attributeType, int count) {
+   private void checkMultiplicity(AttributeTypeToken attributeType, int count) {
       MultiplicityState state = getAttributeMuliplicityState(attributeType, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -534,11 +534,12 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private MultiplicityState getAttributeMuliplicityState(AttributeTypeId attributeType, int count) {
+   private MultiplicityState getAttributeMuliplicityState(AttributeTypeToken attributeType, int count) {
       MultiplicityState state = MultiplicityState.IS_VALID;
-      if (count > attributeFactory.getMaxOccurrenceLimit(attributeType)) {
+      ArtifactTypeToken artifactType = artifactData.getArtifactType();
+      if (count > artifactType.getMax(attributeType)) {
          state = MultiplicityState.MAX_VIOLATION;
-      } else if (count < attributeFactory.getMinOccurrenceLimit(attributeType)) {
+      } else if (count < artifactType.getMin(attributeType)) {
          state = MultiplicityState.MIN_VIOLATION;
       }
       return state;

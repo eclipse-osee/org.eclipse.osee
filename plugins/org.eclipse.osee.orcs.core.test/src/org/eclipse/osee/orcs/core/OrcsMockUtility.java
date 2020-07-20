@@ -17,9 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -33,7 +31,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.mockito.Matchers;
 
 /**
  * @author Ryan D. Brooks
@@ -58,8 +55,6 @@ public class OrcsMockUtility {
       artifactData.setModType(ModificationType.NEW);
 
       Artifact artifact = new ArtifactImpl(artifactData, attributeFactory);
-
-      when(attributeFactory.getMaxOccurrenceLimit(Matchers.any(AttributeTypeId.class))).thenReturn(1);
 
       addAttribute(artifact, Name, name);
       addAttribute(artifact, RelationOrder, "");

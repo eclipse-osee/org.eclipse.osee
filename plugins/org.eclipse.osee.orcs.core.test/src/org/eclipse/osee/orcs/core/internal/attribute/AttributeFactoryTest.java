@@ -24,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -156,31 +155,5 @@ public class AttributeFactoryTest {
       verify(dataFactory).introduce(COMMON, attributeData);
 
       assertEquals(actual, destinationAttribute);
-   }
-
-   @Test
-   public void testGetMaxOccurrenceLimit() {
-      AttributeTypeId token = mock(AttributeTypeId.class);
-
-      when(cache.getMaxOccurrences(token)).thenReturn(56);
-
-      int actual = factory.getMaxOccurrenceLimit(token);
-
-      assertEquals(56, actual);
-
-      verify(cache).getMaxOccurrences(token);
-   }
-
-   @Test
-   public void testGetMinOccurrenceLimit() {
-      AttributeTypeId token = mock(AttributeTypeId.class);
-
-      when(cache.getMinOccurrences(token)).thenReturn(99);
-
-      int actual = factory.getMinOccurrenceLimit(token);
-
-      assertEquals(99, actual);
-
-      verify(cache).getMinOccurrences(token);
    }
 }

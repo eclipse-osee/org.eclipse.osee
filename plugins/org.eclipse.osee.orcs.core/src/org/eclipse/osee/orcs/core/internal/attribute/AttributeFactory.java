@@ -146,13 +146,4 @@ public class AttributeFactory {
    private ResourceNameResolver createResolver(Attribute<?> attribute) {
       return new AttributeResourceNameResolver(attribute);
    }
-
-   public int getMaxOccurrenceLimit(AttributeTypeId attributeType) {
-      return cache.getMaxOccurrences(attributeType);
-   }
-
-   public int getMinOccurrenceLimit(AttributeTypeId attributeType) {
-      return cache.getMinOccurrences(attributeType);
-   }
-
 }

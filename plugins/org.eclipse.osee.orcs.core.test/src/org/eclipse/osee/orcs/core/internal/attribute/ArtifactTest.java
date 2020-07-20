@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.core.internal.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -93,10 +92,9 @@ public class ArtifactTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
+      when(artifactData.getArtifactType()).thenReturn(artifactType);
       artifact = new ArtifactImpl(artifactData, attributeFactory);
       artifact.setGraph(graph);
-
-      when(attributeFactory.getMaxOccurrenceLimit(any())).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(), any())).thenReturn(attribute);
       when(attributeFactory.createAttributeWithDefaults(any(), any(), any())).thenReturn(attribute);
@@ -136,7 +134,6 @@ public class ArtifactTest {
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
 
-      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(1);
       artifact.add(attributeType, one);
       artifact.add(attributeType, two);
       Assert.assertEquals(2, artifact.getAttributes(attributeType).size());
@@ -367,7 +364,6 @@ public class ArtifactTest {
 
    @Test
    public void testDeleteSoleAttribute() {
-      when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
       when(notDeleted.getContainer()).thenReturn(artifact);
       artifact.add(attributeType, notDeleted);
       artifact.deleteSoleAttribute(attributeType);
@@ -376,11 +372,10 @@ public class ArtifactTest {
 
    @Test
    public void testDeleteSoleAttributeException() {
-      when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
-      artifact.add(attributeType, notDeleted);
+      artifact.add(Name, notDeleted);
 
       thrown.expect(OseeStateException.class);
-      artifact.deleteSoleAttribute(attributeType);
+      artifact.deleteSoleAttribute(Name);
    }
 
    @Test
@@ -392,8 +387,6 @@ public class ArtifactTest {
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
       when(three.getOrcsData()).thenReturn(attributeData);
-
-      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
 
       when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(), eq(attributeType))).thenReturn(one, two,
          three);
@@ -412,7 +405,6 @@ public class ArtifactTest {
       when(two.getOrcsData()).thenReturn(attributeData);
 
       when(one.getValue()).thenReturn("1");
-      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
 
       when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(), eq(attributeType))).thenReturn(two);
       artifact.setAttributesFromStrings(attributeType, "1", "2");
