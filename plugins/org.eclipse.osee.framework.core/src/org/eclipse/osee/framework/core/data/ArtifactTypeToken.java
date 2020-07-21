@@ -41,19 +41,6 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    String getAttributeDefault(AttributeTypeToken attributeType);
 
-   default boolean inheritsFrom(ArtifactTypeToken otherType) {
-      if (equals(otherType)) {
-         return true;
-      } else {
-         for (ArtifactTypeToken superType : getSuperTypes()) {
-            if (superType.inheritsFrom(otherType)) {
-               return true;
-            }
-         }
-      }
-      return false;
-   }
-
    default boolean inheritsFromAny(Collection<ArtifactTypeToken> artTypes) {
       for (ArtifactTypeToken inheritType : artTypes) {
          if (this.inheritsFrom(inheritType)) {

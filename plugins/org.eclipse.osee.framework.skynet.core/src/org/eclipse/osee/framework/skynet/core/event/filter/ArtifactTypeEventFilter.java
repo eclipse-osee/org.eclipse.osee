@@ -18,11 +18,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -30,12 +30,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class ArtifactTypeEventFilter implements IEventFilter {
 
-   private final Collection<ArtifactTypeId> artifactTypes;
+   private final Collection<ArtifactTypeToken> artifactTypes;
 
    /**
     * Provide artifact types of events to be passed through. All others will be ignored.
     */
-   public ArtifactTypeEventFilter(ArtifactTypeId... artifactTypes) {
+   public ArtifactTypeEventFilter(ArtifactTypeToken... artifactTypes) {
       this.artifactTypes = Arrays.asList(artifactTypes);
    }
 
@@ -46,13 +46,13 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
       try {
          for (DefaultBasicGuidArtifact guidArt : guidArts) {
-            ArtifactTypeId artType = guidArt.getArtifactType();
+            ArtifactTypeToken typeToken = guidArt.getArtifactType();
             for (ArtifactTypeId artifactType : artifactTypes) {
-               if (ArtifactTypeManager.getType(artType).inheritsFrom(artifactType)) {
+               if (typeToken.inheritsFrom(artifactType)) {
                   return true;
                }
-               for (ArtifactTypeId matchArtType : artifactTypes) {
-                  if (matchArtType.equals(artType)) {
+               for (ArtifactTypeToken matchArtType : artifactTypes) {
+                  if (matchArtType.equals(typeToken)) {
                      return true;
                   }
                }

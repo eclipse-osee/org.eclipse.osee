@@ -69,8 +69,7 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
       }
 
       for (ArtifactTypeToken artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
-         Collection<? extends AttributeTypeId> attributeTypes =
-            ArtifactTypeManager.getAttributeTypes(artifactType, branch);
+         Collection<? extends AttributeTypeId> attributeTypes = artifactType.getValidAttributeTypes();
          if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
             selectedArtifactTypes.add(artifactType);
          }

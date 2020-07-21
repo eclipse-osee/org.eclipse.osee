@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -398,8 +397,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          deleteUnmatchedArtifacts.setEnabled(toUpdate);
          if (toUpdate) {
             try {
-               attributeTypeSelectPanel.setAllowedAttributeTypes(
-                  ArtifactTypeManager.getAttributeTypes(getArtifactType(), getDestinationArtifact().getBranch()));
+               attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getValidAttributeTypes());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -465,8 +463,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                if (getArtifactType() != null) {
-                  attributeTypeSelectPanel.setAllowedAttributeTypes(
-                     ArtifactTypeManager.getAttributeTypes(getArtifactType(), getDestinationArtifact().getBranch()));
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getValidAttributeTypes());
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

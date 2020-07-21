@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -33,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.UriAttributeDataProvider;
@@ -48,18 +46,14 @@ public class AttributeTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<AttributeType> getCache() {
+   private static AbstractOseeCache<AttributeType> getCache() {
       return getCacheService().getAttributeTypeCache();
-   }
-
-   public static BranchCache getBranchCache() {
-      return getCacheService().getBranchCache();
    }
 
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
       for (ArtifactTypeToken artifactType : ArtifactTypeManager.getAllTypes()) {
-         attributeTypes.addAll(ArtifactTypeManager.getAttributeTypes(artifactType, BranchManager.getBranch(branch)));
+         attributeTypes.addAll(artifactType.getValidAttributeTypes());
       }
       return attributeTypes;
    }

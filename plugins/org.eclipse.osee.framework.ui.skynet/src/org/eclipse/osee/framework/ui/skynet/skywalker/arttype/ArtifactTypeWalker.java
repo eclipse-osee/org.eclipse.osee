@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
@@ -74,7 +73,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
                Object obj = itemsIter.next();
                if (obj instanceof ArtifactTypeToken) {
                   try {
-                     explore(ArtifactTypeManager.getType((ArtifactTypeToken) obj));
+                     explore((ArtifactTypeToken) obj);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
@@ -147,7 +146,7 @@ public class ArtifactTypeWalker extends GenericViewPart {
 
    public void refresh() {
       try {
-         explore(ArtifactTypeManager.getType(CoreArtifactTypes.Artifact));
+         explore(CoreArtifactTypes.Artifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

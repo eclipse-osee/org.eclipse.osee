@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -39,8 +39,11 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
+   private static OrcsTokenService tokenService;
+
    public ArtifactChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<ArtifactId> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<ArtifactId> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+      ArtifactChangeAcquirer.tokenService = ServiceUtil.getOrcsTokenService();
    }
 
    @Override
@@ -83,7 +86,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
             ArtifactChangeBuilder artifactChangeBuilder =
-               new ArtifactChangeBuilder(getSourceBranch(), ArtifactTypeManager.getType(chStmt.getLong("art_type_id")),
+               new ArtifactChangeBuilder(getSourceBranch(), tokenService.getArtifactType(chStmt.getLong("art_type_id")),
                   GammaId.valueOf(chStmt.getLong("gamma_id")), artId, txDelta, modificationType, !hasBranch);
 
             getArtIds().add(artId);

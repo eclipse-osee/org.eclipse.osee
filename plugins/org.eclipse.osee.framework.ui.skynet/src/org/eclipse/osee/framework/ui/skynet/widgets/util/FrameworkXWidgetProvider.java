@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -439,7 +438,7 @@ public final class FrameworkXWidgetProvider {
                   List<ArtifactTypeToken> types = new LinkedList<>();
                   for (String type : defaultType.split(",")) {
                      try {
-                        types.add(ArtifactTypeManager.getType(type));
+                        types.add(ServiceUtil.getTokenService().getArtifactType(type));
                      } catch (Exception ex) {
                         // do nothing
                      }

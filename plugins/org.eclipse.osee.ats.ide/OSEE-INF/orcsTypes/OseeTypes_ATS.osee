@@ -146,7 +146,6 @@ artifactType "PeerToPeer Review" extends "ats.Review" {
 	attribute "ats.Meeting Location"
 	attribute "ats.Meeting Date"
 	attribute "ats.Verification Code Inspection"
-   attribute "ats.CSCI"
    attribute "ats.Change Type"
 }
 

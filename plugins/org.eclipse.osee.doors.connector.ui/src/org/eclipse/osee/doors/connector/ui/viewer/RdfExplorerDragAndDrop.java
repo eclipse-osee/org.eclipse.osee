@@ -83,7 +83,7 @@ public class RdfExplorerDragAndDrop {
 
    private JsonArtifact makeJsonArtifactRepresentation(Requirement reqt) {
       JsonArtifact art = new JsonArtifact();
-      art.setTypeId(CoreArtifactTypes.Url);
+      art.setType(CoreArtifactTypes.Url);
       art.setName(reqt.getShortName());
       List<JsonAttribute> attrs = new ArrayList<>();
       attrs.add(new JsonAttribute(CoreAttributeTypes.Description, reqt.getName()));

@@ -252,7 +252,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
       for (ArtifactReadable art : artifacts) {
          JsonArtifact jArt = new JsonArtifact();
-         jArt.setTypeId(art.getArtifactType());
+         jArt.setType(art.getArtifactType());
          jArt.setTypeName(art.getArtifactType().getName());
          jArt.setId(ArtifactId.valueOf(art.getId()));
          jArt.setName(art.getName());

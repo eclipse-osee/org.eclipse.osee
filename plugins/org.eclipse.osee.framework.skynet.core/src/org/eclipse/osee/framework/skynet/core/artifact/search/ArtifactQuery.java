@@ -740,7 +740,7 @@ public class ArtifactQuery {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Long artId = chStmt.getLong("art_id");
-         ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artTypeId = ServiceUtil.getOrcsTokenService().getArtifactType(chStmt.getLong("art_type_id"));
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
          ArtifactToken token = ArtifactToken.valueOf(artId, guid, name, branch, artTypeId);
@@ -827,7 +827,8 @@ public class ArtifactQuery {
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
 
-            ArtifactTypeToken artTypeId = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+            ArtifactTypeToken artTypeId =
+               ServiceUtil.getOrcsTokenService().getArtifactType(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
             ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);

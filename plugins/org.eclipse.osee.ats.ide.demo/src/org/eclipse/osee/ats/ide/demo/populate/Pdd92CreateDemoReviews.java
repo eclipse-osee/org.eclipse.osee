@@ -125,7 +125,6 @@ public class Pdd92CreateDemoReviews {
          (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,
             "Review new logic", secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
             AtsClientService.get().getUserService().getUserById(DemoUsers.Kay_Jones), changes);
-      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
       roles.add(new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones),
