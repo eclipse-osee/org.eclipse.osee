@@ -202,10 +202,8 @@ public class WordTemplateProcessor {
          attributeElements.clear();
          metadataElements.clear();
          //JSONObject jsonObject = new JSONObject(masterTemplateOptions);
-         HashMap jsonMap = new HashMap();
-         ObjectMapper OM = new ObjectMapper();
-
-         JsonNode node = OM.readTree(masterTemplateOptions);
+         ObjectMapper objMap = new ObjectMapper();
+         JsonNode node = objMap.readTree(masterTemplateOptions);
          elementType = node.get("ElementType").asText();
          if (elementType.equals(ARTIFACT)) {
             parseAttributeOptions(masterTemplateOptions);
@@ -376,8 +374,8 @@ public class WordTemplateProcessor {
             wordMl.addWordMl(templateContent.substring(lastEndIndex, matcher.start()));
             lastEndIndex = matcher.end();
 
-            ObjectMapper OM = new ObjectMapper();
-            JsonNode node = OM.readTree(templateOptions);
+            ObjectMapper objMap = new ObjectMapper();
+            JsonNode node = objMap.readTree(templateOptions);
             elementType = node.get("ElementType").asText();
             if (elementType.equals(ARTIFACT)) {
                parseOutliningOptions(templateOptions);
@@ -413,12 +411,13 @@ public class WordTemplateProcessor {
 
    private void parseNestedTemplateOptions(String templateOptions, IContainer folder, WordMLProducer wordMl, PresentationType presentationType) {
       try {
-         ObjectMapper OM = new ObjectMapper();
-         JsonNode jsonObject = OM.readTree(templateOptions);
+         ObjectMapper objMap = new ObjectMapper();
+         JsonNode jsonObject = objMap.readTree(templateOptions);
          JsonNode nestedTemplateOptions = jsonObject.findValue("NestedTemplates");
          JsonNode options = null;
 
-         if (nestedTemplateOptions != null) {
+         if (nestedCount < nestedTemplateOptions.size()) {
+            options = nestedTemplateOptions.get(nestedCount);
 
             nestedCount++;
             outlineType = nestedTemplateOptions.findValue("OutlineType").asText();
@@ -471,17 +470,19 @@ public class WordTemplateProcessor {
    private List<Artifact> parseOrcsQueryResult(String result, BranchId branch) {
       ArrayList<Artifact> artifacts = new ArrayList<>();
       try {
+         ObjectMapper objMap = new ObjectMapper();
 
-         HashMap jsonMap = new HashMap();
-         ObjectMapper OM = new ObjectMapper();
-
-         JsonNode jsonObject = OM.readTree(result);
+         JsonNode jsonObject = objMap.readTree(result);
          JsonNode results = jsonObject.findValue("results");
-         if (results != null) {
-            JsonNode artifactIds = results.findValue("artifacts");
-            ArtifactId artifactId = ArtifactId.valueOf(artifactIds.findValue("id").asLong());
-            Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
-            artifacts.add(artifact);
+         if (results.size() >= 1) {
+            JsonNode artifactIds = results.get(0).findValue("artifacts");
+            JsonNode id = null;
+            for (int i = 0; i < artifactIds.size(); i++) {
+               id = artifactIds.get(i);
+               ArtifactId artifactId = ArtifactId.valueOf(id.findValue("id").asLong());
+               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
+               artifacts.add(artifact);
+            }
          }
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -494,22 +495,25 @@ public class WordTemplateProcessor {
       try {
          attributeElements.clear();
 
-         ObjectMapper OM = new ObjectMapper();
-
-         JsonNode jsonObject = OM.readTree(templateOptions);
+         ObjectMapper objMapper = new ObjectMapper();
+         JsonNode jsonObject = objMapper.readTree(templateOptions);
          JsonNode attributeOptions = jsonObject.findValue("AttributeOptions");
-         attributeType = attributeOptions.findValue("AttrType").asText();
-         attributeLabel = attributeOptions.findValue("Label").asText();
-         formatPre = attributeOptions.findValue("FormatPre").asText();
-         formatPost = attributeOptions.findValue("FormatPost").asText();
+         JsonNode options = null;
 
-         AttributeElement attrElement = new AttributeElement();
+         for (int i = 0; i < attributeOptions.size(); i++) {
+            options = attributeOptions.get(i);
 
-         if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
-            attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
-            attributeElements.add(attrElement);
+            attributeType = attributeOptions.findValue("AttrType").asText();
+            attributeLabel = attributeOptions.findValue("Label").asText();
+            formatPre = attributeOptions.findValue("FormatPre").asText();
+            formatPost = attributeOptions.findValue("FormatPost").asText();
+
+            AttributeElement attrElement = new AttributeElement();
+            if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
+               attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
+               attributeElements.add(attrElement);
+            }
          }
-
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -517,10 +521,10 @@ public class WordTemplateProcessor {
 
    private void parseOutliningOptions(String templateOptions) {
       try {
-         ObjectMapper OM = new ObjectMapper();
-
-         JsonNode jsonObject = OM.readTree(templateOptions);
+         ObjectMapper objMap = new ObjectMapper();
+         JsonNode jsonObject = objMap.readTree(templateOptions);
          JsonNode attributeOptions = jsonObject.findValue("OutliningOptions");
+
          outlining = attributeOptions.findValue("Outlining").asBoolean();
          recurseChildren = attributeOptions.findValue("RecurseChildren").asBoolean();
          try {
@@ -539,24 +543,25 @@ public class WordTemplateProcessor {
 
    private void parseMetadataOptions(String metadataOptions) {
       try {
-         ObjectMapper OM = new ObjectMapper();
-         JsonNode jsonObject = OM.readTree(metadataOptions);
-         JsonNode options = null;
+         ObjectMapper objMap = new ObjectMapper();
+         JsonNode jsonObject = objMap.readTree(metadataOptions);
 
          if (!jsonObject.has("MetadataOptions")) {
             return;
          }
 
          JsonNode optionsArray = jsonObject.findValue("MetadataOptions");
+         JsonNode options = null;
+         for (int i = 0; i < optionsArray.size(); i++) {
+            metadataType = optionsArray.findValue("Type").asText();
+            metadataFormat = optionsArray.findValue("Format").asText();
+            metadataLabel = optionsArray.findValue("Label").asText();
 
-         metadataType = optionsArray.findValue("Type").asText();
-         metadataFormat = optionsArray.findValue("Format").asText();
-         metadataLabel = optionsArray.findValue("Label").asText();
+            MetadataElement metadataElement = new MetadataElement();
 
-         MetadataElement metadataElement = new MetadataElement();
-
-         metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
-         metadataElements.add(metadataElement);
+            metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
+            metadataElements.add(metadataElement);
+         }
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
