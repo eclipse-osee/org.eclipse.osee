@@ -111,7 +111,6 @@ abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Ar
 
 artifactType "Country" extends "ats.Ats Config Artifact" {
 	id 4955822638391722788
-	attribute "ats.Description"
 }
 
 artifactType "Program" extends "ats.Ats Config Artifact" {
@@ -183,7 +182,6 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Full Name"
 	attribute "ats.Team Uses Versions"
 	attribute "ats.Require Targeted Version"
-	attribute "ats.Baseline Branch Guid"
 	attribute "ats.Baseline Branch Id"
 	attribute "ats.Action Details Format"
 	attribute "ats.Allow Create Branch"
@@ -220,7 +218,6 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Estimated Release Date"
 	attribute "ats.Full Name"
 	attribute "ats.Next Version"
-	attribute "ats.Baseline Branch Guid"
 	attribute "ats.Baseline Branch Id"
 	attribute "ats.Release Date"
 	attribute "ats.Released"
@@ -288,7 +285,6 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Actionable Item"
 	attribute "ats.Actionable Item Reference"
 	attribute "ats.Branch Metrics"
-	attribute "ats.Baseline Branch Guid"
 	attribute "ats.Baseline Branch Id"
 	attribute "ats.Validation Required"
 	attribute "ats.Weekly Benefit"

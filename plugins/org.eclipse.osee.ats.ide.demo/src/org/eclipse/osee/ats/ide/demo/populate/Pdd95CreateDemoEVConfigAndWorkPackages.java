@@ -245,7 +245,6 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       jaxCountry.setName(country.getName());
       jaxCountry.setId(country.getId());
       jaxCountry.setActive(country.isActive());
-      jaxCountry.setDescription(country.getDescription());
       countryEp.create(jaxCountry);
       return jaxCountry;
    }

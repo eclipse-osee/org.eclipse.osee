@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ColorTeamAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.IptAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.IptTeamAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType;
@@ -111,7 +110,6 @@ public interface AtsAttributeTypes {
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
    IptAttributeType IPT = ats.createEnum(IptAttributeType::new, MediaType.TEXT_PLAIN);
-   IptTeamAttributeType IptTeam = ats.createEnum(IptTeamAttributeType::new, MediaType.TEXT_PLAIN);
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
    AttributeTypeString KanbanStoryName = ats.createString(72645877009467643L, "ats.kb.Story Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LegacyPcrId = ats.createString(1152921504606847219L, "ats.Legacy PCR Id", MediaType.TEXT_PLAIN, "Field to register problem change report id from legacy items imported into ATS.");

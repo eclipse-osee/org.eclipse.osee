@@ -244,13 +244,13 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestResultNative = osee.add(osee.artifactType(39L, "Test Result Native", false, NativeArtifact, AbstractTestResult));
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Artifact));
-   ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")
       .any(DoorsId, ""));
    ArtifactTypeToken SoftwareTestProcedurePlainText = osee.add(osee.artifactType(564397212436322878L, "Software Test Procedure Plain Text", false, PlainText, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")
       .any(DoorsId, ""));
-   ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
+   ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .zeroOrOne(DoorsHierarchy, "")
       .any(DoorsId, ""));
    ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, TestUnit));
@@ -293,10 +293,10 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Zip, ""));
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup, "false"));
-   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
       .any(DoorsId, "")
       .zeroOrOne(DoorsHierarchy, ""));
-   ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
+   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .any(DoorsId, "")
       .zeroOrOne(DoorsHierarchy, ""));
    ArtifactTypeToken SubscriptionGroup = osee.add(osee.artifactType(6753071794573299176L, "Subscription Group", false, UserGroup));

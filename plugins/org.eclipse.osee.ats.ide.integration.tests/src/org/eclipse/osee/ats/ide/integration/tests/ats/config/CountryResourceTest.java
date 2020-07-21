@@ -23,28 +23,8 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class CountryResourceTest extends AbstractRestTest {
-
-   private void testCountriesUrl(String url, int size, boolean hasDescription) {
-      testUrl(url, size, "USG", "ats.Description", hasDescription);
-   }
-
-   @Test
-   public void testAtsCountriesRestCall() {
-      testCountriesUrl("/ats/country", 2, false);
-   }
-
-   @Test
-   public void testAtsCountriesDetailsRestCall() {
-      testCountriesUrl("/ats/country/details", 2, true);
-   }
-
    @Test
    public void testAtsCountryRestCall() {
       testUrl("/ats/country/" + DemoCountry.usg.getIdString(), "USG");
-   }
-
-   @Test
-   public void testAtsCountryDetailsRestCall() {
-      testCountriesUrl("/ats/country/" + DemoCountry.usg.getIdString() + "/details", 1, true);
    }
 }

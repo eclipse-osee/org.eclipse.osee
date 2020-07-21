@@ -66,8 +66,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AtsConfiguredBranch, "")
       .zeroOrOne(Default, "")
       .zeroOrOne(Description, ""));
-   ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, AtsConfigArtifact)
-      .zeroOrOne(Description, ""));
+   ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, AtsConfigArtifact));
    ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, AtsConfigArtifact)
       .zeroOrOne(ColorTeam, "Unspecified")
       .zeroOrOne(Description, "")
@@ -147,7 +146,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Decision, "")
       .zeroOrOne(DecisionReviewOptions, ""));
    ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "PeerToPeer Review", false, AbstractReview)
-      .any(CSCI, "")
       .zeroOrOne(ChangeType, "")
       .zeroOrOne(LocChanged, "")
       .zeroOrOne(LocReviewed, "")
@@ -174,7 +172,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AllowCreateBranch, "true")
       .zeroOrOne(AtsIdPrefix, "")
       .zeroOrOne(AtsIdSequenceName, "")
-      .zeroOrOne(BaselineBranchGuid, "")
       .zeroOrOne(BaselineBranchId, "")
       .any(CSCI, "")
       .zeroOrOne(ClosureActive, "")
@@ -200,7 +197,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ApplicableToProgram, "")
       .zeroOrOne(ApproveRequestedHoursBy, "")
       .zeroOrOne(ApproveRequestedHoursDate, "")
-      .zeroOrOne(BaselineBranchGuid, "")
       .zeroOrOne(BaselineBranchId, "")
       .zeroOrOne(BranchMetrics, "")
       .zeroOrOne(ChangeType, "")
@@ -234,7 +230,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AllowCommitBranch, "true")
       .zeroOrOne(AllowCreateBranch, "true")
       .zeroOrOne(AllowWebExport, "false")
-      .zeroOrOne(BaselineBranchGuid, "")
       .zeroOrOne(BaselineBranchId, "")
       .zeroOrOne(ClosureState, "")
       .zeroOrOne(EstimatedReleaseDate, "")
