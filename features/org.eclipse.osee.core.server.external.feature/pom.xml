@@ -63,7 +63,6 @@
 							   <plugin id="org.eclipse.persistence.asm" />
 							   <plugin id="org.eclipse.persistence.core" />
 							   <plugin id="org.eclipse.persistence.moxy" />
-							   <plugin id="org.json" />
 							   <plugin id="org.jsoup" />
 							   <plugin id="org.eclipse.jdt.annotation" />
 							   <plugin id="org.apache.commons.codec" />

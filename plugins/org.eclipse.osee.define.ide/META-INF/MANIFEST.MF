@@ -76,6 +76,5 @@ Import-Package: com.fasterxml.jackson.databind,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.ote.define.artifacts,
- org.eclipse.ui.forms.widgets,
- org.json
+ org.eclipse.ui.forms.widgets
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

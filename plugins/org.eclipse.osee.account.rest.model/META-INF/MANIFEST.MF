@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Account REST Model (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.account.rest.model;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.account.rest.model
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -12,5 +12,4 @@ Import-Package: com.fasterxml.jackson.databind,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.jaxrs.client,
- org.json
+ org.eclipse.osee.jaxrs.client

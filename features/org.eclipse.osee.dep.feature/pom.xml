@@ -41,7 +41,6 @@
 								<plugin id="org.eclipse.wst.xml.ui" />
 								<plugin id="org.eclipse.wst.common.emf" />
 								<plugin id="org.eclipse.jem.util" />
-								<plugin id="org.json" />
 								<plugin id="com.google.protobuf" />
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="javax.ws.rs" />

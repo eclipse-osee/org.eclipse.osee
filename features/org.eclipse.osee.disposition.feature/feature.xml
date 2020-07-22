@@ -26,7 +26,6 @@
       <import plugin="org.eclipse.osee.logger"/>
       <import plugin="org.eclipse.osee.orcs"/>
       <import plugin="org.eclipse.osee.template.engine"/>
-      <import plugin="org.json"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osee.console.admin"/>
       <import plugin="org.eclipse.osgi.services"/>
