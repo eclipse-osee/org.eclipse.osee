@@ -92,14 +92,13 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -137,8 +136,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private WfeMembersTab membersTab;
    private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
-   int attributesPageIndex = 0;;
-   private AttributesComposite attributesComposite;
+   private ArtEdAttrTab attrTab;
+   int attrPageIndex = 0;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private final HashCollectionSet<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollectionSet<>();
@@ -190,7 +189,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             createWorkflowTab();
             createTaskTab();
             createDefectsTab();
-            createAttributesTab();
+            createAttributes2Tab();
             createMetricsTab();
          }
          updatePartName();
@@ -299,19 +298,15 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                "You do not have permissions to save " + workItem.getArtifactTypeName() + ":" + workItem);
          } else {
             try {
-               if (attributesComposite != null && getActivePage() == attributesPageIndex) {
-                  workItem.persist("Workflow Editor - Attributes Tab - Save");
-               } else {
-                  IAtsChangeSet changes = AtsClientService.get().createChangeSet("Workflow Editor - Save");
-                  // If change was made on Attribute tab, persist awa separately.  This is cause attribute
-                  // tab changes conflict with XWidget changes
-                  // Save widget data to artifact
-                  workFlowTab.saveXWidgetToArtifact();
-                  workItem.save(changes);
-                  changes.executeIfNeeded();
-                  if (saveListener != null) {
-                     saveListener.saved(workItem, changes);
-                  }
+               IAtsChangeSet changes = AtsClientService.get().createChangeSet("Workflow Editor - Save");
+               // If change was made on Attribute tab, persist awa separately.  This is cause attribute
+               // tab changes conflict with XWidget changes
+               // Save widget data to artifact
+               workFlowTab.saveXWidgetToArtifact();
+               workItem.save(changes);
+               changes.executeIfNeeded();
+               if (saveListener != null) {
+                  saveListener.saved(workItem, changes);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -364,8 +359,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (metricsPageIndex > 0) {
          removePage(metricsPageIndex);
       }
-      if (attributesPageIndex > 0) {
-         removePage(attributesPageIndex);
+      if (attrPageIndex > 0) {
+         removePage(attrPageIndex);
       }
       if (taskTab != null) {
          removePage(taskTab.getIndex());
@@ -445,59 +440,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    }
 
-   private void createAttributesTab() {
+   private void createAttributes2Tab() {
+      attrTab = new ArtEdAttrTab(this, workItem);
       try {
-         if (!AtsClientService.get().getUserService().isAtsAdmin() && !isDemoDb()) {
-            return;
-         }
-
-         // Create Attributes tab
-         Composite composite = createCommonPageComposite(getContainer());
-         ToolBar toolBar = createToolBar(composite);
-
-         ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(FrameworkImage.SAVE));
-         item.setToolTipText("Save attributes changes only");
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               try {
-                  workItem.persist(getClass().getSimpleName());
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
-
-         ToolItem refresh = new ToolItem(toolBar, SWT.PUSH);
-         refresh.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-         refresh.setToolTipText("Reload Table");
-         refresh.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               try {
-                  workItem.reloadAttributesAndRelations();
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
-
-         Label label = new Label(composite, SWT.NONE);
-         label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-
-         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, workItem);
-         attributesPageIndex = addPage(composite);
-         setPageText(attributesPageIndex, "Attributes");
-      } catch (Exception ex) {
+         attrPageIndex = addPage(attrTab);
+      } catch (PartInitException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   private static boolean isDemoDb() {
-      String dbType = OseeInfo.getValue(OseeInfo.DB_TYPE_KEY);
-      return "demo".equals(dbType);
    }
 
    private ToolBar createToolBar(Composite parent) {
@@ -528,9 +477,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
          if (taskTab != null) {
             taskTab.refresh();
-         }
-         if (attributesComposite != null) {
-            attributesComposite.refreshArtifact(workItem);
          }
          onDirtied();
          updatePartName();
@@ -784,8 +730,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                String title = getPageText(newPageIndex);
                if (title.equalsIgnoreCase("metrics")) {
                   provider = null;
-               } else if (title.equalsIgnoreCase("attributes")) {
-                  provider = attributesComposite.getTableViewer();
                }
             }
             getSite().setSelectionProvider(provider);
@@ -976,7 +920,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
          handledArts.add(getWorkItem().getGuid());
       }
+
       onDirtied();
+
       updatePartName();
    }
 

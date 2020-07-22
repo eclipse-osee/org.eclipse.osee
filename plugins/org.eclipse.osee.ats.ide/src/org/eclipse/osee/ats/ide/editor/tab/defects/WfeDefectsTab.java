@@ -180,8 +180,10 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
 
    @Override
    public void refreshActionHandler() {
-      AtsClientService.get().getQueryServiceClient().getArtifact(review).reloadAttributesAndRelations();
-      xViewer.loadTable(this);
+      if (xViewer != null) {
+         AtsClientService.get().getQueryServiceClient().getArtifact(review).reloadAttributesAndRelations();
+         xViewer.loadTable(this);
+      }
    }
 
    @Override
