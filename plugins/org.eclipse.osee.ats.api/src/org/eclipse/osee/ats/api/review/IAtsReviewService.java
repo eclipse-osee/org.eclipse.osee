@@ -88,4 +88,6 @@ public interface IAtsReviewService {
 
    boolean isStandAloneReview(Object object);
 
+   ReviewDefectItem getDefectItem(String xml, IAtsPeerToPeerReview review);
+
 }

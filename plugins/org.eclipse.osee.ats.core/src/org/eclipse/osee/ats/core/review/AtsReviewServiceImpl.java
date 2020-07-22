@@ -562,4 +562,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return Result.TrueResult;
    }
 
+   @Override
+   public ReviewDefectItem getDefectItem(String xml, IAtsPeerToPeerReview review) {
+      return new ReviewDefectItem(xml, false, review);
+   }
+
 }
