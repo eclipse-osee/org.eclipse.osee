@@ -53,6 +53,9 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
 
    @Override
    public TransactionToken finishImport() {
+      if (codeunitToCommitMap.isEmpty()) {
+         return TransactionToken.SENTINEL;
+      }
       pathToCodeunitMap.forEach((path, codeUnit) -> tx.addTuple4(GitLatest, repoArtifact, codeUnit,
          codeunitToCommitMap.get(codeUnit), ArtifactId.SENTINEL));
       return tx.commit();
