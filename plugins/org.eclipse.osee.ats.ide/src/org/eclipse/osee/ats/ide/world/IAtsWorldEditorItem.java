@@ -31,29 +31,43 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface IAtsWorldEditorItem {
 
-   public List<XViewerColumn> getXViewerColumns();
+   default public List<XViewerColumn> getXViewerColumns() {
+      return Collections.emptyList();
+   }
 
-   public boolean isXColumnProvider(XViewerColumn xCol);
+   default public boolean isXColumnProvider(XViewerColumn xCol) {
+      return getXViewerColumns().contains(xCol);
+   }
 
-   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex);
+   default public String getColumnText(Object element, XViewerColumn col, int columnIndex) {
+      return null;
+   }
 
-   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex);
+   default public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) {
+      return null;
+   }
 
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex);
+   default public Color getForeground(Object element, XViewerColumn col, int columnIndex) {
+      return null;
+   }
 
    /**
     * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
     * worldSearchItem
     */
-   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor);
+   default public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
+      return Collections.emptyList();
+   }
 
-   public void updateTaskEditMenuActions(TaskXViewer taskXViewer);
+   default public void updateTaskEditMenuActions(TaskXViewer taskXViewer) {
+      // do nothing
+   }
 
-   public default boolean isWorldEditorSearchProviderNamespaceMatch(String namespace) {
+   default boolean isWorldEditorSearchProviderNamespaceMatch(String namespace) {
       return false;
    }
 
-   public default IAdaptable getNewWorldEditorInputFromNamespace(String namespace, long atsSearchId) {
+   default IAdaptable getNewWorldEditorInputFromNamespace(String namespace, long atsSearchId) {
       return null;
    }
 

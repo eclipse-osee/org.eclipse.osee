@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.world.search.AtsSearchWorkPackageSearchItem;
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
+public class AtsWorldEditorItem implements IAtsWorldEditorItem {
 
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
