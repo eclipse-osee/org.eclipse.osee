@@ -37,6 +37,7 @@ public final class DoorsImportFieldTokens {
    private static final String DESCRIPTION_REGEX = "^Functional Description.*";
    private static final String DEFINITION_REGEX = "^Definition.*";
    private static final String REFDOC_NAME_REGEX = "^RefDocFilename.*";
+   private static final String SAFETY_HAZARD_REGEX = "^SafetyHazardDescription.*";
 
    private static final String OBJECT_TEXT_REGEX = "(.*?)<w:r>(.*?)</w:r>(.*)";
 
@@ -58,5 +59,6 @@ public final class DoorsImportFieldTokens {
    public static final BlockFieldToken blockAttrDescription = BlockFieldToken.valueOf(16, "Description", DESCRIPTION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Description);
    public static final BlockFieldToken blockAttrAcronym =     BlockFieldToken.valueOf(17, "Definition", DEFINITION_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Acronym);
    public static final BlockFieldToken blockAttrNative =      BlockFieldToken.valueOf(18, "Native Content", REFDOC_NAME_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.NativeContent);
+   public static final BlockFieldToken blockAttrSafetyHazard = BlockFieldToken.valueOf(19, "Hazard", SAFETY_HAZARD_REGEX, BLOCK_ATTR_REGEX, BlockField::new, CoreAttributeTypes.Hazard);
    // @formatter:on
 }

@@ -232,14 +232,14 @@ public interface CoreArtifactTypes {
       .exactlyOne(Subsystem, "Unspecified"));
    ArtifactTypeToken SubsystemFunctionMsWord = osee.add(osee.artifactType(36L, "Subsystem Function - MS Word", false, FunctionMsWord, SubsystemDesignMsWord));
    ArtifactTypeToken SubsystemRequirementHtml = osee.add(osee.artifactType(795L, "Subsystem Requirement - HTML", false, AbstractSubsystemRequirement, HtmlArtifact));
-   ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, MsWordTemplate, AbstractSubsystemRequirement));
+   ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, MsWordTemplate, AbstractSubsystemRequirement).zeroOrOne(CoreAttributeTypes.Hazard, ""));
    ArtifactTypeToken SupportDocumentMsWord = osee.add(osee.artifactType(13L, "Support Document - MS Word", false, MsWordTemplate)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified"));
    ArtifactTypeToken SystemDesignMsWord = osee.add(osee.artifactType(44L, "System Design - MS Word", false, DesignMsWord));
    ArtifactTypeToken SystemFunctionMsWord = osee.add(osee.artifactType(35L, "System Function - MS Word", false, FunctionMsWord, SystemDesignMsWord).zeroOrOne(FunctionalCategory, ""));
    ArtifactTypeToken SystemRequirementHtml = osee.add(osee.artifactType(794L, "System Requirement - HTML", false, AbstractSystemRequirement, HtmlArtifact));
-   ArtifactTypeToken SystemRequirementMsWord = osee.add(osee.artifactType(30L, "System Requirement - MS Word", false, MsWordTemplate, AbstractSystemRequirement));
+   ArtifactTypeToken SystemRequirementMsWord = osee.add(osee.artifactType(30L, "System Requirement - MS Word", false, MsWordTemplate, AbstractSystemRequirement).zeroOrOne(CoreAttributeTypes.Hazard, ""));
    ArtifactTypeToken TestPlanElementMsWord = osee.add(osee.artifactType(37L, "Test Plan Element - MS Word", false, MsWordTemplate));
    ArtifactTypeToken TestResultNative = osee.add(osee.artifactType(39L, "Test Result Native", false, NativeArtifact, AbstractTestResult));
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));

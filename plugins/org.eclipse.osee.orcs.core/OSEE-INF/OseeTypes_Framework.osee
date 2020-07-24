@@ -990,6 +990,7 @@ abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requi
 
 artifactType "System Requirement - MS Word" extends "Abstract System Requirement" , "MS Word Template" {
 	id 30
+	attribute "Hazard"
 }
 
 artifactType "Customer Requirement - MS Word" extends "Abstract Spec Requirement" , "MS Word Template" {
@@ -1012,6 +1013,7 @@ abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Re
 
 artifactType "Subsystem Requirement - MS Word" extends "Abstract Subsystem Requirement" , "MS Word Template" {
 	id 31
+	attribute "Hazard"
 }
 
 artifactType "Subsystem Requirement - HTML" extends "Abstract Subsystem Requirement" , "HTML Artifact" {
@@ -1320,6 +1322,15 @@ attributeType "Software Control Category Rationale" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
+}
+
+attributeType "Safety Hazard Description" extends StringAttribute {
+	id 1785731605616857001
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Safety Hazard Description"
 	mediaType "text/plain"
 }
 

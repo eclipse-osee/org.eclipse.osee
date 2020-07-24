@@ -145,6 +145,7 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger ReviewId = osee.createInteger(1152921504606847245L, "Review Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ReviewStoryId = osee.createString(1152921504606847246L, "Review Story Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SFHA = osee.createString(1152921504606847140L, "SFHA", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString SafetyHazardDescription = osee.createString(1785731605616857001L, "Safety Hazard Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString SafetyImpact = osee.createString(1684721504606847095L, "Safety Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeDouble SafetyObjective = osee.createDouble(1152921504606847142L, "Safety Objective", MediaType.TEXT_PLAIN, "");
    SafetySeverityAttributeType SafetySeverity = osee.createEnum(SafetySeverityAttributeType::new, MediaType.TEXT_PLAIN);
