@@ -224,4 +224,9 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    public void setAbstract(boolean isAbstract) {
       setFieldLogException(ARTIFACT_IS_ABSTRACT_FIELD_KEY, isAbstract);
    }
+
+   @Override
+   public String getAttributeDefault(AttributeTypeToken attributeType) {
+      return "";
+   }
 }

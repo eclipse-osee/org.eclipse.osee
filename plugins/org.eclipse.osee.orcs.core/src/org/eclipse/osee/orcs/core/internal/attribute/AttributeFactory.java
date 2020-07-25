@@ -40,7 +40,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.IntegerAttribute
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.LongAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -48,12 +47,10 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 public class AttributeFactory {
 
    private final AttributeDataFactory dataFactory;
-   private final AttributeTypes cache;
    private final OrcsTokenService tokenService;
 
-   public AttributeFactory(AttributeDataFactory dataFactory, AttributeTypes cache, OrcsTokenService tokenService) {
+   public AttributeFactory(AttributeDataFactory dataFactory, OrcsTokenService tokenService) {
       this.dataFactory = dataFactory;
-      this.cache = cache;
       this.tokenService = tokenService;
    }
 
@@ -76,7 +73,7 @@ public class AttributeFactory {
 
       Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
-      attribute.internalInitialize(cache, tokenService, artifactRef, data, isDirty, createWithDefaults);
+      attribute.internalInitialize(artifactRef, data, isDirty, createWithDefaults);
       container.add(data.getType(), attribute);
 
       return attribute;
@@ -135,7 +132,7 @@ public class AttributeFactory {
          try {
             destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
             Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
-            destinationAttribute.internalInitialize(cache, tokenService, artifactRef, attributeData, true, false);
+            destinationAttribute.internalInitialize(artifactRef, attributeData, true, false);
          } catch (AttributeDoesNotExist ex) {
             destinationAttribute = createAttribute(destination, attributeData);
          }

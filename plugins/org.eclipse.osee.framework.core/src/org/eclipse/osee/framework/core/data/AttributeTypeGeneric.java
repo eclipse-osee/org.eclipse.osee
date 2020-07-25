@@ -28,13 +28,15 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final TaggerTypeToken taggerType;
    private final NamespaceToken namespace;
    private final String fileExtension;
+   private final T defaultValue;
 
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;
       this.taggerType = taggerType;
       this.fileExtension = fileExtension;
+      this.defaultValue = defaultValue;
    }
 
    @Override
@@ -78,5 +80,10 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    @Override
    public boolean isTaggable() {
       return taggerType.isValid();
+   }
+
+   @Override
+   public T getDefaultValue() {
+      return defaultValue;
    }
 }

@@ -22,24 +22,19 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -55,7 +50,6 @@ public class AttributeFactoryTest {
 
    // @formatter:off
    @Mock private OrcsTokenService tokenService;
-   @Mock private AttributeTypes cache;
    @Mock private AttributeDataFactory dataFactory;
 
    @Mock private AttributeData attributeData;
@@ -75,7 +69,7 @@ public class AttributeFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      factory = new AttributeFactory(dataFactory, cache, tokenService);
+      factory = new AttributeFactory(dataFactory, tokenService);
 
       when(attributeData.getType()).thenReturn(attributeType);
       doReturn(attributeType).when(tokenService).getAttributeType(attributeType.getId());
@@ -88,25 +82,6 @@ public class AttributeFactoryTest {
    @Test
    public void testCreateAttribute() {
       Attribute<Object> actual = factory.createAttribute(container, attributeData);
-      assertEquals(attribute.getId(), actual.getId());
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Test
-   public void testCreateAttributeFromArtifactDataAndType() {
-      ArtifactData artifactData = mock(ArtifactData.class);
-      VersionData artVersionData = mock(VersionData.class);
-
-      when(dataFactory.create(artifactData, attributeType)).thenReturn(attributeData);
-      when(attributeData.getVersion()).thenReturn(attrVersionData);
-      when(artifactData.getVersion()).thenReturn(artVersionData);
-
-      ArgumentCaptor.forClass(ResourceNameResolver.class);
-      ArgumentCaptor.forClass(WeakReference.class);
-
-      Attribute<Object> actual = factory.createAttributeWithDefaults(container, artifactData, attributeType);
-
-      verify(dataFactory).create(artifactData, attributeType);
       assertEquals(attribute.getId(), actual.getId());
    }
 

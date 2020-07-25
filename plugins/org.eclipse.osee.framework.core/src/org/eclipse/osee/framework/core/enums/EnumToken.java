@@ -13,15 +13,16 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Stephen J. Molaro
  */
 public class EnumToken extends NamedIdBase {
+   public static final EnumToken SENTINEL = new EnumToken(-1, Named.SENTINEL);
 
    public EnumToken(int id, String name) {
       super(id, name);
    }
-
 }

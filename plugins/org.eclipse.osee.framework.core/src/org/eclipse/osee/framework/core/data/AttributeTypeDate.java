@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  */
 public final class AttributeTypeDate extends AttributeTypeGeneric<Date> {
    public AttributeTypeDate(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      super(id, namespace, name, mediaType, description, taggerType, "");
+      super(id, namespace, name, mediaType, description, taggerType, "", new Date());
    }
 
    @Override

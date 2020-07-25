@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -23,8 +25,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputStream> {
+   private static final InputStream defaultValue = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
+
    public AttributeTypeInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
-      super(id, namespace, name, mediaType, description, taggerType, fileExtension);
+      super(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue);
    }
 
    @Override

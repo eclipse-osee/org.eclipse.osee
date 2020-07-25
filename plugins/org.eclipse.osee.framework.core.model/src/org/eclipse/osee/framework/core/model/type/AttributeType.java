@@ -80,6 +80,7 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       return getFieldValueLogException("", ATTRIBUTE_PROVIDER_ID_FIELD_KEY);
    }
 
+   @Override
    public String getDefaultValue() {
       return getFieldValueLogException(null, ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY);
    }

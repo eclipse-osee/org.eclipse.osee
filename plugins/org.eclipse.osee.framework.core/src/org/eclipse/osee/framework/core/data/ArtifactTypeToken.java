@@ -38,6 +38,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes).get();
    }
 
+   String getAttributeDefault(AttributeTypeToken attributeType);
+
    default boolean inheritsFrom(ArtifactTypeToken otherType) {
       if (equals(otherType)) {
          return true;
@@ -171,6 +173,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             return -1;
          }
 
+         @Override
+         public String getAttributeDefault(AttributeTypeToken attributeType) {
+            return attributeTypes.getAttributeDefault(attributeType);
+         }
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);
    }

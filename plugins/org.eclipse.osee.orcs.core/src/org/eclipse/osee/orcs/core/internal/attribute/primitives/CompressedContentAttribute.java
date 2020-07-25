@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,12 +60,8 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   public InputStream convertStringToValue(String value) {
-      try {
-         return Lib.stringToInputStream(value);
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+   InputStream subclassConvertStringToValue(String value) throws UnsupportedEncodingException {
+      return Lib.stringToInputStream(value);
    }
 
    @Override

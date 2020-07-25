@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OrcsTypesSheet;
@@ -44,11 +43,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.EnumEntry;
-import org.eclipse.osee.orcs.data.EnumType;
-import org.eclipse.osee.orcs.data.JaxEnumAttribute;
-import org.eclipse.osee.orcs.data.JaxEnumEntry;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -84,27 +78,6 @@ public class TypesEndpointImpl implements TypesEndpoint {
    public Response invalidateCaches() {
       orcsTypes.invalidateAll();
       return Response.ok().build();
-   }
-
-   private JaxEnumAttribute createJaxEnumAttribute(AttributeTypes attributeTypes, AttributeTypeToken type) {
-      JaxEnumAttribute enumAttr = new JaxEnumAttribute();
-      enumAttr.setName(type.getName());
-      enumAttr.setDescription(type.getDescription());
-      enumAttr.setUuid(type.getIdString());
-      enumAttr.setDefaultValue(attributeTypes.getDefaultValue(type));
-      enumAttr.setMax(attributeTypes.getMaxOccurrences(type));
-      enumAttr.setMin(attributeTypes.getMinOccurrences(type));
-      enumAttr.setMediaType(type.getMediaType());
-      EnumType enumType = attributeTypes.getEnumType(type);
-      enumAttr.setEnumTypeName(enumType.getName());
-      enumAttr.setEnumTypeUuid(enumType.getIdString());
-      for (EnumEntry enumEntry : enumType.values()) {
-         JaxEnumEntry entry = new JaxEnumEntry();
-         entry.setName(enumEntry.getName());
-         entry.setUuid(enumEntry.getId());
-         enumAttr.getEntries().add(entry);
-      }
-      return enumAttr;
    }
 
    public static final String LOAD_OSEE_TYPE_DEF_NAME_AND_ID =

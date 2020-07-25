@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 public class AttributeTypeString extends AttributeTypeGeneric<String> {
 
    public AttributeTypeString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
-      super(id, namespace, name, mediaType, description, taggerType, fileExtension);
+      super(id, namespace, name, mediaType, description, taggerType, fileExtension, "");
    }
 
    @Override

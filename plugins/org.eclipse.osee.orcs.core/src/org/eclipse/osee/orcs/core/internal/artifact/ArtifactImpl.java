@@ -143,7 +143,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return getArtifactType().isValidAttributeType(attributeType);
-      //return tokenService.getArtifactTypeOrSentinel(getArtifactType().getId()).isValidAttributeType(attributeType);
    }
 
    @Override
@@ -174,6 +173,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       deleteAttributesByArtifact();
    }
 
+   @Override
    public boolean isDeleteAllowed() {
       return !isDeleted();
    }

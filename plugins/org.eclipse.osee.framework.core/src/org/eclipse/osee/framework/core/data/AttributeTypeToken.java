@@ -137,4 +137,6 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
             return TaggerTypeToken.PlainTextTagger;
       }
    }
+
+   Object getDefaultValue();
 }

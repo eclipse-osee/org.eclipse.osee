@@ -19,14 +19,13 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  * @author Ryan D. Brooks
  */
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
-   public static final String NAME = ArtifactReferenceAttribute.class.getSimpleName();
 
    public ArtifactReferenceAttribute(Long id) {
       super(id);
    }
 
    @Override
-   public ArtifactId convertStringToValue(String value) {
+   ArtifactId subclassConvertStringToValue(String value) {
       return ArtifactId.valueOf(value);
    }
 }

@@ -19,14 +19,13 @@ import org.eclipse.osee.framework.core.data.BranchId;
  * @author Ryan D. Brooks
  */
 public class BranchReferenceAttribute extends IdentityReferenceAttribute {
-   public static final String NAME = BranchReferenceAttribute.class.getSimpleName();
 
    public BranchReferenceAttribute(Long id) {
       super(id);
    }
 
    @Override
-   public BranchId convertStringToValue(String value) {
+   BranchId subclassConvertStringToValue(String value) {
       return BranchId.valueOf(value);
    }
 }

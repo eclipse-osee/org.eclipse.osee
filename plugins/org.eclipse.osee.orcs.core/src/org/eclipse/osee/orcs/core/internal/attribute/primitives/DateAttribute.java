@@ -24,7 +24,6 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("DateAttribute")
 public class DateAttribute extends CharacterBackedAttribute<Date> {
-   public static final String NAME = DateAttribute.class.getSimpleName();
    private static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
    public DateAttribute(Long id) {
@@ -42,7 +41,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    }
 
    @Override
-   public Date convertStringToValue(String value) {
+   Date subclassConvertStringToValue(String value) {
       return new Date(Long.parseLong(value));
    }
 

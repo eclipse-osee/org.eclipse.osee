@@ -62,10 +62,6 @@ public class ConvertWorkDefinitionOperations {
    }
 
    private void convertMissingWorkItemWorkDefNameAttribute(XResultData rd) {
-      if (!orcsApi.getOrcsTypes().getAttributeTypes().typeExists(AtsAttributeTypes.WorkflowDefinition)) {
-         return;
-      }
-
       List<ArtifactId> artIdList = new LinkedList<>();
       artIdList.addAll(
          atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.CurrentStateType,

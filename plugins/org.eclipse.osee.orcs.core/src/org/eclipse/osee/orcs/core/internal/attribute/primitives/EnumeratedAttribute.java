@@ -21,7 +21,6 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("EnumeratedAttribute")
 public class EnumeratedAttribute extends StringAttribute {
-   public static final String NAME = EnumeratedAttribute.class.getSimpleName();
 
    public EnumeratedAttribute(Long id) {
       super(id);

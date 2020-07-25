@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -32,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Ryan D. Brooks
@@ -43,16 +41,12 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
       super(id);
    }
 
-   private AttributeTypes attributeTypeCache;
-   private OrcsTokenService tokenService;
    private Reference<AttributeContainer> containerReference;
    private final Log logger = null;
    private AttributeData<T> attributeData;
 
    @Override
-   public void internalInitialize(AttributeTypes attributeTypeCache, OrcsTokenService tokenService, Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
-      this.attributeTypeCache = attributeTypeCache;
-      this.tokenService = tokenService;
+   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
       this.containerReference = containerReference;
       this.attributeData = attributeData;
 
@@ -115,10 +109,10 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
       setToDefaultValue();
    }
 
-   protected void setToDefaultValue() {
-      String defaultValue = attributeTypeCache.getDefaultValue(attributeData.getType());
+   private void setToDefaultValue() {
+      T defaultValue = getSafeDefaultValue();
       if (defaultValue != null) {
-         subClassSetValue(convertStringToValue(defaultValue));
+         subClassSetValue(defaultValue);
       }
    }
 
@@ -192,10 +186,6 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
          throw new OseeStateException("Attribute parent has been garbage collected");
       }
       return containerReference.get();
-   }
-
-   protected String getDefaultValueFromMetaData() {
-      return attributeTypeCache.getDefaultValue(getAttributeType());
    }
 
    /**
@@ -325,4 +315,28 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    public int hashCode() {
       return getId().hashCode();
    }
+
+   @Override
+   public T convertStringToValue(String proposedValue) {
+      try {
+         return subclassConvertStringToValue(proposedValue);
+      } catch (Exception ex) {
+         return getSafeDefaultValue();
+      }
+   }
+
+   private T getSafeDefaultValue() {
+      try {
+         String defaultValue = containerReference.get().getArtifactType().getAttributeDefault(getAttributeType());
+         return defaultValue == null ? null : subclassConvertStringToValue(defaultValue);
+      } catch (Exception ex) {
+         return (T) attributeData.getType().getDefaultValue();
+      }
+   }
+
+   /**
+    * @return result of converting the string value of this attribute or throw an exception so the super class can
+    * supply a default
+    */
+   abstract T subclassConvertStringToValue(String value) throws Exception;
 }

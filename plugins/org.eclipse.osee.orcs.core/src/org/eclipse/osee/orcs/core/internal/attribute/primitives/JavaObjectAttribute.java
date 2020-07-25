@@ -78,10 +78,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    @Override
-   public Object convertStringToValue(String value) {
-      if (value == null) {
-         return null;
-      }
+   Object subclassConvertStringToValue(String value) {
       return getObjectFromBytes(ByteBuffer.wrap(value.getBytes()));
    }
 }

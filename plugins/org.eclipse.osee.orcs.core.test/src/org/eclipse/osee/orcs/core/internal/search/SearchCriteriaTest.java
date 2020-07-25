@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +35,6 @@ import org.mockito.MockitoAnnotations;
  */
 public class SearchCriteriaTest {
 
-   @Mock
-   private AttributeTypes cache;
    @Mock
    private OrcsTokenService tokenService;
 
