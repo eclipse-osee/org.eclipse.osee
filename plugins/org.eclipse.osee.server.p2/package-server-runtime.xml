@@ -26,6 +26,10 @@
 			<fileset dir="${p2-content-path}/plugins" excludes="**/*source_*.jar" />
 		</copy>
 
+		<copy todir="${server-path}/extras">
+					<fileset dir="${project-base-path}/extras" />
+				</copy>
+		
 		<mkdir dir="${server-etc-path}" />
 		<copy todir="${server-etc-path}">
 			<fileset dir="${etc-content-path}" />
