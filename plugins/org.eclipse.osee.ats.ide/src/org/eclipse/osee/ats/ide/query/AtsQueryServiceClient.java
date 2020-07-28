@@ -20,10 +20,10 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -212,10 +212,10 @@ public class AtsQueryServiceClient {
 
    public Artifact getParentAction(ArtifactId artifact) {
       Artifact actionArt = null;
-      if (artifact instanceof ActionArtifact) {
-         actionArt = (ActionArtifact) artifact;
+      if (artifact instanceof IAtsAction) {
+         actionArt = (Artifact) (IAtsAction) artifact;
       } else if (artifact instanceof AbstractWorkflowArtifact) {
-         actionArt = ((AbstractWorkflowArtifact) artifact).getParentActionArtifact();
+         actionArt = (Artifact) ((AbstractWorkflowArtifact) artifact).getParentAction().getStoreObject();
       }
       return actionArt;
    }

@@ -40,7 +40,7 @@ public class AssigneeColumnUITest {
       Assert.assertEquals(DemoUsers.Joe_Smith.getName(),
          AssigneeColumnUI.getInstance().getColumnText(codeArt, AssigneeColumnUI.getInstance(), 0));
 
-      Artifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
       List<String> results = Arrays.asList(DemoUsers.Joe_Smith_And_Kay_Jones, DemoUsers.Kay_Jones_And_Joe_Smith);
       Assert.assertTrue(
          results.contains(AssigneeColumnUI.getInstance().getColumnText(actionArt, AssigneeColumnUI.getInstance(), 0)));
@@ -55,7 +55,7 @@ public class AssigneeColumnUITest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertNotNull(AssigneeColumnUI.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(), 0));
 
-      Artifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
       Assert.assertNotNull(AssigneeColumnUI.getInstance().getColumnImage(actionArt, AssigneeColumnUI.getInstance(), 0));
 
       Assert.assertNull(AssigneeColumnUI.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(), 0));

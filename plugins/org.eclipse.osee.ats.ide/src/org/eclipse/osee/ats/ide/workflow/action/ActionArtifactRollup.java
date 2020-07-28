@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,13 +34,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ActionArtifactRollup {
 
-   private final ActionArtifact action;
+   private final IAtsAction action;
    private static AttributeTypeEnum<?> priAttrToken;
 
-   public ActionArtifactRollup(ActionArtifact action) {
+   public ActionArtifactRollup(IAtsAction action) {
       this.action = action;
       if (!action.isTypeEqual(AtsArtifactTypes.Action)) {
-         throw new OseeArgumentException("Artifact must be an Action instead of [%s]", action.getArtifactTypeName());
+         throw new OseeArgumentException("Artifact must be an Action instead of [%s]", action.getArtifactType());
       }
    }
 
@@ -87,7 +86,8 @@ public class ActionArtifactRollup {
     */
    private void resetTitleOffChildren() {
       String title = "";
-      for (TeamWorkFlowArtifact team : action.getTeams()) {
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
+
          if (title.isEmpty()) {
             title = team.getName();
          } else if (!title.equals(team.getName())) {
@@ -95,20 +95,24 @@ public class ActionArtifactRollup {
          }
       }
       if (!title.equals(action.getName())) {
-         action.setName(title);
+         ((Artifact) action.getStoreObject()).setName(title);
       }
    }
 
    // Set validation to true if any require validation
    private void resetValidationOffChildren() {
       boolean validationRequired = false;
-      for (TeamWorkFlowArtifact team : action.getTeams()) {
-         if (team.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false)) {
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
+         if (AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
+            AtsAttributeTypes.ValidationRequired, false)) {
             validationRequired = true;
          }
       }
-      if (validationRequired != action.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false)) {
-         action.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, validationRequired);
+      if (validationRequired != AtsClientService.get().getAttributeResolver().getSoleAttributeValue(action,
+         AtsAttributeTypes.ValidationRequired, false)) {
+         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action,
+            AtsAttributeTypes.ValidationRequired, false);
+
       }
    }
 
@@ -117,18 +121,22 @@ public class ActionArtifactRollup {
     */
    private void resetDescriptionOffChildren() {
       String desc = "";
-      for (TeamWorkFlowArtifact team : action.getTeams()) {
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
          if (desc.isEmpty()) {
-            desc = team.getSoleAttributeValue(AtsAttributeTypes.Description, "");
-         } else if (!desc.equals(team.getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
+            desc = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
+               AtsAttributeTypes.Description, "");
+         } else if (!desc.equals(AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
+            AtsAttributeTypes.Description, ""))) {
             return;
          }
       }
-      if (!desc.equals(action.getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
-         action.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
+      if (!desc.equals(AtsClientService.get().getAttributeResolver().getSoleAttributeValue(action,
+         AtsAttributeTypes.Description, ""))) {
+         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action, AtsAttributeTypes.Description,
+            desc);
       }
       if (desc.isEmpty()) {
-         action.deleteSoleAttribute(AtsAttributeTypes.Description);
+         ((Artifact) action).deleteSoleAttribute(AtsAttributeTypes.Description);
       }
    }
 
@@ -150,22 +158,26 @@ public class ActionArtifactRollup {
    private void resetPriorityOffChildren() {
       AttributeTypeEnum<?> priToken = getPrioirtyAttrToken();
       String priorityType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
+      Collection<IAtsTeamWorkflow> teamArts = AtsClientService.get().getWorkItemServiceClient().getTeams(action);
       if (teamArts.size() == 1) {
-         priorityType = teamArts.iterator().next().getSoleAttributeValue(priToken, "");
+         priorityType = AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(
+            teamArts.iterator().next(), priToken, "");
       } else {
-         for (TeamWorkFlowArtifact team : teamArts) {
+         for (IAtsTeamWorkflow team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = team.getSoleAttributeValue(priToken, "");
-               } else if (!priorityType.equals(team.getSoleAttributeValue(priToken, ""))) {
+                  priorityType =
+                     AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, "");
+               } else if (!priorityType.equals(
+                  AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, ""))) {
                   return;
                }
             }
          }
       }
       if (Strings.isValid(priorityType)) {
-         action.setSoleAttributeValue(priToken, priorityType);
+         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action, priToken, priorityType);
+         //AtsClientService.get().
       }
    }
 

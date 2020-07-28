@@ -48,7 +48,8 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
       String result = "";
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
+            TeamWorkFlowArtifact teamArt =
+               (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
             if (teamArt != null) {
                try {
                   BranchId workingBranch = null;

@@ -44,11 +44,12 @@ public class Pdd91CreateDemoGroups {
          DemoUtil.getSawCodeUnCommittedWf())) {
 
          // Add Action to Universal Group
-         groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members, codeArt.getParentActionArtifact());
+         groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members,
+            (Artifact) codeArt.getParentAction().getStoreObject());
 
          // Add All Team Workflows to Universal Group
          for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
-            codeArt.getParentActionArtifact())) {
+            codeArt.getParentAction().getStoreObject())) {
             groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members,
                AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
          }

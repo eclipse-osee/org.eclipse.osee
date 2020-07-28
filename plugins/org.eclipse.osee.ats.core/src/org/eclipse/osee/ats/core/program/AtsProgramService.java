@@ -443,10 +443,10 @@ public class AtsProgramService implements IAtsProgramService {
 
          IAtsObject useWorkItem = workItem;
          if (useWorkItem instanceof IAtsTask) {
-            useWorkItem = ((IAtsTask) useWorkItem).getParentAction();
+            useWorkItem = (IAtsObject) ((IAtsTask) useWorkItem).getParentAction().getStoreObject();
          }
          if (useWorkItem instanceof IAtsTeamWorkflow) {
-            useWorkItem = ((IAtsTeamWorkflow) useWorkItem).getParentAction();
+            useWorkItem = (IAtsObject) ((IAtsTeamWorkflow) useWorkItem).getParentAction().getStoreObject();
          }
          if (useWorkItem != null && useWorkItem instanceof IAtsAction) {
             for (IAtsTeamWorkflow team : atsApi.getWorkItemService().getTeams(useWorkItem)) {

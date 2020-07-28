@@ -19,11 +19,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,9 +53,9 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
    public Object[] getElements(Object entity) {
       List<Object> objs = new ArrayList<>(5);
       try {
-         if (!isTopArtifactGoal() && entity instanceof ActionArtifact) {
+         if (!isTopArtifactGoal() && entity instanceof IAtsAction) {
             objs.add(entity);
-            objs.addAll(((ActionArtifact) entity).getTeams());
+            objs.addAll(AtsClientService.get().getWorkItemServiceClient().getTeams(entity));
          } else if (!isTopArtifactGoal() && entity instanceof TeamWorkFlowArtifact) {
             objs.add(entity);
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) entity;
@@ -109,8 +109,9 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
    @Override
    public Object[] getConnectedTo(Object inputElement) {
       try {
-         if (!isTopArtifactGoal() && inputElement instanceof ActionArtifact) {
-            return ((ActionArtifact) inputElement).getTeams().toArray();
+         if (!isTopArtifactGoal() && inputElement instanceof IAtsAction) {
+            return AtsClientService.get().getWorkItemServiceClient().getTeams(inputElement).toArray();
+
          } else if (inputElement instanceof TeamWorkFlowArtifact) {
             List<Object> objs = new ArrayList<>(5);
             if (!isTopArtifactGoal()) {

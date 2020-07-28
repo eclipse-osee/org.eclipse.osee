@@ -57,7 +57,7 @@ public class WorkflowManager {
    }
 
    private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) {
-      TeamWorkFlowArtifact parentTeamArt = awa.getParentTeamWorkflow();
+      TeamWorkFlowArtifact parentTeamArt = (TeamWorkFlowArtifact) awa.getParentTeamWorkflow();
       return parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
          RuleDefinitionOption.AllowAssigneeToAll.name());
    }

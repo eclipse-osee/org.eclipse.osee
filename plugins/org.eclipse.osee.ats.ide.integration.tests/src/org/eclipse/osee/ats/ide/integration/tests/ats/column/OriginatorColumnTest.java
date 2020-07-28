@@ -39,7 +39,7 @@ public class OriginatorColumnTest {
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
          OriginatorColumn.getInstance().getColumnText(reqArt, OriginatorColumn.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
          OriginatorColumn.getInstance().getColumnText(actionArt, OriginatorColumn.getInstance(), 0));
 

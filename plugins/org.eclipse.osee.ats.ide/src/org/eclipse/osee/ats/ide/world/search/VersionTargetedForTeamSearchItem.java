@@ -19,12 +19,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -87,9 +87,9 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
          getSearchVersionArtifact())) {
          if (returnAction) {
-            ActionArtifact parentAction = ((TeamWorkFlowArtifact) team.getStoreObject()).getParentActionArtifact();
+            IAtsAction parentAction = ((TeamWorkFlowArtifact) team.getStoreObject()).getParentAction();
             if (parentAction != null) {
-               arts.add(parentAction);
+               arts.add((Artifact) parentAction);
             }
          } else {
             arts.add((TeamWorkFlowArtifact) team.getStoreObject());

@@ -170,7 +170,7 @@ public class WorldXViewerEventManager {
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
                   AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
-                  Artifact smaParent = smaArt.getParentAtsArtifact();
+                  Artifact smaParent = (Artifact) smaArt.getParentAtsArtifact();
                   /**
                    * Only process parent artifacts once to reduce the amount of refresh. This is especially important
                    * for tasks and reviews where the parents of 2 or more can be the same.

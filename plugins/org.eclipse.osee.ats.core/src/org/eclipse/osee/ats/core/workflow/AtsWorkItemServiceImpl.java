@@ -69,6 +69,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -159,6 +160,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       } else if (object instanceof ActionResult) {
          return Collections.castAll(AtsObjects.getArtifacts(((ActionResult) object).getTeamWfArts()));
+      } else {
+         throw new OseeArgumentException("Unhandled object type");
       }
       return teams;
    }

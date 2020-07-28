@@ -129,7 +129,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(art);
          if (!allArtifacts.contains(teamWf.getParentAction().getStoreObject())) {
             return String.format("Can't delete workflow %s without deleting action %s, use ATS World Editor",
-               teamWf.toStringWithId(), teamWf.getParentAction().toStringWithId());
+               teamWf.toStringWithId(), teamWf.getParentAction().getStoreObject().toStringWithId());
          }
       }
       return null;

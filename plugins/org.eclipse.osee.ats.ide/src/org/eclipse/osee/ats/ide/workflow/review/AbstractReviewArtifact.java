@@ -24,10 +24,11 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -83,27 +84,27 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       if (parentAwa != null) {
          return parentAwa;
       }
-      parentAwa = getParentTeamWorkflow();
+      parentAwa = (AbstractWorkflowArtifact) getParentTeamWorkflow();
       return parentAwa;
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public IAtsAction getParentAction() {
       if (isStandAloneReview()) {
          return null;
       }
       if (parentAction != null) {
          return parentAction;
       }
-      parentTeamArt = getParentTeamWorkflow();
+      parentTeamArt = (TeamWorkFlowArtifact) getParentTeamWorkflow();
       if (parentTeamArt != null) {
-         parentAction = parentTeamArt.getParentActionArtifact();
+         parentAction = parentTeamArt.getParentAction();
       }
       return parentAction;
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() {
+   public IAtsTeamWorkflow getParentTeamWorkflow() {
       if (isStandAloneReview() || isDeleted()) {
          return null;
       }

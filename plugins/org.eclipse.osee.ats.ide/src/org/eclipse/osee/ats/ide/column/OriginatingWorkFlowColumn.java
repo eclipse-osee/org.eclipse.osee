@@ -71,7 +71,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
             getWorldViewOriginatingWorkflowStr(AtsClientService.get().getQueryServiceClient().getArtifact(element));
          }
          if (element instanceof AbstractWorkflowArtifact) {
-            Artifact parentAction = ((AbstractWorkflowArtifact) element).getParentActionArtifact();
+            Artifact parentAction = (Artifact) ((AbstractWorkflowArtifact) element).getParentAction().getStoreObject();
             if (parentAction != null) {
                return getColumnText(parentAction, column, columnIndex);
             }

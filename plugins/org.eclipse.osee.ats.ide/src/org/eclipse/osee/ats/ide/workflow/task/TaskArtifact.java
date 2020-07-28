@@ -15,11 +15,12 @@ package org.eclipse.osee.ats.ide.workflow.task;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -39,7 +40,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
 
    public boolean isRelatedToParentWorkflowCurrentState() {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
-         getParentAWA().getStateMgr().getCurrentStateName());
+         ((IAtsWorkItem) getParentAWA()).getStateMgr().getCurrentStateName());
    }
 
    public boolean isRelatedToUsed() {
@@ -66,6 +67,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
          return parentAwa;
       }
       parentAwa = (AbstractWorkflowArtifact) getRelatedArtifactOrNull(AtsRelationTypes.TeamWfToTask_TeamWorkflow);
+
       // only display error once
       if (parentAwa == null && !taskHasNoParent.contains(getId())) {
          taskHasNoParent.add(getId());
@@ -75,11 +77,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public IAtsAction getParentAction() {
       if (parentAction != null) {
          return parentAction;
       }
-      parentAction = getParentTeamWorkflow().getParentActionArtifact();
+      parentAction =
+         (IAtsAction) ((AbstractWorkflowArtifact) getParentTeamWorkflow()).getParentAction().getStoreObject();
       return parentAction;
    }
 

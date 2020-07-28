@@ -22,10 +22,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -74,12 +75,13 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
 
    public static Set<User> getActionableItemOwners(Object element) {
       Set<User> users = new HashSet<>();
-      if (element instanceof ActionArtifact) {
-         for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) element).getTeams()) {
+      if (element instanceof IAtsAction) {
+         for (IAtsTeamWorkflow teamArt : AtsClientService.get().getWorkItemServiceClient().getTeams(element)) {
             users.addAll(getActionableItemOwners(teamArt));
          }
       } else if (element instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
+         TeamWorkFlowArtifact teamArt =
+            (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
             for (IAtsActionableItem aia : AtsClientService.get().getActionableItemService().getActionableItems(
                teamArt)) {

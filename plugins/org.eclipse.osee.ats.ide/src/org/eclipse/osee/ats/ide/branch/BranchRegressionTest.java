@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranchEnablement;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -220,13 +220,13 @@ public abstract class BranchRegressionTest {
       OseeEventManager.removeAllListeners();
 
       // Purge Action if already exists
-      Collection<ActionArtifact> actionArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+      Collection<IAtsAction> actionArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
             AtsAttributeTypes.LegacyPcrId, getLegacyPcrId()).createFilter().getActions());
 
       Set<Artifact> artsToDel = new HashSet<>();
-      for (Artifact actionArt : actionArts) {
-         artsToDel.add(actionArt);
+      for (IAtsAction actionArt : actionArts) {
+         artsToDel.add((Artifact) actionArt.getStoreObject());
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
             artsToDel.add((Artifact) team.getStoreObject());
             artsToDel.addAll(
@@ -325,7 +325,7 @@ public abstract class BranchRegressionTest {
          }
       }
 
-      actionArt = reqTeam.getParentActionArtifact();
+      actionArt = (Artifact) reqTeam.getParentAction().getStoreObject();
 
       validateNoBoostrapUser();
       Assert.assertNotNull("Req workflow not created", reqTeam);

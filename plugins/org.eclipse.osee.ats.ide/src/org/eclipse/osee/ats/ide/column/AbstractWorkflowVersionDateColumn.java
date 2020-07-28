@@ -76,10 +76,12 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) object).getSoleAttributeValue(attributeType, null);
       } else if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
+         TeamWorkFlowArtifact teamArt =
+            (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) object).getParentTeamWorkflow().getStoreObject();
          if (teamArt != null) {
             return getDateFromWorkflow(attributeType, teamArt);
          }
+
       }
       return null;
    }
@@ -96,7 +98,8 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
             }
          }
       } else if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
+         TeamWorkFlowArtifact teamArt =
+            (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
          if (teamArt != null) {
             return getDateFromTargetedVersion(attributeType, teamArt);
          }

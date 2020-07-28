@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.ide.workflow.goal;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,7 +35,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public IAtsAction getParentAction() {
       return null;
    }
 

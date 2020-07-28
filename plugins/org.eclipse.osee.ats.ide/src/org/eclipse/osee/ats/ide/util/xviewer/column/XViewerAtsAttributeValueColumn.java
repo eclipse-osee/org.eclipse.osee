@@ -100,7 +100,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       Artifact useArt = null;
       if (element instanceof Artifact) {
          if (element instanceof AbstractWorkflowArtifact) {
-            useArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
+            useArt = (Artifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          } else {
             useArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
          }
@@ -136,8 +136,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
                return result;
             }
             if (isInheritParentWithDefault() && !awa.isTeamWorkflow() && awa.getParentTeamWorkflow() != null) {
-               result =
-                  Collections.toString("; ", awa.getParentTeamWorkflow().getAttributesToStringList(getAttributeType()));
+               result = Collections.toString("; ",
+                  ((Artifact) awa.getParentTeamWorkflow()).getAttributesToStringList(getAttributeType()));
                if (Strings.isValid(result)) {
                   return result;
                }

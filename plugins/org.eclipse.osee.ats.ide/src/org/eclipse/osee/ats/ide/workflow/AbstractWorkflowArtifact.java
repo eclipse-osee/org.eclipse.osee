@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -73,7 +72,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private Collection<AtsUser> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
-   protected ActionArtifact parentAction;
+   protected IAtsAction parentAction;
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
 
@@ -90,18 +89,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return parentAwa;
    }
 
-   public ActionArtifact getParentActionArtifact() {
-      return parentAction;
-   }
-
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() {
+   public IAtsTeamWorkflow getParentTeamWorkflow() {
       return parentTeamArt;
    }
 
    @Override
    public IAtsAction getParentAction() {
-      Artifact actionArt = getParentActionArtifact();
+      Artifact actionArt = (Artifact) parentAction;
       if (actionArt != null) {
          return AtsClientService.get().getWorkItemService().getAction(actionArt);
       }
@@ -283,7 +278,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          teamArt = (TeamWorkFlowArtifact) this;
       }
       if (this instanceof AbstractReviewArtifact) {
-         teamArt = ((AbstractReviewArtifact) this).getParentTeamWorkflow();
+         teamArt = (TeamWorkFlowArtifact) ((AbstractReviewArtifact) this).getParentTeamWorkflow();
       }
       if (teamArt == null) {
          return false;

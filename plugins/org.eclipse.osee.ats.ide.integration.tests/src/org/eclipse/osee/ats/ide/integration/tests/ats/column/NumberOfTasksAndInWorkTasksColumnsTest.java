@@ -67,7 +67,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("", NumberOfTasksColumn.getInstance().getColumnText(testArt, null, 0));
       Assert.assertEquals("", NumberOfTasksRemainingColumn.getInstance().getColumnText(testArt, null, 0));
 
-      Artifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(actionArt, null, 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

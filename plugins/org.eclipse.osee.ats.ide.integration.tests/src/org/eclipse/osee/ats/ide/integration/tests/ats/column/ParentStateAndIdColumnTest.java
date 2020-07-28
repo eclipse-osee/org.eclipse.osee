@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.column.ParentAtsIdColumn;
 import org.eclipse.osee.ats.ide.column.ParentStateColumn;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -39,7 +39,7 @@ public class ParentStateAndIdColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      IAtsAction actionArt = codeArt.getParentAction();
 
       Assert.assertEquals("",
          ParentStateColumn.getInstance().getColumnText(codeArt, ParentAtsIdColumn.getInstance(), 0));

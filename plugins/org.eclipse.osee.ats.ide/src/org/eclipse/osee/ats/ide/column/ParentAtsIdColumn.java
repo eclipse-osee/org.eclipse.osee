@@ -18,9 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,7 +58,7 @@ public class ParentAtsIdColumn extends XViewerAtsColumn implements IXViewerValue
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            ActionArtifact parentAction = ((TeamWorkFlowArtifact) element).getParentActionArtifact();
+            IAtsAction parentAction = (IAtsAction) ((TeamWorkFlowArtifact) element).getParentAction().getStoreObject();
             if (parentAction != null) {
                return parentAction.getAtsId();
             }

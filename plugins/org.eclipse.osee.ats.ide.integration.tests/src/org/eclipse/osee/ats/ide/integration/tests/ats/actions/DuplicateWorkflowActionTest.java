@@ -91,8 +91,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    private List<AtsUser> setupAssignees(IAtsTeamWorkflow teamWf) {
       List<AtsUser> assignees = new LinkedList<>();
       assignees.addAll(teamWf.getAssignees());
-      AtsUser lead =
-         AtsClientService.get().getUserService().getUserById(UserManager.getUser(DemoUsers.Kay_Jones));
+      AtsUser lead = AtsClientService.get().getUserService().getUserById(UserManager.getUser(DemoUsers.Kay_Jones));
       assignees.add(lead);
       return assignees;
    }

@@ -655,7 +655,8 @@ public class WorldXWidgetActionPage extends FormPage {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.add(art);
                   } else if (art instanceof AbstractWorkflowArtifact) {
-                     Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
+                     Artifact parentArt =
+                        (Artifact) ((AbstractWorkflowArtifact) art).getParentAction().getStoreObject();
                      if (parentArt != null) {
                         arts.add(parentArt);
                      }
@@ -701,7 +702,7 @@ public class WorldXWidgetActionPage extends FormPage {
                      arts.addAll(Collections.castAll(
                         AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(art))));
                   } else if (art instanceof AbstractWorkflowArtifact) {
-                     Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
+                     Artifact parentArt = (Artifact) ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
                      if (parentArt != null) {
                         arts.add(parentArt);
                      }

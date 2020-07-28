@@ -52,7 +52,7 @@ public class PriorityColumnTest {
          (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task).iterator().next();
       Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(taskArt, PriorityColumnUI.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals("3",
          PriorityColumnUI.getInstance().getColumnText(actionArt, PriorityColumnUI.getInstance(), 0));
 

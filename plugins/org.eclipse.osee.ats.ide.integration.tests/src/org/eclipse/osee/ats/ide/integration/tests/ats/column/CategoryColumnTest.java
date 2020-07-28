@@ -64,7 +64,7 @@ public class CategoryColumnTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       TeamWorkFlowArtifact testArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
-      Artifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
 
       Assert.assertEquals("",
          CategoryColumn.getCategory1Instance().getColumnText(codeArt, CategoryColumn.getCategory1Instance(), 0));

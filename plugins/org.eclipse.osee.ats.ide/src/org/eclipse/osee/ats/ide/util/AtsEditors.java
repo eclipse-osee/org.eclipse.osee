@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -120,7 +119,7 @@ public final class AtsEditors {
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromId(art, AtsClientService.get().getAtsBranch());
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            ActionArtifact action = (ActionArtifact) artifact;
+            IAtsAction action = (IAtsAction) artifact;
             Collection<IAtsTeamWorkflow> teams = AtsClientService.get().getWorkItemService().getTeams(artifact);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (IAtsTeamWorkflow team : teams) {

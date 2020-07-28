@@ -54,7 +54,7 @@ public class RelatedToStateColumnTest {
       Assert.assertEquals("",
          RelatedToStateColumn.getInstance().getColumnText(reqArt, RelatedToStateColumn.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals("",
          RelatedToStateColumn.getInstance().getColumnText(actionArt, RelatedToStateColumn.getInstance(), 0));
 

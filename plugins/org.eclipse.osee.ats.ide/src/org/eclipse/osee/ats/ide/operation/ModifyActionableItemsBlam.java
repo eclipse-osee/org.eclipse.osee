@@ -244,7 +244,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   wfTree.setInitalChecked(actionableItems);
 
                   Set<IAtsActionableItem> ais = new HashSet<>();
-                  for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
+                  for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(
+                     teamWf.getParentAction())) {
                      if (team.notEqual(teamWf)) {
                         ais.addAll(team.getActionableItems());
                      }
@@ -293,7 +294,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       }
       try {
          currAIsForAllWfs = new HashSet<>();
-         for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(
+            teamWf.getParentAction())) {
             currAIsForAllWfs.addAll(team.getActionableItems());
          }
 
@@ -364,9 +366,9 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
             IAtsTeamWorkflow newTeamWf =
-               AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentActionArtifact(),
-                  data.getTeamDef(), data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes,
-                  createdDate, data.getCreatedBy(), null, data.getCreateTeamOption());
+               AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
+                  data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes, createdDate,
+                  data.getCreatedBy(), null, data.getCreateTeamOption());
             newTeamWfs.add(newTeamWf);
          }
 

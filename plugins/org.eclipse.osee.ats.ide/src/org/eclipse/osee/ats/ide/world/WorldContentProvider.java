@@ -126,7 +126,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return null;
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               return ((IAtsTeamWorkflow) artifact).getParentAction();
+               return ((IAtsTeamWorkflow) artifact).getParentAction().getStoreObject();
             }
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                return ((TaskArtifact) artifact).getParentAWA();

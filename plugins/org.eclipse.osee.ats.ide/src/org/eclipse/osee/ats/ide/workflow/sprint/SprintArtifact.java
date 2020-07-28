@@ -16,10 +16,10 @@ package org.eclipse.osee.ats.ide.workflow.sprint;
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -38,7 +38,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public IAtsAction getParentAction() {
       return null;
    }
 

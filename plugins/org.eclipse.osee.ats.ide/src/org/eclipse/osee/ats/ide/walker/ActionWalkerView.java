@@ -23,6 +23,8 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -35,7 +37,6 @@ import org.eclipse.osee.ats.ide.walker.action.ActionWalkerLayoutAction;
 import org.eclipse.osee.ats.ide.walker.action.ActionWalkerRefreshAction;
 import org.eclipse.osee.ats.ide.walker.action.ActionWalkerShowAllAction;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -154,14 +155,15 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          } else if (art.isOfType(AtsArtifactTypes.Action)) {
             artifact = art;
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+            artifact = (Artifact) ((TeamWorkFlowArtifact) art).getParentAction().getStoreObject();
          } else if (art.isOfType(AtsArtifactTypes.AgileSprint)) {
             artifact = art;
          } else if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             if (!AtsClientService.get().getReviewService().isStandAloneReview(art)) {
                Artifact parentArtifact = ((AbstractWorkflowArtifact) art).getParentAWA();
                if (parentArtifact != null && parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                  artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
+                  artifact =
+                     (Artifact) (((AbstractWorkflowArtifact) parentArtifact).getParentAction().getStoreObject());
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + AtsClientService.get().getAtsId(art));
                }
@@ -189,13 +191,13 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       try {
          if (!activeAwa.isOfType(
             AtsArtifactTypes.Goal) && !AtsClientService.get().getReviewService().isStandAloneReview(activeAwa)) {
-            ActionArtifact actionArt = activeAwa.getParentActionArtifact();
+            IAtsAction actionArt = activeAwa.getParentAction();
             if (actionArt != null) {
-               for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {
+               for (IAtsTeamWorkflow teamArt : AtsClientService.get().getWorkItemServiceClient().getTeams(actionArt)) {
                   GraphItem item = viewer.findGraphItem(teamArt);
                   if (item != null && item instanceof GraphNode) {
                      GraphNode node = (GraphNode) item;
-                     node.setTooltip(new Label(getToolTip(teamArt)));
+                     node.setTooltip(new Label(getToolTip((Artifact) teamArt)));
                   }
                }
             }

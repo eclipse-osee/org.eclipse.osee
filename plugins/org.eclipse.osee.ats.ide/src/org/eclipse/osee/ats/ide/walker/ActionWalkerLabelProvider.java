@@ -16,8 +16,8 @@ package org.eclipse.osee.ats.ide.walker;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,7 +63,7 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
          } catch (OseeCoreException ex) {
             str = "Exception - " + ex.getLocalizedMessage();
          }
-      } else if (obj instanceof Artifact && !(obj instanceof ActionArtifact)) {
+      } else if (obj instanceof Artifact && !(obj instanceof IAtsAction)) {
          str = obj.toString();
       } else if (obj instanceof IActionWalkerItem) {
          str = ((IActionWalkerItem) obj).getName();

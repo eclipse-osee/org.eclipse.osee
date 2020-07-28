@@ -37,7 +37,7 @@ public class DescriptionColumnTest {
       Assert.assertEquals("Problem with the Diagram View",
          DescriptionColumn.getInstance().getColumnText(reqArt, DescriptionColumn.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals("Problem with the Diagram View",
          DescriptionColumn.getInstance().getColumnText(actionArt, DescriptionColumn.getInstance(), 0));
 

@@ -37,7 +37,7 @@ public class GroupsColumnTest {
       Assert.assertEquals("Demo Group",
          GroupsColumn.getInstance().getColumnText(reqArt, GroupsColumn.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals("Demo Group",
          GroupsColumn.getInstance().getColumnText(actionArt, GroupsColumn.getInstance(), 0));
 

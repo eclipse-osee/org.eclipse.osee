@@ -41,7 +41,7 @@ public class CreatedDateColumnTest {
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(codeArt));
 
-      Artifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) codeArt.getParentAction().getStoreObject();
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(actionArt));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

@@ -25,12 +25,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -81,7 +81,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    public void save(IAtsChangeSet changes) {
       super.save(changes);
       try {
-         ActionArtifact parentAction = getParentActionArtifact();
+         IAtsAction parentAction = getParentAction();
          ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction);
          rollup.resetAttributesOffChildren();
          changes.add(parentAction);
@@ -155,11 +155,11 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    @Override
    public Artifact getParentAtsArtifact() {
-      return getParentActionArtifact();
+      return (Artifact) getParentAction().getStoreObject();
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public IAtsAction getParentAction() {
       if (parentAction != null) {
          return parentAction;
       }
@@ -177,7 +177,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
          throw new OseeStateException("Team [%s] has multiple parent Actions", toStringWithId());
       }
       if (arts.size() > 0) {
-         parentAction = (ActionArtifact) arts.iterator().next();
+         parentAction = (IAtsAction) arts.iterator().next();
       }
       return parentAction;
    }

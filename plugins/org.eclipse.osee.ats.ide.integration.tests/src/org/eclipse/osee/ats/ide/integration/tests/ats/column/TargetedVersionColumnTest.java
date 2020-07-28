@@ -43,7 +43,7 @@ public class TargetedVersionColumnTest {
       Assert.assertEquals(SAW_Bld_2.getName(),
          TargetedVersionColumnUI.getInstance().getColumnText(codeArt, TargetedVersionColumnUI.getInstance(), 0));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals(SAW_Bld_2.getName(),
          TargetedVersionColumnUI.getInstance().getColumnText(actionArt, TargetedVersionColumnUI.getInstance(), 0));
 
@@ -51,7 +51,7 @@ public class TargetedVersionColumnTest {
       Assert.assertEquals("",
          TargetedVersionColumnUI.getInstance().getColumnText(toolsArt, TargetedVersionColumnUI.getInstance(), 0));
 
-      actionArt = toolsArt.getParentActionArtifact();
+      actionArt = (Artifact) toolsArt.getParentAction().getStoreObject();
       Assert.assertEquals("",
          TargetedVersionColumnUI.getInstance().getColumnText(actionArt, TargetedVersionColumnUI.getInstance(), 0));
 

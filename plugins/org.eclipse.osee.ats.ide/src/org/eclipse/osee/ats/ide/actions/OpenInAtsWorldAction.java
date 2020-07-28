@@ -15,9 +15,9 @@ package org.eclipse.osee.ats.ide.actions;
 
 import java.util.Arrays;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -38,10 +38,10 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      ActionArtifact actionArt = sma.getParentActionArtifact();
-      if (actionArt != null) {
-         WorldEditor.open(
-            new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(), Arrays.asList(actionArt), null, sma));
+      IAtsAction action = sma.getParentAction();
+      if (action != null) {
+         WorldEditor.open(new WorldEditorSimpleProvider("Action " + action.getAtsId(),
+            Arrays.asList(action.getStoreObject()), null, sma));
       } else {
          WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
             Arrays.asList(sma), null, sma));

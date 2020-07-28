@@ -134,7 +134,7 @@ public class Overview {
          addTable(getLabelValue("Cancellation Reason", awa.getCancelledReason()));
       }
       if (awa.isTypeEqual(AtsArtifactTypes.Task)) {
-         AbstractWorkflowArtifact parentArt = ((TaskArtifact) awa).getParentAWA();
+         AbstractWorkflowArtifact parentArt = (AbstractWorkflowArtifact) ((TaskArtifact) awa).getParentAWA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(
                new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));

@@ -15,14 +15,15 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -99,13 +100,15 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
          return;
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem;
-      ActionArtifact parentAction = teamWf.getParentActionArtifact();
+      IAtsAction parentAction = (IAtsAction) teamWf.getParentAction().getStoreObject();
       if (parentAction == null) {
          label.setText(" " + "Error: No Parent Action.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else if (parentAction.getActionableItems().isEmpty()) {
+      } else if (((IAtsActionableItemProvider) parentAction).getActionableItems().isEmpty()) {
          label.setText(" " + "Error: No Actionable Items identified.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else if (((IAtsActionableItemProvider) parentAction).getActionableItems().isEmpty()) {
+         //
       } else {
          StringBuffer sb =
             new StringBuffer(AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));

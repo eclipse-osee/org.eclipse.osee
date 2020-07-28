@@ -672,7 +672,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       // Cleanup test
       if (teamArt != null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
-         changes.deleteArtifact(teamArt.getParentActionArtifact());
+         changes.deleteArtifact(teamArt.getParentAction().getStoreObject());
          changes.deleteArtifact((Artifact) teamArt);
          changes.executeIfNeeded();
       }

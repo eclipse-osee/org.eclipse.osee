@@ -97,7 +97,8 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       List<Artifact> results = new ArrayList<>();
       if (returnActions) {
          for (IAtsWorkItem workItem : filter.getItems()) {
-            results.add(((AbstractWorkflowArtifact) workItem.getStoreObject()).getParentActionArtifact());
+            results.add(
+               (Artifact) ((AbstractWorkflowArtifact) workItem.getStoreObject()).getParentAction().getStoreObject());
          }
       } else {
          for (IAtsWorkItem workItem : filter.getItems()) {

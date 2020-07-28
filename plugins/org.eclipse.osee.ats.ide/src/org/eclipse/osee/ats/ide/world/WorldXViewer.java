@@ -35,6 +35,7 @@ import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeletePurgeAtsArtifactsAction;
@@ -57,7 +58,6 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
@@ -217,10 +217,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
                   "Reset Action off Children");
-               for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
+               for (IAtsAction actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
-                  actionArt.persist(transaction);
+                  ((Artifact) actionArt).persist(transaction);
                }
                transaction.execute();
             } catch (OseeCoreException ex) {
@@ -530,13 +530,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return smaArts;
    }
 
-   public Set<ActionArtifact> getSelectedActionArtifacts() {
-      Set<ActionArtifact> actionArts = new HashSet<>();
+   public Set<IAtsAction> getSelectedActionArtifacts() {
+      Set<IAtsAction> actionArts = new HashSet<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
             if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
-               actionArts.add((ActionArtifact) item.getData());
+               actionArts.add((IAtsAction) item.getData());
             }
          }
       }
