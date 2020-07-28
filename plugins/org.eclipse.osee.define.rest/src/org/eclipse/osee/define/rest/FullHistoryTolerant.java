@@ -172,6 +172,6 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
 
    @Override
    public boolean hasChangeIdAlredyImported(String changeId) {
-      return queryFactory.fromBranch(branch).andAttributeIs(GitChangeId, changeId).exists();
+      return queryFactory.fromBranch(branch).and(GitChangeId, changeId).exists();
    }
 }
