@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -275,6 +276,9 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                atsApi.getUserService().addUser(user);
             }
          }
+      }
+      if (user == null) {
+         user = atsApi.getUserService().getUserById(SystemUser.UnAuthenticated);
       }
       return user;
    }
