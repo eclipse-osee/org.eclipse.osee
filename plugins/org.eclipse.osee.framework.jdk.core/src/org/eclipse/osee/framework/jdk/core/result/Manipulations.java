@@ -21,6 +21,7 @@ public enum Manipulations {
    GUID_CMD_HYPER,
    // Replace all GUID strings with hyperlinks; ATS=<guid> opens Action editor
    // ART=<guid> opens Artifact editor, BOTH=<guid> allows either
+   SUCCESS_GREEN, // Make all "Error" strings red
    ERROR_RED, // Make all "Error" strings red
    WARNING_YELLOW, // Make all "Warning" strings yellow
    CONVERT_NEWLINES, // Convert all \n to <br>

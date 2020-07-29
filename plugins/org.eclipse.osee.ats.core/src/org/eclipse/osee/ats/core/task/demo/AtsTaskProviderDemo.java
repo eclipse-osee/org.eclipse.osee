@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.core.task.AbstractAtsTaskProvider;
 public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
 
    @Override
-   public IAutoGenTaskData getAutoGenTaskData(AutoGenVersion autoGenVer, IAtsTask task) {
-      if (autoGenVer == AutoGenVersionDemo.Demo) {
+   public IAutoGenTaskData getAutoGenTaskData(String autoGenVerStr, IAtsTask task) {
+      if (autoGenVerStr.equals(AutoGenVersionDemo.Demo.name())) {
          return new AutoGenTaskDataDemo(task);
       }
       return null;

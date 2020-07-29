@@ -131,8 +131,12 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
 
          monitor.worked(calculateWork(0.70));
 
-         Collection<Change> changes =
-            changeData.getArtifactChangesByName(data.getRelatedArtName(), data.getAddDetails());
+         Collection<Change> changes = null;
+         if (data.getRelatedArtId().isValid()) {
+            changes = changeData.getArtifactChangesById(data.getRelatedArtId());
+         } else {
+            changes = changeData.getArtifactChangesByName(data.getRelatedArtName(), data.getAddDetails());
+         }
          checkForCancelledStatus(monitor);
          if (!changes.isEmpty()) {
             if (tasks.size() == 1) {
@@ -148,18 +152,16 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       }
 
       display.showDifferences(artifactDeltas);
+      if (results.isEmpty()) {
+         results.log("Opening Differences in Word");
+      }
       XResultDataUI.report(results, getName());
       monitor.worked(calculateWork(0.10));
    }
 
    private void checkForNoRequirementArtifacts(IAutoGenTaskData data) {
-      if (data.hasRelatedArt()) {
-         throw new OseeArgumentException("No related artifact found for %s");
-      }
       if (!data.hasRelatedArt()) {
-         String message =
-            "Task is not against requirement or is named incorrectly.\n\nMust be \"Code|Test \"<partition>\" for \"<requirement name>\"\"";
-         throw new OseeArgumentException(message);
+         throw new OseeArgumentException("No related artifact found for %s", data.getTask().toStringWithId());
       }
    }
 
@@ -168,19 +170,28 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       if (changes.size() == 1) {
          change = changes.iterator().next();
       } else {
-         List<Artifact> selectableArtifacts = new ArrayList<>();
+         Set<Artifact> selectableArtifacts = new HashSet<>();
          for (Change artChange : changes) {
             Artifact changeArtifact = artChange.getChangeArtifact();
             if (changeArtifact.isValid()) {
                selectableArtifacts.add(changeArtifact);
             }
          }
-         Artifact selectedArtifact = display.getArtifactSelection(monitor, selectableArtifacts);
+         Artifact selectedArtifact = null;
+         if (selectableArtifacts.size() == 1) {
+            selectedArtifact = selectableArtifacts.iterator().next();
+         } else {
+            selectedArtifact = display.getArtifactSelection(monitor, selectableArtifacts);
+         }
+         if (selectedArtifact == null) {
+            return null;
+         }
          checkForCancelledStatus(monitor);
 
          for (Change artChange : changes) {
             if (artChange.getChangeArtifact().equals(selectedArtifact)) {
                change = artChange;
+               break;
             }
          }
       }

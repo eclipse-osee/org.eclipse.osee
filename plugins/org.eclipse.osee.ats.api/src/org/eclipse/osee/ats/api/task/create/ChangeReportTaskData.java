@@ -38,12 +38,13 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public class ChangeReportTaskData {
 
-   public List<ChangeReportTaskTeamWfData> changeReportDatas = new ArrayList<ChangeReportTaskTeamWfData>();
    /**
     * Results for all processing of this operation including validation checks, creating workflow, creating tasks and
     * error handling
     */
    public XResultData results = new XResultData();
+   public String operationName = "";
+   public List<ChangeReportTaskTeamWfData> changeReportDatas = new ArrayList<ChangeReportTaskTeamWfData>();
    // True if just want results of what would be done
    boolean reportOnly = false;
    IAtsVersion targetedVersion;
@@ -149,6 +150,10 @@ public class ChangeReportTaskData {
       this.changeItems = changeItems;
    }
 
+   public boolean hasChangeItems() {
+      return this.changeItems == null || this.changeItems.isEmpty();
+   }
+
    public BranchId getWorkOrParentBranch() {
       return workOrParentBranch;
    }
@@ -220,6 +225,14 @@ public class ChangeReportTaskData {
 
    public void setIds(Set<ArtifactId> ids) {
       this.ids = ids;
+   }
+
+   public String getOperationName() {
+      return operationName;
+   }
+
+   public void setOperationName(String operationName) {
+      this.operationName = operationName;
    }
 
 }

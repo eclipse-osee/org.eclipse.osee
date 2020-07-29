@@ -36,15 +36,15 @@ public interface IAtsTaskRelatedService {
     */
    void getRelatedChangedArtifactFromChangeReport(DerivedFromTaskData trd);
 
-   default DerivedFromTaskData getTaskRelatedData(IAtsTask task) {
-      return getTaskRelatedData(new DerivedFromTaskData(task));
+   default DerivedFromTaskData getDerivedFromTaskData(IAtsTask task) {
+      return populateDerivedFromTaskData(new DerivedFromTaskData(task));
    }
 
    /**
     * @param trd with getTask specified
     * @return with all fields filled out and getResults() with errors
     */
-   DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd);
+   DerivedFromTaskData populateDerivedFromTaskData(DerivedFromTaskData trd);
 
    /**
     * @return true if AutoGenTaskVer attr is set. This does not mean it's related to a change report artifact.

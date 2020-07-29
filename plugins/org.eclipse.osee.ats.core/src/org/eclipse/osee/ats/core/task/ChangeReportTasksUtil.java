@@ -60,24 +60,29 @@ public class ChangeReportTasksUtil {
       IAtsTeamWorkflow chgRptTeamWf = atsApi.getWorkItemService().getTeamWf(crtd.getChgRptTeamWf());
 
       // If working branch, get change data from branch
-      List<ChangeItem> changeData = null;
+      List<ChangeItem> changeItems = null;
       BranchId workOrParentBranch = null;
       if (atsApi.getBranchService().isWorkingBranchInWork(chgRptTeamWf)) {
          IOseeBranch workingBranch = atsApi.getBranchService().getWorkingBranch(chgRptTeamWf);
          workOrParentBranch = workingBranch;
-         changeData = atsApi.getBranchService().getChangeData(BranchId.valueOf(workingBranch.getId()));
+         changeItems = atsApi.getBranchService().getChangeData(BranchId.valueOf(workingBranch.getId()));
          crtd.getResults().logf("Using Working Branch %s\n", workingBranch.toStringWithId());
       }
       // Else get change data from earliest transaction
       else if (atsApi.getBranchService().isCommittedBranchExists(chgRptTeamWf)) {
          TransactionToken tx = atsApi.getBranchService().getEarliestTransactionId(chgRptTeamWf);
          workOrParentBranch = tx.getBranch();
-         changeData = atsApi.getBranchService().getChangeData(tx);
+         changeItems = atsApi.getBranchService().getChangeData(tx);
          crtd.getResults().logf("Using Commit Branch %s\n",
             atsApi.getBranchService().getBranch(tx.getBranch()).toStringWithId());
       }
       crtd.setWorkOrParentBranch(workOrParentBranch);
-      crtd.setChangeItems(changeData);
+      if (changeItems == null) {
+         crtd.getResults().error("No Change Items (Change Report or Commit) Found");
+         return;
+      } else {
+         crtd.setChangeItems(changeItems);
+      }
    }
 
    /**

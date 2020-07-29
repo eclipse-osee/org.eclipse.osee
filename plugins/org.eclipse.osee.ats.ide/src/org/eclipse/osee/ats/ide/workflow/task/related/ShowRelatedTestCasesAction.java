@@ -58,7 +58,7 @@ public class ShowRelatedTestCasesAction extends AbstractShowRelatedAction {
          protected IStatus run(IProgressMonitor monitor) {
             for (IAtsTask task : tasks) {
                try {
-                  DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
+                  DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
 
                   BranchId workingBranch =
                      AtsClientService.get().getBranchService().getWorkingBranchInWork(task.getParentTeamWorkflow());

@@ -7,11 +7,14 @@ package org.eclipse.osee.ats.api.task.related;
 
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public interface IAutoGenTaskData {
 
    WorkType getWorkType();
+
+   ArtifactId getRelatedArtId();
 
    String getRelatedArtName();
 

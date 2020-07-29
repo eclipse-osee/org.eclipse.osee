@@ -62,15 +62,18 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
          return trd;
       }
 
-      Artifact headArtifact = findHeadArtifact(changeData, data.getRelatedArtName(), data.getAddDetails());
-      if (headArtifact == null) {
-         trd.getResults().error("Corresponding requirement can not be found.");
-         return trd;
-      }
-      Artifact latestArt = null;
-      if (!headArtifact.isDeleted()) {
-         latestArt = ArtifactQuery.getArtifactFromToken(headArtifact, DeletionFlag.INCLUDE_DELETED);
-         trd.setLatestArt(latestArt);
+      // Can't get head artifact for deleted art
+      if (!trd.isDeleted()) {
+         Artifact headArtifact = findHeadArtifact(changeData, data.getRelatedArtName(), data.getAddDetails());
+         if (headArtifact == null) {
+            trd.getResults().error("Corresponding requirement can not be found.");
+            return trd;
+         }
+         Artifact latestArt = null;
+         if (!headArtifact.isDeleted()) {
+            latestArt = ArtifactQuery.getArtifactFromToken(headArtifact, DeletionFlag.INCLUDE_DELETED);
+            trd.setLatestArt(latestArt);
+         }
       }
       return trd;
    }
@@ -109,9 +112,8 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
    public IAutoGenTaskData getAutoGenTaskData(IAtsTask task) {
       String autoGenVerStr = atsApi.getAttributeResolver().getSoleAttributeValue(task,
          AtsAttributeTypes.TaskAutoGenVersion, AutoGenVersion.Other.getName());
-      AutoGenVersion autoGenVer = AutoGenVersion.valueOf(autoGenVerStr);
       for (IAtsTaskProvider taskProvider : atsApi.getTaskService().getTaskProviders()) {
-         IAutoGenTaskData taskGenData = taskProvider.getAutoGenTaskData(autoGenVer, task);
+         IAutoGenTaskData taskGenData = taskProvider.getAutoGenTaskData(autoGenVerStr, task);
          if (taskGenData != null) {
             return taskGenData;
          }

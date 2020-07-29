@@ -65,7 +65,7 @@ public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
                   String taskStr =
                      tasks.size() > 1 ? "these " + tasks.size() + " tasks" : tasks.iterator().next().getName();
                   String dialogMessage = String.format(
-                     "Are you sure you want to open the latest requirement(s) for %s?\nNote: Deleted requirements will default to historical version.",
+                     "Are you sure you want to open the latest requirement(s) for %s?\n\nNote: Deleted requirements will default to historical version.",
                      taskStr);
 
                   MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Show Related Requirement", null,
@@ -97,10 +97,10 @@ public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
 
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
-               DerivedFromTaskData trd = new DerivedFromTaskData(task);
+               DerivedFromTaskData trd = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
                trd.getResults().logf(getName() + "\n\n");
                trd.getResults().logf("Task %s \n\n", task.toStringWithId());
-               AtsClientService.get().getTaskRelatedService().getTaskRelatedData(trd);
+               AtsClientService.get().getTaskRelatedService().populateDerivedFromTaskData(trd);
                if (trd.getResults().isErrors()) {
                   XResultDataUI.report(trd.getResults(), getName());
                } else {

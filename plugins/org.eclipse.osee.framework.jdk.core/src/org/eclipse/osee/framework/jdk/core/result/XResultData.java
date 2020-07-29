@@ -38,6 +38,7 @@ public class XResultData {
       Severe,
       Warning,
       Info,
+      Success,
       ConsoleErr,
       ConsoleOut;
    }
@@ -112,6 +113,10 @@ public class XResultData {
       logStr(Type.Info, String.format(formatStr, objs));
    }
 
+   public void success(String formatStr, Object... objs) {
+      logStr(Type.Success, String.format(formatStr, objs));
+   }
+
    /**
     * Adds string with newline to log as error
     */
@@ -155,6 +160,8 @@ public class XResultData {
          resultStr = "Warning: " + String.format(format, data);
       } else if (type == Type.Severe) {
          resultStr = "Error: " + String.format(format, data);
+      } else if (type == Type.Success) {
+         resultStr = "Success: " + String.format(format, data);
       } else {
          resultStr = String.format(format, data);
       }

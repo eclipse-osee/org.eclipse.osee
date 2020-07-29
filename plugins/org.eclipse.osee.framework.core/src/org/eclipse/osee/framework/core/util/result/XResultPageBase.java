@@ -60,11 +60,13 @@ public class XResultPageBase {
                this.manipulations.add(Manipulations.ERROR_RED);
                this.manipulations.add(Manipulations.CONVERT_NEWLINES);
                this.manipulations.add(Manipulations.WARNING_YELLOW);
+               this.manipulations.add(Manipulations.SUCCESS_GREEN);
                break;
             case HTML_MANIPULATIONS:
                this.manipulations.add(Manipulations.GUID_CMD_HYPER);
                this.manipulations.add(Manipulations.ERROR_RED);
                this.manipulations.add(Manipulations.WARNING_YELLOW);
+               this.manipulations.add(Manipulations.SUCCESS_GREEN);
                break;
             default:
                this.manipulations.add(man);
@@ -149,6 +151,9 @@ public class XResultPageBase {
             }
             if (manipulations.contains(Manipulations.WARNING_YELLOW)) {
                str = str.replaceAll("Warning:", AHTML.color("orange", "Warning:"));
+            }
+            if (manipulations.contains(Manipulations.SUCCESS_GREEN)) {
+               str = str.replaceAll("Success:", "<b>" + AHTML.color("05977F", "Success:") + "</b>");
             }
          }
          manipulatedHtml = str;

@@ -89,7 +89,7 @@ public class ShowRelatedRequirementInArtifactExplorerAction extends AbstractShow
    private void showRequirements(final Collection<IAtsTask> tasks, final boolean loadLatest) {
 
       for (final IAtsTask task : tasks) {
-         DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getTaskRelatedData(task);
+         DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
          if (reqData != null) {
             if (reqData.getResults().isErrors()) {
                AWorkbench.popup(reqData.getResults().toString());

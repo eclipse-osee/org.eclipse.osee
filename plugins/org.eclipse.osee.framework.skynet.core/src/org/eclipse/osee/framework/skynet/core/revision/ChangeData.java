@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -56,6 +57,22 @@ public class ChangeData {
 
    public Collection<Change> getChanges() {
       return changes;
+   }
+
+   public Collection<Change> getArtifactChangesById(ArtifactId art) {
+      Set<Change> foundChanges = new HashSet<>();
+      try {
+         for (Change change : changes) {
+            if (change instanceof ArtifactChange) {
+               if (change.getChangeArtifact().equals(art)) {
+                  foundChanges.add(change);
+               }
+            }
+         }
+         return foundChanges;
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    public Collection<Change> getArtifactChangesByName(String name, String appendedInfo) {

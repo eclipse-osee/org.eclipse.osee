@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.api.task.create.StaticTaskDefinition;
 import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -88,6 +87,7 @@ public class CreateChangeReportTasksOperation {
 
    public ChangeReportTaskData run() {
       XResultData rd = crtd.getResults();
+      rd.log(crtd.getOperationName() + "\n");
 
       try {
          if (crtd.getHostTeamWf() == null || crtd.getHostTeamWf().isInvalid()) {
@@ -225,7 +225,11 @@ public class CreateChangeReportTasksOperation {
             }
             addIfDebug("=======================================================================\n");
 
-            // TBD return if not tasks to create?
+            // Return if not tasks to create?
+            if (crttwd.getTaskMatches().isEmpty()) {
+               rd.success("No Tasks to Generate");
+               continue;
+            }
 
             // Get or create destTeamWf
             IAtsTeamWorkflow destTeamWf =
@@ -238,7 +242,7 @@ public class CreateChangeReportTasksOperation {
                         new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
                   workflowCreator.setActionableItem(ai);
                   destTeamWf = workflowCreator.createMissingWorkflow();
-                  rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
+                  rd.success("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
                } else {
                   rd.logf("Need to Create Destination Team Wf for team %s\n", toTeamDef.toStringWithId());
                }
@@ -272,7 +276,7 @@ public class CreateChangeReportTasksOperation {
                   boolean autoGen = atsApi.getTaskService().isAutoGen(taskMatch.getTaskWf());
                   boolean deReferenced = atsApi.getTaskService().isAutoGenDeReferenced(taskMatch.getTaskWf());
                   if (!autoGen || deReferenced) {
-                     crtd.getResults().warningf(ChangeReportTaskMatchResult.TaskExistsNeedsDereference.getName(),
+                     crtd.getResults().success(ChangeReportTaskMatchResult.TaskExistsNeedsDereference.getName(),
                         taskMatch.getTaskWf().toStringWithId());
                      taskMatch.setMatchResult(ChangeReportTaskMatchResult.TaskExistsNeedsDereference);
                      if (changes != null) {
@@ -288,7 +292,7 @@ public class CreateChangeReportTasksOperation {
                // Create if no task was found
                else if (matchType == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf(ChangeReportTaskMatchResult.CreateNewChgRptTask.getName(),
+                     crtd.getResults().success(ChangeReportTaskMatchResult.CreateNewChgRptTask.getName(),
                         taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
                      addModTaskNames.add(taskMatch.getTaskName());
@@ -299,7 +303,7 @@ public class CreateChangeReportTasksOperation {
                // Create if no task was found
                else if (matchType == ChangeReportTaskMatchType.StaticTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf(ChangeReportTaskMatchResult.CreateNewStaticTask.getName(),
+                     crtd.getResults().success(ChangeReportTaskMatchResult.CreateNewStaticTask.getName(),
                         taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
                      addModTaskNames.add(taskMatch.getTaskName());
@@ -310,7 +314,7 @@ public class CreateChangeReportTasksOperation {
                // Mark as de-referenced if no reference or referenced artifact not there anymore
                else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrButNoRefChgArt)) {
                   if (!deletedTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf(ChangeReportTaskMatchResult.NoMatchArtTaskCanBeDeleted.getName(),
+                     crtd.getResults().success(ChangeReportTaskMatchResult.NoMatchArtTaskCanBeDeleted.getName(),
                         taskMatch.getTaskWf().toStringWithId());
                      taskMatch.setMatchResult(ChangeReportTaskMatchResult.NoMatchArtTaskCanBeDeleted);
                      if (!reportOnly) {
@@ -396,12 +400,13 @@ public class CreateChangeReportTasksOperation {
             return crtd;
          } else if (changes != null) {
             TransactionId transId = changes.executeIfNeeded();
+            crtd.getResults().log("\n");
             if (transId != null && transId.isValid()) {
                crtd.setTransaction(transId);
                crtd.setIds(changes.getIds());
-               crtd.getResults().log("\nTasks Updated\n");
+               crtd.getResults().success("Tasks Updated\n");
             } else {
-               crtd.getResults().log("\nNo Changes Needed\n");
+               crtd.getResults().success("No Changes Needed\n");
             }
          }
       } catch (Exception ex) {
@@ -535,13 +540,10 @@ public class CreateChangeReportTasksOperation {
          crtd.getResults().errorf("Un-handled MatchType [%s]", taskMatch.getMatchType().name());
          return;
       }
+
       task.setCreatedDate(createdDate);
-      if (crtd.getAsUser() != null) {
-         AtsUser asUser = crtd.getAsUser();
-         task.setCreatedByUserId(asUser.getUserId());
-      } else {
-         task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
-      }
+      task.setCreatedByUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
+
       // Allow extensions to set TaskAutoGenVersion, else fail
       AutoGenVersion ver = null;
       List<IAtsTaskProvider> taskProviders = AtsTaskProviderCollector.getTaskProviders();

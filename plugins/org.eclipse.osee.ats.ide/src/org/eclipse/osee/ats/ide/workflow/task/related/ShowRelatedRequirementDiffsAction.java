@@ -92,7 +92,7 @@ public class ShowRelatedRequirementDiffsAction extends AbstractShowRelatedAction
 
       @Override
       public void showDifferences(Collection<ArtifactDelta> artifactDeltas) {
-         Conditions.checkNotNull(artifactDeltas, "selected artifact change from change report");
+         Conditions.checkNotNullOrEmpty(artifactDeltas, "selected artifact change from change report");
          String pathPrefix = RenderingUtil.getAssociatedArtifactName(artifactDeltas);
          RendererManager.diffInJob(artifactDeltas, pathPrefix);
       }

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
  */
 public interface IAtsTaskProvider {
 
-   IAutoGenTaskData getAutoGenTaskData(AutoGenVersion autoGenVer, IAtsTask task);
+   IAutoGenTaskData getAutoGenTaskData(String autoGenVerStr, IAtsTask task);
 
    /**
     * Add additional attributes to taskMatch if this task is applicable to this provider

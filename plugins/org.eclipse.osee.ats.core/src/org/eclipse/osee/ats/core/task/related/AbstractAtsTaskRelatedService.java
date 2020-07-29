@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskProviderCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -45,7 +43,10 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
    }
 
    @Override
-   public DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd) {
+   public DerivedFromTaskData populateDerivedFromTaskData(DerivedFromTaskData trd) {
+      boolean deleted = atsApi.getAttributeResolver().getSoleAttributeValue(trd.getTask(),
+         AtsAttributeTypes.TaskToChangedArtifactDeleted, false);
+      trd.setDeleted(deleted);
       getDerivedTeamWf(trd);
       if (trd.getResults().isErrors()) {
          return trd;
@@ -101,33 +102,33 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       return trd;
    }
 
-   private void getRelatedChangedArtifact(DerivedFromTaskData trd, ArtifactId relatedArtifact) {
-      final IAutoGenTaskData nameData = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
+   private void getRelatedChangedArtifact(DerivedFromTaskData dftd, ArtifactId relatedArtifact) {
+      final IAutoGenTaskData nameData = atsApi.getTaskRelatedService().getAutoGenTaskData(dftd.getTask());
       if (nameData == null) {
-         trd.getResults().error("Can't retrieve Auto Gen Task Data");
+         dftd.getResults().error("Can't retrieve Auto Gen Task Data");
          return;
       }
       if (nameData.isNoChangedArtifact()) {
-         trd.getResults().error("No changed artifact to show");
+         dftd.getResults().error("No changed artifact to show");
          return;
       }
       if (!nameData.hasRelatedArt()) {
-         trd.getResults().error("Task is not against changed artifact or is named incorrectly.\n\n" + //
+         dftd.getResults().error("Task is not against changed artifact or is named incorrectly.\n\n" + //
             "Must be \"Code|Test \"<partition>\" for \"<requirement name>\"");
       }
 
-      findHeadArtifact(trd, relatedArtifact, nameData.getAddDetails());
-      if (trd.getResults().isErrors()) {
+      findHeadArtifact(dftd, relatedArtifact, nameData.getAddDetails());
+      if (dftd.getResults().isErrors()) {
          return;
       }
-      if (trd.getHeadArtifact() == null) {
-         trd.getResults().error("Corresponding changed artifact can not be found.");
+      if (dftd.getHeadArtifact() == null) {
+         dftd.getResults().error("Corresponding changed artifact can not be found.");
       }
       ArtifactToken latestArt = null;
-      if (!atsApi.getStoreService().isDeleted(trd.getHeadArtifact())) {
-         latestArt = atsApi.getQueryService().getArtifact(trd.getHeadArtifact(), atsApi.getAtsBranch(),
+      if (!atsApi.getStoreService().isDeleted(dftd.getHeadArtifact())) {
+         latestArt = atsApi.getQueryService().getArtifact(dftd.getHeadArtifact(), atsApi.getAtsBranch(),
             DeletionFlag.INCLUDE_DELETED);
-         trd.setLatestArt(latestArt);
+         dftd.setLatestArt(latestArt);
       }
       return;
    }
@@ -140,16 +141,19 @@ public abstract class AbstractAtsTaskRelatedService implements IAtsTaskRelatedSe
       boolean foundBranchOrTransId = false;
       BranchId workingBranch = atsApi.getBranchService().getWorkingBranchInWork(trd.getDerivedFromTeamWf());
       if (workingBranch.isValid()) {
-         ArtifactToken headArt = atsApi.getQueryService().getArtifact(relatedArtifact, workingBranch);
+         ArtifactToken headArt =
+            atsApi.getQueryService().getArtifact(relatedArtifact, workingBranch, DeletionFlag.INCLUDE_DELETED);
          trd.setHeadArtifact(headArt);
          foundBranchOrTransId = true;
       }
-      TransactionToken transaction = atsApi.getBranchService().getEarliestTransactionId(trd.getDerivedFromTeamWf());
-      if (transaction.isValid()) {
-         ArtifactToken headArt = atsApi.getQueryService().getHistoricalArtifactOrNull(relatedArtifact, transaction,
-            DeletionFlag.INCLUDE_DELETED);
-         trd.setHeadArtifact(headArt);
-         foundBranchOrTransId = true;
+      if (!foundBranchOrTransId) {
+         TransactionToken transaction = atsApi.getBranchService().getEarliestTransactionId(trd.getDerivedFromTeamWf());
+         if (transaction.isValid()) {
+            ArtifactToken headArt = atsApi.getQueryService().getHistoricalArtifactOrNull(relatedArtifact, transaction,
+               DeletionFlag.INCLUDE_DELETED);
+            trd.setHeadArtifact(headArt);
+            foundBranchOrTransId = true;
+         }
       }
       if (!foundBranchOrTransId) {
          trd.getResults().error("Derived relation but no working branch or transaction found.");

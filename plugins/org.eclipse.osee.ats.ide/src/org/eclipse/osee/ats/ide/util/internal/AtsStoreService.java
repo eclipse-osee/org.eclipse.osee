@@ -181,6 +181,9 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(ArtifactId artifact) {
+      if (artifact instanceof Artifact) {
+         return ((Artifact) artifact).isDeleted();
+      }
       ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
       if (art != null) {
          return AtsClientService.get().getQueryServiceClient().getArtifact(art).isDeleted();

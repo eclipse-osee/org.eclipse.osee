@@ -127,21 +127,22 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                   if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(
                      teamWf, AtsClientService.get())) {
 
-                     ChangeReportTaskData data = new ChangeReportTaskData();
-                     data.setTaskDefToken(taskDefToken);
-                     data.setHostTeamWf(hostTeamWf);
-                     data.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
+                     ChangeReportTaskData crtd = new ChangeReportTaskData();
+                     crtd.setOperationName(getName());
+                     crtd.setTaskDefToken(taskDefToken);
+                     crtd.setHostTeamWf(hostTeamWf);
+                     crtd.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
 
                      // Use booleans above to debug task matches
-                     data.setDebug(debug);
-                     data.setReportOnly(reportOnly);
+                     crtd.setDebug(debug);
+                     crtd.setReportOnly(reportOnly);
 
-                     data = AtsClientService.get().getTaskService().createTasks(data);
-                     XResultDataUI.report(data.getResults(), getName());
+                     crtd = AtsClientService.get().getTaskService().createTasks(crtd);
+                     XResultDataUI.report(crtd.getResults(), getName());
 
                      // Reload team wfs if tasks created
-                     if (data.getTransaction() != null && data.getTransaction().isValid()) {
-                        final ChangeReportTaskData fData = data;
+                     if (crtd.getTransaction() != null && crtd.getTransaction().isValid()) {
+                        final ChangeReportTaskData fData = crtd;
                         Thread reload = new Thread(new Runnable() {
                            @Override
                            public void run() {

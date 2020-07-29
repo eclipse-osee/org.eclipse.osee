@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.task.related;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * Version 2 of Auto Task Generation uses task attributes and parent TWF to resolve fields
@@ -40,6 +41,12 @@ public class AutoGenTaskDataVer2ViaAttrs implements IAutoGenTaskData {
    public String getRelatedArtName() {
       return task.getAtsApi().getAttributeResolver().getSoleAttributeValue(task,
          AtsAttributeTypes.TaskToChangedArtifactName, "");
+   }
+
+   @Override
+   public ArtifactId getRelatedArtId() {
+      return task.getAtsApi().getAttributeResolver().getSoleAttributeValue(task,
+         AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
    }
 
    @Override

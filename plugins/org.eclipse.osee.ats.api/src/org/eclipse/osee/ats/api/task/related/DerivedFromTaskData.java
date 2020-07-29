@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  * @author Donald G. Dunne
  */
 public class DerivedFromTaskData {
-   private final boolean deleted;
+   private boolean deleted;
    private ArtifactToken headArtifact;
    private ArtifactToken latestArt;
    private XResultData results = new XResultData();
@@ -102,5 +102,9 @@ public class DerivedFromTaskData {
          return "Empty";
       }
       return results.toString();
+   }
+
+   public void setDeleted(boolean deleted) {
+      this.deleted = deleted;
    }
 }
