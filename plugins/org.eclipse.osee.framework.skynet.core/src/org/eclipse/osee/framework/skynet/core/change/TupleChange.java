@@ -67,6 +67,11 @@ public class TupleChange extends Change {
    }
 
    @Override
+   public String getNameOrToken() {
+      return "N/A";
+   }
+
+   @Override
    public String getItemKind() {
       return itemKind;
    }

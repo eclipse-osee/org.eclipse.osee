@@ -69,7 +69,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return ((XViewerValueColumn) cCol).getColumnText(element, cCol, columnIndex);
          }
          if (cCol.equals(ChangeXViewerFactory.Name)) {
-            return change.getName();
+            return change.getNameOrToken();
          }
 
          if (change instanceof ErrorChange) {

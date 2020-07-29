@@ -104,6 +104,11 @@ public final class AttributeChange extends Change {
    }
 
    @Override
+   public String getNameOrToken() {
+      return getArtifactNameOrToken();
+   }
+
+   @Override
    public String getItemTypeName() {
       return getAttributeType().getName();
    }

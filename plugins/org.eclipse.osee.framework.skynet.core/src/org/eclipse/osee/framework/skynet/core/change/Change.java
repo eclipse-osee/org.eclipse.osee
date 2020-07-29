@@ -120,10 +120,17 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return changeArtifact;
    }
 
-   public String getArtifactName() {
+   /**
+    * @return Name or [Name]-[Id] if UserManager.isShowTokenForChangeName()
+    */
+   public String getArtifactNameOrToken() {
       if (UserManager.isShowTokenForChangeName()) {
          return getChangeArtifact().toStringWithId();
       }
+      return getChangeArtifact().getName();
+   }
+
+   public String getArtifactName() {
       return getChangeArtifact().getName();
    }
 
@@ -161,6 +168,11 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    public abstract String getWasValue();
 
    public abstract String getItemTypeName();
+
+   /**
+    * @return Name or [Name]-[Id] if UserManager.isShowTokenForChangeName()
+    */
+   public abstract String getNameOrToken();
 
    public abstract String getName();
 

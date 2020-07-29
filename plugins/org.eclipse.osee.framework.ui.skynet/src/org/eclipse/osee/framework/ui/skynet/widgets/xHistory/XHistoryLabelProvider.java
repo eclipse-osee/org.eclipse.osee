@@ -64,7 +64,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
                if (data instanceof ArtifactChange && data.getChangeArtifact().isInvalid()) {
                   toReturn = "Artifact Does Exist In This Transaction";
                } else {
-                  toReturn = data instanceof RelationChange ? data.getName() : data.getItemTypeName();
+                  toReturn = data instanceof RelationChange ? data.getNameOrToken() : data.getItemTypeName();
                }
             } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
                toReturn = data.getItemKind();

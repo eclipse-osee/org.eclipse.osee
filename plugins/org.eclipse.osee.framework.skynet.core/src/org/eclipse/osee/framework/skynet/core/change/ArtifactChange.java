@@ -42,6 +42,11 @@ public final class ArtifactChange extends Change {
    }
 
    @Override
+   public String getNameOrToken() {
+      return getArtifactNameOrToken();
+   }
+
+   @Override
    public String getItemTypeName() {
       return getChangeArtifact().getArtifactType().getName();
    }

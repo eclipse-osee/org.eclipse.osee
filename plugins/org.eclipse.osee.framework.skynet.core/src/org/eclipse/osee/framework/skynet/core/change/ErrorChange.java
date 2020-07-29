@@ -68,6 +68,11 @@ public final class ErrorChange extends Change {
    }
 
    @Override
+   public String getNameOrToken() {
+      return name;
+   }
+
+   @Override
    public String getWasValue() {
       return errorMessage;
    }

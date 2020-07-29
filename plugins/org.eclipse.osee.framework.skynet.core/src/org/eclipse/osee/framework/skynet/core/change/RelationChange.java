@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
@@ -74,8 +75,13 @@ public final class RelationChange extends Change {
 
    @Override
    public String getName() {
-      return String.format("%s <- [%s] -> %s", getArtifactName(), getItemTypeName(),
-         getEndTxBArtifact().toStringWithId());
+      return String.format("%s <- [%s] -> %s", getArtifactName(), getItemTypeName(), getEndTxBArtifact().getName());
+   }
+
+   @Override
+   public String getNameOrToken() {
+      return String.format("%s <- [%s] -> %s", getArtifactNameOrToken(), getItemTypeName(),
+         (UserManager.isShowTokenForChangeName() ? getEndTxBArtifact().toStringWithId() : getEndTxBArtifact().getName()));
    }
 
    @Override
