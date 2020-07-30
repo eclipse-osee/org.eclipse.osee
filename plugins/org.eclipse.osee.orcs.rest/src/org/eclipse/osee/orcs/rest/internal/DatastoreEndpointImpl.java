@@ -65,8 +65,8 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    }
 
    @Override
-   public void initialize(String typeModel) {
-      adminOps.createDatastoreAndSystemBranches(typeModel);
+   public TransactionId initialize(String typeModel) {
+      return adminOps.createDatastoreAndSystemBranches(typeModel);
    }
 
    @Override

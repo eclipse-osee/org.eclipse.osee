@@ -37,7 +37,8 @@ public interface DatastoreEndpoint {
    @POST
    @Path("initialize")
    @Consumes(MediaType.TEXT_PLAIN)
-   void initialize(String typeModel);
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionId initialize(String typeModel);
 
    @POST
    @Path("synonyms")

@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -244,4 +245,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return atsApi.getTeamDefinitionService().getTeamDefinitionById(teamDefId);
    }
 
+   @Override
+   public TransactionId demoInitilize() {
+      TransactionId txId = orcsApi.getAdminOps().createDatastoreAndSystemBranches("");
+      orcsApi.getAdminOps().createDemoBranches();
+      atsApi.getConfigService().configAtsDatabase(atsApi);
+      return txId;
+   }
 }

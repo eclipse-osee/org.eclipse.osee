@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -28,7 +29,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   void createDatastoreAndSystemBranches(String typeModel);
+   TransactionId createDatastoreAndSystemBranches(String typeModel);
 
    Callable<OrcsMetaData> migrateDatastore();
 

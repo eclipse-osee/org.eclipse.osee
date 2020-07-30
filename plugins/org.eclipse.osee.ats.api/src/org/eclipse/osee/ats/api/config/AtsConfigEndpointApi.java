@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
@@ -122,4 +123,8 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public TeamDefinition getTeamDefinition(@PathParam("teamDefId") ArtifactId teamDefId);
 
+   @POST
+   @Path("initialize/demo")
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionId demoInitilize();
 }

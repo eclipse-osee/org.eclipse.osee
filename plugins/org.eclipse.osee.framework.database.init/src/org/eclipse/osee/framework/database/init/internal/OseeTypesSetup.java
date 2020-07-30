@@ -25,17 +25,13 @@ import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.osgi.framework.Bundle;
 
 /**
- * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
- * points. Creation, adding skynet types and initializing a new branch should be done through
- * BranchManager.createRootBranch.
+ * This class provides necessary functionality for database initialization to load types through their extension points.
  *
  * @author Andrew M. Finkbeiner
  * @author Donald G. Dunne
- * @see BranchManager#createTopLevelBranch(String, String, String, Collection, boolean)
  */
 public class OseeTypesSetup {
    private static final String DECLARING_PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
@@ -50,7 +46,6 @@ public class OseeTypesSetup {
          Bundle bundle = Platform.getBundle(element.getContributor().getName());
          URL url = bundle.getEntry(resourceName);
          sheet.setName(element.getDeclaringExtension().getUniqueIdentifier());
-         sheet.setGuid(element.getAttribute("guid"));
          sheet.setId(element.getAttribute("id"));
          try {
             if (url != null) {

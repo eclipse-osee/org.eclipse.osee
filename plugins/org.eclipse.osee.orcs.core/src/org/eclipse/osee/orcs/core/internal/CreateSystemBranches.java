@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -62,14 +63,14 @@ public class CreateSystemBranches {
       query = orcsApi.getQueryFactory().fromBranch(COMMON);
    }
 
-   public void create(String typeModel) {
+   public TransactionId create(String typeModel) {
       orcsApi.getKeyValueOps().putByKey(BASE, BASE.getName());
 
       populateSystemBranch();
 
       orcsApi.getBranchOps().createTopLevelBranch(COMMON, SystemUser.OseeSystem);
 
-      populateCommonBranch(typeModel);
+      return populateCommonBranch(typeModel);
    }
 
    private void populateSystemBranch() {
@@ -80,7 +81,7 @@ public class CreateSystemBranches {
       tx.commit();
    }
 
-   private void populateCommonBranch(String typeModel) {
+   private TransactionId populateCommonBranch(String typeModel) {
       TransactionBuilder tx = txFactory.createTransaction(COMMON, SystemUser.OseeSystem, "Add Common branch artifacts");
 
       orcsApi.tokenService().getArtifactTypeJoins().forEach(tx::addOrcsTypeJoin);
@@ -121,7 +122,7 @@ public class CreateSystemBranches {
 
       addFrameworkAccessModel(tx, typesAccessFolder);
 
-      tx.commit();
+      return tx.commit();
    }
 
    private void createWordTemplates(TransactionBuilder tx, ArtifactId documentTemplateFolder) {

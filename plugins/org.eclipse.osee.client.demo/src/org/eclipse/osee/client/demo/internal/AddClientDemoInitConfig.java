@@ -30,7 +30,6 @@ public class AddClientDemoInitConfig implements IAddDbInitChoice {
 
       config.addTask(asLocalExtensionId("AddRequirementData"));
 
-      config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);
       config.addOseeType(DefaultOseeTypeDefinitions.DEFINE_TYPES);
       config.addOseeType(asLocalExtensionId("OseeTypes_ClientDemo"));
 

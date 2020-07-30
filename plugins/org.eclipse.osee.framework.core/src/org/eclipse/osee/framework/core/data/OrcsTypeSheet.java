@@ -24,7 +24,6 @@ public class OrcsTypeSheet {
    public String name;
    public String typesSheet;
    public String id;
-   public String guid;
 
    public OrcsTypeSheet() {
       // For JAX-RS Instantiation
@@ -57,13 +56,5 @@ public class OrcsTypeSheet {
 
    public void setId(String id) {
       this.id = id;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 }

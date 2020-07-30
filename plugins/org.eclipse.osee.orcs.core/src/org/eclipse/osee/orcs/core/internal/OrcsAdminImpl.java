@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -80,7 +81,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
    }
 
    @Override
-   public void createDatastoreAndSystemBranches(String typeModel) {
+   public TransactionId createDatastoreAndSystemBranches(String typeModel) {
       ActivityLog activityLog = orcsApi.getActivityLog();
       try {
          activityLog.setEnabled(false);
@@ -88,7 +89,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
          dataStoreAdmin.createDataStore();
          orcsApi.getOrcsTypes().loadTypes(typeModel);
-         new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
+         return new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
       } finally {
          activityLog.setEnabled(true);
       }
