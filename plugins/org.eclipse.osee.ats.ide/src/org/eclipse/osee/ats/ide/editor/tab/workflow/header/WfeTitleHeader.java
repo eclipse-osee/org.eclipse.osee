@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
@@ -83,7 +84,10 @@ public class WfeTitleHeader extends Composite implements IWfeEventHandle {
    }
 
    public Result isXWidgetDirty() {
-      return titleText.isDirty();
+      if (titleText != null) {
+         return titleText.isDirty();
+      }
+      return Result.FalseResult;
    }
 
    public Result isXWidgetSavable() {
