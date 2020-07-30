@@ -171,14 +171,6 @@
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.UriAttributeDataProvider">
          </BinaryAttributeDataProvider>
       </extension>
-      <extension
-            id="ClobAttributeDataProvider"
-            name="ClobAttributeDataProvider"
-            point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
-         <CharacterAttributeDataProvider
-               class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
-         </CharacterAttributeDataProvider>
-      </extension>
         <extension
         point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
      <IHttpServerRequest

@@ -509,12 +509,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, int attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, int attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
          applicabilityId, markDirty, data);
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, AttributeId attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, AttributeId attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
          markDirty, false);
@@ -1708,8 +1708,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (modType == ModificationType.DELETED) {
          return;
       }
-      for (AttributeTypeId attributeType : getAttributeTypes()) {
-         int missingCount = AttributeTypeManager.getMinOccurrences(attributeType) - getAttributeCount(attributeType);
+      for (AttributeTypeToken attributeType : artifactType.getValidAttributeTypes()) {
+         int missingCount = artifactType.getMin(attributeType) - getAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);
          }

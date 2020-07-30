@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
 
@@ -55,41 +54,20 @@ public class AttributeExtensionManager {
       this.attributeDataProviderClasses = null;
    }
 
-   public static String resolveAttributeBaseTypeId(String id) {
-      return resolveAttributeProviderTypeId(id);
-   }
-
-   public static String resolveAttributeProviderTypeId(String id) {
-      String newType = id;
-      if (!newType.contains(".")) {
-         newType = Activator.PLUGIN_ID + "." + newType;
-      }
-      return newType;
+   private static String fullyQualifyName(String name) {
+      return name.contains(".") ? name : Activator.PLUGIN_ID + "." + name;
    }
 
    public static Class<? extends Attribute<?>> getAttributeClassFor(String name) {
       if (instance.attributeTypeClasses == null) {
          instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
-      String resolved = resolveAttributeBaseTypeId(name);
+      String resolved = fullyQualifyName(name);
       Pair<String, String> entry = instance.attributeTypeClasses.get(resolved);
       if (entry == null) {
          throw new OseeArgumentException("Unable to find class for: [%s]", resolved);
       }
 
-      return instance.loadClass(entry.getFirst(), entry.getSecond());
-   }
-
-   public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) {
-      if (instance.attributeDataProviderClasses == null) {
-         instance.attributeDataProviderClasses =
-            instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
-      }
-      String resolved = resolveAttributeProviderTypeId(name);
-      Pair<String, String> entry = instance.attributeDataProviderClasses.get(resolved);
-      if (entry == null) {
-         throw new OseeArgumentException("Unable to find class for: [%s]", resolved);
-      }
       return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
 
@@ -138,12 +116,5 @@ public class AttributeExtensionManager {
             instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
       return instance.attributeDataProviderClasses.keySet();
-   }
-
-   public static Set<String> getAttributeClasses() {
-      if (instance.attributeTypeClasses == null) {
-         instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
-      }
-      return instance.attributeTypeClasses.keySet();
    }
 }

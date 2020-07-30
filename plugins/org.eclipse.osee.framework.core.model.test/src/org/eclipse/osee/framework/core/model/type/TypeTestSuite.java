@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-   ArtifactTypeTest.class, //
    AttributeTypeTest.class, //
    BaseOseeTypeTest.class, //
    BranchTest.class, //

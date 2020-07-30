@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactWasIsLazyProvider;
@@ -248,7 +247,7 @@ public class ChangeDataLoader extends AbstractOperation {
                "", isHistorical, changeArtifact, artifactDelta);
          }
       } else if (item.getChangeType().isAttributeChange()) {
-         AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(item.getItemTypeId().getId());
+         AttributeTypeToken attributeType = tokenService.getAttributeType(item.getItemTypeId().getId());
          if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
             netModType = ModificationType.APPLICABILITY;
             change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,

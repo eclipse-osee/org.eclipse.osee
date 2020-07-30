@@ -140,7 +140,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    @Override
    public void reloadTypes() {
-      DslToTypeLoader typesLoader = new DslToTypeLoader(branchCache);
+      DslToTypeLoader typesLoader = new DslToTypeLoader(branchCache, tokenService);
       typesLoader.loadTypes(this, new ByteSource() {
          @Override
          public InputStream openStream() {

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
-import java.util.Date;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -71,34 +69,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
          AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
 
-         Object value = null;
-         if (attributeType.isBoolean()) {
-            value = chStmt.getBoolean("value");
-         } else if (attributeType.isDouble()) {
-            value = chStmt.getDouble("value");
-         } else if (attributeType.isInteger()) {
-            value = chStmt.getInt("value");
-         } else if (attributeType.isLong()) {
-            value = chStmt.getLong("value");
-         } else if (attributeType.isArtifactId()) {
-            String id = chStmt.getString("value");
-            if (Strings.isNumeric(id)) {
-               value = ArtifactId.valueOf(id);
-            } else {
-               logger.error("Inavlid non-numeric value [%s] for ArtRefAttribute [%s] attrId [%s] on artId [%s]", id,
-                  attributeType.getIdString(), attrId, artId);
-            }
-         } else if (attributeType.isBranchId()) {
-            value = BranchId.valueOf(chStmt.getString("value"));
-         } else if (attributeType.isDate()) {
-            value = new Date(chStmt.getLong("value"));
-         } else {
-            value = chStmt.getString("value");
-            if (attributeType.isEnumerated()) {
-               value = Strings.intern((String) value);
-            }
-         }
-
+         Object value = chStmt.loadAttributeValue(attributeType);
          String uri = chStmt.getString("uri");
 
          toReturn = factory.createAttributeData(version, attrId, attributeType, modType, artId, value, uri, applicId);

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -74,12 +75,13 @@ public class DslToTypeLoader implements TypesLoader {
    private final ArtifactTypeFactory artTypeFactory = new ArtifactTypeFactory();
    private final AttributeTypeFactory attrTypeFactory = new AttributeTypeFactory();
    private final OseeEnumTypeFactory enumTypeFactory = new OseeEnumTypeFactory();
+   private final OrcsTokenService tokenService;
 
    private final BranchCache branchCache;
 
-   public DslToTypeLoader(BranchCache branchCache) {
-      super();
+   public DslToTypeLoader(BranchCache branchCache, OrcsTokenService tokenService) {
       this.branchCache = branchCache;
+      this.tokenService = tokenService;
    }
 
    @Override
@@ -241,7 +243,8 @@ public class DslToTypeLoader implements TypesLoader {
    private void translateXArtifactType(TypeBuffer buffer, XArtifactType xArtifactType) {
       String artifactTypeName = xArtifactType.getName();
       Long artUuid = Long.valueOf(xArtifactType.getId());
-      artTypeFactory.createOrUpdate(buffer.getArtTypes(), artUuid, xArtifactType.isAbstract(), artifactTypeName);
+      artTypeFactory.createOrUpdate(buffer.getArtTypes(), artUuid, xArtifactType.isAbstract(), artifactTypeName,
+         tokenService);
    }
 
    private void translateXEnumType(TypeBuffer buffer, XOseeEnumType xEnumType) {

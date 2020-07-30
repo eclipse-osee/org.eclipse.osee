@@ -313,7 +313,7 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         ArtifactTypeToken artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         ArtifactTypeToken artifactType = tokenService.getArtifactType(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact = factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,
@@ -355,7 +355,8 @@ public final class ArtifactLoader {
          tempCache.put(artifact, key2, artifact);
       }
 
-      AttributeLoader.loadAttributeData(queryId, tempCache, historical, allowDeleted, loadLevel, isArchived);
+      AttributeLoader.loadAttributeData(queryId, tempCache, historical, allowDeleted, loadLevel, isArchived,
+         tokenService);
       RelationLoader.loadRelationData(queryId, artifacts, historical, loadLevel, tokenService);
 
       if (!historical) {

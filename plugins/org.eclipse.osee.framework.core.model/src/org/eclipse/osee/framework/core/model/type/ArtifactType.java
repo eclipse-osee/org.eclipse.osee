@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -45,11 +46,13 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    private final Set<ArtifactType> superTypes = new HashSet<>();
    private final Set<ArtifactType> childTypes = new HashSet<>();
    private final Map<BranchId, Collection<AttributeType>> attributes = new HashMap<>();
+   private final OrcsTokenService tokenService;
 
-   public ArtifactType(Long guid, String name, boolean isAbstract) {
+   public ArtifactType(Long guid, String name, boolean isAbstract, OrcsTokenService tokenService) {
       super(guid, name);
       initializeFields();
       setAbstract(isAbstract);
+      this.tokenService = tokenService;
    }
 
    protected void initializeFields() {
@@ -159,38 +162,14 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       return false;
    }
 
-   private AttributeType getValidAttributeType(AttributeTypeToken attributeType) {
-      Map<BranchId, Collection<AttributeType>> validityMap = getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
-
-      for (Collection<AttributeType> types : validityMap.values()) {
-         if (types.contains(attributeType)) {
-            for (AttributeType type : types) {
-               if (type.getId() == attributeType.getId()) {
-                  return type;
-               }
-            }
-         }
-      }
-      for (ArtifactType superType : getSuperArtifactTypes()) {
-         return superType.getValidAttributeType(attributeType);
-      }
-      return null;
-   }
-
    @Override
    public int getMin(AttributeTypeToken attributeType) {
-      if (isValidAttributeType(attributeType)) {
-         return getValidAttributeType(attributeType).getMinOccurrences();
-      }
-      return -1;
+      return tokenService.getArtifactType(getId()).getMin(attributeType);
    }
 
    @Override
    public int getMax(AttributeTypeToken attributeType) {
-      if (isValidAttributeType(attributeType)) {
-         return getValidAttributeType(attributeType).getMaxOccurrences();
-      }
-      return -1;
+      return tokenService.getArtifactType(getId()).getMax(attributeType);
    }
 
    @Override

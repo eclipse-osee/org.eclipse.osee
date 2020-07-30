@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -65,11 +64,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
          internalSetApplicabilityId(applicabilityId);
       }
       try {
-         Class<? extends IAttributeDataProvider> providerClass =
-            AttributeTypeManager.getAttributeProviderClass(AttributeTypeManager.getType(attributeTypeToken));
-         Constructor<? extends IAttributeDataProvider> providerConstructor =
-            providerClass.getConstructor(Attribute.class);
-         attributeDataProvider = providerConstructor.newInstance(this);
+         attributeDataProvider = AttributeTypeManager.getAttributeProvider(attributeType.getId(), this);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
@@ -191,6 +186,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
     */
    protected abstract boolean subClassSetValue(T value);
 
+   @Override
    public String getDisplayableString() {
       return getAttributeDataProvider().getDisplayableString();
    }
@@ -248,12 +244,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    }
 
    /**
-    * Currently this method provides support for quasi attribute type inheritance
-    *
-    * @return whether this attribute's type or any of its super-types are the specified type
+    * Despite this method's name it only checks for direct equality.
     */
    public boolean isOfType(AttributeTypeId otherAttributeType) {
-      return getAttributeType().equals(otherAttributeType);
+      return attributeTypeToken.equals(otherAttributeType);
    }
 
    public void resetModType() {

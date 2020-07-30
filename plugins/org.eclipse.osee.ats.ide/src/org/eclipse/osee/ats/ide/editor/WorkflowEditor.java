@@ -85,7 +85,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -845,7 +844,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             handleArtifactEvent(handledArts, eMArt.getGuid());
             if (eMArt.getGuid().equals(getWorkItem().getGuid())) {
                for (AttributeChange attr : eMArt.getAttributeChanges()) {
-                  handleEvent(AttributeTypeManager.getTypeById(attr.getAttrTypeGuid()));
+                  handleEvent(tokenService.getAttributeType(attr.getAttrTypeGuid()));
                }
             }
          }

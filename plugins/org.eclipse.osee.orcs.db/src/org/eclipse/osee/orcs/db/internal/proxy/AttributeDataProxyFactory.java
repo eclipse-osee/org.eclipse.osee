@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -36,7 +35,7 @@ public class AttributeDataProxyFactory {
       Object checkedValue = intern(attributeTypeToken, value);
       AbstractDataProxy dataProxy;
 
-      if (isUri(attributeTypeToken.getMediaType())) {
+      if (attributeTypeToken.isUri()) {
          dataProxy = new UriDataProxy();
       } else {
          dataProxy = new VarCharDataProxy();
@@ -54,17 +53,5 @@ public class AttributeDataProxyFactory {
          value = Strings.intern((String) value);
       }
       return value;
-   }
-
-   static final String APPLICATION_ZIP = "application/zip";
-
-   private boolean isUri(String mediaType) {
-      if (mediaType.equals(AttributeTypeToken.TEXT_URI_LIST) || mediaType.equals(
-         AttributeTypeToken.APPLICATION_MSWORD) || mediaType.equals(AttributeTypeToken.IMAGE) || mediaType.equals(
-            AttributeTypeToken.APPLICATION_ZIP) || mediaType.equals(
-               MediaType.TEXT_HTML) || mediaType.equals(MediaType.APPLICATION_OCTET_STREAM)) {
-         return true;
-      }
-      return false;
    }
 }

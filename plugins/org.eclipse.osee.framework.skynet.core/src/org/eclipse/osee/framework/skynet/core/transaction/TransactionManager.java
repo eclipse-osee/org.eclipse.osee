@@ -24,7 +24,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
@@ -399,7 +399,8 @@ public final class TransactionManager {
    }
 
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
-      AttributeTypeId attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
+      OrcsTokenService tokenService = OsgiUtil.getService(TransactionManager.class, OrcsTokenService.class);
+      AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));

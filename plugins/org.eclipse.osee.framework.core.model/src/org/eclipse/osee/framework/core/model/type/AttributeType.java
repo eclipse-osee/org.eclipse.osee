@@ -72,14 +72,6 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       setFieldLogException(ATTRIBUTE_MEDIA_TYPE_FIELD_KEY, mediaType);
    }
 
-   public String getBaseAttributeTypeId() {
-      return getFieldValueLogException("", ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY);
-   }
-
-   public String getAttributeProviderId() {
-      return getFieldValueLogException("", ATTRIBUTE_PROVIDER_ID_FIELD_KEY);
-   }
-
    @Override
    public String getDefaultValue() {
       return getFieldValueLogException(null, ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY);

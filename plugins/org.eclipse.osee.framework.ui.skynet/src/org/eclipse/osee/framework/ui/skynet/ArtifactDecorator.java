@@ -203,7 +203,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          Collection<AttributeTypeToken> selectedItems = attributesAction.getSelected();
 
          List<String> info = new ArrayList<>();
-         for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
+         for (AttributeTypeId attributeType : artifact.getArtifactType().getValidAttributeTypes()) {
             if (selectedItems.contains(attributeType)) {
                String value = artifact.getAttributesToString(attributeType);
                if (Strings.isValid(value)) {

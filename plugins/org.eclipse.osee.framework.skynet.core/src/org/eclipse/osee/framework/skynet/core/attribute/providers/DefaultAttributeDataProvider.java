@@ -73,7 +73,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    public boolean setValue(T value) {
       Conditions.checkNotNull(value, "attribute value");
       boolean response = false;
-      if (value.toString().equals(getValueAsString())) {
+      if (value.equals(getValue())) {
          response = false;
       } else {
          storeValue(value);

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactSuperTypeField;
-import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,10 +40,10 @@ public class ArtifactSuperTypeFieldTest {
 
    @BeforeClass
    public static void prepareTest() {
-      containingArt = MockDataFactory.createArtifactType(999);
-      art1 = MockDataFactory.createArtifactType(1);
-      art2 = MockDataFactory.createArtifactType(2);
-      art3 = MockDataFactory.createArtifactType(3);
+      containingArt = CoreArtifactTypes.Folder;
+      art1 = CoreArtifactTypes.BranchView;
+      art2 = CoreArtifactTypes.SoftwareRequirementHtml;
+      art3 = CoreArtifactTypes.SoftwareRequirementMsWord;
       base = CoreArtifactTypes.Artifact;
    }
 

@@ -17,13 +17,13 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -31,13 +31,10 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -47,7 +44,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived) {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived, OrcsTokenService tokenservice) {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
@@ -62,7 +59,7 @@ public class AttributeLoader {
          List<AttrData> currentAttributes = new ArrayList<>();
 
          while (chStmt.next()) {
-            AttrData nextAttr = new AttrData(chStmt, historical);
+            AttrData nextAttr = new AttrData(chStmt, historical, tokenservice);
 
             if (AttrData.isDifferentArtifact(previousAttr, nextAttr)) {
                loadAttributesFor(currentArtifact, currentAttributes, historical);
@@ -91,7 +88,7 @@ public class AttributeLoader {
       public GammaId gammaId = GammaId.SENTINEL;
       public ModificationType modType;
       public Long transactionId = -1L;
-      public AttributeTypeId attributeType = AttributeTypeId.SENTINEL;
+      public AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
       public Object value = "";
       public TransactionId stripeId = TransactionId.SENTINEL;
       public String uri = "";
@@ -101,7 +98,7 @@ public class AttributeLoader {
          // do nothing
       }
 
-      public AttrData(JdbcStatement chStmt, boolean historical) {
+      public AttrData(JdbcStatement chStmt, boolean historical, OrcsTokenService tokenservice) {
          artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
          branch = BranchId.valueOf(chStmt.getLong("id1"));
          attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
@@ -109,30 +106,9 @@ public class AttributeLoader {
          modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");
-         attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
+         attributeType = tokenservice.getAttributeType(chStmt.getLong("attr_type_id"));
 
-         AttributeType typeByGuid = AttributeTypeManager.getType(attributeType);
-         String baseAttributeType = typeByGuid.getBaseAttributeTypeId();
-         if (baseAttributeType.contains("BooleanAttribute")) {
-            value = chStmt.getBoolean("value");
-         } else if (baseAttributeType.contains("FloatingPointAttribute")) {
-            value = chStmt.getDouble("value");
-         } else if (baseAttributeType.contains("IntegerAttribute")) {
-            value = chStmt.getInt("value");
-         } else if (baseAttributeType.contains("LongAttribute")) {
-            value = chStmt.getLong("value");
-         } else if (baseAttributeType.contains("ArtifactReferenceAttribute")) {
-            value = ArtifactId.valueOf(chStmt.getString("value"));
-         } else if (baseAttributeType.contains("BranchReferenceAttribute")) {
-            value = BranchId.valueOf(chStmt.getString("value"));
-         } else if (baseAttributeType.contains("DateAttribute")) {
-            value = new Date(chStmt.getLong("value"));
-         } else {
-            value = chStmt.getString("value");
-            if (baseAttributeType.contains("EnumeratedAttribute")) {
-               value = Strings.intern((String) value);
-            }
-         }
+         value = chStmt.loadAttributeValue(attributeType);
 
          if (historical) {
             stripeId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));

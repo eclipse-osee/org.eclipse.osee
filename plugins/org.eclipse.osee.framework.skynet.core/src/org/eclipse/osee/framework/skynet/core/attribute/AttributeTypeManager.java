@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -32,12 +33,15 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.UriAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
@@ -168,11 +172,45 @@ public class AttributeTypeManager {
    }
 
    public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType) {
-      return AttributeExtensionManager.getAttributeClassFor(getType(attributeType).getBaseAttributeTypeId());
+      AttributeTypeToken attributeTypeToken =
+         getCacheService().getTokenService().getAttributeType(attributeType.getId());
+      if (attributeTypeToken.isInputStream()) {
+         return CompressedContentAttribute.class;
+      } else if (attributeTypeToken.isBoolean()) {
+         return BooleanAttribute.class;
+      } else if (attributeTypeToken.isDate()) {
+         return DateAttribute.class;
+      } else if (attributeTypeToken.isDouble()) {
+         return FloatingPointAttribute.class;
+      } else if (attributeTypeToken.isArtifactId()) {
+         return ArtifactReferenceAttribute.class;
+      } else if (attributeTypeToken.isBranchId()) {
+         return BranchReferenceAttribute.class;
+      } else if (attributeTypeToken.isInteger()) {
+         return IntegerAttribute.class;
+      } else if (attributeTypeToken.isLong()) {
+         return LongAttribute.class;
+      } else if (attributeTypeToken.isString()) {
+         return StringAttribute.class;
+      } else if (attributeTypeToken.isEnumerated()) {
+         return EnumeratedAttribute.class;
+      } else if (attributeTypeToken.equals(CoreAttributeTypes.ParagraphNumber)) {
+         return OutlineNumberAttribute.class;
+      } else if (attributeTypeToken.equals(CoreAttributeTypes.WordTemplateContent)) {
+         return WordTemplateAttribute.class;
+      } else if (attributeTypeToken.equals(CoreAttributeTypes.WholeWordContent)) {
+         return WordWholeDocumentAttribute.class;
+      } else {
+         throw new OseeCoreException("Unexpected Attribute Base Type for: " + attributeType);
+      }
    }
 
-   public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType) {
-      return AttributeExtensionManager.getAttributeProviderClassFor(attributeType.getAttributeProviderId());
+   public static <T> IAttributeDataProvider getAttributeProvider(Long attributeTypeId, Attribute<T> attribute) {
+      AttributeTypeToken attributeType = AttributeTypeManager.getAttributeType(attributeTypeId);
+      if (attributeType.isUri()) {
+         return new UriAttributeDataProvider(attribute);
+      }
+      return new DefaultAttributeDataProvider<T>(attribute);
    }
 
    public static boolean checkIfRemovalAllowed(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {

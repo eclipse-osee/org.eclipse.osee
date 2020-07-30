@@ -18,8 +18,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-
-   ArtifactTypeCacheTest.class, //
    AttributeTypeCacheTest.class, //
    OseeEnumTypeCacheTest.class, //
    BranchCacheTest.class //

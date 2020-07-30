@@ -44,7 +44,7 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
             boolean setValues = false;
             if (attributeType instanceof AttributeType) {
                AttributeType type = (AttributeType) attributeType;
-               if (type.getBaseAttributeTypeId().contains("Boolean")) {
+               if (type.isBoolean()) {
                   ArrayList<Boolean> booleanValues = new ArrayList<>();
                   for (String state : values) {
                      Boolean value = new Boolean(state.equalsIgnoreCase("True"));

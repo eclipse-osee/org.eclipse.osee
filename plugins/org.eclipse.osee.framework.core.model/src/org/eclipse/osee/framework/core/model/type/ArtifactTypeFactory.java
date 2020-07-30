@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.model.type;
 
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -21,17 +22,12 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Roberto E. Escobar
  */
 public final class ArtifactTypeFactory implements IOseeTypeFactory {
-
-   private ArtifactType create(Long guid, boolean isAbstract, String name) {
-      Conditions.checkNotNullOrEmpty(name, "artifact type name");
-      return new ArtifactType(guid, name, isAbstract);
-   }
-
-   public ArtifactType createOrUpdate(ArtifactTypeCache cache, Long guid, boolean isAbstract, String name) {
+   public ArtifactType createOrUpdate(ArtifactTypeCache cache, Long guid, boolean isAbstract, String name, OrcsTokenService tokenService) {
       Conditions.checkNotNull(cache, "ArtifactTypeCache");
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {
-         artifactType = create(guid, isAbstract, name);
+         Conditions.checkNotNullOrEmpty(name, "artifact type name");
+         artifactType = new ArtifactType(guid, name, isAbstract, tokenService);
          cache.cache(artifactType);
       } else {
          artifactType.setName(name);

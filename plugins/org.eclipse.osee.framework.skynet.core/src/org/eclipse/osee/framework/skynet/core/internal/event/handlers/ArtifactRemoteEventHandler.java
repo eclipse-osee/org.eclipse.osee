@@ -17,12 +17,12 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -121,7 +120,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =
                      AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();
-                  AttributeType attributeType = AttributeTypeManager.getTypeById(attrChange.getAttrTypeGuid());
+                  AttributeTypeToken attributeType = tokenService.getAttributeType(attrChange.getAttrTypeGuid());
                   try {
                      Attribute<?> attribute = artifact.getAttributeById(attrChange.getAttributeId(), true);
                      // Attribute already exists (but may be deleted), process update

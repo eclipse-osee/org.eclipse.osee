@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -110,7 +111,7 @@ public class AccessDetailTest {
       Collection<Object[]> data = new ArrayList<>();
       addTest(data, "Hello", PermissionEnum.DENY, "A reason", new Scope().add("hello_scope"));
       addTest(data, 456, PermissionEnum.WRITE, null, new Scope().add("456_scope"));
-      addTest(data, MockDataFactory.createArtifactType(4), PermissionEnum.FULLACCESS, "reason3", new Scope());
+      addTest(data, CoreArtifactTypes.TestUnit, PermissionEnum.FULLACCESS, "reason3", new Scope());
       addTest(data, CoreAttributeTypes.Name, PermissionEnum.READ, "xx", new Scope().add("xx"));
       return data;
    }

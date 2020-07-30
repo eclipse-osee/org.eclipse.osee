@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 
@@ -75,13 +74,5 @@ public final class MockDataFactory {
             "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index, "mediaType_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
-   }
-
-   public static ArtifactType createArtifactType(int index) {
-      return createArtifactType(index, ThreadLocalRandom.current().nextLong());
-   }
-
-   public static ArtifactType createArtifactType(int index, Long id) {
-      return new ArtifactType(id, "art_" + index, index % 2 == 0);
    }
 }

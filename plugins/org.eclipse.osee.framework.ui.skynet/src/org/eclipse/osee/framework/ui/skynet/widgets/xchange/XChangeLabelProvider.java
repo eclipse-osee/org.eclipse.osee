@@ -21,10 +21,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -138,7 +138,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          if (isBinary != null) {
             return isBinary;
          }
-         AttributeType type = AttributeTypeManager.getTypeById(itemTypeId.getId());
+         AttributeTypeToken type = AttributeTypeManager.getAttributeType(itemTypeId.getId());
          if (type == null) {
             return false;
          }
@@ -147,8 +147,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
           * that types are "large" or possible provide the size of the attribute when requested so UIs can decide what
           * to do with large values.
           */
-         String attrProviderId = type.getAttributeProviderId();
-         isBinary = "org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider".equals(attrProviderId);
+
+         isBinary = type.isUri();
          attrTypeIdToIsBinaryMap.put(itemTypeId, isBinary);
          return isBinary;
       }
