@@ -30,9 +30,15 @@ public interface MSWordOperations {
 
    public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data);
 
-   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, String userEmail);
+   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact);
 
-   public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal);
+   default public Response msWordTemplatePublish(BranchId branch, ArtifactId template, String document, String userEmail) {
+      return null;
+   }
+
+   default public Response goalWorkflowPublish(ArtifactId template, ArtifactId goal) {
+      return null;
+   }
 
    public String renderPlainText(BranchId branchId, String data);
 
