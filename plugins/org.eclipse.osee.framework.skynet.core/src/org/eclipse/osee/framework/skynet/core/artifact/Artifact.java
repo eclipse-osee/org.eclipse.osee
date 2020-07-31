@@ -1083,6 +1083,13 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    /**
+    * Revert artifact to it's state at base transaction of the branch. <br>
+    * This will remove all changes from osee_txs for this artifact on it's branch.<br>
+    * <br>
+    * NOTE: This should NOT normally be used for baseline branches as the artifact will disappear from existence. <br>
+    * <br>
+    * Instead use reloadAttributesAndRelations() to restore in memory artifact back to it's non-dirty state. <br>
+    * <br>
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     */
@@ -1193,14 +1200,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return result;
    }
 
-   /**
-    * Revert artifact to it's state at base transaction of the branch. <br>
-    * This will remove all changes from osee_txs for this artifact on it's branch.<br>
-    * <br>
-    * NOTE: This should NOT normally be used for baseline branches as the artifact will disappear from existence. <br>
-    * <br>
-    * Instead use reloadAttributesAndRelations() to restore in memory artifact back to it's non-dirty state.
-    */
    /**
     * Reloads this artifact's attributes and relations back to the last state saved. <br>
     * <br>
@@ -1684,6 +1683,9 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * This method should never be called from outside the OSEE Application Framework
     */
    public final void setTransactionId(TransactionToken transaction) {
+      if (transaction.isInvalid()) {
+         throw new OseeArgumentException("Transaction can not be set invalid for %s", toStringWithId());
+      }
       this.transaction = transaction;
    }
 
