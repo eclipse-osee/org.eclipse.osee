@@ -323,7 +323,7 @@ public final class ArtifactLoader {
 
       if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(GammaId.valueOf(chStmt.getLong("gamma_id")), transactionId,
-            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, false);
+            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, true);
       }
       return artifact;
    }
