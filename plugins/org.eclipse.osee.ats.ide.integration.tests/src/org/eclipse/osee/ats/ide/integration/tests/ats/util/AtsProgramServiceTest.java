@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.junit.Assert;
@@ -191,6 +192,8 @@ public class AtsProgramServiceTest {
    private IAtsProgram getSawProgram() {
       if (sawProgram == null) {
          sawProgram = programService.getProgramById(DemoArtifactToken.SAW_Program);
+         ArtifactToken art = sawProgram.getArtifactToken();
+         AtsClientService.get().getStoreService().reloadArts(Arrays.asList(art));
       }
       return sawProgram;
    }

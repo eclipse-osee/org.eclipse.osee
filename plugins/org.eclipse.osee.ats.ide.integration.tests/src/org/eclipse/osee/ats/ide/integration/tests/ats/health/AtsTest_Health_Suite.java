@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsValidateAtsDatabaseTest.class})
+@Suite.SuiteClasses({AtsHealthTestTest.class})
 public class AtsTest_Health_Suite {
    // do nothing
 }

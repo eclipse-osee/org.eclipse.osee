@@ -108,12 +108,12 @@ public class AtsTestUtil {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       if (!dirtyArtifacts.isEmpty()) {
          XResultData results = new XResultData();
+         results.log("\n");
          for (Artifact artifact : dirtyArtifacts) {
-            results.errorf("Dirty Artifact [%s] attribute [%s] \n\n%s", artifact.toStringWithId(),
+            results.errorf("Dirty Artifact [%s] attribute [%s] \n%s", artifact.toStringWithId(),
                Artifacts.getDirtyReport(artifact), results.toString());
          }
-         throw new OseeStateException("[%d] Dirty Artifacts found after populate [%s]", dirtyArtifacts.size(),
-            dirtyArtifacts);
+         throw new OseeStateException("[%d] Dirty Artifacts found after populate [%s]", dirtyArtifacts.size(), results);
       }
    }
 

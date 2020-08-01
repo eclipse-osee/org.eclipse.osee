@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
@@ -41,7 +40,6 @@ import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.applicability.DemoFeatures;
 import org.eclipse.osee.orcs.core.util.Artifacts;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -52,14 +50,12 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class CreateDemoBranches {
    private final OrcsApi orcsApi;
    private final TransactionFactory txFactory;
-   private final QueryBuilder query;
    private final OrcsApplicability ops;
    private final OrcsBranch branchOps;
 
    public CreateDemoBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
       txFactory = orcsApi.getTransactionFactory();
-      query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
       ops = orcsApi.getApplicabilityOps();
       branchOps = orcsApi.getBranchOps();
    }
@@ -87,9 +83,8 @@ public class CreateDemoBranches {
 
       TransactionBuilder tx = txFactory.createTransaction(branch, OseeSystem, "Create Product Line folders");
 
-      ArtifactId oseeConfig = Artifacts.getOrCreate(CoreArtifactTokens.OseeConfiguration,
+      ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder,
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
-      ArtifactToken plFolder = Artifacts.getOrCreate(CoreArtifactTokens.ProductLineFolder, oseeConfig, tx, orcsApi);
       Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
 
@@ -179,9 +174,8 @@ public class CreateDemoBranches {
 
       TransactionBuilder tx = txFactory.createTransaction(branch, account, "Create SAW Product Decomposition");
 
-      ArtifactId oseeConfig = Artifacts.getOrCreate(CoreArtifactTokens.OseeConfiguration,
-         CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
-      ArtifactId sawProduct = tx.createArtifact(oseeConfig, CoreArtifactTypes.Component, "SAW Product Decomposition");
+      ArtifactId sawProduct = tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Component,
+         "SAW Product Decomposition");
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          tx.createArtifact(sawProduct, CoreArtifactTypes.Component, subsystem);

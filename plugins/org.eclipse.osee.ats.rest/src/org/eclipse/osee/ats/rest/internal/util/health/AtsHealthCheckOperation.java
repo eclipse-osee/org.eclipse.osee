@@ -21,15 +21,27 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheckProvider;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
+import org.eclipse.osee.ats.rest.internal.util.health.check.TestDuplicateAttributesWithPersist;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestTaskParent;
 import org.eclipse.osee.ats.rest.internal.util.health.check.TestWorkflowVersions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -111,28 +123,33 @@ public class AtsHealthCheckOperation {
 
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
+         int size = artIdLists.size();
+         int num = 1;
          for (Collection<Long> artIdList : artIdLists) {
+            System.err.println(String.format("Processing %s/%s...", num++, size));
 
             Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
 
             // remove all deleted/purged artifacts first
-            List<ArtifactId> artifacts = new ArrayList<>(allArtifacts.size());
-            for (ArtifactId artifact : allArtifacts) {
+            List<ArtifactToken> artifacts = new ArrayList<>(allArtifacts.size());
+            for (ArtifactToken artifact : allArtifacts) {
                if (!atsApi.getStoreService().isDeleted(artifact)) {
                   artifacts.add(artifact);
                }
             }
             count += artifacts.size();
 
-            for (ArtifactId artifact : artifacts) {
+            for (ArtifactToken artifact : artifacts) {
                for (IAtsHealthCheck check : checks) {
                   if (atsApi.getStoreService().isDeleted(artifact)) {
                      continue;
                   }
-                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem((ArtifactToken) artifact);
+                  IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
                   Date date = new Date();
+                  // TBD Add IAtsChangeSet and send to check for fixes
                   try {
-                     check.check(artifact, workItem, vResults, atsApi);
+                     // TBD check.check(artifact, workItem, vResults, atsApi, changes);
+                     check.check(artifact, workItem, vResults, atsApi, null);
                   } catch (Exception ex) {
                      vResults.log(artifact, check.getName(), "Error: Exception: " + Lib.exceptionToString(ex));
                   }
@@ -159,16 +176,287 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
+      healthChecks.add(new TestStateMgr());
+      healthChecks.add(new TestCurrentStateIsInWorkDef());
+      healthChecks.add(new TestWorkflowHasAction());
+      healthChecks.add(new TestTeamDefinitions());
+      healthChecks.add(new TestActionableItems());
+      healthChecks.add(new TestVersions());
+      healthChecks.add(new TestTeamWorkflows());
+      healthChecks.add(new TestBranches());
       for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
          healthChecks.addAll(provider.getHealthChecks());
       }
+      healthChecks.add(new TestDuplicateAttributesWithPersist());
+      healthChecks.add(new TestDuplicateArtEntries());
       return healthChecks;
    }
 
-   private static class TestWorkflowDefinition implements IAtsHealthCheck {
+   private class TestWorkflowHasAction implements IAtsHealthCheck {
 
       @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         if (!workItem.isSprint() && !workItem.isBacklog() && workItem.getParentAction() == null) {
+            results.log(artifact, "TestWorkflowHasAction",
+               String.format("Error: Workflow %s has no parent Action", workItem.toStringWithId()));
+         }
+      }
+   }
+
+   private class TestBranches implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         if (workItem.isTeamWorkflow()) {
+            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+            try {
+               BranchId workingBranch = atsApi.getBranchService().getWorkingBranch(teamWf);
+               if (workingBranch != null && workingBranch.isValid() && !atsApi.getBranchService().getBranchType(
+                  workingBranch).isBaselineBranch()) {
+                  if (!atsApi.getBranchService().getBranchState(workingBranch).isCommitted()) {
+                     Collection<BranchId> branchesCommittedTo =
+                        atsApi.getBranchService().getBranchesCommittedTo(teamWf);
+                     if (!branchesCommittedTo.isEmpty()) {
+                        results.log(artifact, "testAtsBranchManagerA",
+                           "Error: TeamWorkflow " + teamWf.toStringWithId() + " has committed branches but working branch [" + workingBranch + "] != COMMITTED");
+                     }
+                  } else if (!atsApi.getBranchService().isArchived(workingBranch)) {
+                     Collection<BranchId> branchesLeftToCommit =
+                        atsApi.getBranchService().getBranchesLeftToCommit(teamWf);
+                     if (branchesLeftToCommit.isEmpty()) {
+                        results.log(artifact, "testAtsBranchManagerA",
+                           "Error: TeamWorkflow " + teamWf.toStringWithId() + " has committed all branches but working branch [" + workingBranch + "] != ARCHIVED");
+                     }
+                  }
+               }
+            } catch (Exception ex) {
+               results.log("testAtsBranchManager",
+                  teamWf.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+            }
+         }
+      }
+   }
+
+   private class TestTeamWorkflows implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         if (workItem.isTeamWorkflow()) {
+            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+            try {
+               if (!atsApi.getActionableItemService().hasActionableItems(teamWf)) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     "Error: TeamWorkflow " + teamWf.toStringWithId() + " has 0 ActionableItems");
+               }
+               if (teamWf.getTeamDefinition() == null) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     "Error: TeamWorkflow " + teamWf.toStringWithId() + " has no TeamDefinition");
+               }
+               List<Long> badIds =
+                  getInvalidIds(AtsObjects.toIds(atsApi.getActionableItemService().getActionableItems(teamWf)));
+               if (!badIds.isEmpty()) {
+                  results.log(artifact, "TestTeamWorkflows",
+                     "Error: TeamWorkflow " + teamWf.toStringWithId() + " has AI ids that don't exisit " + badIds);
+               }
+            } catch (Exception ex) {
+               results.log(artifact, "TestTeamWorkflows",
+                  teamWf.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+            }
+         }
+      }
+   }
+
+   private List<Long> getInvalidIds(List<Long> ids) {
+      List<Long> badIds = new ArrayList<>();
+      for (Long id : ids) {
+         if (atsApi.getQueryService().getArtifact(id) == null) {
+            badIds.add(id);
+         }
+      }
+      return badIds;
+   }
+
+   private class TestCurrentStateIsInWorkDef implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         if (workItem.isInWork()) {
+            String currentStatename = workItem.getStateMgr().getCurrentStateName();
+            IAtsWorkDefinition workDef = workItem.getWorkDefinition();
+            if (workDef.getStateByName(currentStatename) == null) {
+               results.log(artifact, "TestCurrentStateIsInWorkDef",
+                  String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //
+                     artifact.toStringWithId(), currentStatename, workDef.getName()));
+            }
+         }
+      }
+   }
+
+   private class TestActionableItems implements IAtsHealthCheck {
+
+      @Override
+      public void check(HealthCheckResults results, AtsApi atsApi) {
+
+         // Actionable Items
+         for (ArtifactToken aiArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.ActionableItem)) {
+            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(AtsAttributeTypes.TeamDefinition)) {
+               for (Object obj : atsApi.getAttributeResolver().getAttributeValues(aiArt, artType)) {
+                  ArtifactId artId = (ArtifactId) obj;
+                  ArtifactToken refArt = atsApi.getQueryService().getArtifact(artId);
+                  if (refArt == null) {
+                     results.log("TestActionableItems", String.format("Invalid %s %s for Actionable Item %s",
+                        artType.getName(), artId.getId(), aiArt.toStringWithId()));
+                  }
+               }
+            }
+
+            // Program Id
+            ArtifactId progId = atsApi.getAttributeResolver().getSoleAttributeValue(aiArt, AtsAttributeTypes.ProgramId,
+               ArtifactId.SENTINEL);
+            if (progId.isValid()) {
+               ArtifactToken progArt = atsApi.getQueryService().getArtifact(progId);
+               if (progArt == null) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid Program Id %s for Actionable Item %s", progId, aiArt.toStringWithId()));
+               }
+            }
+         }
+      }
+   }
+
+   private class TestTeamDefinitions implements IAtsHealthCheck {
+
+      @Override
+      public void check(HealthCheckResults results, AtsApi atsApi) {
+
+         for (ArtifactToken teamDefArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.TeamDefinition)) {
+
+            // Actionable Items
+            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(AtsAttributeTypes.ActionableItem)) {
+               for (Object obj : atsApi.getAttributeResolver().getAttributeValues(teamDefArt, artType)) {
+                  ArtifactId artId = (ArtifactId) obj;
+                  ArtifactToken refArt = atsApi.getQueryService().getArtifact(artId);
+                  if (refArt == null) {
+                     results.log("TestTeamDefinitions", String.format("Invalid %s %s for Team Def %s",
+                        artType.getName(), artId.getId(), teamDefArt.toStringWithId()));
+                  }
+               }
+            }
+
+            // Baseline Branch Id valid and Baseline
+            String branchId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
+               AtsAttributeTypes.BaselineBranchId, "-1");
+            BranchId branch = BranchId.valueOf(branchId);
+            if (branch.isValid()) {
+               IOseeBranch branch2 = atsApi.getBranchService().getBranch(branch);
+               if (branch2 == null) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid Branch %s for Team Def %s", branch.getId(), teamDefArt.toStringWithId()));
+               } else if (atsApi.getBranchService().getBranchType(branch2) != BranchType.BASELINE) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid BranchType %s for Branch %s for Team Def %s",
+                        atsApi.getBranchService().getBranchType(branch2), branch.getId(), teamDefArt.toStringWithId()));
+               }
+            }
+
+            // WorkflowDefinition References
+            for (AttributeTypeGeneric<? extends Object> artType : Arrays.asList(
+               AtsAttributeTypes.WorkflowDefinitionReference, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference,
+               AtsAttributeTypes.RelatedTaskWorkflowDefinitionReference)) {
+               for (Object obj : atsApi.getAttributeResolver().getAttributeValues(teamDefArt, artType)) {
+                  ArtifactId workDefId = (ArtifactId) obj;
+                  if (workDefId.isValid()) {
+                     if (atsApi.getWorkDefinitionService().getWorkDefinition(workDefId) == null) {
+                        results.log("TestTeamDefinitions", String.format("Invalid WorkDefRef %s for Team Def %s",
+                           workDefId.getId(), teamDefArt.toStringWithId()));
+                     }
+                  }
+               }
+            }
+
+            // Program Id
+            ArtifactId progId = atsApi.getAttributeResolver().getSoleAttributeValue(teamDefArt,
+               AtsAttributeTypes.ProgramId, ArtifactId.SENTINEL);
+            if (progId.isValid()) {
+               ArtifactToken progArt = atsApi.getQueryService().getArtifact(progId);
+               if (progArt == null) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid Program Id %s for Team Def %s", progId, teamDefArt.toStringWithId()));
+               }
+            }
+         }
+      }
+   }
+
+   private class TestVersions implements IAtsHealthCheck {
+
+      @Override
+      public void check(HealthCheckResults results, AtsApi atsApi) {
+
+         for (ArtifactToken verArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.Version)) {
+            IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
+
+            // Baseline Branch Id valid and Baseline
+            String branchId =
+               atsApi.getAttributeResolver().getSoleAttributeValue(verArt, AtsAttributeTypes.BaselineBranchId, "-1");
+            BranchId branch = BranchId.valueOf(branchId);
+            if (branch.isValid()) {
+               IOseeBranch branch2 = atsApi.getBranchService().getBranch(branch);
+               if (branch2 == null) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid Branch %s for Team Def %s", branch.getId(), verArt.toStringWithId()));
+               } else if (atsApi.getBranchService().getBranchType(branch2) != BranchType.BASELINE) {
+                  results.log("TestTeamDefinitions",
+                     String.format("Invalid BranchType %s for Branch %s for Team Def %s",
+                        atsApi.getBranchService().getBranchType(branch2), branch.getId(), verArt.toStringWithId()));
+               }
+            }
+
+            // Parallel Config
+            for (IAtsVersion parallelVersion : atsApi.getVersionService().getParallelVersions(version)) {
+               if (parallelVersion != null) {
+                  try {
+                     if (parallelVersion.isBranchInvalid()) {
+                        results.log(verArt, "testParallelConfig",
+                           "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch id");
+                     }
+                  } catch (Exception ex) {
+                     results.log(verArt, "testParallelConfig",
+                        "Error: " + verArt.getName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
+                  }
+               }
+            }
+
+         }
+      }
+   }
+
+   private class TestDuplicateArtEntries implements IAtsHealthCheck {
+
+      @Override
+      public void check(HealthCheckResults results, AtsApi atsApi) {
+         List<ArtifactId> artIds =
+            atsApi.getQueryService().getArtifactIdsFromQuery(AtsHealthQueries.getMultipleArtEntriesonCommon(atsApi));
+         if (!artIds.isEmpty()) {
+            results.log("TestDuplicateArtEntries",
+               String.format("Error: Duplicate Art Ids [%s]", Collections.toString(",", artIds)));
+         }
+      }
+
+   }
+
+   private class TestStateMgr implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+         workItem.getStateMgr();
+      }
+   }
+
+   private class TestWorkflowDefinition implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
          if (workItem.getWorkDefinition() == null) {
             error(results, workItem, "Workflow has no Work Definition");
          } else if (workItem.getStateDefinition() == null) {
@@ -179,10 +467,10 @@ public class AtsHealthCheckOperation {
       }
    }
 
-   private static class TestWorkflowTeamDefinition implements IAtsHealthCheck {
+   private class TestWorkflowTeamDefinition implements IAtsHealthCheck {
 
       @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+      public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
          if (workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow().getTeamDefinition() == null) {
             error(results, workItem, "Team workflow has no Team Definition (re-run conversion?)");
          }

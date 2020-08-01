@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.rest.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,10 +26,8 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -41,22 +38,16 @@ public abstract class AbstractConfigResource {
    protected final AtsApi atsApi;
    private final ArtifactTypeToken artifactType;
    private final QueryBuilder query;
-   private final OrcsApi orcsApi;
 
    public AbstractConfigResource(ArtifactTypeToken artifactType, AtsApi atsApi, OrcsApi orcsApi) {
       this.artifactType = artifactType;
       this.atsApi = atsApi;
-      this.orcsApi = orcsApi;
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactToken> get() {
-
-      Map<ArtifactId, ArtifactReadable> artifactMap = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
-         CoreArtifactTokens.OseeConfiguration).asArtifactMap();
-
       return query.andIsOfType(artifactType).asArtifactTokens();
    }
 

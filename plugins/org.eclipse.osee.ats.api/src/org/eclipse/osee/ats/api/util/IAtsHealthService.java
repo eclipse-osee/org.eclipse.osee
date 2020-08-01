@@ -20,5 +20,5 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  */
 public interface IAtsHealthService {
 
-   XResultData validateAtsDatabase();
+   XResultData healthCheck();
 }

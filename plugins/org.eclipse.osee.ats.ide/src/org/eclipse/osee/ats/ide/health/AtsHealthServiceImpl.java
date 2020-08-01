@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.health;
 
 import org.eclipse.osee.ats.core.health.AbstractAtsHealthServiceImpl;
+import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -22,10 +23,9 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class AtsHealthServiceImpl extends AbstractAtsHealthServiceImpl {
 
    @Override
-   public XResultData validateAtsDatabase() {
-      ValidateAtsDatabase valid = new ValidateAtsDatabase(null);
-      XResultData results = valid.runIt(null, new XResultData());
-      return results;
+   public XResultData healthCheck() {
+      XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().validate();
+      return rd;
    }
 
 }

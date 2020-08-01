@@ -92,6 +92,14 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
       return isOfType(AtsArtifactTypes.AbstractReview);
    }
 
+   default boolean isSprint() {
+      return isOfType(AtsArtifactTypes.AgileSprint);
+   }
+
+   default boolean isBacklog() {
+      return isOfType(AtsArtifactTypes.AgileBacklog);
+   }
+
    default boolean isGoal() {
       return this instanceof IAtsGoal;
    }
@@ -264,6 +272,11 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
          @Override
          public boolean hasTag(String tag) {
+            return false;
+         }
+
+         @Override
+         public boolean isSprint() {
             return false;
          }
 

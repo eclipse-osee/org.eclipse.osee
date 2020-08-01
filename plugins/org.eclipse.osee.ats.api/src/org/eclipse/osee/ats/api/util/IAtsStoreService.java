@@ -129,4 +129,6 @@ public interface IAtsStoreService {
 
    boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType);
 
+   boolean isChangedInDb(ArtifactId artifact);
+
 }

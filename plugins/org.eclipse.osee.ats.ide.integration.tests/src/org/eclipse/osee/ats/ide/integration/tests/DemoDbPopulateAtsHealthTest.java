@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests;
 
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.ats.health.AtsValidateAtsDatabaseTest;
+import org.eclipse.osee.ats.ide.integration.tests.ats.health.AtsHealthTestTest;
 import org.junit.BeforeClass;
 
 /**
@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
  *
  * @author Donald G Dunne
  */
-public class DemoDbPopulateValidateAtsDatabaseTest extends AtsValidateAtsDatabaseTest {
+public class DemoDbPopulateAtsHealthTest extends AtsHealthTestTest {
 
    @BeforeClass
    public static void cleanup() {

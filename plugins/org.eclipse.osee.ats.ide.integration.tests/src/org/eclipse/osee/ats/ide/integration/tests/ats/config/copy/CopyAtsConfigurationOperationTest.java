@@ -21,14 +21,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.config.copy.ConfigData;
 import org.eclipse.osee.ats.ide.config.copy.CopyAtsConfigurationOperation;
-import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
-import org.eclipse.osee.ats.ide.health.ValidateResults;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -61,11 +57,6 @@ public class CopyAtsConfigurationOperationTest {
       Collection<IAtsActionableItem> ais = getActionableItemsNameStartsWith("CISv2");
       Assert.assertEquals(5, ais.size());
 
-      ValidateResults results = new ValidateResults();
-      Collection<Artifact> aiaArts =
-         Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(ais));
-      ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, results);
-      Assert.assertEquals(0, results.getTestNameToResultsMap().size());
    }
 
    public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) {

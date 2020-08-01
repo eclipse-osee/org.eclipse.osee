@@ -15,14 +15,20 @@ package org.eclipse.osee.ats.api.util.health;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsHealthCheck {
 
-   public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi);
+   /**
+    * @param changes if not null, then fix if possible
+    */
+   public default void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
+      // do nothing
+   }
 
    /**
     * Implement to make single check on whole database. These are good for queries on things other that Work Items and
@@ -39,7 +45,6 @@ public interface IAtsHealthCheck {
    public default void error(HealthCheckResults results, IAtsWorkItem workItem, String format, Object... data) {
       results.log(workItem.getStoreObject(), getClass().getSimpleName(),
          String.format("Error: " + format + " for " + workItem.getAtsId(), data));
-      System.err.println(String.format("Error: " + format + " for " + workItem.getAtsId(), data));
    }
 
 }

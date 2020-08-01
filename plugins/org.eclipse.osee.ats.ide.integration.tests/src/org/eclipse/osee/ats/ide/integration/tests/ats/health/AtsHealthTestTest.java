@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
+import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -30,20 +30,17 @@ import org.eclipse.swt.program.Program;
  *
  * @author Donald G. Dunne
  */
-public class AtsValidateAtsDatabaseTest {
+public class AtsHealthTestTest {
 
    @org.junit.Test
-   public void testValidateAtsDatabase() throws Exception {
+   public void testAtsHealthTest() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      ValidateAtsDatabase validateAtsDatabase = new ValidateAtsDatabase(null);
-      XResultData rd = new XResultData();
-      validateAtsDatabase.setFixAttributeValues(false);
-      validateAtsDatabase.runIt(null, rd);
+      XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().validate();
       String html = XResultDataUI.getReport(rd, "").getManipulatedHtml();
       Matcher m = Pattern.compile("Error:.*$").matcher(html);
       while (m.find()) {
-         File file = OseeData.writeToFile("ValidateAtsDatabaseTest.html", html);
+         File file = OseeData.writeToFile("AtsHealthTest.html", html);
          Program.launch(file.getAbsolutePath());
          fail("Note: Failure html opened in browser.  " + m.group());
       }

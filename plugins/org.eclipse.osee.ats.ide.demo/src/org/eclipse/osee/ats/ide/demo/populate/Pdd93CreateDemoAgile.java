@@ -202,6 +202,7 @@ public class Pdd93CreateDemoAgile {
       Artifact progArt = AtsClientService.get().getQueryServiceClient().getArtifact(aProgram);
       RelationManager.setRelationOrder(progArt, CoreRelationTypes.DefaultHierarchical_Child, RelationSide.SIDE_B,
          RelationSorter.UNORDERED, progArt.getChildren());
+      progArt.persist("Set Relation Order");
 
       jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
       AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
@@ -314,6 +315,7 @@ public class Pdd93CreateDemoAgile {
       Artifact backlogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlog.getId());
       RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
+      backlogArt.persist("Set Backlog Order");
 
       // Create Sprints
       JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);

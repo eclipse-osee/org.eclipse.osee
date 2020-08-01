@@ -259,4 +259,13 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean isOfType(ArtifactId artifact, ArtifactTypeToken artType) {
       return ((ArtifactReadable) atsApi.getQueryService().getArtifact(artifact)).isOfType(artType);
    }
+
+   /**
+    * return false cause server always loads workItems fresh
+    */
+   @Override
+   public boolean isChangedInDb(ArtifactId workItem) {
+      return false;
+   }
+
 }

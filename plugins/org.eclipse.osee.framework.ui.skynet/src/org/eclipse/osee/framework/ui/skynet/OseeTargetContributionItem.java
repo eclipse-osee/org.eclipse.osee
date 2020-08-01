@@ -143,7 +143,7 @@ public class OseeTargetContributionItem extends OseeStatusContributionItem {
 
                   } catch (Exception ex) {
                      OseeLog.log(OseeTargetContributionItem.class, OseeLevel.SEVERE_POPUP,
-                        "Error loading AtsHealthCheck extension", ex);
+                        "Error loading WorkbenchTargetProvider extension", ex);
                   }
                }
             }

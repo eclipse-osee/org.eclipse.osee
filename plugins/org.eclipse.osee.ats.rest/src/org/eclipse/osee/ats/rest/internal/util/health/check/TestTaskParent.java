@@ -16,9 +16,10 @@ package org.eclipse.osee.ats.rest.internal.util.health.check;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 public class TestTaskParent implements IAtsHealthCheck {
 
    @Override
-   public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+   public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
       if (workItem.isTask()) {
          if (atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
             AtsRelationTypes.TeamWfToTask_TeamWorkflow).isInvalid()) {

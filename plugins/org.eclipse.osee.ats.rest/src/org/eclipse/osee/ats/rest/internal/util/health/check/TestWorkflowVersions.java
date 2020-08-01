@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 
@@ -34,7 +34,7 @@ public class TestWorkflowVersions implements IAtsHealthCheck {
       new HashCollectionSet<>(HashSet::new);
 
    @Override
-   public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+   public void check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes) {
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
          Collection<ArtifactToken> versions =

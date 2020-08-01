@@ -22,12 +22,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.ide.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
@@ -152,8 +150,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
-      new ValidateAtsDatabase(healthItems);
-      new ValidateAtsConfiguration(healthItems);
       new CreateGoalTestDemoArtifacts(healthItems);
 
       return items;

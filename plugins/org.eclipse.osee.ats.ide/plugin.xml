@@ -4,7 +4,6 @@
    <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="OSEE-INF/extensionPts/AtsNavigateItem.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="OSEE-INF/extensionPts/AtsWizardItem.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="OSEE-INF/extensionPts/AtsWorldEditorItem.exsd"/>
-   <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="OSEE-INF/extensionPts/AtsHealthCheck.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>
    <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="OSEE-INF/extensionPts/AtsXWidgetValidator.exsd"/>

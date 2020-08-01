@@ -106,15 +106,13 @@ public class Pdd92CreateDemoReviews {
       reviewArt =
          (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
             "Peer Review algorithm used in code", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
-      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
-      roles.add(new UserRole(Role.Author,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
-      roles.add(new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones)));
-      roles.add(new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
+      roles.add(
+         new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones)));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         2.0, true));
       Result result = AtsClientService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Review,
          roles, null, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isFalse()) {
@@ -130,31 +128,29 @@ public class Pdd92CreateDemoReviews {
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
-      roles.add(new UserRole(Role.Author,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones), 2.3, true));
-      roles.add(new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), 4.5, true));
-      roles.add(new UserRole(Role.Reviewer,
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones),
+         2.3, true));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+         4.5, true));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         2.0, true));
 
       List<ReviewDefectItem> defects = new ArrayList<>();
-      defects.add(new ReviewDefectItem(
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay), Severity.Issue,
-         Disposition.Accept, InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234", new Date()));
-      defects.add(
-         new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
-            Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Using getInteger instead", "Fixed",
-            "MyWorld.java:Line 33", new Date()));
-      defects.add(
-         new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
-            Severity.Major, Disposition.Reject, InjectionActivity.Code, "Spelling incorrect", "Is correct",
-            "MyWorld.java:Line 234", new Date()));
-      defects.add(new ReviewDefectItem(
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), Severity.Minor,
-         Disposition.Reject, InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234", new Date()));
-      defects.add(new ReviewDefectItem(
-         AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith), Severity.Major,
-         Disposition.Accept, InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
+      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234",
+         new Date()));
+      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Using getInteger instead", "Fixed",
+         "MyWorld.java:Line 33", new Date()));
+      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         Severity.Major, Disposition.Reject, InjectionActivity.Code, "Spelling incorrect", "Is correct",
+         "MyWorld.java:Line 234", new Date()));
+      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+         Severity.Minor, Disposition.Reject, InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234",
+         new Date()));
+      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+         Severity.Major, Disposition.Accept, InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234",
+         new Date()));
       for (ReviewDefectItem defect : defects) {
          defect.setClosed(true);
       }

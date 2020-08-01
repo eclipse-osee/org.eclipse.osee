@@ -32,7 +32,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({//
    AtsTestUtilTest.class,
    AtsTest_DemoPopulateAndTest_Suite.class,
-   DemoDbPopulateValidateAtsDatabaseTest.class //
+   DemoDbPopulateAtsHealthTest.class //
 })
 /**
  * @author Donald G. Dunne

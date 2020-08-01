@@ -202,8 +202,8 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
       List<IAtsInsertion> insertions = new ArrayList<>();
-      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(
-         atsApi.getQueryService().getArtifact(program.getId()), AtsRelationTypes.ProgramToInsertion_Insertion)) {
+      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(program,
+         AtsRelationTypes.ProgramToInsertion_Insertion)) {
          insertions.add(atsApi.getProgramService().getInsertionById(artifact));
       }
       return insertions;

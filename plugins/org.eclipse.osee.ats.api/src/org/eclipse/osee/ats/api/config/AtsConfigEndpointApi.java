@@ -127,4 +127,10 @@ public interface AtsConfigEndpointApi {
    @Path("initialize/demo")
    @Produces(MediaType.APPLICATION_JSON)
    TransactionId demoInitilize();
+
+   @GET
+   @Path("validate")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData validate();
+
 }

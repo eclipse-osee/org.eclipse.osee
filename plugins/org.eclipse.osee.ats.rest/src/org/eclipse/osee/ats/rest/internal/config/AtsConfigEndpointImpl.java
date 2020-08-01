@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
+import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -252,4 +253,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       atsApi.getConfigService().configAtsDatabase(atsApi);
       return txId;
    }
+
+   @Override
+   public XResultData validate() {
+      AtsHealthCheckOperation op = new AtsHealthCheckOperation(atsApi, atsApi.getJdbcService(), null);
+      return op.run();
+   }
+
 }

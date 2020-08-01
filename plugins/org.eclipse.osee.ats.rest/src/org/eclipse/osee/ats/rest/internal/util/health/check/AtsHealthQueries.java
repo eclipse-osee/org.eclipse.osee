@@ -24,6 +24,13 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
  */
 public class AtsHealthQueries {
 
+   public static String getMultipleArtEntriesonCommon(AtsApi atsApi) {
+      return "SELECT DISTINCT art1.art_id FROM osee_artifact art1, osee_artifact art2, \n" + //
+         "osee_txs txs WHERE art1.ART_ID = art2.ART_ID AND \n" + //
+         "art1.art_type_id = art2.art_type_id AND art1.GAMMA_ID <> art2.GAMMA_ID AND \n" + //
+         "art2.GAMMA_ID = txs.GAMMA_ID and txs.BRANCH_ID = 570 ORDER BY art1.art_id";
+   }
+
    public static String getArtIdsOfMuiltipleRelsOnSide(AtsApi atsApi, IOseeBranch branch, RelationTypeSide singleRelTypeSide) {
       String sideName = singleRelTypeSide.getSide().isSideA() ? "a_art_id" : "b_art_id";
       return String.format("select %s as art_id from " //

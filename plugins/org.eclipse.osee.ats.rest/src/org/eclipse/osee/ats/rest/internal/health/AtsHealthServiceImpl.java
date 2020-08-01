@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class AtsHealthServiceImpl extends AbstractAtsHealthServiceImpl {
 
    @Override
-   public XResultData validateAtsDatabase() {
+   public XResultData healthCheck() {
       return new XResultData();
    }
 
