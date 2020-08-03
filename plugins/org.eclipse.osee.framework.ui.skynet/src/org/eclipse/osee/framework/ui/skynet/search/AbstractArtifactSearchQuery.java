@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 
@@ -41,7 +42,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
 
    public String getResultLabel() {
       StringBuilder builder = new StringBuilder();
-      builder.append(getCriteriaLabel());
+      builder.append(Strings.truncate(getCriteriaLabel(), 256));
       builder.append(" - ");
       if (doneRunning) {
          builder.append(aResult.getMatchCount());
