@@ -39,7 +39,7 @@ public final class AttributeFormatRule extends AbstractValidationRule {
    }
 
    public boolean hasArtifactType(ArtifactTypeToken artifactType) {
-      return artifactType.inheritsFrom(baseArtifactType);
+      return artifactType.equals(baseArtifactType);
    }
 
    @Override
