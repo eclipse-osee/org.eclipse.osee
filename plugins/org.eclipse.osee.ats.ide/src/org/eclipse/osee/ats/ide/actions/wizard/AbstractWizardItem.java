@@ -68,14 +68,16 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    private final DoubleKeyHashMap<IAtsTeamDefinition, WizardFields, Object> teamDefFieldToWidget =
       new DoubleKeyHashMap<>();
    private final AtsApi atsApi;
-   private final WizardFields[] fields;
    private XComboViewer versionCombo;
    private XCheckBox createBranchCheck;
    private IAtsVersion previousVersion;
 
-   public AbstractWizardItem(AtsApi atsApi, WizardFields... fields) {
+   public AbstractWizardItem(AtsApi atsApi) {
       this.atsApi = atsApi;
-      this.fields = fields;
+   }
+
+   public Collection<WizardFields> getFields(IAtsTeamDefinition teamDef) {
+      return Collections.emptyList();
    }
 
    @Override
@@ -97,7 +99,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
             gd.widthHint = 500;
             teamComp.setLayoutData(gd);
 
-            for (WizardFields field : fields) {
+            for (WizardFields field : getFields(teamDef)) {
                if (field.equals(WizardFields.Assignees)) {
                   createAssigneeWidget(teamDef, teamComp);
                } else if (field.equals(WizardFields.Originator)) {
