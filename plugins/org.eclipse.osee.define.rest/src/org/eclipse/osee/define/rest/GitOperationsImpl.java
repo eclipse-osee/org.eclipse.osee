@@ -263,7 +263,7 @@ public final class GitOperationsImpl implements GitOperations {
 
       if (clone) {
          CloneCommand jgitClone = Git.cloneRepository().setURI(gitRepoUrl).setDirectory(localPath).setBranchesToClone(
-            Arrays.asList(branchToClone)).setNoCheckout(true);
+            Arrays.asList(branchToClone)).setBranch(branchToClone);
          configurateAuthentication(gitRepoUrl, jgitClone, passphrase);
          try {
             jgitClone.call();
