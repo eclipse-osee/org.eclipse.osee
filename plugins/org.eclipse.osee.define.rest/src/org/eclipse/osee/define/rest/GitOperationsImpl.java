@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -204,7 +205,7 @@ public final class GitOperationsImpl implements GitOperations {
 
    @Override
    public ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
-      ArtifactReadable repoArtifact = clone(gitRepoUrl, branch, account, clone, passphrase);
+      ArtifactReadable repoArtifact = clone(gitRepoUrl, branch, account, gitBranchName, clone, passphrase);
       return updateGitTrackingBranch(branch, repoArtifact, account, gitBranchName, !clone, passphrase, true);
    }
 
@@ -254,13 +255,15 @@ public final class GitOperationsImpl implements GitOperations {
       return repoArtifact;
    }
 
-   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, UserId account, boolean clone, String passphrase) {
+   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, UserId account, String gitBranchName, boolean clone, String passphrase) {
       String serverDataLocation = systemPrefs.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       String repoName = gitRepoUrl.substring(gitRepoUrl.lastIndexOf('/') + 1).replaceAll("\\.git$", "");
       File localPath = new File(serverDataLocation + File.separator + "git", repoName);
+      String branchToClone = "remotes/origin/" + gitBranchName;
 
       if (clone) {
-         CloneCommand jgitClone = Git.cloneRepository().setURI(gitRepoUrl).setDirectory(localPath).setNoCheckout(true);
+         CloneCommand jgitClone = Git.cloneRepository().setURI(gitRepoUrl).setDirectory(localPath).setBranchesToClone(
+            Arrays.asList(branchToClone)).setNoCheckout(true);
          configurateAuthentication(gitRepoUrl, jgitClone, passphrase);
          try {
             jgitClone.call();
