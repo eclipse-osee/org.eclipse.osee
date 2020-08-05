@@ -31,7 +31,7 @@ public class UserResourceTest extends AbstractRestTest {
       String json = getJson("/ats/user");
       JsonNode users = JsonUtil.readTree(json);
       Assert.assertTrue(users.size() >= 9);
-      Assert.assertEquals(3333,
-         JsonUtil.getArrayElement(users, "name", DemoUsers.Joe_Smith.getName()).get("id").asInt());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getUserId(),
+         JsonUtil.getArrayElement(users, "name", DemoUsers.Joe_Smith.getName()).get("userId").asText());
    }
 }

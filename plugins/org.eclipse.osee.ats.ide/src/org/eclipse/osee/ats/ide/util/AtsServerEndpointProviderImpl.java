@@ -113,7 +113,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    @Override
    public AtsTaskEndpointApi getTaskEp() {
       if (taskEp == null) {
-         taskEp = jaxRsApi.newProxy(getAtsTarget(), AtsTaskEndpointApi.class);
+         taskEp = jaxRsApi.newProxy("ats", AtsTaskEndpointApi.class);
       }
       return taskEp;
    }
