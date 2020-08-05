@@ -176,7 +176,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       if (Strings.isInValid(featureDef.getName())) {
          results.error("Feature must have a name.");
       }
-      if (!featureDef.getName().matches("^[A-Z0-9_()\\s\\-]+$")) {
+      if (!featureDef.getName().matches("^[A-Z0-9_()\\s\\-\\.]+$")) {
          results.error("Feature name must be all caps with no special characters except underscore, dash, and space");
       }
       if (Strings.isInValid(featureDef.getDescription())) {
@@ -186,7 +186,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          results.error("Values must be specified.  Comma delimited.");
       } else {
          for (String val : featureDef.getValues()) {
-            if (!val.matches("^[a-zA-Z0-9_]+$")) {
+            if (!val.matches("^[a-zA-Z0-9_()\\s\\-\\.]+$")) {
                results.error("The value: " + val + " is invalid.  Must be alphanumeric.");
             }
          }

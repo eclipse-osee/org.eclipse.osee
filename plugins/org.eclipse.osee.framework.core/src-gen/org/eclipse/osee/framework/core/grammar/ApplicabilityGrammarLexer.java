@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-03-03 12:17:20
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-08-05 10:09:53
 package org.eclipse.osee.framework.core.grammar;
 
 import org.antlr.runtime.BaseRecognizer;
@@ -261,8 +261,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = ID;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:81:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '(' | ')' )* )
-         // ApplicabilityGrammar.g:81:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '(' | ')' )*
+         // ApplicabilityGrammar.g:81:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )* )
+         // ApplicabilityGrammar.g:81:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
          {
             if ((input.LA(1) >= 'A' && input.LA(1) <= 'Z') || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                input.consume();
@@ -273,12 +273,12 @@ public class ApplicabilityGrammarLexer extends Lexer {
                throw mse;
             }
 
-            // ApplicabilityGrammar.g:81:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '(' | ')' )*
+            // ApplicabilityGrammar.g:81:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
             loop1: do {
                int alt1 = 2;
                int LA1_0 = input.LA(1);
 
-               if ((LA1_0 == ' ' || (LA1_0 >= '(' && LA1_0 <= ')') || LA1_0 == '-' || (LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z'))) {
+               if ((LA1_0 == ' ' || (LA1_0 >= '(' && LA1_0 <= ')') || (LA1_0 >= '-' && LA1_0 <= '.') || (LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z'))) {
                   alt1 = 1;
                }
 
@@ -286,8 +286,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
                   case 1:
                   // ApplicabilityGrammar.g:
                   {
-                     if (input.LA(1) == ' ' || (input.LA(1) >= '(' && input.LA(1) <= ')') || input.LA(
-                        1) == '-' || (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(
+                     if (input.LA(1) == ' ' || (input.LA(1) >= '(' && input.LA(1) <= ')') || (input.LA(
+                        1) >= '-' && input.LA(1) <= '.') || (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(
                            1) >= 'A' && input.LA(1) <= 'Z') || input.LA(
                               1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                         input.consume();
@@ -502,7 +502,7 @@ public class ApplicabilityGrammarLexer extends Lexer {
       "\1\22",
       "\1\23",
       "\1\24",
-      "\1\13\7\uffff\2\13\3\uffff\1\13\2\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
+      "\1\13\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
       "\1\26",
       "\1\27",
       "",
@@ -518,12 +518,12 @@ public class ApplicabilityGrammarLexer extends Lexer {
       "\1\40",
       "\1\41",
       "\1\42",
-      "\1\43\7\uffff\2\13\3\uffff\1\13\2\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
+      "\1\43\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
       "\1\45",
       "",
       "\1\46",
       "\1\47",
-      "\1\13\7\uffff\2\13\3\uffff\1\13\2\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
+      "\1\13\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
       ""};
 
    static final short[] DFA3_eot = DFA.unpackEncodedString(DFA3_eotS);
