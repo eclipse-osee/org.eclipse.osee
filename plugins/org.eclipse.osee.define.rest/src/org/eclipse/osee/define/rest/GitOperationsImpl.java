@@ -81,6 +81,7 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -238,7 +239,8 @@ public final class GitOperationsImpl implements GitOperations {
          }
 
          List<ArtifactToken> currentCommits =
-            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).asArtifactTokens();
+            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).andRelatedRecursive(
+               CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifactTokens();
          for (ArtifactToken singleCommit : currentCommits) {
             pathToCodeunitMap.put(singleCommit.getName(), singleCommit);
          }
