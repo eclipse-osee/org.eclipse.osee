@@ -238,11 +238,12 @@ public final class GitOperationsImpl implements GitOperations {
             }
          }
 
-         List<ArtifactToken> currentCommits =
+         List<ArtifactReadable> currentCommits =
             queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).andRelatedRecursive(
-               CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifactTokens();
-         for (ArtifactToken singleCommit : currentCommits) {
-            pathToCodeunitMap.put(singleCommit.getName(), singleCommit);
+               CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifacts();
+         for (ArtifactReadable singleCommit : currentCommits) {
+            String fullPathName = singleCommit.getSoleAttributeAsString(CoreAttributeTypes.FileSystemPath);
+            pathToCodeunitMap.put(fullPathName, singleCommit);
          }
 
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(), account,
@@ -261,11 +262,11 @@ public final class GitOperationsImpl implements GitOperations {
       String serverDataLocation = systemPrefs.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       String repoName = gitRepoUrl.substring(gitRepoUrl.lastIndexOf('/') + 1).replaceAll("\\.git$", "");
       File localPath = new File(serverDataLocation + File.separator + "git", repoName);
-      String branchToClone = "remotes/origin/" + gitBranchName;
+      String branchToClone = "refs/heads/" + gitBranchName;
 
       if (clone) {
          CloneCommand jgitClone = Git.cloneRepository().setURI(gitRepoUrl).setDirectory(localPath).setBranchesToClone(
-            Arrays.asList(branchToClone)).setBranch(branchToClone);
+            Arrays.asList(branchToClone)).setBranch(branchToClone).setNoCheckout(true);
          configurateAuthentication(gitRepoUrl, jgitClone, passphrase);
          try {
             jgitClone.call();

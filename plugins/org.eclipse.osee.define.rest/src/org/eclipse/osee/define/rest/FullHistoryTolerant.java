@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -56,6 +58,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
       queryFactory = orcsApi.getQueryFactory();
       this.tupleQuery = queryFactory.tupleQuery();
       this.pathToCodeunitMap = pathToCodeunitMap;
+      initExistingCodeUnitPath();
    }
 
    @Override
@@ -87,7 +90,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          codeUnit = findCodeUnit(repoArtifact, path);
          if (codeUnit.isValid()) {
             if (Strings.isValid(newPath)) {
-               tx.setName(codeUnit, newPath);
+               tx.setName(codeUnit, getCodeUnitName(newPath));
+               tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
                pathToCodeunitMap.remove(path);
                pathToCodeunitMap.put(newPath, codeUnit);
             }
@@ -105,11 +109,28 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private ArtifactId findCodeUnit(ArtifactId repository, String path) {
+
       ArtifactId codeUnit = pathToCodeunitMap.get(path);
       if (codeUnit != null) {
          return codeUnit;
       }
       return ArtifactId.SENTINEL;
+   }
+
+   private void initExistingCodeUnitPath() {
+      List<ArtifactReadable> existingFolders =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.Folder).andRelatedRecursive(
+            CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifacts();
+      for (ArtifactReadable art : existingFolders) {
+         String wholePath = art.getName();
+         while (!art.getParent().equals(repoArtifact) && art.isValid()) {
+            art = art.getParent();
+            wholePath = art.getName() + "/" + wholePath;
+         }
+         if (!existingCodeUnitPath.containsKey(wholePath)) {
+            existingCodeUnitPath.put(wholePath, art);
+         }
+      }
    }
 
    private ArtifactId createCodeUnit(TransactionBuilder tx, String newPath) {
@@ -120,13 +141,11 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
       if (!(path.size() > 0)) {
          return ArtifactId.SENTINEL;
       }
-      codeUnitName = path.get(path.size() - 1);
+      codeUnitName = getCodeUnitName(newPath);
       path.remove(path.size() - 1);
 
-      String temp = "";
       for (String newFolder : path) {
          wholePath += newFolder + "/";
-         temp = folder.getIdString();
          if (!existingCodeUnitPath.containsKey(wholePath)) {
             folder = tx.createArtifact(folder, CoreArtifactTypes.Folder, newFolder);
             existingCodeUnitPath.put(wholePath, folder);
@@ -134,11 +153,17 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             folder = existingCodeUnitPath.get(wholePath);
          }
       }
-      temp = folder.getIdString();
       ArtifactId codeUnit = tx.createArtifact(folder, CoreArtifactTypes.CodeUnit, codeUnitName);
-      wholePath += newPath;
+      tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
 
       return codeUnit;
+   }
+
+   private String getCodeUnitName(String newPath) {
+      String codeUnitName = "";
+      List<String> path = Lists.newArrayList(Splitter.on("/").split(newPath));
+      codeUnitName = path.get(path.size() - 1);
+      return codeUnitName;
    }
 
    @Override

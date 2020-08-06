@@ -60,6 +60,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken CodeUnit = osee.add(osee.artifactType(58L, "Code Unit", false, Artifact)
       .zeroOrOne(DataRightsBasis, "")
       .zeroOrOne(DataRightsClassification, "Unspecified")
+      .exactlyOne(FileSystemPath, "")
       .zeroOrOne(SubjectMatterExpert, ""));
    ArtifactTypeToken Component = osee.add(osee.artifactType(57L, "Component", false, Artifact)
       .exactlyOne(Developmental, "true")

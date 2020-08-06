@@ -1907,6 +1907,7 @@ artifactType "Code Unit" extends "Artifact" {
 	id 58
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
+	attribute "File System Path"
 	attribute "Subject Matter Expert"
 }
 
