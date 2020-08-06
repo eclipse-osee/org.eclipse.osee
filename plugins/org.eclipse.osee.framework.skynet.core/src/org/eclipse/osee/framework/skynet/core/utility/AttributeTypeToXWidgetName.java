@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 public class AttributeTypeToXWidgetName {
 
    public static <T extends EnumToken> String getXWidgetName(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+      artType = ServiceUtil.getOrcsTokenService().getArtifactType(artType.getId()); //Remove this when ArtifactType class is removed
       int minOccurrence = artType.getMin(attributeType);
       int maxOccurrence = artType.getMax(attributeType);
       String xWidgetName = "";

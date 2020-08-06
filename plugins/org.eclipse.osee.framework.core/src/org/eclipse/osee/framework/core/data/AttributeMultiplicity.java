@@ -99,12 +99,18 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
 
    public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType) {
       List<T> validEnumTokens = new ArrayList<T>();
-      for (T enumToken : attributeType.getEnumValues()) {
-         for (String enumeratedValue : get(attributeType).getValidEnumValues()) {
-            if (enumToken.getName().equals(enumeratedValue)) {
-               validEnumTokens.add(enumToken);
+      try {
+         for (T enumToken : attributeType.getEnumValues()) {
+            //get(attributeType) will fail on some attributes for overridden artifact types. Hence the try/catch.
+            for (String enumeratedValue : get(attributeType).getValidEnumValues()) {
+               if (enumToken.getName().equals(enumeratedValue)) {
+                  validEnumTokens.add(enumToken);
+               }
             }
          }
+      } catch (Exception e) {
+         //TODO: Catch should be removed/replaced with error when overridden type handling is updated
+         validEnumTokens.addAll(attributeType.getEnumValues());
       }
       if (validEnumTokens.isEmpty()) {
          validEnumTokens.addAll(attributeType.getEnumValues());
