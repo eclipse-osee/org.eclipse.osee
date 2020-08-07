@@ -86,6 +86,35 @@ public interface ApplicabilityEndpoint {
    XResultData deleteView(@PathParam("viewName") String viewName);
 
    @GET
+   @Path("cfggroup")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getCfgGroup();
+
+   @POST
+   @Path("cfggroup")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData createCfgGroup(String grpName);
+
+   @PUT
+   @Path("cfggroup/{groupName}/relate/{viewName}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData relateCfgGroupToView(@PathParam("groupName") String groupName, @PathParam("viewName") String viewName);
+
+   @PUT
+   @Path("cfggroup/{groupName}/unrelate/{viewName}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData unrelateCfgGroupToView(@PathParam("groupName") String groupName, @PathParam("viewName") String viewName);
+
+   @DELETE
+   @Path("cfggroup/{groupName}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData deleteCfgGroup(@PathParam("groupName") String viewName);
+
+   @GET
    @Path("view/{id}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
@@ -205,4 +234,5 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
    XResultData isAccess();
+
 }

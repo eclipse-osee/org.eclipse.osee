@@ -109,6 +109,12 @@ public class ApplicabilityEndpointTest {
       Assert.assertFalse("ApplicabilityEndpoint.deleteView failure", viewTable.contains("Product D"));
       Assert.assertTrue("ApplicabilityEndpoint.createView failure", viewTable.contains(newView.getName()));
 
+      XResultData abGroup1 = appl.createCfgGroup("abGrp");
+      XResultData addView1 = appl.relateCfgGroupToView("abGrp", "Product A");
+      XResultData addView2 = appl.relateCfgGroupToView("abGrp", "Product B");
+
+      viewList = appl.getViews();
+      Assert.assertEquals(5, viewList.size());
    }
 
    @Test

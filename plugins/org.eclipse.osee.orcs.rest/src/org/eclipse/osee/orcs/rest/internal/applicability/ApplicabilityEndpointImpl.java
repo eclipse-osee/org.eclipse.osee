@@ -101,7 +101,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public List<ArtifactToken> getViews() {
-      return applicabilityQuery.getViewForBranch(branch);
+      return applicabilityQuery.getViewsForBranch(branch);
+   }
+
+   @Override
+   public List<ArtifactToken> getCfgGroup() {
+      return applicabilityQuery.getConfigurationGroupsForBranch(branch);
    }
 
    @Override
@@ -252,6 +257,42 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          rd.error("Access denied to non-working branch");
       }
       return rd;
+   }
+
+   @Override
+   public XResultData createCfgGroup(String groupName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.createCfgGroup(groupName, branch, account);
+   }
+
+   @Override
+   public XResultData relateCfgGroupToView(String groupName, String viewName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.relateCfgGroupToView(groupName, viewName, branch, account);
+   }
+
+   @Override
+   public XResultData unrelateCfgGroupToView(String groupName, String viewName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.unrelateCfgGroupToView(groupName, viewName, branch, account);
+   }
+
+   @Override
+   public XResultData deleteCfgGroup(String groupName) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.deleteCfgGroup(groupName, branch, account);
    }
 
 }

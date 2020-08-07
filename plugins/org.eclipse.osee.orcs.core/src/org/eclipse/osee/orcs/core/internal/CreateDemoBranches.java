@@ -87,6 +87,7 @@ public class CreateDemoBranches {
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
       Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
+      ArtifactToken cfgFolder = Artifacts.getOrCreate(CoreArtifactTokens.PlCfgGroupsFolder, plFolder, tx, orcsApi);
 
       ArtifactToken productA = tx.createView(branch, "Product A");
       ArtifactToken productB = tx.createView(branch, "Product B");

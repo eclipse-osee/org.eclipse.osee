@@ -68,4 +68,14 @@ public interface OrcsApplicability {
 
    XResultData createApplicabilityForView(ArtifactId viewId, String applicability, UserId account, BranchId branch);
 
+   XResultData createCfgGroup(String groupName, BranchId branch, UserId account);
+
+   XResultData relateCfgGroupToView(String groupName, String viewName, BranchId branch, UserId account);
+
+   XResultData unrelateCfgGroupToView(String groupName, String viewName, BranchId branch, UserId account);
+
+   ArtifactToken getPlConfigurationGroupsFolder(BranchId branch);
+
+   XResultData deleteCfgGroup(String groupName, BranchId branch, UserId account);
+
 }

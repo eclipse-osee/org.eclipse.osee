@@ -36,8 +36,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
@@ -243,20 +245,50 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<ArtifactToken> getViewForBranch(BranchId branch) {
-      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
+   public List<ArtifactToken> getViewsForBranch(BranchId branch) {
+      List<ArtifactToken> views =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
+      List<ArtifactToken> cfgGrps =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokens();
+      if (!cfgGrps.isEmpty()) {
+         views.addAll(cfgGrps);
+      }
+      return views;
+   }
+
+   @Override
+   public List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch) {
+      List<ArtifactToken> views =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokens();
+
+      return views;
    }
 
    @Override
    public boolean viewExistsOnBranch(BranchId branch, ArtifactId viewId) {
       Boolean returnValue = false;
-      for (ArtifactToken view : getViewForBranch(branch)) {
+      for (ArtifactToken view : getViewsForBranch(branch)) {
          if (view.equals(viewId)) {
             returnValue = true;
+            break;
          }
       }
 
       return returnValue;
+   }
+
+   @Override
+   public ArtifactToken getViewByName(BranchId branch, String viewName) {
+      ArtifactToken viewToken = ArtifactToken.SENTINEL;
+      for (ArtifactToken view : getViewsForBranch(branch)) {
+         if (view.getName().equals(viewName)) {
+            viewToken = view;
+            break;
+         }
+      }
+      return viewToken;
    }
 
    /*
@@ -271,7 +303,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       html.append(String.format("<h1>Features for branch [%s]</h1>",
          branchQuery.andId(branch).getResults().getExactlyOne().getName()));
       html.append("<table border=\"1\">");
-      List<ArtifactToken> branchViews = this.getViewForBranch(branch);
+      List<ArtifactToken> branchViews = this.getViewsForBranch(branch);
 
       if (Strings.isValid(filter)) {
          branchViews.removeIf(art -> art.getName().matches(filter));
@@ -348,7 +380,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
             // now determine what views of this branch are applicable
 
-            for (ArtifactId view : getViewForBranch(baseBranch)) {
+            for (ArtifactId view : getViewsForBranch(baseBranch)) {
                // Get all applicability tokens for the view of this branch
                List<ApplicabilityToken> viewApplicabilityTokens = getViewApplicabilityTokens(view, baseBranch);
                // Cross check applicabilityTokens with valid ApplicabilityIds sent in

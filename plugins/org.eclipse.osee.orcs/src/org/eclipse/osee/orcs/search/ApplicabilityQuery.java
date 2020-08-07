@@ -49,7 +49,9 @@ public interface ApplicabilityQuery {
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
-   List<ArtifactToken> getViewForBranch(BranchId branch);
+   List<ArtifactToken> getViewsForBranch(BranchId branch);
+
+   ArtifactToken getViewByName(BranchId branch, String viewName);
 
    String getViewTable(BranchId branch, String filter);
 
@@ -72,4 +74,6 @@ public interface ApplicabilityQuery {
    boolean viewExistsOnBranch(BranchId branch, ArtifactId viewId);
 
    boolean applicabilityExistsOnBranchView(BranchId branch, ArtifactId viewId, String applicability);
+
+   List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch);
 }
