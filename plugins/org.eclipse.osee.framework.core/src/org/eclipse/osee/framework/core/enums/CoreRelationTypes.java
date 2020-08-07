@@ -16,12 +16,14 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DesignMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Feature;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
@@ -167,5 +169,10 @@ public interface CoreRelationTypes {
    RelationTypeToken WorkItem = osee.add(2305843009213694306L, "Work Item", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, Artifact, "Parent", Artifact, "Child");
    RelationTypeSide WorkItem_Parent = RelationTypeSide.create(WorkItem, SIDE_A);
    RelationTypeSide WorkItem_Child = RelationTypeSide.create(WorkItem, SIDE_B);
+
+   RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
+   RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);
+   RelationTypeSide PlConfigurationGroup_BranchView = RelationTypeSide.create(PlConfigurationGroup, SIDE_B);
+
    //@formatter:on
 }
