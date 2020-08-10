@@ -384,13 +384,13 @@
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="org.eclipse.equinox.security"/>
       <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.jetty.http"/>
-      <import plugin="org.eclipse.osgi.util"/>
-      <import plugin="org.eclipse.jetty.io"/>
-      <import plugin="org.eclipse.jetty.security"/>
-      <import plugin="org.eclipse.jetty.server"/>
-      <import plugin="org.eclipse.jetty.servlet"/>
-      <import plugin="org.eclipse.jetty.util"/>
+      <import plugin="org.eclipse.jetty.http" version="9.4.11"/>
+      <import plugin="org.eclipse.osgi.util" />
+      <import plugin="org.eclipse.jetty.io" version="9.4.11"/>
+      <import plugin="org.eclipse.jetty.security" version="9.4.11"/>
+      <import plugin="org.eclipse.jetty.server" version="9.4.11"/>
+      <import plugin="org.eclipse.jetty.servlet" version="9.4.11"/>
+      <import plugin="org.eclipse.jetty.util" version="9.4.11" />
       <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>      
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
@@ -436,35 +436,35 @@
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.9.2"
          unpack="false" />
                   
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.9.2"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-databind"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.9.2"
          unpack="false"/>
          
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.9.2"
          unpack="false"/>  
          
     <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.9.2"
          unpack="false"/>  
          
    <plugin
@@ -748,7 +748,7 @@
          id="org.apache.commons.codec"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.13.0"
          unpack="false"/>
 
    <plugin
@@ -1005,7 +1005,7 @@
          id="org.apache.ant"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.10.8"
          unpack="false"/>
 
    <plugin
@@ -1972,7 +1972,7 @@
          id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="9.4.11"
          unpack="false"/>    
          
    <plugin
@@ -1986,7 +1986,7 @@
          id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="9.4.11"
          unpack="false"/>    
           
    <plugin

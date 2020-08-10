@@ -96,7 +96,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/mylyn/drops/3.5.1/v20110422-0200/</url>
 		</repository>
-			
+			<repository>
+			<id>jetty</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.11.v20180605/</url>
+			</repository>	
 		<repository>
 			<id>findbugs</id>
 			<layout>p2</layout>
