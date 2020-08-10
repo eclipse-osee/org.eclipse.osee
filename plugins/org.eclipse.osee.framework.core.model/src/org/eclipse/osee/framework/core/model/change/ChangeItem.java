@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class ChangeItem implements Comparable<ChangeItem> {
 
    private ChangeIgnoreType ignoreType = ChangeIgnoreType.SENTINEL;
-   private ChangeType changeType = ChangeType.UNKNOWN_CHANGE;
+   private ChangeType changeType = ChangeType.Unknown;
    private ArtifactId artId = ArtifactId.SENTINEL;
    private Id itemId = Id.valueOf(Id.SENTINEL);
    private Id itemTypeId = Id.valueOf(Id.SENTINEL);
@@ -173,7 +173,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
    @Override
    public String toString() {
       String artIdBStr = "";
-      if (getChangeType() == ChangeType.RELATION_CHANGE) {
+      if (getChangeType().isRelationChange()) {
          artIdBStr = " artBId: " + getArtIdB();
       }
       return String.format(

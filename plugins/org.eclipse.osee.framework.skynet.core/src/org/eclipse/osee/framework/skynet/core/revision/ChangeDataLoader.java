@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
-import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -102,8 +101,8 @@ public class ChangeDataLoader extends AbstractOperation {
          BranchId startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
-            if ((ChangeItemUtil.hasValueChange(item) || item.getChangeType().equals(
-               ChangeType.ARTIFACT_CHANGE)) && ChangeItemUtil.hasApplicabilityChange(item)) {
+            if ((ChangeItemUtil.hasValueChange(
+               item) || item.getChangeType().isArtifactChange()) && ChangeItemUtil.hasApplicabilityChange(item)) {
                ChangeItem splitItem = ChangeItemUtil.splitForApplicability(item);
                Change splitChange = computeChange(bulkLoaded, startTxBranch, splitItem);
                changes.add(splitChange);
@@ -230,95 +229,89 @@ public class ChangeDataLoader extends AbstractOperation {
       }
       boolean isHistorical = txDelta.areOnTheSameBranch();
 
-      switch (item.getChangeType()) {
-         case ARTIFACT_CHANGE:
+      if (item.getChangeType().isArtifactChange()) {
 
-            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
-               netModType = ModificationType.APPLICABILITY;
-               String isValue = "";
-               String wasValue = "";
-               if (item.getDestinationVersion().isValid()) {
-                  wasValue = item.getDestinationVersion().getApplicabilityToken().getName();
-               }
-               if (item.getCurrentVersion().isValid()) {
-                  isValue = item.getCurrentVersion().getApplicabilityToken().getName();
-               }
-               change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
-                  isValue, wasValue, isHistorical, changeArtifact, artifactDelta);
-            } else {
-               change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
-                  "", "", isHistorical, changeArtifact, artifactDelta);
+         if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
+            netModType = ModificationType.APPLICABILITY;
+            String isValue = "";
+            String wasValue = "";
+            if (item.getDestinationVersion().isValid()) {
+               wasValue = item.getDestinationVersion().getApplicabilityToken().getName();
             }
-            break;
-         case ATTRIBUTE_CHANGE:
-            AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(item.getItemTypeId().getId());
-            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
-               netModType = ModificationType.APPLICABILITY;
+            if (item.getCurrentVersion().isValid()) {
+               isValue = item.getCurrentVersion().getApplicabilityToken().getName();
+            }
+            change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
+               isValue, wasValue, isHistorical, changeArtifact, artifactDelta);
+         } else {
+            change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType, "",
+               "", isHistorical, changeArtifact, artifactDelta);
+         }
+      } else if (item.getChangeType().isAttributeChange()) {
+         AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(item.getItemTypeId().getId());
+         if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
+            netModType = ModificationType.APPLICABILITY;
+            change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
+               item.getCurrentVersion().getApplicabilityToken().getName(), null,
+               item.getDestinationVersion().getApplicabilityToken().getName(), null, AttributeId.valueOf(itemId),
+               attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+         } else {
+
+            // Remove after 26.0 release; only set in OseeInfo if want to turn off
+            String value = OseeInfo.getValue("UseWasIsLazyProvider");
+            boolean useWasIsLazyProvider = !"false".equals(value);
+            ChangeDateLoaderWasIsLazyProvider wasIsProvider =
+               new ChangeDateLoaderWasIsLazyProvider(txDelta, item, attributeType, artifactDelta);
+            if (useWasIsLazyProvider) {
+               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, wasIsProvider,
+                  AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+            } else {
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  item.getCurrentVersion().getApplicabilityToken().getName(), null,
-                  item.getDestinationVersion().getApplicabilityToken().getName(), null, AttributeId.valueOf(itemId),
-                  attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
-            } else {
-
-               // Remove after 26.0 release; only set in OseeInfo if want to turn off
-               String value = OseeInfo.getValue("UseWasIsLazyProvider");
-               boolean useWasIsLazyProvider = !"false".equals(value);
-               ChangeDateLoaderWasIsLazyProvider wasIsProvider =
-                  new ChangeDateLoaderWasIsLazyProvider(txDelta, item, attributeType, artifactDelta);
-               if (useWasIsLazyProvider) {
-                  change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, wasIsProvider,
-                     AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact,
-                     artifactDelta);
-               } else {
-                  change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                     wasIsProvider.getIsValue(), wasIsProvider.getIsUri(), wasIsProvider.getWasValue(),
-                     wasIsProvider.getWasUri(), AttributeId.valueOf(itemId), attributeType, netModType, isHistorical,
-                     changeArtifact, artifactDelta);
-               }
+                  wasIsProvider.getIsValue(), wasIsProvider.getIsUri(), wasIsProvider.getWasValue(),
+                  wasIsProvider.getWasUri(), AttributeId.valueOf(itemId), attributeType, netModType, isHistorical,
+                  changeArtifact, artifactDelta);
             }
-            break;
-         case RELATION_CHANGE:
-            RelationTypeToken relationType = tokenService.getRelationType(item.getItemTypeId().getId());
+         }
+      } else if (item.getChangeType().isRelationChange()) {
+         RelationTypeToken relationType = tokenService.getRelationType(item.getItemTypeId().getId());
 
-            TransactionId transaction = txDelta.getStartTx();
-            if (txDelta.areOnTheSameBranch()) {
-               transaction = txDelta.getEndTx();
-            }
-            Artifact endTxBArtifact = bulkLoaded.get(transaction, item.getArtIdB());
+         TransactionId transaction = txDelta.getStartTx();
+         if (txDelta.areOnTheSameBranch()) {
+            transaction = txDelta.getEndTx();
+         }
+         Artifact endTxBArtifact = bulkLoaded.get(transaction, item.getArtIdB());
 
-            String rationale = item.getCurrentVersion().getValue();
+         String rationale = item.getCurrentVersion().getValue();
 
-            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
-               netModType = ModificationType.APPLICABILITY;
-               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
-                  RelationId.valueOf(itemId), item.getCurrentVersion().getApplicabilityToken().getName(),
-                  item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
-                  changeArtifact, artifactDelta, endTxBArtifact);
-            } else {
-               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
-                  RelationId.valueOf(itemId), rationale, "", relationType, isHistorical, changeArtifact, artifactDelta,
-                  endTxBArtifact);
-            }
-            break;
-         case TUPLE_CHANGE:
-            TupleTypeId tupleTypeId = TupleTypeId.valueOf(item.getItemTypeId().getId());
-            String value = item.getCurrentVersion().getValue();
-            StringTokenizer tok = new StringTokenizer(value, "|");
+         if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
+            netModType = ModificationType.APPLICABILITY;
+            change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
+               RelationId.valueOf(itemId), item.getCurrentVersion().getApplicabilityToken().getName(),
+               item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
+               changeArtifact, artifactDelta, endTxBArtifact);
+         } else {
+            change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
+               RelationId.valueOf(itemId), rationale, "", relationType, isHistorical, changeArtifact, artifactDelta,
+               endTxBArtifact);
+         }
+      } else if (item.getChangeType().isTupleChange()) {
+         TupleTypeId tupleTypeId = TupleTypeId.valueOf(item.getItemTypeId().getId());
+         String value = item.getCurrentVersion().getValue();
+         StringTokenizer tok = new StringTokenizer(value, "|");
 
-            String itemKind = "";
-            String tupleIsValue = "";
+         String itemKind = "";
+         String tupleIsValue = "";
 
-            if (tok.hasMoreTokens()) {
-               itemKind = tok.nextToken();
-            }
-            if (tok.hasMoreElements()) {
-               tupleIsValue = tok.nextToken();
-            }
-            change = new TupleChange(startTxBranch, itemGammaId, txDelta, netModType, tupleTypeId, tupleIsValue, "?",
-               itemKind, isHistorical);
-            break;
-         default:
-            throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
+         if (tok.hasMoreTokens()) {
+            itemKind = tok.nextToken();
+         }
+         if (tok.hasMoreElements()) {
+            tupleIsValue = tok.nextToken();
+         }
+         change = new TupleChange(startTxBranch, itemGammaId, txDelta, netModType, tupleTypeId, tupleIsValue, "?",
+            itemKind, isHistorical);
+      } else {
+         throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }
       return change;
    }

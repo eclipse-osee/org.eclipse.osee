@@ -13,29 +13,71 @@
 
 package org.eclipse.osee.framework.core.model.change;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public enum ChangeType {
-   ARTIFACT_CHANGE,
-   ATTRIBUTE_CHANGE,
-   RELATION_CHANGE,
-   TUPLE_CHANGE,
-   UNKNOWN_CHANGE;
+public class ChangeType extends OseeEnum {
 
+   private static final Long ENUM_ID = 2834799904L;
+
+   public static ChangeType Artifact = new ChangeType(111L, "ArtifactChange");
+   public static ChangeType Attribute = new ChangeType(222L, "AttributeChange");
+   public static ChangeType Relation = new ChangeType(333L, "RelationChange");
+   public static ChangeType Tuple = new ChangeType(444L, "TupleChange");
+   public static ChangeType Unknown = new ChangeType(555L, "UnknownChange");
+
+   public ChangeType() {
+      super(ENUM_ID, -1L, "");
+   }
+
+   public ChangeType(String name) {
+      super(ENUM_ID, name);
+   }
+
+   public ChangeType(long id, String name) {
+      super(ENUM_ID, id, name);
+   }
+
+   @JsonIgnore
    public boolean isArtifactChange() {
-      return this == ARTIFACT_CHANGE;
+      return this.equals(Artifact);
    }
 
+   @JsonIgnore
    public boolean isAttributeChange() {
-      return this == ATTRIBUTE_CHANGE;
+      return this.equals(Attribute);
    }
 
+   @JsonIgnore
    public boolean isRelationChange() {
-      return this == RELATION_CHANGE;
+      return this.equals(Relation);
    }
 
+   @JsonIgnore
    public boolean isTupleChange() {
-      return this == TUPLE_CHANGE;
+      return this.equals(Tuple);
+   }
+
+   @Override
+   public Long getTypeId() {
+      return ENUM_ID;
+   }
+
+   @JsonIgnore
+   @Override
+   public OseeEnum getDefault() {
+      return Unknown;
+   }
+
+   public boolean isNotRelationChange() {
+      return !isRelationChange();
+   }
+
+   public boolean isNotAttributeChange() {
+      return !isAttributeChange();
    }
 }

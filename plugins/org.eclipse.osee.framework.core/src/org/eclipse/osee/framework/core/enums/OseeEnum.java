@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,7 @@ public abstract class OseeEnum extends NamedIdBase {
 
    abstract public Long getTypeId();
 
+   @JsonIgnore
    abstract public OseeEnum getDefault();
 
    /**

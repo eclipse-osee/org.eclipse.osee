@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemData;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeReportRollup;
-import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -129,7 +128,7 @@ public interface IAtsChangeReportTaskNameProvider {
       boolean deleted = false;
       if (changeItems != null && !changeItems.isEmpty()) {
          for (ChangeItem change : changeItems) {
-            if (change.getArtId().equals(reqArt) && change.getChangeType() == ChangeType.ATTRIBUTE_CHANGE) {
+            if (change.getArtId().equals(reqArt) && change.getChangeType().isAttributeChange()) {
                if (change.getNetChange().getModType() == ModificationType.ARTIFACT_DELETED) {
                   deleted = true;
                }
@@ -205,7 +204,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
       // Check for included/excluded attribute type
       for (ChangeItem item : reqArtChangeItems) {
-         if (item.getChangeType() != ChangeType.ATTRIBUTE_CHANGE) {
+         if (item.getChangeType().isNotAttributeChange()) {
             continue;
          }
          if (ChangeItemUtil.createdAndDeleted(item)) {
@@ -266,7 +265,7 @@ public interface IAtsChangeReportTaskNameProvider {
 
          List<ChangeItem> reqArtChangeItems = rollup.getChangeItems();
          for (ChangeItem item : reqArtChangeItems) {
-            if (item.getChangeType() != ChangeType.RELATION_CHANGE) {
+            if (item.getChangeType().isNotRelationChange()) {
                continue;
             }
             if (ChangeItemUtil.createdAndDeleted(item)) {

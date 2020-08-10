@@ -71,18 +71,14 @@ public final class ConflictUtil {
 
    public static ConflictType toConflictType(ChangeItem item) {
       ConflictType type = null;
-      switch (item.getChangeType()) {
-         case ARTIFACT_CHANGE:
-            type = ConflictType.ARTIFACT;
-            break;
-         case ATTRIBUTE_CHANGE:
-            type = ConflictType.ATTRIBUTE;
-            break;
-         case RELATION_CHANGE:
-            type = ConflictType.RELATION;
-            break;
-         default:
-            throw new OseeArgumentException("Unable to convert change item [%s] to conflict type", item);
+      if (item.getChangeType().isArtifactChange()) {
+         type = ConflictType.ARTIFACT;
+      } else if (item.getChangeType().isAttributeChange()) {
+         type = ConflictType.ATTRIBUTE;
+      } else if (item.getChangeType().isRelationChange()) {
+         type = ConflictType.RELATION;
+      } else {
+         throw new OseeArgumentException("Unable to convert change item [%s] to conflict type", item);
       }
       return type;
    }

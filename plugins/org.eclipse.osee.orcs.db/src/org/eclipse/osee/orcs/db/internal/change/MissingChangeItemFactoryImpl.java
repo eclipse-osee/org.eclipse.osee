@@ -66,25 +66,19 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
          for (ChangeItem change : changes) {
 
-            switch (change.getChangeType()) {
-               case ARTIFACT_CHANGE:
-                  if (!change.isSynthetic()) {
-                     modifiedArtIds.add(change.getArtId());
-                  }
-                  break;
-               case ATTRIBUTE_CHANGE:
-                  modifiedAttrIds.put(change.getArtId(), change.getItemId());
-                  break;
-               case RELATION_CHANGE:
-                  modifiedRels.put(change.getArtId(), change.getItemId());
-                  modifiedRels.put(change.getArtId(), change.getItemId());
-                  modifiedRels.put(change.getArtIdB(), change.getItemId());
-                  break;
-               case TUPLE_CHANGE:
-                  modifiedTuples.put(change.getArtId(), change.getItemId());
-                  break;
-               default:
-                  throw new OseeStateException("Unknonw change type detected [%s]", change);
+            if (change.getChangeType().isArtifactChange()) {
+               if (!change.isSynthetic()) {
+                  modifiedArtIds.add(change.getArtId());
+               }
+            } else if (change.getChangeType().isAttributeChange()) {
+               modifiedAttrIds.put(change.getArtId(), change.getItemId());
+            } else if (change.getChangeType().isRelationChange()) {
+               modifiedRels.put(change.getArtId(), change.getItemId());
+               modifiedRels.put(change.getArtIdB(), change.getItemId());
+            } else if (change.getChangeType().isTupleChange()) {
+               modifiedTuples.put(change.getArtId(), change.getItemId());
+            } else {
+               throw new OseeStateException("Unknonw change type detected [%s]", change);
             }
          }
 

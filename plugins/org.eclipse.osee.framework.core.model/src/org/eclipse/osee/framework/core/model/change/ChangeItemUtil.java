@@ -44,7 +44,7 @@ public final class ChangeItemUtil {
 
    public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
-      item.setChangeType(ChangeType.ARTIFACT_CHANGE);
+      item.setChangeType(ChangeType.Artifact);
 
       item.setItemId(artId);
       item.setItemTypeId(artTypeId);
@@ -61,7 +61,7 @@ public final class ChangeItemUtil {
 
    public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId, GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
-      item.setChangeType(ChangeType.ATTRIBUTE_CHANGE);
+      item.setChangeType(ChangeType.Attribute);
 
       item.setItemId(attrId);
       item.setItemTypeId(attrTypeId);
@@ -79,7 +79,7 @@ public final class ChangeItemUtil {
 
    public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
-      item.setChangeType(ChangeType.RELATION_CHANGE);
+      item.setChangeType(ChangeType.Relation);
 
       item.setItemId(relLinkId);
       item.setItemTypeId(relTypeId);
@@ -98,7 +98,7 @@ public final class ChangeItemUtil {
 
    public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, Long... e) {
       ChangeItem item = new ChangeItem();
-      item.setChangeType(ChangeType.TUPLE_CHANGE);
+      item.setChangeType(ChangeType.Tuple);
 
       item.setItemId(gammaId);
       item.setItemTypeId(tupleTypeId);
