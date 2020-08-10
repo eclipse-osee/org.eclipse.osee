@@ -127,7 +127,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       String classification = variableMap.getString(DATA_RIGHTS);
 
-      List<Artifact> artifacts = null;
+      List<Artifact> artifacts = variableMap.getArtifacts(ARTIFACTS);
+      
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
       } else {

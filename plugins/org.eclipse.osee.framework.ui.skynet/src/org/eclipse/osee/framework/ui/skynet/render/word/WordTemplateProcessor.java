@@ -500,10 +500,10 @@ public class WordTemplateProcessor {
          for (int i = 0; i < attributeOptions.size(); i++) {
             options = attributeOptions.get(i);
 
-            attributeType = attributeOptions.findValue("AttrType").asText();
-            attributeLabel = attributeOptions.findValue("Label").asText();
-            formatPre = attributeOptions.findValue("FormatPre").asText();
-            formatPost = attributeOptions.findValue("FormatPost").asText();
+            attributeType = options.findValue("AttrType").asText();
+            attributeLabel = options.findValue("Label").asText();
+            formatPre = options.findValue("FormatPre").asText();
+            formatPost = options.findValue("FormatPost").asText();
 
             AttributeElement attrElement = new AttributeElement();
             if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
@@ -550,9 +550,10 @@ public class WordTemplateProcessor {
          JsonNode optionsArray = jsonObject.findValue("MetadataOptions");
          JsonNode options = null;
          for (int i = 0; i < optionsArray.size(); i++) {
-            metadataType = optionsArray.findValue("Type").asText();
-            metadataFormat = optionsArray.findValue("Format").asText();
-            metadataLabel = optionsArray.findValue("Label").asText();
+            options = optionsArray.get(i);
+            metadataType = options.findValue("Type").asText();
+            metadataFormat = options.findValue("Format").asText();
+            metadataLabel = options.findValue("Label").asText();
 
             MetadataElement metadataElement = new MetadataElement();
 
