@@ -53,6 +53,25 @@ public abstract class AbstractAtsTaskServiceCore extends AbstractAtsTaskService 
    }
 
    @Override
+   public boolean removeDeReferencedNote(IAtsTask task, IAtsChangeSet changes) {
+      boolean updated = false;
+      // Remove note to user that task is de-referenced
+      String note = atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, "");
+      if (note.contains(DE_REFERRENCED_NOTE)) {
+         note = note.replaceAll(DE_REFERRENCED_NOTE, "");
+         changes.setSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, note);
+         updated = true;
+      }
+      boolean autoGen = atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.TaskAutoGen, false);
+      if (!autoGen) {
+         // Add back auto-gen flag
+         changes.setSoleAttributeValue(task, AtsAttributeTypes.TaskAutoGen, true);
+         updated = true;
+      }
+      return updated;
+   }
+
+   @Override
    public void addDeReferencedNote(IAtsTask task, IAtsChangeSet changes) {
       // Add note to user that task is de-referenced
       String note = atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, "");
@@ -60,7 +79,7 @@ public abstract class AbstractAtsTaskServiceCore extends AbstractAtsTaskService 
          note = note + DE_REFERRENCED_NOTE;
          changes.setSoleAttributeValue(task, AtsAttributeTypes.WorkflowNotes, note);
       }
-      // Remove auto-gen version
-      changes.deleteAttributes(task, AtsAttributeTypes.TaskAutoGenVersion);
+      // Remove auto-gen flag
+      changes.deleteAttributes(task, AtsAttributeTypes.TaskAutoGen);
    }
 }

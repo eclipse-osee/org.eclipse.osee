@@ -24,6 +24,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
    ArtifactTypeManagerTest.class, //
+   ArtifactTest.class, //
 })
 public class SkyentCoreArtifact_Suite {
    @BeforeClass

@@ -166,4 +166,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    String getSafeName();
 
    List<ArtifactReadable> getRelatedList(RelationTypeSide relationTypeSide);
+
+   <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 }

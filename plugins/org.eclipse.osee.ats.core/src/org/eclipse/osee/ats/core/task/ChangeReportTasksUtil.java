@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,10 @@ public class ChangeReportTasksUtil {
     */
    public static void determinExistingTaskMatchType(Map<ArtifactId, ArtifactToken> idToArtifact, ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, CreateTasksDefinition setDef, WorkType workType, IAtsTeamWorkflow destTeamWf) {
       AtsApi atsApi = AtsApiService.get();
-      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(destTeamWf);
+      Collection<IAtsTask> tasks = Collections.emptyList();
+      if (destTeamWf != null) {
+         tasks = atsApi.getTaskService().getTasks(destTeamWf);
+      }
 
       // Find static task def matches
       List<IAtsTask> tasksFound = new LinkedList<IAtsTask>();

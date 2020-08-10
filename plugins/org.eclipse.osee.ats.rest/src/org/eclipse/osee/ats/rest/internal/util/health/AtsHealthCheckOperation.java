@@ -126,7 +126,6 @@ public class AtsHealthCheckOperation {
          int size = artIdLists.size();
          int num = 1;
          for (Collection<Long> artIdList : artIdLists) {
-            System.err.println(String.format("Processing %s/%s...", num++, size));
 
             Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
 

@@ -713,6 +713,14 @@ attributeType "ats.WCAFE Impact" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Task Auto Gen" extends BooleanAttribute {
+	id 395202732487784
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
 attributeType "ats.Task Auto Gen Version" extends StringAttribute {
 	id 29374282544622
 	dataProvider DefaultAttributeDataProvider

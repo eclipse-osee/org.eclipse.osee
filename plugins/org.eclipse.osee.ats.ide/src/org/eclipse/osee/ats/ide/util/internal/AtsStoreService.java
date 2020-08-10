@@ -259,8 +259,19 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public String getSafeName(ArtifactId art) {
-      Artifact artifact = (Artifact) art;
-      return artifact.getName();
+      String safeName = "Unknown";
+      if (art.isInvalid()) {
+         safeName = "Sentinal";
+      } else if (art instanceof Artifact) {
+         safeName = ((Artifact) art).getName();
+      } else {
+         Artifact artifact =
+            (Artifact) atsApi.getQueryService().getArtifact(art, atsApi.getAtsBranch(), DeletionFlag.INCLUDE_DELETED);
+         if (artifact != null) {
+            safeName = artifact.getName();
+         }
+      }
+      return safeName;
    }
 
    @Override
@@ -270,7 +281,16 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isOfType(ArtifactId art, ArtifactTypeToken artType) {
-      Artifact artifact = (Artifact) art;
+      Artifact artifact = null;
+      if (art instanceof ArtifactToken) {
+         BranchId branch = ((ArtifactToken) art).getBranch();
+         if (branch.isValid()) {
+            artifact = (Artifact) atsApi.getQueryService().getArtifact(art, branch);
+         }
+      }
+      if (artifact == null) {
+         artifact = (Artifact) atsApi.getQueryService().getArtifact(art);
+      }
       return artifact.isOfType(artType);
    }
 

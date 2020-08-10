@@ -177,7 +177,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
          artIdBStr = " artBId: " + getArtIdB();
       }
       return String.format(
-         "ChangeItem %s - itemId:[%s] artId:%s%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
+         "ChangeItem %s - itemId:[%s] artId:%s%s type:[%s] base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
          getChangeType().name(), itemId, getArtId(), artIdBStr, getItemTypeId(), getBaselineVersion(),
          getFirstNonCurrentChange(), getCurrentVersion(), getDestinationVersion(), getNetChange(), isSynthetic(),
          getIgnoreType().toString());

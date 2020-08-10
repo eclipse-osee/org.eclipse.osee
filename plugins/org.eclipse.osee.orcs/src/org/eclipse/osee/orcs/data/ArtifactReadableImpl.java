@@ -198,6 +198,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return list.iterator().next().getId();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       if (attributes.isEmpty()) {
@@ -208,6 +209,20 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       if (values == null) {
          return null;
       }
+      return (List<T>) values.stream().map(IAttribute::getValue).collect(Collectors.toList());
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      if (attributes.isEmpty()) {
+         throw new OseeStateException("attributes not loaded for artifact [%s]", getIdString());
+      }
+      List<? extends AttributeReadable<Object>> values = getAttributes(attributeType, deletionFlag).getList();
+      if (values.isEmpty()) {
+         return null;
+      }
+
       return (List<T>) values.stream().map(IAttribute::getValue).collect(Collectors.toList());
    }
 
@@ -371,4 +386,5 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       return getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED,
          "Unknown Name: " + getIdString());
    }
+
 }

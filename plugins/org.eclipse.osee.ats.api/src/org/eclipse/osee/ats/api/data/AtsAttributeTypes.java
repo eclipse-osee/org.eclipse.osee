@@ -166,6 +166,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", MediaType.TEXT_PLAIN, "");
    AttributeTypeLong TaskSetId = ats.createLong(2412431655932432L, "ats.Task Set Id", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean TaskAutoGen = ats.createBoolean(395202732487784L, "ats.Task Auto Gen", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TaskAutoGenVersion = ats.createString(29374282544622L, "ats.Task Auto Gen Version", MediaType.TEXT_PLAIN, "Version of Task Auto Generation");
    AttributeTypeArtifactId TaskToChangedArtifactReference = ats.createArtifactId(1153126013769613562L, "ats.Task To Changed Artifact Reference", MediaType.TEXT_PLAIN, "Task reference to the changed artifact");
    AttributeTypeString TaskToChangedArtifactName = ats.createString(23524392992929L, "ats.Task To Changed Artifact Name", MediaType.TEXT_PLAIN, "Task reference to the changed artifact name");

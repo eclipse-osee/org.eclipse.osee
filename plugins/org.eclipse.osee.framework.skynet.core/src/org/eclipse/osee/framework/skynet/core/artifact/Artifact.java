@@ -532,10 +532,22 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
-   public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, Object value) {
+   public final <T> List<Attribute<T>> getAttributesByValue(AttributeTypeId attributeType, Object value) {
       List<Attribute<?>> filteredList = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
+            filteredList.add(attribute);
+         }
+      }
+      return Collections.castAll(filteredList);
+   }
+
+   public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+      List<Attribute<?>> filteredList = new ArrayList<>();
+      for (Attribute<?> attribute : getAttributes(attributeType)) {
+         if (deletionFlag == DeletionFlag.INCLUDE_DELETED) {
+            filteredList.add(attribute);
+         } else if (deletionFlag == DeletionFlag.EXCLUDE_DELETED && !attribute.isDeleted()) {
             filteredList.add(attribute);
          }
       }
@@ -860,7 +872,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * value. Will not touch any other values.
     */
    public void setSingletonAttributeValue(AttributeTypeId attributeType, String value) {
-      List<Attribute<String>> attributes = getAttributes(attributeType, value);
+      List<Attribute<String>> attributes = getAttributesByValue(attributeType, value);
       if (attributes.isEmpty()) {
          addAttribute(attributeType, value);
       } else if (attributes.size() > 1) {
@@ -876,7 +888,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Will remove one or more of the single string value if artifact has it. Will not touch any other values.
     */
    public void deleteSingletonAttributeValue(AttributeTypeId attributeType, String value) {
-      for (Attribute<?> attribute : getAttributes(attributeType, value)) {
+      for (Attribute<?> attribute : getAttributesByValue(attributeType, value)) {
          attribute.delete();
       }
    }
@@ -884,7 +896,9 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
-    * excess attributes will be deleted.
+    * excess attributes will be deleted.</br>
+    * </br>
+    * NOTE: You MUST add artifact to transaction AFTER calling this method for new artifacts.
     */
    public final void setAttributeValues(AttributeTypeId attributeType, Collection<String> newValues) {
       ensureAttributesLoaded();
@@ -1037,6 +1051,16 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
       List<String> items = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
+         items.add(attribute.getDisplayableString());
+      }
+      return items;
+   }
+
+   public List<String> getAttributesToStringList(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      ensureAttributesLoaded();
+
+      List<String> items = new ArrayList<>();
+      for (Attribute<?> attribute : getAttributes(attributeType, deletionFlag)) {
          items.add(attribute.getDisplayableString());
       }
       return items;

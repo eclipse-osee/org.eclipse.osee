@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -91,7 +92,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    private Artifact getArtifact(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
+         return (Artifact) artifact;
       }
       ArtifactId art = AtsClientService.get().getQueryService().getArtifact(artifact);
       if (art instanceof Artifact) {
@@ -265,6 +266,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType) {
       return getArtifact(artifact).getAttributesToStringList(attributeType);
+   }
+
+   @Override
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      return getArtifact(artifact).getAttributesToStringList(attributeType, deletionFlag);
    }
 
 }

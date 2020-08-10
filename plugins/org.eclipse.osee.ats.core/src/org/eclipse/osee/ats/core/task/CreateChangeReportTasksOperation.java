@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.create.ChangeReportOptionsToTeam;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
+import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchResult;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatchType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
@@ -56,6 +57,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableColumn;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableDataType;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableRow;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -161,7 +166,7 @@ public class CreateChangeReportTasksOperation {
 
          IAtsChangeSet changes = null;
          if (!reportOnly) {
-            changes = atsApi.createChangeSet(setDef.getName());
+            changes = atsApi.createChangeSet(setDef.getName(), crtd.getAsUser());
          }
          for (ChangeReportOptionsToTeam toSiblingTeamDef : toSiblingTeamDatas) {
             IAtsTeamDefinition toTeamDef = getToTeamDef(setDef, program, rd, toSiblingTeamDef);
@@ -212,13 +217,13 @@ public class CreateChangeReportTasksOperation {
                return crtd;
             }
 
-            // Add task match for each task that is needed
+            // Add task match for each task that is needed (matches to existing tasks will be later)
             Map<ArtifactId, ArtifactToken> idToArtifact = nameProvider.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
+            addIfDebug("============== Task Computed As Needed ================================\n");
             for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
-               if (crtd.isDebug()) {
-                  crtd.getResults().logf("Task Computed as Needed [%s]\n", taskMatch.toString());
-               }
+               addIfDebug("[%s]\n", taskMatch.toString().replaceFirst("mapped to task none", ""));
             }
+            addIfDebug("=======================================================================\n");
 
             // TBD return if not tasks to create?
 
@@ -226,13 +231,17 @@ public class CreateChangeReportTasksOperation {
             IAtsTeamWorkflow destTeamWf =
                ChangeReportTasksUtil.getDestTeamWfOrNull(crttwd, workType, atsApi, chgRptTeamWf, toTeamDef);
             if (destTeamWf == null) {
-               CreateTasksWorkflow workflowCreator =
-                  new CreateTasksWorkflow(hostTeamWf.getName(), setDef.getChgRptOptions().getCreateOptions(), true,
-                     reportOnly, crttwd.getRd(), changes, new Date(), AtsCoreUsers.SYSTEM_USER, chgRptTeamWf,
-                     new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
-               workflowCreator.setActionableItem(ai);
-               destTeamWf = workflowCreator.createMissingWorkflow();
-               rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
+               if (changes != null) {
+                  CreateTasksWorkflow workflowCreator =
+                     new CreateTasksWorkflow(hostTeamWf.getName(), setDef.getChgRptOptions().getCreateOptions(), true,
+                        reportOnly, crttwd.getRd(), changes, new Date(), AtsCoreUsers.SYSTEM_USER, chgRptTeamWf,
+                        new CommitConfigItem(targetedVersion, atsApi), crttwd.getWorkType(), null, null);
+                  workflowCreator.setActionableItem(ai);
+                  destTeamWf = workflowCreator.createMissingWorkflow();
+                  rd.logf("Created Destination Team Wf %s\n", destTeamWf.toStringWithId());
+               } else {
+                  rd.logf("Need to Create Destination Team Wf for team %s\n", toTeamDef.toStringWithId());
+               }
             } else {
                rd.logf("Using existing Destination Team Wf %s\n", destTeamWf.toStringWithId());
             }
@@ -240,10 +249,12 @@ public class CreateChangeReportTasksOperation {
                destTeamWf)) {
                changes.relate(chgRptTeamWf, AtsRelationTypes.Derive_To, destTeamWf);
             }
-            crttwd.setDestTeamWf(destTeamWf.getStoreObject());
-            crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
-            crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(), destTeamWf.getName(),
-               BranchId.valueOf(atsApi.getAtsBranch().getId())));
+            if (destTeamWf != null) {
+               crttwd.setDestTeamWf(destTeamWf.getStoreObject());
+               crtd.getIdToTeamWf().put(destTeamWf.getId(), destTeamWf);
+               crtd.getDestTeamWfs().add(ArtifactToken.valueOf(destTeamWf.getStoreObject().getId(),
+                  destTeamWf.getName(), BranchId.valueOf(atsApi.getAtsBranch().getId())));
+            }
 
             // Compute missing tasks; add task or null to crttwd.ChangeReportTaskMatch objects
             ChangeReportTasksUtil.determinExistingTaskMatchType(idToArtifact, crtd, crttwd, setDef, workType,
@@ -257,33 +268,51 @@ public class CreateChangeReportTasksOperation {
                ChangeReportTaskMatchType matchType = taskMatch.getMatchType();
                // Skip if task already exists
                if (matchType == ChangeReportTaskMatchType.Match) {
-                  crtd.getResults().logf("Task %s Exists - No Change Needed\n", taskMatch.getTaskWf().toStringWithId());
+
+                  boolean autoGen = atsApi.getTaskService().isAutoGen(taskMatch.getTaskWf());
+                  boolean deReferenced = atsApi.getTaskService().isAutoGenDeReferenced(taskMatch.getTaskWf());
+                  if (!autoGen || deReferenced) {
+                     crtd.getResults().warningf(ChangeReportTaskMatchResult.TaskExistsNeedsDereference.getName(),
+                        taskMatch.getTaskWf().toStringWithId());
+                     taskMatch.setMatchResult(ChangeReportTaskMatchResult.TaskExistsNeedsDereference);
+                     if (changes != null) {
+                        atsApi.getTaskService().removeDeReferencedNote(taskMatch.getTaskWf(), changes);
+                     }
+                  } else {
+                     crtd.getResults().logf(ChangeReportTaskMatchResult.TaskExistsNoChangeNeeded.getName(),
+                        taskMatch.getTaskWf().toStringWithId());
+                     taskMatch.setMatchResult(ChangeReportTaskMatchResult.TaskExistsNoChangeNeeded);
+                  }
                }
 
                // Create if no task was found
                else if (matchType == ChangeReportTaskMatchType.ChgRptTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf("Create new chg rpt task [%s]\n", taskMatch.getTaskName());
+                     crtd.getResults().warningf(ChangeReportTaskMatchResult.CreateNewChgRptTask.getName(),
+                        taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
                      addModTaskNames.add(taskMatch.getTaskName());
+                     taskMatch.setMatchResult(ChangeReportTaskMatchResult.CreateNewChgRptTask);
                   }
                }
 
                // Create if no task was found
                else if (matchType == ChangeReportTaskMatchType.StaticTskCompAsNeeded) {
                   if (!addModTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf("Create new static task [%s]\n", taskMatch.getTaskName());
+                     crtd.getResults().warningf(ChangeReportTaskMatchResult.CreateNewStaticTask.getName(),
+                        taskMatch.getTaskName());
                      addToNewTaskData(crtd, crttwd, taskMatch, createdDate);
                      addModTaskNames.add(taskMatch.getTaskName());
+                     taskMatch.setMatchResult(ChangeReportTaskMatchResult.CreateNewStaticTask);
                   }
                }
 
                // Mark as de-referenced if no reference or referenced artifact not there anymore
                else if ((matchType == ChangeReportTaskMatchType.TaskRefAttrMissing) || (matchType == ChangeReportTaskMatchType.TaskRefAttrButNoRefChgArt)) {
                   if (!deletedTaskNames.contains(taskMatch.getTaskName())) {
-                     crtd.getResults().warningf(
-                        "No matching artifact for Task %s; De-referenced task can be deleted.\n",
+                     crtd.getResults().warningf(ChangeReportTaskMatchResult.NoMatchArtTaskCanBeDeleted.getName(),
                         taskMatch.getTaskWf().toStringWithId());
+                     taskMatch.setMatchResult(ChangeReportTaskMatchResult.NoMatchArtTaskCanBeDeleted);
                      if (!reportOnly) {
                         if (changes == null) {
                            crtd.getResults().errorf("AtsChangeSet can not be null.");
@@ -294,7 +323,9 @@ public class CreateChangeReportTasksOperation {
                      deletedTaskNames.add(taskMatch.getTaskName());
                   }
                } else {
-                  crtd.getResults().errorf("Unhandled Match Type [%s]\n", taskMatch.getMatchType().name());
+                  crtd.getResults().errorf(ChangeReportTaskMatchResult.UnhandledMatchType.getName(),
+                     taskMatch.getMatchType().name());
+                  taskMatch.setMatchResult(ChangeReportTaskMatchResult.UnhandledMatchType);
                }
             }
 
@@ -319,6 +350,46 @@ public class CreateChangeReportTasksOperation {
                   }
                }
             }
+
+            // Create final results table
+            XResultTable table = new XResultTable();
+            rd.getTables().add(table);
+            if (destTeamWf != null) {
+               table.setName(destTeamWf.getTeamDefinition().getName() + " - " + destTeamWf.toStringWithId());
+            } else {
+               table.setName(toTeamDef.getName() + " - <new team wf>");
+            }
+
+            List<XResultTableColumn> columns = table.getColumns();
+            columns.add(new XResultTableColumn(Columns.ChgRptArtName.name(), Columns.ChgRptArtName.name(), 200,
+               XResultTableDataType.String));
+            columns.add(new XResultTableColumn(Columns.ChgRptArtId.name(), Columns.ChgRptArtId.name(), 80,
+               XResultTableDataType.Integer));
+            columns.add(new XResultTableColumn(Columns.ChgRptArtType.name(), Columns.ChgRptArtType.name(), 200,
+               XResultTableDataType.String));
+            columns.add(new XResultTableColumn(Columns.ComputedTaskName.name(), Columns.ComputedTaskName.name(), 200,
+               XResultTableDataType.String));
+            columns.add(new XResultTableColumn(Columns.MatchType.name(), Columns.MatchType.name(), 200,
+               XResultTableDataType.String));
+            columns.add(
+               new XResultTableColumn(Columns.Action.name(), Columns.Action.name(), 200, XResultTableDataType.String));
+
+            for (ChangeReportTaskMatch taskMatch : crttwd.getTaskMatches()) {
+               String safeName = "";
+               if (taskMatch.getChgRptArt().isValid()) {
+                  safeName = atsApi.getStoreService().getSafeName(taskMatch.getChgRptArt());
+               }
+               table.getRows().add(new XResultTableRow( //
+                  taskMatch.getChgRptArtName(), //
+                  taskMatch.getChgRptArt().getIdString(), //
+                  safeName, //
+                  taskMatch.getTaskName(), //
+                  taskMatch.getMatchType().name(), //
+                  taskMatch.getMatchResult().getDisplayName()
+               //
+               ));
+            }
+
          }
 
          if (reportOnly) {
@@ -339,6 +410,21 @@ public class CreateChangeReportTasksOperation {
       return crtd;
    }
 
+   public static enum Columns {
+      ChgRptArtId,
+      ChgRptArtType,
+      ChgRptArtName,
+      ComputedTaskName,
+      MatchType,
+      Action;
+   };
+
+   private void addIfDebug(String format, Object... data) {
+      if (crtd.isDebug()) {
+         crtd.getResults().logf(format, data);
+      }
+   }
+
    private IAtsActionableItem getToSiblingAi(CreateTasksDefinition setDef, IAtsProgram program, XResultData rd, ChangeReportOptionsToTeam toSiblingTeamDef) {
       IAtsActionableItem toSiblingAi = null;
       if (Strings.isNumeric(toSiblingTeamDef.getAiId())) {
@@ -354,8 +440,7 @@ public class CreateChangeReportTasksOperation {
          rd.errorf("Team Definition and Work Type invalid in CreateTaskDefinition\n");
          return null;
       }
-      Collection<IAtsActionableItem> ais =
-         atsApi.getProgramService().getAis(program, setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
+      Collection<IAtsActionableItem> ais = atsApi.getProgramService().getAis(program, workType);
       if (ais.size() == 0) {
          rd.errorf("No Actionable Item of Work Type [%s] found\n",
             setDef.getChgRptOptions().getFromSiblingTeamDefWorkType());
@@ -471,6 +556,7 @@ public class CreateChangeReportTasksOperation {
          return;
       }
       task.addAttribute(AtsAttributeTypes.TaskAutoGenVersion, ver.getName());
+      task.addAttribute(AtsAttributeTypes.TaskAutoGen, true);
 
       // Allow extensions to add to generating task
       for (IAtsTaskProvider provider : AtsTaskProviderCollector.getTaskProviders()) {

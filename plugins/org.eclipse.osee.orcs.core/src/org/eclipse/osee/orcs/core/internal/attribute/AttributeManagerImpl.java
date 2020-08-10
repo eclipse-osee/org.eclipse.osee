@@ -214,6 +214,20 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
+   public <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      List<Attribute<T>> attributes = getAttributes(attributeType, deletionFlag);
+
+      List<T> values = new LinkedList<>();
+      for (Attribute<T> attribute : attributes) {
+         T value = attribute.getValue();
+         if (value != null) {
+            values.add(value);
+         }
+      }
+      return values;
+   }
+
+   @Override
    public String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue) {
       String toReturn = defaultValue;
       List<Attribute<Object>> items = getAttributes(attributeType);
@@ -269,20 +283,20 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return value;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue) {
       T value = defaultValue;
-      Attribute<T> attribute = null;
-      try {
-         attribute = getSoleAttribute(attributeType);
-         value = attribute.getValue();
+      List<Attribute<Object>> attributes = getAttributes(attributeType);
+      if (attributes.size() == 1) {
+         attributes.iterator().next();
+         value = (T) getSoleAttribute(attributeType).getValue();
          if (value == null) {
             return defaultValue;
          }
-      } catch (AttributeDoesNotExist ex) {
-         // do nothing
+      } else if (attributes.size() > 1) {
+         throw createManyExistException(attributeType, attributes.size());
       }
-
       return value;
    }
 

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -241,5 +242,10 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
+   }
+
+   @Override
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      return ((ArtifactReadable) artifact).getAttributeValues(attributeType, deletionFlag);
    }
 }

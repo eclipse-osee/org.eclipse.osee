@@ -155,6 +155,10 @@ public final class ChangeItemUtil {
       return changeVersion != null && changeVersion.getModType().isDeleted();
    }
 
+   public static boolean isArtifactDeleted(ChangeVersion changeVersion) {
+      return changeVersion != null && changeVersion.getModType().isArtifactDeleted();
+   }
+
    public static boolean wasNewOnSource(ChangeItem changeItem) {
       return isNew(changeItem.getFirstNonCurrentChange()) || isNew(changeItem.getCurrentVersion());
    }
@@ -414,4 +418,5 @@ public final class ChangeItemUtil {
       }
       return artifacts;
    }
+
 }

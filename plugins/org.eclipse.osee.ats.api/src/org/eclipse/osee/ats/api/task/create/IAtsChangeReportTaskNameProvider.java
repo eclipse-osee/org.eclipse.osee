@@ -158,9 +158,9 @@ public interface IAtsChangeReportTaskNameProvider {
       Set<ArtifactId> delArts = new HashSet<>();
 
       ChangeItemData data = getChangeItemData(changeItems, crtd.getWorkOrParentBranch(), atsApi);
-      for (ChangeReportRollup rollup : data.getRollups().values()) {
-
-         ArtifactIncluded result = isIncluded(crtd, crttwd, rollup.getChangeItems(), rollup.getArtType(), atsApi);
+      Collection<ChangeReportRollup> rollups = data.getRollups().values();
+      for (ChangeReportRollup rollup : rollups) {
+         ArtifactIncluded result = isIncluded(crtd, crttwd, rollup, rollup.getArtType(), atsApi);
 
          if (result.isIncluded()) {
             if (result.isDeleted()) {
@@ -173,7 +173,6 @@ public interface IAtsChangeReportTaskNameProvider {
                modArts.add(rollup.getArtId());
             }
          }
-
       }
       ChangeReportModDelArts modDel = new ChangeReportModDelArts();
       modDel.setModified(modArts);
@@ -184,7 +183,7 @@ public interface IAtsChangeReportTaskNameProvider {
    /**
     * @return A, B where A is if Artifact/Attributes are included and B if deleted
     */
-   default ArtifactIncluded isIncluded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, Collection<ChangeItem> reqArtChangeItems, ArtifactTypeToken artType, AtsApi atsApi) {
+   default ArtifactIncluded isIncluded(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportRollup rollup, ArtifactTypeToken artType, AtsApi atsApi) {
 
       Collection<ArtifactTypeToken> incArtTypes = crtd.getSetDef().getChgRptOptions().getArtifactTypes();
       Collection<ArtifactTypeToken> exclArtTypes = crtd.getSetDef().getChgRptOptions().getNotArtifactTypes();
@@ -196,46 +195,64 @@ public interface IAtsChangeReportTaskNameProvider {
 
       // Check for included/excluded artifact type
       if (artType.inheritsFromAny(exclArtTypes)) {
+         // included == false
          return new ArtifactIncluded(included, deleted);
       }
       if (!incArtTypes.isEmpty() && !artType.inheritsFromAny(incArtTypes)) {
+         // included == false
          return new ArtifactIncluded(included, deleted);
       }
 
       // Check for included/excluded attribute type
-      for (ChangeItem item : reqArtChangeItems) {
-         if (item.getChangeType().isNotAttributeChange()) {
-            continue;
-         }
+      for (ChangeItem item : rollup.getChangeItems()) {
          if (ChangeItemUtil.createdAndDeleted(item)) {
             continue;
          }
-         if (ChangeItemUtil.isDeleted(item.getCurrentVersion())) {
+         if (ChangeItemUtil.isArtifactDeleted(item.getCurrentVersion())) {
             deleted = true;
          }
 
-         Id typeId = item.getItemTypeId();
-         AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(typeId.getId());
-
-         // Set to include if no include types specified
-         boolean incAttrType = incAttrTypes.isEmpty();
-
-         // If not included, add if included
-         if (!incAttrType) {
-            incAttrType = incAttrTypes.contains(attrType);
+         // Change Type or Applicability always true
+         if (item.getChangeType().isArtifactChange() && !item.isSynthetic()) {
+            deleted = calculatedIfDeleted(rollup);
+            return new ArtifactIncluded(true, deleted);
          }
 
-         // If included, remove if excluded
-         if (incAttrType) {
-            incAttrType = !exclAttrTypes.contains(attrType);
-         }
+         // Look through attrs for anything that should be included
+         if (item.getChangeType().isAttributeChange()) {
 
-         if (incAttrType) {
-            included = true;
-            break;
+            Id typeId = item.getItemTypeId();
+            AttributeTypeToken attrType = atsApi.tokenService().getAttributeType(typeId.getId());
+
+            // Set to include if no include types specified
+            boolean incAttrType = incAttrTypes.isEmpty();
+
+            // If not included, add if included
+            if (!incAttrType) {
+               incAttrType = incAttrTypes.contains(attrType);
+            }
+
+            // If included, remove if excluded
+            if (incAttrType) {
+               incAttrType = !exclAttrTypes.contains(attrType);
+            }
+
+            if (incAttrType) {
+               included = true;
+               break;
+            }
          }
       }
       return new ArtifactIncluded(included, deleted);
+   }
+
+   default public boolean calculatedIfDeleted(ChangeReportRollup rollup) {
+      for (ChangeItem item : rollup.getChangeItems()) {
+         if (item.getChangeType().isArtifactChange() && item.isDeleted()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -248,7 +265,7 @@ public interface IAtsChangeReportTaskNameProvider {
          ArtifactTypeToken artType = atsApi.getStoreService().getArtifactType(artId, branchId);
          rollup.setArtType(artType);
          ArtifactToken tok = atsApi.getQueryService().getArtifact(artId, branchId, DeletionFlag.INCLUDE_DELETED);
-         rollup.setArtToken(tok);
+         rollup.setArtToken(ArtifactToken.valueOf(tok.getId(), tok.getName(), branchId, tok.getArtifactType()));
       }
       return data;
    }
@@ -283,8 +300,8 @@ public interface IAtsChangeReportTaskNameProvider {
             ArtifactTypeToken artBType =
                atsApi.getStoreService().getArtifactType(item.getArtIdB(), workingOrParentBranch);
 
-            ArtifactIncluded artAInc = isIncluded(crtd, crttwd, reqArtChangeItems, artAType, atsApi);
-            ArtifactIncluded artBInc = isIncluded(crtd, crttwd, reqArtChangeItems, artBType, atsApi);
+            ArtifactIncluded artAInc = isIncluded(crtd, crttwd, rollup, artAType, atsApi);
+            ArtifactIncluded artBInc = isIncluded(crtd, crttwd, rollup, artBType, atsApi);
 
             if ((artAInc.isNotDeleted() && artAInc.isIncluded()) || //
                (artBInc.isNotDeleted() && artBInc.isIncluded())) {

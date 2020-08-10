@@ -16,11 +16,14 @@ package org.eclipse.osee.framework.core.model.change;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
 
+import org.eclipse.osee.framework.core.enums.OseeEnum;
+
 /**
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
 public class ChangeType extends OseeEnum {
+   // convert to OseeEnum cause equals isn't working in org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider.isIncluded(ChangeReportTaskData,ChangeReportTaskTeamWfData,Collection<ChangeItem>,ArtifactTypeToken,AtsApi)
 
    private static final Long ENUM_ID = 2834799904L;
 

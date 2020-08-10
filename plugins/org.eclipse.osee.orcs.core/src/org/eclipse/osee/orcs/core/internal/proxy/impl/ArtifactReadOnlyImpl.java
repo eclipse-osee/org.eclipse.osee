@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -74,7 +75,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public String getName() {
-      return getProxiedObject().getName();
+      try {
+         return getSoleAttributeAsString(CoreAttributeTypes.Name);
+      } catch (AttributeDoesNotExist ex) {
+         // do nothing
+      }
+      return getSafeName();
    }
 
    @Override
@@ -170,6 +176,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public <T> List<T> getAttributeValues(AttributeTypeToken attributeType) {
       return getProxiedObject().getAttributeValues(attributeType);
+   }
+
+   @Override
+   public <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      return getProxiedObject().getAttributeValues(attributeType, deletionFlag);
    }
 
    @Override
@@ -339,7 +350,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public String toString() {
       return String.format("Artifact: Id [%s] Type [%s] Name [%s]", getIdString(), getArtifactType().getName(),
-         getName());
+         getSafeName());
    }
 
    @Override

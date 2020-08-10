@@ -32,7 +32,7 @@ public abstract class AbstractAtsTaskProvider implements IAtsTaskProvider {
 
    @Override
    public boolean isAutoGen(IAtsTask task) {
-      return atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.TaskAutoGenVersion) == 1;
+      return atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.TaskAutoGen, false);
    }
 
    @Override

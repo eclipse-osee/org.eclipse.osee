@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
  * @author Donald G. Dunne
@@ -104,5 +105,7 @@ public interface IAttributeResolver {
    List<String> getAttributesToStringList(ArtifactId customizeStoreArt, AttributeTypeToken attributeType);
 
    List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType);
+
+   List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
 }

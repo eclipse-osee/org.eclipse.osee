@@ -19,4 +19,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 public interface XModifiedListener {
 
    public void widgetModified(XWidget widget);
+
+   default public void handleRightClick(XWidget widget) {
+      // do nothing
+   }
+
 }

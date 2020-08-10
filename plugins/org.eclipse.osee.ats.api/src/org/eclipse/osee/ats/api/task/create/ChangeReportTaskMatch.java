@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.api.task.create;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class ChangeReportTaskMatch {
 
-   ArtifactId chgRptArt = ArtifactId.SENTINEL;
+   ArtifactToken chgRptArt = ArtifactToken.SENTINEL;
    String chgRptArtName;
    boolean chgRptArtDeleted;
    String taskName;
@@ -34,15 +33,13 @@ public class ChangeReportTaskMatch {
    IAtsTask taskWf;
    StaticTaskDefinition createTaskDef;
    ChangeReportTaskMatchType matchType;
+   ChangeReportTaskMatchResult matchResult;
 
-   /**
-    * @return ArtifactId or SENTINEL
-    */
-   public ArtifactId getChgRptArt() {
+   public ArtifactToken getChgRptArt() {
       return chgRptArt;
    }
 
-   public void setChgRptArt(ArtifactId chgRptArt) {
+   public void setChgRptArt(ArtifactToken chgRptArt) {
       this.chgRptArt = chgRptArt;
    }
 
@@ -56,8 +53,8 @@ public class ChangeReportTaskMatch {
 
    @Override
    public String toString() {
-      return String.format("%s ChgRptArt %s for task name [%s] mapped to task %s", matchType.name(),
-         chgRptArt.toString(), taskName, (taskTok == null ? "none" : taskTok.toStringWithId()));
+      return String.format("%s ChgRptArt %s task name [%s] mapped to task %s", matchType.name(), chgRptArt.toString(),
+         taskName, (taskTok == null ? "none" : taskTok.toStringWithId()));
    }
 
    public void setTaskWf(IAtsTask taskWf) {
@@ -114,6 +111,14 @@ public class ChangeReportTaskMatch {
 
    public boolean isChgRptArtValid() {
       return chgRptArt.isValid();
+   }
+
+   public ChangeReportTaskMatchResult getMatchResult() {
+      return matchResult;
+   }
+
+   public void setMatchResult(ChangeReportTaskMatchResult matchResult) {
+      this.matchResult = matchResult;
    }
 
 }

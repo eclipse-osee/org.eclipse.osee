@@ -84,7 +84,11 @@ public class XButton extends XButtonCommon {
          @Override
          public void handleEvent(Event event) {
             validate();
-            notifyXModifiedListeners();
+            if (event.button == 1) {
+               notifyXModifiedListeners();
+            } else if (event.button == 3) {
+               notifyRightClickListeners();
+            }
          }
       });
       GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
@@ -99,7 +103,11 @@ public class XButton extends XButtonCommon {
          labelWidget.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
-               notifyXModifiedListeners();
+               if (event.button == 1) {
+                  notifyXModifiedListeners();
+               } else if (event.button == 3) {
+                  notifyRightClickListeners();
+               }
             }
          });
          labelWidget.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));

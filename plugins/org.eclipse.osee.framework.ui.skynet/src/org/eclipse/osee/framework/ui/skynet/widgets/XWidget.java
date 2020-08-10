@@ -96,6 +96,14 @@ public abstract class XWidget {
       }
    }
 
+   public void notifyRightClickListeners() {
+      if (areNotificationsAllowed()) {
+         for (XModifiedListener listener : modifiedListeners) {
+            listener.handleRightClick(this);
+         }
+      }
+   }
+
    public boolean areNotificationsAllowed() {
       return isNotificationAllowed.getValue();
    }

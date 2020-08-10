@@ -167,6 +167,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TaskToChangedArtifactReference, "")
       .zeroOrOne(TaskToChangedArtifactName, "")
       .zeroOrOne(TaskToChangedArtifactDeleted, "")
+      .zeroOrOne(TaskAutoGen, "")
       .zeroOrOne(TaskAutoGenVersion, "")
       .zeroOrOne(WcafeImpact, "")
       .zeroOrOne(UsesResolutionOptions, "false"));

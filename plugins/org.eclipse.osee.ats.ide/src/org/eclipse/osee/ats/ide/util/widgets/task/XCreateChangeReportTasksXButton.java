@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -72,22 +73,36 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
 
       @Override
       public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
+         debug = false;
+         reportOnly = false;
+         createUpdateTasks(fName);
+      }
+
+      @Override
+      public void handleRightClick(XWidget widget) {
+         debug = true;
+         reportOnly = true;
          createUpdateTasks(fName);
       }
 
    };
 
    protected void createUpdateTasks(String name) {
-      final String fName = name;
       if (creating) {
          AWorkbench.popup("Creating Tasks, Please Wait");
          return;
       }
       creating = true;
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), name, name + "?")) {
+      String useName = name;
+      if (reportOnly) {
+         useName = useName + " (ReportOnly)";
+      }
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), useName, useName + "?")) {
+         creating = false;
          return;
       }
 
+      final String fName = name;
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override

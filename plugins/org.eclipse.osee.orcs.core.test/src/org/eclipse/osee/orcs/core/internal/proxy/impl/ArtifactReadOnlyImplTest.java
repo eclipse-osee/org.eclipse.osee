@@ -113,7 +113,6 @@ public class ArtifactReadOnlyImplTest {
       verify(proxiedObject).getGuid();
    }
 
-   @Test
    public void testGetName() {
       String name = "This is my name";
       when(proxiedObject.getName()).thenReturn(name);

@@ -761,9 +761,10 @@ public abstract class BranchRegressionTest {
 
    protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchId branch) throws MultipleAttributesExist {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + artifactToken.getName());
-      Artifact art1 = ArtifactTypeManager.addArtifact(artifactToken, branch);
-      tx.addArtifact(art1);
-      Artifact parentArt = setParent(parent, partitions, art1, tx);
+      Artifact newArt = ArtifactTypeManager.addArtifact(artifactToken, branch);
+      Artifact parentArt = setParent(parent, partitions, newArt, tx);
+      tx.addArtifact(newArt);
+      tx.addArtifact(parent);
       tx.execute();
       return parentArt;
    }
@@ -773,15 +774,15 @@ public abstract class BranchRegressionTest {
          art1.setAttributeValues(getCsciAttribute(), Arrays.asList(partitions));
       }
       parent.addChild(art1);
-      tx.addArtifact(parent);
       return art1;
    }
 
    protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchId branch) {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
-      Artifact art1 = ArtifactTypeManager.addArtifact(artifactType, branch, title);
-      tx.addArtifact(art1);
-      Artifact parentArt = setParent(parent, partitions, art1, tx);
+      Artifact newArt = ArtifactTypeManager.addArtifact(artifactType, branch, title);
+      Artifact parentArt = setParent(parent, partitions, newArt, tx);
+      tx.addArtifact(newArt);
+      tx.addArtifact(parent);
       tx.execute();
       return parentArt;
    }
@@ -812,7 +813,19 @@ public abstract class BranchRegressionTest {
          Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
          boolean deReferenced = AtsClientService.get().getTaskService().isAutoGenDeReferenced(task);
-         Assert.assertFalse(deReferenced);
+         boolean autoGen = AtsClientService.get().getTaskService().isAutoGen(task);
+
+         if (deReferenced) {
+            Assert.assertFalse(autoGen);
+         } else {
+            Assert.assertTrue(autoGen);
+         }
+
+         if (autoGen) {
+            Assert.assertFalse(deReferenced);
+         } else {
+            Assert.assertTrue(deReferenced);
+         }
       }
    }
 

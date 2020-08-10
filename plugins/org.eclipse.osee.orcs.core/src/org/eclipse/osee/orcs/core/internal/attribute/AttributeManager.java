@@ -51,6 +51,8 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> List<T> getAttributeValues(AttributeTypeToken attributeType);
 
+   <T> List<T> getAttributeValues(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
+
    Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
 
    default <T extends EnumToken> boolean attributeMatches(AttributeTypeEnum<T> attributeType, T... values) {

@@ -108,6 +108,8 @@ public interface IAtsTaskService {
 
    void addDeReferencedNote(IAtsTask task, IAtsChangeSet changes);
 
+   boolean removeDeReferencedNote(IAtsTask task, IAtsChangeSet changes);
+
    Collection<IAtsTaskProvider> getTaskProviders();
 
 }
