@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Angel Avila
@@ -82,7 +82,7 @@ public class TupleChange extends Change {
    }
 
    @Override
-   public LoadChangeType getChangeType() {
-      return LoadChangeType.tuple;
+   public ChangeType getChangeType() {
+      return ChangeType.Tuple;
    }
 }

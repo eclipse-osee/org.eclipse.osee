@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -67,7 +68,7 @@ public final class ChangeManager {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
    }
 
-   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) {
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
    }
 

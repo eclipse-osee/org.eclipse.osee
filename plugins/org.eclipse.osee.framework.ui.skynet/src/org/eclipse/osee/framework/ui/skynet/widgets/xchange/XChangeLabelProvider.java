@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -133,7 +132,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    private final Map<Id, Boolean> attrTypeIdToIsBinaryMap = new HashMap<>(20);
 
    private boolean isBinaryAttributeType(Change change) {
-      if (change.getChangeType().equals(LoadChangeType.attribute)) {
+      if (change.getChangeType().isAttributeChange()) {
          Id itemTypeId = change.getChangeItem().getItemTypeId();
          Boolean isBinary = attrTypeIdToIsBinaryMap.get(itemTypeId);
          if (isBinary != null) {

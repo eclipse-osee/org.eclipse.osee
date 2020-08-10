@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithBaselineOperation;
@@ -73,7 +73,7 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
       boolean isEnabled = false;
       setSelectedData();
 
-      LoadChangeType lastChangeType = null;
+      ChangeType lastChangeType = null;
 
       //Only use the item selected for accessControl
       for (Change change : Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) {
@@ -81,7 +81,7 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
          if (lastChangeType == null) {
             lastChangeType = change.getChangeType();
          }
-         isEnabled = lastChangeType == change.getChangeType();
+         isEnabled = lastChangeType.equals(change.getChangeType());
 
          try {
             isEnabled =
@@ -126,13 +126,13 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
       }
    }
 
-   private boolean enableButtons(IStructuredSelection selection, LoadChangeType changeType) {
+   private boolean enableButtons(IStructuredSelection selection, ChangeType changeType) {
       boolean attrEnabled = false;
 
       Collection<Change> changes = Handlers.getArtifactChangesFromStructuredSelection(selection);
 
       for (Change change : changes) {
-         attrEnabled = change.getChangeType() == changeType;
+         attrEnabled = change.getChangeType().equals(changeType);
 
          if (!attrEnabled) {
             break;
@@ -144,8 +144,8 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
-         boolean attrEnabled = enableButtons(structuredSelection, LoadChangeType.attribute);
-         boolean artEnabled = enableButtons(structuredSelection, LoadChangeType.artifact);
+         boolean attrEnabled = enableButtons(structuredSelection, ChangeType.Attribute);
+         boolean artEnabled = enableButtons(structuredSelection, ChangeType.Artifact);
 
          ReplaceWithBaselineVersionDialog dialog = new ReplaceWithBaselineVersionDialog(artEnabled, attrEnabled);
          if (dialog.open() == Window.OK) {

@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Megumi Telles
@@ -78,7 +78,7 @@ public final class ErrorChange extends Change {
    }
 
    @Override
-   public LoadChangeType getChangeType() {
+   public ChangeType getChangeType() {
       return null;
    }
 }

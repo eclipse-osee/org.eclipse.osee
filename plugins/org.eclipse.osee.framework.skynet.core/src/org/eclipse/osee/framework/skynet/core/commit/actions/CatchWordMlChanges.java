@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 
@@ -55,7 +54,7 @@ public class CatchWordMlChanges implements CommitAction {
       Map<Integer, String> applicabilityTags = new HashMap<>();
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
-            if (change.getChangeType() == LoadChangeType.attribute) {
+            if (change.getChangeType().isAttributeChange()) {
                Attribute<?> attribute = ((AttributeChange) change).getAttribute();
 
                if (attribute instanceof WordAttribute) {

@@ -18,15 +18,15 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class ArtifactChange extends Change {
-   private static LoadChangeType changeType = LoadChangeType.artifact;
+   private static ChangeType changeType = ChangeType.Artifact;
    private final String isValue;
    private final String wasValue;
 
@@ -77,7 +77,7 @@ public final class ArtifactChange extends Change {
    }
 
    @Override
-   public LoadChangeType getChangeType() {
+   public ChangeType getChangeType() {
       return changeType;
    }
 }

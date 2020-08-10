@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceArtifactWithBaselineOperation;
@@ -94,7 +93,7 @@ import org.junit.runners.Parameterized.Parameters;
  *
  *    Case 10 is a collection of 1-9, all cases.
  * </pre>
- * 
+ *
  * @author Ryan D. Brooks
  */
 @RunWith(Parameterized.class)
@@ -314,8 +313,8 @@ public final class ReplaceWithBaselineTest {
                      testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()));
                      break;
                   case INTRODUCED:
-                     BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch, "another working branch",
-                    		 ArtifactId.SENTINEL);
+                     BranchId anotherBranch =
+                        BranchManager.createWorkingBranch(workingBranch, "another working branch", ArtifactId.SENTINEL);
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
 
@@ -459,7 +458,7 @@ public final class ReplaceWithBaselineTest {
       List<Change> attrChanges = new ArrayList<>(1);
 
       for (Change change : changes) {
-         if (change.getChangeType() == LoadChangeType.attribute && change.getItemId().getId().intValue() == attributeToRevert.getId()) {
+         if (change.getChangeType().isAttributeChange() && change.getItemId().getId().intValue() == attributeToRevert.getId()) {
             attrChanges.add(change);
          }
       }

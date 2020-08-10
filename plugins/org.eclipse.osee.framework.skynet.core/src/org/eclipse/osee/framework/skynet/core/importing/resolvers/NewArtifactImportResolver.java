@@ -15,8 +15,8 @@ package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

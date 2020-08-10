@@ -23,19 +23,19 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class AttributeChange extends Change {
-   private final static LoadChangeType changeType = LoadChangeType.attribute;
+   private final static ChangeType changeType = ChangeType.Attribute;
 
    private String isValue;
 
@@ -177,7 +177,7 @@ public final class AttributeChange extends Change {
    }
 
    @Override
-   public LoadChangeType getChangeType() {
+   public ChangeType getChangeType() {
       return changeType;
    }
 

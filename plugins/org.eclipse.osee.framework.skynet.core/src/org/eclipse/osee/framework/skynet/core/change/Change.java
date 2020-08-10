@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
  * @author Jeff C. Phillips
@@ -180,7 +180,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    public abstract Id getItemId();
 
-   public abstract LoadChangeType getChangeType();
+   public abstract ChangeType getChangeType();
 
    @SuppressWarnings("unchecked")
    @Override

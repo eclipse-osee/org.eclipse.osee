@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**

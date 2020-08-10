@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -75,14 +76,13 @@ public final class RevisionChangeLoader {
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
    public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) {
-      return getChangesPerArtifact(artifact, monitor, LoadChangeType.artifact, LoadChangeType.attribute,
-         LoadChangeType.relation);
+      return getChangesPerArtifact(artifact, monitor, ChangeType.Artifact, ChangeType.Attribute, ChangeType.Relation);
    }
 
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
       BranchId branch = artifact.getBranch();
       Set<TransactionToken> transactionIds = new LinkedHashSet<>();
       boolean recurseThroughBranchHierarchy = true;
@@ -112,8 +112,8 @@ public final class RevisionChangeLoader {
 
       int count = 0;
       for (TransactionToken transactionId : sortedTransIds) {
-         loadChanges(null, transactionId, monitor, artifact, changes, LoadChangeType.artifact, LoadChangeType.attribute,
-            LoadChangeType.relation);
+         loadChanges(null, transactionId, monitor, artifact, changes, ChangeType.Artifact, ChangeType.Attribute,
+            ChangeType.Relation);
          count++;
          if (count >= numberTransactionsToShow) {
             break;
@@ -160,7 +160,7 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private void loadChanges(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) {
+   private void loadChanges(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, ChangeType... loadChangeTypes) {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -171,26 +171,20 @@ public final class RevisionChangeLoader {
       boolean isHistorical = sourceBranch == null;
 
       ArrayList<ChangeBuilder> changeBuilders = new ArrayList<>();
-      for (LoadChangeType changeType : loadChangeTypes) {
-         switch (changeType) {
-            case artifact:
-               ArtifactChangeAcquirer artifactChangeAcquirer = new ArtifactChangeAcquirer(sourceBranch, transactionId,
-                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
-               changeBuilders = artifactChangeAcquirer.acquireChanges();
-               break;
-            case attribute:
-               AttributeChangeAcquirer attributeChangeAcquirer = new AttributeChangeAcquirer(sourceBranch,
-                  transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
-               changeBuilders = attributeChangeAcquirer.acquireChanges();
-               break;
-            case relation:
-               RelationChangeAcquirer relationChangeAcquirer = new RelationChangeAcquirer(sourceBranch, transactionId,
-                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds, tokenService);
+      for (ChangeType changeType : loadChangeTypes) {
+         if (changeType.isArtifactChange()) {
+            ArtifactChangeAcquirer artifactChangeAcquirer = new ArtifactChangeAcquirer(sourceBranch, transactionId,
+               monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+            changeBuilders = artifactChangeAcquirer.acquireChanges();
+         } else if (changeType.isAttributeChange()) {
+            AttributeChangeAcquirer attributeChangeAcquirer = new AttributeChangeAcquirer(sourceBranch, transactionId,
+               monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
+            changeBuilders = attributeChangeAcquirer.acquireChanges();
+         } else if (changeType.isRelationChange()) {
+            RelationChangeAcquirer relationChangeAcquirer = new RelationChangeAcquirer(sourceBranch, transactionId,
+               monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds, tokenService);
 
-               changeBuilders = relationChangeAcquirer.acquireChanges();
-               break;
-            default:
-               break;
+            changeBuilders = relationChangeAcquirer.acquireChanges();
          }
       }
       monitor.subTask("Loading Artifacts from the Database");
