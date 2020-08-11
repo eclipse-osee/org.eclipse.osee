@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -245,11 +244,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       if (awa != null) {
          awa.clearImplementersCache();
       }
-   }
-
-   @Override
-   public IAtsChangeSet createChangeSet(String comment) {
-      return getStoreService().createAtsChangeSet(comment, getUserService().getCurrentUser());
    }
 
    @Override

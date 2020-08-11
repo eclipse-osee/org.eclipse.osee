@@ -559,4 +559,9 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       return storeService.createAtsChangeSet(comment, branch, asUser);
    }
 
+   @Override
+   public IAtsChangeSet createChangeSet(String comment) {
+      return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
+   }
+
 }

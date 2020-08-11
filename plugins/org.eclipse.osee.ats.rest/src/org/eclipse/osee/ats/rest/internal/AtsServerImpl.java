@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
@@ -303,11 +302,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          addCustomizationsFromArts(namespace, customizations, customizationArt);
       }
       return customizations;
-   }
-
-   @Override
-   public IAtsChangeSet createChangeSet(String comment) {
-      return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
    }
 
    @Override
