@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-08-05 10:09:53
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-08-11 07:54:21
 
 package org.eclipse.osee.framework.core.grammar;
 
@@ -17,13 +17,15 @@ import org.antlr.runtime.tree.*;
 
 public class ApplicabilityGrammarParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "ID", "AND", "OR", "NOT", "WS", "'CONFIGURATION'", "'CONFIGURATION NOT'", "'['", "']'", "'FEATURE['", "'='", "'('", "')'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "ID", "AND", "OR", "NOT", "WS", "'CONFIGURATION'", "'CONFIGURATION NOT'", "'['", "']'", "'CONFIGURATIONGROUP'", "'CONFIGURATIONGROUP NOT'", "'FEATURE['", "'='", "'('", "')'"
     };
     public static final int T__9=9;
     public static final int OR=6;
     public static final int NOT=7;
     public static final int T__15=15;
     public static final int T__16=16;
+    public static final int T__17=17;
+    public static final int T__18=18;
     public static final int AND=5;
     public static final int T__11=11;
     public static final int T__12=12;
@@ -140,7 +142,7 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "applicability"
-    // ApplicabilityGrammar.g:42:1: applicability : ( config_applicability | feature_applicability );
+    // ApplicabilityGrammar.g:42:1: applicability : ( config_applicability | feature_applicability | configurationgroup_applicability );
     public final ApplicabilityGrammarParser.applicability_return applicability() throws RecognitionException {
         ApplicabilityGrammarParser.applicability_return retval = new ApplicabilityGrammarParser.applicability_return();
         retval.start = input.LT(1);
@@ -151,25 +153,38 @@ public class ApplicabilityGrammarParser extends Parser {
 
         ApplicabilityGrammarParser.feature_applicability_return feature_applicability4 = null;
 
+        ApplicabilityGrammarParser.configurationgroup_applicability_return configurationgroup_applicability5 = null;
+
 
 
         try {
-            // ApplicabilityGrammar.g:42:25: ( config_applicability | feature_applicability )
-            int alt1=2;
-            int LA1_0 = input.LA(1);
-
-            if ( ((LA1_0>=9 && LA1_0<=10)) ) {
+            // ApplicabilityGrammar.g:42:25: ( config_applicability | feature_applicability | configurationgroup_applicability )
+            int alt1=3;
+            switch ( input.LA(1) ) {
+            case 9:
+            case 10:
+                {
                 alt1=1;
-            }
-            else if ( (LA1_0==13) ) {
+                }
+                break;
+            case 15:
+                {
                 alt1=2;
-            }
-            else {
+                }
+                break;
+            case 13:
+            case 14:
+                {
+                alt1=3;
+                }
+                break;
+            default:
                 NoViableAltException nvae =
                     new NoViableAltException("", 1, 0, input);
 
                 throw nvae;
             }
+
             switch (alt1) {
                 case 1 :
                     // ApplicabilityGrammar.g:42:27: config_applicability
@@ -201,6 +216,21 @@ public class ApplicabilityGrammarParser extends Parser {
 
                     }
                     break;
+                case 3 :
+                    // ApplicabilityGrammar.g:44:11: configurationgroup_applicability
+                    {
+                    root_0 = (CommonTree)adaptor.nil();
+
+                    pushFollow(FOLLOW_configurationgroup_applicability_in_applicability110);
+                    configurationgroup_applicability5=configurationgroup_applicability();
+
+                    state._fsp--;
+
+                    adaptor.addChild(root_0, configurationgroup_applicability5.getTree());
+                     applicabilityType="ConfigurationGroup"; 
+
+                    }
+                    break;
 
             }
             retval.stop = input.LT(-1);
@@ -227,33 +257,33 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "config_applicability"
-    // ApplicabilityGrammar.g:45:1: config_applicability : ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']' ;
+    // ApplicabilityGrammar.g:46:1: config_applicability : ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']' ;
     public final ApplicabilityGrammarParser.config_applicability_return config_applicability() throws RecognitionException {
         ApplicabilityGrammarParser.config_applicability_return retval = new ApplicabilityGrammarParser.config_applicability_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token set5=null;
-        Token char_literal6=null;
-        Token char_literal8=null;
-        ApplicabilityGrammarParser.expressions_return expressions7 = null;
+        Token set6=null;
+        Token char_literal7=null;
+        Token char_literal9=null;
+        ApplicabilityGrammarParser.expressions_return expressions8 = null;
 
 
-        CommonTree set5_tree=null;
-        CommonTree char_literal6_tree=null;
-        CommonTree char_literal8_tree=null;
+        CommonTree set6_tree=null;
+        CommonTree char_literal7_tree=null;
+        CommonTree char_literal9_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:45:25: ( ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']' )
-            // ApplicabilityGrammar.g:45:27: ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']'
+            // ApplicabilityGrammar.g:46:25: ( ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']' )
+            // ApplicabilityGrammar.g:46:27: ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']'
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            set5=(Token)input.LT(1);
+            set6=(Token)input.LT(1);
             if ( (input.LA(1)>=9 && input.LA(1)<=10) ) {
                 input.consume();
-                adaptor.addChild(root_0, (CommonTree)adaptor.create(set5));
+                adaptor.addChild(root_0, (CommonTree)adaptor.create(set6));
                 state.errorRecovery=false;
             }
             else {
@@ -261,11 +291,11 @@ public class ApplicabilityGrammarParser extends Parser {
                 throw mse;
             }
 
-            char_literal6=(Token)match(input,11,FOLLOW_11_in_config_applicability123); 
-            char_literal6_tree = (CommonTree)adaptor.create(char_literal6);
-            adaptor.addChild(root_0, char_literal6_tree);
+            char_literal7=(Token)match(input,11,FOLLOW_11_in_config_applicability137); 
+            char_literal7_tree = (CommonTree)adaptor.create(char_literal7);
+            adaptor.addChild(root_0, char_literal7_tree);
 
-            // ApplicabilityGrammar.g:45:68: ( expressions )+
+            // ApplicabilityGrammar.g:46:68: ( expressions )+
             int cnt2=0;
             loop2:
             do {
@@ -279,14 +309,14 @@ public class ApplicabilityGrammarParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // ApplicabilityGrammar.g:45:68: expressions
+            	    // ApplicabilityGrammar.g:46:68: expressions
             	    {
-            	    pushFollow(FOLLOW_expressions_in_config_applicability125);
-            	    expressions7=expressions();
+            	    pushFollow(FOLLOW_expressions_in_config_applicability139);
+            	    expressions8=expressions();
 
             	    state._fsp--;
 
-            	    adaptor.addChild(root_0, expressions7.getTree());
+            	    adaptor.addChild(root_0, expressions8.getTree());
 
             	    }
             	    break;
@@ -300,9 +330,9 @@ public class ApplicabilityGrammarParser extends Parser {
                 cnt2++;
             } while (true);
 
-            char_literal8=(Token)match(input,12,FOLLOW_12_in_config_applicability128); 
-            char_literal8_tree = (CommonTree)adaptor.create(char_literal8);
-            adaptor.addChild(root_0, char_literal8_tree);
+            char_literal9=(Token)match(input,12,FOLLOW_12_in_config_applicability142); 
+            char_literal9_tree = (CommonTree)adaptor.create(char_literal9);
+            adaptor.addChild(root_0, char_literal9_tree);
 
 
             }
@@ -325,38 +355,51 @@ public class ApplicabilityGrammarParser extends Parser {
     }
     // $ANTLR end "config_applicability"
 
-    public static class feature_applicability_return extends ParserRuleReturnScope {
+    public static class configurationgroup_applicability_return extends ParserRuleReturnScope {
         CommonTree tree;
         public Object getTree() { return tree; }
     };
 
-    // $ANTLR start "feature_applicability"
-    // ApplicabilityGrammar.g:47:1: feature_applicability : 'FEATURE[' ( expressions )+ ']' ;
-    public final ApplicabilityGrammarParser.feature_applicability_return feature_applicability() throws RecognitionException {
-        ApplicabilityGrammarParser.feature_applicability_return retval = new ApplicabilityGrammarParser.feature_applicability_return();
+    // $ANTLR start "configurationgroup_applicability"
+    // ApplicabilityGrammar.g:48:1: configurationgroup_applicability : ( 'CONFIGURATIONGROUP' | 'CONFIGURATIONGROUP NOT' ) '[' ( expressions )+ ']' ;
+    public final ApplicabilityGrammarParser.configurationgroup_applicability_return configurationgroup_applicability() throws RecognitionException {
+        ApplicabilityGrammarParser.configurationgroup_applicability_return retval = new ApplicabilityGrammarParser.configurationgroup_applicability_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token string_literal9=null;
+        Token set10=null;
         Token char_literal11=null;
-        ApplicabilityGrammarParser.expressions_return expressions10 = null;
+        Token char_literal13=null;
+        ApplicabilityGrammarParser.expressions_return expressions12 = null;
 
 
-        CommonTree string_literal9_tree=null;
+        CommonTree set10_tree=null;
         CommonTree char_literal11_tree=null;
+        CommonTree char_literal13_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:47:25: ( 'FEATURE[' ( expressions )+ ']' )
-            // ApplicabilityGrammar.g:47:27: 'FEATURE[' ( expressions )+ ']'
+            // ApplicabilityGrammar.g:48:34: ( ( 'CONFIGURATIONGROUP' | 'CONFIGURATIONGROUP NOT' ) '[' ( expressions )+ ']' )
+            // ApplicabilityGrammar.g:48:36: ( 'CONFIGURATIONGROUP' | 'CONFIGURATIONGROUP NOT' ) '[' ( expressions )+ ']'
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            string_literal9=(Token)match(input,13,FOLLOW_13_in_feature_applicability138); 
-            string_literal9_tree = (CommonTree)adaptor.create(string_literal9);
-            adaptor.addChild(root_0, string_literal9_tree);
+            set10=(Token)input.LT(1);
+            if ( (input.LA(1)>=13 && input.LA(1)<=14) ) {
+                input.consume();
+                adaptor.addChild(root_0, (CommonTree)adaptor.create(set10));
+                state.errorRecovery=false;
+            }
+            else {
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                throw mse;
+            }
 
-            // ApplicabilityGrammar.g:47:38: ( expressions )+
+            char_literal11=(Token)match(input,11,FOLLOW_11_in_configurationgroup_applicability155); 
+            char_literal11_tree = (CommonTree)adaptor.create(char_literal11);
+            adaptor.addChild(root_0, char_literal11_tree);
+
+            // ApplicabilityGrammar.g:48:87: ( expressions )+
             int cnt3=0;
             loop3:
             do {
@@ -370,14 +413,14 @@ public class ApplicabilityGrammarParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // ApplicabilityGrammar.g:47:38: expressions
+            	    // ApplicabilityGrammar.g:48:87: expressions
             	    {
-            	    pushFollow(FOLLOW_expressions_in_feature_applicability140);
-            	    expressions10=expressions();
+            	    pushFollow(FOLLOW_expressions_in_configurationgroup_applicability157);
+            	    expressions12=expressions();
 
             	    state._fsp--;
 
-            	    adaptor.addChild(root_0, expressions10.getTree());
+            	    adaptor.addChild(root_0, expressions12.getTree());
 
             	    }
             	    break;
@@ -391,9 +434,100 @@ public class ApplicabilityGrammarParser extends Parser {
                 cnt3++;
             } while (true);
 
-            char_literal11=(Token)match(input,12,FOLLOW_12_in_feature_applicability143); 
-            char_literal11_tree = (CommonTree)adaptor.create(char_literal11);
-            adaptor.addChild(root_0, char_literal11_tree);
+            char_literal13=(Token)match(input,12,FOLLOW_12_in_configurationgroup_applicability160); 
+            char_literal13_tree = (CommonTree)adaptor.create(char_literal13);
+            adaptor.addChild(root_0, char_literal13_tree);
+
+
+            }
+
+            retval.stop = input.LT(-1);
+
+            retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
+            adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+    	retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+
+        }
+        finally {
+        }
+        return retval;
+    }
+    // $ANTLR end "configurationgroup_applicability"
+
+    public static class feature_applicability_return extends ParserRuleReturnScope {
+        CommonTree tree;
+        public Object getTree() { return tree; }
+    };
+
+    // $ANTLR start "feature_applicability"
+    // ApplicabilityGrammar.g:50:1: feature_applicability : 'FEATURE[' ( expressions )+ ']' ;
+    public final ApplicabilityGrammarParser.feature_applicability_return feature_applicability() throws RecognitionException {
+        ApplicabilityGrammarParser.feature_applicability_return retval = new ApplicabilityGrammarParser.feature_applicability_return();
+        retval.start = input.LT(1);
+
+        CommonTree root_0 = null;
+
+        Token string_literal14=null;
+        Token char_literal16=null;
+        ApplicabilityGrammarParser.expressions_return expressions15 = null;
+
+
+        CommonTree string_literal14_tree=null;
+        CommonTree char_literal16_tree=null;
+
+        try {
+            // ApplicabilityGrammar.g:50:25: ( 'FEATURE[' ( expressions )+ ']' )
+            // ApplicabilityGrammar.g:50:27: 'FEATURE[' ( expressions )+ ']'
+            {
+            root_0 = (CommonTree)adaptor.nil();
+
+            string_literal14=(Token)match(input,15,FOLLOW_15_in_feature_applicability170); 
+            string_literal14_tree = (CommonTree)adaptor.create(string_literal14);
+            adaptor.addChild(root_0, string_literal14_tree);
+
+            // ApplicabilityGrammar.g:50:38: ( expressions )+
+            int cnt4=0;
+            loop4:
+            do {
+                int alt4=2;
+                int LA4_0 = input.LA(1);
+
+                if ( ((LA4_0>=ID && LA4_0<=OR)) ) {
+                    alt4=1;
+                }
+
+
+                switch (alt4) {
+            	case 1 :
+            	    // ApplicabilityGrammar.g:50:38: expressions
+            	    {
+            	    pushFollow(FOLLOW_expressions_in_feature_applicability172);
+            	    expressions15=expressions();
+
+            	    state._fsp--;
+
+            	    adaptor.addChild(root_0, expressions15.getTree());
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt4 >= 1 ) break loop4;
+                        EarlyExitException eee =
+                            new EarlyExitException(4, input);
+                        throw eee;
+                }
+                cnt4++;
+            } while (true);
+
+            char_literal16=(Token)match(input,12,FOLLOW_12_in_feature_applicability175); 
+            char_literal16_tree = (CommonTree)adaptor.create(char_literal16);
+            adaptor.addChild(root_0, char_literal16_tree);
 
 
             }
@@ -422,61 +556,61 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "expressions"
-    // ApplicabilityGrammar.g:49:1: expressions : ( ( operator )? expression ) ;
+    // ApplicabilityGrammar.g:52:1: expressions : ( ( operator )? expression ) ;
     public final ApplicabilityGrammarParser.expressions_return expressions() throws RecognitionException {
         ApplicabilityGrammarParser.expressions_return retval = new ApplicabilityGrammarParser.expressions_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        ApplicabilityGrammarParser.operator_return operator12 = null;
+        ApplicabilityGrammarParser.operator_return operator17 = null;
 
-        ApplicabilityGrammarParser.expression_return expression13 = null;
+        ApplicabilityGrammarParser.expression_return expression18 = null;
 
 
 
         try {
-            // ApplicabilityGrammar.g:49:17: ( ( ( operator )? expression ) )
-            // ApplicabilityGrammar.g:49:19: ( ( operator )? expression )
+            // ApplicabilityGrammar.g:52:17: ( ( ( operator )? expression ) )
+            // ApplicabilityGrammar.g:52:19: ( ( operator )? expression )
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // ApplicabilityGrammar.g:49:19: ( ( operator )? expression )
-            // ApplicabilityGrammar.g:49:20: ( operator )? expression
+            // ApplicabilityGrammar.g:52:19: ( ( operator )? expression )
+            // ApplicabilityGrammar.g:52:20: ( operator )? expression
             {
-            // ApplicabilityGrammar.g:49:20: ( operator )?
-            int alt4=2;
-            int LA4_0 = input.LA(1);
+            // ApplicabilityGrammar.g:52:20: ( operator )?
+            int alt5=2;
+            int LA5_0 = input.LA(1);
 
-            if ( ((LA4_0>=AND && LA4_0<=OR)) ) {
-                alt4=1;
+            if ( ((LA5_0>=AND && LA5_0<=OR)) ) {
+                alt5=1;
             }
-            switch (alt4) {
+            switch (alt5) {
                 case 1 :
-                    // ApplicabilityGrammar.g:49:20: operator
+                    // ApplicabilityGrammar.g:52:20: operator
                     {
-                    pushFollow(FOLLOW_operator_in_expressions157);
-                    operator12=operator();
+                    pushFollow(FOLLOW_operator_in_expressions189);
+                    operator17=operator();
 
                     state._fsp--;
 
-                    adaptor.addChild(root_0, operator12.getTree());
+                    adaptor.addChild(root_0, operator17.getTree());
 
                     }
                     break;
 
             }
 
-            pushFollow(FOLLOW_expression_in_expressions160);
-            expression13=expression();
+            pushFollow(FOLLOW_expression_in_expressions192);
+            expression18=expression();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, expression13.getTree());
+            adaptor.addChild(root_0, expression18.getTree());
 
             }
 
-             operators.add((operator12!=null?input.toString(operator12.start,operator12.stop):null)); 
+             operators.add((operator17!=null?input.toString(operator17.start,operator17.stop):null)); 
 
             }
 
@@ -504,50 +638,50 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "expression"
-    // ApplicabilityGrammar.g:51:1: expression : ID ( '=' temp= val )? ;
+    // ApplicabilityGrammar.g:54:1: expression : ID ( '=' temp= val )? ;
     public final ApplicabilityGrammarParser.expression_return expression() throws RecognitionException {
         ApplicabilityGrammarParser.expression_return retval = new ApplicabilityGrammarParser.expression_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token ID14=null;
-        Token char_literal15=null;
+        Token ID19=null;
+        Token char_literal20=null;
         ApplicabilityGrammarParser.val_return temp = null;
 
 
-        CommonTree ID14_tree=null;
-        CommonTree char_literal15_tree=null;
+        CommonTree ID19_tree=null;
+        CommonTree char_literal20_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:51:13: ( ID ( '=' temp= val )? )
-            // ApplicabilityGrammar.g:51:15: ID ( '=' temp= val )?
+            // ApplicabilityGrammar.g:54:13: ( ID ( '=' temp= val )? )
+            // ApplicabilityGrammar.g:54:15: ID ( '=' temp= val )?
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            ID14=(Token)match(input,ID,FOLLOW_ID_in_expression172); 
-            ID14_tree = (CommonTree)adaptor.create(ID14);
-            adaptor.addChild(root_0, ID14_tree);
+            ID19=(Token)match(input,ID,FOLLOW_ID_in_expression204); 
+            ID19_tree = (CommonTree)adaptor.create(ID19);
+            adaptor.addChild(root_0, ID19_tree);
 
-             id = (ID14!=null?ID14.getText():null).trim(); 
+             id = (ID19!=null?ID19.getText():null).trim(); 
             										 id_values_map.put(id, new ArrayList<String>());
             										
-            // ApplicabilityGrammar.g:54:9: ( '=' temp= val )?
-            int alt5=2;
-            int LA5_0 = input.LA(1);
+            // ApplicabilityGrammar.g:57:9: ( '=' temp= val )?
+            int alt6=2;
+            int LA6_0 = input.LA(1);
 
-            if ( (LA5_0==14) ) {
-                alt5=1;
+            if ( (LA6_0==16) ) {
+                alt6=1;
             }
-            switch (alt5) {
+            switch (alt6) {
                 case 1 :
-                    // ApplicabilityGrammar.g:54:10: '=' temp= val
+                    // ApplicabilityGrammar.g:57:10: '=' temp= val
                     {
-                    char_literal15=(Token)match(input,14,FOLLOW_14_in_expression186); 
-                    char_literal15_tree = (CommonTree)adaptor.create(char_literal15);
-                    adaptor.addChild(root_0, char_literal15_tree);
+                    char_literal20=(Token)match(input,16,FOLLOW_16_in_expression218); 
+                    char_literal20_tree = (CommonTree)adaptor.create(char_literal20);
+                    adaptor.addChild(root_0, char_literal20_tree);
 
-                    pushFollow(FOLLOW_val_in_expression190);
+                    pushFollow(FOLLOW_val_in_expression222);
                     temp=val();
 
                     state._fsp--;
@@ -590,62 +724,62 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "val"
-    // ApplicabilityGrammar.g:59:1: val : ( value | start_compound );
+    // ApplicabilityGrammar.g:62:1: val : ( value | start_compound );
     public final ApplicabilityGrammarParser.val_return val() throws RecognitionException {
         ApplicabilityGrammarParser.val_return retval = new ApplicabilityGrammarParser.val_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        ApplicabilityGrammarParser.value_return value16 = null;
+        ApplicabilityGrammarParser.value_return value21 = null;
 
-        ApplicabilityGrammarParser.start_compound_return start_compound17 = null;
+        ApplicabilityGrammarParser.start_compound_return start_compound22 = null;
 
 
 
         try {
-            // ApplicabilityGrammar.g:59:7: ( value | start_compound )
-            int alt6=2;
-            int LA6_0 = input.LA(1);
+            // ApplicabilityGrammar.g:62:7: ( value | start_compound )
+            int alt7=2;
+            int LA7_0 = input.LA(1);
 
-            if ( ((LA6_0>=ID && LA6_0<=OR)) ) {
-                alt6=1;
+            if ( ((LA7_0>=ID && LA7_0<=OR)) ) {
+                alt7=1;
             }
-            else if ( (LA6_0==15) ) {
-                alt6=2;
+            else if ( (LA7_0==17) ) {
+                alt7=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 6, 0, input);
+                    new NoViableAltException("", 7, 0, input);
 
                 throw nvae;
             }
-            switch (alt6) {
+            switch (alt7) {
                 case 1 :
-                    // ApplicabilityGrammar.g:59:10: value
+                    // ApplicabilityGrammar.g:62:10: value
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_value_in_val222);
-                    value16=value();
+                    pushFollow(FOLLOW_value_in_val254);
+                    value21=value();
 
                     state._fsp--;
 
-                    adaptor.addChild(root_0, value16.getTree());
+                    adaptor.addChild(root_0, value21.getTree());
 
                     }
                     break;
                 case 2 :
-                    // ApplicabilityGrammar.g:59:18: start_compound
+                    // ApplicabilityGrammar.g:62:18: start_compound
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_start_compound_in_val226);
-                    start_compound17=start_compound();
+                    pushFollow(FOLLOW_start_compound_in_val258);
+                    start_compound22=start_compound();
 
                     state._fsp--;
 
-                    adaptor.addChild(root_0, start_compound17.getTree());
+                    adaptor.addChild(root_0, start_compound22.getTree());
 
                     }
                     break;
@@ -675,41 +809,41 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "start_compound"
-    // ApplicabilityGrammar.g:61:1: start_compound : '(' compound_value ')' ;
+    // ApplicabilityGrammar.g:64:1: start_compound : '(' compound_value ')' ;
     public final ApplicabilityGrammarParser.start_compound_return start_compound() throws RecognitionException {
         ApplicabilityGrammarParser.start_compound_return retval = new ApplicabilityGrammarParser.start_compound_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token char_literal18=null;
-        Token char_literal20=null;
-        ApplicabilityGrammarParser.compound_value_return compound_value19 = null;
+        Token char_literal23=null;
+        Token char_literal25=null;
+        ApplicabilityGrammarParser.compound_value_return compound_value24 = null;
 
 
-        CommonTree char_literal18_tree=null;
-        CommonTree char_literal20_tree=null;
+        CommonTree char_literal23_tree=null;
+        CommonTree char_literal25_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:61:18: ( '(' compound_value ')' )
-            // ApplicabilityGrammar.g:61:20: '(' compound_value ')'
+            // ApplicabilityGrammar.g:64:18: ( '(' compound_value ')' )
+            // ApplicabilityGrammar.g:64:20: '(' compound_value ')'
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            char_literal18=(Token)match(input,15,FOLLOW_15_in_start_compound244); 
-            char_literal18_tree = (CommonTree)adaptor.create(char_literal18);
-            adaptor.addChild(root_0, char_literal18_tree);
+            char_literal23=(Token)match(input,17,FOLLOW_17_in_start_compound276); 
+            char_literal23_tree = (CommonTree)adaptor.create(char_literal23);
+            adaptor.addChild(root_0, char_literal23_tree);
 
              id_values_map.get(id).add("("); 
-            pushFollow(FOLLOW_compound_value_in_start_compound259);
-            compound_value19=compound_value();
+            pushFollow(FOLLOW_compound_value_in_start_compound291);
+            compound_value24=compound_value();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, compound_value19.getTree());
-            char_literal20=(Token)match(input,16,FOLLOW_16_in_start_compound270); 
-            char_literal20_tree = (CommonTree)adaptor.create(char_literal20);
-            adaptor.addChild(root_0, char_literal20_tree);
+            adaptor.addChild(root_0, compound_value24.getTree());
+            char_literal25=(Token)match(input,18,FOLLOW_18_in_start_compound302); 
+            char_literal25_tree = (CommonTree)adaptor.create(char_literal25);
+            adaptor.addChild(root_0, char_literal25_tree);
 
             	id_values_map.get(id).add(")"); 
 
@@ -739,91 +873,91 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "compound_value"
-    // ApplicabilityGrammar.g:65:1: compound_value : ( ( value )+ | multiple_compounds );
+    // ApplicabilityGrammar.g:68:1: compound_value : ( ( value )+ | multiple_compounds );
     public final ApplicabilityGrammarParser.compound_value_return compound_value() throws RecognitionException {
         ApplicabilityGrammarParser.compound_value_return retval = new ApplicabilityGrammarParser.compound_value_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        ApplicabilityGrammarParser.value_return value21 = null;
+        ApplicabilityGrammarParser.value_return value26 = null;
 
-        ApplicabilityGrammarParser.multiple_compounds_return multiple_compounds22 = null;
+        ApplicabilityGrammarParser.multiple_compounds_return multiple_compounds27 = null;
 
 
 
         try {
-            // ApplicabilityGrammar.g:65:18: ( ( value )+ | multiple_compounds )
-            int alt8=2;
-            int LA8_0 = input.LA(1);
+            // ApplicabilityGrammar.g:68:18: ( ( value )+ | multiple_compounds )
+            int alt9=2;
+            int LA9_0 = input.LA(1);
 
-            if ( ((LA8_0>=ID && LA8_0<=OR)) ) {
-                alt8=1;
+            if ( ((LA9_0>=ID && LA9_0<=OR)) ) {
+                alt9=1;
             }
-            else if ( (LA8_0==15) ) {
-                alt8=2;
+            else if ( (LA9_0==17) ) {
+                alt9=2;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 8, 0, input);
+                    new NoViableAltException("", 9, 0, input);
 
                 throw nvae;
             }
-            switch (alt8) {
+            switch (alt9) {
                 case 1 :
-                    // ApplicabilityGrammar.g:65:20: ( value )+
+                    // ApplicabilityGrammar.g:68:20: ( value )+
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    // ApplicabilityGrammar.g:65:20: ( value )+
-                    int cnt7=0;
-                    loop7:
+                    // ApplicabilityGrammar.g:68:20: ( value )+
+                    int cnt8=0;
+                    loop8:
                     do {
-                        int alt7=2;
-                        int LA7_0 = input.LA(1);
+                        int alt8=2;
+                        int LA8_0 = input.LA(1);
 
-                        if ( ((LA7_0>=ID && LA7_0<=OR)) ) {
-                            alt7=1;
+                        if ( ((LA8_0>=ID && LA8_0<=OR)) ) {
+                            alt8=1;
                         }
 
 
-                        switch (alt7) {
+                        switch (alt8) {
                     	case 1 :
-                    	    // ApplicabilityGrammar.g:65:20: value
+                    	    // ApplicabilityGrammar.g:68:20: value
                     	    {
-                    	    pushFollow(FOLLOW_value_in_compound_value282);
-                    	    value21=value();
+                    	    pushFollow(FOLLOW_value_in_compound_value314);
+                    	    value26=value();
 
                     	    state._fsp--;
 
-                    	    adaptor.addChild(root_0, value21.getTree());
+                    	    adaptor.addChild(root_0, value26.getTree());
 
                     	    }
                     	    break;
 
                     	default :
-                    	    if ( cnt7 >= 1 ) break loop7;
+                    	    if ( cnt8 >= 1 ) break loop8;
                                 EarlyExitException eee =
-                                    new EarlyExitException(7, input);
+                                    new EarlyExitException(8, input);
                                 throw eee;
                         }
-                        cnt7++;
+                        cnt8++;
                     } while (true);
 
 
                     }
                     break;
                 case 2 :
-                    // ApplicabilityGrammar.g:65:29: multiple_compounds
+                    // ApplicabilityGrammar.g:68:29: multiple_compounds
                     {
                     root_0 = (CommonTree)adaptor.nil();
 
-                    pushFollow(FOLLOW_multiple_compounds_in_compound_value287);
-                    multiple_compounds22=multiple_compounds();
+                    pushFollow(FOLLOW_multiple_compounds_in_compound_value319);
+                    multiple_compounds27=multiple_compounds();
 
                     state._fsp--;
 
-                    adaptor.addChild(root_0, multiple_compounds22.getTree());
+                    adaptor.addChild(root_0, multiple_compounds27.getTree());
 
                     }
                     break;
@@ -853,46 +987,46 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "multiple_compounds"
-    // ApplicabilityGrammar.g:67:1: multiple_compounds : start_compound operator compound_value ;
+    // ApplicabilityGrammar.g:70:1: multiple_compounds : start_compound operator compound_value ;
     public final ApplicabilityGrammarParser.multiple_compounds_return multiple_compounds() throws RecognitionException {
         ApplicabilityGrammarParser.multiple_compounds_return retval = new ApplicabilityGrammarParser.multiple_compounds_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        ApplicabilityGrammarParser.start_compound_return start_compound23 = null;
+        ApplicabilityGrammarParser.start_compound_return start_compound28 = null;
 
-        ApplicabilityGrammarParser.operator_return operator24 = null;
+        ApplicabilityGrammarParser.operator_return operator29 = null;
 
-        ApplicabilityGrammarParser.compound_value_return compound_value25 = null;
+        ApplicabilityGrammarParser.compound_value_return compound_value30 = null;
 
 
 
         try {
-            // ApplicabilityGrammar.g:67:22: ( start_compound operator compound_value )
-            // ApplicabilityGrammar.g:67:24: start_compound operator compound_value
+            // ApplicabilityGrammar.g:70:22: ( start_compound operator compound_value )
+            // ApplicabilityGrammar.g:70:24: start_compound operator compound_value
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            pushFollow(FOLLOW_start_compound_in_multiple_compounds304);
-            start_compound23=start_compound();
+            pushFollow(FOLLOW_start_compound_in_multiple_compounds336);
+            start_compound28=start_compound();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, start_compound23.getTree());
-            pushFollow(FOLLOW_operator_in_multiple_compounds316);
-            operator24=operator();
+            adaptor.addChild(root_0, start_compound28.getTree());
+            pushFollow(FOLLOW_operator_in_multiple_compounds348);
+            operator29=operator();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, operator24.getTree());
-             id_values_map.get(id).add((operator24!=null?input.toString(operator24.start,operator24.stop):null)); 
-            pushFollow(FOLLOW_compound_value_in_multiple_compounds330);
-            compound_value25=compound_value();
+            adaptor.addChild(root_0, operator29.getTree());
+             id_values_map.get(id).add((operator29!=null?input.toString(operator29.start,operator29.stop):null)); 
+            pushFollow(FOLLOW_compound_value_in_multiple_compounds362);
+            compound_value30=compound_value();
 
             state._fsp--;
 
-            adaptor.addChild(root_0, compound_value25.getTree());
+            adaptor.addChild(root_0, compound_value30.getTree());
 
             }
 
@@ -920,37 +1054,37 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "value"
-    // ApplicabilityGrammar.g:71:1: value : (temp= operator )? ID ;
+    // ApplicabilityGrammar.g:74:1: value : (temp= operator )? ID ;
     public final ApplicabilityGrammarParser.value_return value() throws RecognitionException {
         ApplicabilityGrammarParser.value_return retval = new ApplicabilityGrammarParser.value_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token ID26=null;
+        Token ID31=null;
         ApplicabilityGrammarParser.operator_return temp = null;
 
 
-        CommonTree ID26_tree=null;
+        CommonTree ID31_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:71:16: ( (temp= operator )? ID )
-            // ApplicabilityGrammar.g:71:18: (temp= operator )? ID
+            // ApplicabilityGrammar.g:74:16: ( (temp= operator )? ID )
+            // ApplicabilityGrammar.g:74:18: (temp= operator )? ID
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            // ApplicabilityGrammar.g:71:22: (temp= operator )?
-            int alt9=2;
-            int LA9_0 = input.LA(1);
+            // ApplicabilityGrammar.g:74:22: (temp= operator )?
+            int alt10=2;
+            int LA10_0 = input.LA(1);
 
-            if ( ((LA9_0>=AND && LA9_0<=OR)) ) {
-                alt9=1;
+            if ( ((LA10_0>=AND && LA10_0<=OR)) ) {
+                alt10=1;
             }
-            switch (alt9) {
+            switch (alt10) {
                 case 1 :
-                    // ApplicabilityGrammar.g:71:22: temp= operator
+                    // ApplicabilityGrammar.g:74:22: temp= operator
                     {
-                    pushFollow(FOLLOW_operator_in_value349);
+                    pushFollow(FOLLOW_operator_in_value381);
                     temp=operator();
 
                     state._fsp--;
@@ -962,14 +1096,14 @@ public class ApplicabilityGrammarParser extends Parser {
 
             }
 
-            ID26=(Token)match(input,ID,FOLLOW_ID_in_value352); 
-            ID26_tree = (CommonTree)adaptor.create(ID26);
-            adaptor.addChild(root_0, ID26_tree);
+            ID31=(Token)match(input,ID,FOLLOW_ID_in_value384); 
+            ID31_tree = (CommonTree)adaptor.create(ID31);
+            adaptor.addChild(root_0, ID31_tree);
 
              	
             														if((temp!=null?input.toString(temp.start,temp.stop):null) != null)
             															id_values_map.get(id).add((temp!=null?input.toString(temp.start,temp.stop):null));
-            														id_values_map.get(id).add((ID26!=null?ID26.getText():null).trim());
+            														id_values_map.get(id).add((ID31!=null?ID31.getText():null).trim());
             												 		
 
             }
@@ -998,27 +1132,27 @@ public class ApplicabilityGrammarParser extends Parser {
     };
 
     // $ANTLR start "operator"
-    // ApplicabilityGrammar.g:77:1: operator : ( AND | OR );
+    // ApplicabilityGrammar.g:80:1: operator : ( AND | OR );
     public final ApplicabilityGrammarParser.operator_return operator() throws RecognitionException {
         ApplicabilityGrammarParser.operator_return retval = new ApplicabilityGrammarParser.operator_return();
         retval.start = input.LT(1);
 
         CommonTree root_0 = null;
 
-        Token set27=null;
+        Token set32=null;
 
-        CommonTree set27_tree=null;
+        CommonTree set32_tree=null;
 
         try {
-            // ApplicabilityGrammar.g:77:14: ( AND | OR )
+            // ApplicabilityGrammar.g:80:14: ( AND | OR )
             // ApplicabilityGrammar.g:
             {
             root_0 = (CommonTree)adaptor.nil();
 
-            set27=(Token)input.LT(1);
+            set32=(Token)input.LT(1);
             if ( (input.LA(1)>=AND && input.LA(1)<=OR) ) {
                 input.consume();
-                adaptor.addChild(root_0, (CommonTree)adaptor.create(set27));
+                adaptor.addChild(root_0, (CommonTree)adaptor.create(set32));
                 state.errorRecovery=false;
             }
             else {
@@ -1056,30 +1190,35 @@ public class ApplicabilityGrammarParser extends Parser {
     public static final BitSet FOLLOW_EOF_in_start59 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_config_applicability_in_applicability80 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_feature_applicability_in_applicability95 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_config_applicability118 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_config_applicability123 = new BitSet(new long[]{0x0000000000000070L});
-    public static final BitSet FOLLOW_expressions_in_config_applicability125 = new BitSet(new long[]{0x0000000000001070L});
-    public static final BitSet FOLLOW_12_in_config_applicability128 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_13_in_feature_applicability138 = new BitSet(new long[]{0x0000000000000070L});
-    public static final BitSet FOLLOW_expressions_in_feature_applicability140 = new BitSet(new long[]{0x0000000000001070L});
-    public static final BitSet FOLLOW_12_in_feature_applicability143 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_operator_in_expressions157 = new BitSet(new long[]{0x0000000000000070L});
-    public static final BitSet FOLLOW_expression_in_expressions160 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_expression172 = new BitSet(new long[]{0x0000000000004002L});
-    public static final BitSet FOLLOW_14_in_expression186 = new BitSet(new long[]{0x0000000000008070L});
-    public static final BitSet FOLLOW_val_in_expression190 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_in_val222 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_start_compound_in_val226 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_15_in_start_compound244 = new BitSet(new long[]{0x0000000000008070L});
-    public static final BitSet FOLLOW_compound_value_in_start_compound259 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_start_compound270 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_in_compound_value282 = new BitSet(new long[]{0x0000000000000072L});
-    public static final BitSet FOLLOW_multiple_compounds_in_compound_value287 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_start_compound_in_multiple_compounds304 = new BitSet(new long[]{0x0000000000000060L});
-    public static final BitSet FOLLOW_operator_in_multiple_compounds316 = new BitSet(new long[]{0x0000000000008070L});
-    public static final BitSet FOLLOW_compound_value_in_multiple_compounds330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_operator_in_value349 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ID_in_value352 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_configurationgroup_applicability_in_applicability110 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_config_applicability132 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_config_applicability137 = new BitSet(new long[]{0x0000000000000070L});
+    public static final BitSet FOLLOW_expressions_in_config_applicability139 = new BitSet(new long[]{0x0000000000001070L});
+    public static final BitSet FOLLOW_12_in_config_applicability142 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_configurationgroup_applicability150 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_configurationgroup_applicability155 = new BitSet(new long[]{0x0000000000000070L});
+    public static final BitSet FOLLOW_expressions_in_configurationgroup_applicability157 = new BitSet(new long[]{0x0000000000001070L});
+    public static final BitSet FOLLOW_12_in_configurationgroup_applicability160 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_15_in_feature_applicability170 = new BitSet(new long[]{0x0000000000000070L});
+    public static final BitSet FOLLOW_expressions_in_feature_applicability172 = new BitSet(new long[]{0x0000000000001070L});
+    public static final BitSet FOLLOW_12_in_feature_applicability175 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_operator_in_expressions189 = new BitSet(new long[]{0x0000000000000070L});
+    public static final BitSet FOLLOW_expression_in_expressions192 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_expression204 = new BitSet(new long[]{0x0000000000010002L});
+    public static final BitSet FOLLOW_16_in_expression218 = new BitSet(new long[]{0x0000000000020070L});
+    public static final BitSet FOLLOW_val_in_expression222 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_in_val254 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_start_compound_in_val258 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_start_compound276 = new BitSet(new long[]{0x0000000000020070L});
+    public static final BitSet FOLLOW_compound_value_in_start_compound291 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_start_compound302 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_in_compound_value314 = new BitSet(new long[]{0x0000000000000072L});
+    public static final BitSet FOLLOW_multiple_compounds_in_compound_value319 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_start_compound_in_multiple_compounds336 = new BitSet(new long[]{0x0000000000000060L});
+    public static final BitSet FOLLOW_operator_in_multiple_compounds348 = new BitSet(new long[]{0x0000000000020070L});
+    public static final BitSet FOLLOW_compound_value_in_multiple_compounds362 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_operator_in_value381 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ID_in_value384 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_operator0 = new BitSet(new long[]{0x0000000000000002L});
 
 }

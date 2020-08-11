@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-08-05 10:09:53
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2020-08-11 07:54:21
 package org.eclipse.osee.framework.core.grammar;
 
 import org.antlr.runtime.BaseRecognizer;
@@ -16,6 +16,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
    public static final int NOT = 7;
    public static final int T__15 = 15;
    public static final int T__16 = 16;
+   public static final int T__17 = 17;
+   public static final int T__18 = 18;
    public static final int AND = 5;
    public static final int T__11 = 11;
    public static final int T__12 = 12;
@@ -128,10 +130,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__13;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:7:7: ( 'FEATURE[' )
-         // ApplicabilityGrammar.g:7:9: 'FEATURE['
+         // ApplicabilityGrammar.g:7:7: ( 'CONFIGURATIONGROUP' )
+         // ApplicabilityGrammar.g:7:9: 'CONFIGURATIONGROUP'
          {
-            match("FEATURE[");
+            match("CONFIGURATIONGROUP");
 
          }
 
@@ -147,10 +149,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__14;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:8:7: ( '=' )
-         // ApplicabilityGrammar.g:8:9: '='
+         // ApplicabilityGrammar.g:8:7: ( 'CONFIGURATIONGROUP NOT' )
+         // ApplicabilityGrammar.g:8:9: 'CONFIGURATIONGROUP NOT'
          {
-            match('=');
+            match("CONFIGURATIONGROUP NOT");
 
          }
 
@@ -166,10 +168,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__15;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:9:7: ( '(' )
-         // ApplicabilityGrammar.g:9:9: '('
+         // ApplicabilityGrammar.g:9:7: ( 'FEATURE[' )
+         // ApplicabilityGrammar.g:9:9: 'FEATURE['
          {
-            match('(');
+            match("FEATURE[");
 
          }
 
@@ -185,10 +187,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__16;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:10:7: ( ')' )
-         // ApplicabilityGrammar.g:10:9: ')'
+         // ApplicabilityGrammar.g:10:7: ( '=' )
+         // ApplicabilityGrammar.g:10:9: '='
          {
-            match(')');
+            match('=');
 
          }
 
@@ -199,13 +201,51 @@ public class ApplicabilityGrammarLexer extends Lexer {
    }
    // $ANTLR end "T__16"
 
+   // $ANTLR start "T__17"
+   public final void mT__17() throws RecognitionException {
+      try {
+         int _type = T__17;
+         int _channel = DEFAULT_TOKEN_CHANNEL;
+         // ApplicabilityGrammar.g:11:7: ( '(' )
+         // ApplicabilityGrammar.g:11:9: '('
+         {
+            match('(');
+
+         }
+
+         state.type = _type;
+         state.channel = _channel;
+      } finally {
+      }
+   }
+   // $ANTLR end "T__17"
+
+   // $ANTLR start "T__18"
+   public final void mT__18() throws RecognitionException {
+      try {
+         int _type = T__18;
+         int _channel = DEFAULT_TOKEN_CHANNEL;
+         // ApplicabilityGrammar.g:12:7: ( ')' )
+         // ApplicabilityGrammar.g:12:9: ')'
+         {
+            match(')');
+
+         }
+
+         state.type = _type;
+         state.channel = _channel;
+      } finally {
+      }
+   }
+   // $ANTLR end "T__18"
+
    // $ANTLR start "OR"
    public final void mOR() throws RecognitionException {
       try {
          int _type = OR;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:78:10: ( '|' )
-         // ApplicabilityGrammar.g:78:12: '|'
+         // ApplicabilityGrammar.g:81:10: ( '|' )
+         // ApplicabilityGrammar.g:81:12: '|'
          {
             match('|');
 
@@ -223,8 +263,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = AND;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:79:10: ( '&' )
-         // ApplicabilityGrammar.g:79:12: '&'
+         // ApplicabilityGrammar.g:82:10: ( '&' )
+         // ApplicabilityGrammar.g:82:12: '&'
          {
             match('&');
 
@@ -242,8 +282,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = NOT;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:80:10: ( 'NOT' )
-         // ApplicabilityGrammar.g:80:12: 'NOT'
+         // ApplicabilityGrammar.g:83:10: ( 'NOT' )
+         // ApplicabilityGrammar.g:83:12: 'NOT'
          {
             match("NOT");
 
@@ -261,8 +301,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = ID;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:81:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )* )
-         // ApplicabilityGrammar.g:81:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
+         // ApplicabilityGrammar.g:84:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )* )
+         // ApplicabilityGrammar.g:84:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
          {
             if ((input.LA(1) >= 'A' && input.LA(1) <= 'Z') || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                input.consume();
@@ -273,7 +313,7 @@ public class ApplicabilityGrammarLexer extends Lexer {
                throw mse;
             }
 
-            // ApplicabilityGrammar.g:81:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
+            // ApplicabilityGrammar.g:84:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' | '.' | '(' | ')' )*
             loop1: do {
                int alt1 = 2;
                int LA1_0 = input.LA(1);
@@ -320,10 +360,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = WS;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:83:4: ( ( ' ' | '\\r' | '\\t' | '\\n' )+ )
-         // ApplicabilityGrammar.g:83:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
+         // ApplicabilityGrammar.g:85:4: ( ( ' ' | '\\r' | '\\t' | '\\n' )+ )
+         // ApplicabilityGrammar.g:85:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
          {
-            // ApplicabilityGrammar.g:83:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
+            // ApplicabilityGrammar.g:85:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
             int cnt2 = 0;
             loop2: do {
                int alt2 = 2;
@@ -372,8 +412,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
 
    @Override
    public void mTokens() throws RecognitionException {
-      // ApplicabilityGrammar.g:1:8: ( T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | OR | AND | NOT | ID | WS )
-      int alt3 = 13;
+      // ApplicabilityGrammar.g:1:8: ( T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | OR | AND | NOT | ID | WS )
+      int alt3 = 15;
       alt3 = dfa3.predict(input);
       switch (alt3) {
          case 1:
@@ -433,35 +473,49 @@ public class ApplicabilityGrammarLexer extends Lexer {
          }
             break;
          case 9:
-         // ApplicabilityGrammar.g:1:57: OR
+         // ApplicabilityGrammar.g:1:57: T__17
+         {
+            mT__17();
+
+         }
+            break;
+         case 10:
+         // ApplicabilityGrammar.g:1:63: T__18
+         {
+            mT__18();
+
+         }
+            break;
+         case 11:
+         // ApplicabilityGrammar.g:1:69: OR
          {
             mOR();
 
          }
             break;
-         case 10:
-         // ApplicabilityGrammar.g:1:60: AND
+         case 12:
+         // ApplicabilityGrammar.g:1:72: AND
          {
             mAND();
 
          }
             break;
-         case 11:
-         // ApplicabilityGrammar.g:1:64: NOT
+         case 13:
+         // ApplicabilityGrammar.g:1:76: NOT
          {
             mNOT();
 
          }
             break;
-         case 12:
-         // ApplicabilityGrammar.g:1:68: ID
+         case 14:
+         // ApplicabilityGrammar.g:1:80: ID
          {
             mID();
 
          }
             break;
-         case 13:
-         // ApplicabilityGrammar.g:1:71: WS
+         case 15:
+         // ApplicabilityGrammar.g:1:83: WS
          {
             mWS();
 
@@ -474,15 +528,15 @@ public class ApplicabilityGrammarLexer extends Lexer {
 
    protected DFA3 dfa3 = new DFA3(this);
    static final String DFA3_eotS =
-      "\1\uffff\1\13\2\uffff\1\13\5\uffff\1\13\2\uffff\5\13\1\25\2\13" + "\1\uffff\7\13\1\uffff\4\13\1\44\1\13\1\uffff\2\13\1\50\1\uffff";
-   static final String DFA3_eofS = "\51\uffff";
+      "\1\uffff\1\13\2\uffff\1\13\5\uffff\1\13\2\uffff\5\13\1\25\2\13" + "\1\uffff\7\13\1\uffff\4\13\1\45\2\13\1\uffff\4\13\1\54\1\13\1\uffff" + "\1\57\1\13\1\uffff\2\13\1\63\1\uffff";
+   static final String DFA3_eofS = "\64\uffff";
    static final String DFA3_minS =
-      "\1\11\1\117\2\uffff\1\105\5\uffff\1\117\2\uffff\1\116\1\101\1\124" + "\1\106\1\124\1\40\1\111\1\125\1\uffff\1\107\1\122\1\125\1\105\1" + "\122\1\133\1\101\1\uffff\1\124\1\111\1\117\1\116\1\40\1\116\1\uffff" + "\1\117\1\124\1\40\1\uffff";
+      "\1\11\1\117\2\uffff\1\105\5\uffff\1\117\2\uffff\1\116\1\101\1\124" + "\1\106\1\124\1\40\1\111\1\125\1\uffff\1\107\1\122\1\125\1\105\1" + "\122\1\133\1\101\1\uffff\1\124\1\111\1\117\1\116\1\40\1\116\1\122" + "\1\uffff\2\117\1\124\1\125\1\40\1\120\1\uffff\1\40\1\116\1\uffff" + "\1\117\1\124\1\40\1\uffff";
    static final String DFA3_maxS =
-      "\1\174\1\117\2\uffff\1\105\5\uffff\1\117\2\uffff\1\116\1\101\1" + "\124\1\106\1\124\1\172\1\111\1\125\1\uffff\1\107\1\122\1\125\1\105" + "\1\122\1\133\1\101\1\uffff\1\124\1\111\1\117\1\116\1\172\1\116\1" + "\uffff\1\117\1\124\1\172\1\uffff";
+      "\1\174\1\117\2\uffff\1\105\5\uffff\1\117\2\uffff\1\116\1\101\1" + "\124\1\106\1\124\1\172\1\111\1\125\1\uffff\1\107\1\122\1\125\1\105" + "\1\122\1\133\1\101\1\uffff\1\124\1\111\1\117\1\116\1\172\1\116\1" + "\122\1\uffff\2\117\1\124\1\125\1\172\1\120\1\uffff\1\172\1\116\1" + "\uffff\1\117\1\124\1\172\1\uffff";
    static final String DFA3_acceptS =
-      "\2\uffff\1\3\1\4\1\uffff\1\6\1\7\1\10\1\11\1\12\1\uffff\1\14\1" + "\15\10\uffff\1\13\7\uffff\1\5\6\uffff\1\1\3\uffff\1\2";
-   static final String DFA3_specialS = "\51\uffff}>";
+      "\2\uffff\1\3\1\4\1\uffff\1\10\1\11\1\12\1\13\1\14\1\uffff\1\16" + "\1\17\10\uffff\1\15\7\uffff\1\7\7\uffff\1\1\6\uffff\1\2\2\uffff" + "\1\5\3\uffff\1\6";
+   static final String DFA3_specialS = "\64\uffff}>";
    static final String[] DFA3_transitionS = {
       "\2\14\2\uffff\1\14\22\uffff\1\14\5\uffff\1\11\1\uffff\1\6\1" + "\7\23\uffff\1\5\3\uffff\2\13\1\1\2\13\1\4\7\13\1\12\14\13\1" + "\2\1\uffff\1\3\3\uffff\32\13\1\uffff\1\10",
       "\1\15",
@@ -518,11 +572,22 @@ public class ApplicabilityGrammarLexer extends Lexer {
       "\1\40",
       "\1\41",
       "\1\42",
-      "\1\43\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
-      "\1\45",
-      "",
+      "\1\43\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\6\13" + "\1\44\23\13\4\uffff\1\13\1\uffff\32\13",
       "\1\46",
       "\1\47",
+      "",
+      "\1\50",
+      "\1\51",
+      "\1\52",
+      "\1\53",
+      "\1\13\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
+      "\1\55",
+      "",
+      "\1\56\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
+      "\1\60",
+      "",
+      "\1\61",
+      "\1\62",
       "\1\13\7\uffff\2\13\3\uffff\2\13\1\uffff\12\13\7\uffff\32\13" + "\4\uffff\1\13\1\uffff\32\13",
       ""};
 
@@ -558,7 +623,7 @@ public class ApplicabilityGrammarLexer extends Lexer {
 
       @Override
       public String getDescription() {
-         return "1:1: Tokens : ( T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | OR | AND | NOT | ID | WS );";
+         return "1:1: Tokens : ( T__9 | T__10 | T__11 | T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | OR | AND | NOT | ID | WS );";
       }
    }
 

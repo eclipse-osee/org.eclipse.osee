@@ -40,9 +40,12 @@ package org.eclipse.osee.framework.core.grammar;
 start                  :  applicability EOF! { operators.removeAll(Collections.singleton(null)); };
 
 applicability           : config_applicability { applicabilityType="Config"; } 
-								| feature_applicability { applicabilityType="Feature"; } ;
+								| feature_applicability { applicabilityType="Feature"; } 
+								| configurationgroup_applicability { applicabilityType="ConfigurationGroup"; };
 									
 config_applicability    : ('CONFIGURATION'|'CONFIGURATION NOT')'[' expressions+ ']';
+
+configurationgroup_applicability : ('CONFIGURATIONGROUP'|'CONFIGURATIONGROUP NOT')'[' expressions+ ']';
 
 feature_applicability   : 'FEATURE[' expressions+ ']' ;
 
@@ -79,7 +82,6 @@ OR							: '|';
 AND						: '&';
 NOT						: 'NOT';
 ID : ('a'..'z'|'A'..'Z')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-'|' '|'.'|'('|')')* ;
-
 WS : (' '|'\r'|'\t'|'\n')+ {$channel=HIDDEN;};
 
 

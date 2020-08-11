@@ -23,7 +23,9 @@ public class ApplicabilityBlock {
    public enum ApplicabilityType {
       Configuration,
       NotConfiguration,
-      Feature
+      Feature,
+      ConfigurationGroup,
+      NotConfigurationGroup
    };
 
    private ApplicabilityType applicabilityType;
