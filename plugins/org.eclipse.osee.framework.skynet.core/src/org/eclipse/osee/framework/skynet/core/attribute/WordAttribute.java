@@ -82,8 +82,9 @@ public class WordAttribute extends StringAttribute {
       return WordCoreUtil.containsWordAnnotations(temp);
    }
 
-   public boolean areApplicabilityTagsInvalid(BranchId branch, HashCollection<String, String> validFeatureValues, HashSet<String> validConfigurations) {
-      return WordCoreUtil.areApplicabilityTagsInvalid(getValue(), branch, validFeatureValues, validConfigurations);
+   public boolean areApplicabilityTagsInvalid(BranchId branch, HashCollection<String, String> validFeatureValues, HashSet<String> validConfigurations, HashSet<String> validConfigurationGroups) {
+      return WordCoreUtil.areApplicabilityTagsInvalid(getValue(), branch, validFeatureValues, validConfigurations,
+         validConfigurationGroups);
    }
 
    @Override

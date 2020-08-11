@@ -915,6 +915,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             "Create Config and Base applicabilities on new view: " + groupName);
          tx2.createApplicabilityForView(newGrp, "Base");
          tx2.createApplicabilityForView(newGrp, "ConfigurationGroup = " + groupName);
+         for (FeatureDefinition feature : orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(
+            branch)) {
+            tx2.createApplicabilityForView(newGrp, feature.getName() + " = " + feature.getDefaultValue());
+         }
          tx2.commit();
       } catch (Exception ex) {
          results.error(Lib.exceptionToString(ex));

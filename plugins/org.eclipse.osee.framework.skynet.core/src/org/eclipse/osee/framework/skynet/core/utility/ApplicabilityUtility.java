@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -54,4 +55,17 @@ public class ApplicabilityUtility {
       }
       return names;
    }
+
+   public static HashSet<String> getConfigurationGroupsUpperCase(BranchId branch) {
+      HashSet<String> names = new HashSet<>();
+      OseeClient oseeClient = ServiceUtil.getOseeClient();
+      oseeClient.getApplicabilityEndpoint(branch).getViews();
+      Collection<ArtifactToken> views =
+         ArtifactQuery.getArtifactTokenListFromType(CoreArtifactTypes.GroupArtifact, branch);
+      for (ArtifactToken view : views) {
+         names.add(view.getName().toUpperCase());
+      }
+      return names;
+   }
+
 }

@@ -32,6 +32,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
 
    private HashCollection<String, String> validFeatureValues;
    private HashSet<String> validConfigurations;
+   private HashSet<String> validConfigurationGroups;
 
    public MatchingApplicabilityTagsRule(AtsApi atsApi) {
       super(atsApi);
@@ -50,10 +51,14 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
          validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(artifact.getBranch());
       }
 
+      if (validConfigurationGroups == null) {
+         validConfigurationGroups = ApplicabilityUtility.getConfigurationGroupsUpperCase(artifact.getBranch());
+      }
+
       boolean validationPassed = true;
       if (!validFeatureValues.isEmpty()) {
          validationPassed = !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artifact.getBranch(), validFeatureValues,
-            validConfigurations);
+            validConfigurations, validConfigurationGroups);
          if (!validationPassed) {
             String errStr = "has invalid feature values and/or mismatching start and end applicability tags";
             logError(artifact, errStr, results);

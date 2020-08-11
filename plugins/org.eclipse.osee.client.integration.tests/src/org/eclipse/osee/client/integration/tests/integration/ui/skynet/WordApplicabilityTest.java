@@ -37,11 +37,13 @@ public class WordApplicabilityTest {
 
    HashCollection<String, String> validFeatureValuesForBranch;
    HashSet<String> validConfigurations;
+   HashSet<String> validConfigurationGroups;
 
    @Before
    public void setup() {
       validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_PL);
       validConfigurations = ApplicabilityUtility.getBranchViewNamesUpperCase(DemoBranches.SAW_PL);
+      validConfigurationGroups = ApplicabilityUtility.getConfigurationGroupsUpperCase(DemoBranches.SAW_PL);
    }
 
    @Test
@@ -49,7 +51,7 @@ public class WordApplicabilityTest {
       String content = Lib.fileToString(getClass(), TEST_INVALID_TAGS);
 
       assertTrue(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
-         validConfigurations));
+         validConfigurations, validConfigurationGroups));
    }
 
    @Test
@@ -57,7 +59,7 @@ public class WordApplicabilityTest {
       String content = Lib.fileToString(getClass(), TEST_ElSE_TAGS);
 
       assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
-         validConfigurations));
+         validConfigurations, validConfigurationGroups));
    }
 
    @Test
@@ -65,7 +67,7 @@ public class WordApplicabilityTest {
       String content = Lib.fileToString(getClass(), TEST_EMBEDDED_TAGS);
 
       assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
-         validConfigurations));
+         validConfigurations, validConfigurationGroups));
    }
 
    @Test
@@ -73,6 +75,6 @@ public class WordApplicabilityTest {
       String content = Lib.fileToString(getClass(), TEST_VALID_TAGS);
 
       assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_PL, validFeatureValuesForBranch,
-         validConfigurations));
+         validConfigurations, validConfigurationGroups));
    }
 }

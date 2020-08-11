@@ -36,6 +36,7 @@ public class ApplicabilityBlock {
    private boolean isInTable;
 
    private String beforeElseText, afterElseText, beforeEmbeddedBlockText, afterEmbeddedBlockText, fullText;
+   private String beginTag;
    private int startInsertIndex, endInsertIndex, startTextIndex, endTextIndex;
 
    public ApplicabilityBlock() {
@@ -167,5 +168,13 @@ public class ApplicabilityBlock {
 
    public boolean isInTable() {
       return isInTable;
+   }
+
+   public String getBeginTag() {
+      return beginTag;
+   }
+
+   public void setBeginTag(String beginTag) {
+      this.beginTag = beginTag;
    }
 }

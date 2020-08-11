@@ -1,16 +1,25 @@
 T__9=9
-T__8=8
-OR=4
-AND=6
+OR=6
+NOT=7
+T__15=15
+T__16=16
+T__17=17
+T__18=18
+AND=5
 T__11=11
 T__12=12
 T__13=13
-ID=5
-WS=7
+T__14=14
+ID=4
+WS=8
 T__10=10
-']'=9
-'='=11
-')'=13
-'('=12
-'Feature['=10
-'Configuration['=8
+']'=12
+'CONFIGURATIONGROUP'=13
+'='=16
+'['=11
+'CONFIGURATIONGROUP NOT'=14
+'CONFIGURATION'=9
+')'=18
+'('=17
+'CONFIGURATION NOT'=10
+'FEATURE['=15

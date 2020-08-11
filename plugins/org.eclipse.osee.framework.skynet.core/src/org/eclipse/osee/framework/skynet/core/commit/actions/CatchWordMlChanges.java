@@ -67,7 +67,8 @@ public class CatchWordMlChanges implements CommitAction {
                   Boolean isInvalidTags =
                      useInvalidTagsCheck ? ((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
                         ApplicabilityUtility.getValidFeatureValuesForBranch(destinationBranch),
-                        ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch)) : useInvalidTagsCheck;
+                        ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch),
+                        ApplicabilityUtility.getConfigurationGroupsUpperCase(destinationBranch)) : useInvalidTagsCheck;
                   if (isInvalidTags) {
                      applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }

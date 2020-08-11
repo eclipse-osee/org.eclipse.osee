@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 public class WordCoreUtil {
    public static String FEATUREAPP = "feature";
    public static String CONFIGAPP = "configuration";
+   public static String CONFIGGRPAPP = "configurationgroup";
 
    public static String MAX_TAG_OCCURENCE = "30";
    public static String WORD_ML_TAGS = "(\\<[^>]*?>){0," + MAX_TAG_OCCURENCE + "}";
@@ -58,6 +59,9 @@ public class WordCoreUtil {
       "F" + WORD_ML_TAGS + "e" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "e";
    public static String CONFIG =
       "C" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "f" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "g" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n";
+   public static String CONFIGGRP =
+      "C" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "f" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "g" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "G" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "p";
+
    public static String NOT = "N" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "t";
 
    public static String ENDBRACKETS = WORD_ML_TAGS + " ?(\\[(.*?)\\]) ?";
@@ -67,7 +71,12 @@ public class WordCoreUtil {
    public static String BEGINCONFIG =
       CONFIG + WORD_ML_TAGS + "( " + WORD_ML_TAGS + NOT + WORD_ML_TAGS + ")? ?" + ENDBRACKETS;
    public static String ENDCONFIG = END + WORD_ML_TAGS + CONFIG + OPTIONAL_ENDBRACKETS;
-   public static String ELSE_EXP = "(" + FEATURE + "|" + CONFIG + ")" + WORD_ML_TAGS + " " + WORD_ML_TAGS + ELSE;
+
+   public static String BEGINCONFIGGRP =
+      CONFIGGRP + WORD_ML_TAGS + "( " + WORD_ML_TAGS + NOT + WORD_ML_TAGS + ")? ?" + ENDBRACKETS;
+   public static String ENDCONFIGGRP = END + WORD_ML_TAGS + CONFIGGRP + OPTIONAL_ENDBRACKETS;
+   public static String ELSE_EXP =
+      "(" + FEATURE + "|" + CONFIGGRP + "|" + CONFIG + ")" + WORD_ML_TAGS + " " + WORD_ML_TAGS + ELSE;
 
    public static Pattern ELSE_PATTERN = Pattern.compile(ELSE_EXP, Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -78,9 +87,9 @@ public class WordCoreUtil {
    public static Pattern IMG_SRC_PATTERN =
       Pattern.compile("<v:imagedata.*?src=\"([^\"]+)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-   public static Pattern FULL_PATTERN =
-      Pattern.compile("(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
-         Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern FULL_PATTERN = Pattern.compile(
+      "(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIGGRP + ")|(" + ENDCONFIGGRP + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
+      Pattern.DOTALL | Pattern.MULTILINE);
 
    public static String EMPTY_LIST_REGEX =
       "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
@@ -92,6 +101,18 @@ public class WordCoreUtil {
    private static final String AML_ANNOTATION = "<.??aml:annotation.*?>";
    private static final String AML_CONTENT = "<.??aml:content.*?>";
    private static final String DELETIONS = "<w:delText>.*?</w:delText>";
+   /**
+    * The following static numbers are derived from the FULL_PATTERN compiled above
+    */
+   public final static int beginFeatureMatcherGroup = 1;
+   public final static int beginConfigGroupMatcherGroup = 26;
+   public final static int beginConfigMatcherGroup = 78;
+   public final static int endFeatureMatcherGroup = 12;
+   public final static int endConfigGroupMatcherGroup = 53;
+   public final static int endConfigMatcherGroup = 100;
+   public final static int endFeatureBracketMatcherGroup = 23;
+   public final static int endConfigGroupBracketMatcherGroup = 75;
+   public final static int endConfigBracketMatcherGroup = 117;
 
    public static boolean containsWordAnnotations(String wordml) {
       return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains(
@@ -108,18 +129,26 @@ public class WordCoreUtil {
       return response;
    }
 
-   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations) {
+   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
 
       Matcher matcher = FULL_PATTERN.matcher(wordml);
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
       int applicBlockCount = 0;
 
       while (matcher.find()) {
-         String beginFeature = matcher.group(1) != null ? WordCoreUtil.textOnly(matcher.group(1)) : null;
-         String beginConfiguration = matcher.group(26) != null ? WordCoreUtil.textOnly(matcher.group(26)) : null;
+         String beginFeature = matcher.group(beginFeatureMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(beginFeatureMatcherGroup)) : null;
+         String beginConfiguration = matcher.group(beginConfigMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(beginConfigMatcherGroup)) : null;
+         String beginConfigurationGroup = matcher.group(beginConfigGroupMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(beginConfigGroupMatcherGroup)) : null;
 
-         String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)) : null;
-         String endConfiguration = matcher.group(48) != null ? WordCoreUtil.textOnly(matcher.group(48)) : null;
+         String endFeature = matcher.group(endFeatureMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(endFeatureMatcherGroup)) : null;
+         String endConfiguration = matcher.group(endConfigMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(endConfigMatcherGroup)) : null;
+         String endConfigurationGroup = matcher.group(endConfigGroupMatcherGroup) != null ? WordCoreUtil.textOnly(
+            matcher.group(endConfigGroupMatcherGroup)) : null;
 
          if (beginFeature != null && beginFeature.toLowerCase().contains(FEATUREAPP)) {
             applicBlockCount += 1;
@@ -128,6 +157,12 @@ public class WordCoreUtil {
             if (isValidConfigurationBracket(beginConfiguration, allValidConfigurations)) {
                applicBlockCount += 1;
                applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Configuration, beginConfiguration));
+            }
+         } else if (beginConfigurationGroup != null && beginConfigurationGroup.toLowerCase().contains(CONFIGGRPAPP)) {
+            if (isValidConfigurationGroupBracket(beginConfigurationGroup, allValidConfigurationGroups)) {
+               applicBlockCount += 1;
+               applicabilityBlocks.add(
+                  createApplicabilityBlock(ApplicabilityType.ConfigurationGroup, beginConfigurationGroup));
             }
          } else if (endFeature != null && endFeature.toLowerCase().contains(FEATUREAPP)) {
             applicBlockCount -= 1;
@@ -147,6 +182,15 @@ public class WordCoreUtil {
             }
 
             if (isInvalidConfigurationBlock(applicabilityBlocks.pop(), matcher)) {
+               return true;
+            }
+         } else if (endConfigurationGroup != null && endConfigurationGroup.toLowerCase().contains(CONFIGGRPAPP)) {
+            applicBlockCount -= 1;
+            if (applicabilityBlocks.isEmpty()) {
+               return true;
+            }
+
+            if (isInvalidConfigurationGroupBlock(applicabilityBlocks.pop(), matcher)) {
                return true;
             }
          }
@@ -177,8 +221,34 @@ public class WordCoreUtil {
       return true;
    }
 
+   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
+      beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
+      int start = beginConfigGroup.indexOf("[") + 1;
+      int end = beginConfigGroup.indexOf("]");
+      String applicExpText = beginConfigGroup.substring(start, end);
+
+      String[] configs = applicExpText.split("&|\\|");
+
+      for (String config : configs) {
+         String configKey = config.split("=")[0].trim().toUpperCase();
+         if (!allValidConfigurationGroups.contains(configKey)) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
    private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
       if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
+         return true;
+      }
+
+      return false;
+   }
+
+   private static boolean isInvalidConfigurationGroupBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
+      if (applicabilityBlock.getType() != ApplicabilityType.ConfigurationGroup) {
          return true;
       }
 

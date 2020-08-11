@@ -148,10 +148,12 @@ public class WordUpdateArtifact {
                BranchId plBranch = WordMLApplicabilityHandler.getProductLineBranch(query, data.getBranch());
                HashCollection<String, String> validFeatureValues = getValidFeatureValuesForBranch(query, plBranch);
                HashSet<String> validConfigurations = WordMLApplicabilityHandler.getValidConfigurations(query, plBranch);
+               HashSet<String> validConfigurationGroups =
+                  WordMLApplicabilityHandler.getValidConfigurationGroups(query, plBranch);
 
                // If artifact has InvalidApplicabilityTags, do not block the save
-               boolean hasInvalidApplicabilityTags =
-                  WordCoreUtil.areApplicabilityTagsInvalid(content, plBranch, validFeatureValues, validConfigurations);
+               boolean hasInvalidApplicabilityTags = WordCoreUtil.areApplicabilityTagsInvalid(content, plBranch,
+                  validFeatureValues, validConfigurations, validConfigurationGroups);
 
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has

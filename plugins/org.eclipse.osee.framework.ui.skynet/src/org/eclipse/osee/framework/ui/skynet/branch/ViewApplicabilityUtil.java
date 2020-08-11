@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilterTreeDialog;
@@ -105,8 +103,8 @@ public class ViewApplicabilityUtil {
    public static Map<Long, String> getBranchViews(BranchId branch) {
       Map<Long, String> viewsToBranchData = new HashMap<>();
       if (branch != null && branch.isValid()) {
-         List<Artifact> branchViews = ArtifactQuery.getArtifactListFromType(BranchView, branch);
-         for (Artifact art : branchViews) {
+         List<ArtifactToken> branchViews = getApplicabilityEndpoint(branch).getViews();
+         for (ArtifactToken art : branchViews) {
             viewsToBranchData.put(art.getId(), art.getName());
          }
       }
