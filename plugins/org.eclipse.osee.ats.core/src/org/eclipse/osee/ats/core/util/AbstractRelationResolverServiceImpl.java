@@ -65,7 +65,7 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
       ArtifactToken parent = getParent(artifact);
       while (parent != null) {
          ancestors.add(parent);
-         parent = getParent(artifact);
+         parent = getParent(parent);
       }
       return ancestors;
    }

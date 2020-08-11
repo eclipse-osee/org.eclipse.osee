@@ -36,8 +36,6 @@ public interface IAtsProgramManager {
 
    public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt);
 
-   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt);
-
    public ArtifactToken getPidsReviewAssigneeUserGroup();
 
 }

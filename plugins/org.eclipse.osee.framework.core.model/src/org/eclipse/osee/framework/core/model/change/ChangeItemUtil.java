@@ -15,16 +15,13 @@ package org.eclipse.osee.framework.core.model.change;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
@@ -400,8 +397,21 @@ public final class ChangeItemUtil {
       return netModType;
    }
 
-   public static Collection<ArtifactToken> getArtifacts(Collection<ChangeItem> changes, KindType kindType, Collection<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) {
-      System.err.println("TBD - Implement this");
-      return Collections.emptyList();
+   public static Collection<ArtifactId> getArtifacts(Collection<ChangeItem> changes, ChangeType changeItemType, ModificationType... modificationType) {
+      List<ArtifactId> artifacts = new ArrayList<>();
+      for (ChangeItem change : changes) {
+         if (change.getChangeType().equals(changeItemType)) {
+            ModificationType changeModType = change.getCurrentVersion().getModType();
+            for (ModificationType modType : modificationType) {
+               if (changeModType.equals(modType)) {
+                  if (!artifacts.contains(change.getArtId())) {
+                     artifacts.add(change.getArtId());
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return artifacts;
    }
 }
