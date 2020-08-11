@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.text.SimpleDateFormat;
@@ -186,6 +187,7 @@ public class JsonUtil {
       module.addSerializer(TransactionId.class, idSerializer);
       module.addSerializer(BranchType.class, idSerializer);
       module.addSerializer(BranchState.class, idSerializer);
+      module.addSerializer(java.util.Date.class, DateSerializer.instance);
 
       return module;
    }
