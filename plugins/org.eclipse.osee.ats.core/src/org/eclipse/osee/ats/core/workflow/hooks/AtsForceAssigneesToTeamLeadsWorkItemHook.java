@@ -29,10 +29,10 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
  *
  * @author Donald G. Dunne
  */
-public class AtsForceAssigneesToTeamLeadsWorkflowHook implements IAtsTransitionHook {
+public class AtsForceAssigneesToTeamLeadsWorkItemHook implements IAtsTransitionHook {
 
    public String getName() {
-      return AtsForceAssigneesToTeamLeadsWorkflowHook.class.getSimpleName();
+      return AtsForceAssigneesToTeamLeadsWorkItemHook.class.getSimpleName();
    }
 
    @Override

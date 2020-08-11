@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkflowHook;
+import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link AtsDecisionReviewPrepareWorkflowHook}
+ * Test Case for {@link AtsDecisionReviewPrepareWorkItemHook}
  *
  * @author Donald G. Dunne
  */
@@ -51,7 +51,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       IStateToken toState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Decision.getName());
 
       // make call to state item that should set options based on artifact's attribute value
-      AtsDecisionReviewPrepareWorkflowHook stateItem = new AtsDecisionReviewPrepareWorkflowHook();
+      AtsDecisionReviewPrepareWorkItemHook stateItem = new AtsDecisionReviewPrepareWorkItemHook();
       TransitionResults results = new TransitionResults();
       stateItem.transitioning(results, decRevArt, fromState, toState,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));

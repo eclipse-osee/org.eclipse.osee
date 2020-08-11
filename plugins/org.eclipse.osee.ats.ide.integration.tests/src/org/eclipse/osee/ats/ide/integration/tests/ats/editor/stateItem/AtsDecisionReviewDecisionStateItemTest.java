@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.workflow.hooks.AtsDecisionReviewDecisionWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.AtsDecisionReviewDecisionWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -35,7 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test Case for {@link AtsDecisionReviewDecisionWorkflowHookIde}
+ * Test Case for {@link AtsDecisionReviewDecisionWorkItemHookIde}
  *
  * @author Donald G. Dunne
  */
@@ -78,7 +78,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       Assert.assertEquals("Two", decisionComboDam.getDisplayArray()[2]);
 
       // make call to state item that should set options based on artifact's attribute value
-      AtsDecisionReviewDecisionWorkflowHookIde stateItem = new AtsDecisionReviewDecisionWorkflowHookIde();
+      AtsDecisionReviewDecisionWorkItemHookIde stateItem = new AtsDecisionReviewDecisionWorkItemHookIde();
       Result result = stateItem.xWidgetCreating(decisionComboDam, null, stateDef, decRevArt, true);
 
       // verify no errors and options are as specified in artifact's attribute
@@ -99,7 +99,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       // Set Yes
       decisionComboDam.set(1);
 
-      AtsDecisionReviewDecisionWorkflowHookIde stateItem = new AtsDecisionReviewDecisionWorkflowHookIde();
+      AtsDecisionReviewDecisionWorkItemHookIde stateItem = new AtsDecisionReviewDecisionWorkItemHookIde();
       Collection<AtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
       Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(), users.iterator().next());
@@ -123,7 +123,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       // Set Yes
       decisionComboDam.set(1);
 
-      AtsDecisionReviewDecisionWorkflowHookIde stateItem = new AtsDecisionReviewDecisionWorkflowHookIde();
+      AtsDecisionReviewDecisionWorkItemHookIde stateItem = new AtsDecisionReviewDecisionWorkItemHookIde();
       String toStateName = stateItem.getOverrideTransitionToStateName(decRevArt, decisionComboDam);
       Assert.assertEquals(DecisionReviewState.Followup.getName(), toStateName);
 

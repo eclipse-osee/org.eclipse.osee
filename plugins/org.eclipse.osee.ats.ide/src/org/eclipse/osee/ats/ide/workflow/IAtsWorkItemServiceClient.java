@@ -15,12 +15,12 @@ package org.eclipse.osee.ats.ide.workflow;
 
 import java.util.Set;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 
 public interface IAtsWorkItemServiceClient extends IAtsWorkItemService {
 
-   public Set<IAtsWorkflowHookIde> getWorkflowHooksIde();
+   public Set<IAtsWorkItemHookIde> getWorkItemHooksIde();
 
-   void addWorkflowHookIde(IAtsWorkflowHookIde hook);
+   void addWorkItemHookIde(IAtsWorkItemHookIde hook);
 
 }

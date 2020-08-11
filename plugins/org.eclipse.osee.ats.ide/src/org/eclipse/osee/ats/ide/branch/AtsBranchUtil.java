@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -198,7 +198,7 @@ public class AtsBranchUtil {
       }
 
       // Notify extensions of branch creation
-      for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
+      for (IAtsWorkItemHook item : AtsClientService.get().getWorkItemService().getWorkItemHooks()) {
          item.workingBranchCreated(teamWf);
       }
    }

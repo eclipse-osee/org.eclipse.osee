@@ -42,10 +42,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * 
  * @author Donald G. Dunne
  */
-public class AtsDecisionReviewDecisionWorkflowHookIde implements IAtsWorkflowHookIde, IAtsTransitionHook {
+public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHookIde, IAtsTransitionHook {
 
    public String getName() {
-      return AtsDecisionReviewDecisionWorkflowHookIde.class.getSimpleName();
+      return AtsDecisionReviewDecisionWorkItemHookIde.class.getSimpleName();
    }
 
    @Override

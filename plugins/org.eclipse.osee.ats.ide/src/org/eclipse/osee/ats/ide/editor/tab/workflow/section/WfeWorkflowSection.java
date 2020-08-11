@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XCancelWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -188,8 +188,8 @@ public class WfeWorkflowSection extends SectionPart {
          createMetricsHeader(workComp);
       }
 
-      // Add any dynamic XWidgets declared for page by IAtsWorkflowHook extensions
-      for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+      // Add any dynamic XWidgets declared for page by IAtsWorkItemHook extensions
+      for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -217,8 +217,8 @@ public class WfeWorkflowSection extends SectionPart {
       // Create dynamic XWidgets
       createSectionBody(statePage, workComp);
 
-      // Add any dynamic XWidgets declared for page by IAtsWorkflowHook extensions
-      for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+      // Add any dynamic XWidgets declared for page by IAtsWorkItemHook extensions
+      for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -471,7 +471,7 @@ public class WfeWorkflowSection extends SectionPart {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+            for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,

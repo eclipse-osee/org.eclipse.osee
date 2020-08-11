@@ -30,10 +30,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class AtsPeerToPeerReviewPrepareWorkflowHookIde implements IAtsWorkflowHookIde {
+public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHookIde {
 
    public String getName() {
-      return AtsPeerToPeerReviewPrepareWorkflowHookIde.class.getSimpleName();
+      return AtsPeerToPeerReviewPrepareWorkItemHookIde.class.getSimpleName();
    }
 
    @Override

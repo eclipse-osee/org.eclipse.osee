@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -85,7 +85,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
-         for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+         for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
             item.xWidgetCreated(xWidget, toolkit, stateDefinition, art, isEditable);
          }
       }
@@ -94,7 +94,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
-         for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+         for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
             Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
             if (result.isFalse()) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
@@ -244,7 +244,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) {
       // Check extension points for page creation
       if (art != null) {
-         for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+         for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
             Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
             if (result.isFalse()) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());

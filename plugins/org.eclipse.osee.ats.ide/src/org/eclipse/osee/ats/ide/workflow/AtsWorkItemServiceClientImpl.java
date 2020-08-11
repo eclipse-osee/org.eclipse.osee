@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -43,10 +43,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl implements IAtsWorkItemServiceClient {
 
-   private static Set<IAtsWorkflowHookIde> workflowHooksIde = new HashSet<>();
+   private static Set<IAtsWorkItemHookIde> workflowHooksIde = new HashSet<>();
 
    @Override
-   public void addWorkflowHookIde(IAtsWorkflowHookIde hook) {
+   public void addWorkItemHookIde(IAtsWorkItemHookIde hook) {
       workflowHooksIde.add(hook);
    }
 
@@ -55,7 +55,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
    }
 
    @Override
-   public Set<IAtsWorkflowHookIde> getWorkflowHooksIde() {
+   public Set<IAtsWorkItemHookIde> getWorkItemHooksIde() {
       return workflowHooksIde;
    }
 

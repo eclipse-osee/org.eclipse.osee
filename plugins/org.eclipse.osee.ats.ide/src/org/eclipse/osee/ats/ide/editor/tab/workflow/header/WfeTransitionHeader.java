@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -318,7 +318,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    public void updateTransitionToAssignees() {
       Collection<AtsUser> assignees = null;
       // Determine if the is an override set of assignees
-      for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
+      for (IAtsWorkItemHook item : AtsClientService.get().getWorkItemService().getWorkItemHooks()) {
          String decisionValueIfApplicable = "";
          if (awa.isOfType(
             AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(

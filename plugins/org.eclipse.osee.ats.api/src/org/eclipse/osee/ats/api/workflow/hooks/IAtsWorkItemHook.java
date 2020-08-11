@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.util.Result;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkflowHook {
+public interface IAtsWorkItemHook {
 
    default public Result committing(IAtsTeamWorkflow workItem) {
       return Result.TrueResult;

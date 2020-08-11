@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -56,12 +56,12 @@ import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerToPeerReview;
-import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkflowHook;
+import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkflowHook;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkflowHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -84,7 +84,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    protected final AtsApi atsApi;
    private static final String CANCEL_HYPERLINK_URL_CONFIG_KEY = "CancelHyperlinkUrl";
-   private static Set<IAtsWorkflowHook> workflowHooks = new HashSet<>();
+   private static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = new HashSet<>();
 
    @Override
@@ -93,7 +93,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public void addWorkflowHook(IAtsWorkflowHook hook) {
+   public void addWorkItemHook(IAtsWorkItemHook hook) {
       workflowHooks.add(hook);
    }
 
@@ -109,9 +109,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       transitionHooks.add(new DecisionReviewOnTransitionToHook());
       transitionHooks.add(new PeerReviewOnTransitionToHook());
       transitionHooks.add(new AtsNotificationTransitionHook());
-      transitionHooks.add(new AtsDecisionReviewPrepareWorkflowHook());
-      transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkflowHook());
-      transitionHooks.add(new AtsPeerToPeerReviewReviewWorkflowHook());
+      transitionHooks.add(new AtsDecisionReviewPrepareWorkItemHook());
+      transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
+      transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
    }
 
    @Override
@@ -472,7 +472,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<IAtsWorkflowHook> getWorkflowHooks() {
+   public Collection<IAtsWorkItemHook> getWorkItemHooks() {
       return workflowHooks;
    }
 

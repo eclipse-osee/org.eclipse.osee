@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
-import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
@@ -329,7 +329,7 @@ public class WfeHeaderComposite extends Composite {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsWorkflowHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkflowHooksIde()) {
+            for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), workItem.getStateDefinition(), (Artifact) workItem,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), workItem,

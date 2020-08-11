@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -164,7 +164,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
          } else if (element instanceof IAtsStateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
-         } else if (element instanceof IAtsWorkflowHook || element instanceof WrappedStateItems) {
+         } else if (element instanceof IAtsWorkItemHook || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
          } else if (element instanceof IAtsWorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
@@ -212,7 +212,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             add(items, ((WorkDefinitionViewer) element).getWorkDef());
          } else if (element instanceof WorkflowEditor) {
             add(items, ((WorkflowEditor) element).getWorkItem());
-            items.add(new WrappedStateItems(AtsClientService.get().getWorkItemService().getWorkflowHooks()));
+            items.add(new WrappedStateItems(AtsClientService.get().getWorkItemService().getWorkItemHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
@@ -229,9 +229,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedStateItems) {
             items.addAll(((WrappedStateItems) element).getStateItems());
-         } else if (element instanceof IAtsWorkflowHook) {
-            items.add("Description: " + ((IAtsWorkflowHook) element).getDescription());
-            items.add("Full Name: " + ((IAtsWorkflowHook) element).getFullName());
+         } else if (element instanceof IAtsWorkItemHook) {
+            items.add("Description: " + ((IAtsWorkItemHook) element).getDescription());
+            items.add("Full Name: " + ((IAtsWorkItemHook) element).getFullName());
          } else if (element instanceof WrappedTransitions) {
             items.addAll(((WrappedTransitions) element).getTransitions());
          } else if (element instanceof IAtsDecisionReviewDefinition) {
@@ -292,7 +292,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof IAtsCompositeLayoutItem) {
             return true;
-         } else if (element instanceof IAtsWorkflowHook) {
+         } else if (element instanceof IAtsWorkItemHook) {
             return true;
          } else if (element instanceof IAtsWidgetDefinition) {
             return true;
@@ -607,9 +607,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    }
    private class WrappedStateItems {
-      private final Collection<IAtsWorkflowHook> workflowHooks;
+      private final Collection<IAtsWorkItemHook> workflowHooks;
 
-      public WrappedStateItems(Collection<IAtsWorkflowHook> stateItems) {
+      public WrappedStateItems(Collection<IAtsWorkItemHook> stateItems) {
          this.workflowHooks = stateItems;
       }
 
@@ -618,7 +618,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return "Workflow Hooks" + (workflowHooks.isEmpty() ? " (Empty)" : "");
       }
 
-      public Collection<IAtsWorkflowHook> getStateItems() {
+      public Collection<IAtsWorkItemHook> getStateItems() {
          return workflowHooks;
       }
 

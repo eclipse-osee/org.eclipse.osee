@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkflowHookIde;
+import org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkItemHookIde;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.swt.SWT;
@@ -38,7 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test Case for {@link AtsPeerToPeerReviewPrepareWorkflowHookIde}
+ * Test Case for {@link AtsPeerToPeerReviewPrepareWorkItemHookIde}
  *
  * @author Donald G. Dunne
  */
@@ -92,7 +92,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
          peerRev.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
 
       // make call to state item that should
-      AtsPeerToPeerReviewPrepareWorkflowHookIde stateItem = new AtsPeerToPeerReviewPrepareWorkflowHookIde();
+      AtsPeerToPeerReviewPrepareWorkItemHookIde stateItem = new AtsPeerToPeerReviewPrepareWorkItemHookIde();
       stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, (Artifact) peerRev, true);
 
       // verify the decision combo has been disabled

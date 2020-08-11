@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkflowHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test Case for {@link AtsPeerToPeerReviewReviewWorkflowHook}
+ * Test Case for {@link AtsPeerToPeerReviewReviewWorkItemHook}
  *
  * @author Donald G. Dunne
  */
@@ -98,7 +98,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       IStateToken toState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Review.getName());
 
       // make call to state item that should set options based on artifact's attribute value
-      AtsPeerToPeerReviewReviewWorkflowHook stateItem = new AtsPeerToPeerReviewReviewWorkflowHook();
+      AtsPeerToPeerReviewReviewWorkItemHook stateItem = new AtsPeerToPeerReviewReviewWorkItemHook();
       changes.reset("test transition");
       stateItem.transitioned(peerRevArt, fromState, toState,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes);

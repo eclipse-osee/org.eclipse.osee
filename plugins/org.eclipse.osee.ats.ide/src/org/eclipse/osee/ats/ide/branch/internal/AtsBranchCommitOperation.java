@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
@@ -85,7 +85,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (!overrideStateValidation) {
             final MutableBoolean adminOverride = new MutableBoolean(false);
             // Check extension points for valid commit
-            for (IAtsWorkflowHook item : AtsClientService.get().getWorkItemService().getWorkflowHooks()) {
+            for (IAtsWorkItemHook item : AtsClientService.get().getWorkItemService().getWorkItemHooks()) {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation

@@ -29,10 +29,10 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
  *
  * @author Donald G. Dunne
  */
-public class AtsDecisionReviewPrepareWorkflowHook implements IAtsTransitionHook {
+public class AtsDecisionReviewPrepareWorkItemHook implements IAtsTransitionHook {
 
    public String getName() {
-      return AtsDecisionReviewPrepareWorkflowHook.class.getSimpleName();
+      return AtsDecisionReviewPrepareWorkItemHook.class.getSimpleName();
    }
 
    @Override

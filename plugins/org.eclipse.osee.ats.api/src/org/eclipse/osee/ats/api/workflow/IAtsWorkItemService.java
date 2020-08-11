@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkflowHook;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -121,11 +121,11 @@ public interface IAtsWorkItemService {
 
    void addTransitionHook(IAtsTransitionHook hook);
 
-   void addWorkflowHook(IAtsWorkflowHook hook);
+   void addWorkItemHook(IAtsWorkItemHook hook);
 
    void removeListener(IAtsTransitionHook listener1);
 
-   Collection<IAtsWorkflowHook> getWorkflowHooks();
+   Collection<IAtsWorkItemHook> getWorkItemHooks();
 
    IAtsStateDefinition getStateByName(IAtsWorkItem workItem, String name);
 

@@ -32,10 +32,10 @@ import org.eclipse.osee.ats.core.review.UserRoleManager;
  *
  * @author Donald G. Dunne
  */
-public class AtsPeerToPeerReviewReviewWorkflowHook implements IAtsTransitionHook {
+public class AtsPeerToPeerReviewReviewWorkItemHook implements IAtsTransitionHook {
 
    public String getName() {
-      return AtsPeerToPeerReviewReviewWorkflowHook.class.getSimpleName();
+      return AtsPeerToPeerReviewReviewWorkItemHook.class.getSimpleName();
    }
 
    @Override
