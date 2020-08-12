@@ -67,8 +67,8 @@
 <plugin id="oracle.driver"/>
 <plugin id="org.antlr.runtime"/>
 <plugin id="org.aopalliance"/>
-<plugin id="org.apache.ant"/>
-<plugin id="org.apache.ant.source"/>
+<plugin id="org.apache.ant" version="1.10.8.v20200515-1239"/>
+<plugin id="org.apache.ant.source" version="1.10.8.v20200515-1239"/>
 <plugin id="org.apache.aries.blueprint"/>
 <plugin id="org.apache.aries.blueprint.annotation"/>
 <plugin id="org.apache.aries.blueprint.annotation.source"/>
@@ -482,17 +482,17 @@
 <plugin id="org.eclipse.jem.util"/>
 <plugin id="org.eclipse.jetty.continuation"/>
 <plugin id="org.eclipse.jetty.continuation.source"/>
-<plugin id="org.eclipse.jetty.http"/>
+<plugin id="org.eclipse.jetty.http" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.http.source"/>
-<plugin id="org.eclipse.jetty.io"/>
+<plugin id="org.eclipse.jetty.io" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.io.source"/>
-<plugin id="org.eclipse.jetty.security"/>
+<plugin id="org.eclipse.jetty.security" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.security.source"/>
-<plugin id="org.eclipse.jetty.server"/>
+<plugin id="org.eclipse.jetty.server" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.server.source"/>
-<plugin id="org.eclipse.jetty.servlet"/>
+<plugin id="org.eclipse.jetty.servlet" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.servlet.source"/>
-<plugin id="org.eclipse.jetty.util"/>
+<plugin id="org.eclipse.jetty.util" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.util.source"/>
 <plugin id="org.eclipse.jface"/>
 <plugin id="org.eclipse.jface.databinding"/>
@@ -742,7 +742,7 @@
 <plugin id="org.jsoup"/>
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
-<plugin id="org.mockito" version="2.13.0.v20180426-1843"/>
+<plugin id="org.mockito" version="2.13.0.v20200310-1642"/>
 <plugin id="org.mozilla.javascript"/>
 <plugin id="org.objectweb.asm.source" version="6.1.1.v20180414-0329"/>
 <plugin id="org.objenesis.source"/>
@@ -857,6 +857,7 @@
 	<plugin id="org.eclipse.ui.genericeditor"/>
 	<plugin id="javax.xml.stream"/>
 	<plugin id="org.eclipse.jgit.lfs"/>
+	<plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
 </includeBundles>
 <environment>
 <os>win32</os>
