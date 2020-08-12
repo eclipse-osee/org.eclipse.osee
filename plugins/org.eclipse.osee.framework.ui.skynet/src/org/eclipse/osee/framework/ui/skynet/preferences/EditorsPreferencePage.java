@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -52,20 +51,14 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       "change.report.close.editors.on.shutdown";
    private static String USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "use.external.compare.editor.for.text";
    private static String EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "external.compare.editor.for.text";
-   private static String ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR = "artifact.editor.include.attribute.tab";
    private Button artifactEditorButton;
    private Button editButton;
    private Button useCompareEditorForTextCompares;
-   private Button includeAttributeTabOnArtifactEditor;
    private Button showTokenForChangeName;
    private Text compareEditorTextBox;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
-   }
-
-   public static boolean isIncludeAttributeTabOnArtifactEditor() {
-      return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR) || isDemoDb();
    }
 
    private static boolean isDemoDb() {
@@ -95,22 +88,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       try {
          boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
          useCompareEditorForTextCompares.setSelection(value);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
-      try {
-         if (UserGroupService.getOseeAdmin().isCurrentUserMember()) {
-            includeAttributeTabOnArtifactEditor = new Button(composite, SWT.CHECK);
-            includeAttributeTabOnArtifactEditor.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-            includeAttributeTabOnArtifactEditor.setText("Admin - Include Attribute Tab on Artifact Editor");
-            try {
-               boolean value = UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
-               includeAttributeTabOnArtifactEditor.setSelection(value);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -284,11 +261,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             boolean set = showTokenForChangeName.getSelection();
             UserManager.setShowTokenForChangeName(set);
          }
-         if (includeAttributeTabOnArtifactEditor != null) {
-            result = includeAttributeTabOnArtifactEditor.getSelection();
-            UserManager.setSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR, String.valueOf(result));
-         }
-
          if (useCompareEditorForTextCompares != null) {
             result = useCompareEditorForTextCompares.getSelection();
             UserManager.setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));

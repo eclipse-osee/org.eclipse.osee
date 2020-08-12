@@ -189,7 +189,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             createWorkflowTab();
             createTaskTab();
             createDefectsTab();
-            createAttributes2Tab();
+            createAttributesTab();
             createMetricsTab();
          }
          updatePartName();
@@ -440,10 +440,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    }
 
-   private void createAttributes2Tab() {
-      attrTab = new ArtEdAttrTab(this, workItem);
+   private void createAttributesTab() {
       try {
-         attrPageIndex = addPage(attrTab);
+         if (AtsClientService.get().getUserService().isAtsAdmin()) {
+            attrTab = new ArtEdAttrTab(this, workItem);
+            attrPageIndex = addPage(attrTab);
+         }
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

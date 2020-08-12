@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditor
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ui.IEditorReference;
@@ -187,22 +187,17 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      try {
-         if (EditorsPreferencePage.isIncludeAttributeTabOnArtifactEditor()) {
-            createAttributesTab();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
+      createAttributesTab();
    }
 
    private void createAttributesTab() {
-      attrTab = new ArtEdAttrTab(this, getArtifactFromEditorInput());
-      try {
-         addPage(attrTab);
-      } catch (PartInitException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (AccessControlManager.isOseeAdmin()) {
+         attrTab = new ArtEdAttrTab(this, getArtifactFromEditorInput());
+         try {
+            addPage(attrTab);
+         } catch (PartInitException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 
