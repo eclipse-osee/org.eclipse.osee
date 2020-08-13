@@ -141,7 +141,10 @@ public class RelationManager {
                try {
                   if (relation.getSide(artifact).isOppositeSide(relationSide)) {
                      relationSide = relation.getOppositeSide(artifact);
-                     relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
+                     Artifact relatedArt = relation.getArtifactOnOtherSide(artifact);
+                     if (!relatedArt.isDeleted()) {
+                        relatedArtifacts.add(relatedArt);
+                     }
                   }
                } catch (ArtifactDoesNotExist ex) {
                   OseeLog.log(Activator.class, Level.WARNING, ex);
