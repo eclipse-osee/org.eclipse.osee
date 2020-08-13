@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 
@@ -25,14 +23,6 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
 
    GammaId getGammaId();
-
-   @Override
-   AttributeTypeToken getAttributeType();
-
-   boolean isOfType(AttributeTypeId otherAttributeType);
-
-   @Override
-   T getValue();
 
    String getDisplayableString();
 

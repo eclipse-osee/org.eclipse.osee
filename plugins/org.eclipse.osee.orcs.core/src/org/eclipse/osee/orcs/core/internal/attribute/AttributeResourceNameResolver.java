@@ -81,7 +81,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    private String getExtension(Attribute<?> attribute) {
       AttributeTypeToken attributeType = attribute.getAttributeType();
       String fileTypeExtension = null;
-      if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
+      if (attributeType.equals(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = (String) attribute.getValue();
       }
       if (!Strings.isValid(fileTypeExtension)) {

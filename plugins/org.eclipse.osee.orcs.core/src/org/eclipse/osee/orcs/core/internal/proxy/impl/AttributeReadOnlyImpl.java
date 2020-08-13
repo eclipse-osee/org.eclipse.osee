@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -57,11 +56,6 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType) {
-      return getProxiedObject().isOfType(otherAttributeType);
-   }
-
-   @Override
    public T getValue() {
       return getProxiedObject().getValue();
    }
@@ -70,5 +64,4 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    public String getDisplayableString() {
       return getProxiedObject().getDisplayableString();
    }
-
 }

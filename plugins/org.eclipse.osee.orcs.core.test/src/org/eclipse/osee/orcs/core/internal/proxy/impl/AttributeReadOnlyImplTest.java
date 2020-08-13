@@ -121,15 +121,4 @@ public class AttributeReadOnlyImplTest {
       assertEquals(expected, actual);
       verify(proxiedObject).isDeleted();
    }
-
-   @Test
-   public void testIsOfType() {
-      boolean expected = true;
-      when(proxiedObject.isOfType(Name)).thenReturn(expected);
-
-      boolean actual = readOnly.isOfType(Name);
-
-      assertEquals(expected, actual);
-      verify(proxiedObject).isOfType(Name);
-   }
 }

@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -194,16 +193,6 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    @Override
    public AttributeTypeToken getAttributeType() {
       return attributeData.getType();
-   }
-
-   /**
-    * Currently this method provides support for quasi attribute type inheritance
-    *
-    * @return whether this attribute's type or any of its super-types are the specified type
-    */
-   @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType) {
-      return getAttributeType().equals(otherAttributeType);
    }
 
    @Override
