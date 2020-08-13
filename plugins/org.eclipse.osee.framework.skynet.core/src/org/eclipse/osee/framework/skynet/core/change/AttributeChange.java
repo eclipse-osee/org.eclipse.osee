@@ -137,7 +137,7 @@ public final class AttributeChange extends Change {
    public Attribute<?> getAttribute() {
       List<Attribute<?>> attributes = getChangeArtifact().getAttributes(true);
       for (Attribute<?> attribute : attributes) {
-         if (attribute.getId() == attrId.getId().intValue()) {
+         if (attribute.getId().equals(attrId.getId())) {
             return attribute;
          }
       }
