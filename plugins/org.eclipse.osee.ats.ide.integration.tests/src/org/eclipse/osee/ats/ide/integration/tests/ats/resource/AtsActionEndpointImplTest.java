@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -265,16 +264,17 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.State);
    }
 
-   private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeId attrType) {
+   private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeToken attributeType) {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
-      Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), attrType.getIdString());
-      Assert.assertEquals(teamWf.getIdString(), attribute.getArtId().getIdString());
-      Assert.assertEquals(attrType.getIdString(), attribute.getAttrTypeId().getIdString());
-      Assert.assertEquals(teamWf.getAttributeCount(attrType), attribute.getValues().size());
+      Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), attributeType);
+      Assert.assertEquals(teamWf, attribute.getArtId());
+      Assert.assertEquals(attributeType, attribute.getAttributeType());
+      Assert.assertEquals(teamWf.getAttributeCount(attributeType), attribute.getValues().size());
 
-      for (org.eclipse.osee.framework.skynet.core.artifact.Attribute<Object> attr : teamWf.getAttributes(attrType)) {
-         Assert.assertTrue(attribute.getValues().values().contains(String.valueOf(attr.getValue())));
+      for (org.eclipse.osee.framework.skynet.core.artifact.Attribute<Object> attr : teamWf.getAttributes(
+         attributeType)) {
+         Assert.assertTrue(attribute.getValues().values().contains(attr.getDisplayableString()));
       }
       return teamWf;
    }
@@ -303,10 +303,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertEquals(2, teamWf.getTags().size());
 
       // test that search by id or atsId work as well
-      Attribute attribute =
-         actionEp.getActionAttributeByType(teamWf.getIdString(), CoreAttributeTypes.StaticId.getIdString());
+      Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), CoreAttributeTypes.StaticId);
       Assert.assertEquals(2, attribute.getValues().size());
-      attribute = actionEp.getActionAttributeByType(teamWf.getAtsId(), CoreAttributeTypes.StaticId.getIdString());
+      attribute = actionEp.getActionAttributeByType(teamWf.getAtsId(), CoreAttributeTypes.StaticId);
       Assert.assertEquals(2, attribute.getValues().size());
 
    }

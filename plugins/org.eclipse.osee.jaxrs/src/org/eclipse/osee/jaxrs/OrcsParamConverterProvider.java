@@ -20,6 +20,7 @@ import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
@@ -32,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 @Provider
 public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamConverterProvider {
    private final ParamConverter<ArtifactTypeToken> artifactTypeConverter;
-   private final ParamConverter<AttributeTypeToken> attributeTypeConverter;
+   private final ParamConverter<AttributeTypeGeneric<?>> attributeTypeConverter;
    private final ParamConverter<RelationTypeToken> relationTypeConverter;
 
    private final ParamConverter<ArtifactTypeJoin> artifactTypeJoinConverter;
@@ -67,7 +68,7 @@ public final class OrcsParamConverterProvider implements javax.ws.rs.ext.ParamCo
       if (ArtifactTypeToken.class.equals(rawType)) {
          return (ParamConverter<T>) artifactTypeConverter;
       }
-      if (AttributeTypeToken.class.equals(rawType)) {
+      if (AttributeTypeToken.class.isAssignableFrom(rawType)) {
          return (ParamConverter<T>) attributeTypeConverter;
       }
       if (RelationTypeToken.class.equals(rawType)) {

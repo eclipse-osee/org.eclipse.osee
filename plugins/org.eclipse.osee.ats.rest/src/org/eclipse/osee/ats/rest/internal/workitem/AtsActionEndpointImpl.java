@@ -74,7 +74,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -281,11 +281,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("{id}/attributeType/{attrTypeId}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") String attrTypeId) {
+   public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") AttributeTypeToken attributeType) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       ActionOperations ops = new ActionOperations(null, workItem, atsApi, orcsApi);
-      Attribute attribute = ops.getActionAttributeValues(attrTypeId, workItem);
-      return attribute;
+      return ops.getActionAttributeValues(attributeType, workItem);
    }
 
    @Override
@@ -548,7 +547,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          // else, attempt to resolve as attribute type id or name
          else {
             String key = entry.getKey();
-            AttributeTypeId attrType = null;
+            AttributeTypeToken attrType = null;
             if (Strings.isNumeric(key)) {
                attrType = atsApi.tokenService().getAttributeType(Long.valueOf(key));
             }

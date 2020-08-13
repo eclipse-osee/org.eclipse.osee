@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 
 /**
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 public class Attribute {
 
    private ArtifactId artId = ArtifactId.SENTINEL;
-   private AttributeTypeId attrTypeId = AttributeTypeId.SENTINEL;
+   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private Map<AttributeId, String> values = new HashMap<>();
 
    public Attribute() {
@@ -40,12 +40,12 @@ public class Attribute {
       this.artId = artId;
    }
 
-   public AttributeTypeId getAttrTypeId() {
-      return attrTypeId;
+   public AttributeTypeToken getAttributeType() {
+      return attributeType;
    }
 
-   public void setAttrTypeId(AttributeTypeId attrTypeId) {
-      this.attrTypeId = attrTypeId;
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
    }
 
    public void addAttribute(IAttribute<?> attr) {

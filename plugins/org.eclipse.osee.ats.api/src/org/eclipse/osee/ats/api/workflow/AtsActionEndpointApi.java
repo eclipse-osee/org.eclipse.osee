@@ -155,7 +155,7 @@ public interface AtsActionEndpointApi {
    @Path("{actionId}/attributeType/{attrTypeId}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId);
+   Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") AttributeTypeToken attributeType);
 
    /**
     * @param actionId (atsId, artId) of workItem

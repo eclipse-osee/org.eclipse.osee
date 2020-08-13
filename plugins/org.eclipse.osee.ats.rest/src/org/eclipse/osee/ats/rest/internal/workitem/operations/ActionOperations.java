@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -64,7 +65,7 @@ public class ActionOperations {
    public Attribute setActionAttributeByType(String id, String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsChangeSet changes = atsApi.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
-      AttributeTypeToken attrTypeId = null;
+      AttributeTypeGeneric<?> attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
          attrTypeId = CoreAttributeTypes.Name;
@@ -193,19 +194,15 @@ public class ActionOperations {
       return null;
    }
 
-   private AttributeTypeToken getAttributeType(String id) {
+   private AttributeTypeGeneric<?> getAttributeType(String id) {
       return orcsApi.tokenService().getAttributeType(Long.valueOf(id));
    }
 
-   public Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {
-      return getActionAttributeValues(getAttributeType(attrTypeId), workItem);
-   }
-
-   private Attribute getActionAttributeValues(AttributeTypeToken attrType, IAtsWorkItem workItem) {
+   public Attribute getActionAttributeValues(AttributeTypeToken attributeType, IAtsWorkItem workItem) {
       Attribute attribute = new Attribute();
       attribute.setArtId(workItem.getStoreObject());
-      attribute.setAttrTypeId(attrType);
-      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem, attrType)) {
+      attribute.setAttributeType(attributeType);
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem, attributeType)) {
          attribute.addAttribute(attr);
       }
       return attribute;
