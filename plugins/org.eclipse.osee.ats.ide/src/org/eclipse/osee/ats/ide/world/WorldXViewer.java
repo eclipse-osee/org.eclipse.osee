@@ -217,7 +217,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
                   "Reset Action off Children");
-               for (IAtsAction actionArt : getSelectedActionArtifacts()) {
+               for (IAtsAction actionArt : getSelectedActions()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
                   ((Artifact) actionArt).persist(transaction);
@@ -408,7 +408,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       emailAction.setEnabled(getSelectedWorkflowArtifacts().size() == 1);
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, resetActionArtifactAction);
-      resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);
+      resetActionArtifactAction.setEnabled(getSelectedActions().size() > 0);
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
@@ -530,7 +530,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return smaArts;
    }
 
-   public Set<IAtsAction> getSelectedActionArtifacts() {
+   public Set<IAtsAction> getSelectedActions() {
       Set<IAtsAction> actionArts = new HashSet<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
