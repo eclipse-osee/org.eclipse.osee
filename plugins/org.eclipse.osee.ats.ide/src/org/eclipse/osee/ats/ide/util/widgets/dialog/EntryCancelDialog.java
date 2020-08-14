@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
+package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,12 +33,12 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Jeremy A. Midvidy
  */
-public class EntryCancelWidgetDialog extends EntryDialog {
+public class EntryCancelDialog extends EntryDialog {
 
    private String selection = "";
    private XComboDam reasonCombo;
 
-   public EntryCancelWidgetDialog(String dialogTitle, String dialogMessage) {
+   public EntryCancelDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
    }
 

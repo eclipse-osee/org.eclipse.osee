@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
@@ -54,7 +55,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -172,7 +172,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       Object[] stateArray = states.toArray();
       ListSelectionDialogNoSave dialog =
          new ListSelectionDialogNoSave(stateArray, Displays.getActiveShell().getShell(), "Select Transition-To State",
-            null, "Select the state to transition to.\nTransition will happen upon selection and Tranistion button.\n" //
+            null, "Select the state to transition to.\nTransition will happen upon selection and Transition button.\n" //
                + "Double-click will select, close and transition.",
             2, new String[] {"Transition", "Cancel"}, 0);
 
@@ -237,7 +237,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                            }
                         }
                         if (useEntryCancelWidgetDialog) {
-                           cancelDialog = new EntryCancelWidgetDialog("Cancellation Reason",
+                           cancelDialog = new EntryCancelDialog("Cancellation Reason",
                               "Select cancellation reason.  If other, please specify with details in the text entry.");
                         } else {
                            cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
@@ -247,9 +247,9 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                            return;
                         }
                         if (useEntryCancelWidgetDialog) {
-                           transitionData.setCancellationReason(((EntryCancelWidgetDialog) cancelDialog).getEntry());
+                           transitionData.setCancellationReason(((EntryCancelDialog) cancelDialog).getEntry());
                            transitionData.setCancellationReasonDetails(
-                              ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
+                              ((EntryCancelDialog) cancelDialog).getCancelledDetails());
                         } else {
                            transitionData.setCancellationReason(cancelDialog.getEntry());
                         }

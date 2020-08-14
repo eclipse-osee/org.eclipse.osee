@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCancelWidgetDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -206,7 +206,7 @@ public class TransitionToMenu {
                         }
                      }
                      if (useEntryCancelWidgetDialog) {
-                        cancelDialog = new EntryCancelWidgetDialog("Cancellation Reason",
+                        cancelDialog = new EntryCancelDialog("Cancellation Reason",
                            "Select cancellation reason.  If other, please specify with details in the text entry.");
                      } else {
                         cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
@@ -215,9 +215,9 @@ public class TransitionToMenu {
                         transitionData.setDialogCancelled(true);
                      }
                      if (useEntryCancelWidgetDialog) {
-                        transitionData.setCancellationReason(((EntryCancelWidgetDialog) cancelDialog).getEntry());
+                        transitionData.setCancellationReason(((EntryCancelDialog) cancelDialog).getEntry());
                         transitionData.setCancellationReasonDetails(
-                           ((EntryCancelWidgetDialog) cancelDialog).getCancelledDetails());
+                           ((EntryCancelDialog) cancelDialog).getCancelledDetails());
                      } else {
                         transitionData.setCancellationReason(cancelDialog.getEntry());
                      }
