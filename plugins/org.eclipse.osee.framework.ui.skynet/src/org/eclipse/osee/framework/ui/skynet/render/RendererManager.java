@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -49,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollec
 public final class RendererManager {
    private static final List<IRenderer> renderers = new ArrayList<>(20);
    private static boolean firstTimeThrough = true;
+   private static Boolean defaultArtifactEditor = false;
 
    private RendererManager() {
       // Utility Class
@@ -112,8 +114,7 @@ public final class RendererManager {
    }
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
-      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(
-         UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
+      if (presentationType == DEFAULT_OPEN && RendererManager.isDefaultArtifactEditor()) {
          presentationType = GENERAL_REQUESTED;
       }
       IRenderer bestRendererPrototype = null;
@@ -288,6 +289,17 @@ public final class RendererManager {
       }
 
       Operations.executeWork(operation, monitor);
+   }
+
+   public static Boolean isDefaultArtifactEditor() {
+      if (defaultArtifactEditor == null) {
+         defaultArtifactEditor = UserGroupService.isInUserGrp(CoreUserGroups.DefaultArtifactEditor);
+      }
+      return defaultArtifactEditor;
+   }
+
+   public static void setDefaultArtifactEditor(Boolean defaultArtifactEditor) {
+      RendererManager.defaultArtifactEditor = defaultArtifactEditor;
    }
 
 }

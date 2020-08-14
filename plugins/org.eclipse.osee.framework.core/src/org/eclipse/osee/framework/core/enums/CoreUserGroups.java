@@ -30,5 +30,7 @@ public class CoreUserGroups {
    public static IUserGroupArtifactToken AgileUser = UserGroupArtifactToken.valueOf(10635635L, "Agile User");
    public static IUserGroupArtifactToken EarnedValueUser =
       UserGroupArtifactToken.valueOf(10635662L, "Earner Value User");
+   public static IUserGroupArtifactToken DefaultArtifactEditor =
+      UserGroupArtifactToken.valueOf(10862351L, "Deault Artifact Editor");
 
 }

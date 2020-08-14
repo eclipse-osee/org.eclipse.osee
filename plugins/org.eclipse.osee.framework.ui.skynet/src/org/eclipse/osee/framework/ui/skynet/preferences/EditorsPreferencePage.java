@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -59,11 +58,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
    public static boolean isCloseChangeReportEditorsOnShutdown() {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
-   }
-
-   private static boolean isDemoDb() {
-      String dbType = OseeInfo.getValue(OseeInfo.DB_TYPE_KEY);
-      return "demo".equals(dbType);
    }
 
    public static boolean isUseExternalCompareEditorForText() {
@@ -216,17 +210,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             //
          }
       });
-
-      try {
-         if (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
-            artifactEditorButton.setSelection(
-               UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT));
-         } else if (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
-            editButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 
    /**
@@ -250,8 +233,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    @Override
    public boolean performOk() {
       try {
-         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT,
-            String.valueOf(artifactEditorButton.getSelection()));
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editButton.getSelection()));
 
          boolean result = useCompareEditorForTextCompares.getSelection();

@@ -32,12 +32,11 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATT
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.editor.renderer.AtsWERenderer;
+import org.eclipse.osee.ats.ide.editor.renderer.AtsWfeRenderer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -91,7 +90,7 @@ public class RendererManagerTest {
    }
 
    private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option) {
-      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT, String.valueOf(option == On));
+      RendererManager.setDefaultArtifactEditor(option == On);
 
       if (clazz == null) {
          try {
@@ -139,12 +138,12 @@ public class RendererManagerTest {
       addTest(data, SoftwareRequirementMsWord, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
 
       addTest(data, Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, Action, SPECIALIZED_EDIT, AtsWERenderer.class, Both);
-      addTest(data, Action, DIFF, AtsWERenderer.class, Both);
-      addTest(data, Action, PREVIEW, AtsWERenderer.class, Both);
-      addTest(data, Action, MERGE, AtsWERenderer.class, Both);
-      addTest(data, Action, DEFAULT_OPEN, AtsWERenderer.class, Off);
-      addTest(data, Action, DEFAULT_OPEN, AtsWERenderer.class, On);
+      addTest(data, Action, SPECIALIZED_EDIT, AtsWfeRenderer.class, Both);
+      addTest(data, Action, DIFF, AtsWfeRenderer.class, Both);
+      addTest(data, Action, PREVIEW, AtsWfeRenderer.class, Both);
+      addTest(data, Action, MERGE, AtsWfeRenderer.class, Both);
+      addTest(data, Action, DEFAULT_OPEN, AtsWfeRenderer.class, Off);
+      addTest(data, Action, DEFAULT_OPEN, AtsWfeRenderer.class, On);
       addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       addTest(data, TestProcedureWholeWord, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);

@@ -31,19 +31,20 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AtsWERenderer extends DefaultArtifactRenderer {
+public class AtsWfeRenderer extends DefaultArtifactRenderer {
 
    private static final String Option_WORKFLOW_EDITOR = "workflow.editor.option";
 
-   public AtsWERenderer(Map<RendererOption, Object> rendererOptions) {
+   public AtsWfeRenderer(Map<RendererOption, Object> rendererOptions) {
       super(rendererOptions);
    }
 
-   public AtsWERenderer() {
+   public AtsWfeRenderer() {
       this(new HashMap<RendererOption, Object>());
    }
 
@@ -59,13 +60,13 @@ public class AtsWERenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public AtsWERenderer newInstance() {
-      return new AtsWERenderer();
+   public AtsWfeRenderer newInstance() {
+      return new AtsWfeRenderer();
    }
 
    @Override
-   public AtsWERenderer newInstance(Map<RendererOption, Object> rendererOptions) {
-      return new AtsWERenderer(rendererOptions);
+   public AtsWfeRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new AtsWfeRenderer(rendererOptions);
    }
 
    @Override
@@ -74,10 +75,9 @@ public class AtsWERenderer extends DefaultArtifactRenderer {
       if (!artifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
          PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
-         if (Option_WORKFLOW_EDITOR.equals(
-            rendererOptions.get(RendererOption.OPEN_OPTION)) && !UserManager.getBooleanSetting(
-               UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) && !UserManager.getBooleanSetting(
-                  UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
+         if (Option_WORKFLOW_EDITOR.equals(rendererOptions.get(RendererOption.OPEN_OPTION)) && //
+            !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) && //
+            !RendererManager.isDefaultArtifactEditor()) {
             return SPECIALIZED_MATCH;
          } else {
             return PRESENTATION_SUBTYPE_MATCH;

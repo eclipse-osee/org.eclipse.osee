@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AgileUser;
+import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifactEditor;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public final class DemoUsers {
    public static List<UserToken> values = new ArrayList<UserToken>();
 
    // @formatter:off
-   public static final UserToken Joe_Smith = create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, Arrays.asList("3333"), AgileUser, EarnedValueUser);
+   public static final UserToken Joe_Smith = create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, Arrays.asList("3333"), AgileUser, EarnedValueUser, DefaultArtifactEditor);
    public static final UserToken Kay_Jones = create(5896672, "Kay Jones", "kay@boeing.com", "4444", true, AgileUser, EarnedValueUser);
    public static final UserToken Jason_Michael = create(277990, "Jason Michael", "jason@boeing.com", "5555", true, CoreUserGroups.OseeAdmin, CoreUserGroups.OseeAccessAdmin);
    public static final UserToken Alex_Kay = create(8006939, "Alex Kay", "", "6666", true, AgileUser, EarnedValueUser);
