@@ -49,7 +49,7 @@ public class Attribute {
    }
 
    public void addAttribute(IAttribute<?> attr) {
-      values.put(AttributeId.valueOf(attr.getId()), attr.getValue().toString());
+      values.put(AttributeId.valueOf(attr.getId()), attr.getDisplayableString());
    }
 
    public Map<AttributeId, String> getValues() {
@@ -59,5 +59,4 @@ public class Attribute {
    public void setValues(Map<AttributeId, String> values) {
       this.values = values;
    }
-
 }

@@ -24,6 +24,4 @@ public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
 
    GammaId getGammaId();
 
-   String getDisplayableString();
-
 }

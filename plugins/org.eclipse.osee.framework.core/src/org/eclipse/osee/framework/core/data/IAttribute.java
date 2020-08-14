@@ -21,4 +21,7 @@ public interface IAttribute<T> extends AttributeId {
    T getValue();
 
    AttributeTypeToken getAttributeType();
+
+   String getDisplayableString();
+
 }

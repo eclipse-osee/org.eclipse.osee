@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
  */
 public class Attribute<T> extends BaseId implements IAttribute<T> {
    private final IResourceManager resourceManager;
-   private final AttributeTypeToken attributeType;
+   private final AttributeTypeGeneric<T> attributeType;
    private final String uri;
    private T value;
 
@@ -43,6 +43,11 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
       if (uri == null && value != null) {
          this.value = attributeType.valueFromStorageString(value);
       }
+   }
+
+   @Override
+   public String getDisplayableString() {
+      return attributeType.storageStringFromValue(getValue());
    }
 
    private String loadBinaryAttribute() {
