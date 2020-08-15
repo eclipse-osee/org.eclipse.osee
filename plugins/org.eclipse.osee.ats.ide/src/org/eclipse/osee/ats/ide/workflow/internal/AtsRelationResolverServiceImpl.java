@@ -97,12 +97,6 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       } else if (object instanceof ArtifactId) {
          useArt = atsClient.getQueryServiceClient().getArtifact(((ArtifactId) object).getId());
       }
-      if (useArt != null && !useArt.isDeleted() && !useArt.isDirty()) {
-         boolean changed = AtsClientService.get().getStoreService().isChangedInDb(useArt);
-         if (changed) {
-            //            useArt.reloadAttributesAndRelations();
-         }
-      }
       return useArt;
    }
 
