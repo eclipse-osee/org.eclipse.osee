@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService;
@@ -57,7 +58,7 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
          workDefProviders.add(atsWorkDefProv);
       }
       // Add any not processed
-      for (IAtsWorkDefinitionProvider workDefProvider : workDefProviders) {
+      for (IAtsWorkDefinitionProvider workDefProvider : new CopyOnWriteArrayList<>(workDefProviders)) {
          handleProvider(workDefProvider);
       }
    }

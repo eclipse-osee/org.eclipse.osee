@@ -125,7 +125,9 @@ public class SyncJiraOperation {
       results.logf("Sprints");
       results.logf("");
       for (SyncSprint sSprint : syncTeam.getSyncSprints()) {
-         if (!atsApi.getAttributeResolver().getAttributesToStringList(sSprint.sprint.getStoreObject(),
+         if (sSprint.sprint == null) {
+            results.errorf("Sprint [%s] has null sprint", sSprint.getJiraSprintName());
+         } else if (!atsApi.getAttributeResolver().getAttributesToStringList(sSprint.sprint.getStoreObject(),
             AtsAttributeTypes.Category1).contains(SKIP_JIRA_SYNC)) {
             results.logf("");
             results.logf("Sprint [%s]", sSprint.getJiraSprintName());
@@ -261,8 +263,11 @@ public class SyncJiraOperation {
                      }
 
                   } else if (sSprint != null && atsSprint != null) {
+                     if (sSprint.getSprint() == null) {
+                        results.errorf("   ERROR: sSprint != null but getSprint() == null for %s", sSprint);
+                     }
                      // If match, it is good; else error that wrong sprint
-                     if (!sSprint.getSprint().equals(atsSprint)) {
+                     else if (!sSprint.getSprint().equals(atsSprint)) {
                         results.logf("   ERROR: Workflow Sprint [%s] doesn't match JIRA sprint [%s] for workflow %s",
                            atsSprint, jTask.getjSprint(), teamWf.toStringWithId());
                         results.logf("      FIX: MOVE ATS workflow to sprint %s", sSprint.getSprint());
