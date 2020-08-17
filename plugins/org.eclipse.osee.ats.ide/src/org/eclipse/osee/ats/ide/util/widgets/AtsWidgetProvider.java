@@ -71,6 +71,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetRendererItem.getToolTip());
          toReturn = widget;
+      } else if (widgetName.equals(XProductLineApprovalWidget.WIDGET_ID)) {
+         toReturn = new XProductLineApprovalWidget();
       } else if (widgetName.equals(AtsObjectMultiChoiceSelect.WIDGET_ID)) {
          toReturn = new AtsObjectMultiChoiceSelect();
       } else if (widgetName.equals(XReviewStateSearchCombo.WIDGET_ID)) {

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.ats.ide.util.widgets;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -21,13 +21,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 
 /**
  * @author Audrey Denk
  */
 public class XProductLineApprovalWidget extends XAbstractSignDateAndByButton {
 
-   public static String ID = XProductLineApprovalWidget.class.getSimpleName();
+   public static String WIDGET_ID = XProductLineApprovalWidget.class.getSimpleName();
 
    public XProductLineApprovalWidget() {
       super("PL ARB Approved", "Sign or clear changes", AtsAttributeTypes.ProductLineApprovedDate,
