@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -97,5 +98,7 @@ public interface IAtsActionableItemService {
    Collection<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService);
 
    Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais);
+
+   Collection<IAtsActionableItem> getActionableItems(IAtsAction action);
 
 }

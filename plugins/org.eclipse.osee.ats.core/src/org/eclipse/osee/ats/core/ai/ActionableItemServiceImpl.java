@@ -36,6 +36,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -220,6 +222,15 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
          ai = related.iterator().next();
       }
       return ai;
+   }
+
+   @Override
+   public Collection<IAtsActionableItem> getActionableItems(IAtsAction action) {
+      Set<IAtsActionableItem> aias = new HashSet<>();
+      for (IAtsTeamWorkflow team : atsApi.getWorkItemService().getTeams(action)) {
+         aias.addAll(atsApi.getActionableItemService().getActionableItems(team));
+      }
+      return aias;
    }
 
    @Override

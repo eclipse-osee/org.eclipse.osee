@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -104,11 +103,9 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
       if (parentAction == null) {
          label.setText(" " + "Error: No Parent Action.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else if (((IAtsActionableItemProvider) parentAction).getActionableItems().isEmpty()) {
+      } else if (AtsClientService.get().getActionableItemService().getActionableItems(parentAction).isEmpty()) {
          label.setText(" " + "Error: No Actionable Items identified.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else if (((IAtsActionableItemProvider) parentAction).getActionableItems().isEmpty()) {
-         //
       } else {
          StringBuffer sb =
             new StringBuffer(AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));
