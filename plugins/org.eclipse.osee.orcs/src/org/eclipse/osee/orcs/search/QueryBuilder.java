@@ -198,7 +198,7 @@ public interface QueryBuilder extends Query {
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(AttributeTypeId attributeType, String value);
+   QueryBuilder andNotExists(AttributeTypeToken attributeType, String value);
 
    /**
     * Search criteria that follows the relation link ending on the given side

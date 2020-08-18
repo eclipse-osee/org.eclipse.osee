@@ -443,7 +443,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andNotExists(AttributeTypeId attributeType, String value) {
+   public QueryBuilder andNotExists(AttributeTypeToken attributeType, String value) {
       return addAndCheck(new CriteriaAttributeTypeNotExists(attributeType, value));
    }
 

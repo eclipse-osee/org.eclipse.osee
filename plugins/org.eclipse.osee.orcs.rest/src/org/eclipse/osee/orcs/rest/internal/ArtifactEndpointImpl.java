@@ -24,7 +24,6 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -148,7 +147,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return new AttributeEndpointImpl(artifactId, branch, orcsApi, query, uriInfo);
    }
 
-   private <T> T getArtifactXByAttribute(QueryBuilder query, AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeToken artifactType, Supplier<T> queryMethod) {
+   private <T> T getArtifactXByAttribute(QueryBuilder query, AttributeTypeToken attributeType, String value, boolean exists, ArtifactTypeToken artifactType, Supplier<T> queryMethod) {
       if (artifactType.isValid()) {
          query.andTypeEquals(artifactType);
       }
@@ -168,7 +167,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
     * type but with a different value.
     */
    @Override
-   public List<ArtifactToken> getArtifactTokensByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeToken artifactType) {
+   public List<ArtifactToken> getArtifactTokensByAttribute(AttributeTypeToken attributeType, String value, boolean exists, ArtifactTypeToken artifactType) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       return getArtifactXByAttribute(query, attributeType, value, exists, artifactType, query::asArtifactTokens);
    }
@@ -179,7 +178,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
     * type but with a different value.
     */
    @Override
-   public List<ArtifactId> getArtifactIdsByAttribute(AttributeTypeId attributeType, String value, boolean exists, ArtifactTypeToken artifactType) {
+   public List<ArtifactId> getArtifactIdsByAttribute(AttributeTypeToken attributeType, String value, boolean exists, ArtifactTypeToken artifactType) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       return getArtifactXByAttribute(query, attributeType, value, exists, artifactType, query::asArtifactIds);
    }
@@ -190,7 +189,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
     * type but with a different value.
     */
    @Override
-   public List<Map<String, Object>> getArtifactMaps(AttributeTypeId attributeType, String representation, String value, boolean exists, ArtifactTypeToken artifactType, ArtifactId view) {
+   public List<Map<String, Object>> getArtifactMaps(AttributeTypeToken attributeType, String representation, String value, boolean exists, ArtifactTypeToken artifactType, ArtifactId view) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, view);
       return getArtifactXByAttribute(query, attributeType, value, exists, artifactType, query::asArtifactMaps);
    }
