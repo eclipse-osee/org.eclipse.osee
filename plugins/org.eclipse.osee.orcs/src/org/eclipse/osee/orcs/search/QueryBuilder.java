@@ -70,7 +70,7 @@ public interface QueryBuilder extends Query {
     * @param attributeType is used in place of the natural Name attribute to populate the name fields in the returned
     * artifact tokens
     */
-   List<ArtifactToken> asArtifactTokens(AttributeTypeId attributeType);
+   List<ArtifactToken> asArtifactTokens(AttributeTypeToken attributeType);
 
    /**
     * @return artifact search results
@@ -178,7 +178,7 @@ public interface QueryBuilder extends Query {
    /**
     * Search criteria that checks for the existence of an attribute type(s).
     */
-   QueryBuilder andExists(AttributeTypeId... attributeType);
+   QueryBuilder andExists(AttributeTypeToken... attributeType);
 
    /**
     * Search criteria that checks for the existence of an attribute types.
@@ -193,7 +193,7 @@ public interface QueryBuilder extends Query {
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(AttributeTypeId attributeType);
+   QueryBuilder andNotExists(AttributeTypeToken attributeType);
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).

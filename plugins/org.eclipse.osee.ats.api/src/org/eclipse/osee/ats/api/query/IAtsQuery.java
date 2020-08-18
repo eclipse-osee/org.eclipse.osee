@@ -126,7 +126,7 @@ public interface IAtsQuery {
     */
    boolean exists();
 
-   IAtsQuery andNotExists(AttributeTypeId attributeType);
+   IAtsQuery andNotExists(AttributeTypeToken attributeType);
 
    IAtsQuery andName(String name);
 

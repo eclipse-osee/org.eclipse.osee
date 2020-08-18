@@ -83,7 +83,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final ArtifactId view;
    private final QueryData parentQueryData;
    private final List<QueryData> childrenQueryData = new ArrayList<>(2);
-   private AttributeTypeId attributeType = AttributeTypeToken.SENTINEL;
+   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private final CallableQueryFactory artQueryFactory;
    private final QueryFactory queryFactory;
    private final QueryEngine queryEngine;
@@ -269,7 +269,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return branch;
    }
 
-   public void select(AttributeTypeId attributeType) {
+   public void select(AttributeTypeToken attributeType) {
       this.attributeType = attributeType;
    }
 
@@ -428,7 +428,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andExists(AttributeTypeId... attributeType) {
+   public QueryBuilder andExists(AttributeTypeToken... attributeType) {
       return andExists(Arrays.asList(attributeType));
    }
 
@@ -438,7 +438,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andNotExists(AttributeTypeId attributeType) {
+   public QueryBuilder andNotExists(AttributeTypeToken attributeType) {
       return addAndCheck(new CriteriaAttributeTypeNotExists(attributeType));
    }
 
@@ -614,7 +614,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public List<ArtifactToken> asArtifactTokens(AttributeTypeId attributeType) {
+   public List<ArtifactToken> asArtifactTokens(AttributeTypeToken attributeType) {
       setQueryType(QueryType.TOKEN);
       select(attributeType);
       return queryEngine.asArtifactTokens(this);

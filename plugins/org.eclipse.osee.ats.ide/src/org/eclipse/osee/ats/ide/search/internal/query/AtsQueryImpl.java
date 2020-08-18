@@ -149,7 +149,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   protected void queryAndNotExists(AttributeTypeId attributeType) {
+   protected void queryAndNotExists(AttributeTypeToken attributeType) {
       query.andNotExists(attributeType);
    }
 

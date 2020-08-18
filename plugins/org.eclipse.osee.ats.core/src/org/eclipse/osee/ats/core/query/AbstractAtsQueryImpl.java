@@ -1068,13 +1068,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andNotExists(AttributeTypeId attributeType) {
+   public IAtsQuery andNotExists(AttributeTypeToken attributeType) {
       createQueryBuilder();
       queryAndNotExists(attributeType);
       return this;
    }
 
-   protected abstract void queryAndNotExists(AttributeTypeId attributeType);
+   protected abstract void queryAndNotExists(AttributeTypeToken attributeType);
 
    @Override
    public IAtsQuery andExists(AttributeTypeToken attributeType) {
