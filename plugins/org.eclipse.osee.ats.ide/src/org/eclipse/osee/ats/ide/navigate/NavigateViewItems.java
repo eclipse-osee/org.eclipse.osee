@@ -320,6 +320,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new CompareEditorExample(exampleItems);
          new XViewerExample(exampleItems);
          new XResultDataExample(exampleItems);
+         new XResultDataTableExample(exampleItems);
          new FilteredTreeDialogExample(exampleItems);
          new FilteredTreeDialogSingleExample(exampleItems);
          new FilteredTreeArtifactDialogExample(exampleItems);

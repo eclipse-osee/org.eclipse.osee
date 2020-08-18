@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -258,6 +259,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public XResultData validate() {
       AtsHealthCheckOperation op = new AtsHealthCheckOperation(atsApi, atsApi.getJdbcService(), null);
       return op.run();
+   }
+
+   @Override
+   public XResultData getResultTableTest() {
+      return ExampleTableData.getResultTable();
    }
 
 }

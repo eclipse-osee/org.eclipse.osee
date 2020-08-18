@@ -22,6 +22,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
+import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData.Columns;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -44,18 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 public class ResultsEditorExample extends XNavigateItemAction {
 
    public static final String TITLE = "Results Editor Example";
-   private static enum Columns {
-      Date,
-      Priority_123_Open_Bugs,
-      Goal;
-   };
-   private final static List<String> chartDateStrs = Arrays.asList("09/07/2008", "09/21/2008", "10/05/2008",
-      "10/19/2008", "11/02/2008", "11/16/2008", "11/30/2008", "12/14/2008", "12/28/2008", "01/11/2009", "01/25/2009",
-      "02/08/2009", "02/22/2009", "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
-   private final static List<Double> chartValueStrs = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0,
-      165.0, 171.0, 179.0, 178.0, 177.0, 164.0, 159.0, 159.0, 157.0, 157.0);
-   private final static List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0,
-      165.0, 171.0, 179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
 
    public ResultsEditorExample(XNavigateItem parent) {
       super(parent, TITLE, PluginUiImage.ADMIN);
@@ -87,11 +77,11 @@ public class ResultsEditorExample extends XNavigateItemAction {
 
    private IResultsEditorTab createDataTab() {
       List<IResultsXViewerRow> rows = new ArrayList<>();
-      for (int x = 0; x < chartDateStrs.size(); x++) {
+      for (int x = 0; x < ExampleTableData.chartDateStrs.size(); x++) {
          rows.add(new ResultsXViewerRow(new String[] {
-            chartDateStrs.get(x),
-            String.valueOf(chartValueStrs.get(x)),
-            String.valueOf(chartValueStrsGoal.get(x))}));
+            ExampleTableData.chartDateStrs.get(x),
+            String.valueOf(ExampleTableData.chartValueStrs.get(x)),
+            String.valueOf(ExampleTableData.chartValueStrsGoal.get(x))}));
       }
       List<XViewerColumn> columns = Arrays.asList(
          new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, XViewerAlign.Left, true, SortDataType.Date,
@@ -137,9 +127,9 @@ public class ResultsEditorExample extends XNavigateItemAction {
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(
          new String[] {Columns.Date.name(), Columns.Priority_123_Open_Bugs.name(), Columns.Goal.name()}));
-      for (int x = 0; x < chartDateStrs.size(); x++) {
-         sb.append(AHTML.addRowMultiColumnTable(chartDateStrs.get(x), "" + chartValueStrs.get(x),
-            "" + chartValueStrsGoal.get(x)));
+      for (int x = 0; x < ExampleTableData.chartDateStrs.size(); x++) {
+         sb.append(AHTML.addRowMultiColumnTable(ExampleTableData.chartDateStrs.get(x),
+            "" + ExampleTableData.chartValueStrs.get(x), "" + ExampleTableData.chartValueStrsGoal.get(x)));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();

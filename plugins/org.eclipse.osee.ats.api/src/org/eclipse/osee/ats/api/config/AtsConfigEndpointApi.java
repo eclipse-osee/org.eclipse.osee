@@ -133,4 +133,9 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData validate();
 
+   @GET
+   @Path("test/result")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData getResultTableTest();
+
 }

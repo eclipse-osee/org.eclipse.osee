@@ -15,12 +15,20 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableColumn;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableDataType;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTableRow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -32,7 +40,11 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
 /**
  * @author Donald G. Dunne
@@ -100,9 +112,53 @@ public class XResultDataUI {
 
    public static String report(XResultData resultData, final String title, final Manipulations... manipulations) {
       final String html = getReport(resultData, title, manipulations).getManipulatedHtml();
-      ResultsEditor.open("Results", title, html);
+      ResultsEditor.open(new IResultsEditorProvider() {
+
+         private List<IResultsEditorTab> tabs;
+
+         @Override
+         public String getEditorName() {
+            return title;
+         }
+
+         @Override
+         public List<IResultsEditorTab> getResultsEditorTabs() {
+            if (tabs == null) {
+               tabs = new LinkedList<>();
+               tabs.add(new ResultsEditorHtmlTab(title, "Results", html));
+               for (XResultTable table : resultData.getTables()) {
+                  tabs.add(createDataTable(table));
+               }
+            }
+            return tabs;
+         }
+      });
       return html;
    }
+
+   private static IResultsEditorTab createDataTable(XResultTable table) {
+      List<IResultsXViewerRow> rows = new ArrayList<>();
+      for (XResultTableRow row : table.getRows()) {
+         rows.add(new ResultsXViewerRow(row.getValues()));
+      }
+
+      List<XViewerColumn> columns = new ArrayList<>();
+      for (XResultTableColumn rCol : table.getColumns()) {
+         columns.add(new XViewerColumn(rCol.getId(), rCol.getName(), rCol.getWidth(), XViewerAlign.Left, true,
+            getSortDataType(rCol.getType()), false, ""));
+      }
+
+      return new ResultsEditorTableTab(table.getName(), columns, rows);
+   }
+
+   private static SortDataType getSortDataType(XResultTableDataType type) {
+      try {
+         return SortDataType.valueOf(type.name());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return SortDataType.String;
+   };
 
    public static XResultPage getReport(XResultData resultData, final String title) {
       return getReport(resultData, title, Manipulations.ALL);

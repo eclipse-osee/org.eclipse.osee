@@ -14,11 +14,13 @@
 package org.eclipse.osee.framework.jdk.core.result;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -53,6 +55,7 @@ public class XResultData {
    private int infoCount;
    @JsonIgnore
    private boolean logToSysErr;
+   public List<XResultTable> tables = new ArrayList<XResultTable>();
 
    public XResultData() {
       this(false);
@@ -313,5 +316,13 @@ public class XResultData {
 
    public boolean isFailed() {
       return !isSuccess();
+   }
+
+   public List<XResultTable> getTables() {
+      return tables;
+   }
+
+   public void setTables(List<XResultTable> tables) {
+      this.tables = tables;
    }
 }
