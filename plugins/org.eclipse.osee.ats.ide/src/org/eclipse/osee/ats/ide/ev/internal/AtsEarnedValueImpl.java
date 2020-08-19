@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.logger.Log;
@@ -100,7 +99,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
    @Override
    public Collection<String> getColorTeams() {
-      return AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ColorTeam);
+      return AtsAttributeTypes.ColorTeam.getEnumStrValues();
    }
 
    @Override

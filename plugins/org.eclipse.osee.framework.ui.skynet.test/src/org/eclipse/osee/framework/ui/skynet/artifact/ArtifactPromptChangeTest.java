@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -118,7 +119,7 @@ public class ArtifactPromptChangeTest {
 
    private static class MockPromptFactory implements IPromptFactory {
       @Override
-      public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+      public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
          return new TestPromptChange(attributeType, persist);
       }
    }

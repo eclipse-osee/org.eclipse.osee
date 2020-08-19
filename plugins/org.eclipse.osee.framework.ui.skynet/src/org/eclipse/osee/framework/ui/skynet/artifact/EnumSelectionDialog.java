@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttribtueMultiplicityResolver;
@@ -51,13 +52,13 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
 
    private AttributeMultiplicitySelectionOption selected = AttributeMultiplicitySelectionOption.AddSelection;
 
-   public EnumSelectionDialog(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
+   public EnumSelectionDialog(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
       super("Select Options" + (isSingletonAttribute(attributeType) ? " - (Singleton)" : ""),
          "Select option(s) to add, delete or replace.", new ArrayTreeContentProvider(), new StringLabelProvider(),
          new StringViewerSorter());
       Set<String> options;
       try {
-         options = AttributeTypeManager.getEnumerationValues(attributeType);
+         options = attributeType.toEnum().getEnumStrValues();
          attrMultResolver = new AttribtueMultiplicityResolver(attributeType, artifacts);
          isSingletonAttribute = attrMultResolver.isSingeltonAttribute();
          selectionOptions = attrMultResolver.getSelectionOptions();

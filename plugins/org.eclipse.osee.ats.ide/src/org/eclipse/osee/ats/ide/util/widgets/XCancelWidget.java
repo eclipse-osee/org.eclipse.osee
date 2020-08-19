@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
@@ -57,7 +56,7 @@ public class XCancelWidget extends GenericXWidget implements IArtifactWidget {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.CancelReason.getId());
+      Set<String> valuesSet = AtsAttributeTypes.CancelReason.getEnumStrValues();
       String[] values = valuesSet.toArray(new String[valuesSet.size()]);
       Arrays.sort(values);
       return values;

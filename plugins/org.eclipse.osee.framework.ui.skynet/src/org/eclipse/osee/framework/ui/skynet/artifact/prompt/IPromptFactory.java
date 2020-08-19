@@ -14,7 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -22,5 +22,5 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IPromptFactory {
 
-   IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine);
+   IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine);
 }

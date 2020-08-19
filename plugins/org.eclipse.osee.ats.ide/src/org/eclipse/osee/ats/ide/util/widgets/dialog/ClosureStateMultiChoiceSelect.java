@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
@@ -32,7 +31,7 @@ public class ClosureStateMultiChoiceSelect extends XSelectFromDialog<String> {
 
    public ClosureStateMultiChoiceSelect() {
       super("Select Version(s)");
-      setSelectableItems(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
+      setSelectableItems(AtsAttributeTypes.ClosureState.getEnumStrValues());
    }
 
    @Override
@@ -48,7 +47,7 @@ public class ClosureStateMultiChoiceSelect extends XSelectFromDialog<String> {
       FilteredCheckboxTreeDialog<String> dialog =
          new FilteredCheckboxTreeDialog<String>(getLabel(), "Select from the Closure States below",
             new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
-      dialog.setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
+      dialog.setInput(AtsAttributeTypes.ClosureState.getEnumStrValues());
       return dialog;
    }
 }

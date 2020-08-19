@@ -14,10 +14,13 @@
 package org.eclipse.osee.ats.ide.workflow;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
@@ -38,31 +41,30 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
 
       if (xWidgetData.getXWidgetName().contains(
          OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains("ACTIVE_USER_COMMUNITIES")) {
-         Set<String> options = null;
+         Set<String> options = new HashSet<String>();
+         OrcsTokenService tokenService = ServiceUtil.getTokenService();
+         AttributeTypeGeneric<?> attributeType = AttributeTypeGeneric.SENTINEL;
          try {
             String storeName = xWidgetData.getStoreName();
             Long storeId = xWidgetData.getStoreId();
             if (storeId > 0) {
-               options = AttributeTypeManager.getEnumerationValues(storeId);
+               attributeType = tokenService.getAttributeType(storeId);
+            } else if (Strings.isValid(storeName)) {
+               attributeType = tokenService.getAttributeType(storeName);
+            } else if (Strings.isValid(xWidgetData.getName())) {
+               attributeType = tokenService.getAttributeType(xWidgetData.getName());
+            } else {
+               throw new OseeArgumentException(
+                  "Attribute Type can not be determined from storeName [%s] or Name [%s] and is needed for OPTIONS_FROM_ATTRIBUTE_VALIDITY for widget [%s]",
+                  xWidgetData.getStoreName(), xWidgetData.getName(), xWidgetData);
             }
-            if (options == null && Strings.isValid(storeName)) {
-               options = AttributeTypeManager.getEnumerationValues(storeName);
-            }
-            if (options == null) {
-               String displayName = xWidgetData.getName();
-               if (Strings.isValid(displayName)) {
-                  options = AttributeTypeManager.getEnumerationValues(displayName);
-               }
+            if (attributeType.isEnumerated()) {
+               options = attributeType.toEnum().getEnumStrValues();
             }
          } catch (Exception ex) {
             throw new OseeArgumentException(
                "Exception determining Attribute Type from storeName [%s] or Name [%s] and widget [%s]: %s",
                xWidgetData.getStoreName(), xWidgetData.getName(), xWidgetData, ex.getLocalizedMessage());
-         }
-         if (options == null) {
-            throw new OseeArgumentException(
-               "Attribute Type can not be determined from storeName [%s] or Name [%s] and is needed for OPTIONS_FROM_ATTRIBUTE_VALIDITY for widget [%s]",
-               xWidgetData.getStoreName(), xWidgetData.getName(), xWidgetData);
          }
          String optStrs[] = options.toArray(new String[options.size()]);
          Arrays.sort(optStrs);
@@ -77,5 +79,4 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
    public static ATSXWidgetOptionResolver getInstance() {
       return instance;
    }
-
 }

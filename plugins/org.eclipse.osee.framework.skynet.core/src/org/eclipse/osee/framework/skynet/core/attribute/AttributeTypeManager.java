@@ -15,10 +15,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -27,14 +24,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -127,43 +122,12 @@ public class AttributeTypeManager {
       return getCache().getByName(name);
    }
 
-   private static Set<String> getEnumerationValues(AttributeType attributeType) {
-      if (attributeType.isEnumerated() && attributeType.getOseeEnumType() != null) {
-         return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
-      }
-      return Collections.emptySet();
-   }
-
-   public static Set<String> getEnumerationValues(AttributeTypeId attributeType) {
-      return getEnumerationValues(getType(attributeType));
-   }
-
-   public static Map<String, String> getEnumerationValueDescriptions(AttributeTypeId attributeType) {
-      Map<String, String> values = new HashMap<>();
-      for (OseeEnumEntry entry : AttributeTypeManager.getType(attributeType).getOseeEnumType().values()) {
-         values.put(entry.getName(), entry.getDescription());
-      }
-      return values;
-   }
-
    public static int getMinOccurrences(AttributeTypeId attributeType) {
       return getType(attributeType).getMinOccurrences();
    }
 
    public static int getMaxOccurrences(AttributeTypeId attributeType) {
       return getType(attributeType).getMaxOccurrences();
-   }
-
-   public static Set<String> getEnumerationValues(Long id) {
-      AttributeType type = getTypeById(id);
-      Conditions.checkNotNull(type, "Attribute Type");
-      return getEnumerationValues(type);
-   }
-
-   public static Set<String> getEnumerationValues(String attributeName) {
-      AttributeTypeToken type = getType(attributeName);
-      Conditions.checkNotNull(type, "Attribute Type");
-      return getEnumerationValues(type);
    }
 
    @SuppressWarnings("rawtypes")

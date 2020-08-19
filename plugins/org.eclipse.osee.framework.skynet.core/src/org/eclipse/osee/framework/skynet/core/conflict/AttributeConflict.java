@@ -210,7 +210,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() {
-      return new TreeSet<>(AttributeTypeManager.getEnumerationValues(attributeType));
+      return new TreeSet<>(attributeType.toEnum().getEnumStrValues());
    }
 
    public boolean setStringAttributeValue(String value) {

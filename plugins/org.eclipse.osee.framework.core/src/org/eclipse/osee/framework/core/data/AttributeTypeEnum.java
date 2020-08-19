@@ -16,7 +16,9 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 
 /**
@@ -37,6 +39,14 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
 
    public Collection<T> getEnumValues() {
       return Collections.unmodifiableCollection(enumTokens);
+   }
+
+   public Set<String> getEnumStrValues() {
+      Set<String> enumStringValues = new HashSet<String>();
+      for (T enumToken : enumTokens) {
+         enumStringValues.add(enumToken.getName());
+      }
+      return enumStringValues;
    }
 
    public boolean isValidEnum(String enumName) {

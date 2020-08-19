@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.core.data;
 
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -149,5 +151,16 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
          return true;
       }
       return false;
+   }
+
+   public default <T extends EnumToken> AttributeTypeEnum<T> toEnum() {
+      if (this.isEnumerated()) {
+         try {
+            return (AttributeTypeEnum<T>) this;
+         } catch (Exception e) {
+            throw new OseeTypeDoesNotExist("Attribute type [%s] cannot be cast to an enum.", getName());
+         }
+      }
+      throw new OseeTypeDoesNotExist("Attribute type [%s] is not an enum type.", getName());
    }
 }

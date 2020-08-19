@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -177,12 +176,10 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
          //
          "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-            AttributeTypeManager.getEnumerationValues(
-               AtsAttributeTypes.ChangeType)) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
+            AtsAttributeTypes.ChangeType.getEnumStrValues()) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
          //
          "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-            AttributeTypeManager.getEnumerationValues(
-               AtsAttributeTypes.Priority)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
+            AtsAttributeTypes.Priority.getEnumStrValues()) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
          //
          "</xWidgets>";
    }

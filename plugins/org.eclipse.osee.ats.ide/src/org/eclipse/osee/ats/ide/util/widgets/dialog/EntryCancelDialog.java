@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -66,7 +65,7 @@ public class EntryCancelDialog extends EntryDialog {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.CancelReason.getId());
+      Set<String> valuesSet = AtsAttributeTypes.CancelReason.getEnumStrValues();
       String[] values = valuesSet.toArray(new String[valuesSet.size()]);
       Arrays.sort(values);
       return values;

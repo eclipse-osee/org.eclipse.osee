@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -156,7 +155,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
       XComboViewer pointsCombo = new XComboViewer("Points", SWT.NONE);
       Collection<Object> objects = new LinkedList<>();
-      objects.addAll(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.Points));
+      objects.addAll(AtsAttributeTypes.Points.getEnumStrValues());
       pointsCombo.setInput(objects);
       pointsCombo.setFillHorizontally(false);
       pointsCombo.createWidgets(pointsComp, 2);

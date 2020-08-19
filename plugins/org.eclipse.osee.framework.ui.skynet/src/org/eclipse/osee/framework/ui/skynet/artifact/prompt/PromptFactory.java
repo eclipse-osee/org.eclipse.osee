@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
 import java.text.NumberFormat;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 public final class PromptFactory implements IPromptFactory {
 
    @Override
-   public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+   public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       IHandlePromptChange promptChange;
 
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {

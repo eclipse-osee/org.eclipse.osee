@@ -17,7 +17,6 @@ import java.util.Collections;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
@@ -52,7 +51,7 @@ public class VersionMultiChoiceSelect extends XSelectFromDialog<IAtsVersion> {
       FilteredCheckboxTreeDialog<IAtsVersion> dialog =
          new FilteredCheckboxTreeDialog<IAtsVersion>(getLabel(), "Select from the versions below",
             new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
-      dialog.setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
+      dialog.setInput(AtsAttributeTypes.ClosureState.getEnumStrValues());
       dialog.setShowSelectButtons(true);
       return dialog;
    }
