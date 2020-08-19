@@ -29,7 +29,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -83,7 +82,7 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Path("branches")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public List<BranchViewToken> getApplicabilityBranches() {
+   public List<BranchId> getApplicabilityBranches() {
       return ops.getApplicabilityBranches();
    }
 
@@ -92,7 +91,7 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
    @Path("branches/{branchQueryType}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public List<BranchViewToken> getApplicabilityBranchesByType(@PathParam("branchQueryType") String branchQueryType) {
+   public List<BranchId> getApplicabilityBranchesByType(@PathParam("branchQueryType") String branchQueryType) {
       return ops.getApplicabilityBranchesByType(branchQueryType);
    }
 

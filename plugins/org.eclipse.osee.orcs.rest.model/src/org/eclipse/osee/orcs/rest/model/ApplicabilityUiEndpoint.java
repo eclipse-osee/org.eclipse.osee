@@ -26,7 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -45,13 +44,13 @@ public interface ApplicabilityUiEndpoint {
    @GET
    @Path("branches")
    @Produces({MediaType.APPLICATION_JSON})
-   List<BranchViewToken> getApplicabilityBranches();
+   List<BranchId> getApplicabilityBranches();
 
    @GET
    @Path("branches/{branchQueryType}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   List<BranchViewToken> getApplicabilityBranchesByType(String branchQueryType);
+   List<BranchId> getApplicabilityBranchesByType(String branchQueryType);
 
    @GET
    @Path("branch/{branch}")

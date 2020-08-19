@@ -14,7 +14,7 @@ app
                   	        top: 98,
                   	        left: 357
                   	      };
-                	  $scope.branchQueryType = 'all';
+                	  $scope.branchQueryType = 'working';
                 	  $scope.selectedViewOption = 'productAction';
                 	  $scope.selectedFeatureOption = 'featureAction';
                 	  $scope.selectedActionOption = 'actionAction';
@@ -116,22 +116,22 @@ app
                      // //////////////////////////////////////
                      $scope.loadBranches = function() {
                     	 if (!$scope.branchQueryType) {
-                    		 $scope.branchQueryType = 'all';
+                    		 $scope.branchQueryType = 'working';
                     	 }
-                    	 if($scope.branchQueryType == 'all') {
-                            $http.get('/orcs/applicui/branches').then(
+                    	 if ($scope.branchQueryType == 'working') {
+                    		 $http.get('/orcs/branches?branchTypes=Working&namePattern=.*ARB%20\-.*').then(
+                                     function(response) {
+                                        $scope.branches = response.data;
+                                        $scope.message = '';
+                                        $scope.setSelectedBranch();
+                                     });	 
+                    	 } else {
+                    		 $http.get('/orcs/applicui/branches/'+$scope.branchQueryType).then(
                               function(response) {
                                  $scope.branches = response.data;
                                  $scope.message = '';
                                  $scope.setSelectedBranch();
                               });
-                    	 } else {
-                    		 $http.get('/orcs/applicui/branches/'+$scope.branchQueryType).then(
-                                     function(response) {
-                                        $scope.branches = response.data;
-                                        $scope.message = '';
-                                        $scope.setSelectedBranch();
-                                     });
                     	 }
                          
                      }
@@ -249,7 +249,7 @@ app
                      // //////////////////////////////////////
                      //http://<server>/ats/ui/action/actionableitems
                      $scope.loadAIs = function() {
-                        $http.get('/ats/ai').then(
+                        $http.get('/ats/ai/worktype/ARB').then(
                               function(response) {
                                  $scope.actionableitems = response.data;
                                  $scope.message = '';
@@ -575,7 +575,7 @@ app
                         	$scope.error("Description is required");
                         	return;
                         }
-                        if (!$scope.selectedUser.id) {
+                        if (!$scope.selectedUser.userId) {
                         	$scope.error("User is required");
                         	return;
                         }
@@ -586,11 +586,11 @@ app
                         var aiIdsParam = []; 
                         aiIdsParam.push($scope.selectedAI.id);
                         
-                        var actionData = { title: $scope.action.title,
+                        var actionData = { title: "ARB - " + $scope.action.title,
                         		           description: $scope.action.description,
                         		           aiIds: aiIdsParam,
-                        		           asUserId: $scope.selectedUser.id,
-                        		           createdByUserId: $scope.selectedUser.id,
+                        		           asUserId: $scope.selectedUser.userId,
+                        		           createdByUserId: $scope.selectedUser.userId,
                         		           versionId: $scope.selectedVersion.id }
                         var url = '/ats/action/branch';
                         
@@ -665,15 +665,16 @@ app
 			// Save Transition
 			// //////////////////////////////////////
 			$scope.validateTransition = function() {
+				$scope.selectedToState = "Review";
 				if ($scope.selectedToState && $scope.actionId && $scope.selectedUser.id) {
-					
+						
 
 					var workItemIdsParam = []; 
 					var workItem = { id: $scope.actionId, name: ""};
 	                workItemIdsParam.push(workItem);
 					   var transitionData = { toStateName: $scope.selectedToState,
 					   		           name: "Transition to " + $scope.selectedToState,
-					   		           transitionUserArtId: $scope.selectedUser.accountId,
+					   		           transitionUserArtId: $scope.selectedUser.id,
 					   		           workItemIds: workItemIdsParam }
 					   
 					   var validateUrl = '/ats/action/transitionValidate';
@@ -703,13 +704,13 @@ app
 			}
 			$scope.handleSaveTransition = function() {
 				
-
+				$scope.selectedToState = "Review";
 				var workItemIdsParam = []; 
 				var workItem = { id: $scope.actionId, name: ""};
                 workItemIdsParam.push(workItem);
 				   var transitionData = { toStateName: $scope.selectedToState,
 				   		           name: "Transition to " + $scope.selectedToState,
-				   		           transitionUserArtId: $scope.selectedUser.accountId,
+				   		           transitionUserArtId: $scope.selectedUser.id,
 				   		           workItemIds: workItemIdsParam }
 			   		  var json = JSON.stringify(transitionData);
 					  var url = '/ats/action/transition';
@@ -1093,8 +1094,8 @@ app
                                       } ];
 
                                       $scope.createFeatureColumns();
-                                      $scope.createViewColumns();
                                       $scope.refreshAccess();
+                                      $scope.createViewColumns();
                                       $scope.refreshShowAllLabel();
                                       
                                       $scope.itemsGridOptions.columnDefs = $scope.columns;
@@ -1173,6 +1174,7 @@ app
                                field : "valueType",
                                displayName : "Value Type",
                                enableSorting : true,
+                               enableCellEdit:false,
                                width : 125
                             });
                             $scope.columns
@@ -1180,6 +1182,7 @@ app
                                field : "values",
                                displayName : "Values",
                                enableSorting : true,
+                               enableCellEdit:false,
                                width : 125
                             });
                             $scope.columns
@@ -1187,6 +1190,7 @@ app
                                field : "productApplicabilities",
                                displayName : "Product Applicability",
                                enableSorting : true,
+                               enableCellEdit:false,
                                width : 125
                             });
                             $scope.columns
@@ -1194,6 +1198,7 @@ app
                                field : "defaultValue",
                                displayName : "Default Value",
                                enableSorting : true,
+                               enableCellEdit:false,
                                width : 125
                             });
                             $scope.columns
@@ -1201,6 +1206,7 @@ app
                                field : "multiValued",
                                displayName : "Multi Valued",
                                enableSorting : true,
+                               enableCellEdit:false,
                                width : 60
                             });
                         }
@@ -1221,15 +1227,18 @@ app
                               return;
                            }
                            var columnName = view.name;
+                           
+                           var columnVisible = !columnName.includes("IETM");
                            $scope.columns
                                  .push({
                                     field : columnName
                                           .toLowerCase(),
                                     displayName : columnName,
                                     id : view.id,
+                                    visible : columnVisible,
                                     enableSorting : true,
                                     width : 125,
-                                    enableCellEdit: true,
+                                    enableCellEdit: $scope.config.editable,
                                     editDropdownValueLabel: 'value', 
                                     editDropdownIdLabel: 'value',
                                     editableCellTemplate: 'ui-grid/dropdownEditor',

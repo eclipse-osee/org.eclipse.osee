@@ -73,6 +73,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       config.setBranch(branch);
       config.setAssociatedArtifactId(branch.getAssociatedArtifact());
+      if (branch.getBranchType().equals(BranchType.WORKING.getId())) {
+         config.setEditable(true);
+      } else {
+         config.setEditable(false);
+      }
       if (branch.getParentBranch().isValid()) {
          Branch parentBranch =
             orcsApi.getQueryFactory().branchQuery().andId(branch.getParentBranch()).getResults().getExactlyOne();
@@ -249,21 +254,21 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public List<BranchViewToken> getApplicabilityBranches() {
-      List<BranchViewToken> tokens = new ArrayList<>();
+   public List<BranchId> getApplicabilityBranches() {
+      List<BranchId> tokens = new ArrayList<>();
       for (Branch branch : orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(
          false).andIsOfType(BranchType.BASELINE, BranchType.WORKING).andStateIs(BranchState.CREATED,
             BranchState.MODIFIED).getResults().getList()) {
          if (orcsApi.getQueryFactory().fromBranch(branch).andId(CoreArtifactTokens.ProductLineFolder).exists()) {
-            tokens.add(new BranchViewToken(branch, branch.getName(), branch.getViewId()));
+            tokens.add(branch);
          }
       }
       return tokens;
    }
 
    @Override
-   public List<BranchViewToken> getApplicabilityBranchesByType(String branchQueryType) {
-      List<BranchViewToken> tokens = new ArrayList<>();
+   public List<BranchId> getApplicabilityBranchesByType(String branchQueryType) {
+      List<BranchId> tokens = new ArrayList<>();
       List<Branch> branchList = new ArrayList<>();
 
       if (branchQueryType.equals("all")) {
@@ -271,17 +276,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             BranchType.BASELINE, BranchType.WORKING).andStateIs(BranchState.CREATED,
                BranchState.MODIFIED).getResults().getList();
       }
-      if (branchQueryType.equals("working")) {
-         branchList = orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
-            BranchType.WORKING).andStateIs(BranchState.CREATED, BranchState.MODIFIED).getResults().getList();
-      }
       if (branchQueryType.equals("baseline")) {
          branchList = orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
             BranchType.BASELINE).andStateIs(BranchState.CREATED, BranchState.MODIFIED).getResults().getList();
       }
       for (Branch branch : branchList) {
          if (orcsApi.getQueryFactory().fromBranch(branch).andId(CoreArtifactTokens.ProductLineFolder).exists()) {
-            tokens.add(new BranchViewToken(branch, branch.getName(), branch.getViewId()));
+            tokens.add(branch);
          }
       }
       return tokens;

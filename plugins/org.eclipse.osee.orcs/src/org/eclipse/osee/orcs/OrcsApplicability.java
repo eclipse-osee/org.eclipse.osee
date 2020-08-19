@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -40,9 +39,9 @@ public interface OrcsApplicability {
 
    ArtifactToken createUpdateFeatureDefinition(FeatureDefinition featureDef, String action, TransactionBuilder tx, XResultData results);
 
-   List<BranchViewToken> getApplicabilityBranches();
+   List<BranchId> getApplicabilityBranches();
 
-   List<BranchViewToken> getApplicabilityBranchesByType(String branchQueryType);
+   List<BranchId> getApplicabilityBranchesByType(String branchQueryType);
 
    ArtifactToken getProductsFolder(BranchId branch);
 

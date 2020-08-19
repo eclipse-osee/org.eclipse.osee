@@ -44,9 +44,9 @@
 		<div class="inner">
 				<div id="navDiv" class="container">
 						   <label>Branch Type: </label>
-							<input type="radio" ng-model="branchQueryType" value="working" ng-change="updateBranchQueryType()">Working</input>
-							<input type="radio" ng-model="branchQueryType" value="baseline" ng-change="updateBranchQueryType()">Baseline</input>
-							<input type="radio" ng-model="branchQueryType" value="all" ng-change="updateBranchQueryType()">All</input>
+							<input type="radio" ng-model="branchQueryType" value="baseline" ng-change="updateBranchQueryType()"> Baseline</input>
+							<input type="radio" ng-model="branchQueryType" value="working" ng-change="updateBranchQueryType()"> Working</input>
+							<input type="radio" ng-model="branchQueryType" value="all" ng-change="updateBranchQueryType()"> All</input>
 							<br/>
 							<label>Select Branch: </label> 
 							<select id="selectedBranchField" class="dropdown" ng-model="selectedBranch"
@@ -55,7 +55,7 @@
 							</select>
 							<b>{{accessLevel}}</b>
 							<select class="dropdown" ng-model="selectedViewOption" ng-change="doSelectedViewAction()">
-									<option value="productAction" ng-selected="true">Product...</option>
+									<option value="productAction" ng-selected="true">Configuration...</option>
 									<option value="add">Add</option>
 									<option value="edit">Edit</option>
 									<option value="delete">Delete</option>
@@ -69,8 +69,7 @@
 							<select class="dropdown" ng-model="selectedActionOption" ng-change="doSelectedActionAction()">
 									<option value="actionAction" ng-selected="true">Action...</option>
 									<option value="create">Create</option>
-									<option value="transition">Transition</option>
-									<option value="commitBranch">Commit Working Branch</option>
+									<option value="transition">Transition To Review</option>
 							</select>
 							<!-- <button class="button" type="submit" class="btn btn-default btn-xs" ng-click="handleActionAdd()">Create PL Action
 						   </button>
@@ -156,19 +155,10 @@
 								ng-change="handleUserSelection()">
 							</select>
 							<br/>	
-							<!-- SELECT ToState -->
-							<label ng-show="htmlTransitionSelect">Transition To: </label>
-							<br/>
-							<select
-								ng-model="selectedToState" 
-								ng-show="htmlTransitionSelect"
-								ng-options="state as state for state in transitionToStates | orderBy: 'state'"
-								ng-change="handleTransitionSelect()">
-							</select>
 							<br/>
 							<br/>
 							<button type="button" class="btn btn-primary"
-								ng-click="validateTransition($event)" ng-show="htmlTransition">Save</button>
+								ng-click="validateTransition($event)" ng-show="htmlTransition">Transition to Review</button>
 							<button type="button" class="btn btn-primary"
 								ng-click="cancelTransition($event)">Cancel</button>
 						</form>
@@ -200,12 +190,12 @@
 						<form name="viewPane" id="viewPane" ng-show="htmlViewPane" 
 						class="floatingPane" style="top: {{elem.top || 0}}px; left: {{elem.left || 0}}px" important>
 							
-							<p class="handle" draggable ng-show="htmlViewAdd">Add Product</p>
-							<p class="handle" draggable ng-show="htmlViewEdit">Edit Product</p>
-							<p class="handle" draggable ng-show="htmlViewDelete">Delete	Product</p>
+							<p class="handle" draggable ng-show="htmlViewAdd">Add Configuration</p>
+							<p class="handle" draggable ng-show="htmlViewEdit">Edit Configuration</p>
+							<p class="handle" draggable ng-show="htmlViewDelete">Delete	Configuration</p>
 							<hr class="floatingHr"/>
 							<!-- SELECT View -->
-							<label ng-show="htmlViewSelect">Product: </label>
+							<label ng-show="htmlViewSelect">Configuration: </label>
 							<select
 								ng-model="view" 
 								ng-show="htmlViewSelect"

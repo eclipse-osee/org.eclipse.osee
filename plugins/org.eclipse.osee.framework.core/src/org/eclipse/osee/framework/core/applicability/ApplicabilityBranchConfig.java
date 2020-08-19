@@ -28,6 +28,7 @@ public class ApplicabilityBranchConfig {
 
    BranchViewToken branch;
    BranchViewToken parentBranch;
+   Boolean editable;
    Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
    List<ArtifactToken> views = new LinkedList<>();
@@ -118,6 +119,14 @@ public class ApplicabilityBranchConfig {
 
    public void setParentBranch(BranchViewToken parentBranch) {
       this.parentBranch = parentBranch;
+   }
+
+   public Boolean getEditable() {
+      return editable;
+   }
+
+   public void setEditable(Boolean editable) {
+      this.editable = editable;
    }
 
 }

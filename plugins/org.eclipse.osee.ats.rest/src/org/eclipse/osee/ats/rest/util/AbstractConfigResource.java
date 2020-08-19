@@ -36,12 +36,14 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public abstract class AbstractConfigResource {
 
    protected final AtsApi atsApi;
+   protected final OrcsApi orcsApi;
    private final ArtifactTypeToken artifactType;
    private final QueryBuilder query;
 
    public AbstractConfigResource(ArtifactTypeToken artifactType, AtsApi atsApi, OrcsApi orcsApi) {
       this.artifactType = artifactType;
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
       query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 

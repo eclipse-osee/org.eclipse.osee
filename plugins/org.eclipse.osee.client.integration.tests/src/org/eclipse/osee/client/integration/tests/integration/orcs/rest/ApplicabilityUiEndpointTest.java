@@ -20,7 +20,6 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewToken;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
@@ -56,7 +55,7 @@ public class ApplicabilityUiEndpointTest {
       ApplicabilityUiEndpoint applUiEndpoint = ServiceUtil.getOseeClient().getApplicabilityUiEndpoint();
       Assert.assertNotNull(applUiEndpoint);
 
-      List<BranchViewToken> applBranches = applUiEndpoint.getApplicabilityBranches();
+      List<BranchId> applBranches = applUiEndpoint.getApplicabilityBranches();
       Assert.assertTrue("Should be at least 1 branches, was " + applBranches.size(), applBranches.size() > 1);
    }
 
