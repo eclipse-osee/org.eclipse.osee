@@ -23,7 +23,6 @@ import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
@@ -137,7 +136,7 @@ public class FixAttributeOperation extends AbstractOperation {
          List<Attribute<?>> attributes = artifact.getAttributes();
          for (Attribute<?> attribute : attributes) {
             checkForCancelledStatus(monitor);
-            AttributeType attributeType = attribute.getAttributeType();
+            AttributeTypeToken attributeType = attribute.getAttributeType();
             if (attributeType.isEnumerated()) {
                artifactAttributeMap.put(artifact, attributeType);
             }

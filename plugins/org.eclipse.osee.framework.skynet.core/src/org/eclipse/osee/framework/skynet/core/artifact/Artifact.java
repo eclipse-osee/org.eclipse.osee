@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -1003,7 +1002,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * adds a new attribute of the type named attributeTypeName. The attribute is set to the default value for its type,
     * if any.
     */
-   public final void addAttribute(AttributeType attributeType) {
+   public final void addAttribute(AttributeTypeToken attributeType) {
       initializeAttribute(attributeType, ModificationType.NEW, true, true);
    }
 
@@ -1728,8 +1727,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return relationOrderRecords;
    }
 
-   public Set<AttributeType> getAttributeTypesUsed() {
-      Set<AttributeType> types = new HashSet<>();
+   public Set<AttributeTypeToken> getAttributeTypesUsed() {
+      Set<AttributeTypeToken> types = new HashSet<>();
       for (Attribute<?> attr : getAttributes()) {
          types.add(attr.getAttributeType());
       }

@@ -127,21 +127,6 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
    }
 
    /**
-    * Whether this attribute type has a media type.
-    *
-    * @return <b>true</b> if this attribute type has a media type. <b>false</b> if this is attribute does not have a
-    * media type.
-    */
-   public boolean hasMediaType() {
-      boolean toReturn = false;
-      String format = getMediaType();
-      if (format != null) {
-         toReturn = Strings.isValid(format.trim());
-      }
-      return toReturn;
-   }
-
-   /**
     * Whether this attribute type is taggable.
     *
     * @return <b>true</b> if this attribute type is taggable. <b>false</b> if this is not taggable.

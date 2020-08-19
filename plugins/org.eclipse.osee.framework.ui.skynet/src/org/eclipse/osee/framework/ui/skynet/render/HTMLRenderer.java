@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -153,8 +153,8 @@ public class HTMLRenderer extends FileSystemRenderer {
       String blankLine = "<br /><br />";
       String underline = "<span style=\"text-decoration: underline;\">";
       String underlineEnd = "</span>";
-      Collection<AttributeType> types = artifact.getAttributeTypesUsed();
-      for (AttributeType type : types) {
+      Collection<AttributeTypeToken> types = artifact.getAttributeTypesUsed();
+      for (AttributeTypeToken type : types) {
          if (type.equals(CoreAttributeTypes.HtmlContent)) {
             htmlContent = artifact.getAttributesToString(type);
          } else if (type.equals(CoreAttributeTypes.ImageContent)) {

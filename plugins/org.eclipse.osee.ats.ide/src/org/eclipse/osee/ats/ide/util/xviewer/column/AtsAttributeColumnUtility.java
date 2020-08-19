@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
 
 /**
@@ -39,7 +38,7 @@ public class AtsAttributeColumnUtility {
             IAttributeColumn attrColumn = (IAttributeColumn) columnData;
             if (item instanceof Artifact) {
                Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(item);
-               if (AttributeTypeManager.getMaxOccurrences(attrColumn.getAttributeType()) != 1) {
+               if (useArt.getArtifactType().getMax(attrColumn.getAttributeType()) != 1) {
                   if (useArt.getAttributeCount(attrColumn.getAttributeType()) > 1) {
                      return false;
                   }

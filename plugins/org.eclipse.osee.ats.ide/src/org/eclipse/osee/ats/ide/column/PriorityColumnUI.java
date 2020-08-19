@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -51,6 +50,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
    public static PriorityColumnUI instance = null;
    private final AtsAttributeValueColumn colToken;
    private final AttributeTypeEnum<?> attrToken;
+   private Artifact artifact;
 
    public static PriorityColumnUI getInstance() {
       if (instance == null) {
@@ -107,7 +107,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          // Only prompt change for sole attribute types
-         if (AttributeTypeManager.getMaxOccurrences(getAttributeType()) != 1) {
+         if (artifact.getArtifactType().getMax(getAttributeType()) != 1) {
             return false;
          }
          if (treeItem.getData() instanceof Artifact) {

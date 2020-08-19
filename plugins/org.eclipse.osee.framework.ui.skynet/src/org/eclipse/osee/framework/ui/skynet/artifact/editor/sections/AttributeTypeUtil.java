@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -40,8 +39,8 @@ public class AttributeTypeUtil {
       return items;
    }
 
-   private static Set<AttributeType> toTypes(List<Attribute<?>> attributes) {
-      Set<AttributeType> types = new HashSet<>();
+   private static Set<AttributeTypeToken> toTypes(List<Attribute<?>> attributes) {
+      Set<AttributeTypeToken> types = new HashSet<>();
       for (Attribute<?> attribute : attributes) {
          types.add(attribute.getAttributeType());
       }
@@ -52,21 +51,21 @@ public class AttributeTypeUtil {
       List<AttributeTypeToken> items = new ArrayList<>();
 
       List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());
-      Set<AttributeType> typesInExistence = toTypes(attributeInstances);
+      Set<AttributeTypeToken> typesInExistence = toTypes(attributeInstances);
 
-      AttributeType nameType = null;
-      AttributeType annotations = null;
-      AttributeType relationOrder = null;
-      AttributeType dslEditableAttribute = null;
+      AttributeTypeToken nameType = null;
+      AttributeTypeToken annotations = null;
+      AttributeTypeToken relationOrder = null;
+      AttributeTypeToken dslEditableAttribute = null;
 
-      for (AttributeType type : typesInExistence) {
+      for (AttributeTypeToken type : typesInExistence) {
          if (CoreAttributeTypes.Name.equals(type)) {
             nameType = type;
          } else if (CoreAttributeTypes.Annotation.equals(type)) {
             annotations = type;
          } else if (CoreAttributeTypes.RelationOrder.equals(type)) {
             relationOrder = type;
-         } else if (type.hasMediaType() && type.getMediaType().endsWith("dsl")) {
+         } else if (type.getMediaType().endsWith("dsl")) {
             dslEditableAttribute = type;
          } else {
             items.add(type);

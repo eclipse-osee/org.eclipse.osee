@@ -68,7 +68,6 @@ public class EnumAttribtueMultiplicityTest {
          resolver = new AttribtueMultiplicityResolver(attr.getAttributeTypeToken());
          HashMap<AttributeMultiplicitySelectionOption, Boolean> optionMap =
             AttributeMultiplicitySelectionOption.getOptionMap();
-
          int minVal = AttributeTypeManager.getMinOccurrences(attrIdToken);
          int maxVal = AttributeTypeManager.getMaxOccurrences(attrIdToken);
          boolean isSingelton = resolver.isSingeltonAttribute();

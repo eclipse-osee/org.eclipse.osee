@@ -127,12 +127,12 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    }
 
    private static void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactType artifactType, Branch branch) {
-      Map<BranchId, Collection<AttributeType>> validityMap =
+      Map<BranchId, Collection<AttributeTypeToken>> validityMap =
          artifactType.getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
 
       if (!validityMap.isEmpty()) {
          for (BranchId ancestor : branch.getAncestors()) {
-            Collection<AttributeType> items = validityMap.get(ancestor);
+            Collection<AttributeTypeToken> items = validityMap.get(ancestor);
             if (items != null) {
                attributeTypes.addAll(items);
             }
@@ -146,9 +146,9 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
 
    @Override
    public boolean isValidAttributeType(AttributeTypeId attributeType) {
-      Map<BranchId, Collection<AttributeType>> validityMap = getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+      Map<BranchId, Collection<AttributeTypeToken>> validityMap = getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
 
-      for (Collection<AttributeType> types : validityMap.values()) {
+      for (Collection<AttributeTypeToken> types : validityMap.values()) {
          if (types.contains(attributeType)) {
             return true;
          }
@@ -184,10 +184,10 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    }
 
    private void getValidAttributeTypes(List<AttributeTypeToken> attributeTypes, ArtifactType artifactType) {
-      Map<BranchId, Collection<AttributeType>> validityMap =
+      Map<BranchId, Collection<AttributeTypeToken>> validityMap =
          artifactType.getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
 
-      for (Collection<AttributeType> types : validityMap.values()) {
+      for (Collection<AttributeTypeToken> types : validityMap.values()) {
          attributeTypes.addAll(types);
       }
    }

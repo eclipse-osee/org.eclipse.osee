@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -600,7 +599,7 @@ public class ExcelAtsActionArtifactExtractor {
                } else {
                   String attrTypeName = header;
                   if (Strings.isValid(attrTypeName)) {
-                     AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
+                     AttributeTypeToken attributeType = AttributeTypeManager.getType(attrTypeName);
                      if (attributeType == null) {
                         resultData.errorf("Invalid Attribute Type Name => %s\n", header);
                      } else {

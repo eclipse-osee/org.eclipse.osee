@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -278,8 +279,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    public boolean canDelete() {
       try {
-         AttributeType attributeType = getAttributeType();
-         return getArtifact().getAttributeCount(attributeType) > attributeType.getMinOccurrences();
+         AttributeTypeToken attributeType = getAttributeType();
+         return getArtifact().getAttributeCount(attributeType) > artifactRef.get().getArtifactType().getMin(
+            attributeType);
+
       } catch (OseeCoreException ex) {
          return false;
       }
