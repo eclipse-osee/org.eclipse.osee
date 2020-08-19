@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core.validation;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -34,8 +33,7 @@ public class OseeValidator {
    private final ExtensionDefinedObjects<IOseeValidator> loadedObjects;
 
    private OseeValidator() {
-      loadedObjects =
-         new ExtensionDefinedObjects<>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
+      loadedObjects = new ExtensionDefinedObjects<>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE);
    }
 
    public static OseeValidator getInstance() {
@@ -45,7 +43,7 @@ public class OseeValidator {
    public IStatus validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
       IStatus status = Status.OK_STATUS;
       try {
-         AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+         AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
          status = validate(requiredQualityOfService, artifact, attributeType, proposedValue);
       } catch (Exception ex) {
          status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);

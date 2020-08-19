@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -238,7 +238,7 @@ public class ExcelAtsTaskArtifactExtractor {
                if (validRow(task)) {
                   String attrTypeName = header;
                   if (Strings.isValid(attrTypeName)) {
-                     AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
+                     AttributeTypeToken attributeType = AttributeTypeManager.getType(attrTypeName);
                      if (attributeType == null) {
                         rd.error("Invalid Attribute Type Name => " + header);
                      } else {

@@ -161,7 +161,7 @@ public class AttributeTypeManager {
    }
 
    public static Set<String> getEnumerationValues(String attributeName) {
-      AttributeType type = getType(attributeName);
+      AttributeTypeToken type = getType(attributeName);
       Conditions.checkNotNull(type, "Attribute Type");
       return getEnumerationValues(type);
    }

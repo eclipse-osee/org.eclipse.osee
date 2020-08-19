@@ -45,7 +45,7 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
 
    private final Set<ArtifactType> superTypes = new HashSet<>();
    private final Set<ArtifactType> childTypes = new HashSet<>();
-   private final Map<BranchId, Collection<AttributeType>> attributes = new HashMap<>();
+   private final Map<BranchId, Collection<AttributeTypeToken>> attributes = new HashMap<>();
    private final OrcsTokenService tokenService;
 
    public ArtifactType(Long guid, String name, boolean isAbstract, OrcsTokenService tokenService) {
@@ -105,12 +105,12 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
       }
    }
 
-   public void setAttributeTypes(Collection<AttributeType> attributeTypes, BranchId branch) {
+   public void setAttributeTypes(Collection<AttributeTypeToken> attributeTypes, BranchId branch) {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
 
-   public void setAllAttributeTypes(Map<BranchId, Collection<AttributeType>> attributeTypes) {
+   public void setAllAttributeTypes(Map<BranchId, Collection<AttributeTypeToken>> attributeTypes) {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).set(attributeTypes);
    }

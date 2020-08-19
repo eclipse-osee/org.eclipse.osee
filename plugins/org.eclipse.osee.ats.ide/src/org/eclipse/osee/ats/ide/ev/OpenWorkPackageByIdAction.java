@@ -25,7 +25,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,7 +69,7 @@ public class OpenWorkPackageByIdAction extends Action {
                   if (!ids.isEmpty()) {
                      results.addAll(ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.ActivityId, ids,
                         AtsClientService.get().getAtsBranch(), 5));
-                     AttributeType type = AttributeTypeManager.getType(AtsAttributeTypes.CognosUniqueId);
+                     AttributeTypeToken type = AttributeTypeManager.getType(AtsAttributeTypes.CognosUniqueId);
                      if (type != null) {
                         results.addAll(ArtifactQuery.getArtifactListFromAttributeValues(
                            AtsAttributeTypes.CognosUniqueId, ids, AtsClientService.get().getAtsBranch(), 5));

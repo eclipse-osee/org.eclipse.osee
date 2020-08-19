@@ -132,7 +132,7 @@ public class RoughArtifact {
 
    private boolean isEnumeration(String typeName) {
       boolean result = false;
-      AttributeType type = AttributeTypeManager.getType(typeName);
+      AttributeTypeToken type = AttributeTypeManager.getType(typeName);
       result = type.isEnumerated();
       return result;
    }

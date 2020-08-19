@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -47,7 +46,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public boolean isEmpty() {
-      AttributeType attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null) {
          return artifact.getAttributeCount(attributeType) == 0;
       }
@@ -56,14 +55,14 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<String> getValues() {
-      AttributeType attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null) {
          return artifact.getAttributesToStringList(attributeType);
       }
       return Collections.emptyList();
    }
 
-   public AttributeType getAtributeType() {
+   public AttributeTypeToken getAtributeType() {
       return AttributeTypeManager.getType(attributeType);
    }
 
@@ -74,7 +73,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<Date> getDateValues() {
-      AttributeType attributeType = getAtributeType();
+      AttributeTypeToken attributeType = getAtributeType();
       if (attributeType != null) {
          List<Date> dates = new ArrayList<>();
          for (Attribute<?> attr : artifact.getAttributes(attributeType)) {

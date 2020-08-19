@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.RendererUtil;
@@ -772,7 +771,7 @@ public class WordTemplateProcessor {
                }
             }
          } else {
-            AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+            AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,
                   publishInLine, footer);

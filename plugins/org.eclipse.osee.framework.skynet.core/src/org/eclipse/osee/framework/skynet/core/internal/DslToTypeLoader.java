@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -56,7 +57,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
@@ -138,7 +138,7 @@ public class DslToTypeLoader implements TypesLoader {
    private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
       ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(Long.valueOf(xArtifactType.getId()));
       translateSuperTypes(buffer, targetArtifactType, xArtifactType);
-      Map<BranchId, Collection<AttributeType>> validAttributesPerBranch =
+      Map<BranchId, Collection<AttributeTypeToken>> validAttributesPerBranch =
          getOseeAttributes(buffer, branchCache, xArtifactType);
       targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
    }
@@ -156,15 +156,15 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
-      Map<BranchId, Collection<AttributeType>> validAttributes = new HashMap<>();
+   private Map<BranchId, Collection<AttributeTypeToken>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
+      Map<BranchId, Collection<AttributeTypeToken>> validAttributes = new HashMap<>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
          Long attrUuid = Long.valueOf(xAttributeType.getId());
-         AttributeType oseeAttributeType = buffer.getAttrTypes().getByGuid(attrUuid);
+         AttributeTypeToken oseeAttributeType = buffer.getAttrTypes().getByGuid(attrUuid);
          if (oseeAttributeType != null) {
-            Collection<AttributeType> listOfAllowedAttributes = validAttributes.get(branch);
+            Collection<AttributeTypeToken> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
                listOfAllowedAttributes = new HashSet<>();
                validAttributes.put(branch, listOfAllowedAttributes);

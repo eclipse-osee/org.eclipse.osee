@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -69,7 +69,7 @@ public class TemplateArtifactValidatorTest {
       newNonTemplate.persist(testInfo.getQualifiedTestName());
 
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
-      for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
+      for (AttributeTypeToken attrType : AttributeTypeManager.getAllTypes()) {
          boolean correctAttrType = false;
          if (attrType.equals(CoreAttributeTypes.TemplateMatchCriteria)) {
             correctAttrType = true;

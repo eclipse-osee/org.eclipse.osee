@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.ide.internal.AtsClientService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
@@ -72,7 +72,7 @@ public class WorldXViewerUtil {
       try {
          if (AtsClientService.get().getUserService().getCurrentUser().getUserGroups().contains(
             AtsUserGroups.AtsAddAttrColumns)) {
-            for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+            for (AttributeTypeToken attributeType : AttributeTypeManager.getAllTypes()) {
                if (attributeType.getName().startsWith("ats.")) {
                   factory.registerColumns(SkynetXViewerFactory.getAttributeColumn(attributeType));
                }
@@ -96,7 +96,7 @@ public class WorldXViewerUtil {
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {
-            AttributeType attrType = null;
+            AttributeTypeToken attrType = null;
             try {
                attrType = AttributeTypeManager.getTypeById(column.getAttrTypeId());
             } catch (OseeTypeDoesNotExist ex) {

@@ -23,12 +23,12 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,7 +55,7 @@ public class FindMissingOrUnspecifiedAttributes extends AbstractBlam {
       ISheetWriter excelWriter = new ExcelXmlWriter(file);
 
       BranchId branch = variableMap.getBranch("Branch");
-      AttributeType attributeType = variableMap.getAttributeType("Attribute Type");
+      AttributeTypeToken attributeType = variableMap.getAttributeType("Attribute Type");
 
       // Unspecified
       List<Artifact> artifacts =

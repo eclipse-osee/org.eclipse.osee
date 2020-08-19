@@ -18,11 +18,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -35,10 +35,10 @@ import org.junit.Test;
  */
 public class ArtifactTypeAttributesFieldTest {
 
-   private static AttributeType attr1;
-   private static AttributeType attr2;
-   private static AttributeType attr3;
-   private static AttributeType attr4;
+   private static AttributeTypeToken attr1;
+   private static AttributeTypeToken attr2;
+   private static AttributeTypeToken attr3;
+   private static AttributeTypeToken attr4;
    private static BranchId br1;
    private static BranchId br2;
 
@@ -55,7 +55,7 @@ public class ArtifactTypeAttributesFieldTest {
 
    @Test
    public void testGetSet() {
-      Map<BranchId, Collection<AttributeType>> input = new LinkedHashMap<>();
+      Map<BranchId, Collection<AttributeTypeToken>> input = new LinkedHashMap<>();
       ArtifactTypeAttributesField field = new ArtifactTypeAttributesField(input);
 
       Assert.assertEquals(false, field.isDirty());
@@ -75,33 +75,33 @@ public class ArtifactTypeAttributesFieldTest {
       field.clearDirty();
 
       // Add to entry
-      Map<BranchId, Collection<AttributeType>> values = map(br1, attr2, attr4);
+      Map<BranchId, Collection<AttributeTypeToken>> values = map(br1, attr2, attr4);
       map(values, br2, attr3, attr1);
       assertSetGet(field, values, values, true);
       field.clearDirty();
 
       // Add to emptylist
-      assertSetGet(field, Collections.<BranchId, Collection<AttributeType>> emptyMap(),
-         Collections.<BranchId, Collection<AttributeType>> emptyMap(), true);
+      assertSetGet(field, Collections.<BranchId, Collection<AttributeTypeToken>> emptyMap(),
+         Collections.<BranchId, Collection<AttributeTypeToken>> emptyMap(), true);
       field.clearDirty();
    }
 
-   private static Map<BranchId, Collection<AttributeType>> map(BranchId branch, AttributeType... attrs) {
-      Map<BranchId, Collection<AttributeType>> map = new LinkedHashMap<>();
+   private static Map<BranchId, Collection<AttributeTypeToken>> map(BranchId branch, AttributeTypeToken... attrs) {
+      Map<BranchId, Collection<AttributeTypeToken>> map = new LinkedHashMap<>();
       map.put(branch, Arrays.asList(attrs));
       return map;
    }
 
-   private static Map<BranchId, Collection<AttributeType>> map(Map<BranchId, Collection<AttributeType>> map, BranchId branch, AttributeType... attrs) {
+   private static Map<BranchId, Collection<AttributeTypeToken>> map(Map<BranchId, Collection<AttributeTypeToken>> map, BranchId branch, AttributeTypeToken... attrs) {
       map.put(branch, Arrays.asList(attrs));
       return map;
    }
 
-   private static void assertSetGet(ArtifactTypeAttributesField field, Map<BranchId, Collection<AttributeType>> setValues, Map<BranchId, Collection<AttributeType>> expected, boolean expectedDirty) {
+   private static void assertSetGet(ArtifactTypeAttributesField field, Map<BranchId, Collection<AttributeTypeToken>> setValues, Map<BranchId, Collection<AttributeTypeToken>> expected, boolean expectedDirty) {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 
-      Map<BranchId, Collection<AttributeType>> actual = field.get();
+      Map<BranchId, Collection<AttributeTypeToken>> actual = field.get();
       Assert.assertEquals(expected.size(), actual.size());
 
       Assert.assertFalse(Compare.isDifferent(actual, expected));
