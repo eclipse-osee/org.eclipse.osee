@@ -117,6 +117,9 @@ public interface IAtsWorkItemService {
     */
    Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf, IAtsTeamDefinition fromSiblingTeam);
 
+   /**
+    * @return all sibling team workflow; does not include this one
+    */
    Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf);
 
    void addTransitionHook(IAtsTransitionHook hook);
