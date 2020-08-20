@@ -83,6 +83,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -237,17 +238,26 @@ public final class GitOperationsImpl implements GitOperations {
                throw new OseeStateException("Failed to resolve commit [%s]", latestImportedSHA);
             }
          }
-
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(), account,
+            "updateGitTrackingBranch repo [" + repoArtifact + "]");
          List<ArtifactReadable> currentCommits =
             queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.CodeUnit).andRelatedRecursive(
                CoreRelationTypes.DefaultHierarchical_Child, repoArtifact).asArtifacts();
          for (ArtifactReadable singleCommit : currentCommits) {
-            String fullPathName = singleCommit.getSoleAttributeAsString(CoreAttributeTypes.FileSystemPath);
+            String fullPathName = "";
+            try {
+               fullPathName = singleCommit.getSoleAttributeAsString(CoreAttributeTypes.FileSystemPath);
+            } catch (Exception e) {
+               fullPathName = setFullPathName(branch, singleCommit, repoArtifact);
+               tx.setSoleAttributeFromString(singleCommit, CoreAttributeTypes.FileSystemPath, fullPathName);
+            }
+            if (fullPathName.isEmpty()) {
+               throw new OseeArgumentException(
+                  "Attribute FileSystemPath on code unit %s - art id [%d] is missing and cannot be determined",
+                  singleCommit.getName(), singleCommit.getId());
+            }
             pathToCodeunitMap.put(fullPathName, singleCommit);
          }
-
-         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(repoArtifact.getBranch(), account,
-            "updateGitTrackingBranch repo [" + repoArtifact + "]");
          HistoryImportStrategy importStrategy =
             new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport, pathToCodeunitMap);
          walkTree(repoArtifact, jgitRepo, to, from, repoArtifact.getBranch(), account, importStrategy);
@@ -417,5 +427,15 @@ public final class GitOperationsImpl implements GitOperations {
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   private String setFullPathName(BranchId branch, ArtifactReadable singleCommit, ArtifactReadable repoArtifact) {
+      ArtifactReadable art = singleCommit;
+      String wholePath = art.getName();
+      while (!art.getParent().equals(repoArtifact) && art.isValid()) {
+         art = art.getParent();
+         wholePath = art.getName() + "/" + wholePath;
+      }
+      return wholePath;
    }
 }
