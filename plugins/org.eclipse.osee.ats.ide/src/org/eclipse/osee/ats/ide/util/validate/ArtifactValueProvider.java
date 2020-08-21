@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 
 /**
@@ -63,7 +62,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    public AttributeTypeToken getAtributeType() {
-      return AttributeTypeManager.getType(attributeType);
+      return attributeType;
    }
 
    @Override

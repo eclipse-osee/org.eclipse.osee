@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -424,7 +423,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getChangeItem() {
       if (changeItemName == null) {
-         changeItemName = AttributeTypeManager.getName(attributeType);
+         changeItemName = attributeType.getName();
       }
       return changeItemName;
    }

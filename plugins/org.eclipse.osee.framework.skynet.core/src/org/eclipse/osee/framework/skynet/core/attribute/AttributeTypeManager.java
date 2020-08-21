@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -46,6 +47,10 @@ public class AttributeTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
+   private static OrcsTokenService getTokenService() {
+      return getCacheService().getTokenService();
+   }
+
    private static AbstractOseeCache<AttributeType> getCache() {
       return getCacheService().getAttributeTypeCache();
    }
@@ -64,7 +69,7 @@ public class AttributeTypeManager {
 
    public static Collection<AttributeTypeToken> getTaggableTypes() {
       Collection<AttributeTypeToken> taggableTypes = new ArrayList<>();
-      for (AttributeType type : getAllTypes()) {
+      for (AttributeTypeToken type : getAllTypes()) {
          if (type.isTaggable()) {
             taggableTypes.add(type);
          }
@@ -72,8 +77,8 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static Collection<AttributeTypeId> getSingleMultiplicityTypes() {
-      Collection<AttributeTypeId> types = new ArrayList<>();
+   public static Collection<AttributeTypeToken> getSingleMultiplicityTypes() {
+      Collection<AttributeTypeToken> types = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.getMaxOccurrences() == 1) {
             types.add(type);
@@ -83,11 +88,11 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) {
-      return getCache().existsByName(name);
+      return getTokenService().attributeTypeExists(name);
    }
 
    public static AttributeTypeGeneric<?> getAttributeType(Long id) {
-      return getCacheService().getTokenService().getAttributeType(id);
+      return getTokenService().getAttributeType(id);
    }
 
    public static AttributeType getTypeById(Long id) {
@@ -130,8 +135,7 @@ public class AttributeTypeManager {
    }
 
    public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType) {
-      AttributeTypeToken attributeTypeToken =
-         getCacheService().getTokenService().getAttributeType(attributeType.getId());
+      AttributeTypeToken attributeTypeToken = getTokenService().getAttributeType(attributeType.getId());
       if (attributeTypeToken.isInputStream()) {
          return CompressedContentAttribute.class;
       } else if (attributeTypeToken.isBoolean()) {
@@ -171,24 +175,12 @@ public class AttributeTypeManager {
       return new DefaultAttributeDataProvider<T>(attribute);
    }
 
-   public static boolean checkIfRemovalAllowed(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
-      boolean removalAllowed = false;
-      if (getType(attributeType).getMinOccurrences() == 0) {
-         removalAllowed = true;
-      }
-      // if there is any artifact that allows the type, then removal is not allowed
-      boolean notAllowed = false;
+   public static boolean checkIfRemovalAllowed(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
       for (Artifact art : artifacts) {
-         notAllowed = art.isAttributeTypeValid(attributeType);
-         if (notAllowed) {
-            break;
+         if (art.getArtifactType().getMin(attributeType) > 0) {
+            return false;
          }
       }
-
-      return removalAllowed || !notAllowed;
-   }
-
-   public static String getName(AttributeTypeId type) {
-      return getCache().get(type).getName();
+      return true;
    }
 }
