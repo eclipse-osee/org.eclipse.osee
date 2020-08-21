@@ -16,6 +16,8 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 
@@ -122,5 +124,14 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       List<AttributeTypeToken> attributeTypes = new ArrayList<AttributeTypeToken>(size());
       forEachKey(50000, attributeTypes::add);
       return attributeTypes;
+   }
+
+   public void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
+
+      for (Map.Entry<AttributeTypeToken, ArtifactTypeAttributeTypeMetaData<?>> entry : entrySet()) {
+         if (entry.getValue().getMultiplicity().matches(Multiplicity.EXACTLY_ONE, Multiplicity.ZERO_OR_ONE)) {
+            attributeTypeTokens.add(entry.getKey());
+         }
+      }
    }
 }

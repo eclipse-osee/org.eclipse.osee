@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -33,6 +34,10 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public static ArtifactTypeToken valueOf(long id, String name, ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
+   }
+
+   default void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
+      //This implementation should never be called
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
@@ -171,6 +176,11 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          @Override
          public String getAttributeDefault(AttributeTypeToken attributeType) {
             return attributeTypes.getAttributeDefault(attributeType);
+         }
+
+         @Override
+         public void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
+            attributeTypes.getSingletonAttributeTypes(attributeTypeTokens);
          }
       }
       return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);

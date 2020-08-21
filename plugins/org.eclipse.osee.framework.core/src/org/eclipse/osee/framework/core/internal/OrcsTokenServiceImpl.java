@@ -322,4 +322,13 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       }
       return false;
    }
+
+   @Override
+   public Set<AttributeTypeToken> getSingletonAttributeTypes() {
+      Set<AttributeTypeToken> attributeTypeTokens = new HashSet<>();
+      for (ArtifactTypeToken artifactType : getArtifactTypes()) {
+         artifactType.getSingletonAttributeTypes(attributeTypeTokens);
+      }
+      return attributeTypeTokens;
+   }
 }

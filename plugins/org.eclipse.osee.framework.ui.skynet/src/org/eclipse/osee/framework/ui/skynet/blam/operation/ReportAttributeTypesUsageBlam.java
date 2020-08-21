@@ -17,10 +17,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +50,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       xResultData.log(getName() + " " + BranchManager.getBranchName(branch));
       xResultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       xResultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"AttributeType", "Occurances"}));
-      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+      for (AttributeTypeToken attributeType : AttributeTypeManager.getAllTypes()) {
          Collection<Artifact> arts = ArtifactQuery.getArtifactListFromAttributeType(attributeType, branch);
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }

@@ -228,7 +228,6 @@ public class ConflictTest {
 
       // enable multiplicity conflict checking
       OseeInfo.setValue("osee.disable.multiplicity.conflicts", "false");
-
       mgr = new ConflictManagerExternal(parent, child2);
       Assert.assertTrue(mgr.originalConflictsExist());
       List<Conflict> conflicts = mgr.getOriginalConflicts();

@@ -63,8 +63,8 @@ public class AttributeTypeManager {
       return attributeTypes;
    }
 
-   public static Collection<AttributeType> getAllTypes() {
-      return getCache().getAll();
+   public static Collection<AttributeTypeGeneric<?>> getAllTypes() {
+      return getTokenService().getAttributeTypes();
    }
 
    public static Collection<AttributeTypeToken> getTaggableTypes() {
@@ -77,14 +77,8 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static Collection<AttributeTypeToken> getSingleMultiplicityTypes() {
-      Collection<AttributeTypeToken> types = new ArrayList<>();
-      for (AttributeType type : getAllTypes()) {
-         if (type.getMaxOccurrences() == 1) {
-            types.add(type);
-         }
-      }
-      return types;
+   public static Set<AttributeTypeToken> getSingleMultiplicityTypes() {
+      return getTokenService().getSingletonAttributeTypes();
    }
 
    public static boolean typeExists(String name) {

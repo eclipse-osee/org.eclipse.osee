@@ -229,8 +229,8 @@ public class DoorsArtifactExtractorTest {
 
    private static void copyResource(String resource, File output) throws IOException {
       OutputStream outputStream = null;
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(DoorsArtifactExtractorTest.class,
-         "support/doorsArtifactExtractor/" + resource)) {
+      try (InputStream inputStream =
+         OsgiUtil.getResourceAsStream(DoorsArtifactExtractorTest.class, "support/doorsArtifactExtractor/" + resource)) {
          outputStream = new BufferedOutputStream(new FileOutputStream(output));
          Lib.inputStreamToOutputStream(inputStream, outputStream);
       } finally {

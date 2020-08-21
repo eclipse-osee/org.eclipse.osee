@@ -64,7 +64,6 @@ public class HtmlRendererTest {
    private static String EXPECTED_HTML;
    private final static String LEGACY_ID = "ABC-123,ABC-234";
    private final static String PARAGRAPH_NUMBER = "1.2.3.4";
-
    private BranchId rootBranch;
 
    private List<Artifact> theArtifacts = null;

@@ -15,10 +15,12 @@ package org.eclipse.osee.framework.core;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
@@ -157,4 +159,6 @@ public interface OrcsTokenService {
    Collection<RelationTypeJoin> getRelationTypeJoins();
 
    boolean attributeTypeExists(String name);
+
+   Set<AttributeTypeToken> getSingletonAttributeTypes();
 }

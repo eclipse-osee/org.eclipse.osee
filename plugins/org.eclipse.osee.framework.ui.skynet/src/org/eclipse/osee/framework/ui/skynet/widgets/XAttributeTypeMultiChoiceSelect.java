@@ -14,7 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
  *
  * @author Donald G. Dunne
  */
-public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<AttributeType> {
+public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<AttributeTypeToken> {
 
    public static final String WIDGET_ID = XAttributeTypeMultiChoiceSelect.class.getSimpleName();
 
@@ -43,11 +43,10 @@ public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<Attribute
    }
 
    @Override
-   public FilteredCheckboxTreeDialog<AttributeType> createDialog() {
-      FilteredCheckboxTreeDialog<AttributeType> dialog = new FilteredCheckboxTreeDialog<AttributeType>(getLabel(),
+   public FilteredCheckboxTreeDialog<AttributeTypeToken> createDialog() {
+      FilteredCheckboxTreeDialog<AttributeTypeToken> dialog = new FilteredCheckboxTreeDialog<>(getLabel(),
          "Select from the items below", new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
       dialog.setInput(AttributeTypeManager.getAllTypes());
       return dialog;
    }
-
 }
