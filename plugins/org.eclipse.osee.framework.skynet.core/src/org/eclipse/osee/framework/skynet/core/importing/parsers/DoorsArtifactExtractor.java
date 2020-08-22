@@ -106,11 +106,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public boolean usesTypeList() {
-      return false;
-   }
-
-   @Override
    public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
       doExtraction(logger, source, collector, "");
    }

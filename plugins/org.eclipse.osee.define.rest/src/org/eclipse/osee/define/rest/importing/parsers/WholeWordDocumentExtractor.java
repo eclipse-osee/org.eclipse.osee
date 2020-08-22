@@ -57,10 +57,4 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    public String getName() {
       return "Whole Word Document";
    }
-
-   @Override
-   public boolean usesTypeList() {
-      return true;
-   }
-
 }

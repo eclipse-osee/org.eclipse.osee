@@ -88,11 +88,6 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public boolean usesTypeList() {
-      return true;
-   }
-
-   @Override
    public FileFilter getFileFilter() {
       return new FileFilter() {
          @Override

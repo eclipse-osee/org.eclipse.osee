@@ -111,11 +111,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public boolean usesTypeList() {
-      return false;
-   }
-
-   @Override
    public XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       doExtraction(orcsApi, results, source, collector, "");
       return results;

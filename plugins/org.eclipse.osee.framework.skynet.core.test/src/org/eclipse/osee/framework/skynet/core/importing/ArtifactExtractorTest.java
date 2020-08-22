@@ -67,7 +67,6 @@ public class ArtifactExtractorTest {
 
    @org.junit.Test
    public void testGetters() {
-      Assert.assertFalse(extractor.usesTypeList());
       Assert.assertNotNull(extractor.getFileFilter());
 
       Assert.assertEquals(propertyStore.get("expected.name"), extractor.getName());

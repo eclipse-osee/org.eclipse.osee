@@ -33,8 +33,6 @@ public interface IArtifactExtractor {
 
    public abstract FileFilter getFileFilter();
 
-   public abstract boolean usesTypeList();
-
    public boolean isDelegateRequired();
 
    public void setDelegate(IArtifactExtractorDelegate delegate);

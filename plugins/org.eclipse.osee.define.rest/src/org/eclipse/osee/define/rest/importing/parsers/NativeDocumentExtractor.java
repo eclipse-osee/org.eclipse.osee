@@ -57,10 +57,4 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    public String getName() {
       return "General Documents (Any Format)";
    }
-
-   @Override
-   public boolean usesTypeList() {
-      return true;
-   }
-
 }

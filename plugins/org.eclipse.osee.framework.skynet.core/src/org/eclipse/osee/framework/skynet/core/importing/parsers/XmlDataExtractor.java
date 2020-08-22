@@ -59,9 +59,4 @@ public class XmlDataExtractor extends AbstractArtifactExtractor {
    public String getDescription() {
       return "Extract Data from xml of the form <row><cell></cell>*</row>* like that created by Excel data export.";
    }
-
-   @Override
-   public boolean usesTypeList() {
-      return true;
-   }
 }

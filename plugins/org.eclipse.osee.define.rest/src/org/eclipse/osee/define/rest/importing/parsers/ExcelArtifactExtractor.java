@@ -67,11 +67,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public boolean usesTypeList() {
-      return false;
-   }
-
-   @Override
    protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(orcsApi, results, collector), true));
