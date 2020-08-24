@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -286,7 +287,11 @@ public class SwtXWidgetRenderer {
                type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
             }
             if (type == null && Strings.isValid(layoutData.getStoreName())) {
-               type = AttributeTypeManager.getType(layoutData.getStoreName());
+               try {
+                  type = AttributeTypeManager.getType(layoutData.getStoreName());
+               } catch (ItemDoesNotExist ex) {
+                  // do nothing
+               }
             }
             if (type != null && Strings.isValid(type.getDescription())) {
                description = type.getDescription();
