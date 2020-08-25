@@ -367,6 +367,9 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (workFlowTab != null) {
          removePage(workFlowTab.getIndex());
       }
+      if (defectsTab != null) {
+         removePage(defectsTab.getIndex());
+      }
       if (membersTab != null) {
          removePage(membersTab.getIndex());
       }
