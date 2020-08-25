@@ -295,4 +295,24 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return ops.deleteCfgGroup(groupName, branch, account);
    }
 
+   @Override
+   public XResultData updateCfgGroup(String cfgGroup) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.updateConfigGroup(branch, cfgGroup, account, null);
+
+   }
+
+   @Override
+   public XResultData updateCfgGroup() {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return access;
+      }
+      return ops.updateConfigGroup(branch, account);
+
+   }
+
 }

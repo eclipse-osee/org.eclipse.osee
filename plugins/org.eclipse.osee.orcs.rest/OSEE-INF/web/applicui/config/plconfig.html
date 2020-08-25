@@ -158,7 +158,7 @@
 							<br/>
 							<br/>
 							<button type="button" class="btn btn-primary"
-								ng-click="validateTransition($event)" ng-show="htmlTransition">Transition to Review</button>
+								ng-click="handleTransitionChecks($event)" ng-show="htmlTransition">Transition to Review</button>
 							<button type="button" class="btn btn-primary"
 								ng-click="cancelTransition($event)">Cancel</button>
 						</form>
@@ -295,7 +295,7 @@
 		      </div>
 		      <div id="errorDiv" class="container">
 					&nbsp;&nbsp;&nbsp;<label ng-show="showErrorLabel"><font
-						color="red">Error: {{errorMsg}}</font></label>
+						color="red">{{errorMsg}}</font></label>
 		      </div>
 		</div>
 	</div>

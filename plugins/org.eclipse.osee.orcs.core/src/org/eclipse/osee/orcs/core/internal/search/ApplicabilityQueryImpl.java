@@ -204,7 +204,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       String existingAppl = "";
       for (String appl : queryFactory.tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId)) {
 
-         if (appl.startsWith(featureName + " =")) {
+         if (appl.startsWith(featureName + " =") & !appl.contains("|") & !appl.contains("&")) {
             existingAppl = appl;
          }
       }

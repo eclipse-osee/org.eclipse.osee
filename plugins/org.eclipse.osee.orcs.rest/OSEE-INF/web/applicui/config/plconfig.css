@@ -97,4 +97,6 @@
   border: none;
   cursor: pointer;
 }
-
+.groupColor {
+  background-color: lightgray;
+}

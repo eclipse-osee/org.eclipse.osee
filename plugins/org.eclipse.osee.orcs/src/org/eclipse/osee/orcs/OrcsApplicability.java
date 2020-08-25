@@ -77,4 +77,8 @@ public interface OrcsApplicability {
 
    XResultData deleteCfgGroup(String groupName, BranchId branch, UserId account);
 
+   XResultData updateConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results);
+
+   XResultData updateConfigGroup(BranchId branch, UserId account);
+
 }

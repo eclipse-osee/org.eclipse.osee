@@ -104,7 +104,7 @@ public class ApplicabilityEndpointTest {
       appl.deleteView("Product D");
 
       List<ArtifactToken> viewList = appl.getViews();
-      Assert.assertEquals(4, viewList.size());
+      Assert.assertEquals(5, viewList.size());
       String viewTable = appl.getViewTable(null);
       Assert.assertFalse("ApplicabilityEndpoint.deleteView failure", viewTable.contains("Product D"));
       Assert.assertTrue("ApplicabilityEndpoint.createView failure", viewTable.contains(newView.getName()));
@@ -112,9 +112,9 @@ public class ApplicabilityEndpointTest {
       XResultData abGroup1 = appl.createCfgGroup("abGrp");
       XResultData addView1 = appl.relateCfgGroupToView("abGrp", "Product A");
       XResultData addView2 = appl.relateCfgGroupToView("abGrp", "Product B");
-
+      XResultData updateGroups = appl.updateCfgGroup();
       viewList = appl.getViews();
-      Assert.assertEquals(5, viewList.size());
+      Assert.assertEquals(6, viewList.size());
    }
 
    @Test

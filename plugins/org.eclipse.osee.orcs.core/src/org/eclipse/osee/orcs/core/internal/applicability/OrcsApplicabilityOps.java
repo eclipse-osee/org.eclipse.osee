@@ -86,6 +86,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       // Load all products (stored as branch views)
       List<ArtifactReadable> branchViews =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).getResults().getList();
+      List<ArtifactToken> groups =
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branch);
       Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
       Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
       for (ArtifactToken branchView : branchViews) {
@@ -93,7 +95,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          branchViewsMap.put(branchView,
             orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, branchView));
       }
-
+      for (ArtifactToken group : groups) {
+         config.addGroup(group);
+         branchViewsMap.put(group,
+            orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branch, group));
+      }
       List<ArtifactReadable> featureArts =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).getResults().getList();
       Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
@@ -130,6 +136,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             Map<String, String> viewToValue = config.getFeatureToValues(count);
             String viewToFeatureValue = getViewToFeatureValue(view, fDef, branchViewsMap);
             viewToValue.put(view.getName().toLowerCase(), viewToFeatureValue);
+         }
+         for (ArtifactToken group : config.getGroups()) {
+            Map<String, String> viewToValue = config.getFeatureToValues(count);
+            String viewToFeatureValue = getViewToFeatureValue(group, fDef, branchViewsMap);
+            viewToValue.put(group.getName().toLowerCase(), viewToFeatureValue);
          }
          count++;
       }
@@ -1053,4 +1064,77 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       return results;
    }
+
+   @Override
+   public XResultData updateConfigGroup(BranchId branch, String cfgGroup, UserId account, XResultData results) {
+      if (results == null) {
+         results = new XResultData();
+      }
+      ArtifactToken cfgGroupArtToken;
+      if (Strings.isNumeric(cfgGroup)) {
+         cfgGroupArtToken =
+            orcsApi.getQueryFactory().fromBranch(branch).andId(ArtifactId.valueOf(cfgGroup)).andIsOfType(
+               CoreArtifactTypes.GroupArtifact).andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent,
+                  CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokenOrSentinel();
+      } else {
+         cfgGroupArtToken =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).andNameEquals(
+                  cfgGroup).asArtifactTokenOrSentinel();
+      }
+      if (cfgGroupArtToken.isValid()) {
+
+         for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
+            String resultApp = null;
+            if (feature.getValues().contains("Included")) {
+               resultApp = feature.getName() + " = Excluded";
+            }
+            List<ArtifactToken> views =
+               orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_Group,
+                  cfgGroupArtToken).asArtifactTokens();
+            for (ArtifactId viewId : views) {
+
+               String applicability = orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(
+                  branch, viewId, feature.getName());
+
+               if (feature.getValues().contains("Included")) {
+                  if (applicability.equals(feature.getName() + " = Included")) {
+
+                     resultApp = applicability;
+                     break;
+                  }
+               } else {
+                  if (resultApp == null) {
+                     resultApp = applicability;
+                  } else {
+                     if (!resultApp.equals(applicability)) {
+                        //error
+                        results.error(
+                           "Updating Group: " + cfgGroupArtToken.getName() + " (" + views.toString() + "). Applicabilities differ for non-binary feature: " + feature.getName());
+                     }
+                  }
+               }
+
+            }
+            if (results.isSuccess()) {
+               createApplicabilityForView(cfgGroupArtToken, resultApp, account, branch);
+            }
+         }
+
+      } else {
+         results.error("Invalid Configuration Group name.");
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData updateConfigGroup(BranchId branch, UserId account) {
+      XResultData results = new XResultData();
+      for (ArtifactToken group : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
+         branch)) {
+         updateConfigGroup(branch, group.getIdString(), account, results);
+      }
+      return results;
+   }
+
 }

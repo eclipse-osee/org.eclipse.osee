@@ -114,6 +114,18 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    XResultData deleteCfgGroup(@PathParam("groupName") String viewName);
 
+   @PUT
+   @Path("cfggroup/{cfgGroup}")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData updateCfgGroup(@PathParam("cfgGroup") String cfgGroup);
+
+   @PUT
+   @Path("cfggroup")
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   XResultData updateCfgGroup();
+
    @GET
    @Path("view/{id}")
    @Consumes(MediaType.APPLICATION_JSON)

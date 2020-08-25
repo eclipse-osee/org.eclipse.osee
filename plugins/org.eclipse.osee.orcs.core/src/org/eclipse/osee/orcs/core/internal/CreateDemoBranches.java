@@ -93,6 +93,7 @@ public class CreateDemoBranches {
       ArtifactToken productB = tx.createView(branch, "Product B");
       ArtifactToken productC = tx.createView(branch, "Product C");
       ArtifactToken productD = tx.createView(branch, "Product D");
+
       ArtifactToken[] products = new ArtifactToken[] {productA, productB, productC, productD};
 
       createFeatureConfigs(featuresFolder, tx);
@@ -100,14 +101,19 @@ public class CreateDemoBranches {
       // Configure productions for each feature
       configureFeature(tx, DemoFeatures.ROBOT_ARM_LIGHT.name(), products, "Excluded", "Included", "Excluded",
          "Excluded");
-      configureFeature(tx, DemoFeatures.ENGINE_5.name(), products, "2543A", "2543A", "2543A", "5543A");
+      configureFeature(tx, DemoFeatures.ENGINE_5.name(), products, "A2543", "A2543", "A2543", "A5543");
       configureFeature(tx, DemoFeatures.JHU_CONTROLLER.name(), products, "Excluded", "Included", "Included",
          "Excluded");
-      configureFeature(tx, DemoFeatures.ROBOT_SPEAKER.name(), products, "SPKR A", "SPKR A", "SPKR B", "SPKR B");
+      configureFeature(tx, DemoFeatures.ROBOT_SPEAKER.name(), products, "SPKR_A", "SPKR_A", "SPKR_B", "SPKR_B");
 
       createLegacyFeatureConfig(featuresFolder, tx);
 
       tx.commit();
+      orcsApi.getApplicabilityOps().createCfgGroup("abGroup", branch, account);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product A", branch, account);
+      orcsApi.getApplicabilityOps().relateCfgGroupToView("abGroup", "Product B", branch, account);
+      orcsApi.getApplicabilityOps().updateConfigGroup(branch, account);
+
    }
 
    private void createFeatureConfigs(ArtifactId folder, TransactionBuilder tx) {

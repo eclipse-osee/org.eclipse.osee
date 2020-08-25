@@ -505,6 +505,26 @@ app
                         }
                      }
 
+                     //Update Groups on Branch
+                     $scope.handleUpdateGroup = function(group) {
+                    	 if (!group || !group.id) {
+                    		 group = $scope.group;
+                    	 }
+                            var url = '/orcs/branch/'
+                               + $scope.selectedBranch.id
+                               + '/applic/cfggroup/'+group.id;
+                            $http.put(url).then(
+                                  function(response) {
+                                     if (response.data.errors) {
+                                        $scope.error(response.data.results);
+                                        return;
+                                     } else {
+                                        $scope.loadTable();
+                                     }
+                                  });
+                         
+                      }
+
                   // /////////////////////////////////////////////////////////////////////
                      // Action METHODS
                      // /////////////////////////////////////////////////////////////////////
@@ -664,8 +684,23 @@ app
 			// //////////////////////////////////////
 			// Save Transition
 			// //////////////////////////////////////
+			$scope.handleTransitionChecks = function() {
+				var url = '/orcs/branch/'
+                    + $scope.selectedBranch.id
+                    + '/applic/cfggroup';
+                 $http.put(url).then(
+                       function(response) {
+                          if (response.data.errors) {
+                             $scope.error(response.data.results);
+                          } else {
+                             $scope.validateTransition();
+                          }
+                       });
+			}
 			$scope.validateTransition = function() {
 				$scope.selectedToState = "Review";
+				
+				
 				if ($scope.selectedToState && $scope.actionId && $scope.selectedUser.id) {
 						
 
@@ -1094,8 +1129,9 @@ app
                                       } ];
 
                                       $scope.createFeatureColumns();
-                                      $scope.refreshAccess();
                                       $scope.createViewColumns();
+                                      $scope.createGroupColumns();
+                                      $scope.refreshAccess();
                                       $scope.refreshShowAllLabel();
                                       
                                       $scope.itemsGridOptions.columnDefs = $scope.columns;
@@ -1251,31 +1287,62 @@ app
                                         return $timeout(function() {
                                              return values;
                                            }, 100);
-                                    },
-                                    menuItems: [
-                                                {
-                                                  title: 'Edit View',
-                                                  icon: 'glyphicon glyphicon-pencil',
-                                                  context: {scope: $scope, view: view},
-                                                  action: function($event) {
-                                                     this.context.scope.view = this.context.view;
-                                                     this.context.scope.handleEditView();
-                                                  }
-                                                },
-                                                {
-                                                  title: 'Delete view',
-                                                  icon: 'glyphicon glyphicon-remove',
-                                                  context: {scope: $scope, view: view},
-                                                  action: function($event) {
-                                                     this.context.scope.view = this.context.view;
-                                                     this.context.scope.saveViewDelete();
-                                                  }
-                                                }
-                                              ]
+                                    }
                                  });
                         }
 
                      }
+                     
+                     // //////////////////////////////////////
+                     // Dynamically create group columns
+                     // //////////////////////////////////////
+                     $scope.createGroupColumns = function() {
+                        for (i = 0; i < $scope.config.groups.length; i++) {
+                           var group = $scope.config.groups[i];
+                           if (group.id == null || group.id <=0) {
+                              $scope.error("group Id is invalid in "+$scope.groups);
+                              $return;
+                           } else if (!group.name) {
+                              $scope.error("group Name is invalid in "+$scope.groups);
+                              return;
+                           }
+                           var columnName = group.name;
+                           var hdrTemplateGroup = '<div class="groupColor"><div ng-class="{ \'sortable\': sortable }">' +
+                           					 '<div class="ui-grid-cell-contents" col-index="renderIndex" title="TOOLTIP">'+
+                           					 '<span>{{ col.displayName CUSTOM_FILTERS }}</span>'+
+                           					 '<span ui-grid-visible="col.sort.direction" ng-class="{ \'ui-grid-icon-up-dir\': col.sort.direction == asc, \'ui-grid-icon-down-dir\': col.sort.direction == desc, \'ui-grid-icon-blank\': !col.sort.direction }">'+
+                           					 '&nbsp;'+
+                           					 '</span>'+
+                           					 '</div>'+
+                           					 '<div class="ui-grid-column-menu-button" ng-if="grid.options.enableColumnMenus && !col.isRowHeader  && col.colDef.enableColumnMenu !== false" ng-click="toggleMenu($event)" ng-class="{\'ui-grid-column-menu-button-last-col\': isLastCol}">'+
+                           					 '<i class="ui-grid-icon-angle-down">&nbsp;</i>'+
+                           					 '</div>'+
+                           					 '<div ui-grid-filter></div>'+
+                           					 '</div></div>';
+                           $scope.columns
+                                 .push({
+                                    field : columnName
+                                          .toLowerCase(),
+                                    displayName : columnName,
+                                    id : group.id,
+                                    enableSorting : true,
+                                    width : 125,
+                                    enableCellEdit: false,
+                                    headerCellTemplate: hdrTemplateGroup,
+                                    menuItems: [
+                                        {
+                                            title: 'Synchronize Group',
+                                            icon: 'glyphicon glyphicon-pencil',
+                                            context: {scope: $scope, group: group},
+                                            action: function($event) {
+                                               this.context.scope.group = this.context.group;
+                                               this.context.scope.handleUpdateGroup();
+                                            }
+                                          }
+                                        ]
+                                    })
+
+                     }}
                      
                      // //////////////////////////////////////
                      // Utilities

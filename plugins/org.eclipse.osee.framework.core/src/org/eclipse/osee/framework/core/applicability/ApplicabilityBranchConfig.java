@@ -32,6 +32,7 @@ public class ApplicabilityBranchConfig {
    Map<String, FeatureDefinition> featureIdToFeature = new HashMap<>();
    List<String> featuresOrdered = new LinkedList<>();
    List<ArtifactToken> views = new LinkedList<>();
+   private List<ArtifactToken> groups = new LinkedList<>();
    List<String> viewsOrdered = new LinkedList<>();
    List<Map<String, String>> featureToValueMaps = new LinkedList<>();
    List<FeatureDefinition> features = new LinkedList<>();
@@ -46,6 +47,10 @@ public class ApplicabilityBranchConfig {
    public void addView(ArtifactToken view) {
       views.add(view);
       viewsOrdered.add(view.getName());
+   }
+
+   public void addGroup(ArtifactToken group) {
+      groups.add(group);
    }
 
    public BranchViewToken getBranch() {
@@ -127,6 +132,14 @@ public class ApplicabilityBranchConfig {
 
    public void setEditable(Boolean editable) {
       this.editable = editable;
+   }
+
+   public List<ArtifactToken> getGroups() {
+      return groups;
+   }
+
+   public void setGroups(List<ArtifactToken> groups) {
+      this.groups = groups;
    }
 
 }
