@@ -209,8 +209,8 @@ public class AttributeFindReplaceDialog extends Dialog {
 
       @Override
       public String getText(Object element) {
-         if (element instanceof AttributeType) {
-            return ((AttributeType) element).getName();
+         if (element instanceof AttributeTypeToken) {
+            return ((AttributeTypeToken) element).getName();
          } else {
             return element.toString();
          }

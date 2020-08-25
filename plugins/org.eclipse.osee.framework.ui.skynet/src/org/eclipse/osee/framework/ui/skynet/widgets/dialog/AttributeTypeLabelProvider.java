@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * Generic Artifact Label Provider showing Descriptive Name as text
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AttributeTypeLabelProvider implements ILabelProvider {
@@ -32,8 +32,8 @@ public class AttributeTypeLabelProvider implements ILabelProvider {
 
    @Override
    public String getText(Object arg0) {
-      if (arg0 instanceof AttributeType) {
-         return ((AttributeType) arg0).getName();
+      if (arg0 instanceof AttributeTypeToken) {
+         return ((AttributeTypeToken) arg0).getName();
       }
       return null;
    }
