@@ -558,6 +558,34 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return follow(relationTypeSide, artifactType, false);
    }
 
+   @Override
+   public List<RelationTypeSide> getRelationTypesForLevel(int level) {
+      int depth = getDepth();
+      if (level > depth) {
+         throw new OseeCoreException("level greater than depth of query");
+      }
+      QueryData cursor = this;
+      for (int i = 0; i < depth - level; ++i) {
+         cursor = cursor.getParentQueryData();
+      }
+      List<RelationTypeSide> sides = new ArrayList<>();
+
+      CriteriaRelationTypeFollow criteria = cursor.getCriteriaByType(CriteriaRelationTypeFollow.class).get(0);
+      sides.add(criteria.getType());
+
+      return sides;
+   }
+
+   private int getDepth() {
+      int depth = 0;
+      QueryData cursor = getParentQueryData();
+      while (cursor != null) {
+         cursor = cursor.getParentQueryData();
+         ++depth;
+      }
+      return depth;
+   }
+
    private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, boolean terminalFollow) {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;

@@ -294,4 +294,6 @@ public interface QueryBuilder extends Query {
    @Deprecated
    QueryBuilder followRelation(RelationTypeSide typeSide);
 
+   List<RelationTypeSide> getRelationTypesForLevel(int level);
+
 }
