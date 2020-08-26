@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -70,7 +70,7 @@ public class WorkItemNotificationProcessorTest {
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock IAtsStateManager stateMgr;
    @Mock Log logger;
-   @Mock IAtsServer atsServer;
+   @Mock AtsApiServer atsApiServer;
    @Mock OrcsApi orcsApi;
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsUserService userService;
@@ -106,12 +106,12 @@ public class WorkItemNotificationProcessorTest {
          Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser));
       String atsId = "ATS003";
       when(teamWf.getAtsId()).thenReturn(atsId);
-      when(atsServer.getWorkItemService()).thenReturn(workItemService);
+      when(atsApiServer.getWorkItemService()).thenReturn(workItemService);
       when(workItemService.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
-      when(atsServer.getWorkItemService()).thenReturn(workItemService);
-      when(atsServer.getTeamDefinitionService()).thenReturn(teamDefinitionService);
-      when(atsServer.getActionableItemService()).thenReturn(actionableItemService);
+      when(atsApiServer.getWorkItemService()).thenReturn(workItemService);
+      when(atsApiServer.getTeamDefinitionService()).thenReturn(teamDefinitionService);
+      when(atsApiServer.getActionableItemService()).thenReturn(actionableItemService);
       when(workItemService.getCancelUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn(
          "http://ats/action/ID/cancel");
       when(workItemService.getHtmlUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn("http://ats/action/ID");
@@ -133,7 +133,7 @@ public class WorkItemNotificationProcessorTest {
    public void testNotifyOriginator() {
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -162,7 +162,7 @@ public class WorkItemNotificationProcessorTest {
    public void testNotifyAssignee() {
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -215,8 +215,8 @@ public class WorkItemNotificationProcessorTest {
    @org.junit.Test
    public void testNotifySubscribe() {
       when(teamWf.getStoreObject()).thenReturn(teamWfArt);
-      when(atsServer.getRelationResolver()).thenReturn(relResolver);
-      when(atsServer.getAttributeResolver()).thenReturn(attrResolver);
+      when(atsApiServer.getRelationResolver()).thenReturn(relResolver);
+      when(atsApiServer.getAttributeResolver()).thenReturn(attrResolver);
       when(relResolver.getRelated(teamWf.getStoreObject(), AtsRelationTypes.SubscribedUser_User)).thenReturn(
          Arrays.asList(kayArtifact));
       when(attrResolver.getSoleAttributeValue(kayArtifact, CoreAttributeTypes.UserId, null)).thenReturn("4444");
@@ -227,7 +227,7 @@ public class WorkItemNotificationProcessorTest {
       event.getAtsIds().add(teamWf.getAtsId());
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
 
@@ -257,7 +257,7 @@ public class WorkItemNotificationProcessorTest {
       when(stateMgr.getCurrentStateName()).thenReturn("Completed");
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
 
       processor.run(notifications, event);
@@ -294,7 +294,7 @@ public class WorkItemNotificationProcessorTest {
       when(stateMgr.getCurrentStateName()).thenReturn("Cancelled");
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
 
       processor.run(notifications, event);
@@ -329,7 +329,7 @@ public class WorkItemNotificationProcessorTest {
       when(stateMgr.getCurrentStateName()).thenReturn(StateType.Working.name());
 
       WorkItemNotificationProcessor processor =
-         new WorkItemNotificationProcessor(logger, atsServer, userService, attrResolver);
+         new WorkItemNotificationProcessor(logger, atsApiServer, userService, attrResolver);
 
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       processor.run(notifications, event);

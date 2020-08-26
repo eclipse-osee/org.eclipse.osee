@@ -48,6 +48,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
+import org.eclipse.osee.ats.rest.AtsApiServer;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -65,15 +67,15 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
 
    private JsonFactory jsonFactory;
-   private AtsApi atsApi;
+   private AtsApi atsApiServer;
    private OrcsApi orcsApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
-   public void setAtsServer(AtsApi atsApi) {
-      this.atsApi = atsApi;
+   public void setAtsApiServer(AtsApiServer atsApiServer) {
+      this.atsApiServer = atsApiServer;
    }
 
    public void start() {
@@ -104,7 +106,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       try {
          writer = jsonFactory.createGenerator(entityStream);
          writer.writeStartArray();
-         addProgramObject(atsApi, orcsApi, config, annotations, writer,
+         addProgramObject(atsApiServer, orcsApi, config, annotations, writer,
             JsonUtil.hasAnnotation(IdentityView.class, annotations));
          writer.writeEndArray();
       } finally {

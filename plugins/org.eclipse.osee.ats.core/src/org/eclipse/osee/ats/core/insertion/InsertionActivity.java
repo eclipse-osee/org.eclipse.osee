@@ -27,8 +27,8 @@ public class InsertionActivity extends AtsConfigObject implements IAtsInsertionA
 
    private long insertionId;
 
-   public InsertionActivity(Log logger, AtsApi atsServer, ArtifactToken artifact) {
-      super(logger, atsServer, artifact, AtsArtifactTypes.InsertionActivity);
+   public InsertionActivity(Log logger, AtsApi atsApiServer, ArtifactToken artifact) {
+      super(logger, atsApiServer, artifact, AtsArtifactTypes.InsertionActivity);
    }
 
    @Override

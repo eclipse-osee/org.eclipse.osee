@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintDataUiOperation;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintSummaryOperation;
@@ -71,7 +71,7 @@ public class AtsApplication extends Application {
 
    private Log logger;
    private static OrcsApi orcsApi;
-   private IAtsServer atsServer;
+   private AtsApiServer atsApiServer;
    private CpaServiceRegistry cpaRegistry;
    private JdbcService jdbcService;
 
@@ -89,8 +89,8 @@ public class AtsApplication extends Application {
       this.logger = logger;
    }
 
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public void setAtsApiServer(AtsApiServer atsApiServer) {
+      this.atsApiServer = atsApiServer;
    }
 
    public void setJdbcService(JdbcService jdbcService) {
@@ -107,57 +107,57 @@ public class AtsApplication extends Application {
 
       // Register conversions
       ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(orcsApi);
-      atsServer.addAtsDatabaseConversion(atsConfgConversion);
-      atsServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
-      atsServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
-      atsServer.addAtsDatabaseConversion(new FixWorkDefinitionToAttributeConversion());
+      atsApiServer.addAtsDatabaseConversion(atsConfgConversion);
+      atsApiServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
+      atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
+      atsApiServer.addAtsDatabaseConversion(new FixWorkDefinitionToAttributeConversion());
 
       // Register agile html report operations
-      atsServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsServer, registry));
-      atsServer.getAgileSprintHtmlReportOperations().add(new SprintDataUiOperation(atsServer, registry));
+      atsApiServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsApiServer, registry));
+      atsApiServer.getAgileSprintHtmlReportOperations().add(new SprintDataUiOperation(atsApiServer, registry));
 
       // Resources
-      singletons.add(new VersionResource(atsServer, orcsApi));
-      singletons.add(new TeamResource(atsServer, orcsApi));
-      singletons.add(new ActionableItemResource(atsServer, orcsApi));
+      singletons.add(new VersionResource(atsApiServer, orcsApi));
+      singletons.add(new TeamResource(atsApiServer, orcsApi));
+      singletons.add(new ActionableItemResource(atsApiServer, orcsApi));
 
-      singletons.add(new CountryResource(atsServer, orcsApi));
-      singletons.add(new ProgramResource(atsServer, orcsApi));
-      singletons.add(new InsertionResource(atsServer, orcsApi));
-      singletons.add(new InsertionActivityResource(atsServer, orcsApi));
+      singletons.add(new CountryResource(atsApiServer, orcsApi));
+      singletons.add(new ProgramResource(atsApiServer, orcsApi));
+      singletons.add(new InsertionResource(atsApiServer, orcsApi));
+      singletons.add(new InsertionActivityResource(atsApiServer, orcsApi));
 
-      singletons.add(new StateResource(atsServer));
-      singletons.add(new ConvertResource(atsServer));
-      singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
-      singletons.add(new UserResource(atsServer.getUserService()));
+      singletons.add(new StateResource(atsApiServer));
+      singletons.add(new ConvertResource(atsApiServer));
+      singletons.add(new CpaResource(orcsApi, atsApiServer, cpaRegistry));
+      singletons.add(new UserResource(atsApiServer.getUserService()));
 
       // Endpoints
       // NOTE: @Consumes(MediaType.APPLICATION_JSON) doesn't work with GET, must be PUT
-      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi));
-      singletons.add(new AtsWorldEndpointImpl(atsServer));
-      singletons.add(new AtsHealthEndpointImpl(atsServer, jdbcService));
-      singletons.add(new AtsWorkDefEndpointImpl(atsServer, orcsApi));
-      singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService, orcsApi));
-      singletons.add(new CountryEndpointImpl(atsServer));
-      singletons.add(new ProgramEndpointImpl(atsServer));
-      singletons.add(new InsertionEndpointImpl(atsServer));
-      singletons.add(new InsertionActivityEndpointImpl(atsServer));
-      singletons.add(new AtsTaskEndpointImpl(atsServer));
-      singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, executorAdmin));
-      singletons.add(new AtsNotifyEndpointImpl(atsServer));
-      singletons.add(new AtsWorkPackageEndpointImpl(atsServer, logger));
-      singletons.add(new AtsTeamWfEndpointImpl(atsServer));
-      singletons.add(new AtsAttributeEndpointImpl(atsServer, orcsApi));
+      singletons.add(new AtsActionEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new AtsWorldEndpointImpl(atsApiServer));
+      singletons.add(new AtsHealthEndpointImpl(atsApiServer, jdbcService));
+      singletons.add(new AtsWorkDefEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new AgileEndpointImpl(atsApiServer, registry, jdbcService, orcsApi));
+      singletons.add(new CountryEndpointImpl(atsApiServer));
+      singletons.add(new ProgramEndpointImpl(atsApiServer));
+      singletons.add(new InsertionEndpointImpl(atsApiServer));
+      singletons.add(new InsertionActivityEndpointImpl(atsApiServer));
+      singletons.add(new AtsTaskEndpointImpl(atsApiServer));
+      singletons.add(new AtsConfigEndpointImpl(atsApiServer, orcsApi, executorAdmin));
+      singletons.add(new AtsNotifyEndpointImpl(atsApiServer));
+      singletons.add(new AtsWorkPackageEndpointImpl(atsApiServer, logger));
+      singletons.add(new AtsTeamWfEndpointImpl(atsApiServer));
+      singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
 
       // UIs
-      singletons.add(new ActionUiResource(atsServer, logger));
-      singletons.add(new ReportResource(orcsApi, atsServer));
+      singletons.add(new ActionUiResource(atsApiServer, logger));
+      singletons.add(new ReportResource(orcsApi, atsApiServer));
 
       Thread loadConfig = new Thread("Load ATS Config") {
 
          @Override
          public void run() {
-            atsServer.getConfigService().getConfigurations();
+            atsApiServer.getConfigService().getConfigurations();
          }
 
       };

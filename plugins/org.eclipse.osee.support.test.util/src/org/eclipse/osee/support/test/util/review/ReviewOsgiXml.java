@@ -72,7 +72,7 @@ public class ReviewOsgiXml {
       }
       rd.logf("\n");
 
-      String path = System.getProperty("user.home") + File.separator + "OseeDevReview.html";
+      String path = System.getProperty("user.home") + File.separator + "ReviewOsgiXml.html";
       File outFile = new File(path);
       String html = rd.getHtml();
       try {

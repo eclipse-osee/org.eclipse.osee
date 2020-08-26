@@ -32,7 +32,7 @@ import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -61,8 +61,8 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
       this.uriInfo = uriInfo;
    }
 
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsApi = atsServer;
+   public void setAtsApiServer(AtsApiServer atsApiServer) {
+      this.atsApi = atsApiServer;
    }
 
    public void start() {

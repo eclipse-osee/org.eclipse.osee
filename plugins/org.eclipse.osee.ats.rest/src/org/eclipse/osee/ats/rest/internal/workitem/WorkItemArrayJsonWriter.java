@@ -28,7 +28,7 @@ import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemArray;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -40,15 +40,15 @@ import org.eclipse.osee.orcs.OrcsApi;
 @Provider
 public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray> {
    private JsonFactory jsonFactory;
-   private AtsApi atsApi;
+   private AtsApi atsApiServer;
    private OrcsApi orcsApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsApi = atsServer;
+   public void setAtsApiServer(AtsApiServer atsApiServer) {
+      this.atsApiServer = atsApiServer;
    }
 
    public void start() {
@@ -87,7 +87,7 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
          writer.writeStartObject();
          writer.writeArrayFieldStart("workItems");
          for (IAtsWorkItem workItem : workItemArray.getWorkItems()) {
-            WorkItemJsonWriter.addWorkItem(atsApi, orcsApi, workItem, annotations, writer,
+            WorkItemJsonWriter.addWorkItem(atsApiServer, orcsApi, workItem, annotations, writer,
                matches(IdentityView.class, annotations), Collections.emptyList());
          }
          writer.writeEndArray();

@@ -24,7 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,10 +39,10 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 @Path("convert")
 public final class ConvertResource {
 
-   private final IAtsServer atsServer;
+   private final AtsApiServer atsApiServer;
 
-   public ConvertResource(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public ConvertResource(AtsApiServer atsApiServer) {
+      this.atsApiServer = atsApiServer;
    }
 
    /**
@@ -54,7 +54,7 @@ public final class ConvertResource {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(95, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Name", "Report", "Run", "Description")));
-      for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
+      for (IAtsDatabaseConversion convert : atsApiServer.getDatabaseConversions()) {
          sb.append(AHTML.addRowMultiColumnTable(convert.getName(), getForm(convert.getName(), "report", "REPORT-ONLY"),
             getForm(convert.getName(), "run", "RUN"), AHTML.textToHtml(convert.getDescription())));
       }
@@ -87,9 +87,9 @@ public final class ConvertResource {
       boolean reportOnly = !operation.equals("run");
       XResultData results = new XResultData(false);
       results.logf("Running [%s] ...\n", convertName);
-      for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
+      for (IAtsDatabaseConversion convert : atsApiServer.getDatabaseConversions()) {
          if (convert.getName().equals(convertName)) {
-            convert.run(results, reportOnly, atsServer);
+            convert.run(results, reportOnly, atsApiServer);
          }
       }
       if (results.isErrors()) {

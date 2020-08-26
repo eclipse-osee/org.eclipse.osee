@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
@@ -66,7 +66,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Donald G Dunne
  */
-public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
+public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;

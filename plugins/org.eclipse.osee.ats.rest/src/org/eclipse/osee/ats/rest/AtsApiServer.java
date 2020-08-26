@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends AtsApi, IAtsNotifier {
+public interface AtsApiServer extends AtsApi, IAtsNotifier {
 
    OrcsApi getOrcsApi();
 

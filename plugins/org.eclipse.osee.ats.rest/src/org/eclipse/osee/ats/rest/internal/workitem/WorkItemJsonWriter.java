@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
@@ -64,15 +64,15 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
    private static final String ATS_UI_ACTION_PREFIX = "/ats/ui/action/ID";
    private JsonFactory jsonFactory;
-   private AtsApi atsApi;
+   private AtsApi atsApiServer;
    private OrcsApi orcsApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsApi = atsServer;
+   public void setAtsApiServer(AtsApiServer atsApiServer) {
+      this.atsApiServer = atsApiServer;
    }
 
    public void start() {
@@ -108,7 +108,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createGenerator(entityStream);
-         addWorkItem(atsApi, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations),
+         addWorkItem(atsApiServer, orcsApi, config, annotations, writer, matches(IdentityView.class, annotations),
             Collections.emptyList());
       } finally {
          if (writer != null) {
