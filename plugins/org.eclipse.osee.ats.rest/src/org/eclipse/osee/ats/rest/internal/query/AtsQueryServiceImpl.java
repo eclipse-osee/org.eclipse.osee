@@ -316,4 +316,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(attributeType, values).getResults().getList());
    }
 
+   @Override
+   public ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(attributeType,
+         Arrays.asList(value)).getResults().getOneOrNull();
+   }
+
 }

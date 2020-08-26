@@ -204,4 +204,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsFromObjects(Collection<? extends IAtsObject> atsObjects);
 
+   ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch);
+
 }
