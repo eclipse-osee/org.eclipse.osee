@@ -32,6 +32,6 @@ public interface ReportEndpoint {
    @GET
    @Path("{branch}/view/{view}/template/{template}")
    @Produces({MediaType.APPLICATION_XML})
-   Response getReportFromTemplate(@PathParam("branch") BranchId branch, @DefaultValue("-1") @PathParam("view") ArtifactId view, @DefaultValue("-1") @PathParam("templateArt") ArtifactId templateArt);
+   Response getReportFromTemplate(@PathParam("branch") BranchId branch, @DefaultValue("-1") @PathParam("view") ArtifactId view, @DefaultValue("-1") @PathParam("template") ArtifactId templateArt);
 
 }
