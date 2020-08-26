@@ -30,6 +30,8 @@
 					<fileset dir="${project-base-path}/extras" />
 				</copy>
 		
+		<copy file="${project-base-path}/runServer.sh" tofile="${server-path}/runServer.sh" overwrite="true" />
+
 		<mkdir dir="${server-etc-path}" />
 		<copy todir="${server-etc-path}">
 			<fileset dir="${etc-content-path}" />

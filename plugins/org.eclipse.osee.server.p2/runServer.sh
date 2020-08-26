@@ -6,7 +6,7 @@
 echo "Start of OSEE control script"
 
 if [ -z "$OSEE_APP_SERVER_PORT" ]; then
-  OSEE_APP_SERVER_PORT=8089
+  OSEE_APP_SERVER_PORT=8089 
 fi
 
 if [ -z "$OSGI_TELNET_PORT" ]; then
@@ -160,12 +160,12 @@ start() {
            echo Server already started with pid: $pid
            exit 0
     fi
-    
-    EXECUTION_CMD="nohup $JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean>> $LOG 2>&1 &" 
+    echo $OSEE_SERVER_CONFIG_URI    
+    EXECUTION_CMD="$JAVA_EXEC -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT -Dlogback.configurationFile=$LOG_BACK $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog $OSEE_APP_ARGS -clean>> $LOG 2>&1 &" 
     EXECUTION_CMD=${EXECUTION_CMD//Program Files/\'Program Files\'}
     echo "EXEC: $EXECUTION_CMD"> "$LOG"
    
-    "eval $EXECUTION_CMD"
+    `eval` $EXECUTION_CMD
 
     pid_of_osee_app_server 
     echo pid: $pid
@@ -249,6 +249,7 @@ setLoadBalancerPortEnablement () {
 }
 
 # See how we were called.
+OSEE_APP_SERVER_CMD=$1
 case "$OSEE_APP_SERVER_CMD" in
   start)
     print_osee_app_server_home
