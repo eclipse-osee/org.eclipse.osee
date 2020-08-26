@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -88,7 +88,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    public boolean isApplicable(BranchId objectBranch) {
       boolean result = false;
       try {
-         if (AtsClientService.get().getAtsBranch().notEqual(objectBranch)) {
+         if (AtsApiService.get().getAtsBranch().notEqual(objectBranch)) {
             Artifact associatedArtifact = BranchManager.getAssociatedArtifact(objectBranch);
             if (associatedArtifact.isValid()) {
                result = associatedArtifact.isOfType(AtsArtifactTypes.AtsArtifact);
@@ -119,7 +119,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       branchIdToContextIdCache.put(branch, contextIds);
       try {
          // don't access control common branch artifacts...yet
-         if (AtsClientService.get().getAtsBranch().notEqual(branch)) {
+         if (AtsApiService.get().getAtsBranch().notEqual(branch)) {
             // do this check first since role will supersede others
             if (roleContextProvider != null) {
                contextIds.addAll(roleContextProvider.getContextId(UserManager.getUser()));
@@ -148,11 +148,11 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    public Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
       Set<IAccessContextId> contextIds = new HashSet<>();
       try {
-         contextIds.addAll(getFromArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)));
+         contextIds.addAll(getFromArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)));
          if (contextIds.isEmpty()) {
-            for (IAtsActionableItem aia : AtsClientService.get().getActionableItemService().getActionableItems(
+            for (IAtsActionableItem aia : AtsApiService.get().getActionableItemService().getActionableItems(
                teamWf)) {
-               Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(aia);
+               Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(aia);
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }
@@ -162,7 +162,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
             }
             if (contextIds.isEmpty()) {
                Artifact artifact =
-                  AtsClientService.get().getQueryServiceClient().getArtifact(teamWf.getTeamDefinition());
+                  AtsApiService.get().getQueryServiceIde().getArtifact(teamWf.getTeamDefinition());
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }

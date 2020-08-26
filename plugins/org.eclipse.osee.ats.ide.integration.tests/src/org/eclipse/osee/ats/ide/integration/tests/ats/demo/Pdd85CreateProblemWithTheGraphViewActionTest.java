@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd85CreateProblemWithTheGraphViewAction;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ public class Pdd85CreateProblemWithTheGraphViewActionTest implements IPopulateDe
       create.run();
 
       IAtsTeamWorkflow teamWf =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheGraphView_TeamWf);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheGraphView_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemWithTheGraphView_TeamWf.getName(), "1", "",

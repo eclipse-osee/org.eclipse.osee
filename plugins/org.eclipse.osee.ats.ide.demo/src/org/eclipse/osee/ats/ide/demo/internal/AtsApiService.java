@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2018 Boeing
+ * Copyright (c) 2013 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,24 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests;
+package org.eclipse.osee.ats.ide.demo.internal;
 
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsClientServiceTest {
+public class AtsApiService {
 
-   @BeforeClass
-   public static void setUp() throws Exception {
-      DemoUtil.checkDbInitAndPopulateSuccess();
+   private static AtsApiIde atsApiIde;
+
+   public void setAtsApiIde(AtsApiIde atsApiIde) {
+      AtsApiService.atsApiIde = atsApiIde;
    }
 
-   @org.junit.Test
-   public void testHealthEndpoint() {
-      Assert.assertTrue(AtsClientService.get().getServerEndpoints().getHealthEndpoint().alive());
+   public static AtsApiIde get() {
+      return atsApiIde;
    }
+
 }

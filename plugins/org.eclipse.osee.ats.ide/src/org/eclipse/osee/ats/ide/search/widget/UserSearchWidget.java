@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -40,7 +40,7 @@ public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> 
       setup(getWidget());
       String userId = data.getUserId();
       if (Strings.isValid(userId)) {
-         AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
+         AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
          XComboViewer combo = getWidget();
          combo.setSelected(Arrays.asList(user));
       }
@@ -48,6 +48,6 @@ public class UserSearchWidget extends AbstractXComboViewerSearchWidget<AtsUser> 
 
    @Override
    public Collection<AtsUser> getInput() {
-      return Collections.castAll(AtsClientService.get().getUserService().getUsers(Active.Both));
+      return Collections.castAll(AtsApiService.get().getUserService().getUsers(Active.Both));
    }
 }

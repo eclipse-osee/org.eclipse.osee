@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractAtsArtifact;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -167,7 +167,7 @@ public class Overview {
    public void addNotes(Artifact artifact) {
       if (artifact instanceof AbstractWorkflowArtifact) {
          String notesHtml =
-            AtsClientService.get().getWorkItemService().getNotes((AbstractWorkflowArtifact) artifact).getTable(null);
+            AtsApiService.get().getWorkItemService().getNotes((AbstractWorkflowArtifact) artifact).getTable(null);
          if (notesHtml.equals("")) {
             return;
          }
@@ -249,8 +249,8 @@ public class Overview {
    public void addLog(AbstractWorkflowArtifact artifact) {
       IAtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
-         AtsLogUtility.getTable(artifactLog, AtsClientService.get().getLogFactory().getLogProvider(artifact,
-            AtsClientService.get().getAttributeResolver()), AtsClientService.get().getUserService());
+         AtsLogUtility.getTable(artifactLog, AtsApiService.get().getLogFactory().getLogProvider(artifact,
+            AtsApiService.get().getAttributeResolver()), AtsApiService.get().getUserService());
       }
    }
 

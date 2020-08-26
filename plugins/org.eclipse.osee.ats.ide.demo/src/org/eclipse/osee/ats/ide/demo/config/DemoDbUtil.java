@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -74,7 +74,7 @@ public class DemoDbUtil {
    public static Collection<IAtsActionableItem> getActionableItems(ArtifactToken... aiTokens) {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (ArtifactToken aiToken : aiTokens) {
-         aias.add(AtsClientService.get().getActionableItemService().getActionableItemById(aiToken));
+         aias.add(AtsApiService.get().getActionableItemService().getActionableItemById(aiToken));
       }
       return aias;
    }

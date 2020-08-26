@@ -66,7 +66,7 @@ public class OseePerspective implements IPerspectiveFactory {
       bottomLeft.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
 
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          bottom.addView("org.eclipse.pde.runtime.LogView");
       }
       bottom.addView(BranchView.VIEW_ID);

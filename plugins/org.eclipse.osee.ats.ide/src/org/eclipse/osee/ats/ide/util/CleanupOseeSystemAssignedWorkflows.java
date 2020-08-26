@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -38,9 +38,9 @@ public class CleanupOseeSystemAssignedWorkflows extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
 
       XResultData results = new XResultData();
-      Collection<IAtsWorkItem> workItems = AtsClientService.get().getQueryService().getWorkItemsFromQuery(
+      Collection<IAtsWorkItem> workItems = AtsApiService.get().getQueryService().getWorkItemsFromQuery(
          "select art_id from osee_attribute where attr_type_id in (1152921504606847192) and value like '%99999999%'");
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("OSEE System Assignee Cleanup");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("OSEE System Assignee Cleanup");
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.SYSTEM_USER);

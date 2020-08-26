@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -68,7 +68,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
                resultData.error("user name can't be blank");
             }
             try {
-               if (AtsClientService.get().getUserService().getUserByName(newUserName) != null) {
+               if (AtsApiService.get().getUserService().getUserByName(newUserName) != null) {
                   resultData.error(String.format("User [%s] already exists", newUserName));
                }
             } catch (UserNotInDatabase ex) {
@@ -82,7 +82,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
          }
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create New User(s)");
+               TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Create New User(s)");
             Set<Artifact> newUsers = createNewUserItemTx(transaction, newUserNames);
             transaction.execute();
 
@@ -102,7 +102,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
       Set<Artifact> newVersions = new HashSet<>();
       for (String userName : userNames) {
          Artifact userArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsClientService.get().getAtsBranch(), userName);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsApiService.get().getAtsBranch(), userName);
          userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, Lib.generateArtifactIdAsInt().toString());
          userArt.persist(transaction);
          newVersions.add(userArt);

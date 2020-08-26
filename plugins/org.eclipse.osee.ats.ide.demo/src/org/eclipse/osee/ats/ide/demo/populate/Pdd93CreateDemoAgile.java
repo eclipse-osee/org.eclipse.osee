@@ -54,7 +54,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.demo.SprintItemData;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -95,11 +95,11 @@ public class Pdd93CreateDemoAgile {
    }
 
    public void run() throws Exception {
-      agileEp = AtsClientService.get().getServerEndpoints().getAgile();
+      agileEp = AtsApiService.get().getServerEndpoints().getAgile();
 
       validateArtifactCache();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
@@ -120,92 +120,92 @@ public class Pdd93CreateDemoAgile {
       JaxAgileProgramBacklog jaxProgramBacklog =
          JaxAgileProgramBacklog.construct(aProgram, DemoArtifactToken.RD_Program_Backlog);
       IAgileProgramBacklog programBacklog =
-         AtsClientService.get().getAgileService().createAgileProgramBacklog(aProgram, jaxProgramBacklog);
+         AtsApiService.get().getAgileService().createAgileProgramBacklog(aProgram, jaxProgramBacklog);
 
       JaxAgileProgramBacklogItem backlogItem1 =
          JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_1);
       IAgileProgramBacklogItem item =
-         AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, backlogItem1);
+         AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, backlogItem1);
 
       JaxAgileProgramBacklogItem item2 =
          JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_2);
-      AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item2);
+      AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item2);
       JaxAgileProgramBacklogItem item3 =
          JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_3);
-      AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
+      AtsApiService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
 
       JaxAgileProgramFeature jaxFeature =
          JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
       IAgileProgramFeature feature =
-         AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+         AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
 
       JaxAgileStory jaxStory1 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_1);
-      IAgileStory story1 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory1);
+      IAgileStory story1 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory1);
 
       JaxAgileStory jaxStory2 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_2);
-      IAgileStory story2 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory2);
+      IAgileStory story2 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory2);
 
       JaxAgileStory jaxStory3 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_3);
-      IAgileStory story3 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory3);
+      IAgileStory story3 = AtsApiService.get().getAgileService().createAgileStory(feature, jaxStory3);
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Agile Items to Stories");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Agile Items to Stories");
 
       IAtsTeamWorkflow codeWf =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(codeWf, story1, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(codeWf, story1, changes);
       IAtsTeamWorkflow testWf =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Test_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(testWf, story1, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Test_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(testWf, story1, changes);
       IAtsTeamWorkflow reqWf =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
 
       // relate story to agile team and sprint
-      ArtifactToken story1Art = AtsClientService.get().getQueryService().getArtifact(story1);
+      ArtifactToken story1Art = AtsApiService.get().getQueryService().getArtifact(story1);
       ArtifactToken agileTeamArt =
-         AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+         AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
-      ArtifactToken sprint2Art = AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
+      ArtifactToken sprint2Art = AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      ArtifactToken story2Art = AtsClientService.get().getQueryService().getArtifact(story2);
+      ArtifactToken story2Art = AtsApiService.get().getQueryService().getArtifact(story2);
       changes.relate(story2Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
       changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      ArtifactToken story3Art = AtsClientService.get().getQueryService().getArtifact(story3);
+      ArtifactToken story3Art = AtsApiService.get().getQueryService().getArtifact(story3);
       changes.relate(story3Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
       changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_AgileSprint, sprint2Art);
 
-      AtsClientService.get().getAgileService().setAgileStory(reqWf, story1, changes);
+      AtsApiService.get().getAgileService().setAgileStory(reqWf, story1, changes);
       changes.relate(story1Art, AtsRelationTypes.AgileStoryToItem_TeamWorkflow, reqWf);
 
       IAtsTeamWorkflow codeWf2 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(codeWf2, story2, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(codeWf2, story2, changes);
       IAtsTeamWorkflow testWf2 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(testWf2, story2, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(testWf2, story2, changes);
       IAtsTeamWorkflow reqWf2 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
 
       IAtsTeamWorkflow codeWf3 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(codeWf3, story3, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(codeWf3, story3, changes);
       IAtsTeamWorkflow testWf3 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(testWf3, story3, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(testWf3, story3, changes);
       IAtsTeamWorkflow reqWf3 =
-         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
-      AtsClientService.get().getAgileService().setAgileStory(reqWf3, story3, changes);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
+      AtsApiService.get().getAgileService().setAgileStory(reqWf3, story3, changes);
       changes.execute();
 
-      Artifact progArt = AtsClientService.get().getQueryServiceClient().getArtifact(aProgram);
+      Artifact progArt = AtsApiService.get().getQueryServiceIde().getArtifact(aProgram);
       RelationManager.setRelationOrder(progArt, CoreRelationTypes.DefaultHierarchical_Child, RelationSide.SIDE_B,
          RelationSorter.UNORDERED, progArt.getChildren());
       progArt.persist("Set Relation Order");
 
       jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
-      AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+      AtsApiService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
    }
 
    private void createAgileStandAloneTeam() {
@@ -215,7 +215,7 @@ public class Pdd93CreateDemoAgile {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName("Facilities Team");
       newTeam.setId(teamId);
-      Response response = AtsClientService.get().getServerEndpoints().getAgile().createTeam(newTeam);
+      Response response = AtsApiService.get().getServerEndpoints().getAgile().createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Create Backlog
@@ -236,9 +236,9 @@ public class Pdd93CreateDemoAgile {
       Response response = agileEp.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
       Artifact sawAgileTeam =
-         AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.CIS_Agile_Team);
+         AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.CIS_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
@@ -256,7 +256,7 @@ public class Pdd93CreateDemoAgile {
       JaxAgileProgram jProgram = new JaxAgileProgram();
       jProgram.setName(DemoArtifactToken.RD_Agile_Program.getName());
       jProgram.setId(DemoArtifactToken.RD_Agile_Program.getId());
-      IAgileProgram aProgram = AtsClientService.get().getAgileService().createAgileProgram(jProgram);
+      IAgileProgram aProgram = AtsApiService.get().getAgileService().createAgileProgram(jProgram);
       return aProgram;
    }
 
@@ -269,24 +269,24 @@ public class Pdd93CreateDemoAgile {
       Response response = agile.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
       Artifact sawAgileTeam =
-         AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+         AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Agile_Team);
       changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
          AtsAttributeTypes.Points.getName());
       changes.execute();
 
       // Assigne ATS Team to Agile Team
-      Artifact sawCodeArt = AtsClientService.get().getQueryServiceClient().getArtifact(DemoArtifactToken.SAW_Code);
+      Artifact sawCodeArt = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Code);
       Conditions.assertNotNull(sawCodeArt, "sawCodeArt");
-      Artifact agileTeam = AtsClientService.get().getQueryServiceClient().getArtifact(newTeam.getId());
+      Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(newTeam.getId());
       agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawCodeArt);
       agileTeam.persist("Assigne ATS Team to Agile Team");
 
       // Add team members to agile team
-      Artifact joeUser = AtsClientService.get().getQueryServiceClient().getArtifact(DemoUsers.Joe_Smith);
+      Artifact joeUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Joe_Smith);
       agileTeam.addRelation(CoreRelationTypes.Users_User, joeUser);
-      Artifact kayUser = AtsClientService.get().getQueryServiceClient().getArtifact(DemoUsers.Kay_Jones);
+      Artifact kayUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Kay_Jones);
       agileTeam.addRelation(CoreRelationTypes.Users_User, kayUser);
       agileTeam.persist("Add Team Members to Agile Team");
 
@@ -297,7 +297,7 @@ public class Pdd93CreateDemoAgile {
 
       // Add items to backlog
       Collection<IAtsWorkItem> items =
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).isOfType(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).isOfType(
             AtsDemoOseeTypes.DemoCodeTeamWorkflow, AtsDemoOseeTypes.DemoReqTeamWorkflow,
             AtsDemoOseeTypes.DemoTestTeamWorkflow).getItems();
       Assert.isTrue(items.size() > 0);
@@ -312,7 +312,7 @@ public class Pdd93CreateDemoAgile {
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       // Set backlog as user_defined member order
-      Artifact backlogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlog.getId());
+      Artifact backlogArt = AtsApiService.get().getQueryServiceIde().getArtifact(backlog.getId());
       RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
       backlogArt.persist("Set Backlog Order");
@@ -347,12 +347,12 @@ public class Pdd93CreateDemoAgile {
       result = agile.updateItems(completedItems);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
-      Artifact sprint1Art = AtsClientService.get().getQueryServiceClient().getArtifact(sprint1.getId());
+      Artifact sprint1Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint1.getId());
       RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
       sprint1Art.persist("Set sort order for Sprint 1");
 
-      Artifact sprint2Art = AtsClientService.get().getQueryServiceClient().getArtifact(sprint2.getId());
+      Artifact sprint2Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint2.getId());
       RelationManager.setRelationOrder(sprint2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
       sprint2Art.persist("Set sort order for Sprint 2");
@@ -366,12 +366,12 @@ public class Pdd93CreateDemoAgile {
       changes.execute();
 
       // Transition First Sprint to completed
-      IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+      IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+            null, changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
       }
@@ -389,9 +389,9 @@ public class Pdd93CreateDemoAgile {
    private void setupSprint2ForBurndown(long secondSprintId) {
 
       // Transition First Sprint to completed
-      IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+      IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          secondSprintId).getItems().iterator().next();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Setup Sprint 2 for Burndown");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Setup Sprint 2 for Burndown");
 
       Calendar cal = Calendar.getInstance();
       cal.add(Calendar.DAY_OF_YEAR, -5);
@@ -422,7 +422,7 @@ public class Pdd93CreateDemoAgile {
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday2);
 
       // set sprint data on sprint items
-      Artifact agileTeamArt = AtsClientService.get().getQueryServiceClient().getArtifact(sprint).getRelatedArtifact(
+      Artifact agileTeamArt = AtsApiService.get().getQueryServiceIde().getArtifact(sprint).getRelatedArtifact(
          AtsRelationTypes.AgileTeamToSprint_AgileTeam);
       changes.execute();
 

@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
@@ -70,8 +70,8 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
    public Collection<Artifact> performSearch() {
       allArtifacts.clear();
       allArtifacts.addAll(
-         Collections.castAll(AtsClientService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
-      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         Collections.castAll(AtsApiService.get().getQueryService().getArtifactsByIdsOrAtsIds(data.getSearchStr())));
+      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
          data.getSearchStr(), false, DeletionFlag.EXCLUDE_DELETED, false)) {
          try {
             // only ATS Artifacts

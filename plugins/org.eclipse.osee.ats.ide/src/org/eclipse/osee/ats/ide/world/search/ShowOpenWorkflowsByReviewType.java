@@ -18,7 +18,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,7 +54,7 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(workItemType);
+      IAtsQuery query = AtsApiService.get().getQueryService().createQuery(workItemType);
       if (!showFinished) {
          query.andStateType(StateType.Working);
       }

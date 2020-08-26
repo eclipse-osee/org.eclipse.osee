@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -60,10 +60,10 @@ public class RelatedArtifactLastModifiedDateColumn extends XViewerAtsColumn impl
       try {
          if (element instanceof Artifact) {
             ArtifactId refArtId =
-               AtsClientService.get().getQueryServiceClient().getArtifact(element).getSoleAttributeValue(
+               AtsApiService.get().getQueryServiceIde().getArtifact(element).getSoleAttributeValue(
                   AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
             if (refArtId.isValid()) {
-               Artifact refArt = AtsClientService.get().getQueryServiceClient().getArtifact(refArtId);
+               Artifact refArt = AtsApiService.get().getQueryServiceIde().getArtifact(refArtId);
                if (refArt != null) {
                   return DateUtil.getMMDDYYHHMM(refArt.getLastModified());
                }

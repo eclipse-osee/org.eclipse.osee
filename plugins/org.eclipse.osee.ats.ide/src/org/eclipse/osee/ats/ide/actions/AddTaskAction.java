@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.actions;
 import java.util.Collection;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -40,7 +40,7 @@ public class AddTaskAction extends AbstractAtsAction {
 
    @Override
    public void run() {
-      AtsClientService.get().getTaskServiceClient().createNewTaskWithDialog(
+      AtsApiService.get().getTaskServiceIde().createNewTaskWithDialog(
          selectedTeamWfs.getSelectedTeamWorkflowArtifacts().iterator().next());
    }
 

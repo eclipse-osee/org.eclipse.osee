@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.column.CancelledDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.column.CancelledDateColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -50,7 +50,7 @@ public class CancelledDateColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), changes);
       changes.execute();
@@ -62,9 +62,9 @@ public class CancelledDateColumnTest {
       Assert.assertEquals("", CancelledDateColumn.getCancelledDateStr(teamArt));
 
       TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(teamArt),
-         TeamState.Cancelled.getName(), null, "reason", null, AtsClientService.get(),
+         TeamState.Cancelled.getName(), null, "reason", null, AtsApiService.get(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       date = CancelledDateColumn.getCancelledDate(teamArt);
@@ -74,10 +74,10 @@ public class CancelledDateColumnTest {
          CancelledDateColumnUI.getInstance().getColumnText(teamArt, CancelledDateColumnUI.getInstance(), 0));
 
       helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, null,
-         AtsClientService.get(), TransitionOption.OverrideTransitionValidityCheck,
+         Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         AtsApiService.get(), TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
-      results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+      results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       teamArt = (TeamWorkFlowArtifact) teamArt.reloadAttributesAndRelations();

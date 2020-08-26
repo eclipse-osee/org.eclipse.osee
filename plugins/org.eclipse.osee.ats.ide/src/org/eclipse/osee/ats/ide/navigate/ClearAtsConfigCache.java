@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -31,8 +31,8 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
 
-      AtsClientService.get().reloadServerAndClientCaches();
-      AtsClientService.get().clearCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
+      AtsApiService.get().clearCaches();
 
    }
 

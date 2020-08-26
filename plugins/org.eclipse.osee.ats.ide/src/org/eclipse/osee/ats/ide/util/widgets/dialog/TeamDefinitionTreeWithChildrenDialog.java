@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -40,7 +40,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) {
-      this(active, AtsClientService.get().getTeamDefinitionService().getTeamTopLevelJaxDefinitions(active));
+      this(active, AtsApiService.get().getTeamDefinitionService().getTeamTopLevelJaxDefinitions(active));
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinition> TeamDefinitions) {
@@ -67,7 +67,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
       Set<TeamDefinition> children = new HashSet<>();
       for (Long childId : teamDef.getChildren()) {
          TeamDefinition child =
-            AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(childId);
+            AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(childId);
          if (child != null) {
             children.add(child);
             if (recurse) {

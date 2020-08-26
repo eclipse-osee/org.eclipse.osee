@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
@@ -65,10 +65,10 @@ public class ImportActionsViaSpreadsheetTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse(AtsClientService.get().getStoreService().isProductionDb());
+      assertFalse(AtsApiService.get().getStoreService().isProductionDb());
 
       for (String title : ActionTitles) {
-         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch());
+         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsApiService.get().getAtsBranch());
          Assert.assertEquals(String.format("Action [%s] should have been purged before test start.", title), 0,
             arts.size());
       }
@@ -85,7 +85,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       List<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsApiService.get().getAtsBranch());
       Assert.assertEquals("One Action and 3 Team Workflows should be created", 4, arts.size());
       TeamWorkFlowArtifact testWf = null, code1Wf = null, code2Wf = null;
       for (Artifact art : arts) {
@@ -109,7 +109,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("3", testWf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      Assert.assertEquals("SAW_Bld_3", AtsClientService.get().getVersionService().getTargetedVersion(testWf).getName());
+      Assert.assertEquals("SAW_Bld_3", AtsApiService.get().getVersionService().getTargetedVersion(testWf).getName());
       Assert.assertEquals(DemoUsers.Joe_Smith, testWf.getAssignees().iterator().next());
       Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(),
          testWf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
@@ -123,7 +123,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertTrue(code1Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 23.0);
       Assert.assertEquals("Improvement", code1Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_2",
-         AtsClientService.get().getVersionService().getTargetedVersion(code1Wf).getName());
+         AtsApiService.get().getVersionService().getTargetedVersion(code1Wf).getName());
       Assert.assertEquals(DemoUsers.Joe_Smith, code1Wf.getAssignees().iterator().next());
       Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(),
          code1Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
@@ -137,7 +137,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertTrue(code2Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 3.0);
       Assert.assertEquals("Improvement", code2Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_2",
-         AtsClientService.get().getVersionService().getTargetedVersion(code2Wf).getName());
+         AtsApiService.get().getVersionService().getTargetedVersion(code2Wf).getName());
       Assert.assertEquals(DemoUsers.Joe_Smith, code2Wf.getAssignees().iterator().next());
       Assert.assertEquals(DemoUsers.Joe_Smith.getUserId(),
          code2Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
@@ -145,7 +145,7 @@ public class ImportActionsViaSpreadsheetTest {
 
    @org.junit.Test
    public void testImport_withGoal() throws Exception {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goal = GoalManager.createGoal(getClass().getSimpleName(), changes);
       changes.execute();
 
@@ -179,7 +179,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertNotNull(file);
 
       // Two should be added to backlog
-      IAgileBacklog backlog = AtsClientService.get().getAgileService().getAgileBacklog(DemoArtifactToken.SAW_Backlog);
+      IAgileBacklog backlog = AtsApiService.get().getAgileService().getAgileBacklog(DemoArtifactToken.SAW_Backlog);
       Assert.assertNotNull(backlog);
 
       // Import actions to backlog and sprint
@@ -188,7 +188,7 @@ public class ImportActionsViaSpreadsheetTest {
 
       // Validate backlog
       Collection<ArtifactToken> members =
-         AtsClientService.get().getRelationResolver().getRelated(backlog, AtsRelationTypes.Goal_Member);
+         AtsApiService.get().getRelationResolver().getRelated(backlog, AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Should be 20 members", 20, members.size());
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 1"));
@@ -196,22 +196,22 @@ public class ImportActionsViaSpreadsheetTest {
          ((IAtsObject) members.toArray()[19]).getDescription().startsWith("Phase 2"));
 
       // Two should be added to sprint and points set
-      IAgileSprint sprint2 = AtsClientService.get().getAgileService().getAgileSprint(DemoArtifactToken.SAW_Sprint_2);
+      IAgileSprint sprint2 = AtsApiService.get().getAgileService().getAgileSprint(DemoArtifactToken.SAW_Sprint_2);
       Assert.assertNotNull(sprint2);
 
       // Validate sprint
       members =
-         AtsClientService.get().getRelationResolver().getRelated(sprint2, AtsRelationTypes.AgileSprintToItem_AtsItem);
+         AtsApiService.get().getRelationResolver().getRelated(sprint2, AtsRelationTypes.AgileSprintToItem_AtsItem);
       Assert.assertEquals("Should be 19 members", 19, members.size());
 
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[17]).getDescription().startsWith("Phase 1"));
-      Assert.assertEquals("2", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals("2", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) members.toArray()[17], AtsAttributeTypes.Points, ""));
 
       Assert.assertTrue("members should be in order",
          ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 2"));
-      Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals("3", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) members.toArray()[18], AtsAttributeTypes.Points, ""));
 
    }

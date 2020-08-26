@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsButton;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintArtifactLabelProvider;
 import org.eclipse.osee.ats.ide.agile.navigate.OpenAgileSprint.SprintStateTypeComparator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -48,7 +48,7 @@ public class OpenAgileStoredSprintReports extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -58,7 +58,7 @@ public class OpenAgileStoredSprintReports extends XNavigateItemAction {
       if (dialog.open() == 0) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Collection<Artifact> sprints =
-            Collections.castAll(AtsClientService.get().getRelationResolver().getRelated(agileTeamArt,
+            Collections.castAll(AtsApiService.get().getRelationResolver().getRelated(agileTeamArt,
                AtsRelationTypes.AgileTeamToSprint_Sprint));
 
          FilteredTreeArtifactDialog dialog2 = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", sprints,

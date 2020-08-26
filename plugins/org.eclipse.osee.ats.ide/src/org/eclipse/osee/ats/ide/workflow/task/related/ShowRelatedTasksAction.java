@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -52,7 +52,7 @@ public class ShowRelatedTasksAction extends AbstractShowRelatedAction {
          return;
       }
       for (IAtsTask task : tasks) {
-         IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(task);
+         IAutoGenTaskData data = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(task);
          final String srchStr = data.hasRelatedArt() ? data.getRelatedArtName() : task.getName();
          if (!Strings.isValid(srchStr)) {
             AWorkbench.popup("ERROR", "Unable to extract requirement from task name");

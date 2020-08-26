@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -63,10 +63,10 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
          try {
             if (object instanceof Artifact) {
                ArtifactId refArtId =
-                  AtsClientService.get().getQueryServiceClient().getArtifact(object).getSoleAttributeValue(
+                  AtsApiService.get().getQueryServiceIde().getArtifact(object).getSoleAttributeValue(
                      AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
                if (refArtId.isValid()) {
-                  Artifact refArt = AtsClientService.get().getQueryServiceClient().getArtifact(refArtId);
+                  Artifact refArt = AtsApiService.get().getQueryServiceIde().getArtifact(refArtId);
                   if (refArt != null) {
                      BranchId refBranch = refArt.getBranch();
                      if (refArt.isDeleted()) {
@@ -75,7 +75,7 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
                         refBranch).isBaselineBranch()) {
                         value = "Commited";
                      } else if (refArt.getLastModified().after(
-                        AtsClientService.get().getQueryServiceClient().getArtifact(object).getLastModified())) {
+                        AtsApiService.get().getQueryServiceIde().getArtifact(object).getLastModified())) {
                         value = refArt.getLastModified().toString();
                      } else {
                         value = "Unmodified";

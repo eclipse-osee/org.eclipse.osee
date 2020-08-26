@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -37,9 +37,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObject {
    protected final Artifact artifact;
-   private final IAtsClient atsClient;
+   private final AtsApiIde atsClient;
 
-   public AtsConfigObject(IAtsClient atsClient, Artifact artifact) {
+   public AtsConfigObject(AtsApiIde atsClient, Artifact artifact) {
       super(artifact.getName(), artifact.getArtId());
       this.atsClient = atsClient;
       this.artifact = artifact;
@@ -108,7 +108,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
       return results;
    }
 
-   protected IAtsClient getAtsClient() {
+   protected AtsApiIde getAtsClient() {
       return atsClient;
    }
 

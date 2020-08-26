@@ -22,7 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -50,7 +50,7 @@ public class WorldXViewerUtil {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             boolean found = false;
             Collection<IUserGroupArtifactToken> userGroups = item.getUserGroups();
-            for (ArtifactId myUserGroup : AtsClientService.get().getUserService().getCurrentUser().getUserGroups()) {
+            for (ArtifactId myUserGroup : AtsApiService.get().getUserService().getCurrentUser().getUserGroups()) {
                if (userGroups.contains(myUserGroup)) {
                   found = true;
                   break;
@@ -70,7 +70,7 @@ public class WorldXViewerUtil {
    public static void registerAtsAttributeColumns(SkynetXViewerFactory factory) {
       // Register all ats.* attribute columns
       try {
-         if (AtsClientService.get().getUserService().getCurrentUser().getUserGroups().contains(
+         if (AtsApiService.get().getUserService().getCurrentUser().getUserGroups().contains(
             AtsUserGroups.AtsAddAttrColumns)) {
             for (AttributeTypeToken attributeType : AttributeTypeManager.getAllTypes()) {
                if (attributeType.getName().startsWith("ats.")) {
@@ -92,7 +92,7 @@ public class WorldXViewerUtil {
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
       List<AtsAttributeValueColumn> columns =
-         AtsClientService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
+         AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {

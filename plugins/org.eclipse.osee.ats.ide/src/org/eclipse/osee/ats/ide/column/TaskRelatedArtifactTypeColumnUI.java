@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 
 /**
@@ -52,14 +52,14 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.TaskToRelatedArtifactType,
+      return AtsApiService.get().getColumnService().getColumnText(AtsColumnId.TaskToRelatedArtifactType,
          (IAtsWorkItem) obj);
    }
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
       TaskRelatedArtifactTypeColumn column =
-         (TaskRelatedArtifactTypeColumn) AtsClientService.get().getColumnService().getColumn(
+         (TaskRelatedArtifactTypeColumn) AtsApiService.get().getColumnService().getColumn(
             AtsColumnId.TaskToRelatedArtifactType);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (Object obj : objects) {

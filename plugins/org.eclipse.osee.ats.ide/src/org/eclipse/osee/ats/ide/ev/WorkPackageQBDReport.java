@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleSearchProvider;
@@ -68,9 +68,9 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
    public Collection<Artifact> performSearch(SearchType searchType) {
       List<ArtifactToken> workItemTokens = ArtifactQuery.getArtifactTokenListFromSoleAttributeInherited(
          AtsArtifactTypes.AbstractWorkflowArtifact, AtsAttributeTypes.WorkPackageReference,
-         selectedWorkPackage.getIdString(), AtsClientService.get().getAtsBranch());
+         selectedWorkPackage.getIdString(), AtsApiService.get().getAtsBranch());
       List<Artifact> workItems =
-         ArtifactQuery.getArtifactListFrom(workItemTokens, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactListFrom(workItemTokens, AtsApiService.get().getAtsBranch());
       return workItems;
    }
 

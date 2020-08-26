@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -68,7 +68,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            getWorldViewOriginatingWorkflowStr(AtsClientService.get().getQueryServiceClient().getArtifact(element));
+            getWorldViewOriginatingWorkflowStr(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
          if (element instanceof AbstractWorkflowArtifact) {
             Artifact parentAction = (Artifact) ((AbstractWorkflowArtifact) element).getParentAction().getStoreObject();
@@ -85,18 +85,18 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) {
       Set<String> strs = new HashSet<>();
       for (IAtsTeamWorkflow team : getWorldViewOriginatingWorkflows(actionArt)) {
-         strs.add(AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(team));
+         strs.add(AtsApiService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(team));
       }
       return Collections.toString(";", strs);
    }
 
    public static Collection<IAtsTeamWorkflow> getWorldViewOriginatingWorkflows(Artifact actionArt) {
-      if (AtsClientService.get().getWorkItemService().getTeams(actionArt).size() == 1) {
-         return AtsClientService.get().getWorkItemService().getTeams(actionArt);
+      if (AtsApiService.get().getWorkItemService().getTeams(actionArt).size() == 1) {
+         return AtsApiService.get().getWorkItemService().getTeams(actionArt);
       }
       Collection<IAtsTeamWorkflow> results = new ArrayList<>();
       Date origDate = null;
-      for (IAtsTeamWorkflow teamArt : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+      for (IAtsTeamWorkflow teamArt : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
          if (teamArt.isCancelled()) {
             continue;
          }

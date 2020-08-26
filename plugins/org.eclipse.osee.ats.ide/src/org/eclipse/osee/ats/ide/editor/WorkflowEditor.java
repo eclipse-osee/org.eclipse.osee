@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.ide.editor.tab.task.WfeTasksTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.RecentlyVisitedNavigateItems;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -257,7 +257,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createTaskTab() throws PartInitException {
       if (isTaskable()) {
-         taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) workItem, AtsClientService.get());
+         taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) workItem, AtsApiService.get());
          addPage(taskTab);
          taskTab.refreshTabName();
       }
@@ -297,7 +297,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                "You do not have permissions to save " + workItem.getArtifactTypeName() + ":" + workItem);
          } else {
             try {
-               IAtsChangeSet changes = AtsClientService.get().createChangeSet("Workflow Editor - Save");
+               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Workflow Editor - Save");
                // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                // Save widget data to artifact
@@ -444,7 +444,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createAttributesTab() {
       try {
-         if (AtsClientService.get().getUserService().isAtsAdmin()) {
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
             attrTab = new ArtEdAttrTab(this, workItem);
             attrPageIndex = addPage(attrTab);
          }
@@ -651,7 +651,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    @Override
    public IAtsVersion getMetricsVersion() {
-      return AtsClientService.get().getVersionService().getTargetedVersion(workItem);
+      return AtsApiService.get().getVersionService().getTargetedVersion(workItem);
    }
 
    @Override
@@ -932,7 +932,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void handleArtifactEvent(Set<String> handledArts, String guid) {
       if (!handledArts.contains(guid)) {
-         Artifact loadedWf = ArtifactCache.getActive(guid, AtsClientService.get().getAtsBranch());
+         Artifact loadedWf = ArtifactCache.getActive(guid, AtsApiService.get().getAtsBranch());
          if (loadedWf != null) {
             if (artHandlers.containsKey(loadedWf.getGuid())) {
                Set<IWfeEventHandle> handlers = new HashSet<IWfeEventHandle>();

@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -68,22 +68,22 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
    }
 
    private AtsConfigurations loadConfigurations() {
-      IAtsClient iAtsClient = AtsClientService.get();
+      AtsApiIde iAtsClient = AtsApiService.get();
       if (iAtsClient != null) {
          IAtsServerEndpointProvider serverEndpoints = iAtsClient.getServerEndpoints();
          AtsConfigEndpointApi configEndpoint = serverEndpoints.getConfigEndpoint();
          AtsConfigurations configs = configEndpoint.get();
          for (Version version : configs.getIdToVersion().values()) {
-            version.setAtsApi(AtsClientService.get());
+            version.setAtsApi(AtsApiService.get());
          }
          for (TeamDefinition teamDef : configs.getIdToTeamDef().values()) {
-            teamDef.setAtsApi(AtsClientService.get());
+            teamDef.setAtsApi(AtsApiService.get());
          }
          for (ActionableItem ai : configs.getIdToAi().values()) {
             ai.setAtsApi(atsApi);
          }
          for (AtsUser user : configs.getUsers()) {
-            user.setAtsApi(AtsClientService.get());
+            user.setAtsApi(AtsApiService.get());
          }
          return configs;
       }
@@ -97,12 +97,12 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          results.error("ATS base config has already been completed");
          return results;
       }
-      return AtsClientService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
+      return AtsApiService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
    }
 
    @Override
    public synchronized AtsUser getUserByLoginId(String loginId) {
-      AtsUser user = AtsClientService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin(loginId);
+      AtsUser user = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getUserByLogin(loginId);
       user.setStoreObject(ArtifactToken.valueOf(user.getId(), atsApi.getAtsBranch()));
       user.setAtsApi(atsApi);
       return user;

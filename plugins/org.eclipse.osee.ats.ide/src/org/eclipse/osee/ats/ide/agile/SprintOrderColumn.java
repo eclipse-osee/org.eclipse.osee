@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.MembersManager;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
@@ -75,10 +75,10 @@ public class SprintOrderColumn extends AbstractMembersOrderColumn {
          if (treeItem.getData() instanceof Artifact) {
             if (parentSprintArtifact != null) {
                changedSprint = new SprintManager().promptChangeMemberOrder(parentSprintArtifact,
-                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(treeItem));
             } else {
                changedSprint = new SprintManager().promptChangeSprintOrder(
-                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(treeItem));
             }
 
             if (changedSprint != null) {

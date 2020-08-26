@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskStates;
 import org.eclipse.osee.framework.core.util.Result;
@@ -40,16 +40,16 @@ public class TaskTestUtil {
       }
       // Assign current user if unassigned
       if (taskArt.getStateMgr().isUnAssigned()) {
-         taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getCurrentUser());
+         taskArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
       }
       taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true,
-         AtsClientService.get().getUserService().getCurrentUser());
+         AtsApiService.get().getUserService().getCurrentUser());
       if (estimatedHours > 0.0) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
       }
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-         TaskStates.Completed.getName(), null, null, null, AtsClientService.get());
-      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+         TaskStates.Completed.getName(), null, null, null, AtsApiService.get());
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
 
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -62,16 +62,16 @@ public class TaskTestUtil {
          return Result.TrueResult;
       }
       TransitionHelper helper = new TransitionHelper("Transition to InWork", Arrays.asList(taskArt),
-         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsClientService.get(),
+         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsApiService.get(),
          TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
       }
       if (taskArt.getStateMgr().getPercentComplete(
          taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true,
-            AtsClientService.get().getUserService().getCurrentUser());
+            AtsApiService.get().getUserService().getCurrentUser());
       }
       return Result.TrueResult;
    }

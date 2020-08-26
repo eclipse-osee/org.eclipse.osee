@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -56,7 +56,7 @@ public class TaskRelatedToChangedArtifactTest {
       TeamWorkFlowArtifact codeWf = DemoUtil.getSawCodeCommittedWf();
       assertNotNull(codeWf);
       IAtsTask codeTask = null;
-      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(codeWf)) {
+      for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(codeWf)) {
          if (task.getName().equals("Make changes")) {
             codeTask = task;
             break;
@@ -64,14 +64,14 @@ public class TaskRelatedToChangedArtifactTest {
       }
       assertNotNull(codeTask);
       TeamWorkFlowArtifact reqWf = null;
-      for (IAtsTeamWorkflow wf : AtsClientService.get().getActionFactory().getSiblingTeamWorkflows(codeWf)) {
+      for (IAtsTeamWorkflow wf : AtsApiService.get().getActionFactory().getSiblingTeamWorkflows(codeWf)) {
          if (wf.getTeamDefinition().getName().contains("Requirements")) {
             reqWf = (TeamWorkFlowArtifact) wf.getStoreObject();
             break;
          }
       }
       assertNotNull(reqWf);
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+      IAtsChangeSet changes = AtsApiService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
          AtsCoreUsers.SYSTEM_USER);
       changes.relate(reqWf, AtsRelationTypes.Derive_To, codeWf);
 
@@ -81,7 +81,7 @@ public class TaskRelatedToChangedArtifactTest {
       changes.setSoleAttributeValue(codeTask, AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);
       changes.execute();
 
-      assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(codeTask).isDirty());
+      assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(codeTask).isDirty());
 
       ArtifactId refArt = ((Artifact) codeTask.getStoreObject()).getSoleAttributeValue(
          AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);

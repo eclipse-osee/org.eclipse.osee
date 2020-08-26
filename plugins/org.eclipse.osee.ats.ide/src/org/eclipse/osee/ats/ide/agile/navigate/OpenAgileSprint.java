@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -53,7 +53,7 @@ public class OpenAgileSprint extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -63,7 +63,7 @@ public class OpenAgileSprint extends XNavigateItemAction {
       if (dialog.open() == 0) {
          Artifact agileTeamArt = dialog.getSelectedFirst();
          Collection<Artifact> sprints =
-            Collections.castAll(AtsClientService.get().getRelationResolver().getRelated(agileTeamArt,
+            Collections.castAll(AtsApiService.get().getRelationResolver().getRelated(agileTeamArt,
                AtsRelationTypes.AgileTeamToSprint_Sprint));
 
          FilteredTreeArtifactDialog dialog2 = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", sprints,

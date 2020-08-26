@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.Overview;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -132,7 +132,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   }
                   StateListAndTitleDialog dialog = new StateListAndTitleDialog("Create Decision Review",
                      "Select state to that review will be associated with.",
-                     AtsClientService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()));
+                     AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
@@ -141,8 +141,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                           null, AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(), null,
-                           new Date(), AtsClientService.get().getUserService().getCurrentUser());
+                           null, AtsApiService.get().getReviewService().getDefaultDecisionReviewOptions(), null,
+                           new Date(), AtsApiService.get().getUserService().getCurrentUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -174,9 +174,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   }
                   NewPeerReviewDialog dialog =
                      new NewPeerReviewDialog("Add Peer to Peer Review", "Enter Title and Select Review Type.",
-                        AtsClientService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()),
+                        AtsApiService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition()),
                         forState.getName(), null);
-                  dialog.setReviewTitle(AtsClientService.get().getReviewService().getDefaultReviewTitle(teamArt));
+                  dialog.setReviewTitle(AtsApiService.get().getReviewService().getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
@@ -293,7 +293,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
    public void addAdminRightClickOption() {
       // If ATS Admin, allow right-click to auto-complete tasks
-      if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getStoreService().isProductionDb()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin() && !AtsApiService.get().getStoreService().isProductionDb()) {
          labelWidget.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -306,20 +306,20 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
                      for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         AbstractReviewArtifact revArt =
-                           (AbstractReviewArtifact) AtsClientService.get().getQueryService().getArtifact(review);
+                           (AbstractReviewArtifact) AtsApiService.get().getQueryService().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(
-                                 AtsClientService.get().getUserService().getCurrentUser());
+                                 AtsApiService.get().getUserService().getCurrentUser());
                            }
                            awas.add(revArt);
                         }
                      }
                      TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
-                        TeamState.Completed.getName(), null, null, null, AtsClientService.get(),
+                        TeamState.Completed.getName(), null, null, null, AtsApiService.get(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+                     TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }

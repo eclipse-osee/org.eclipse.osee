@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -64,19 +64,19 @@ public class AtsBranchServiceImplTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Team Def-base Team Arts
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
-      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
-         changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
+      for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {
+         changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       Collection<Object> commitObjs =
-         AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+         AtsApiService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       org.junit.Assert.assertEquals("commitObjs has wrong size", 1, commitObjs.size());
       assertTrue("commitObjs is missing teamDef",
          ((CommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));
@@ -88,24 +88,24 @@ public class AtsBranchServiceImplTest {
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes =
-         AtsClientService.get().createChangeSet("testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
+         AtsApiService.get().createChangeSet("testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
 
       //Test Version-based Team Arts
       IAtsVersion version1 = AtsTestUtil.getVerArt1();
       IAtsVersion version2 = AtsTestUtil.getVerArt2();
 
-      changes.setRelation(AtsClientService.get().getQueryService().getArtifact(version1),
-         AtsRelationTypes.ParallelVersion_Child, AtsClientService.get().getQueryService().getArtifact(version2));
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, version1, changes);
+      changes.setRelation(AtsApiService.get().getQueryService().getArtifact(version1),
+         AtsRelationTypes.ParallelVersion_Child, AtsApiService.get().getQueryService().getArtifact(version2));
+      AtsApiService.get().getVersionService().setTargetedVersion(teamArt, version1, changes);
       changes.execute();
 
       Collection<Object> commitObjs =
-         AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+         AtsApiService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
       assertTrue("commitObjs is missing verArt1",
-         commitObjs.contains(new CommitConfigItem(version1, AtsClientService.get())));
+         commitObjs.contains(new CommitConfigItem(version1, AtsApiService.get())));
       assertTrue("commitObjs is missing verArt2",
-         commitObjs.contains(new CommitConfigItem(version2, AtsClientService.get())));
+         commitObjs.contains(new CommitConfigItem(version2, AtsApiService.get())));
    }
 
    @Test
@@ -115,16 +115,16 @@ public class AtsBranchServiceImplTest {
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
-      for (IAtsVersion version : AtsClientService.get().getVersionService().getVersions(teamDef)) {
-         changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
+      for (IAtsVersion version : AtsApiService.get().getVersionService().getVersions(teamDef)) {
+         changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
@@ -133,14 +133,14 @@ public class AtsBranchServiceImplTest {
       Collection<CommitConfigItem> configItems = new HashSet<>();
       commitTxs.add(txRecord);
       Collection<Object> commitObjs =
-         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
+         AtsApiService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
 
       Collection<CommitConfigItem> configItemsConfiguredToCommitTo =
-         AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(teamArt);
+         AtsApiService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(teamArt);
       configItems.add(configItemsConfiguredToCommitTo.iterator().next());
       commitObjs =
-         AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
+         AtsApiService.get().getBranchService().combineCommitTransactionsAndConfigItems(configItems, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
       assertTrue("commitObjs has wrong object",
          ((CommitConfigItem) commitObjs.iterator().next()).getConfigObject().equals(teamDef));

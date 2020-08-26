@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -67,7 +67,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Get all things user is directly assigned to
                Collection<Artifact> assignedToArts =
-                  AtsEditors.getAssigned(AtsClientService.get().getUserService().getUserById(fromUser));
+                  AtsEditors.getAssigned(AtsApiService.get().getUserService().getUserById(fromUser));
                Set<Artifact> atsArts = new HashSet<>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof AbstractWorkflowArtifact) {
@@ -89,14 +89,14 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                }
                final Collection<Artifact> artsToReAssign = dialog.getChecked();
 
-               IAtsChangeSet changes = AtsClientService.get().createChangeSet("ReAssign ATS Object to User");
+               IAtsChangeSet changes = AtsApiService.get().createChangeSet("ReAssign ATS Object to User");
                // Make the changes and persist
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof AbstractWorkflowArtifact) {
                      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                      awa.getStateMgr().removeAssignee(
-                        AtsClientService.get().getUserService().getUserById(fromUser));
-                     awa.getStateMgr().addAssignee(AtsClientService.get().getUserService().getUserById(toUser));
+                        AtsApiService.get().getUserService().getUserById(fromUser));
+                     awa.getStateMgr().addAssignee(AtsApiService.get().getUserService().getUserById(toUser));
                      changes.add(awa);
                   }
                }

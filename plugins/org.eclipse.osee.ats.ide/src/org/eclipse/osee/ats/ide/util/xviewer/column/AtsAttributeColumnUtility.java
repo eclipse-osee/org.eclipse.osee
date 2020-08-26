@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,15 +37,15 @@ public class AtsAttributeColumnUtility {
          if (columnData instanceof IAttributeColumn) {
             IAttributeColumn attrColumn = (IAttributeColumn) columnData;
             if (item instanceof Artifact) {
-               Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (useArt.getArtifactType().getMax(attrColumn.getAttributeType()) != 1) {
                   if (useArt.getAttributeCount(attrColumn.getAttributeType()) > 1) {
                      return false;
                   }
                }
                if (useArt.isOfType(AtsArtifactTypes.Action)) {
-                  if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                     useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                  if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                     useArt = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
                         useArt).getStoreObject();
                   } else {
                      return false;

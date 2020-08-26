@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -45,8 +45,8 @@ public class ActionableItemTreeContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof IAtsActionableItem && active != null) {
          try {
             IAtsActionableItem aia = (IAtsActionableItem) parentElement;
-            return AtsClientService.get().getActionableItemService().getActive(
-               AtsClientService.get().getActionableItemService().getChildren(aia, false), active).toArray();
+            return AtsApiService.get().getActionableItemService().getActive(
+               AtsApiService.get().getActionableItemService().getChildren(aia, false), active).toArray();
          } catch (Exception ex) {
             // do nothing
          }

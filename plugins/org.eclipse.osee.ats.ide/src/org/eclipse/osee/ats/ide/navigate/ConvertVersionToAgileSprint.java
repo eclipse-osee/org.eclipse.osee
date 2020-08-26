@@ -30,9 +30,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsConfigCheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -60,7 +60,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
 
       List<IAgileTeam> activeAgileTeams = new LinkedList<>();
-      IAtsClient client = AtsClientService.get();
+      AtsApiIde client = AtsApiService.get();
       activeAgileTeams.addAll(
          client.getQueryService().createQuery(AtsArtifactTypes.AgileTeam).andActive(true).getConfigObjects());
 
@@ -102,7 +102,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
          }
       }
       try {
-         AgileEndpointApi ageilEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
+         AgileEndpointApi ageilEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
          JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
          long teamId = agileTeam.getId();
 
@@ -118,7 +118,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             if (jaxSprint != null) {
                long id = jaxSprint.getId();
                IAgileSprint sprint = (SprintArtifact) client.getQueryService().getArtifact(id);
-               AtsClientService.get().getQueryServiceClient().getArtifact(
+               AtsApiService.get().getQueryServiceIde().getArtifact(
                   sprint).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =

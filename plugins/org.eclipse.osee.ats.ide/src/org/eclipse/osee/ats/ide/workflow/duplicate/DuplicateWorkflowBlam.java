@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -125,14 +125,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) {
-      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsApiService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
       for (TeamWorkFlowArtifact teamArt : getDefaultTeamWorkflows()) {
          teamWfs.add(teamArt);
       }
       DuplicateWorkflowAtStartStateOperation op =
-         new DuplicateWorkflowAtStartStateOperation(teamWfs, title, user, AtsClientService.get());
+         new DuplicateWorkflowAtStartStateOperation(teamWfs, title, user, AtsApiService.get());
       IValidatingOperation operation = op;
 
       XResultData results = validateAndRun(operation);
@@ -161,14 +161,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) {
-      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsApiService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
       for (TeamWorkFlowArtifact teamArt : getDefaultTeamWorkflows()) {
          teamWfs.add(teamArt);
       }
       DuplicateWorkflowAsIsOperation op =
-         new DuplicateWorkflowAsIsOperation(teamWfs, duplicateTasks, title, user, AtsClientService.get());
+         new DuplicateWorkflowAsIsOperation(teamWfs, duplicateTasks, title, user, AtsApiService.get());
       IValidatingOperation operation = op;
 
       XResultData results = validateAndRun(operation);

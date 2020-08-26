@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -48,7 +48,7 @@ public class CopyActionDetailsTest {
    @Test
    public void test01GetDetailsStringForTeamWf() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      String str = new CopyActionDetails(AtsTestUtil.getTeamWf(), AtsClientService.get()).getDetailsString();
+      String str = new CopyActionDetails(AtsTestUtil.getTeamWf(), AtsApiService.get()).getDetailsString();
       assertEquals(
          "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getAtsId() + " - \"AtsTestUtil - Team WF [CopyActionDetailsTest]\"",
          str);
@@ -57,7 +57,7 @@ public class CopyActionDetailsTest {
    @Test
    public void test02GetDetailsStringForTask() {
       String str =
-         new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1(), AtsClientService.get()).getDetailsString();
+         new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1(), AtsApiService.get()).getDetailsString();
       assertEquals(
          "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
@@ -65,10 +65,10 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test03GetDetailsStringForDecisionReview() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes);
-      String str = new CopyActionDetails(review, AtsClientService.get()).getDetailsString();
+      String str = new CopyActionDetails(review, AtsApiService.get()).getDetailsString();
       assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"", str);
       changes.execute();
    }
@@ -77,8 +77,8 @@ public class CopyActionDetailsTest {
    public void test04GetDetailsStringForPeerReview() {
       PeerToPeerReviewArtifact review =
          (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze,
-            AtsClientService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
-      String str = new CopyActionDetails(review, AtsClientService.get()).getDetailsString();
+            AtsApiService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
+      String str = new CopyActionDetails(review, AtsApiService.get()).getDetailsString();
       assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());
    }
@@ -87,7 +87,7 @@ public class CopyActionDetailsTest {
    public void test05GetDetailsStringForTeamWfWithTeamDefConfig() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.ActionDetailsFormat,
@@ -95,18 +95,18 @@ public class CopyActionDetailsTest {
       changes.setSoleAttributeValue((IAtsWorkItem) teamWf, AtsAttributeTypes.LegacyPcrId, "PCR100");
       changes.execute();
 
-      String str = new CopyActionDetails(teamWf, AtsClientService.get()).getDetailsString();
+      String str = new CopyActionDetails(teamWf, AtsApiService.get()).getDetailsString();
       assertEquals(teamWf.getAtsId() + " - AtsTestUtil - Team WF [CopyActionDetailsTest] - Team Workflow - Improvement",
          str);
 
-      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.ActionDetailsFormat,
          "[<actionatsid>] - [<atsid>]<legacypcrid> - <name>");
       changes.setSoleAttributeValue((IAtsWorkItem) teamWf, AtsAttributeTypes.LegacyPcrId, "PCR100");
       changes.execute();
 
       IAtsAction action = teamWf.getParentAction();
-      str = new CopyActionDetails(teamWf, AtsClientService.get()).getDetailsString();
+      str = new CopyActionDetails(teamWf, AtsApiService.get()).getDetailsString();
       assertEquals(
          "[" + action.getAtsId() + "] - [" + teamWf.getAtsId() + "] - [PCR100] - AtsTestUtil - Team WF [CopyActionDetailsTest]",
          str);

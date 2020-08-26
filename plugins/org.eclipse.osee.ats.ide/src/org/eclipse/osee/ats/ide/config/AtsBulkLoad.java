@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -44,8 +44,8 @@ public class AtsBulkLoad {
          IOperation op = new AbstractOperation("Re-load ATS Config", Activator.PLUGIN_ID) {
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
-               AtsClientService.get().clearCaches();
-               AtsClientService.get().getConfigService().getConfigurations();
+               AtsApiService.get().clearCaches();
+               AtsApiService.get().getConfigService().getConfigurations();
             }
          };
          ops.add(op);

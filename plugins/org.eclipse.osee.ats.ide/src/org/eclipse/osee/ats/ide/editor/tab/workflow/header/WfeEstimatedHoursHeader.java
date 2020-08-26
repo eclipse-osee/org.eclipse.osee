@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -99,14 +99,14 @@ public class WfeEstimatedHoursHeader extends Composite implements IWfeEventHandl
 
    private String getEstHoursStr() {
       double totalEst = 0;
-      double awaEst = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+      double awaEst = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.EstimatedHours, 0.0);
       if (awaEst < 0) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP,
             "Negative estimated hours not allowed.  Please set to the expected estimated hours.");
          PromptChangeUtil.promptChangeAttribute(workItem, AtsAttributeTypes.EstimatedHours, true, false);
       } else {
-         totalEst = AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(workItem);
+         totalEst = AtsApiService.get().getEarnedValueService().getEstimatedHoursTotal(workItem);
       }
       if (awaEst != totalEst) {
          return String.format("%s | %s", AtsUtil.doubleToI18nString(awaEst), AtsUtil.doubleToI18nString(totalEst));

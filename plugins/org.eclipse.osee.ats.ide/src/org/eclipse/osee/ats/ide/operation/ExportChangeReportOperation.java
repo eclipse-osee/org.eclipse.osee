@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ExportChangeReportUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -104,7 +104,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
-            String id = AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(workflow,
+            String id = AtsApiService.get().getAttributeResolver().getSoleAttributeValueAsString(workflow,
                AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
@@ -165,9 +165,9 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          @Override
          public int compare(IAtsTeamWorkflow workflow1, IAtsTeamWorkflow workflow2) {
             try {
-               String legacyId1 = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workflow1,
+               String legacyId1 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow1,
                   AtsAttributeTypes.LegacyPcrId, "");
-               String legacyId2 = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workflow2,
+               String legacyId2 = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workflow2,
                   AtsAttributeTypes.LegacyPcrId, "");
 
                int compare = legacyId1.compareTo(legacyId2);
@@ -183,10 +183,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
 
       List<Change> changes = new ArrayList<>();
       IOperation operation = null;
-      if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
+      if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamWf)) {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(teamWf), changes);
       } else {
-         BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf);
+         BranchId workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf);
          if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }
@@ -212,7 +212,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private TransactionToken pickTransaction(IAtsTeamWorkflow workflow) {
       TransactionToken minTransactionId = TransactionToken.SENTINEL;
       for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(
-         AtsClientService.get().getQueryServiceClient().getArtifact(workflow))) {
+         AtsApiService.get().getQueryServiceIde().getArtifact(workflow))) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {
             minTransactionId = transaction;
          }

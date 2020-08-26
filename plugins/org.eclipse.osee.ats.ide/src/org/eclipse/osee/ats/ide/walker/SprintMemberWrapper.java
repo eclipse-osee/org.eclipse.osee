@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,7 +40,7 @@ public class SprintMemberWrapper implements IActionWalkerItem {
    @Override
    public String toString() {
       try {
-         return String.format(AtsClientService.get().getAgileService().getItems(sprint).size() + " Members");
+         return String.format(AtsApiService.get().getAgileService().getItems(sprint).size() + " Members");
       } catch (OseeCoreException ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }
@@ -90,7 +90,7 @@ public class SprintMemberWrapper implements IActionWalkerItem {
    public void handleDoubleClick() {
       try {
          AtsEditors.openInAtsWorldEditor(String.format("Goal [%s] Members", sprint.getName()),
-            AtsObjects.getArtifacts(AtsClientService.get().getAgileService().getItems(sprint)));
+            AtsObjects.getArtifacts(AtsApiService.get().getAgileService().getItems(sprint)));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -177,12 +177,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public List<ChangeItem> getChangeData(BranchId branch) {
-      return AtsClientService.get().getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
+      return AtsApiService.get().getServerEndpoints().getActionEndpoint().getBranchChangeData(branch);
    }
 
    @Override
    public List<ChangeItem> getChangeData(TransactionId transaction) {
-      return AtsClientService.get().getServerEndpoints().getActionEndpoint().getTransactionChangeData(transaction);
+      return AtsApiService.get().getServerEndpoints().getActionEndpoint().getTransactionChangeData(transaction);
    }
 
    @Override

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 
 /**
  * @author Donald G. Dunne
@@ -48,15 +48,15 @@ public class WorldXViewerSorter extends XViewerSorter {
 
          if (sortXCol.equals(AssigneeColumnUI.getInstance())) {
             int compareInt = getComparator().compare(
-               AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, m1).replaceFirst("\\(",
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, m1).replaceFirst("\\(",
                   ""),
-               AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, m2).replaceFirst("\\(",
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, m2).replaceFirst("\\(",
                   ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(ChangeTypeColumnUI.getInstance())) {
             int compareInt =
-               getComparator().compare(ChangeTypeUtil.getChangeType(m1, AtsClientService.get()).ordinal() + "",
-                  ChangeTypeUtil.getChangeType(m2, AtsClientService.get()).ordinal() + "");
+               getComparator().compare(ChangeTypeUtil.getChangeType(m1, AtsApiService.get()).ordinal() + "",
+                  ChangeTypeUtil.getChangeType(m2, AtsApiService.get()).ordinal() + "");
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
 

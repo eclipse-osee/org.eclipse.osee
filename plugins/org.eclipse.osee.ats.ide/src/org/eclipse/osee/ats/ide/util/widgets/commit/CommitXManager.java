@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.commit.menu.CommitOverrideAction;
 import org.eclipse.osee.ats.ide.util.widgets.commit.menu.RemoveCommitOverrideAction;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -74,7 +74,7 @@ public class CommitXManager extends XViewer {
          CommitConfigItem configItem = null;
          if (firstSelectedArt instanceof CommitConfigItem) {
             configItem = (CommitConfigItem) firstSelectedArt;
-            branch = BranchManager.getBranch(AtsClientService.get().getBranchService().getBranch(configItem));
+            branch = BranchManager.getBranch(AtsApiService.get().getBranchService().getBranch(configItem));
          }
 
          CommitOverride override =
@@ -122,7 +122,7 @@ public class CommitXManager extends XViewer {
          CommitConfigItem configItem = null;
          if (firstSelectedArt instanceof CommitConfigItem) {
             configItem = (CommitConfigItem) firstSelectedArt;
-            branch = AtsClientService.get().getBranchService().getBranch(configItem);
+            branch = AtsApiService.get().getBranchService().getBranch(configItem);
             displayName = configItem.toString();
          } else if (firstSelectedArt instanceof TransactionToken) {
             TransactionToken txRecord = (TransactionToken) firstSelectedArt;
@@ -133,7 +133,7 @@ public class CommitXManager extends XViewer {
          }
 
          CommitStatus commitStatus =
-            AtsClientService.get().getBranchService().getCommitStatus(xCommitManager.getTeamArt(), branch, configItem);
+            AtsApiService.get().getBranchService().getCommitStatus(xCommitManager.getTeamArt(), branch, configItem);
          if (commitStatus == CommitStatus.Commit_Overridden) {
             AWorkbench.popup("Commit Overridden.  Right-click remove override to continue.");
          } else if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
@@ -152,7 +152,7 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
             IOperation operation =
                AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
-                  AtsClientService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
+                  AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
                      branch));
             Operations.executeAsJob(operation, true);
          } else if (commitStatus == CommitStatus.Committed) {

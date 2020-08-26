@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -40,12 +40,12 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AtsQueryServiceClient {
+public class AtsQueryServiceIde {
 
    private final AtsApi atsApi;
    private final IAtsQueryService queryService;
 
-   public AtsQueryServiceClient(AtsApi atsApi) {
+   public AtsQueryServiceIde(AtsApi atsApi) {
       this.atsApi = atsApi;
       this.queryService = atsApi.getQueryService();
    }
@@ -67,7 +67,7 @@ public class AtsQueryServiceClient {
          if (artId instanceof Artifact) {
             result = (Artifact) artId;
          } else if (artId.isValid()) {
-            ArtifactId dbArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
+            ArtifactId dbArt = AtsApiService.get().getQueryServiceIde().getArtifact(artId);
             if (dbArt instanceof Artifact) {
                result = (Artifact) dbArt;
             }

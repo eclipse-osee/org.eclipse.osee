@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+   <implementation class="org.eclipse.osee.ats.ide.integration.tests.AtsApiService"/>
+   <reference bind="setAtsApiIde" cardinality="1..1" interface="org.eclipse.osee.ats.ide.util.AtsApiIde" name="AtsApiIde" policy="static"/>
+</scr:component>

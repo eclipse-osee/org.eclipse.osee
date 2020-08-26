@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -55,15 +55,15 @@ public class Pdd92CreateDemoReviews {
     * <br>
     */
    public void createDecisionReviews() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
 
       // Create a Decision review and transition to ReWork
-      IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(
+      IAtsDecisionReview review = AtsApiService.get().getReviewService().createValidateReview(
          DemoUtil.getButtonWDoesntWorkOnSituationPageWf(), true, createdDate, createdBy, changes);
-      Result result = AtsClientService.get().getReviewService().transitionDecisionTo(
+      Result result = AtsApiService.get().getReviewService().transitionDecisionTo(
          (DecisionReviewArtifact) review.getStoreObject(), DecisionReviewState.Followup, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
@@ -71,9 +71,9 @@ public class Pdd92CreateDemoReviews {
       changes.add(review);
 
       // Create a Decision review and transition to Completed
-      review = AtsClientService.get().getReviewService().createValidateReview(
+      review = AtsApiService.get().getReviewService().createValidateReview(
          DemoUtil.getProblemInDiagramTree_TeamWfWf(), true, createdDate, createdBy, changes);
-      AtsClientService.get().getReviewService().transitionDecisionTo((DecisionReviewArtifact) review.getStoreObject(),
+      AtsApiService.get().getReviewService().transitionDecisionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
@@ -92,29 +92,29 @@ public class Pdd92CreateDemoReviews {
     */
    public void createPeerToPeerReviews() {
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 1");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 1");
 
       TeamWorkFlowArtifact firstCodeArt = DemoUtil.getSawCodeCommittedWf();
       TeamWorkFlowArtifact secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
             "Peer Review first set of code changes", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
             "Peer Review algorithm used in code", firstCodeArt.getStateMgr().getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
-      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
+      roles.add(new UserRole(Role.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith)));
       roles.add(
-         new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones)));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+         new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones)));
+      roles.add(new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
          2.0, true));
-      Result result = AtsClientService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Review,
-         roles, null, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      Result result = AtsApiService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Review,
+         roles, null, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
@@ -122,32 +122,32 @@ public class Pdd92CreateDemoReviews {
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,
             "Review new logic", secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
-            AtsClientService.get().getUserService().getUserById(DemoUsers.Kay_Jones), changes);
+            AtsApiService.get().getUserService().getUserById(DemoUsers.Kay_Jones), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
-      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones),
+      roles.add(new UserRole(Role.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones),
          2.3, true));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+      roles.add(new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
          4.5, true));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+      roles.add(new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
          2.0, true));
 
       List<ReviewDefectItem> defects = new ArrayList<>();
-      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+      defects.add(new ReviewDefectItem(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
          Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Problem with logic", "Fixed", "Line 234",
          new Date()));
-      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+      defects.add(new ReviewDefectItem(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
          Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Using getInteger instead", "Fixed",
          "MyWorld.java:Line 33", new Date()));
-      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+      defects.add(new ReviewDefectItem(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
          Severity.Major, Disposition.Reject, InjectionActivity.Code, "Spelling incorrect", "Is correct",
          "MyWorld.java:Line 234", new Date()));
-      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+      defects.add(new ReviewDefectItem(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
          Severity.Minor, Disposition.Reject, InjectionActivity.Code, "Remove unused code", "", "Here.java:Line 234",
          new Date()));
-      defects.add(new ReviewDefectItem(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
+      defects.add(new ReviewDefectItem(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith),
          Severity.Major, Disposition.Accept, InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234",
          new Date()));
       for (ReviewDefectItem defect : defects) {
@@ -155,12 +155,12 @@ public class Pdd92CreateDemoReviews {
       }
       changes.execute();
 
-      changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
-      AtsClientService.get().getReviewService().setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
+      changes = AtsApiService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
+      AtsApiService.get().getReviewService().setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
       changes.execute();
 
-      result = AtsClientService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles,
-         defects, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      result = AtsApiService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles,
+         defects, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isTrue()) {
          changes.add(reviewArt);
       }

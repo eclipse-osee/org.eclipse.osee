@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.config.GoalSorter;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +50,7 @@ public class XGoalCombo extends XComboViewer {
 
       try {
          Collection<Artifact> goalArtifacts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-            AtsClientService.get().getQueryService().createQuery(WorkItemType.Goal).andStateType(
+            AtsApiService.get().getQueryService().createQuery(WorkItemType.Goal).andStateType(
                StateType.Working).getResultArtifacts().getList());
          List<IAtsGoal> sortedGoals = new ArrayList<>();
          for (Artifact goalArt : goalArtifacts) {
@@ -65,7 +65,7 @@ public class XGoalCombo extends XComboViewer {
 
             @Override
             public void widgetModified(XWidget widget) {
-               selectedGoal = AtsClientService.get().getQueryServiceClient().getArtifact(getSelected());
+               selectedGoal = AtsApiService.get().getQueryServiceIde().getArtifact(getSelected());
             }
          });
       } catch (OseeCoreException ex) {

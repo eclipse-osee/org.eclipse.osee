@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd92CreateDemoReviews;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
 
       // test decision review 1
       IAtsTeamWorkflow teamWf = DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
-      Collection<IAtsAbstractReview> reviews = AtsClientService.get().getReviewService().getReviews(teamWf);
+      Collection<IAtsAbstractReview> reviews = AtsApiService.get().getReviewService().getReviews(teamWf);
       Assert.assertEquals("Should only 1 review", 1, reviews.size());
       IAtsAbstractReview review = reviews.iterator().next();
       testReviewContents(review, "Is the resolution of this Action valid?", DecisionReviewState.Followup.getName(),
@@ -48,14 +48,14 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
 
       // test decision review2
       IAtsTeamWorkflow teamWf1 = DemoUtil.getProblemInDiagramTree_TeamWfWf();
-      Collection<IAtsAbstractReview> reviews1 = AtsClientService.get().getReviewService().getReviews(teamWf1);
+      Collection<IAtsAbstractReview> reviews1 = AtsApiService.get().getReviewService().getReviews(teamWf1);
       Assert.assertEquals("Should only 1 review", 1, reviews.size());
       IAtsAbstractReview review1 = reviews1.iterator().next();
       testReviewContents(review1, "Is the resolution of this Action valid?", DecisionReviewState.Completed.getName());
 
       // test peer reviews reviews
       IAtsTeamWorkflow teamWf3 = DemoUtil.getSawCodeCommittedWf();
-      Collection<IAtsAbstractReview> reviews3 = AtsClientService.get().getReviewService().getReviews(teamWf3);
+      Collection<IAtsAbstractReview> reviews3 = AtsApiService.get().getReviewService().getReviews(teamWf3);
       Assert.assertEquals("Should only be two reviews", 2, reviews3.size());
       IAtsAbstractReview rev1 = null;
       IAtsAbstractReview rev2 = null;

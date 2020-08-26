@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -97,7 +97,7 @@ public class NewRoleDialog extends MessageDialog {
          }
 
       });
-      Collection<AtsUser> atsUsers = AtsClientService.get().getUserService().getUsers(Active.Active);
+      Collection<AtsUser> atsUsers = AtsApiService.get().getUserService().getUsers(Active.Active);
       List<User> users = new ArrayList<>();
       for (AtsUser aUser : atsUsers) {
          User user = UserManager.getUserByArtId(aUser);
@@ -128,7 +128,7 @@ public class NewRoleDialog extends MessageDialog {
       }
       if (teamDef != null) {
          users = new ArrayList<>();
-         for (AtsUser aUser : AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)) {
+         for (AtsUser aUser : AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(teamDef)) {
             User user = UserManager.getUserByArtId(aUser);
             if (user != null) {
                users.add(user);
@@ -153,7 +153,7 @@ public class NewRoleDialog extends MessageDialog {
    public Collection<AtsUser> getUsers() {
       List<AtsUser> selected = new ArrayList<AtsUser>();
       for (User user : usersLink.getSelectedUsers()) {
-         AtsUser aUser = AtsClientService.get().getUserService().getUserById(user);
+         AtsUser aUser = AtsApiService.get().getUserService().getUserById(user);
          if (aUser != null) {
             selected.add(aUser);
          }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -100,7 +100,7 @@ public class WfeBranchEventManager implements IBranchEventListener {
                case Committed:
                   if (awa instanceof TeamWorkFlowArtifact) {
                      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-                     BranchId assocBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+                     BranchId assocBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
                      if (branch.equals(assocBranch)) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override

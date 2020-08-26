@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -68,7 +68,7 @@ public class WfeStateCreatedOrigHeader extends Composite implements IWfeEventHan
 
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fListener);
+            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fListener);
          }
       });
 
@@ -76,7 +76,7 @@ public class WfeStateCreatedOrigHeader extends Composite implements IWfeEventHan
 
       refresh();
       editor.registerEvent(this, AtsAttributeTypes.CurrentState, AtsAttributeTypes.CreatedDate);
-      AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+      AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
    }
 
@@ -85,7 +85,7 @@ public class WfeStateCreatedOrigHeader extends Composite implements IWfeEventHan
       if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
          if (this.isDisposed()) {
-            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
             return;
          }
          Displays.ensureInDisplayThread(new Runnable() {
@@ -101,7 +101,7 @@ public class WfeStateCreatedOrigHeader extends Composite implements IWfeEventHan
    @Override
    public void refresh() {
       if (Widgets.isAccessible(stateValueLabel)) {
-         String isBlocked = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+         String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
             AtsAttributeTypes.BlockedReason, "");
          if (Strings.isValid(isBlocked)) {
             stateValueLabel.setText(workItem.getStateMgr().getCurrentStateName() + " (Blocked)");

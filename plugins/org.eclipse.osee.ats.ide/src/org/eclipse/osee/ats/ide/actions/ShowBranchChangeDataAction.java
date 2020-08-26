@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -47,8 +47,8 @@ public class ShowBranchChangeDataAction extends AbstractAtsAction {
          return;
       }
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-      if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(
-         teamArt) && !AtsClientService.get().getBranchService().isWorkingBranchEverCommitted(teamArt)) {
+      if (!AtsApiService.get().getBranchService().isWorkingBranchInWork(
+         teamArt) && !AtsApiService.get().getBranchService().isWorkingBranchEverCommitted(teamArt)) {
          AWorkbench.popup("Working branch never created or committed.");
          return;
       }

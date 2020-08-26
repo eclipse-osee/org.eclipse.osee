@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -47,12 +47,12 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
+      assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
       if (peerRevArt == null) {
          AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
          // setup fake review artifact with decision options set
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
          peerRevArt = (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
             AtsTestUtilState.Analyze, changes);
          changes.execute();
@@ -70,16 +70,16 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // assignee should be user creating review
       Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(),
+      Assert.assertEquals(AtsApiService.get().getUserService().getCurrentUser(),
          peerRevArt.getStateMgr().getAssignees().iterator().next());
 
       // set roles
       UserRole userRole = new UserRole(Role.Author,
-         AtsClientService.get().getUserService().getUserByName(DemoUsers.Joe_Smith.getName()));
+         AtsApiService.get().getUserService().getUserByName(DemoUsers.Joe_Smith.getName()));
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerRevArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(userRole);
-      userRole = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByName("Alex Kay"));
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("test transition");
+      userRole = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByName("Alex Kay"));
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("test transition");
       roleMgr.addOrUpdateUserRole(userRole);
       roleMgr.saveToArtifact(changes);
       changes.execute();
@@ -88,10 +88,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
 
       // change assignees back to single user so can test transition
-      peerRevArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getCurrentUser());
+      peerRevArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
       peerRevArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(),
+      Assert.assertEquals(AtsApiService.get().getUserService().getCurrentUser(),
          peerRevArt.getStateMgr().getAssignees().iterator().next());
 
       IStateToken fromState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
@@ -101,7 +101,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       AtsPeerToPeerReviewReviewWorkItemHook stateItem = new AtsPeerToPeerReviewReviewWorkItemHook();
       changes.reset("test transition");
       stateItem.transitioned(peerRevArt, fromState, toState,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes);
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), changes);
       changes.execute();
 
       // Joe and Alex should have been added to assignees

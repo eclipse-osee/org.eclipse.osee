@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 
 /**
  * @author Donald G. Dunne
@@ -49,7 +49,7 @@ public class LogAuthorColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (element instanceof IAtsLogItem) {
-         return AtsLogUtility.getUserName(((IAtsLogItem) element).getUserId(), AtsClientService.get().getUserService());
+         return AtsLogUtility.getUserName(((IAtsLogItem) element).getUserId(), AtsApiService.get().getUserService());
       }
       return "";
    }

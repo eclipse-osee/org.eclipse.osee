@@ -17,7 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,10 +40,10 @@ public class ShowChangeReportAction extends Action {
       setToolTipText(getText());
       boolean enabled = false;
       try {
-         if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
+         if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
             enabled = true;
          } else {
-            enabled = AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt);
+            enabled = AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

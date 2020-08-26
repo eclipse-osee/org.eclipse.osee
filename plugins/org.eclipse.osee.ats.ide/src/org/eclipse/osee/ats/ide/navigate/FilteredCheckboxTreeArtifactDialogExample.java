@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.navigate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -39,7 +39,7 @@ public class FilteredCheckboxTreeArtifactDialogExample extends XNavigateItemActi
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Artifact rootArtifact =
-         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsClientService.get().getAtsBranch());
+         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsApiService.get().getAtsBranch());
       List<Artifact> initialSelection = new ArrayList<>();
       List<Artifact> children = rootArtifact.getChildren();
       initialSelection.add(children.iterator().next());

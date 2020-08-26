@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -53,7 +53,7 @@ public final class SaveAsSearchAction extends Action {
 
    @Override
    public void run() {
-      AtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
       EntryDialog dialog = new EntryDialog("Save Search As", "Save Search?\n\nSearch Name");
       if (dialog.open() == 0) {
          if (!Strings.isValid(dialog.getEntry())) {
@@ -65,14 +65,14 @@ public final class SaveAsSearchAction extends Action {
 
          String namespace = searchItem.getNamespace();
          AtsSearchData data =
-            AtsClientService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
+            AtsApiService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
          searchItem.loadSearchData(data);
          if (data.getId() <= 0) {
             data.setId(Lib.generateArtifactIdAsInt());
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
-         AtsClientService.get().getQueryService().saveSearch(asUser, data);
+         AtsApiService.get().getQueryService().saveSearch(asUser, data);
 
          TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
          OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);

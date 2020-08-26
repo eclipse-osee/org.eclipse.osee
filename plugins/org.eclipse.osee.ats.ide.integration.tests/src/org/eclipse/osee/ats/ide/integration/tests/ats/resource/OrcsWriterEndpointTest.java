@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -43,7 +43,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
    @Before
    public void setup() {
-      writer = AtsClientService.get().getOseeClient().getOrcsWriterEndpoint();
+      writer = AtsApiService.get().getOseeClient().getOrcsWriterEndpoint();
    }
 
    @Test
@@ -88,7 +88,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
          long artTypeId = art.getType().getId();
          if (CoreArtifactTypes.Folder.equals(artTypeId)) {
             long artId = art.getId();
-            Artifact folderArt = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
+            Artifact folderArt = AtsApiService.get().getQueryServiceIde().getArtifact(artId);
             assertNotNull(folderArt);
             assertEquals(3, folderArt.getChildren().size());
             for (Artifact child : folderArt.getChildren()) {
@@ -104,7 +104,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       }
 
       OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
-      Artifact userGroupArt = AtsClientService.get().getQueryServiceClient().getArtifact(userGroupOwArt.getId());
+      Artifact userGroupArt = AtsApiService.get().getQueryServiceIde().getArtifact(userGroupOwArt.getId());
 
       assertNotNull(userGroupArt);
       userGroupArt.reloadAttributesAndRelations();

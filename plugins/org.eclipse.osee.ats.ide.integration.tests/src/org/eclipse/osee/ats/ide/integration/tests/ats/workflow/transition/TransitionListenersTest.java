@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,8 +49,8 @@ public class TransitionListenersTest {
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(
-            org.eclipse.osee.ats.ide.integration.tests.AtsClientService.get().getUserService().getCurrentUser()),
-         null, AtsClientService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+            org.eclipse.osee.ats.ide.integration.tests.AtsApiService.get().getUserService().getCurrentUser()),
+         null, AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
 
@@ -115,10 +115,10 @@ public class TransitionListenersTest {
 
       };
       try {
-         AtsClientService.get().getWorkItemService().addTransitionHook(listener1);
-         AtsClientService.get().getWorkItemService().addTransitionHook(listener2);
-         AtsClientService.get().getWorkItemService().addTransitionHook(listener3);
-         AtsClientService.get().getWorkItemService().addTransitionHook(listener4);
+         AtsApiService.get().getWorkItemService().addTransitionHook(listener1);
+         AtsApiService.get().getWorkItemService().addTransitionHook(listener2);
+         AtsApiService.get().getWorkItemService().addTransitionHook(listener3);
+         AtsApiService.get().getWorkItemService().addTransitionHook(listener4);
 
          AtsUtil.setIsInTest(true);
          transMgr.handleTransitionValidation(results);
@@ -126,10 +126,10 @@ public class TransitionListenersTest {
          Assert.assertTrue(results.contains(reason2));
          Assert.assertTrue(results.contains(exceptionStr));
       } finally {
-         AtsClientService.get().getWorkItemService().removeListener(listener1);
-         AtsClientService.get().getWorkItemService().removeListener(listener2);
-         AtsClientService.get().getWorkItemService().removeListener(listener3);
-         AtsClientService.get().getWorkItemService().removeListener(listener4);
+         AtsApiService.get().getWorkItemService().removeListener(listener1);
+         AtsApiService.get().getWorkItemService().removeListener(listener2);
+         AtsApiService.get().getWorkItemService().removeListener(listener3);
+         AtsApiService.get().getWorkItemService().removeListener(listener4);
       }
    }
 

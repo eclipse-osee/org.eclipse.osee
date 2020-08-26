@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -93,14 +93,14 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       XResultData results = new XResultData();
 
       for (IAtsTask task : tasks) {
-         IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(task);
+         IAutoGenTaskData data = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(task);
          checkForNoRequirementArtifacts(data);
          if (processedReqNames.contains(data.getRelatedArtName() + data.getAddDetails())) {
             continue;
          }
 
          DerivedFromTaskData trd =
-            AtsClientService.get().getTaskRelatedService().getDerivedTeamWf(new DerivedFromTaskData(task));
+            AtsApiService.get().getTaskRelatedService().getDerivedTeamWf(new DerivedFromTaskData(task));
          if (trd.getResults().isErrors()) {
             results.addRaw(trd.getResults().toString());
             continue;
@@ -112,11 +112,11 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          if (changeDataMap.containsKey(sourceTeamWf)) {
             changeData = changeDataMap.get(sourceTeamWf);
          } else {
-            IAtsBranchService branchService = AtsClientService.get().getBranchService();
+            IAtsBranchService branchService = AtsApiService.get().getBranchService();
             if (branchService.isWorkingBranchInWork(sourceTeamWf)) {
                changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(sourceTeamWf);
             } else {
-               IAtsVersion taskTargetedVersion = AtsClientService.get().getVersionService().getTargetedVersion(task);
+               IAtsVersion taskTargetedVersion = AtsApiService.get().getVersionService().getTargetedVersion(task);
                Collection<TransactionRecord> transactions =
                   Collections.castAll(branchService.getTransactionIds(sourceTeamWf, false));
                MutableInteger result = new MutableInteger(0);

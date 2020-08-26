@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -56,7 +56,7 @@ public class AtsHealthCheckNavigateItem extends XNavigateItem {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().validate();
+            XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().validate();
             XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

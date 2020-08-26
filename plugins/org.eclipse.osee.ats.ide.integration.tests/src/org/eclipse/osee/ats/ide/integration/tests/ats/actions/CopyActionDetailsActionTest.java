@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.ide.actions.CopyActionDetailsAction;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 
 /**
@@ -24,7 +24,7 @@ public class CopyActionDetailsActionTest extends AbstractAtsActionRunTest {
 
    @Override
    public CopyActionDetailsAction createAction() {
-      return new CopyActionDetailsAction(AtsTestUtil.getTeamWf(), AtsClientService.get());
+      return new CopyActionDetailsAction(AtsTestUtil.getTeamWf(), AtsApiService.get());
    }
 
 }

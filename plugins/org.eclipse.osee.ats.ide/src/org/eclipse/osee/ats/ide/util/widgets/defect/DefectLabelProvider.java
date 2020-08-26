@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,7 +58,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
          try {
-            AtsUser atsUser = AtsClientService.get().getUserService().getUserByUserId(defectItem.getUserId());
+            AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getUserId());
             User user = UserManager.getUserByArtId(atsUser.getArtifactId());
             return ArtifactImageManager.getImage(user);
          } catch (OseeCoreException ex) {
@@ -74,7 +74,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       if (aCol.equals(DefectXViewerFactory.User_Col)) {
          String name;
          try {
-            AtsUser atsUser = AtsClientService.get().getUserService().getUserByUserId(defectItem.getUserId());
+            AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getUserId());
             name = atsUser.getName();
          } catch (OseeCoreException ex) {
             name = String.format("Erroring getting user name: [%s]", ex.getLocalizedMessage());

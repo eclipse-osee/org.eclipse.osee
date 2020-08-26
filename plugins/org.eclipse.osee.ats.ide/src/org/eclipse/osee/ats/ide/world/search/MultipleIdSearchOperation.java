@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
@@ -120,17 +120,17 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       final Set<Artifact> addedArts = new HashSet<>();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
-               if (AtsClientService.get().getBranchService().isCommittedBranchExists(
-                  team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(team)) {
-                  addedArts.add(AtsClientService.get().getQueryServiceClient().getArtifact(team));
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
+               if (AtsApiService.get().getBranchService().isCommittedBranchExists(
+                  team) || AtsApiService.get().getBranchService().isWorkingBranchInWork(team)) {
+                  addedArts.add(AtsApiService.get().getQueryServiceIde().getArtifact(team));
                }
             }
          }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (AtsClientService.get().getBranchService().isCommittedBranchExists(
-               teamArt) || AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
+            if (AtsApiService.get().getBranchService().isCommittedBranchExists(
+               teamArt) || AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
                addedArts.add(artifact);
             }
          }
@@ -195,7 +195,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                ld.setMessage("Select Workflow");
                ld.setInput(resultAtsArts);
                if (ld.open() == 0) {
-                  artifact = AtsClientService.get().getQueryServiceClient().getArtifact(ld.getResult()[0]);
+                  artifact = AtsApiService.get().getQueryServiceIde().getArtifact(ld.getResult()[0]);
                } else {
                   return;
                }
@@ -216,7 +216,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    private void searchAndSplitResults() {
 
       Collection<TeamWorkFlowArtifact> teamArts =
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
             AtsAttributeTypes.LegacyPcrId, data.getIds()).getItems();
 
       resultAtsArts.addAll(teamArts);

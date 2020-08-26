@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.column;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.CompletedByColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 
 /**
@@ -36,6 +36,6 @@ public class CompletedByColumnUI extends XViewerAtsColumnIdColumn {
 
    @Override
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      return CompletedByColumn.getCompletedBy(element, AtsClientService.get());
+      return CompletedByColumn.getCompletedBy(element, AtsApiService.get());
    }
 }

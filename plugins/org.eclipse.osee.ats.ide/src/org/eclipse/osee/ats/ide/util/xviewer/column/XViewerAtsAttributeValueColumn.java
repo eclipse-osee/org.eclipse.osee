@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -102,7 +102,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof AbstractWorkflowArtifact) {
             useArt = (Artifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          } else {
-            useArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+            useArt = AtsApiService.get().getQueryServiceIde().getArtifact(element);
          }
       }
       return useArt;
@@ -111,7 +111,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact && AtsClientService.get().getQueryServiceClient().getArtifact(
+         if (element instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(
             element).isDeleted()) {
             return "<deleted>";
          }
@@ -145,7 +145,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && isActionRollupWithDefault()) {
             Set<String> strs = new LinkedHashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);
@@ -190,7 +190,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
          try {
             if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(getAttributeType())) {
                awas.add((AbstractWorkflowArtifact) art);

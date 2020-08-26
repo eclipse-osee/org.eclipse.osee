@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.core.workflow.util.IDuplicateWorkflowListener;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -64,7 +64,7 @@ public class CloneWorkflowAction extends Action {
          boolean newAction = dialog.getXCheckBoxChecked("newAction");
          String newTitle = dialog.getXtextString("title");
          DuplicateWorkflowAsIsOperation op = new DuplicateWorkflowAsIsOperation(Arrays.asList(teamWf), false, newTitle,
-            AtsClientService.get().getUserService().getCurrentUser(), AtsClientService.get(),
+            AtsApiService.get().getUserService().getCurrentUser(), AtsApiService.get(),
             "Clone from " + teamWf.toStringWithId(), newAction, listeners);
 
          AtsUser orig = null;

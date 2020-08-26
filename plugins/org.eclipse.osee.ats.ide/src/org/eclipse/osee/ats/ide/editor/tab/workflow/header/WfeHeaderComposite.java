@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
@@ -133,8 +133,8 @@ public class WfeHeaderComposite extends Composite {
             new WfeActionableItemReviewHeader(this, editor.getToolkit(), (AbstractReviewArtifact) workItem, editor);
          }
 
-         boolean isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(),
-            workItem, workItem.getStateDefinition(), AtsClientService.get().getUserService());
+         boolean isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(),
+            workItem, workItem.getStateDefinition(), AtsApiService.get().getUserService());
          wfeTransitionComposite = new WfeTransitionHeader(this, editor, isEditable);
 
       } catch (Exception ex) {
@@ -186,7 +186,7 @@ public class WfeHeaderComposite extends Composite {
 
    public void createSMANotesHeader(Composite comp, XFormToolkit toolkit, int horizontalSpan) {
       // Display Workflow Note
-      String note = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+      String note = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.WorkflowNotes, "");
       if (!note.equals("")) {
          FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
@@ -195,7 +195,7 @@ public class WfeHeaderComposite extends Composite {
 
    public static void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan, String forStateName) {
       // Display global Notes
-      for (NoteItem noteItem : AtsClientService.get().getWorkItemService().getNotes(workItem).getNoteItems()) {
+      for (NoteItem noteItem : AtsApiService.get().getWorkItemService().getNotes(workItem).getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
             FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
          }
@@ -215,7 +215,7 @@ public class WfeHeaderComposite extends Composite {
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
-      if (AtsClientService.get().getStoreService().isHistorical(workItem)) {
+      if (AtsApiService.get().getStoreService().isHistorical(workItem)) {
          Label label = toolkit.createLabel(comp,
             "This is a historical version of this " + workItem.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
@@ -262,7 +262,7 @@ public class WfeHeaderComposite extends Composite {
       if (!workItem.isTeamWorkflow()) {
          return false;
       }
-      return AtsClientService.get().getVersionService().isTeamUsesVersions(
+      return AtsApiService.get().getVersionService().isTeamUsesVersions(
          ((TeamWorkFlowArtifact) workItem).getTeamDefinition());
    }
 
@@ -325,15 +325,15 @@ public class WfeHeaderComposite extends Composite {
       @Override
       public void widgetModified(XWidget xWidget) {
          try {
-            if (AtsClientService.get().getStoreService().isDeleted(workItem)) {
+            if (AtsApiService.get().getStoreService().isDeleted(workItem)) {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
+            for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), workItem.getStateDefinition(), (Artifact) workItem,
-                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), workItem,
-                        workItem.getStateDefinition(), AtsClientService.get().getUserService()));
+                     WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), workItem,
+                        workItem.getStateDefinition(), AtsApiService.get().getUserService()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

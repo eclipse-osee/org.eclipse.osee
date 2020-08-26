@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -57,12 +57,12 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
       List<AtsUser> assignees = setupAssignees(teamWf);
 
-      AtsUser originator = AtsClientService.get().getUserService().getUserById(DemoUsers.Jason_Michael);
+      AtsUser originator = AtsApiService.get().getUserService().getUserById(DemoUsers.Jason_Michael);
 
       // new workflow
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Duplicate Workflow");
-      newTeamWf = AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(),
-         teamWf.getTeamDefinition(), AtsClientService.get().getActionableItemService().getActionableItems(teamWf),
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Duplicate Workflow");
+      newTeamWf = AtsApiService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(),
+         teamWf.getTeamDefinition(), AtsApiService.get().getActionableItemService().getActionableItems(teamWf),
          assignees, changes, new Date(), originator, null, CreateTeamOption.Duplicate_If_Exists);
 
       assertEquals("invalid number of assignees", 2, newTeamWf.getAssignees().size());
@@ -70,11 +70,11 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          changes.getNotifications().getWorkItemNotificationEvents().size());
 
       // duplicate workflow
-      dupTeamWf = AtsClientService.get().getWorkItemService().getTeamWf(
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsClientService.get().getAtsBranch(),
+      dupTeamWf = AtsApiService.get().getWorkItemService().getTeamWf(
+         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsApiService.get().getAtsBranch(),
             Arrays.asList(AtsAttributeTypes.AtsId)));
 
-      AtsClientService.get().getActionFactory().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
+      AtsApiService.get().getActionFactory().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
          AtsCoreUsers.SYSTEM_USER, dupTeamWf.getWorkDefinition(), changes);
 
       changes.add(dupTeamWf);
@@ -91,7 +91,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    private List<AtsUser> setupAssignees(IAtsTeamWorkflow teamWf) {
       List<AtsUser> assignees = new LinkedList<>();
       assignees.addAll(teamWf.getAssignees());
-      AtsUser lead = AtsClientService.get().getUserService().getUserById(UserManager.getUser(DemoUsers.Kay_Jones));
+      AtsUser lead = AtsApiService.get().getUserService().getUserById(UserManager.getUser(DemoUsers.Kay_Jones));
       assignees.add(lead);
       return assignees;
    }

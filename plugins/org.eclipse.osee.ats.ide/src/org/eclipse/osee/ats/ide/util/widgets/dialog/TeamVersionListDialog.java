@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -61,7 +61,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       ArrayList<Object> objs = new ArrayList<>();
       try {
-         for (IAtsTeamDefinition art : AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(
+         for (IAtsTeamDefinition art : AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(
             active)) {
             objs.add(art);
          }
@@ -92,7 +92,7 @@ public class TeamVersionListDialog extends SelectionDialog {
                ArrayList<Object> objs = new ArrayList<>();
                try {
                   selectedTeamDef = (IAtsTeamDefinition) teamCombo.getSelected();
-                  for (IAtsVersion pda : AtsClientService.get().getVersionService().getVersions(selectedTeamDef,
+                  for (IAtsVersion pda : AtsApiService.get().getVersionService().getVersions(selectedTeamDef,
                      VersionReleaseType.Both, VersionLockedType.Both)) {
                      objs.add(pda);
                   }
@@ -126,7 +126,7 @@ public class TeamVersionListDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<>();
          try {
-            for (IAtsVersion pda : AtsClientService.get().getVersionService().getVersions(teamDef,
+            for (IAtsVersion pda : AtsApiService.get().getVersionService().getVersions(teamDef,
                VersionReleaseType.Both, VersionLockedType.Both)) {
                objs.add(pda);
             }

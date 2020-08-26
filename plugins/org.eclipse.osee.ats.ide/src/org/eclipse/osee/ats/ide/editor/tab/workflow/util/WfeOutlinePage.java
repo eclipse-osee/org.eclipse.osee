@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
@@ -212,7 +212,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             add(items, ((WorkDefinitionViewer) element).getWorkDef());
          } else if (element instanceof WorkflowEditor) {
             add(items, ((WorkflowEditor) element).getWorkItem());
-            items.add(new WrappedStateItems(AtsClientService.get().getWorkItemService().getWorkItemHooks()));
+            items.add(new WrappedStateItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
@@ -306,7 +306,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
             try {
-               return AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(
+               return AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(
                   ((WrappedPercentWeight) element).getWorkDef());
             } catch (OseeStateException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -334,7 +334,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
          try {
-            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+            for (IAtsStateDefinition stateDef : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
                weightDef.getWorkDef())) {
                items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
             }
@@ -377,7 +377,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsClientService.get().getUserService().getUserByUserId(userId));
+               add(items, AtsApiService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -399,7 +399,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             "Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               add(items, AtsClientService.get().getUserService().getUserByUserId(userId));
+               add(items, AtsApiService.get().getUserService().getUserByUserId(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -451,7 +451,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          try {
-            items.addAll(AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(workDef));
+            items.addAll(AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(workDef));
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -462,7 +462,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             try {
-               AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
+               AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
                add(items, user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
@@ -471,7 +471,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               AtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
+               AtsUser user = AtsApiService.get().getUserService().getUserByName(userName);
                add(items, user);
             } catch (OseeCoreException ex) {
                items.add(
@@ -511,7 +511,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             try {
                IAtsTeamDefinition teamDef =
                   ((TeamWorkFlowArtifact) workflowEditor.getWfeInput().getArtifact()).getTeamDefinition();
-               for (String workRuleDef : AtsClientService.get().getTeamDefinitionService().getRules(teamDef)) {
+               for (String workRuleDef : AtsApiService.get().getTeamDefinitionService().getRules(teamDef)) {
                   String location = String.format("Team Definition [%s]", teamDef);
                   result.add(new RuleAndLocation(workRuleDef, location));
                   if (workRuleDef.startsWith("ats")) {
@@ -573,7 +573,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       @Override
       public String toString() {
          try {
-            if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(workDef)) {
+            if (AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(workDef)) {
                return "Total Percent Weighting";
             } else {
                return "Total Percent Weighting: Single Percent";

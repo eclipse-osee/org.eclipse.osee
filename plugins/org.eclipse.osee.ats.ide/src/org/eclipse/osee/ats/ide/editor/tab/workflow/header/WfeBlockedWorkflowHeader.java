@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -148,7 +148,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
    }
 
    private String getBlockedReason() {
-      return AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+      return AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.BlockedReason, "");
    }
 
@@ -158,7 +158,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
 
    private void handleBlockedButtonSelection() {
       if (isBlocked()) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set blocked status");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set blocked status");
          boolean unblock = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
             "Unblock Workflow", "Are you sure you wish to set this workflow to unblocked?");
          if (unblock) {
@@ -174,7 +174,7 @@ public class WfeBlockedWorkflowHeader extends Composite implements IWfeEventHand
 
    private void setBlockedReason(EntryDialog ed) {
       String blockedReason = "";
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set blocked reason");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set blocked reason");
       if (ed.open() == 0) {
          blockedReason = ed.getEntry();
          if (!Strings.isValid(blockedReason)) {

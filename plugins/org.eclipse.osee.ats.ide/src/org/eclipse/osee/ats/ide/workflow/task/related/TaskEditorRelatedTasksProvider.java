@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditorProvider;
@@ -69,17 +69,17 @@ public class TaskEditorRelatedTasksProvider extends TaskEditorProvider {
 
       for (String searchStr : searchStrs) {
          allArtifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Task, searchStr,
-            AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS));
+            AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS));
       }
 
       if (!showAll && !byBuild) {
          for (TaskArtifact taskArt : taskArts) {
-            IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
+            IAtsTeamDefinition teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
                taskArt.getParentTeamWorkflow().getTeamDefinition());
             for (Artifact art : allArtifacts) {
                taskArtifact = (TaskArtifact) art;
                IAtsTeamDefinition teamDefinitionHoldingVersions =
-                  AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
+                  AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
                      taskArtifact.getParentTeamWorkflow().getTeamDefinition());
                if (teamDefinitionHoldingVersions != null && teamDefinitionHoldingVersions.equals(teamDef)) {
                   arts.add(taskArtifact);
@@ -90,12 +90,12 @@ public class TaskEditorRelatedTasksProvider extends TaskEditorProvider {
          return arts;
       } else if (!showAll && byBuild) {
          for (TaskArtifact taskArt : taskArts) {
-            String targetVer = AtsClientService.get().getVersionService().getTargetedVersionStr(taskArt,
-               AtsClientService.get().getVersionService());
+            String targetVer = AtsApiService.get().getVersionService().getTargetedVersionStr(taskArt,
+               AtsApiService.get().getVersionService());
             for (Artifact art : allArtifacts) {
                TaskArtifact taskArtifact = (TaskArtifact) art;
-               if (AtsClientService.get().getVersionService().getTargetedVersionStr(taskArtifact,
-                  AtsClientService.get().getVersionService()).equals(targetVer)) {
+               if (AtsApiService.get().getVersionService().getTargetedVersionStr(taskArtifact,
+                  AtsApiService.get().getVersionService()).equals(targetVer)) {
                   arts.add(taskArtifact);
                }
             }

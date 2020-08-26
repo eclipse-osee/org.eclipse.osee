@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -46,10 +46,10 @@ public class PeerToPeerReviewManagerTest {
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
          PeerToPeerReviewManagerTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.PeerToPeerReview,
-         "PeerToPeerReviewManagerTest", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         "PeerToPeerReviewManagerTest", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          if (art.getName().contains("StandAlone")) {
             art.deleteAndPersist(transaction);
          }
@@ -63,13 +63,13 @@ public class PeerToPeerReviewManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt,
             reviewTitle, AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+            AtsApiService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -90,11 +90,11 @@ public class PeerToPeerReviewManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt,
             reviewTitle, AtsTestUtil.getAnalyzeStateDef().getName(), changes);
       changes.execute();
 
@@ -115,12 +115,12 @@ public class PeerToPeerReviewManagerTest {
       IAtsActionableItem testAi = AtsTestUtil.getTestAi();
 
       // create and transition peer review
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + testAi;
 
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(testAi,
-            reviewTitle, null, new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(testAi,
+            reviewTitle, null, new Date(), AtsApiService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);

@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
@@ -72,13 +72,13 @@ public class NewActionJob extends Job {
             throw new OseeArgumentException("Actionable Items can not be empty for New Action");
          }
          if ("tt".equals(title)) {
-            title += " " + AtsClientService.get().getRandomNum();
+            title += " " + AtsApiService.get().getRandomNum();
          }
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create New Action");
-         result = AtsClientService.get().getActionFactory().createAction(
-            AtsClientService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create New Action");
+         result = AtsApiService.get().getActionFactory().createAction(
+            AtsApiService.get().getUserService().getCurrentUser(), title, desc, changeType, priority,
             validationRequired, needByDate, actionableItems, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(),
+            AtsApiService.get().getUserService().getCurrentUser(),
             newActionListeners == null ? Collections.emptyList() : newActionListeners, changes);
 
          if (wizard != null) {

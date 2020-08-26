@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.ev.SearchWorkPackageOperation;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -103,14 +103,14 @@ public class SearchWorkPackageOperationTest {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefId : teamDefIds) {
          IAtsTeamDefinition teamDef =
-            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(teamDefId));
+            AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(ArtifactId.valueOf(teamDefId));
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<>();
       for (Long aiId : aiIds) {
          IAtsActionableItem ai =
-            AtsClientService.get().getActionableItemService().getActionableItemById(ArtifactId.valueOf(aiId));
+            AtsApiService.get().getActionableItemService().getActionableItemById(ArtifactId.valueOf(aiId));
          ais.add(ai);
       }
 

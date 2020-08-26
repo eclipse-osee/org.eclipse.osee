@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -62,22 +62,22 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
       try {
          VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version to Release",
-            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions,
+            AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions,
                VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = dialog.open();
          if (result == 0) {
             IAtsVersion version = dialog.getSelectedFirst();
 
             // Validate team lead status
-            if (!AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getTeamDefinitionService().getLeads(
-               AtsClientService.get().getVersionService().getTeamDefinition(version)).contains(
-                  AtsClientService.get().getUserService().getCurrentUser())) {
+            if (!AtsApiService.get().getUserService().isAtsAdmin() && !AtsApiService.get().getTeamDefinitionService().getLeads(
+               AtsApiService.get().getVersionService().getTeamDefinition(version)).contains(
+                  AtsApiService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+            for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
                version)) {
                if (!team.getStateMgr().getStateType().isCancelled() && !team.getStateMgr().getStateType().isCompleted()) {
                   errorStr =
@@ -87,14 +87,14 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (errorStr != null) {
                AWorkbench.popup("ERROR", errorStr);
             }
-            if (errorStr != null && !AtsClientService.get().getUserService().isAtsAdmin()) {
+            if (errorStr != null && !AtsApiService.get().getUserService().isAtsAdmin()) {
                return;
             } else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
                "ATS Admin Enabled - Override completed condition and release anyway?")) {
                return;
             }
 
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
             if (version != null) {
                changes.setSoleAttributeValue(version, AtsAttributeTypes.NextVersion, false);
                changes.setSoleAttributeValue(version, AtsAttributeTypes.Released, true);
@@ -106,7 +106,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
                dialog = new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                  AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
+                  AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions));
                result = dialog.open();
                if (result == 0) {
                   version = dialog.getSelectedFirst();
@@ -129,7 +129,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
+      dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

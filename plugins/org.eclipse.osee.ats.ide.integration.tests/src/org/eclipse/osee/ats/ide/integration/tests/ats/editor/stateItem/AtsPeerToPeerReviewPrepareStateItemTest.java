@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.hooks.AtsPeerToPeerReviewPrepareWorkItemHookIde;
@@ -49,16 +49,16 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
+      assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
 
       if (peerRev == null) {
-         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
-            AtsClientService.get().getUserService().getCurrentUser());
-         peerRev = AtsClientService.get().getReviewService().createNewPeerToPeerReview(
+         IAtsChangeSet changes = AtsApiService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+            AtsApiService.get().getUserService().getCurrentUser());
+         peerRev = AtsApiService.get().getReviewService().createNewPeerToPeerReview(
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), getClass().getSimpleName(), null, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+            AtsApiService.get().getUserService().getCurrentUser(), changes);
          // Setup actionable item so don't get error that there is no parent team workflow
-         AtsClientService.get().getActionableItemService().addActionableItem(peerRev,
+         AtsApiService.get().getActionableItemService().addActionableItem(peerRev,
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), changes);
          changes.execute();
       }

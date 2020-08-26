@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -76,7 +76,7 @@ public class WfeEditorAddSupportingFiles extends Job {
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
          "Import and relate supporting files");
       for (File file : supportingFiles) {
          IArtifactExtractor extractor =
@@ -89,7 +89,7 @@ public class WfeEditorAddSupportingFiles extends Job {
          SourceToRoughArtifactOperation sourceToRoughArtifactOperation =
             new SourceToRoughArtifactOperation(null, extractor, file, collector);
          sourceToRoughArtifactOperation.run(null);
-         Artifact workItemArt = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+         Artifact workItemArt = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
          RoughToRealArtifactOperation roughToRealArtifactOperation =
             new RoughToRealArtifactOperation(transaction, workItemArt, collector, resolver, false, extractor);
          roughToRealArtifactOperation.setAddRelation(false);

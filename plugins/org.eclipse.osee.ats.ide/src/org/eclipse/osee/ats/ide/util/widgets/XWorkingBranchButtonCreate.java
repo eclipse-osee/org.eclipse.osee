@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -61,11 +61,11 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                return;
             }
             try {
-               String workingBranchName = AtsClientService.get().getBranchService().getBranchName(getTeamArt());
+               String workingBranchName = AtsApiService.get().getBranchService().getBranchName(getTeamArt());
                final BranchId parentBranch =
-                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
+                  AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
                if (parentBranch.isValid()) {
-                  String pBranchName = AtsClientService.get().getBranchService().getBranchName(parentBranch);
+                  String pBranchName = AtsApiService.get().getBranchService().getBranchName(parentBranch);
                   // Retrieve parent branch to create working branch from
                   if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
                      "Creating working branch:\n\n\"" + workingBranchName + //
@@ -95,7 +95,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
       boolean returnVal = false;
       if (result.getText().equals(AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
          returnVal = true;
-         IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(getTeamArt());
+         IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(getTeamArt());
          if (version == null) {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
                AtsBranchUtil.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,

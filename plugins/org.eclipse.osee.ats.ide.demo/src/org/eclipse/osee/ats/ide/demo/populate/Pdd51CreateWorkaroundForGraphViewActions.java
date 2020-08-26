@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -54,7 +54,7 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Adapter_AI);
       Date createdDate = new Date();
@@ -62,9 +62,9 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
       for (ArtifactToken version : getVersionToWorkflowToken().keySet()) {
          currentVersion = version;
          ArtifactToken teamWfArtToken = getVersionToWorkflowToken().get(version);
-         ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+         ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
             teamWfArtToken.getName(), "Problem with the Graph View", ChangeType.Problem, "1", false, null, aias,
-            createdDate, AtsClientService.get().getUserService().getCurrentUser(),
+            createdDate, AtsApiService.get().getUserService().getCurrentUser(),
             Arrays.asList(new ArtifactTokenActionListener()), changes);
 
          transitionTo(actionResult.getFirstTeam(), getState(version), changes);

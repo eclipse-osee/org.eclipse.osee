@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
@@ -35,7 +35,7 @@ public class MyWorldAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       WorldEditor.open(new WorldEditorUISearchItemProvider(
-         new MyWorldSearchItem("My World", AtsClientService.get().getUserService().getCurrentUser()), null,
+         new MyWorldSearchItem("My World", AtsApiService.get().getUserService().getCurrentUser()), null,
          TableLoadOption.None));
    }
 

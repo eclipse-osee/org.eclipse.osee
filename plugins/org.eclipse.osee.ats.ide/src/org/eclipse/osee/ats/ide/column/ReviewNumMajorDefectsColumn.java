@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -57,7 +57,7 @@ public class ReviewNumMajorDefectsColumn extends XViewerAtsColumn implements IXV
       try {
          if (element instanceof PeerToPeerReviewArtifact) {
             return String.valueOf(
-               new ReviewDefectManager((PeerToPeerReviewArtifact) element, AtsClientService.get()).getNumMajor());
+               new ReviewDefectManager((PeerToPeerReviewArtifact) element, AtsApiService.get()).getNumMajor());
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);

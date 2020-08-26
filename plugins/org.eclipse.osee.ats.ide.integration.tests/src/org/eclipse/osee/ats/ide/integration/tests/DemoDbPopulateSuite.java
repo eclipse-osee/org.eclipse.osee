@@ -52,7 +52,7 @@ public class DemoDbPopulateSuite {
       RenderingUtil.setPopupsAllowed(false);
 
       for (IAtsWorkDefinitionBuilder workDefBldr : (new AtsIntegrationTestsWorkDefinitionProvider()).getWorkDefinitionBuilders()) {
-         AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDefBldr);
+         AtsApiService.get().getWorkDefinitionService().addWorkDefinition(workDefBldr);
       }
 
    }

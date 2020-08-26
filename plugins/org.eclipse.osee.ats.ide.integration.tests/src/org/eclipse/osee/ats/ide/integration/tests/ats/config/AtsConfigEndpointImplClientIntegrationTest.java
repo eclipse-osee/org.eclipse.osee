@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
 
@@ -27,7 +27,7 @@ public class AtsConfigEndpointImplClientIntegrationTest {
 
    @org.junit.Test
    public void testAlive() {
-      AtsConfigEndpointApi configEp = AtsClientService.get().getServerEndpoints().getConfigEndpoint();
+      AtsConfigEndpointApi configEp = AtsApiService.get().getServerEndpoints().getConfigEndpoint();
       XResultData resultData = configEp.alive();
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());
    }

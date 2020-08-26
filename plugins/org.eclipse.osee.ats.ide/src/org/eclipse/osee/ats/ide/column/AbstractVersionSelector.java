@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -86,36 +86,36 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       //validate multi-select
       IAtsTeamDefinition teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : awas) {
-         if (!AtsClientService.get().getVersionService().isTeamUsesVersions(teamArt.getTeamDefinition())) {
+         if (!AtsApiService.get().getVersionService().isTeamUsesVersions(teamArt.getTeamDefinition())) {
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
 
-         if (AtsClientService.get().getUserService().isAtsAdmin() && !teamArt.isTeamWorkflow()) {
+         if (AtsApiService.get().getUserService().isAtsAdmin() && !teamArt.isTeamWorkflow()) {
             AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + teamArt.getName());
             return false;
          }
 
-         if (AtsClientService.get().getVersionService().isReleased(
-            teamArt) || AtsClientService.get().getVersionService().isVersionLocked(teamArt)) {
+         if (AtsApiService.get().getVersionService().isReleased(
+            teamArt) || AtsApiService.get().getVersionService().isVersionLocked(teamArt)) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
+            if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
                Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
                return false;
-            } else if (!AtsClientService.get().getUserService().isAtsAdmin()) {
+            } else if (!AtsApiService.get().getUserService().isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
                continue;
             }
          }
          if (teamDefHoldingVersions != null && teamDefHoldingVersions.notEqual(
-            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+            AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
                teamArt.getTeamDefinition()))) {
             AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
             return false;
          }
          if (teamDefHoldingVersions == null) {
-            teamDefHoldingVersions = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+            teamDefHoldingVersions = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
                teamArt.getTeamDefinition());
          }
       }
@@ -126,14 +126,14 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       if (selectedVersion == null) {
          return false;
       }
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Version");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Version");
       for (TeamWorkFlowArtifact sma : awas) {
          // TargetedVerison colUI, use interface method
          if (isTargetedVersionRelation()) {
-            AtsClientService.get().getVersionService().setTargetedVersion(sma, selectedVersion, changes);
+            AtsApiService.get().getVersionService().setTargetedVersion(sma, selectedVersion, changes);
          } else {
             //If foundInVersion and selected == oldVersion
-            if (isFoundInVersionRelation() && selectedVersion == AtsClientService.get().getVersionService().getFoundInVersion(
+            if (isFoundInVersionRelation() && selectedVersion == AtsApiService.get().getVersionService().getFoundInVersion(
                sma)) {
                // FIV and all are same as prev, changes will be empty --> return false
                continue;
@@ -153,7 +153,7 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
 
    public IAtsVersion promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, IAtsTeamDefinition teamDefHoldingVersions) {
       if (teamDefHoldingVersions == null) {
-         teamDefHoldingVersions = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+         teamDefHoldingVersions = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
             teamArt.getTeamDefinition());
       }
       final VersionListDialog dialog;
@@ -163,15 +163,15 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
             return null;
          }
          dialog = new VersionListDialog("Select Version", "Select Version",
-            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
+            AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions));
       } else {
          dialog = new VersionListDialog("Select Version", "Select Version",
-            AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions, versionReleaseType,
+            AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions, versionReleaseType,
                versionLockType));
       }
-      if (AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
+      if (AtsApiService.get().getVersionService().hasTargetedVersion(teamArt)) {
          dialog.setInitialSelections(
-            Arrays.asList(AtsClientService.get().getVersionService().getTargetedVersion(teamArt)));
+            Arrays.asList(AtsApiService.get().getVersionService().getTargetedVersion(teamArt)));
       }
       int result = dialog.open();
       if (result != 0) {
@@ -182,10 +182,10 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       //now check selected version
       if (newVersion != null && newVersion.isLocked()) {
          String error = "Version \"" + getCommitFullDisplayName(newVersion) + "\" is locked or already released.";
-         if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
+         if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
             Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
             return null;
-         } else if (!AtsClientService.get().getUserService().isAtsAdmin()) {
+         } else if (!AtsApiService.get().getUserService().isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
          }
       }
@@ -196,11 +196,11 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       List<String> strs = new ArrayList<>();
       strs.add(getName());
       String fullName =
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.FullName, "");
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.FullName, "");
       if (Strings.isValid(fullName)) {
          strs.add(fullName);
       }
-      String description = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(version,
+      String description = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(version,
          AtsAttributeTypes.Description, "");
       if (Strings.isValid(description)) {
          strs.add(description);
@@ -214,15 +214,15 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
          Set<TeamWorkFlowArtifact> awas = new HashSet<>();
          List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
-            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((TeamWorkFlowArtifact) art);
                arts.add(art);
             }
          }
          if (promptChangeVersionMultiSelect(new ArrayList<TeamWorkFlowArtifact>(awas),
-            AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-            AtsClientService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked)) {
+            AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+            AtsApiService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked)) {
             ((XViewer) getXViewer()).update(awas.toArray(), null);
          }
          return;
@@ -235,11 +235,11 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
+               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = AtsApiService.get().getQueryServiceIde().getArtifact(
+                     AtsApiService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -248,8 +248,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
                return false;
             }
             boolean modified = promptChangeVersion((TeamWorkFlowArtifact) useArt,
-               AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-               AtsClientService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+               AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+               AtsApiService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,7 +51,7 @@ public abstract class AbstractShowRelatedAction extends Action {
 
    protected boolean isAutoGenRelatedArtTasks(final Collection<IAtsTask> tasks) {
       try {
-         if (!AtsClientService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTasks(tasks)) {
+         if (!AtsApiService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTasks(tasks)) {
             AWorkbench.popup(ChangeReportTasksUtil.TASKS_MUST_BE_AUTOGEN_CHANGE_REPORT_RELATED_TASKS);
             return false;
          }
@@ -85,11 +85,11 @@ public abstract class AbstractShowRelatedAction extends Action {
 
    public static boolean isValid(TaskArtifact task) {
       try {
-         if (!AtsClientService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(task)) {
+         if (!AtsApiService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(task)) {
             return false;
          }
          TeamWorkFlowArtifact teamArt = task.getParentTeamWorkflow();
-         if (AtsClientService.get().getProgramService().getProgram(teamArt) == null) {
+         if (AtsApiService.get().getProgramService().getProgram(teamArt) == null) {
             return false;
          }
       } catch (OseeCoreException ex) {

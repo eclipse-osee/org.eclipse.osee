@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.WorldSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -37,7 +37,7 @@ public class MyReviewSearchItem extends WorldSearchItem {
       AtsSearchData data = getData();
       if (!Strings.isValid(data.getUserId())) {
          data.getWorkItemTypes().add(WorkItemType.Review);
-         data.setUserId(AtsClientService.get().getUserService().getCurrentUserId());
+         data.setUserId(AtsApiService.get().getUserService().getCurrentUserId());
          data.setUserType(AtsSearchUserType.Assignee);
       }
       return new WorldSearchItem(data);

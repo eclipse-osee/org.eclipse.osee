@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -55,7 +55,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       BranchId branch = null;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
-         branch = AtsClientService.get().getBranchService().getBranch(configItem);
+         branch = AtsApiService.get().getBranchService().getBranch(configItem);
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;
          branch = txRecord.getBranch();
@@ -71,7 +71,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
-            CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+            CommitStatus commitStatus = AtsApiService.get().getBranchService().getCommitStatus(
                commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
@@ -92,7 +92,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
-            CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+            CommitStatus commitStatus = AtsApiService.get().getBranchService().getCommitStatus(
                commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
@@ -110,7 +110,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       BranchId branch;
       if (element instanceof CommitConfigItem) {
          CommitConfigItem configItem = (CommitConfigItem) element;
-         if (!AtsClientService.get().getBranchService().isBranchValid(configItem)) {
+         if (!AtsApiService.get().getBranchService().isBranchValid(configItem)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
             branch = configItem.getBaselineBranchId();
@@ -123,12 +123,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
 
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         CommitStatus status = AtsClientService.get().getBranchService().getCommitStatus(
+         CommitStatus status = AtsApiService.get().getBranchService().getCommitStatus(
             commitXManager.getXCommitViewer().getTeamArt(), branch);
          if (status == CommitStatus.Commit_Overridden) {
             CommitOverride override =
-               AtsClientService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
-            String userName = AtsClientService.get().getUserService().getUserById(override.getUser()).getName();
+               AtsApiService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
+            String userName = AtsApiService.get().getUserService().getUserById(override.getUser()).getName();
             return String.format("%s by %s - Reason: [%s]", status.getDisplayName(), userName, override.getReason());
          }
          return status.getDisplayName();
@@ -185,7 +185,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private TransactionRecord getTransactionRecord(BranchId branch) {
-      IAtsBranchService service = AtsClientService.get().getBranchService();
+      IAtsBranchService service = AtsApiService.get().getBranchService();
       IAtsTeamWorkflow teamWf = commitXManager.getXCommitViewer().getTeamArt();
       return service.getCommitTransactionRecord(teamWf, branch);
    }
@@ -222,7 +222,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleActionColumn(BranchId branch) {
-      CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+      CommitStatus commitStatus = AtsApiService.get().getBranchService().getCommitStatus(
          commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
          return "Finish Update";

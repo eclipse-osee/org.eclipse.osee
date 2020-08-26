@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.util;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -67,12 +67,12 @@ public class DbInitTest {
          ClientSessionManager.getSession();
          UserManager.releaseUser();
 
-         AtsClientService.get().reloadServerAndClientCaches();
+         AtsApiService.get().reloadServerAndClientCaches();
 
          if (UserManager.isBootstrap()) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
-         if (AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
+         if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
       }
@@ -80,7 +80,7 @@ public class DbInitTest {
       OseeProperties.setIsInTest(false);
 
       //Ensure that all workDefs loaded without error
-      AtsClientService.get().getWorkDefinitionService().getAllWorkDefinitions();
+      AtsApiService.get().getWorkDefinitionService().getAllWorkDefinitions();
 
       System.out.println("End Database Initialization\n");
 

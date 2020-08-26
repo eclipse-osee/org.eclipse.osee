@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -30,31 +30,31 @@ public class AtsUsersTest {
    @Test
    public void testGetUser() {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
-         AtsClientService.get().getUserService().getUserByUserId(SystemUser.OseeSystem.getUserId()));
+         AtsApiService.get().getUserService().getUserByUserId(SystemUser.OseeSystem.getUserId()));
       Assert.assertEquals(AtsCoreUsers.ANONYMOUS_USER,
-         AtsClientService.get().getUserService().getUserByUserId(SystemUser.Anonymous.getUserId()));
+         AtsApiService.get().getUserService().getUserByUserId(SystemUser.Anonymous.getUserId()));
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER,
-         AtsClientService.get().getUserService().getUserByUserId(SystemUser.UnAssigned.getUserId()));
+         AtsApiService.get().getUserService().getUserByUserId(SystemUser.UnAssigned.getUserId()));
    }
 
    @Test
    public void testGetUserWithNull() {
-      Assert.assertNull(AtsClientService.get().getUserService().getUserByUserId(null));
+      Assert.assertNull(AtsApiService.get().getUserService().getUserByUserId(null));
    }
 
    @Test
    public void testGetCurrentUser() {
       User currentUser = UserManager.getUser();
 
-      Assert.assertEquals(currentUser, AtsClientService.get().getUserService().getCurrentUser());
+      Assert.assertEquals(currentUser, AtsApiService.get().getUserService().getCurrentUser());
 
-      AtsUser atsUser = AtsClientService.get().getUserService().getUserByUserId(currentUser.getUserId());
+      AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(currentUser.getUserId());
 
       Assert.assertEquals(currentUser.getUserId(), atsUser.getUserId());
       Assert.assertEquals(currentUser.getEmail(), atsUser.getEmail());
       Assert.assertEquals(currentUser.isActive(), atsUser.isActive());
       Assert.assertEquals(currentUser.getName(), atsUser.getName());
-      Assert.assertEquals(atsUser, AtsClientService.get().getUserService().getCurrentUser());
+      Assert.assertEquals(atsUser, AtsApiService.get().getUserService().getCurrentUser());
    }
 
 }

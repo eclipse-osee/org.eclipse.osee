@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +66,7 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    @Override
    public Collection<? extends ArtifactId> performSearch(SearchType searchType) {
       if (searchType == SearchType.ReSearch) {
-         artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsClientService.get().getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsApiService.get().getAtsBranch());
       }
       return artifacts;
    }

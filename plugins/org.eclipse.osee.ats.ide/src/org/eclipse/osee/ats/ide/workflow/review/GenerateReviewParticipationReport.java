@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerSmaCompletedDateColumn;
@@ -70,7 +70,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       AtsUser useUser = null;
 
-      IAtsUserService userService = AtsClientService.get().getUserService();
+      IAtsUserService userService = AtsApiService.get().getUserService();
       UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User", Active.Active);
       dialog.setMultiSelect(false);
       int result = dialog.open();
@@ -142,11 +142,11 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    public Set<Artifact> getResults() {
       Set<Artifact> reviews = new HashSet<>();
-      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+      IAtsQuery query = AtsApiService.get().getQueryService().createQuery(WorkItemType.Review);
       query.andAssigneeWas(selectedUser);
       reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
 
-      query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+      query = AtsApiService.get().getQueryService().createQuery(WorkItemType.Review);
       query.andAssignee(selectedUser);
       reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
       return reviews;

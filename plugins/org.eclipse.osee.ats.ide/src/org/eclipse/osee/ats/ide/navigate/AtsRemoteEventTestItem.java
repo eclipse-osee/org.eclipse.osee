@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXNavigateItemAction;
@@ -74,7 +74,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (AtsClientService.get().getStoreService().isProductionDb()) {
+      if (AtsApiService.get().getStoreService().isProductionDb()) {
          AWorkbench.popup("ERROR", "This should not to be run on production DB");
          return;
       }
@@ -100,7 +100,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private static Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> aias = new HashSet<>();
-      IAtsActionableItem sawCodeAi = (IAtsActionableItem) AtsClientService.get().getQueryService().createQuery(
+      IAtsActionableItem sawCodeAi = (IAtsActionableItem) AtsApiService.get().getQueryService().createQuery(
          AtsArtifactTypes.ActionableItem).andName("SAW Code").getConfigObjectResultSet().getAtMostOneOrDefault(
             IAtsActionableItem.SENTINEL);
       Conditions.assertNotSentinel(sawCodeAi, "SAW Code AI; DBInit should be Demo DbInit");
@@ -128,8 +128,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       IAtsTeamWorkflow teamWf = (TeamWorkFlowArtifact) job.getResults().getTeams().iterator().next().getStoreObject();
 
       // Make current user assignee for convenience to developer
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");
-      teamWf.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");
+      teamWf.getStateMgr().addAssignee(AtsApiService.get().getUserService().getCurrentUser());
       changes.add(teamWf);
       changes.execute();
 
@@ -182,9 +182,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges7(IAtsTeamWorkflow teamWf) {
       TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
-         TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
-         null, null, AtsClientService.get(), TransitionOption.None);
-      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+         TeamState.Analyze.getName(), Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()),
+         null, null, AtsApiService.get(), TransitionOption.None);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());
       }
@@ -192,42 +192,42 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges6(IAtsTeamWorkflow teamWf) {
       // Make changes and transition
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes6");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes6");
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "false");
       changes.execute();
    }
 
    private void makeChanges5(IAtsTeamWorkflow teamWf) {
       // Make changes and persist
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes5");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes5");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
       changes.execute();
    }
 
    private void makeChanges4(IAtsTeamWorkflow teamWf) {
       // Make changes and persist
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes4");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes4");
       changes.deleteAttributes(teamWf, AtsAttributeTypes.ValidationRequired);
       changes.deleteAttributes(teamWf, AtsAttributeTypes.Resolution);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 4");
       ChangeTypeUtil.setChangeType(teamWf, ChangeType.Support, changes);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "3");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld3(), changes);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld3(), changes);
       changes.execute();
    }
 
    private void makeChanges3(IAtsTeamWorkflow teamWf) {
       // Make changes and persist
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes3");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes3");
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "false");
       changes.execute();
    }
 
    private void makeChanges2(IAtsTeamWorkflow teamWf) {
       // Make changes and persist
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes2");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes2");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 3");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ProposedResolution, "this is resolution");
       changes.execute();
@@ -235,25 +235,25 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges1(IAtsTeamWorkflow teamWf) {
       // Make changes and persist
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 2");
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Priority, "2");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld1(), changes);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, getSawBld1(), changes);
       changes.execute();
    }
 
    private IAtsVersion getSawBld1() {
-      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_1);
+      return AtsApiService.get().getVersionService().getVersionById(SAW_Bld_1);
    }
 
    private IAtsVersion getSawBld2() {
-      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_2);
+      return AtsApiService.get().getVersionService().getVersionById(SAW_Bld_2);
    }
 
    private IAtsVersion getSawBld3() {
-      return AtsClientService.get().getVersionService().getVersionById(SAW_Bld_3);
+      return AtsApiService.get().getVersionService().getVersionById(SAW_Bld_3);
    }
 
    private void validateActionAtStart(IAtsTeamWorkflow teamWf) {
@@ -266,11 +266,11 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      testEquals("Description", "description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      testEquals("Description", "description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf, AtsClientService.get()));
+      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "1",
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
    }
 
    private void validateActionAtEnd(IAtsTeamWorkflow teamWf) {
@@ -283,15 +283,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      testEquals("Description", "description 4", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      testEquals("Description", "description 4", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf, AtsClientService.get()));
+      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf, AtsApiService.get()));
       testEquals("Priority", "3",
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
-      testEquals("Validation Required", false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, null));
+      testEquals("Validation Required", false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          teamWf, AtsAttributeTypes.ValidationRequired, null));
 
-      IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      IAtsVersion verArt = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       String expectedTargetedVersion;
       if (verArt != null) {
          expectedTargetedVersion = verArt.toString();
@@ -316,7 +316,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       IAtsTeamWorkflow teamWf =
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);
@@ -331,7 +331,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       IAtsTeamWorkflow teamWf =
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);

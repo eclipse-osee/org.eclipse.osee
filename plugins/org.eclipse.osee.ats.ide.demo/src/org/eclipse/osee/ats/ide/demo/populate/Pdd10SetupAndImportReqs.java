@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -79,14 +79,14 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    @Override
    public void run() {
       AtsUtilClient.setEmailEnabled(false);
-      if (AtsClientService.get().getStoreService().isProductionDb()) {
+      if (AtsApiService.get().getStoreService().isProductionDb()) {
          throw new IllegalStateException("PopulateDemoActions should not be run on production DB");
       }
       validateArtifactCache();
 
       OseeLog.log(Activator.class, Level.INFO, "Populate Demo Database");
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       // Import all requirements on SAW_Bld_1 Branch
       demoDbImportReqsTx();

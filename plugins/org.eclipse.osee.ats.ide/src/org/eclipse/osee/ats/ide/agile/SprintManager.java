@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.agile;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.MembersManager;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -66,7 +66,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
 
    @Override
    public String getMemberOrder(SprintArtifact sprintArt, Artifact member) {
-      return AtsClientService.get().getSprintItemsCache().getMemberOrder(sprintArt, member);
+      return AtsApiService.get().getSprintItemsCache().getMemberOrder(sprintArt, member);
    }
 
 }

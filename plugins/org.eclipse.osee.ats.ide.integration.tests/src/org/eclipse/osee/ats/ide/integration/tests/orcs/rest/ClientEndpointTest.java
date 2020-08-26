@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.Sessions;
@@ -42,7 +42,7 @@ public class ClientEndpointTest {
 
    @Test
    public void testGetAll() {
-      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
+      ClientEndpoint clientEp = AtsApiService.get().getOseeClient().getClientEndpoint();
       Response response = clientEp.getAll();
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       Sessions sessions = response.readEntity(Sessions.class);
@@ -52,7 +52,7 @@ public class ClientEndpointTest {
    @Test
    @Ignore
    public void testGetClientsForUser() {
-      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
+      ClientEndpoint clientEp = AtsApiService.get().getOseeClient().getClientEndpoint();
       Response response = clientEp.getClientsForUser(DemoUsers.Joe_Smith.getUserId());
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       Sessions sessions = response.readEntity(Sessions.class);
@@ -72,7 +72,7 @@ public class ClientEndpointTest {
 
    @Test
    public void supportedVersions() {
-      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
+      ClientEndpoint clientEp = AtsApiService.get().getOseeClient().getClientEndpoint();
       IdeVersion versions = clientEp.getSupportedVersions();
       assertNotNull(versions);
       Collection<String> supportedVersions = versions.getVersions();

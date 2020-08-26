@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.ide.world.IAtsWorldEditorItem;
@@ -122,8 +122,8 @@ public class SavedSearchesNavigateItem extends XNavigateItem implements EventHan
             SavedSearchesNavigateItem topSearchItem =
                (SavedSearchesNavigateItem) NavigateView.getNavigateView().getItem(SAVED_SEARCH_ID, true);
             if (topSearchItem != null) {
-               populateSavedSearchesItem(topSearchItem, AtsClientService.get().getUserService().getCurrentUser(),
-                  AtsClientService.get());
+               populateSavedSearchesItem(topSearchItem, AtsApiService.get().getUserService().getCurrentUser(),
+                  AtsApiService.get());
             }
          }
       });

@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -51,7 +51,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
    @Override
    public List<Artifact> getMembers() {
-      return AtsClientService.get().getGoalMembersCache().getMembers(this);
+      return AtsApiService.get().getGoalMembersCache().getMembers(this);
    }
 
 }

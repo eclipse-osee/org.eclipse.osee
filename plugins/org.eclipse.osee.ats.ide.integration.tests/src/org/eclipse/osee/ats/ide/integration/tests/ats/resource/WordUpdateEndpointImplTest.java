@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.DirtyArtifactCacheTest;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.define.api.WordArtifactChange;
@@ -54,8 +54,8 @@ public class WordUpdateEndpointImplTest {
    @AfterClass
    public static void cleanup() {
       List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "Safety", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(
+         "Safety", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
+      IAtsChangeSet changes = AtsApiService.get().getStoreService().createAtsChangeSet(
          WordUpdateEndpointImplTest.class.getSimpleName(), AtsCoreUsers.SYSTEM_USER);
       for (Artifact teamArt : teamWorkflows) {
          changes.deleteArtifact(teamArt);
@@ -109,7 +109,7 @@ public class WordUpdateEndpointImplTest {
 
    private void validateSafetyTeamWFExists() {
       List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "Safety Workflow", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
+         "Safety Workflow", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
       Assert.assertFalse(teamWorkflows.isEmpty());
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTaskServiceClient extends IAtsTaskService {
+public interface IAtsTaskServiceIde extends IAtsTaskService {
 
    TaskArtifact createNewTaskWithDialog(IAtsTeamWorkflow teamWf);
 

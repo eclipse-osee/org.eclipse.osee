@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -97,10 +97,10 @@ public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
 
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
-               DerivedFromTaskData trd = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
+               DerivedFromTaskData trd = AtsApiService.get().getTaskRelatedService().getDerivedFromTaskData(task);
                trd.getResults().logf(getName() + "\n\n");
                trd.getResults().logf("Task %s \n\n", task.toStringWithId());
-               AtsClientService.get().getTaskRelatedService().populateDerivedFromTaskData(trd);
+               AtsApiService.get().getTaskRelatedService().populateDerivedFromTaskData(trd);
                if (trd.getResults().isErrors()) {
                   XResultDataUI.report(trd.getResults(), getName());
                } else {
@@ -119,12 +119,12 @@ public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
          public void run() {
             Artifact toOpen = null;
             if (reqData.isDeleted()) {
-               toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getHeadArtifact());
+               toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getHeadArtifact());
             } else {
                if (loadLatest) {
-                  toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getLatestArt());
+                  toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getLatestArt());
                } else {
-                  toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getHeadArtifact());
+                  toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getHeadArtifact());
                }
             }
             try {
@@ -139,7 +139,7 @@ public class ShowRelatedRequirementAction extends AbstractShowRelatedAction {
    LabelProvider relatedArtifactLabelProvider = new LabelProvider() {
       @Override
       public String getText(Object element) {
-         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(element);
          if (art != null) {
             if (art.isHistorical()) {
                return "[Rev:" + art.getTransaction() + "] - " + art.getName();

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.note.NoteType;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.wizard.NewNoteWizard;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -53,7 +53,7 @@ public class AddNoteAction extends AbstractAtsAction {
       ArrayList<String> artifactNames = new ArrayList<>();
       Map<String, String> selectedToStateName = new HashMap<>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+      for (IAtsStateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
          sma.getWorkDefinition())) {
          String displayName = "\"" + stateDefinition.getName() + "\" State";
          artifactNames.add(displayName);
@@ -75,8 +75,8 @@ public class AddNoteAction extends AbstractAtsAction {
       if (!selectedState.startsWith(sma.getName() + " - ")) {
          state = selectedToStateName.get(selectedState);
       }
-      AtsClientService.get().getWorkItemService().getNotes(sma).addNote(noteType, state, noteText,
-         AtsClientService.get().getUserService().getCurrentUser());
+      AtsApiService.get().getWorkItemService().getNotes(sma).addNote(noteType, state, noteText,
+         AtsApiService.get().getUserService().getCurrentUser());
       dirtiable.onDirtied();
    }
 

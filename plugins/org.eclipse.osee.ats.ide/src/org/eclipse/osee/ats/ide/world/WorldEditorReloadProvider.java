@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -76,7 +76,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       if (validArtifactIds.isEmpty()) {
          AWorkbench.popup("No valid ids to load");
       } else {
-         BranchId atsBranch = AtsClientService.get().getAtsBranch();
+         BranchId atsBranch = AtsApiService.get().getAtsBranch();
          if (atsBranch.equals(branch)) {
             artifacts = ArtifactQuery.getArtifactListFrom(validArtifactIds, atsBranch);
             AtsBulkLoad.bulkLoadArtifacts(artifacts);
@@ -101,7 +101,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
       if (searchType == SearchType.ReSearch) {
-         artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsClientService.get().getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsApiService.get().getAtsBranch());
       }
       return artifacts;
    }

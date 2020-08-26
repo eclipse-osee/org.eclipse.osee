@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XWorkPackageHyperlinkWidget;
@@ -83,7 +83,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    public void getWizardXWidgetExtensions(Collection<IAtsActionableItem> ais, Composite comp) {
 
       Collection<IAtsTeamDefinition> teamDefs =
-         AtsClientService.get().getActionableItemService().getImpactedTeamDefs(ais);
+         AtsApiService.get().getActionableItemService().getImpactedTeamDefs(ais);
       boolean first = true;
       for (IAtsTeamDefinition teamDef : teamDefs) {
 
@@ -242,7 +242,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
                   if (version == null) {
                      createBranchCheck.setEditable(false);
                   } else {
-                     BranchId branch = AtsClientService.get().getVersionService().getBranch(version);
+                     BranchId branch = AtsApiService.get().getVersionService().getBranch(version);
                      if (branch != null && branch.isValid()) {
                         createBranchCheck.setEditable(true);
                      }
@@ -418,12 +418,12 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedPoints(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      ArtifactToken agileTeamArt = AtsClientService.get().getRelationResolver().getRelatedOrSentinel(teamDef,
+      ArtifactToken agileTeamArt = AtsApiService.get().getRelationResolver().getRelatedOrSentinel(teamDef,
          AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
       if (agileTeamArt.isValid()) {
-         IAgileTeam agileTeam = AtsClientService.get().getAgileService().getAgileTeam(agileTeamArt);
+         IAgileTeam agileTeam = AtsApiService.get().getAgileService().getAgileTeam(agileTeamArt);
          AttributeTypeToken agileTeamPointsAttributeType =
-            AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+            AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
          XWidget widget = (XWidget) teamDefFieldToWidget.get(teamDef, agileTeamPointsAttributeType.equals(
             AtsAttributeTypes.Points) ? WizardFields.Points : WizardFields.PointsNumeric);
          if (widget != null) {

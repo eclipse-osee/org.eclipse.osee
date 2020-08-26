@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -196,7 +196,7 @@ public class UserRoleXViewer extends XViewer {
    private boolean setUser(Collection<UserRole> userRoles, User user) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         AtsUser atsUser = AtsClientService.get().getUserService().getUserByUserId(userRole.getUserId());
+         AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(userRole.getUserId());
          if (user != null && atsUser.notEqual(user)) {
             userRole.setUserId(atsUser.getUserId());
             if (!modified) {
@@ -254,7 +254,7 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public boolean executeTransaction(Collection<UserRole> userRoles) {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Roles");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
          update(userRole, null);

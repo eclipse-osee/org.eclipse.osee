@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -54,7 +54,7 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
                return "";
             }
             IAtsWorkDefinition workDef =
-               AtsClientService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(value));
+               AtsApiService.get().getWorkDefinitionService().getWorkDefinition(Long.valueOf(value));
             isWorkDef = true;
             if (workDef != null && workDef.isValid()) {
                displayValue = workDef.toStringWithId();
@@ -65,7 +65,7 @@ public class XArtifactReferencedAtsObjectAttributeWidget extends XArtifactRefere
          if (!isWorkDef) {
             try {
                ArtifactToken artifactToken =
-                  AtsClientService.get().getQueryService().getArtifactTokenOrSentinal(ArtifactId.valueOf(value));
+                  AtsApiService.get().getQueryService().getArtifactTokenOrSentinal(ArtifactId.valueOf(value));
                if (artifactToken.isValid()) {
                   displayValue = artifactToken.toStringWithId();
                } else {

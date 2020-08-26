@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.ev.EarnedValueReportOperation;
 import org.eclipse.osee.ats.ide.ev.EarnedValueReportResult;
 import org.eclipse.osee.ats.ide.ev.SearchWorkPackageOperation;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.junit.Assert;
@@ -41,7 +41,7 @@ public class EarnedValueReportOperationTest {
    public void testReport() {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       IAtsTeamDefinition teamDef =
-         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_SW);
+         AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_SW);
       teamDefs.add(teamDef);
       SearchWorkPackageOperation srch = new SearchWorkPackageOperation("srch", teamDefs, true,
          new ArrayList<IAtsActionableItem>(), false, Active.Both);
@@ -70,8 +70,8 @@ public class EarnedValueReportOperationTest {
 
    @Test
    public void testEmptyReport() {
-      List<IAtsWorkPackage> workPackages = Arrays.asList(AtsClientService.get().getEarnedValueService().getWorkPackage(
-         AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C)));
+      List<IAtsWorkPackage> workPackages = Arrays.asList(AtsApiService.get().getEarnedValueService().getWorkPackage(
+         AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C)));
       Assert.assertEquals(1, workPackages.size());
 
       // Confirm that report is empty for Work Packages

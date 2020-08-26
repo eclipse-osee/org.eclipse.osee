@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,21 +60,21 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
       List<ArtifactToken> arts = new ArrayList<>();
       if (activeObjectsOnly) {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
       }
 
       arts.addAll(
-         AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamLead_Team));
+         AtsApiService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamLead_Team));
       arts.addAll(
-         AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamMember_Team));
-      arts.addAll(AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+         AtsApiService.get().getRelationResolver().getRelated((IAtsObject) user, AtsRelationTypes.TeamMember_Team));
+      arts.addAll(AtsApiService.get().getRelationResolver().getRelated((IAtsObject) user,
          AtsRelationTypes.FavoriteUser_Artifact));
-      arts.addAll(AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+      arts.addAll(AtsApiService.get().getRelationResolver().getRelated((IAtsObject) user,
          AtsRelationTypes.SubscribedUser_Artifact));
 
       if (isCancelled()) {

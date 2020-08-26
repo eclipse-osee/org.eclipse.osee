@@ -19,17 +19,17 @@ import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
-import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceClient;
+import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
+import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
+import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsVersionServiceProvider {
+public interface AtsApiIde extends AtsApi, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsVersionServiceProvider {
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
@@ -37,10 +37,10 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
 
    OseeClient getOseeClient();
 
-   AtsQueryServiceClient getQueryServiceClient();
+   AtsQueryServiceIde getQueryServiceIde();
 
-   IAtsTaskServiceClient getTaskServiceClient();
+   IAtsTaskServiceIde getTaskServiceIde();
 
-   IAtsWorkItemServiceClient getWorkItemServiceClient();
+   IAtsWorkItemServiceIde getWorkItemServiceIde();
 
 }

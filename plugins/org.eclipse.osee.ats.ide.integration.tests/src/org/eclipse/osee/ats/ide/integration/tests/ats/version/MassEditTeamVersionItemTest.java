@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Assert;
@@ -35,7 +35,7 @@ public class MassEditTeamVersionItemTest {
 
    @Test
    public void test() {
-      IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitions(
+      IAtsTeamDefinition teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next();
 
       MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, AtsImage.ACTION);

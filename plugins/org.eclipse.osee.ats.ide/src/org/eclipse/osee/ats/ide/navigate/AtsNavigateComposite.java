@@ -19,7 +19,7 @@ import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -62,7 +62,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);
       }
-      ActivityLogEndpoint activityEp = AtsClientService.get().getOseeClient().getActivityLogEndpoint();
+      ActivityLogEndpoint activityEp = AtsApiService.get().getOseeClient().getActivityLogEndpoint();
       ActivityEntryId activityId = null;
       try {
          activityId =
@@ -87,7 +87,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    @Override
    public void refresh() {
       super.refresh();
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          for (XNavigateItem item : getInput()) {
             if (item.getName().equals("Admin")) {
                filteredTree.getViewer().expandToLevel(item, 1);

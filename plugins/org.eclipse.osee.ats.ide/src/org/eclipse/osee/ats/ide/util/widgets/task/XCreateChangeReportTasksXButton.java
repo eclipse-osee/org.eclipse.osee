@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskTeamWfData;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -123,21 +123,21 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                for (AtsTaskDefToken taskDefToken : taskDefTokens) {
                   // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
                   CreateTasksDefinitionBuilder taskSetDefinition =
-                     AtsClientService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
+                     AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
                   if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(
-                     teamWf, AtsClientService.get())) {
+                     teamWf, AtsApiService.get())) {
 
                      ChangeReportTaskData crtd = new ChangeReportTaskData();
                      crtd.setOperationName(getName());
                      crtd.setTaskDefToken(taskDefToken);
                      crtd.setHostTeamWf(hostTeamWf);
-                     crtd.setAsUser(AtsClientService.get().getUserService().getCurrentUser());
+                     crtd.setAsUser(AtsApiService.get().getUserService().getCurrentUser());
 
                      // Use booleans above to debug task matches
                      crtd.setDebug(debug);
                      crtd.setReportOnly(reportOnly);
 
-                     crtd = AtsClientService.get().getTaskService().createTasks(crtd);
+                     crtd = AtsApiService.get().getTaskService().createTasks(crtd);
                      XResultDataUI.report(crtd.getResults(), getName());
 
                      // Reload team wfs if tasks created
@@ -148,7 +148,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements IArtifac
                            public void run() {
                               for (ChangeReportTaskTeamWfData crttwd : fData.getChangeReportDatas()) {
                                  ArtifactQuery.reloadArtifactFromId(crttwd.getDestTeamWf(),
-                                    AtsClientService.get().getAtsBranch());
+                                    AtsApiService.get().getAtsBranch());
                               }
                            }
                         });

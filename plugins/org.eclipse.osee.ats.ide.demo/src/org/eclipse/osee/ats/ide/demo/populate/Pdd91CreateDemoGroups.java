@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,11 +35,11 @@ public class Pdd91CreateDemoGroups {
    public void run() {
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getClass().getSimpleName());
 
       // Create group of all resulting objects
       Artifact groupArt =
-         UniversalGroup.addGroup(DemoArtifactToken.Test_Group, AtsClientService.get().getAtsBranch(), transaction);
+         UniversalGroup.addGroup(DemoArtifactToken.Test_Group, AtsApiService.get().getAtsBranch(), transaction);
       for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
          DemoUtil.getSawCodeUnCommittedWf())) {
 
@@ -48,10 +48,10 @@ public class Pdd91CreateDemoGroups {
             (Artifact) codeArt.getParentAction().getStoreObject());
 
          // Add All Team Workflows to Universal Group
-         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
+         for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(
             codeArt.getParentAction().getStoreObject())) {
             groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members,
-               AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+               AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
          }
 
          codeArt.persist(transaction);
@@ -59,7 +59,7 @@ public class Pdd91CreateDemoGroups {
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Task,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members, task);
       }
       groupArt.persist(transaction);

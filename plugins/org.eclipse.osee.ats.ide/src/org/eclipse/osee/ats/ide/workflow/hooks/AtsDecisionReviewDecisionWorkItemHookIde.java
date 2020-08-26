@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -64,7 +64,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
             XComboDam decisionComboDam = (XComboDam) xWidget;
             List<String> options = new ArrayList<>();
             DecisionReviewOptions xDecOptions =
-               new DecisionReviewOptions((IAtsDecisionReview) art, AtsClientService.get());
+               new DecisionReviewOptions((IAtsDecisionReview) art, AtsApiService.get());
             for (DecisionReviewOption opt : xDecOptions.getDecisionOptions()) {
                options.add(opt.getName());
             }
@@ -126,7 +126,7 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
          return null;
       }
       List<AtsUser> assignees = new LinkedList<>();
-      assignees.addAll(AtsClientService.get().getUserService().getUsersByUserIds(decisionOption.getAssignees()));
+      assignees.addAll(AtsApiService.get().getUserService().getUsersByUserIds(decisionOption.getAssignees()));
       return assignees;
    }
 

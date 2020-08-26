@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor.WfeSaveListener;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -104,7 +104,7 @@ public class ReloadAction extends AbstractAtsAction {
                   }
                   if (sma instanceof TeamWorkFlowArtifact) {
                      Collection<IAtsTask> tasks =
-                        AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
+                        AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
                      relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
                   }
 

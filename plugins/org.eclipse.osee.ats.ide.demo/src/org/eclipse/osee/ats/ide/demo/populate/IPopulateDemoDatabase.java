@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,14 +47,14 @@ public interface IPopulateDemoDatabase {
    }
 
    default void setVersion(IAtsTeamWorkflow teamWf, ArtifactToken versionToken, IAtsChangeSet changes) {
-      IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(versionToken);
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
+      IAtsVersion version = AtsApiService.get().getVersionService().getVersionById(versionToken);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
    }
 
    // Transition to desired state
    default void transitionTo(IAtsTeamWorkflow teamWf, TeamState state, IAtsChangeSet changes) {
 
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
          TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
       Result result = dtwm.transitionTo(state, teamWf.getAssignees().iterator().next(), false, changes);
@@ -65,7 +65,7 @@ public interface IPopulateDemoDatabase {
       if (!teamWf.isCompletedOrCancelled()) {
          // Reset assignees that may have been overwritten during transition
          teamWf.getStateMgr().setAssignees(
-            AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
+            AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
       }
    }
 

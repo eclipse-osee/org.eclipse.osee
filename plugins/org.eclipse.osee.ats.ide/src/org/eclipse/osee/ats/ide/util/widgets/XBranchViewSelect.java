@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ViewBranchViewFilterTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -140,7 +140,7 @@ public class XBranchViewSelect extends GenericXWidget {
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         AtsClientService.get().getServerEndpoints().getTupleEp().addTuple2(CoreTupleTypes.VersionConfig,
+         AtsApiService.get().getServerEndpoints().getTupleEp().addTuple2(CoreTupleTypes.VersionConfig,
             ArtifactId.valueOf(artifact.getId()), ArtifactId.valueOf(dialog.getSelection()));
          return true;
       }

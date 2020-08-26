@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -152,7 +152,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
 
-      BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
+      BundleContext context = AtsApiService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
       context.registerService(EventHandler.class.getName(), this,
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 

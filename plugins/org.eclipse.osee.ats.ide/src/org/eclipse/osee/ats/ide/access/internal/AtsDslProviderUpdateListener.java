@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +38,7 @@ public final class AtsDslProviderUpdateListener implements IArtifactEventListene
    private final List<? extends IEventFilter> eventFilters =
       Arrays.asList(
          new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-         new BranchIdEventFilter(AtsClientService.get().getAtsBranch())
+         new BranchIdEventFilter(AtsApiService.get().getAtsBranch())
          );
    //@formatter:on
 

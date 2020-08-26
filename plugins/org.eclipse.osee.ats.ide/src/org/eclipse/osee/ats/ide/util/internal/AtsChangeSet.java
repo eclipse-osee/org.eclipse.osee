@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -68,11 +68,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public AtsChangeSet(String comment) {
-      this(comment, AtsClientService.get().getAtsBranch(), AtsClientService.get().getUserService().getCurrentUser());
+      this(comment, AtsApiService.get().getAtsBranch(), AtsApiService.get().getUserService().getCurrentUser());
    }
 
    public AtsChangeSet(String comment, AtsUser asUser) {
-      this(comment, AtsClientService.get().getAtsBranch(), asUser);
+      this(comment, AtsApiService.get().getAtsBranch(), asUser);
    }
 
    public AtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
@@ -87,7 +87,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       TransactionId transactionRecord;
       if (branch == null) {
-         branch = AtsClientService.get().getAtsBranch();
+         branch = AtsApiService.get().getAtsBranch();
       }
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       try {
@@ -98,18 +98,18 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                IAtsStateManager stateMgr = workItem.getStateMgr();
                Conditions.assertNotNull(stateMgr, "StateManager");
                if (stateMgr.isDirty()) {
-                  AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
+                  AtsApiService.get().getStateFactory().writeToStore(asUser, workItem, this);
                }
                if (workItem.getLog().isDirty()) {
-                  AtsClientService.get().getLogFactory().writeToStore(workItem,
-                     AtsClientService.get().getAttributeResolver(), this);
+                  AtsApiService.get().getLogFactory().writeToStore(workItem,
+                     AtsApiService.get().getAttributeResolver(), this);
                }
             }
-            transaction.addArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(atsObject));
+            transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(atsObject));
          }
          for (ArtifactId artifact : artifacts) {
             if (artifact instanceof Artifact) {
-               transaction.addArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
+               transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
             }
          }
          // Second, add or delete any relations; this has to be done separate so all artifacts are created
@@ -119,11 +119,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          // Third, delete any desired objects
          for (ArtifactId artifact : deleteArtifacts) {
             if (artifact instanceof Artifact) {
-               AtsClientService.get().getQueryServiceClient().getArtifact(artifact).deleteAndPersist(transaction);
+               AtsApiService.get().getQueryServiceIde().getArtifact(artifact).deleteAndPersist(transaction);
             }
          }
          for (IAtsObject atsObject : deleteAtsObjects) {
-            AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).deleteAndPersist(transaction);
+            AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
          }
          transactionRecord = transaction.execute();
       } catch (Exception ex) {
@@ -133,10 +133,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
-      AtsClientService.get().sendNotifications(getNotifications());
+      AtsApiService.get().sendNotifications(getNotifications());
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
-            AtsClientService.get().getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
+            AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
          }
       }
 
@@ -171,7 +171,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private Artifact getArtifact(Object obj) {
       Artifact art = null;
       if (obj instanceof Artifact) {
-         art = AtsClientService.get().getQueryServiceClient().getArtifact(obj);
+         art = AtsApiService.get().getQueryServiceIde().getArtifact(obj);
       } else if (obj instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) obj;
          Object storeObject = atsObject.getStoreObject();
@@ -201,7 +201,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    public static TransactionId execute(String comment, Object object, Object... objects) {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(comment);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(comment);
       changes.add(object);
       for (Object obj : objects) {
          changes.add(obj);
@@ -211,42 +211,42 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       artifact.deleteSoleAttribute(attributeType);
       add(artifact);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       artifact.addAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
    public void deleteAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       artifact.deleteAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
       add(artifact);
@@ -254,7 +254,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       Attribute<?> attribute = (Attribute<?>) attr;
       attribute.delete();
       add(artifact);
@@ -262,13 +262,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       return artifact.getAttributeTypes().contains(attributeType);
    }
 
    @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       artifact.deleteAttributes(attributeType);
       add(artifact);
    }
@@ -276,14 +276,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
       Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, artifactId);
+         ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name, artifactId);
       add(artifact);
       return artifact;
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;
    }
@@ -372,7 +372,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setAttributeValues(ArtifactId artifact, AttributeTypeToken attrType, List<Object> values) {
-      AtsClientService.get().getQueryServiceClient().getArtifact(artifact).setAttributeFromValues(attrType, values);
+      AtsApiService.get().getQueryServiceIde().getArtifact(artifact).setAttributeFromValues(attrType, values);
       add(artifact);
    }
 
@@ -513,14 +513,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId, String guid) {
       Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, artifactId);
+         ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name, guid, artifactId);
       add(artifact);
       return artifact;
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artType, AtsClientService.get().getAtsBranch(), name);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, AtsApiService.get().getAtsBranch(), name);
       addChild(parent, artifact);
       add(artifact);
       return artifact;

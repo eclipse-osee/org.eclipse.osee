@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -81,7 +81,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (!useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                return false;
             }
@@ -121,7 +121,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          return false;
       }
 
-      Artifact backlogArt = AtsClientService.get().getQueryServiceClient().getArtifact(items.getCommonBacklog());
+      Artifact backlogArt = AtsApiService.get().getQueryServiceIde().getArtifact(items.getCommonBacklog());
       Artifact agileTeamArt = null;
       try {
          agileTeamArt = backlogArt.getRelatedArtifact(AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
@@ -144,10 +144,10 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
       if (dialog.open() == 0) {
          if (dialog.isRemoveFromSprint()) {
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Remove Sprint");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("Remove Sprint");
             for (Artifact awa : awas) {
                Collection<ArtifactToken> relatedSprintArts =
-                  AtsClientService.get().getAgileService().getRelatedSprints(awa);
+                  AtsApiService.get().getAgileService().getRelatedSprints(awa);
                for (ArtifactToken relatedSprint : relatedSprintArts) {
                   changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_AgileSprint, relatedSprint);
                }
@@ -158,13 +158,13 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
             IAgileSprint selectedSprint = dialog.getSelectedFirst();
             Artifact newSprintArt = null;
             if (selectedSprint != null) {
-               newSprintArt = AtsClientService.get().getQueryServiceClient().getArtifact(selectedSprint);
+               newSprintArt = AtsApiService.get().getQueryServiceIde().getArtifact(selectedSprint);
             }
 
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Sprint");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set Sprint");
             for (Artifact awa : awas) {
                Collection<ArtifactToken> relatedSprintArts =
-                  AtsClientService.get().getAgileService().getRelatedSprints(awa);
+                  AtsApiService.get().getAgileService().getRelatedSprints(awa);
                for (ArtifactToken relatedSprint : relatedSprintArts) {
                   changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_AgileSprint, relatedSprint);
                }
@@ -191,7 +191,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    private static Set<IAgileSprint> getActiveSprints(Artifact agileTeamArt) {
       Set<IAgileSprint> activeSprints = new HashSet<>();
       for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         IAgileSprint agileSprint = AtsClientService.get().getWorkItemService().getAgileSprint(sprintArt);
+         IAgileSprint agileSprint = AtsApiService.get().getWorkItemService().getAgileSprint(sprintArt);
          if (agileSprint.isActive()) {
             activeSprints.add(agileSprint);
          }
@@ -204,7 +204,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (element instanceof Artifact) {
             return Collections.toString("; ",
-               AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
+               AtsApiService.get().getQueryServiceIde().getArtifact(element).getRelatedArtifacts(
                   AtsRelationTypes.AgileSprintToItem_AgileSprint));
          }
       } catch (OseeCoreException ex) {
@@ -219,7 +219,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof Artifact) {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   awas.add((AbstractWorkflowArtifact) art);
                }

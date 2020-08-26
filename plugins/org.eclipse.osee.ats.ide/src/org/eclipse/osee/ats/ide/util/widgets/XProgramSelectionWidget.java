@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -48,10 +48,10 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
 
    public void setupPrograms() {
       Collection<IAtsProgram> programs =
-         AtsClientService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
+         AtsApiService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
       for (IAtsProgram program : programs) {
          if (program.isActive()) {
-            programArts.add(AtsClientService.get().getQueryService().getArtifactById(program.getIdString()));
+            programArts.add(AtsApiService.get().getQueryService().getArtifactById(program.getIdString()));
          }
       }
    }
@@ -59,7 +59,7 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
    @Override
    public Collection<Artifact> getSelectableArtifacts() {
       Collection<ArtifactToken> programArts =
-         AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
+         AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
             AtsAttributeTypes.Active, "true").getArtifacts();
       return Collections.castAll(programArts);
    }

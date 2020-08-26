@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 
@@ -54,7 +54,7 @@ public class TeamDefinitionSearchWidget {
    public Collection<IAtsTeamDefinition> get() {
       XHyperlabelTeamDefinitionSelection widget = getWidget();
       if (widget != null) {
-         return AtsClientService.get().getTeamDefinitionService().getTeamDefs(widget.getSelectedTeamDefintions());
+         return AtsApiService.get().getTeamDefinitionService().getTeamDefs(widget.getSelectedTeamDefintions());
       }
       return null;
    }
@@ -73,7 +73,7 @@ public class TeamDefinitionSearchWidget {
          List<TeamDefinition> teamDefs = new LinkedList<>();
          for (Long id : data.getTeamDefIds()) {
             TeamDefinition teamDef =
-               AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+               AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }

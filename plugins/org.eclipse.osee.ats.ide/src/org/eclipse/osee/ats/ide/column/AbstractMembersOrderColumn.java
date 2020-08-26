@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.MembersManager;
@@ -61,7 +61,7 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
                }
             } else {
                String cachedObjectValue =
-                  multiMembersValueMap.get(AtsClientService.get().getQueryServiceClient().getArtifact(obj).getId());
+                  multiMembersValueMap.get(AtsApiService.get().getQueryServiceIde().getArtifact(obj).getId());
                if (Strings.isValid(cachedObjectValue)) {
                   result = cachedObjectValue;
                }
@@ -80,7 +80,7 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
             if (element instanceof Artifact && getXViewer() instanceof WorldXViewer) {
                WorldXViewer worldXViewer = (WorldXViewer) getXViewer();
                CollectorArtifact parentMembersArtifact = (CollectorArtifact) getParentMembersArtifact(worldXViewer);
-               Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+               Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(element);
                if (parentMembersArtifact != null) {
                   String value = manager.getMemberOrder(parentMembersArtifact, artifact);
                   preComputedValueMap.put(getKey(element), value);

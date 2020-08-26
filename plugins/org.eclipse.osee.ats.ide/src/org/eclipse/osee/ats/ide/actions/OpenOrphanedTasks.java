@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -86,13 +86,13 @@ public class OpenOrphanedTasks extends Action {
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
                   List<ArtifactId> ids =
-                     ArtifactQuery.createQueryBuilder(AtsClientService.get().getAtsBranch()).andIsOfType(
+                     ArtifactQuery.createQueryBuilder(AtsApiService.get().getAtsBranch()).andIsOfType(
                         AtsArtifactTypes.Task).andNotExists(AtsRelationTypes.TeamWfToTask_Task).getIds();
                   if (ids.isEmpty()) {
                      AWorkbench.popup("No Orphaned Tasks Found");
                   } else {
                      List<Artifact> artifacts =
-                        ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
+                        ArtifactQuery.getArtifactListFrom(ids, AtsApiService.get().getAtsBranch());
                      CustomizeData data = new CustomizeData();
                      data.setGuid(GUID.create());
                      data.setName("Orphaned Task View");
@@ -124,10 +124,10 @@ public class OpenOrphanedTasks extends Action {
                      if (fAi == null) {
                         AtsEditors.openInAtsWorldEditor("Orphaned Tasks", artifacts, data);
                      } else {
-                        AtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
+                        AtsUser asUser = AtsApiService.get().getUserService().getCurrentUser();
                         IAtsChangeSet changes =
-                           AtsClientService.get().getStoreService().createAtsChangeSet(getName(), asUser);
-                        ActionResult results = AtsClientService.get().getActionFactory().createAction(asUser, getName(),
+                           AtsApiService.get().getStoreService().createAtsChangeSet(getName(), asUser);
+                        ActionResult results = AtsApiService.get().getActionFactory().createAction(asUser, getName(),
                            getName(), ChangeType.Support, "3", false, null, Arrays.asList(fAi), new Date(), asUser,
                            null, changes);
                         IAtsTeamWorkflow teamWf = results.getFirstTeam();

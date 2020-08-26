@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -49,7 +49,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
       if (ed.open() == 0) {
          if (Strings.isValid(ed.getEntry())) {
             try {
-               AgileEndpointApi agileEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
+               AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
                JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
                newTeam.setName(ed.getEntry());
                Response response = agileEp.createTeam(newTeam);
@@ -60,7 +60,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
                   Artifact teamArt =
-                     ArtifactQuery.getArtifactFromId(team.getId(), AtsClientService.get().getAtsBranch());
+                     ArtifactQuery.getArtifactFromId(team.getId(), AtsApiService.get().getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
                   AtsEditors.openArtifact(teamArt, OseeCmEditor.CmPcrEditor);
                } else {

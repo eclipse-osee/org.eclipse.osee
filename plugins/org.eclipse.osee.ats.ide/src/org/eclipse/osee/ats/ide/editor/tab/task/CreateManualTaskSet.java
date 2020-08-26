@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ImportListener;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -45,7 +45,7 @@ public class CreateManualTaskSet extends AbstractAtsAction {
    @Override
    public void runWithException() {
       CreateTasksRuleRunner taskRunner =
-         new CreateTasksRuleRunner(teamWf, taskSet.getCreateTasksDef(), AtsClientService.get());
+         new CreateTasksRuleRunner(teamWf, taskSet.getCreateTasksDef(), AtsApiService.get());
       XResultData result = taskRunner.run();
       if (result.getIds().isEmpty()) {
          result.log("No new tasks created");

@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.BacklogColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalCheckTreeDialog;
@@ -80,10 +80,10 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
                      useArt).getStoreObject();
                } else {
                   return false;
@@ -115,10 +115,10 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
       Collection<Artifact> allGoals = Collections.castAll(
-         AtsClientService.get().getQueryService().createQuery(getWorkItemType()).getResultArtifacts().getList());
+         AtsApiService.get().getQueryService().createQuery(getWorkItemType()).getResultArtifacts().getList());
       Collection<IAtsWorkItem> allInWork = new ArrayList<>();
       for (Artifact art : allGoals) {
-         IAtsGoal goal = AtsClientService.get().getWorkItemService().getGoal(art);
+         IAtsGoal goal = AtsApiService.get().getWorkItemService().getGoal(art);
          if (goal != null && goal.isInWork()) {
             allInWork.add(goal);
          }
@@ -139,7 +139,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       try {
-         result = BacklogColumn.getColumnText(element, AtsClientService.get(), isBacklogGoal());
+         result = BacklogColumn.getColumnText(element, AtsApiService.get(), isBacklogGoal());
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
@@ -152,7 +152,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof Artifact) {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   awas.add((AbstractWorkflowArtifact) art);
                }

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractAtsArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -58,7 +58,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IAtsAction {
    public Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {
-         aias.addAll(AtsClientService.get().getActionableItemService().getActionableItems(team));
+         aias.addAll(AtsApiService.get().getActionableItemService().getActionableItems(team));
       }
       return aias;
    }
@@ -102,7 +102,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IAtsAction {
 
    @Override
    public AtsApi getAtsApi() {
-      return AtsClientService.get();
+      return AtsApiService.get();
    }
 
    @Override

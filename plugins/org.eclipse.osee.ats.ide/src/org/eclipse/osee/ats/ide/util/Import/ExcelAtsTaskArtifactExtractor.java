@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -126,7 +126,7 @@ public class ExcelAtsTaskArtifactExtractor {
          this.newTaskData = newTaskData;
          this.sma = sma;
          createdDate = new Date();
-         createdBy = AtsClientService.get().getUserService().getCurrentUser();
+         createdBy = AtsApiService.get().getUserService().getCurrentUser();
          this.rowNum++;
       }
 
@@ -349,7 +349,7 @@ public class ExcelAtsTaskArtifactExtractor {
          if (Strings.isValid(str)) {
             AtsUser user = null;
             try {
-               user = AtsClientService.get().getUserService().getUserByUserId(str);
+               user = AtsApiService.get().getUserService().getUserByUserId(str);
             } catch (Exception ex) {
                // do nothing
                rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);
@@ -357,7 +357,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
             if (user == null) {
                try {
-                  user = AtsClientService.get().getUserService().getUserByName(str);
+                  user = AtsApiService.get().getUserService().getUserByName(str);
                } catch (Exception ex) {
                   rd.errorf("On row: %d, the user entered in createdBy does not exist\n", rowNum);
                   return;
@@ -398,7 +398,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
                sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true,
-               AtsClientService.get().getUserService().getCurrentUser());
+               AtsApiService.get().getUserService().getCurrentUser());
          }
       }
 
@@ -416,7 +416,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
             int percentInt = percent.intValue();
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true,
-               AtsClientService.get().getUserService().getCurrentUser());
+               AtsApiService.get().getUserService().getCurrentUser());
          }
       }
 
@@ -426,16 +426,16 @@ public class ExcelAtsTaskArtifactExtractor {
             userName = userName.replaceAll("\\+$", "");
             AtsUser user = null;
             if (!Strings.isValid(userName)) {
-               user = AtsClientService.get().getUserService().getCurrentUser();
+               user = AtsApiService.get().getUserService().getCurrentUser();
             } else {
                try {
-                  user = AtsClientService.get().getUserService().getUserByName(userName);
+                  user = AtsApiService.get().getUserService().getUserByName(userName);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
             if (user == null) {
-               user = AtsClientService.get().getUserService().getCurrentUser();
+               user = AtsApiService.get().getUserService().getCurrentUser();
                rd.errorf("Invalid Assignee \"%s\" for row %d.  Using current user\n", userName, rowNum);
             }
             taskArt.addAssigneeUserIds(user.getUserId());

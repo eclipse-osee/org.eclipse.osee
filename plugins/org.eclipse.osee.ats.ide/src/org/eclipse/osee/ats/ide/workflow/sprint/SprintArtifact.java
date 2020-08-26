@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -61,7 +61,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    public long getTeamId() {
       long result = 0;
       try {
-         ArtifactId agileTeam = AtsClientService.get().getRelationResolver().getRelatedOrSentinel((ArtifactId) this,
+         ArtifactId agileTeam = AtsApiService.get().getRelationResolver().getRelatedOrSentinel((ArtifactId) this,
             AtsRelationTypes.AgileTeamToSprint_AgileTeam);
          if (agileTeam.isValid()) {
             result = agileTeam.getId();
@@ -74,7 +74,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public List<Artifact> getMembers() {
-      return AtsClientService.get().getSprintItemsCache().getMembers(this);
+      return AtsApiService.get().getSprintItemsCache().getMembers(this);
    }
 
    public RelationTypeSide getMembersRelationType() {

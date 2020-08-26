@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -92,7 +92,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       editor.registerEvent(this, sides);
       // If team workflow, register for siblings
       if (workItem.isTeamWorkflow()) {
-         for (IAtsTeamWorkflow wf : AtsClientService.get().getWorkItemService().getTeams(workItem.getParentAction())) {
+         for (IAtsTeamWorkflow wf : AtsApiService.get().getWorkItemService().getTeams(workItem.getParentAction())) {
             if (!workItem.equals(wf)) {
                editor.registerEvent(getSiblingEventHandler(), wf.getParentAction().getStoreObject(), siblings);
             }
@@ -207,7 +207,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             return true;
          }
       }
-      if (workItem instanceof AbstractReviewArtifact && AtsClientService.get().getActionableItemService().hasActionableItems(
+      if (workItem instanceof AbstractReviewArtifact && AtsApiService.get().getActionableItemService().hasActionableItems(
          workItem)) {
          return true;
       }
@@ -251,7 +251,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
                Hyperlink link = editor.getToolkit().createHyperlink(fComp,
                   String.format("\"%s\" - %s",
                      thatArt.getName().length() < 60 ? thatArt.getName() : thatArt.getName().substring(0, 60),
-                     AtsClientService.get().getAtsId(thatArt)),
+                     AtsApiService.get().getAtsId(thatArt)),
                   SWT.NONE);
                relIdToHyperlink.put(Long.valueOf(relation.getId()), link);
                relIdToLabel.put(Long.valueOf(relation.getId()), label);

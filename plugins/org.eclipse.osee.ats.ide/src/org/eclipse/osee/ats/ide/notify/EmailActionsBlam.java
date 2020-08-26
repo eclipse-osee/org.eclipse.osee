@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.notify.EmailActionsData.EmailRecipient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -112,7 +112,7 @@ public class EmailActionsBlam extends AbstractBlam {
       notifications.setSubject(data.getSubject());
       notifications.setBody(data.getBody());
       notifications.setIncludeCancelHyperlink(data.isIncludeCancelHyperlink());
-      AtsClientService.get().sendNotifications(notifications);
+      AtsApiService.get().sendNotifications(notifications);
       logf("Sent %s notifications.", sent);
    }
 
@@ -136,25 +136,25 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserService().getCurrentUser().getEmail())) {
+      if (!EmailUtil.isEmailValid(AtsApiService.get().getUserService().getCurrentUser().getEmail())) {
          logf("Can't email from user account [%s] cause email not valid.",
-            AtsClientService.get().getUserService().getCurrentUser());
+            AtsApiService.get().getUserService().getCurrentUser());
          return;
       }
 
       AtsNotificationEvent notificationEvent =
-         AtsNotificationEventFactory.getNotificationEvent(AtsClientService.get().getUserService().getCurrentUser(),
+         AtsNotificationEventFactory.getNotificationEvent(AtsApiService.get().getUserService().getCurrentUser(),
             recipients, getIdString(workItem), data.getEmailRecipient().name(),
             String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
                data.getEmailRecipient().name(), workItem.getArtifactTypeName(),
                workItem.getStateMgr().getCurrentStateName(), workItem.getName(),
                DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
       notificationEvent.setUrl(
-         AtsClientService.get().getWorkItemService().getHtmlUrl(workItem, AtsClientService.get()));
+         AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {
-         if (AtsClientService.get().getWorkItemService().isCancelHyperlinkConfigured()) {
+         if (AtsApiService.get().getWorkItemService().isCancelHyperlinkConfigured()) {
             notificationEvent.setCancelUrl(
-               AtsClientService.get().getWorkItemService().getCancelUrl(workItem, AtsClientService.get()));
+               AtsApiService.get().getWorkItemService().getCancelUrl(workItem, AtsApiService.get()));
          } else {
             AWorkbench.popup("CancelHyperlinkUrl not configured.  Can not include cancel link. Aborting...");
             return;
@@ -184,7 +184,7 @@ public class EmailActionsBlam extends AbstractBlam {
       }
       if (recipients.isEmpty()) {
          try {
-            recipients.add(AtsClientService.get().getUserService().getCurrentUser());
+            recipients.add(AtsApiService.get().getUserService().getCurrentUser());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

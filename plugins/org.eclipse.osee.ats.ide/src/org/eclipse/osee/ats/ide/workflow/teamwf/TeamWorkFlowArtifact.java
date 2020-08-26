@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -69,8 +69,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          artifacts.addAll(ReviewManager.getReviews(this));
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(this)) {
-            artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(task));
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(this)) {
+            artifacts.add(AtsApiService.get().getQueryServiceIde().getArtifact(task));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -103,8 +103,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    @Override
    public String getEditorTitle() {
       try {
-         if (AtsClientService.get().getVersionService().isTeamUsesVersions(getTeamDefinition())) {
-            IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
+         if (AtsApiService.get().getVersionService().isTeamUsesVersions(getTeamDefinition())) {
+            IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(this);
             return String.format("%s: [%s] - %s", getTeamName(), version != null ? version : "Un-Targeted", getName());
 
          }
@@ -121,14 +121,14 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       if (teamDef == null) {
-         ArtifactId artId = AtsClientService.get().getAttributeResolver().getSoleArtifactIdReference((IAtsObject) this,
+         ArtifactId artId = AtsApiService.get().getAttributeResolver().getSoleArtifactIdReference((IAtsObject) this,
             AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
          if (artId.isInvalid()) {
             throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
          }
-         teamDef = AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(artId.getId());
+         teamDef = AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(artId.getId());
          if (teamDef == null) {
-            teamDef = AtsClientService.get().getQueryService().getConfigItem(artId);
+            teamDef = AtsApiService.get().getQueryService().getConfigItem(artId);
          }
          Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       }
@@ -200,13 +200,13 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
       try {
          double manDayHours = 0;
-         Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(getTeamDefinition());
+         Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(getTeamDefinition());
          if (artifact != null) {
             manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
          }
-         if (manDayHours == 0 && AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+         if (manDayHours == 0 && AtsApiService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
             return getHoursPerWorkDayFromItemAndChildren(
-               AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef));
+               AtsApiService.get().getTeamDefinitionService().getParentTeamDef(teamDef));
          }
          return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {
@@ -216,16 +216,16 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    public IOseeBranch getWorkingBranchForceCacheUpdate() {
-      return AtsClientService.get().getBranchService().getWorkingBranch(this, true);
+      return AtsApiService.get().getBranchService().getWorkingBranch(this, true);
    }
 
    public IOseeBranch getWorkingBranch() {
-      return AtsClientService.get().getBranchService().getWorkingBranch(this);
+      return AtsApiService.get().getBranchService().getWorkingBranch(this);
    }
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
-      return AtsClientService.get().getActionableItemService().getActionableItems(this);
+      return AtsApiService.get().getActionableItemService().getActionableItems(this);
    }
 
 }

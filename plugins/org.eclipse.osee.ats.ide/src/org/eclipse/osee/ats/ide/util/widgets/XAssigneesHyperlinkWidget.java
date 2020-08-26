@@ -18,7 +18,7 @@ import java.util.HashSet;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -50,9 +50,9 @@ public class XAssigneesHyperlinkWidget extends XHyperlinkLabelCmdValueSelection 
    @Override
    public boolean handleSelection() {
       UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
-         AtsClientService.get().getUserService().getUsers(Active.Active));
+         AtsApiService.get().getUserService().getUsers(Active.Active));
       if (teamDef != null) {
-         uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
+         uld.setTeamMembers(AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(teamDef));
       }
 
       if (!assignees.isEmpty()) {

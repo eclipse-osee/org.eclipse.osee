@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +56,7 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return AtsClientService.get().getQueryServiceClient().getArtifact(element).getSoleAttributeValue(
+            return AtsApiService.get().getQueryServiceIde().getArtifact(element).getSoleAttributeValue(
                AtsAttributeTypes.GoalOrderVote, "");
          }
       } catch (Exception ex) {

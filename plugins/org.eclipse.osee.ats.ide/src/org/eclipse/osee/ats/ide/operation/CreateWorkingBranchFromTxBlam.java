@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -59,10 +59,10 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
             String idNumber = pairs[0];
             TransactionToken parentTransactionId = TransactionManager.getTransaction(Long.valueOf(pairs[1]));
             try {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(Long.valueOf(idNumber));
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(Long.valueOf(idNumber));
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-                  if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+                  if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt)) {
                      AWorkbench.popup(
                         "Committed branch already exists. Can not create another working branch once changes have been committed.");
                      return;

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -77,9 +77,9 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
          } else if (Artifacts.isOfType(treeItem.getData(),
-            AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(
+            AtsArtifactTypes.Action) && AtsApiService.get().getWorkItemService().getTeams(
                treeItem.getData()).size() == 1) {
-            aba = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+            aba = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
                treeItem.getData()).getStoreObject();
          }
          if (aba != null) {
@@ -111,7 +111,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
                ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
          }
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             if (!isPointsNumericValid(team).isFalse()) {
                return Result.FalseResult;
             }
@@ -126,7 +126,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up points for all children
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             hours += getRemainingPoints(team);
          }
          return hours;
@@ -138,7 +138,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          return 0;
       }
-      double est = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem, pointsAttrType, 0.0);
+      double est = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem, pointsAttrType, 0.0);
       if (est > 0) {
          int percentComplete = getPercentComplete(workItem);
          est = est - est * percentComplete / 100.0;

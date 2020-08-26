@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,11 +53,11 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
             if (teamArt != null) {
                try {
                   BranchId workingBranch = null;
-                  if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-                     workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+                  if (AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
+                     workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt);
                   }
                   if (workingBranch == null) {
-                     workingBranch = AtsClientService.get().getBranchService().getCommittedWorkingBranch(teamArt);
+                     workingBranch = AtsApiService.get().getBranchService().getCommittedWorkingBranch(teamArt);
                   }
                   if (workingBranch != null && workingBranch.isValid()) {
                      result = getColumnText(workingBranch);
@@ -68,7 +68,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.navigate.NavigateView;
 import org.eclipse.osee.ats.ide.util.Import.ImportTasksFromSpreadsheet;
@@ -53,9 +53,9 @@ public class ImportTasksFromSpreadsheetTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
       importTasks.performImport(false, false, teamWf, file);
 
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
       Assert.assertEquals(3, tasks.size());
-      IAttributeResolver attrs = AtsClientService.get().getAttributeResolver();
+      IAttributeResolver attrs = AtsApiService.get().getAttributeResolver();
       for (IAtsTask task : tasks) {
          if (task.getName().equals("2nd Task")) {
             Assert.assertEquals("Category", attrs.getSoleAttributeValue(task, AtsAttributeTypes.Category1, ""));

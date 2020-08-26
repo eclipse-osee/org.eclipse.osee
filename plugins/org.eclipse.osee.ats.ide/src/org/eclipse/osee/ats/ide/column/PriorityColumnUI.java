@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -88,8 +88,8 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
-            if (AtsClientService.get().getVersionService().isReleased(
-               team) || AtsClientService.get().getVersionService().isVersionLocked(team)) {
+            if (AtsApiService.get().getVersionService().isReleased(
+               team) || AtsApiService.get().getVersionService().isVersionLocked(team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;
@@ -111,11 +111,11 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
             return false;
          }
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
+               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = AtsApiService.get().getQueryServiceIde().getArtifact(
+                     AtsApiService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -124,8 +124,8 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
                return false;
             }
             TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) useArt;
-            if (AtsClientService.get().getVersionService().isReleased(
-               team) || AtsClientService.get().getVersionService().isVersionLocked(team)) {
+            if (AtsApiService.get().getVersionService().isReleased(
+               team) || AtsApiService.get().getVersionService().isVersionLocked(team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;
@@ -154,7 +154,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
       Set<TeamWorkFlowArtifact> awas = new HashSet<>();
       for (TreeItem item : treeItems) {
          if (item.getData() instanceof Artifact) {
-            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((TeamWorkFlowArtifact) art);
             }

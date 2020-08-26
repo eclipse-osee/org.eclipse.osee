@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -84,11 +84,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
+               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = AtsApiService.get().getQueryServiceIde().getArtifact(
+                     AtsApiService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -121,8 +121,8 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         AtsUser selectedUser = AtsClientService.get().getUserService().getUserById(ld.getSelection());
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
+         AtsUser selectedUser = AtsApiService.get().getUserService().getUserById(ld.getSelection());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Originator");
          for (IAtsWorkItem workItem : workItems) {
             workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
             addOriginatorNotification(workItem, changes);
@@ -139,7 +139,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public static void addOriginatorNotification(IAtsWorkItem workItem, IAtsChangeSet changes) {
       try {
          changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-            AtsClientService.get().getUserService().getCurrentUser(), workItem, AtsNotifyType.Originator));
+            AtsApiService.get().getUserService().getCurrentUser(), workItem, AtsNotifyType.Originator));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
       }
@@ -154,7 +154,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                strs.add(team.getCreatedBy().getName());
             }
             return Collections.toString("; ", strs);
@@ -173,7 +173,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<AtsUser> users = new HashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                users.add(team.getCreatedBy());
             }
             return AtsEditors.getImage(users);
@@ -191,7 +191,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          Set<IAtsWorkItem> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof AbstractWorkflowArtifact) {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   awas.add((AbstractWorkflowArtifact) art);
                }

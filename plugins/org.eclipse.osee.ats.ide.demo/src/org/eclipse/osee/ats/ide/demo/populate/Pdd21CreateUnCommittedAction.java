@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil.SoftwareRequirementStrs;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -59,22 +59,22 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String title = DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Code_AI,
          DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      actionResult = AtsClientService.get().getActionFactory().createAction(null, title,
-         "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+      actionResult = AtsApiService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.None);
 
          if (isSwDesign) {
@@ -85,13 +85,13 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state [%s] error [%s]",
                   teamWf.toStringWithId(), toState.getName(), result.getText());
             }
-            if (AtsClientService.get().getReviewService().getReviews(teamWf).size() != 1) {
+            if (AtsApiService.get().getReviewService().getReviews(teamWf).size() != 1) {
                throw new OseeCoreException(
-                  "Error, 1 review should have been created instead of " + AtsClientService.get().getReviewService().getReviews(
+                  "Error, 1 review should have been created instead of " + AtsApiService.get().getReviewService().getReviews(
                      teamWf).size());
             }
             // set reviews to non-blocking
-            for (IAtsAbstractReview review : AtsClientService.get().getReviewService().getReviews(teamWf)) {
+            for (IAtsAbstractReview review : AtsApiService.get().getReviewService().getReviews(teamWf)) {
                changes.setSoleAttributeValue(review, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
             }
 
@@ -101,14 +101,14 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]", teamWf.toStringWithId(),
                   toState.getName(), result.getText());
             }
-            if (AtsClientService.get().getReviewService().getReviews(teamWf).size() != 2) {
+            if (AtsApiService.get().getReviewService().getReviews(teamWf).size() != 2) {
                throw new OseeCoreException(
-                  "Error, 2 AtsClientService.get().getReviewService().getReviews(teamWf) should exist instead of " + AtsClientService.get().getReviewService().getReviews(
+                  "Error, 2 AtsApiService.get().getReviewService().getReviews(teamWf) should exist instead of " + AtsApiService.get().getReviewService().getReviews(
                      teamWf).size());
             }
 
             // set reviews to non-blocking
-            for (IAtsAbstractReview review : AtsClientService.get().getReviewService().getReviews(teamWf)) {
+            for (IAtsAbstractReview review : AtsApiService.get().getReviewService().getReviews(teamWf)) {
                changes.setSoleAttributeValue(review, AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
             }
          }
@@ -116,7 +116,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
          if (isSwDesign) {
             // Need to persist so CreateTasksDefinitionBuilder can find workflow to create tasks
             changes.execute();
-            changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + "- 2");
+            changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + "- 2");
          }
 
          // Transition to final state
@@ -129,7 +129,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(
-               AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
+               AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 
          setVersion(teamWf, DemoArtifactToken.SAW_Bld_2, changes);

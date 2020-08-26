@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -84,7 +84,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             newVersionNames.add(str);
          }
          XResultData resultData = new XResultData(false);
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create New Version(s)");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create New Version(s)");
          Collection<IAtsVersion> newVersions =
             createVersions(resultData, changes, teamDefHoldingVersions, newVersionNames);
          if (resultData.isErrors()) {
@@ -97,11 +97,11 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          changes.execute();
          if (newVersions.size() == 1) {
             RendererManager.open(
-               AtsClientService.get().getQueryServiceClient().getArtifact(newVersions.iterator().next()),
+               AtsApiService.get().getQueryServiceIde().getArtifact(newVersions.iterator().next()),
                PresentationType.DEFAULT_OPEN);
          } else {
             Collection<ArtifactToken> artToks =
-               AtsClientService.get().getQueryService().getArtifactsFromObjects(newVersions);
+               AtsApiService.get().getQueryService().getArtifactsFromObjects(newVersions);
             List<Artifact> arts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artToks);
             MassArtifactEditor.editArtifacts(String.format("New Versions for [%s]", teamDefHoldingVersions), arts,
                TableLoadOption.None);
@@ -116,7 +116,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          if (!Strings.isValid(newVer)) {
             resultData.error("Version name can't be blank");
          }
-         for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions)) {
+         for (IAtsVersion verArt : AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions)) {
             if (verArt.getName().equals(newVer)) {
                resultData.error(String.format("Version [%s] already exists", newVer));
             }
@@ -125,7 +125,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       if (!resultData.isErrors()) {
          try {
             for (String newVer : newVersionNames) {
-               IAtsVersion version = AtsClientService.get().getVersionService().createVersion(newVer, changes);
+               IAtsVersion version = AtsApiService.get().getVersionService().createVersion(newVer, changes);
                versions.add(version);
                changes.add(version);
                changes.add(
@@ -144,7 +144,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
+      dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

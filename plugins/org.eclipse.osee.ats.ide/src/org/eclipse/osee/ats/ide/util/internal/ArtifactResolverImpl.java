@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -34,7 +34,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    @Override
    public ArtifactId get(IAtsObject atsObject) {
       if (atsObject instanceof Artifact) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+         return AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
       }
       Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getId());
       return artifact;
@@ -67,6 +67,6 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    @Override
    public ArtifactTypeToken getArtifactType(IAtsWorkItem workItem) {
       Assert.isNotNull(workItem, "Work Item can not be null");
-      return AtsClientService.get().getQueryServiceClient().getArtifact(workItem).getArtifactType();
+      return AtsApiService.get().getQueryServiceIde().getArtifact(workItem).getArtifactType();
    }
 }

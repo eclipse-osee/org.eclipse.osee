@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactory;
 import org.eclipse.osee.ats.api.workflow.INewActionPageAttributeFactoryProvider;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -53,26 +53,26 @@ public class ActionArtifactRollup {
    }
 
    public static void resetChangeTypeOffChildren(IAtsAction action) {
-      Artifact actionArt = AtsClientService.get().getQueryServiceClient().getArtifact(action);
+      Artifact actionArt = AtsApiService.get().getQueryServiceIde().getArtifact(action);
       if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
       }
       ChangeType changeType = null;
-      Collection<IAtsTeamWorkflow> teamWfs = AtsClientService.get().getWorkItemService().getTeams(action);
+      Collection<IAtsTeamWorkflow> teamWfs = AtsApiService.get().getWorkItemService().getTeams(action);
       if (teamWfs.size() == 1) {
-         changeType = ChangeTypeUtil.getChangeType(teamWfs.iterator().next(), AtsClientService.get());
+         changeType = ChangeTypeUtil.getChangeType(teamWfs.iterator().next(), AtsApiService.get());
       } else {
          for (IAtsTeamWorkflow team : teamWfs) {
             if (!team.isCancelled()) {
                if (changeType == null) {
-                  changeType = ChangeTypeUtil.getChangeType(team, AtsClientService.get());
-               } else if (changeType != ChangeTypeUtil.getChangeType(team, AtsClientService.get())) {
+                  changeType = ChangeTypeUtil.getChangeType(team, AtsApiService.get());
+               } else if (changeType != ChangeTypeUtil.getChangeType(team, AtsApiService.get())) {
                   return;
                }
             }
          }
       }
-      if (changeType != null && ChangeTypeUtil.getChangeType(action, AtsClientService.get()) != changeType) {
+      if (changeType != null && ChangeTypeUtil.getChangeType(action, AtsApiService.get()) != changeType) {
          if (changeType == ChangeType.None) {
             ((Artifact) action.getStoreObject()).deleteAttributes(AtsAttributeTypes.ChangeType);
          } else {
@@ -86,7 +86,7 @@ public class ActionArtifactRollup {
     */
    private void resetTitleOffChildren() {
       String title = "";
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(action)) {
 
          if (title.isEmpty()) {
             title = team.getName();
@@ -102,16 +102,16 @@ public class ActionArtifactRollup {
    // Set validation to true if any require validation
    private void resetValidationOffChildren() {
       boolean validationRequired = false;
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
-         if (AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(action)) {
+         if (AtsApiService.get().getAttributeResolver().getSoleAttributeValue(team,
             AtsAttributeTypes.ValidationRequired, false)) {
             validationRequired = true;
          }
       }
-      if (validationRequired != AtsClientService.get().getAttributeResolver().getSoleAttributeValue(action,
+      if (validationRequired != AtsApiService.get().getAttributeResolver().getSoleAttributeValue(action,
          AtsAttributeTypes.ValidationRequired, false)) {
-         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action,
-            AtsAttributeTypes.ValidationRequired, false);
+         AtsApiService.get().getAttributeResolver().setSoleAttributeValue(action, AtsAttributeTypes.ValidationRequired,
+            false);
 
       }
    }
@@ -121,19 +121,18 @@ public class ActionArtifactRollup {
     */
    private void resetDescriptionOffChildren() {
       String desc = "";
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(action)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(action)) {
          if (desc.isEmpty()) {
-            desc = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
-               AtsAttributeTypes.Description, "");
-         } else if (!desc.equals(AtsClientService.get().getAttributeResolver().getSoleAttributeValue(team,
+            desc = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.Description,
+               "");
+         } else if (!desc.equals(AtsApiService.get().getAttributeResolver().getSoleAttributeValue(team,
             AtsAttributeTypes.Description, ""))) {
             return;
          }
       }
-      if (!desc.equals(AtsClientService.get().getAttributeResolver().getSoleAttributeValue(action,
-         AtsAttributeTypes.Description, ""))) {
-         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action, AtsAttributeTypes.Description,
-            desc);
+      if (!desc.equals(
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(action, AtsAttributeTypes.Description, ""))) {
+         AtsApiService.get().getAttributeResolver().setSoleAttributeValue(action, AtsAttributeTypes.Description, desc);
       }
       if (desc.isEmpty()) {
          ((Artifact) action).deleteSoleAttribute(AtsAttributeTypes.Description);
@@ -158,26 +157,25 @@ public class ActionArtifactRollup {
    private void resetPriorityOffChildren() {
       AttributeTypeEnum<?> priToken = getPrioirtyAttrToken();
       String priorityType = null;
-      Collection<IAtsTeamWorkflow> teamArts = AtsClientService.get().getWorkItemServiceClient().getTeams(action);
+      Collection<IAtsTeamWorkflow> teamArts = AtsApiService.get().getWorkItemServiceIde().getTeams(action);
       if (teamArts.size() == 1) {
-         priorityType = AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(
+         priorityType = AtsApiService.get().getAttributeResolver().getSoleAttributeValueAsString(
             teamArts.iterator().next(), priToken, "");
       } else {
          for (IAtsTeamWorkflow team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
                   priorityType =
-                     AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, "");
+                     AtsApiService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, "");
                } else if (!priorityType.equals(
-                  AtsClientService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, ""))) {
+                  AtsApiService.get().getAttributeResolver().getSoleAttributeValueAsString(team, priToken, ""))) {
                   return;
                }
             }
          }
       }
       if (Strings.isValid(priorityType)) {
-         AtsClientService.get().getAttributeResolver().setSoleAttributeValue(action, priToken, priorityType);
-         //AtsClientService.get().
+         AtsApiService.get().getAttributeResolver().setSoleAttributeValue(action, priToken, priorityType);
       }
    }
 

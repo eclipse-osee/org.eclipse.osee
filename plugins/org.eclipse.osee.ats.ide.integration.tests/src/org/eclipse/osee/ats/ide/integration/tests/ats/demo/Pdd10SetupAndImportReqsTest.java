@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd10SetupAndImportReqs;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -40,10 +40,10 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
       List<Artifact> userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
       Assert.assertEquals(23, userArts.size());
 
-      Collection<AtsUser> users = AtsClientService.get().getUserService().getUsers();
+      Collection<AtsUser> users = AtsApiService.get().getUserService().getUsers();
       Assert.assertEquals(23, users.size());
 
-      Collection<AtsUser> users2 = AtsClientService.get().getUserService().getUsers(Active.Active);
+      Collection<AtsUser> users2 = AtsApiService.get().getUserService().getUsers(Active.Active);
       Assert.assertEquals(20, users2.size());
 
       Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();

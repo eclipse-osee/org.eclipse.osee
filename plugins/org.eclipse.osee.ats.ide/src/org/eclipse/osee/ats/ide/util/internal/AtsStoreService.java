@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -69,7 +69,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, AtsUser asUser) {
-      return new AtsChangeSet(comment, AtsClientService.get().getAtsBranch(), asUser);
+      return new AtsChangeSet(comment, AtsApiService.get().getAtsBranch(), asUser);
    }
 
    @Override
@@ -79,7 +79,7 @@ public class AtsStoreService implements IAtsStoreService {
          List<Artifact> artifacts = new LinkedList<>();
          for (IAtsWorkItem workItem : workItems) {
             if (workItem.getStoreObject() != null && workItem.getStoreObject() instanceof Artifact) {
-               artifacts.add(AtsClientService.get().getQueryServiceClient().getArtifact(workItem));
+               artifacts.add(AtsApiService.get().getQueryServiceIde().getArtifact(workItem));
             }
          }
          for (Artifact art : ArtifactQuery.reloadArtifacts(artifacts)) {
@@ -98,23 +98,23 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isDeleted();
+      return AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).isDeleted();
    }
 
    @Override
    public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeToken attributeType) {
-      return isAttributeTypeValid(AtsClientService.get().getQueryService().getArtifact(atsObject), attributeType);
+      return isAttributeTypeValid(AtsApiService.get().getQueryService().getArtifact(atsObject), attributeType);
    }
 
    @Override
    public boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeToken attributeType) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isAttributeTypeValid(attributeType);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).isAttributeTypeValid(attributeType);
    }
 
    @Override
    public ArtifactTypeToken getArtifactType(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getArtifactType();
+         return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getArtifactType();
       }
       return ArtifactQuery.getArtifactFromId(artifact, atsApi.getAtsBranch(),
          DeletionFlag.INCLUDE_DELETED).getArtifactType();
@@ -123,7 +123,7 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public ArtifactTypeToken getArtifactType(ArtifactId artifact, BranchId branch) {
       if (artifact instanceof Artifact) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(artifact, branch).getArtifactType();
+         return AtsApiService.get().getQueryServiceIde().getArtifact(artifact, branch).getArtifactType();
       }
       return ArtifactQuery.getArtifactFromId(artifact, branch, DeletionFlag.INCLUDE_DELETED).getArtifactType();
    }
@@ -150,18 +150,18 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isChangedInDb(IAtsWorkItem workItem) {
       return ArtifactQuery.isArtifactChangedViaTransaction(
-         AtsClientService.get().getQueryServiceClient().getArtifact(workItem));
+         AtsApiService.get().getQueryServiceIde().getArtifact(workItem));
    }
 
    @Override
    public boolean isChangedInDb(ArtifactId artifact) {
       return ArtifactQuery.isArtifactChangedViaTransaction(
-         AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
+         AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
    }
 
    @Override
    public ArtifactTypeToken getArtifactType(IAtsObject atsObject) {
-      return getArtifactType(AtsClientService.get().getQueryService().getArtifact(atsObject));
+      return getArtifactType(AtsApiService.get().getQueryService().getArtifact(atsObject));
    }
 
    @Override
@@ -174,7 +174,7 @@ public class AtsStoreService implements IAtsStoreService {
       TransactionId transId = TransactionId.SENTINEL;
       ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
       if (artifact instanceof Artifact) {
-         transId = AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getTransaction();
+         transId = AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getTransaction();
       }
       return transId;
    }
@@ -186,7 +186,7 @@ public class AtsStoreService implements IAtsStoreService {
       }
       ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
       if (art != null) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(art).isDeleted();
+         return AtsApiService.get().getQueryServiceIde().getArtifact(art).isDeleted();
       }
       return true;
    }
@@ -215,12 +215,12 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isHistorical(IAtsObject atsObject) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(atsObject).isHistorical();
+      return AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).isHistorical();
    }
 
    @Override
    public boolean isHistorical(ArtifactId artifact) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).isHistorical();
+      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).isHistorical();
    }
 
    @Override

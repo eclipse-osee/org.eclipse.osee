@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -98,13 +98,13 @@ public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements
    private boolean promptChange(Collection<IAtsWorkItem> workItems) {
       boolean modified = false;
       IAtsWorkItem firstWf = workItems.iterator().next();
-      IAgileTeam agileTeam = AtsClientService.get().getAgileService().getAgileTeam(firstWf);
+      IAgileTeam agileTeam = AtsApiService.get().getAgileService().getAgileTeam(firstWf);
       if (agileTeam == null) {
          AWorkbench.popup("Can not determine Agile Team for %s", firstWf.toStringWithId());
          return false;
       }
       AttributeTypeId attributeType =
-         AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+         AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
       if (attributeType == null) {
          AWorkbench.popup("Can not determine Agile Team points attribute type for team %s", agileTeam.toStringWithId());
          return false;

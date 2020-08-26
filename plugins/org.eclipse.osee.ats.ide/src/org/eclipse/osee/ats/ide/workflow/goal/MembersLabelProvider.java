@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.workflow.goal;
 
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +31,7 @@ public class MembersLabelProvider extends ArtifactLabelProvider {
    public String getText(Object element) {
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
       try {
-         if (FavoritesManager.isFavorite(awa, AtsClientService.get().getUserService().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(awa, AtsApiService.get().getUserService().getCurrentUser())) {
             return "(Favorite) " + awa.toString();
          } else if (awa.isAssigneeMe()) {
             return "(Assignee) " + awa.toString();

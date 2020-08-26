@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.ValidatePeerDefectsAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MyReviewSearchItem;
@@ -91,7 +91,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
             WorkItemType.PeerReview, false, true, AtsImage.PEER_REVIEW)));
       items.add(new NewPeerToPeerReviewItem(item));
       items.add(new GenerateReviewParticipationReport(item));
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          items.add(new XNavigateItemAction(item, new ValidatePeerDefectsAction(), AtsImage.PEER_REVIEW));
       }
 

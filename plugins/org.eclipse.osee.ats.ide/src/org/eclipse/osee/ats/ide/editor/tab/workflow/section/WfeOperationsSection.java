@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.ide.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsAction;
 import org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -184,7 +184,7 @@ public class WfeOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (!AtsApiService.get().getUserService().isAtsAdmin()) {
          return;
       }
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
@@ -202,7 +202,7 @@ public class WfeOperationsSection extends SectionPart {
       if (ShowBranchChangeDataAction.isApplicable(editor.getWorkItem())) {
          new XButtonViaAction(new ShowBranchChangeDataAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
       }
-      new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsClientService.get())).createWidgets(
+      new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsApiService.get())).createWidgets(
          sectionBody, 2);
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
@@ -230,7 +230,7 @@ public class WfeOperationsSection extends SectionPart {
          if (editor.getWorkItem().getParentAWA() != null) {
             new XButtonViaAction(new OpenParentAction(editor.getWorkItem())).createWidgets(sectionBody, 2);
          }
-         if (AtsClientService.get().getUserService().isAtsAdmin()) {
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
             new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
          }
          new XButtonViaAction(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);

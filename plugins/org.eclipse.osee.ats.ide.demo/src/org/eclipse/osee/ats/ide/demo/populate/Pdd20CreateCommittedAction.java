@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil.SoftwareRequirementStrs;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -57,15 +57,15 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Problem with the Diagram View",
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
@@ -85,7 +85,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
                teamWf.getWorkDefinition().getName());
          }
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
@@ -98,7 +98,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(
-               AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
+               AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 
          changes.add(teamWf);
@@ -169,8 +169,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       Artifact parentArtifact = testCommitBranchHttpRequestOperationSetup(reqTeamArt, testArtifact, testRelArtifact);
 
       IOperation op = AtsBranchManager.commitWorkingBranch(reqTeamArt, false, true,
-         AtsClientService.get().getBranchService().getBranch(
-            AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt)),
+         AtsApiService.get().getBranchService().getBranch(
+            AtsApiService.get().getVersionService().getTargetedVersion(reqTeamArt)),
          true);
       Operations.executeWorkAndCheckStatus(op);
 
@@ -217,8 +217,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
        * Setup for testing the CommitBranchHttpRequestOperation cache update code after commit. Load artifact from
        * parent branch which is being changed on the working branch.
        */
-      BranchId parentBranch = AtsClientService.get().getBranchService().getBranch(
-         AtsClientService.get().getVersionService().getTargetedVersion(reqTeamArt));
+      BranchId parentBranch = AtsApiService.get().getBranchService().getBranch(
+         AtsApiService.get().getVersionService().getTargetedVersion(reqTeamArt));
       Artifact parentArtifact = ArtifactQuery.getArtifactFromId(testArtifact.getId(), parentBranch);
       String subsystemStrBefore = parentArtifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem).toString();
       if (subsystemStrBefore.equals(DemoSubsystems.Communications.name())) {

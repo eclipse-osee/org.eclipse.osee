@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,7 +47,7 @@ public class ColorTeamSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public Collection<String> getInput() {
-      return Collections.castAll(AtsClientService.get().getEarnedValueService().getColorTeams());
+      return Collections.castAll(AtsApiService.get().getEarnedValueService().getColorTeams());
    }
 
 }

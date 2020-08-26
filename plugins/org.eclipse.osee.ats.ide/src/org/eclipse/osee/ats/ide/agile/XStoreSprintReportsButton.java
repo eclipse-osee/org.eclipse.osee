@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -53,7 +53,7 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
 
    @Override
    public Artifact getArtifact() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(sprint);
    }
 
    XModifiedListener listener = new XModifiedListener() {
@@ -74,22 +74,22 @@ public class XStoreSprintReportsButton extends XButton implements IArtifactWidge
             + "Sprint is closed\nsuch as moving un-completed work to the next Sprint.\nSnapshot reports will retain the " //
             + "metrics at the point of storage.\n\nAre you sure?")) {
          try {
-            ArtifactToken teamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
+            ArtifactToken teamArt = AtsApiService.get().getRelationResolver().getRelatedOrNull(sprint,
                AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-            XResultData results = AtsClientService.get().getServerEndpoints().getAgileEndpoint().storeSprintReports(
+            XResultData results = AtsApiService.get().getServerEndpoints().getAgileEndpoint().storeSprintReports(
                teamArt.getId(), this.sprint.getId());
             if (results.isErrors()) {
                AWorkbench.popup(getLabel() + " errors " + results.toString());
                return;
             }
 
-            AtsClientService.get().getQueryServiceClient().getArtifact(sprint).reloadAttributesAndRelations();
+            AtsApiService.get().getQueryServiceIde().getArtifact(sprint).reloadAttributesAndRelations();
 
             XOpenStoredSprintReportsButton stored = new XOpenStoredSprintReportsButton();
-            stored.setArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(sprint));
+            stored.setArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(sprint));
             stored.openExternally();
 
-            ArtifactExplorerUtil.revealArtifact(AtsClientService.get().getQueryServiceClient().getArtifact(sprint));
+            ArtifactExplorerUtil.revealArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(sprint));
 
             AWorkbench.popup("Reports opened in browser");
 

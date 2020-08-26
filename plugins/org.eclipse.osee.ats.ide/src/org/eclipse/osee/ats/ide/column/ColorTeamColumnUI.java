@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -79,7 +79,7 @@ public class ColorTeamColumnUI extends XViewerAtsAttributeValueColumn implements
             if (element instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                Pair<String, Boolean> result =
-                  ColorTeamColumn.getWorkItemColorTeam(workItem, AtsClientService.get());
+                  ColorTeamColumn.getWorkItemColorTeam(workItem, AtsApiService.get());
                preComputedValueMap.put(workItem.getId(), result.getFirst());
             }
          } catch (OseeCoreException ex) {

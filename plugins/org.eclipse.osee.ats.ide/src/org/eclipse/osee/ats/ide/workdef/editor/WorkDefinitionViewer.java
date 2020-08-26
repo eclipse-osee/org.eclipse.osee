@@ -26,7 +26,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -139,7 +139,7 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
       List<IResultsXViewerRow> workDefRows = new ArrayList<>();
       try {
          List<IAtsWorkDefinition> workDefs = new ArrayList<>();
-         workDefs.addAll(AtsClientService.get().getWorkDefinitionService().getAllWorkDefinitions());
+         workDefs.addAll(AtsApiService.get().getWorkDefinitionService().getAllWorkDefinitions());
          Collections.sort(workDefs, new Comparator<IAtsWorkDefinition>() {
 
             @Override

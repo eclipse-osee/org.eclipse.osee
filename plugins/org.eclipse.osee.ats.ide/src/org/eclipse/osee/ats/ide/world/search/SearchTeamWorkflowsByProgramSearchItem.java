@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.config.editor.AtsConfigLabelProvider;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -59,13 +59,13 @@ public class SearchTeamWorkflowsByProgramSearchItem extends WorldUISearchItem {
 
       AtsSearchData data = new AtsSearchData(getName());
       data.getWorkItemTypes().add(WorkItemType.TeamWorkflow);
-      for (IAtsTeamDefinition teamDef : AtsClientService.get().getProgramService().getTeamDefs(program)) {
+      for (IAtsTeamDefinition teamDef : AtsApiService.get().getProgramService().getTeamDefs(program)) {
          data.getTeamDefIds().add(teamDef.getId());
       }
       if (!includeCompletedCancelled) {
          data.setStateTypes(Arrays.asList(StateType.Working));
       }
-      arts.addAll(Collections.castAll(AtsClientService.get().getQueryService().getArtifacts(data, null)));
+      arts.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifacts(data, null)));
 
       return arts;
    }
@@ -76,7 +76,7 @@ public class SearchTeamWorkflowsByProgramSearchItem extends WorldUISearchItem {
       if (program == null) {
          FilteredTreeDialog dialog = new FilteredTreeDialog("Select Program", "Select Program",
             new ArrayTreeContentProvider(), new AtsConfigLabelProvider(null));
-         dialog.setInput(AtsClientService.get().getProgramService().getPrograms());
+         dialog.setInput(AtsApiService.get().getProgramService().getPrograms());
          dialog.setMultiSelect(false);
          if (dialog.open() == 0) {
             program = dialog.getSelectedFirst();

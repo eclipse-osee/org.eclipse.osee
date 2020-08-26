@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -109,7 +109,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             } else if (selectedState.equals(NONE)) {
                selectedState = "";
             }
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Related-to-State");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Related-to-State");
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
                if (!state.equals(selectedState)) {
@@ -132,7 +132,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<>();
-      for (String state : AtsClientService.get().getWorkDefinitionService().getStateNames(
+      for (String state : AtsApiService.get().getWorkDefinitionService().getStateNames(
          teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
             names.add(state);
@@ -168,7 +168,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       Set<TaskArtifact> tasks = new HashSet<>();
       for (TreeItem item : treeItems) {
          if (item.getData() instanceof Artifact) {
-            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art.isOfType(AtsArtifactTypes.Task)) {
                tasks.add((TaskArtifact) art);
             }

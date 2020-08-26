@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
@@ -33,7 +33,7 @@ public class NextVersionSearchItemTest {
 
    @Test
    public void testByTeam() {
-      IAtsTeamDefinition teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitions(
+      IAtsTeamDefinition teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next();
       NextVersionSearchItem search = new NextVersionSearchItem(teamDef, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();

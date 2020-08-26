@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -79,7 +79,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
          }
       }
       try {
-         if (!artifactEvent.isOnBranch(AtsClientService.get().getAtsBranch())) {
+         if (!artifactEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
             return;
          }
       } catch (OseeCoreException ex) {
@@ -129,7 +129,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
             return true;
          }
          if (sma instanceof TeamWorkFlowArtifact) {
-            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
+            for (IAtsTask task : AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
                if (artifactEvent.isReloaded((TaskArtifact) task.getStoreObject())) {
                   return true;
                }

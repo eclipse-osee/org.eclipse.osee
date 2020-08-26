@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -125,15 +125,15 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Actions from Tasks");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
          if (!Strings.isValid(useTitle)) {
             useTitle = task.getName();
          }
-         ActionResult result = AtsClientService.get().getActionFactory().createAction(
-            AtsClientService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType,
-            priority, false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
+         ActionResult result = AtsApiService.get().getActionFactory().createAction(
+            AtsApiService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType,
+            priority, false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null,
             changes);
 
          for (IAtsTeamWorkflow teamWf : result.getTeams()) {

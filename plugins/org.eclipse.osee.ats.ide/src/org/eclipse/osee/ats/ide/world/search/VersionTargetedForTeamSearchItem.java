@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -84,7 +84,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<>();
-      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+      for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
          getSearchVersionArtifact())) {
          if (returnAction) {
             IAtsAction parentAction = ((TeamWorkFlowArtifact) team.getStoreObject()).getParentAction();
@@ -115,7 +115,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog dialog = new TeamDefinitionDialog();
             dialog.setInput(
-               AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both));
+               AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both));
             int result = dialog.open();
             if (result == 0) {
                selectedTeamDef = dialog.getSelectedFirst();
@@ -125,7 +125,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version",
-               AtsClientService.get().getVersionService().getVersions(selectedTeamDef, VersionReleaseType.Both,
+               AtsApiService.get().getVersionService().getVersions(selectedTeamDef, VersionReleaseType.Both,
                   VersionLockedType.Both));
             if (dialog.open() == 0) {
                selectedVersionArt = dialog.getSelectedFirst();

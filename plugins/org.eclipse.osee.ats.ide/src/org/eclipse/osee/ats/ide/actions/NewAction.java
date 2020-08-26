@@ -17,7 +17,7 @@ import java.util.Arrays;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionWizard;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -43,7 +43,7 @@ public class NewAction extends AbstractAtsAction {
    public void runWithException() {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
-         wizard.setInitialAias(AtsClientService.get().getActionableItemService().getActionableItems(
+         wizard.setInitialAias(AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(actionableItem)));
       }
       WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);

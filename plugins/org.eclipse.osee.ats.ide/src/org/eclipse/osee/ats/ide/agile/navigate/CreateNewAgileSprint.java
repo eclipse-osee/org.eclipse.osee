@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,7 +57,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -70,7 +70,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi ageilEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
+                  AgileEndpointApi ageilEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
                   JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
                   Artifact firstArtifact = dialog.getSelectedFirst();
 
@@ -89,7 +89,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                      }
                      if (sprint != null) {
                         long id = sprint.getId();
-                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsClientService.get().getAtsBranch());
+                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
                         AtsEditors.openArtifactById(ArtifactId.valueOf(sprintArt.getId()), OseeCmEditor.CmPcrEditor);
                      } else {

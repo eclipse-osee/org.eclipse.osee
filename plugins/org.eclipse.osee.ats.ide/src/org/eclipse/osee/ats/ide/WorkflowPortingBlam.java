@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.AtsWorldEditorRenderer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -57,7 +57,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
          getActionableItems((IAtsActionableItem) variableMap.getValue(ACTIONABLE_ITEM));
       Conditions.checkNotNullOrEmpty(actionableItems, ACTIONABLE_ITEM);
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Porting Workflow(s)");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Porting Workflow(s)");
       List<Artifact> destinationWorkflows = createDestinationWorkflows(changes, actionableItems);
       changes.execute();
 
@@ -68,7 +68,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems) {
       IAtsTeamDefinition teamDefinition = actionableItems.get(0).getTeamDefinition();
       List<Artifact> destinationWorkflows = new ArrayList<>();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       Date createdDate = new Date();
 
       for (TeamWorkFlowArtifact sourceWorkflow : sourceWorkflows) {
@@ -76,20 +76,20 @@ public class WorkflowPortingBlam extends AbstractBlam {
          if (sourceWorkflow.getRelatedArtifacts(AtsRelationTypes.Port_To).isEmpty()) {
             List<AtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
 
-            destinationWorkflow = AtsClientService.get().getActionFactory().createTeamWorkflow(
+            destinationWorkflow = AtsApiService.get().getActionFactory().createTeamWorkflow(
                sourceWorkflow.getParentAction(), teamDefinition, actionableItems, assignees, changes,
                createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
 
             changes.setName(destinationWorkflow, sourceWorkflow.getName());
             changes.relate(sourceWorkflow, AtsRelationTypes.Port_To, destinationWorkflow);
          } else {
-            destinationWorkflow = AtsClientService.get().getWorkItemService().getTeamWf(
-               AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) sourceWorkflow,
+            destinationWorkflow = AtsApiService.get().getWorkItemService().getTeamWf(
+               AtsApiService.get().getRelationResolver().getRelatedOrNull((ArtifactId) sourceWorkflow,
                   AtsRelationTypes.Port_To));
             log("Reusing destination workflow " + destinationWorkflow);
          }
 
-         destinationWorkflows.add(AtsClientService.get().getQueryServiceClient().getArtifact(destinationWorkflow));
+         destinationWorkflows.add(AtsApiService.get().getQueryServiceIde().getArtifact(destinationWorkflow));
       }
 
       return destinationWorkflows;
@@ -99,7 +99,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
          actionableItems = new ArrayList<>(
-            AtsClientService.get().getActionableItemService().getActionableItems(sourceWorkflows.get(0)));
+            AtsApiService.get().getActionableItemService().getActionableItems(sourceWorkflows.get(0)));
       } else {
          actionableItems = java.util.Collections.singletonList(actionableItem);
       }

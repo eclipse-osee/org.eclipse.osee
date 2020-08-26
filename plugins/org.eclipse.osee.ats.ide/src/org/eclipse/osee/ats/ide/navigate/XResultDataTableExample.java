@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.navigate;
 
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -33,7 +33,7 @@ public class XResultDataTableExample extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().getResultTableTest();
+      XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getResultTableTest();
       XResultDataUI.report(rd, TITLE);
    }
 

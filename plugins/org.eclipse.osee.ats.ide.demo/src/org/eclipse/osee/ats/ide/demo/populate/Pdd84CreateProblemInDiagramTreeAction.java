@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -33,13 +33,13 @@ public class Pdd84CreateProblemInDiagramTreeAction implements IPopulateDemoDatab
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
-      AtsClientService.get().getActionFactory().createAction(null,
+      AtsApiService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ProblemInDiagramTree_TeamWf.getName(), "Problem with the Diagram Tree", ChangeType.Problem,
-         "3", false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
+         "3", false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
          Arrays.asList(new ArtifactTokenActionListener()), changes);
 
       changes.execute();

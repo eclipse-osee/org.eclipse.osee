@@ -65,7 +65,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * This class should NOT be used on the IDE client except in integration tests. Use
- * AtsClientService.get().getWorkItemServiceClient().transition() instead.
+ * AtsApiService.get().getWorkItemServiceClient().transition() instead.
  *
  * @author Donald G. Dunne
  */
@@ -94,7 +94,7 @@ public class TransitionManager implements IExecuteListener {
       this.workItemFromStateMap = new HashMap<>();
       if (helper.getServices().isIde() && !AtsUtil.isInTest()) {
          OseeLog.log(TransitionManager.class, Level.WARNING,
-            "TransitionManager should NOT be used on client.  Use AtsClientService.get().getWorkItemServiceClient().transition() instead.");
+            "TransitionManager should NOT be used on client.  Use AtsApiService.get().getWorkItemServiceClient().transition() instead.");
       }
    }
 

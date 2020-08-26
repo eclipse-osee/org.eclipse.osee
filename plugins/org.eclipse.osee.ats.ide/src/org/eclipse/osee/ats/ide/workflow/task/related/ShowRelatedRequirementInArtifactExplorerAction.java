@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
@@ -89,19 +89,19 @@ public class ShowRelatedRequirementInArtifactExplorerAction extends AbstractShow
    private void showRequirements(final Collection<IAtsTask> tasks, final boolean loadLatest) {
 
       for (final IAtsTask task : tasks) {
-         DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
+         DerivedFromTaskData reqData = AtsApiService.get().getTaskRelatedService().getDerivedFromTaskData(task);
          if (reqData != null) {
             if (reqData.getResults().isErrors()) {
                AWorkbench.popup(reqData.getResults().toString());
             } else {
                Artifact toOpen = null;
                if (reqData.isDeleted()) {
-                  toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getHeadArtifact());
+                  toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getHeadArtifact());
                } else {
                   if (loadLatest) {
-                     toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getLatestArt());
+                     toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getLatestArt());
                   } else {
-                     toOpen = AtsClientService.get().getQueryServiceClient().getArtifact(reqData.getHeadArtifact());
+                     toOpen = AtsApiService.get().getQueryServiceIde().getArtifact(reqData.getHeadArtifact());
                   }
                }
                ArtifactExplorerUtil.revealArtifact(toOpen);
@@ -113,7 +113,7 @@ public class ShowRelatedRequirementInArtifactExplorerAction extends AbstractShow
    LabelProvider relatedArtifactLabelProvider = new LabelProvider() {
       @Override
       public String getText(Object element) {
-         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(element);
          if (art != null) {
             if (art.isHistorical()) {
                return "[Rev:" + art.getTransaction() + "] - " + art.getName();

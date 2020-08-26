@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -42,7 +42,7 @@ public class XStateSearchCombo extends XComboViewer {
    protected synchronized void ensurePopulated() {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
-         validStates.addAll(AtsClientService.get().getConfigService().getConfigurations().getValidStateNames());
+         validStates.addAll(AtsApiService.get().getConfigService().getConfigurations().getValidStateNames());
          Collections.sort(validStates);
       }
    }

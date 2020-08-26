@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditorSimpleProvider;
@@ -77,7 +77,7 @@ public final class AtsEditors {
     */
    public static void openArtifactById(ArtifactId artifactId, OseeCmEditor editor) {
       try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, AtsClientService.get().getAtsBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, AtsApiService.get().getAtsBranch());
          openArtifact(artifact, editor);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -117,10 +117,10 @@ public final class AtsEditors {
 
    public static void openATSAction(final ArtifactToken art, final AtsOpenOption atsOpenOption) {
       try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(art, AtsClientService.get().getAtsBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(art, AtsApiService.get().getAtsBranch());
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             IAtsAction action = (IAtsAction) artifact;
-            Collection<IAtsTeamWorkflow> teams = AtsClientService.get().getWorkItemService().getTeams(artifact);
+            Collection<IAtsTeamWorkflow> teams = AtsApiService.get().getWorkItemService().getTeams(artifact);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (IAtsTeamWorkflow team : teams) {
                   WorkflowEditor.edit(team);
@@ -162,7 +162,7 @@ public final class AtsEditors {
       ld.setLabelProvider(new TeamWorkflowLabelProvider());
       ld.setTitle("Select Team Workflow");
       ld.setMessage("Select Team Workflow");
-      ld.setInput(AtsClientService.get().getWorkItemService().getTeams(actArt));
+      ld.setInput(AtsApiService.get().getWorkItemService().getTeams(actArt));
       if (ld.open() == 0) {
          if (ld.getResult().length == 0) {
             AWorkbench.popup("Error", "No Workflow Selected");
@@ -180,7 +180,7 @@ public final class AtsEditors {
    public static void openInAtsWorldEditor(String name, Collection<? extends ArtifactId> artifacts) {
       Set<Artifact> otherArts = new HashSet<>();
       for (ArtifactId artId : artifacts) {
-         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artId);
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(artId);
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(
                new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null, TableLoadOption.None));
@@ -222,7 +222,7 @@ public final class AtsEditors {
    public static Set<Artifact> getAssigned(AtsUser user) {
       Set<Artifact> assigned = new HashSet<>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
-         "<" + user.getUserId() + ">", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         "<" + user.getUserId() + ">", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          assigned.add(artifact);
       }
       return assigned;
@@ -231,7 +231,7 @@ public final class AtsEditors {
    public static Image getImage(Collection<AtsUser> atsUsers) {
       Set<User> users = new HashSet<>();
       for (AtsUser user : atsUsers) {
-         users.add((User) AtsClientService.get().getUserService().getUserByUserId(user.getUserId()).getStoreObject());
+         users.add((User) AtsApiService.get().getUserService().getUserByUserId(user.getUserId()).getStoreObject());
       }
       return FrameworkArtifactImageProvider.getUserImage(users);
    }

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.access.AtsArtifactChecks;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -58,7 +58,7 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
          AtsArtifactChecks.setDeletionChecksEnabled(false);
 
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
+            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getName());
          if (Strings.isValid(destActionTitle)) {
             ((Artifact) destTeamWorkflow.getParentAction().getStoreObject()).setName(destActionTitle);
          }
@@ -71,14 +71,14 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
                (Artifact) destTeamWorkflow.getParentAction().getStoreObject());
             teamArt.persist(transaction);
             boolean allDeleted = true;
-            for (IRelationLink link : AtsClientService.get().getRelationResolver().getRelations(
+            for (IRelationLink link : AtsApiService.get().getRelationResolver().getRelations(
                parentAction.getArtifactId(), AtsRelationTypes.ActionToWorkflow_TeamWorkflow)) {
                if (!link.isDeleted()) {
                   allDeleted = false;
                }
             }
             if (allDeleted) {
-               AtsClientService.get().getQueryServiceClient().getArtifact(
+               AtsApiService.get().getQueryServiceIde().getArtifact(
                   parentAction.getArtifactId()).deleteAndPersist(transaction);
             }
          }

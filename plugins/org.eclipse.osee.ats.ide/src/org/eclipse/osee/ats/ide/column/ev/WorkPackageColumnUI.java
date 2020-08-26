@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.ide.ev.WorkPackageCollectionProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
@@ -83,7 +83,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(
+         result = AtsApiService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(
             (IAtsObject) element);
       }
       return result;
@@ -94,11 +94,11 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       boolean modified = false;
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact selectedArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact selectedArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             IAtsTeamWorkflow useTeamWF = null;
-            if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
+            if (selectedArt instanceof IAtsAction && AtsApiService.get().getWorkItemService().getTeams(
                selectedArt).size() == 1) {
-               useTeamWF = AtsClientService.get().getWorkItemService().getFirstTeam(selectedArt);
+               useTeamWF = AtsApiService.get().getWorkItemService().getFirstTeam(selectedArt);
             } else if (selectedArt instanceof AbstractWorkflowArtifact) {
                useTeamWF = (IAtsTeamWorkflow) selectedArt;
             }
@@ -135,10 +135,10 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
             boolean removeFromWorkPackage = dialog.isRemoveFromWorkPackage();
             IAtsWorkPackage workPackage = dialog.getSelection();
             if (removeFromWorkPackage) {
-               AtsClientService.get().getEarnedValueService().removeWorkPackage(workPackage,
+               AtsApiService.get().getEarnedValueService().removeWorkPackage(workPackage,
                   Collections.castAll(workItems));
             } else {
-               AtsClientService.get().getEarnedValueService().setWorkPackage(workPackage,
+               AtsApiService.get().getEarnedValueService().setWorkPackage(workPackage,
                   Collections.castAll(workItems));
             }
             modified = true;
@@ -161,7 +161,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       Result result = null;
       for (IAtsWorkItem workItem : workItems) {
          Collection<IAtsWorkPackage> options =
-            AtsClientService.get().getEarnedValueService().getWorkPackageOptions(workItem);
+            AtsApiService.get().getEarnedValueService().getWorkPackageOptions(workItem);
          uniqueWorkPackageOptions.addAll(options);
          if (options.isEmpty()) {
             result = new Result(false, "One or more selected Work Items had no Work Package Options configured.");
@@ -191,7 +191,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
          Set<IAtsWorkItem> workItems = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof Artifact) {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art instanceof AbstractWorkflowArtifact) {
                   workItems.add((IAtsWorkItem) art);
                }

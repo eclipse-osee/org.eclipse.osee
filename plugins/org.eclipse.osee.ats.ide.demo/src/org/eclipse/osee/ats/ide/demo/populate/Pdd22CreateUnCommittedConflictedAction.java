@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -52,20 +52,20 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI);
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      actionResult = AtsClientService.get().getActionFactory().createAction(null,
+      actionResult = AtsApiService.get().getActionFactory().createAction(null,
          DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "Problem with the Diagram View",
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
@@ -78,7 +78,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(
-               AtsClientService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
+               AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 
          setVersion(teamWf, DemoArtifactToken.SAW_Bld_2, changes);

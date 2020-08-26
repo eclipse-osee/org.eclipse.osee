@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -253,7 +253,7 @@ public class WorldXWidgetActionPage extends FormPage {
          }
       });
 
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          Button search2Button = toolkit.createButton(buttonComp, "Search-2 (Beta)", SWT.PUSH);
          gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
          search2Button.setLayoutData(gridData);
@@ -373,7 +373,7 @@ public class WorldXWidgetActionPage extends FormPage {
       try {
          if (getTaskComposite() != null) {
             TeamWorkFlowArtifact teamArt = getTaskComposite().getTeamArt();
-            name = String.format("Tasks (%d)", AtsClientService.get().getTaskService().getTasks(teamArt).size());
+            name = String.format("Tasks (%d)", AtsApiService.get().getTaskService().getTasks(teamArt).size());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -700,7 +700,7 @@ public class WorldXWidgetActionPage extends FormPage {
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.addAll(Collections.castAll(
-                        AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(art))));
+                        AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(art))));
                   } else if (art instanceof AbstractWorkflowArtifact) {
                      Artifact parentArt = (Artifact) ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
                      if (parentArt != null) {
@@ -727,13 +727,13 @@ public class WorldXWidgetActionPage extends FormPage {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
-                     for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
+                     for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(art)) {
                         arts.addAll(Collections.castAll(
-                           AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
+                           AtsObjects.getArtifacts(AtsApiService.get().getTaskService().getTasks(team))));
                      }
                   } else if (art instanceof TeamWorkFlowArtifact) {
                      arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
-                        AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) art))));
+                        AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) art))));
                   }
                }
                worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
@@ -755,9 +755,9 @@ public class WorldXWidgetActionPage extends FormPage {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
-                     for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
+                     for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(art)) {
                         arts.addAll(Collections.castAll(
-                           AtsObjects.getArtifacts(AtsClientService.get().getReviewService().getReviews(team))));
+                           AtsObjects.getArtifacts(AtsApiService.get().getReviewService().getReviews(team))));
                      }
                   } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                      arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));

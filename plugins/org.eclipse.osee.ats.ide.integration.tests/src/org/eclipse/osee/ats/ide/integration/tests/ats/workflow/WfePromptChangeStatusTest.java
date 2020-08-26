@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -54,7 +54,7 @@ public class WfePromptChangeStatusTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
+      assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
    }
 
    @BeforeClass
@@ -69,7 +69,7 @@ public class WfePromptChangeStatusTest {
 
    @Test
    public void test01Initialize() throws Exception {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status Test");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Prompt Change Status Test");
       teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes).getStoreObject();
       changes.execute();
@@ -117,8 +117,8 @@ public class WfePromptChangeStatusTest {
 
       // test that if one task is cancelled, can't change status
       TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask),
-         TaskStates.Cancelled.getName(), null, null, null, AtsClientService.get(), TransitionOption.None);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+         TaskStates.Cancelled.getName(), null, null, null, AtsApiService.get(), TransitionOption.None);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       assertEquals("Transition should have no errors", true, results.isEmpty());
 
       Result result = WfePromptChangeStatus.isValidToChangeStatus(tasks);
@@ -162,12 +162,12 @@ public class WfePromptChangeStatusTest {
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          assertEquals("Percent wrong for " + awa.getAtsId(),
-            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get()), totalPercent);
+            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsApiService.get()), totalPercent);
          assertEquals("Hours Spent wrong for " + awa.getAtsId(),
-            HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get()), hoursSpent, 0.0);
+            HoursSpentUtil.getHoursSpentTotal(awa, AtsApiService.get()), hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-            WorkState state = AtsClientService.get().getWorkStateFactory().fromStoreStr(xml);
+            WorkState state = AtsApiService.get().getWorkStateFactory().fromStoreStr(xml);
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
                assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(), xml.endsWith(";;;"));

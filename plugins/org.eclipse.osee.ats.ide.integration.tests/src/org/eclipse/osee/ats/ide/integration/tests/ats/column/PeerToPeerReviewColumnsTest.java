@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.ide.column.ReviewNumIssuesColumn;
 import org.eclipse.osee.ats.ide.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.ide.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.ide.column.ReviewReviewerColumn;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -59,13 +59,13 @@ public class PeerToPeerReviewColumnsTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
 
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(),
             changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt,
             getClass().getSimpleName(), teamArt.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
@@ -78,45 +78,45 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
       changes.clear();
-      ReviewDefectItem item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(),
+      ReviewDefectItem item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(),
          Severity.Issue, Disposition.None, InjectionActivity.Code, "description", "resolution", "location", new Date());
-      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt, AtsClientService.get());
+      ReviewDefectManager defectManager = new ReviewDefectManager(peerArt, AtsApiService.get());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Issue,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
          Disposition.None, InjectionActivity.Code, "description 2", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Issue,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
          Disposition.None, InjectionActivity.Code, "description 3", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Issue,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
          Disposition.None, InjectionActivity.Code, "description 34", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Major,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Major,
          Disposition.None, InjectionActivity.Code, "description 4", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Minor,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
          Disposition.None, InjectionActivity.Code, "description 5", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Minor,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
          Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
-      item = new ReviewDefectItem(AtsClientService.get().getUserService().getCurrentUser(), Severity.Minor,
+      item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
          Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date());
       defectManager.addOrUpdateDefectItem(item);
       defectManager.saveToArtifact(peerArt, changes);
 
       UserRole role =
-         new UserRole(Role.Author, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
+         new UserRole(Role.Author, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(role);
 
       role =
-         new UserRole(Role.Moderator, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
+         new UserRole(Role.Moderator, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
       roleMgr.addOrUpdateUserRole(role);
 
-      role = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      role = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       roleMgr.addOrUpdateUserRole(role);
-      role = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
+      role = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(changes);
       changes.add(peerArt);

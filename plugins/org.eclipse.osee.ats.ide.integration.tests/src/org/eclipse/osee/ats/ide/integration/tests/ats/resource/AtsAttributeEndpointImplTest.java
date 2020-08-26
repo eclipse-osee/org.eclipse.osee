@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -31,7 +31,7 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
 
    @BeforeClass
    public static void setup() {
-      AtsClientService.get().clearCaches();
+      AtsApiService.get().clearCaches();
    }
 
    @Test

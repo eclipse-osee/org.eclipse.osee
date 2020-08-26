@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -38,12 +38,12 @@ public class AtsDecisionReviewPrepareStateItemTest {
    @Test
    public void testTransitioning() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRevArt =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
       // set valid options
-      String decisionOptionStr = AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
-         AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions());
+      String decisionOptionStr = AtsApiService.get().getReviewService().getDecisionReviewOptionsString(
+         AtsApiService.get().getReviewService().getDefaultDecisionReviewOptions());
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       changes.execute();
 
@@ -54,7 +54,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       AtsDecisionReviewPrepareWorkItemHook stateItem = new AtsDecisionReviewPrepareWorkItemHook();
       TransitionResults results = new TransitionResults();
       stateItem.transitioning(results, decRevArt, fromState, toState,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()));
 
       // verify no errors
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -64,7 +64,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
       stateItem.transitioning(results, decRevArt, fromState, toState,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()));
       Assert.assertTrue(results.contains("Invalid Decision Option"));
 
    }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -81,7 +81,7 @@ public class WfeReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (AtsClientService.get().getAtsBranch().notEqual(branch)) {
+         if (AtsApiService.get().getAtsBranch().notEqual(branch)) {
             Label imageLabel = new Label(bodyComp, SWT.NONE);
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
@@ -180,7 +180,7 @@ public class WfeReloadTab extends FormPage {
             public void run() {
                IAtsWorkItem workItem = editor.getWorkItem();
                if (workItem == null) {
-                  workItem = AtsClientService.get().getWorkItemService().getWorkItem(
+                  workItem = AtsApiService.get().getWorkItemService().getWorkItem(
                      editor.getWfeInput().getSavedArtUuid().getId());
                }
                if (workItem == null) {

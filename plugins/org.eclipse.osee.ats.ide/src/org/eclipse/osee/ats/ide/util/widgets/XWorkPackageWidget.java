@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -146,7 +146,7 @@ public class XWorkPackageWidget extends GenericXWidget implements IArtifactWidge
    public String getReportData() {
       String result = "";
       try {
-         result = AtsClientService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(workflow);
+         result = AtsApiService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(workflow);
       } catch (Exception ex) {
          result = "Error resolving work package (see log for details)";
          OseeLog.log(Activator.class, Level.SEVERE, result, ex);
@@ -165,7 +165,7 @@ public class XWorkPackageWidget extends GenericXWidget implements IArtifactWidge
 
    @Override
    public boolean isEmpty() {
-      return AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) workflow) == null;
+      return AtsApiService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) workflow) == null;
    }
 
    @Override

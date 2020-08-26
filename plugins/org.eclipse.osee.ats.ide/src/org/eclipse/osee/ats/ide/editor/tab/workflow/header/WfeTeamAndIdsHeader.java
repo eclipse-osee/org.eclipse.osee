@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -86,7 +86,7 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
    @Override
    public void refresh() {
       if (Widgets.isAccessible(idValue)) {
-         String legacyPcrId = (AtsClientService.get()).getAttributeResolver().getSoleAttributeValueAsString(workItem,
+         String legacyPcrId = (AtsApiService.get()).getAttributeResolver().getSoleAttributeValueAsString(workItem,
             AtsAttributeTypes.LegacyPcrId, "");
          if (Strings.isValid(legacyPcrId)) {
             legacyPcrId = " | " + legacyPcrId;
@@ -98,7 +98,7 @@ public class WfeTeamAndIdsHeader extends Composite implements IWfeEventHandle {
             teamWfIdValue.setText(((TeamWorkFlowArtifact) workItem).getTeamName());
          } else if ((workItem.isTask() || workItem.isReview()) && workItem.getParentTeamWorkflow() != null) {
             IAtsTeamWorkflow parentTeamWorkflow = workItem.getParentTeamWorkflow();
-            parentIdValue.setText(AtsClientService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
+            parentIdValue.setText(AtsApiService.get().getWorkItemService().getCombinedPcrId(parentTeamWorkflow));
          }
          IAtsAction action = workItem.getParentAction();
          if (action != null) {

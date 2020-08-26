@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -46,16 +46,16 @@ public class AtsChangeSetTest {
    public void setup() {
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getClass().getSimpleName());
 
-      folderArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsClientService.get().getAtsBranch(),
+      folderArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsApiService.get().getAtsBranch(),
          "AtsChangeSetTest");
       folderArt.setSoleAttributeValue(CoreAttributeTypes.StaticId, "my static id");
       folderArt.persist(transaction);
 
       for (int x = 0; x < 4; x++) {
          Artifact genDocArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument,
-            AtsClientService.get().getAtsBranch(), "Art " + x + " AtsChangeSetTest");
+            AtsApiService.get().getAtsBranch(), "Art " + x + " AtsChangeSetTest");
          genDocArt.persist(transaction);
          genDocArts.add(genDocArt);
       }
@@ -66,16 +66,16 @@ public class AtsChangeSetTest {
    @After
    public void cleanup() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getClass().getSimpleName());
       for (Artifact artifact : ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
-         AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         AtsApiService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          artifact.deleteAndPersist(transaction);
       }
       transaction.execute();
    }
 
    private Artifact getGenDocArt(int x) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(genDocArts.toArray()[x]);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(genDocArts.toArray()[x]);
    }
 
    @Test
@@ -196,7 +196,7 @@ public class AtsChangeSetTest {
    }
 
    private IAtsChangeSet createAtsChangeSet() {
-      return AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
-         AtsClientService.get().getUserService().getCurrentUser());
+      return AtsApiService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+         AtsApiService.get().getUserService().getCurrentUser());
    }
 }

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -72,7 +72,7 @@ public class ActionableItemSearchWidget {
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (Long id : data.getAiIds()) {
          IAtsActionableItem ai =
-            AtsClientService.get().getActionableItemService().getActionableItemById(ArtifactId.valueOf(id));
+            AtsApiService.get().getActionableItemService().getActionableItemById(ArtifactId.valueOf(id));
          if (ai != null) {
             ais.add(ai);
          }

@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -66,7 +66,7 @@ public class AuthorColumn extends XViewerValueColumn {
             ArtifactId author = endTx.getAuthor();
             name = artIdToName.get(author);
             if (name == null) {
-               Artifact art = ArtifactQuery.getArtifactFromId(author, AtsClientService.get().getAtsBranch(),
+               Artifact art = ArtifactQuery.getArtifactFromId(author, AtsApiService.get().getAtsBranch(),
                   DeletionFlag.EXCLUDE_DELETED);
                if (art != null) {
                   name = art.getName();

@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -31,14 +31,14 @@ public class WorldAssigneeFilter extends ViewerFilter {
    Pattern p;
 
    public WorldAssigneeFilter() {
-      p = Pattern.compile(AtsClientService.get().getUserService().getCurrentUser().getName());
+      p = Pattern.compile(AtsApiService.get().getUserService().getCurrentUser().getName());
    }
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {
          if (element instanceof IAtsObject) {
-            return p.matcher(AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees,
+            return p.matcher(AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees,
                (IAtsObject) element)).find();
          }
       } catch (Exception ex) {

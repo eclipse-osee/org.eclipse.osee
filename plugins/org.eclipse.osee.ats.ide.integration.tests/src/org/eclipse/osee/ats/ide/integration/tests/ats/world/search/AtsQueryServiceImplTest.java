@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,49 +51,49 @@ public class AtsQueryServiceImplTest {
     */
    @Test
    public void testSaveSearchAndGetSavedSearchesAndRemoveSearch() {
-      AtsUser user = AtsClientService.get().getUserService().getCurrentUserNoCache();
+      AtsUser user = AtsApiService.get().getUserService().getCurrentUserNoCache();
       AtsUtil.setIsInTest(true);
 
       String namespace = AtsSearchUtil.ATS_QUERY_NAMESPACE;
       ArrayList<AtsSearchData> savedSearches =
-         AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+         AtsApiService.get().getQueryService().getSavedSearches(user, namespace);
       Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
 
       AtsSearchData data = new AtsSearchData("my search");
       data.setColorTeam("blue");
       data.setNamespace(namespace);
-      AtsClientService.get().getQueryService().saveSearch(user, data);
-      user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsApiService.get().getQueryService().saveSearch(user, data);
+      user = AtsApiService.get().getUserService().getCurrentUser();
 
-      savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(user, namespace);
       Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
 
       AtsSearchData data2 = new AtsSearchData("my search 2");
       data2.setColorTeam("green");
       data2.setNamespace(namespace);
-      AtsClientService.get().getQueryService().saveSearch(user, data2);
-      user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsApiService.get().getQueryService().saveSearch(user, data2);
+      user = AtsApiService.get().getUserService().getCurrentUser();
 
-      savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace);
+      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(user, namespace);
       Assert.assertEquals(savedSearches.toString(), 2, savedSearches.size());
 
       String namespace2 = AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE;
       data = new AtsSearchData("my search 3");
       data.setColorTeam("gold");
       data.setNamespace(namespace2);
-      AtsClientService.get().getQueryService().saveSearch(user, data);
-      user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsApiService.get().getQueryService().saveSearch(user, data);
+      user = AtsApiService.get().getUserService().getCurrentUser();
 
-      savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
+      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(user, namespace2);
       Assert.assertEquals(savedSearches.toString(), 1, savedSearches.size());
 
       // retrieve the saved search cause it has the search it
       data = savedSearches.iterator().next();
 
-      AtsClientService.get().getQueryService().removeSearch(user, data);
-      user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsApiService.get().getQueryService().removeSearch(user, data);
+      user = AtsApiService.get().getUserService().getCurrentUser();
 
-      savedSearches = AtsClientService.get().getQueryService().getSavedSearches(user, namespace2);
+      savedSearches = AtsApiService.get().getQueryService().getSavedSearches(user, namespace2);
       Assert.assertEquals(savedSearches.toString(), 0, savedSearches.size());
 
    }

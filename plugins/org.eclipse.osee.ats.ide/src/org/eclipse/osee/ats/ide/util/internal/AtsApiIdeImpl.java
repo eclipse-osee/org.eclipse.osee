@@ -44,21 +44,21 @@ import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.query.AtsQueryServiceClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.ide.util.AtsServerEndpointProviderImpl;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemServiceClientImpl;
-import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceClient;
+import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
-import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
+import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -77,13 +77,13 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
 /**
  * @author Donald G. Dunne
  */
-public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
+public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAgileService agileService;
-   private AtsQueryServiceClient queryServiceClient;
-   private IAtsWorkItemServiceClient workItemServiceClient;
+   private AtsQueryServiceIde queryServiceIde;
+   private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
@@ -116,7 +116,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       storeService = new AtsStoreService(this, getUserService(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
-      queryServiceClient = new AtsQueryServiceClient(this);
+      queryServiceIde = new AtsQueryServiceIde(this);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
 
       actionFactory = new ActionFactory(attributeResolverService, this);
@@ -161,7 +161,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public synchronized void sendNotifications(final AtsNotificationCollector notifications) {
       if (AtsUtilClient.isEmailEnabled()) {
-         AtsNotifyEndpointApi notifyEndpoint = AtsClientService.get().getServerEndpoints().getNotifyEndpoint();
+         AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
          Jobs.startJob(new Job("Send Notifications") {
 
             @Override
@@ -279,8 +279,8 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public AtsQueryServiceClient getQueryServiceClient() {
-      return queryServiceClient;
+   public AtsQueryServiceIde getQueryServiceIde() {
+      return queryServiceIde;
    }
 
    @Override
@@ -289,16 +289,16 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTaskServiceClient getTaskServiceClient() {
-      return (IAtsTaskServiceClient) taskService;
+   public IAtsTaskServiceIde getTaskServiceIde() {
+      return (IAtsTaskServiceIde) taskService;
    }
 
    @Override
-   public IAtsWorkItemServiceClient getWorkItemServiceClient() {
-      if (workItemServiceClient == null) {
-         workItemServiceClient = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
+   public IAtsWorkItemServiceIde getWorkItemServiceIde() {
+      if (workItemServiceIde == null) {
+         workItemServiceIde = new AtsWorkItemServiceClientImpl(this, teamWorkflowProvidersLazy);
       }
-      return workItemServiceClient;
+      return workItemServiceIde;
    }
 
    @Override

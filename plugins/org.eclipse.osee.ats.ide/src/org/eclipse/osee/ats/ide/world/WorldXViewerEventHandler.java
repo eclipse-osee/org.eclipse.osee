@@ -13,7 +13,7 @@
 package org.eclipse.osee.ats.ide.world;
 
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -34,7 +34,7 @@ public class WorldXViewerEventHandler implements EventHandler {
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
-               Artifact artifact = ArtifactCache.getActive(workItemId, AtsClientService.get().getAtsBranch());
+               Artifact artifact = ArtifactCache.getActive(workItemId, AtsApiService.get().getAtsBranch());
                if (artifact != null) {
                   for (IWorldViewerEventHandler handler : WorldXViewerEventManager.getHandlers()) {
                      try {

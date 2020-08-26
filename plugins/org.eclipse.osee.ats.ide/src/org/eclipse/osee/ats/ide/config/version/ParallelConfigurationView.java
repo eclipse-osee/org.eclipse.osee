@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -62,7 +62,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       IAtsTeamDefinition teamDef;
       TeamDefinitionDialog dialog = new TeamDefinitionDialog(TITLE, "Select Team");
       dialog.setMultiSelect(false);
-      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions());
+      dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions());
       if (dialog.open() == Window.OK) {
          teamDef = dialog.getSelectedFirst();
 
@@ -89,7 +89,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
 
    private IResultsEditorTab createDataTab(IAtsTeamDefinition teamDef) {
       List<IResultsXViewerRow> rows = new ArrayList<>();
-      for (IAtsVersion ver : AtsClientService.get().getVersionService().getVersions(teamDef)) {
+      for (IAtsVersion ver : AtsApiService.get().getVersionService().getVersions(teamDef)) {
          rows.add(new VersionRow(ver, null));
       }
 
@@ -137,7 +137,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       @Override
       public Collection<IResultsXViewerRow> getChildren() {
          List<IResultsXViewerRow> rows = new ArrayList<>();
-         for (IAtsVersion version : AtsClientService.get().getVersionService().getParallelVersions(version)) {
+         for (IAtsVersion version : AtsApiService.get().getVersionService().getParallelVersions(version)) {
             rows.add(new VersionRow(version, this));
          }
          return rows;

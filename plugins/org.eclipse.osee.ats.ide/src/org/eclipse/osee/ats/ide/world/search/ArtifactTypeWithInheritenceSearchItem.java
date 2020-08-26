@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -39,7 +39,7 @@ public class ArtifactTypeWithInheritenceSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsClientService.get().getAtsBranch(),
+      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsApiService.get().getAtsBranch(),
          EXCLUDE_DELETED);
    }
 

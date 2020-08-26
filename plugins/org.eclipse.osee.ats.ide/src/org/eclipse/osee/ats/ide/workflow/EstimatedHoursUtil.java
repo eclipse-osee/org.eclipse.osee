@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -25,11 +25,11 @@ public class EstimatedHoursUtil {
 
    public static double getEstimatedHours(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
-         return AtsClientService.get().getEarnedValueService().getEstimatedHoursTotal(
+         return AtsApiService.get().getEarnedValueService().getEstimatedHoursTotal(
             (AbstractWorkflowArtifact) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double total = 0;
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             total += getEstimatedHours(team);
          }
          return total;

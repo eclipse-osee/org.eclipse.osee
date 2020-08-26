@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -49,7 +49,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    @Override
    public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
       ArtifactId id = ArtifactId.SENTINEL;
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
@@ -75,7 +75,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
          data.getWorkItemIds().add(workItem.getId());
       }
 
-      AtsWorkPackageEndpointApi workPackageEp = AtsClientService.get().getServerEndpoints().getWorkPackageEndpoint();
+      AtsWorkPackageEndpointApi workPackageEp = AtsApiService.get().getServerEndpoints().getWorkPackageEndpoint();
       if (remove) {
          XResultData rd = workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
          if (rd.isErrors()) {

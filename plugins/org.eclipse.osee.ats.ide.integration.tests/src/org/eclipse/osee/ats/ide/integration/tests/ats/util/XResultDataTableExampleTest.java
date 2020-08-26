@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.result.table.ExampleTableData;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
@@ -33,7 +33,7 @@ public class XResultDataTableExampleTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().getResultTableTest();
+      XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().getResultTableTest();
       Assert.assertTrue(rd.isSuccess());
       Assert.assertEquals(1, rd.getTables().size());
       XResultTable table = rd.getTables().iterator().next();

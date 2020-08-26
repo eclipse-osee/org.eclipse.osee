@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
@@ -55,7 +55,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
          setup(getWidget());
          if (data.getVersionId() > 0) {
             IAtsVersion version =
-               AtsClientService.get().getVersionService().getVersionById(ArtifactId.valueOf(data.getVersionId()));
+               AtsApiService.get().getVersionService().getVersionById(ArtifactId.valueOf(data.getVersionId()));
             if (version != null) {
                getWidget().setSelected(Arrays.asList(version));
             }
@@ -94,7 +94,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
 
    private List<IAtsVersion> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
       List<IAtsVersion> versions = new ArrayList<>();
-      versions.addAll(AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions));
+      versions.addAll(AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions));
       Collections.sort(versions, new Comparator<IAtsVersion>() {
 
          @Override
@@ -139,7 +139,7 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       if (!teamDefArts.isEmpty()) {
 
          IAtsTeamDefinition teamDefHoldingVersions =
-            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
+            AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
                teamDefArts.iterator().next());
          if (teamDefHoldingVersions != null) {
             versions.addAll(getSortedVersions(teamDefHoldingVersions));
@@ -148,12 +148,12 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
       if (!teamActArts.isEmpty()) {
 
          for (IAtsActionableItem ai : teamActArts) {
-            for (ArtifactToken teamDefArt : AtsClientService.get().getRelationResolver().getRelated(ai,
+            for (ArtifactToken teamDefArt : AtsApiService.get().getRelationResolver().getRelated(ai,
                AtsRelationTypes.TeamActionableItem_TeamDefinition)) {
                IAtsTeamDefinition teamDef =
-                  AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(teamDefArt);
+                  AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(teamDefArt);
                IAtsTeamDefinition teamDefHoldVer =
-                  AtsClientService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
+                  AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
                versions.addAll(getSortedVersions(teamDefHoldVer));
             }
          }

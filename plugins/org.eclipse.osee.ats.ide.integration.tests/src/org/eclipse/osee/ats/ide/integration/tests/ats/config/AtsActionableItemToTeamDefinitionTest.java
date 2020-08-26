@@ -19,7 +19,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 
 /**
  * @author Donald G. Dunne
@@ -30,11 +30,11 @@ public class AtsActionableItemToTeamDefinitionTest {
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
       StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
-      for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
+      for (IAtsActionableItem aia : AtsApiService.get().getQueryService().createQuery(
          AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
             Collection<IAtsTeamDefinition> impactedTeamDefs =
-               AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia));
+               AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia));
             if (impactedTeamDefs.isEmpty()) {
                sb.append("[" + aia + "]");
                error = true;

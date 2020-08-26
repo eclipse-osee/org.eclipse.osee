@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -89,9 +89,9 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
          } else if (Artifacts.isOfType(treeItem.getData(),
-            AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(
+            AtsArtifactTypes.Action) && AtsApiService.get().getWorkItemService().getTeams(
                treeItem.getData()).size() == 1) {
-            aba = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+            aba = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
                treeItem.getData()).getStoreObject();
          }
          if (aba != null) {
@@ -124,7 +124,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
                ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
          }
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             if (!isRemainingHoursValid(team).isFalse()) {
                return Result.FalseResult;
             }
@@ -135,11 +135,11 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
 
    public static double getRemainingHours(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
-         return AtsClientService.get().getEarnedValueService().getRemainHoursTotal((AbstractWorkflowArtifact) object);
+         return AtsApiService.get().getEarnedValueService().getRemainHoursTotal((AbstractWorkflowArtifact) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             hours += getRemainingHours(team);
          }
          return hours;

@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -55,7 +55,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
-         boolean isAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+         boolean isAdmin = AtsApiService.get().getUserService().isAtsAdmin();
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle Admin", message)) {
             if (!isAdmin) {
@@ -88,9 +88,9 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }
             }
-            AtsClientService.get().getConfigService().getConfigurationsWithPend();
-            AtsClientService.get().getUserService().isAtsAdmin(false);
-            AtsClientService.get().getUserService().clearCaches();
+            AtsApiService.get().getConfigService().getConfigurationsWithPend();
+            AtsApiService.get().getUserService().isAtsAdmin(false);
+            AtsApiService.get().getUserService().clearCaches();
             NavigateViewItems.getInstance().clearCaches();
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refreshPages();

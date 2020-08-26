@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -46,8 +46,8 @@ public class WorkflowManager {
       // and access control writeable
          awa.isAccessControlWrite() && //
 
-         (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
-            awa.getStateDefinition(), AtsClientService.get().getUserService()) || //
+         (WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), awa,
+            awa.getStateDefinition(), AtsApiService.get().getUserService()) || //
          // page is define to allow anyone to edit
             awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
             // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
@@ -64,9 +64,9 @@ public class WorkflowManager {
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
-      for (ArtifactTypeToken artType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+      for (ArtifactTypeToken artType : AtsApiService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-            ArtifactQuery.getArtifactListFromType(artType, AtsClientService.get().getAtsBranch()));
+            ArtifactQuery.getArtifactListFromType(artType, AtsApiService.get().getAtsBranch()));
          result.addAll(teamArts);
       }
       return result;
@@ -152,10 +152,10 @@ public class WorkflowManager {
          if (awa.getParentTeamWorkflow() == null) {
             continue;
          }
-         if (!AtsClientService.get().getVersionService().hasTargetedVersion(awa)) {
+         if (!AtsApiService.get().getVersionService().hasTargetedVersion(awa)) {
             continue;
          }
-         if (versionArts.contains(AtsClientService.get().getVersionService().getTargetedVersion(awa))) {
+         if (versionArts.contains(AtsApiService.get().getVersionService().getTargetedVersion(awa))) {
             returnawas.add(awa);
          }
       }
@@ -191,7 +191,7 @@ public class WorkflowManager {
       if (workItem != null) {
          IAtsWorkDefinition definition = workItem.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
-         for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+         for (IAtsStateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
             definition)) {
             try {
                StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver,

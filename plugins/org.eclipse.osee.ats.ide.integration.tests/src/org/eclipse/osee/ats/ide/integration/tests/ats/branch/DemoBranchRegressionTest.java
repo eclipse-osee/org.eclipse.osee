@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.branch.BranchRegressionTest;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -92,15 +92,15 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    @Override
    public void testCreateAction() {
       String rpcrNumber = getLegacyPcrId();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      actionResult = AtsClientService.get().getActionFactory().createAction(null, getClass().getSimpleName(),
+      actionResult = AtsApiService.get().getActionFactory().createAction(null, getClass().getSimpleName(),
          "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
          Arrays.asList(new PcrNumberActionListener()), changes);
 
@@ -110,15 +110,15 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       changes.execute();
 
       Collection<IAtsTeamWorkflow> teamWfs =
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
             AtsAttributeTypes.LegacyPcrId, rpcrNumber).getItems();
 
       Assert.assertEquals(3, teamWfs.size());
       testTeamWorkflows(teamWfs);
 
       changes.reset(getClass().getSimpleName() + " - transition req wf");
-      TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeam, AtsClientService.get());
-      mgr.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeam, AtsApiService.get());
+      mgr.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
    }
 
@@ -212,8 +212,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
          INewActionListener.super.teamCreated(action, teamWf, changes);
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, getLegacyPcrId());
-         IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
-         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
+         IAtsVersion version = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+         AtsApiService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
       }
 
    }
@@ -258,7 +258,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    private IAtsTeamWorkflow runCreateCodeTestTasks() {
       IAtsTeamWorkflow codeWf = getCodeTeamWf();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       ChangeReportTaskData data = CreateChangeReportTaskTransitionHook.runChangeReportTaskOperation(codeWf,
          TaskSetDefinitionTokensDemo.SawCreateTasksFromReqChanges, changes);
       changes.executeIfNeeded();
@@ -270,7 +270,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    private void testTasksAgainstExpected(Collection<String> expected) {
       IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
 
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(codeWf);
 
       Assert.assertEquals(expected.size(), tasks.size());
 
@@ -278,8 +278,8 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
          boolean contains = expected.contains(task.getName());
          Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
-         boolean deReferenced = AtsClientService.get().getTaskService().isAutoGenDeReferenced(task);
-         boolean autoGenTask = AtsClientService.get().getTaskService().isAutoGen(task);
+         boolean deReferenced = AtsApiService.get().getTaskService().isAutoGenDeReferenced(task);
+         boolean autoGenTask = AtsApiService.get().getTaskService().isAutoGen(task);
 
          if (autoGenTask) {
             Assert.assertFalse(deReferenced);
@@ -343,7 +343,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       testTasksAgainstExpected(changeNameToReqArtToDelExpected);
 
       IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(codeWf);
       int count = 0;
       for (IAtsTask task : tasks) {
          if (task.getName().contains("[In-Branch Artifact to Delete]")) {
@@ -365,7 +365,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
          "Handle Relation change to [In-Branch Artifact to Delete Changed]"));
 
       IAtsTeamWorkflow codeWf = runCreateCodeTestTasks();
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(codeWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(codeWf);
       int count = 0;
       for (IAtsTask task : tasks) {
          if (task.getName().contains("[In-Branch Artifact to Delete]") || task.getName().contains(
@@ -378,11 +378,11 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
    }
 
    private void testTaskIsDeReferenced(IAtsTask task) {
-      List<IAtsWorkItem> reload = AtsClientService.get().getStoreService().reload(Collections.singleton(task));
+      List<IAtsWorkItem> reload = AtsApiService.get().getStoreService().reload(Collections.singleton(task));
       task = (IAtsTask) reload.iterator().next();
 
       // Test that task has AutoGenTask static id removed
       Assert.assertTrue(task.getTags().isEmpty());
-      Assert.assertTrue(AtsClientService.get().getTaskService().isAutoGenDeReferenced(task));
+      Assert.assertTrue(AtsApiService.get().getTaskService().isAutoGenDeReferenced(task));
    }
 }

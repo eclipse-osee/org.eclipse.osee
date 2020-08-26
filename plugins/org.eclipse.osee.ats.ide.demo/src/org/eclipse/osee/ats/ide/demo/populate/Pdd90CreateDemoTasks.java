@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 
@@ -35,7 +35,7 @@ public class Pdd90CreateDemoTasks {
 
    public void run() throws Exception {
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       boolean firstTaskWorkflow = true;
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
@@ -56,7 +56,7 @@ public class Pdd90CreateDemoTasks {
          firstTaskWorkflow = false;
          newTaskDatas.add(newTaskData);
       }
-      AtsClientService.get().getTaskService().createTasks(newTaskDatas);
+      AtsApiService.get().getTaskService().createTasks(newTaskDatas);
    }
 
 }

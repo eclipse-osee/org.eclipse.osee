@@ -11,23 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.demo.internal;
+package org.eclipse.osee.ats.ide.internal;
 
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsClientService {
+public class AtsApiService {
 
-   private static IAtsClient atsClient;
+   private static AtsApiIde atsApiIde;
 
-   public void setAtsClient(IAtsClient atsClient) {
-      AtsClientService.atsClient = atsClient;
+   public void setAtsApiIde(AtsApiIde atsApiIde) {
+      AtsApiService.atsApiIde = atsApiIde;
    }
 
-   public static IAtsClient get() {
-      return atsClient;
+   public static AtsApiIde get() {
+      return atsApiIde;
    }
 
 }

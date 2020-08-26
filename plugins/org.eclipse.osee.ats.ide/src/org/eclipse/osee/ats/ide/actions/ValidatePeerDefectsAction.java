@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -55,7 +55,7 @@ public class ValidatePeerDefectsAction extends Action {
          XResultData rd = new XResultData();
          rd.log(getText() + "\n\n");
          String idsStr = ed.getEntry();
-         List<IAtsWorkItem> workItems = AtsClientService.get().getQueryService().getWorkItemsByIds(idsStr);
+         List<IAtsWorkItem> workItems = AtsApiService.get().getQueryService().getWorkItemsByIds(idsStr);
          for (IAtsWorkItem workItem : workItems) {
             if (workItem.isPeerReview()) {
                validateReviewDefects(workItem, rd);
@@ -69,13 +69,13 @@ public class ValidatePeerDefectsAction extends Action {
 
    private void validateReviewDefects(IAtsWorkItem workItem, XResultData rd) {
       Artifact art =
-         ArtifactQuery.reloadArtifactFromId(workItem.getArtifactId(), AtsClientService.get().getAtsBranch());
-      IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) AtsClientService.get().getWorkItemService().getReview(art);
+         ArtifactQuery.reloadArtifactFromId(workItem.getArtifactId(), AtsApiService.get().getAtsBranch());
+      IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) AtsApiService.get().getWorkItemService().getReview(art);
       Map<String, Attribute<?>> guids = new HashMap<String, Attribute<?>>();
       Map<Long, Attribute<?>> ids = new HashMap<>();
       for (Attribute<?> attr : art.getAttributes(AtsAttributeTypes.ReviewDefect)) {
          String xml = (String) attr.getValue();
-         ReviewDefectItem item = AtsClientService.get().getReviewService().getDefectItem(xml, review);
+         ReviewDefectItem item = AtsApiService.get().getReviewService().getDefectItem(xml, review);
          if (guids.keySet().contains(item.getGuid())) {
             rd.errorf("Duplicate guid %s on attr id %s and attr id %s\n", item.getGuid(),
                guids.get(item.getGuid()).getIdString(), attr.getIdString());

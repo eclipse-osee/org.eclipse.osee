@@ -24,7 +24,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.ide.util.AtsUserLabelProvider;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
@@ -89,7 +89,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    private Collection<AtsUser> getStoredAtsUsers() {
       List<AtsUser> users = new LinkedList<>();
       for (String userId : awa.getAttributesToStringList(attributeType)) {
-         AtsUser user = AtsClientService.get().getUserService().getUserByUserId(userId);
+         AtsUser user = AtsApiService.get().getUserService().getUserByUserId(userId);
          if (user != null && !AtsCoreUsers.isSystemUser(user)) {
             users.add(user);
          }
@@ -156,7 +156,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    private void handleModifyList() {
       try {
          UserCheckTreeDialog uld = new UserCheckTreeDialog("Select User(s)", "Select Users.",
-            AtsClientService.get().getUserService().getUsers(Active.Active));
+            AtsApiService.get().getUserService().getUsers(Active.Active));
          Collection<AtsUser> atsUsers = getStoredAtsUsers();
          if (!atsUsers.isEmpty()) {
             uld.setInitialSelections(atsUsers);
@@ -165,7 +165,7 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
             selectedUsers.clear();
             for (Object obj : uld.getResult()) {
                User user = (User) obj;
-               AtsUser atsUser = AtsClientService.get().getUserService().getUserById(user);
+               AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
                if (!AtsCoreUsers.isUnAssignedUser(atsUser)) {
                   selectedUsers.add(atsUser);
                }

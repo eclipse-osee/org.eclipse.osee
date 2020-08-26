@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.AbstractMemberProvider;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -128,7 +128,7 @@ public class SprintMemberProvider extends AbstractMemberProvider {
 
    @Override
    public void setArtifact(Artifact artifact) {
-      sprint = AtsClientService.get().getAgileService().getAgileSprint(artifact);
+      sprint = AtsApiService.get().getAgileService().getAgileSprint(artifact);
    }
 
 }

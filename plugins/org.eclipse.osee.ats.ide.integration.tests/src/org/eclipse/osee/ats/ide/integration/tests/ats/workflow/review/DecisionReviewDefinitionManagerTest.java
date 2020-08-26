@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTestPrepare;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision;
@@ -48,9 +48,9 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
-      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
          new WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision());
-      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(
+      AtsApiService.get().getWorkDefinitionService().addWorkDefinition(
          new WorkDefTeamDecisionReviewDefinitionManagerTestPrepare());
    }
 
@@ -60,8 +60,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
          DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision, changes);
       changes.execute();
 
@@ -71,8 +71,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf), TeamState.Implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
 
       Assert.assertTrue(results.toString(), results.isEmpty());
       Assert.assertFalse(teamWf.isDirty());
@@ -98,8 +98,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - Prepare");
 
       IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf,
          DemoWorkDefinitionTokens.WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare, changes);
       changes.execute();
 
@@ -107,10 +107,10 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(),
          Arrays.asList((TeamWorkFlowArtifact) teamWf.getStoreObject()), TeamState.Implement.getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser
 
          ()), null, null, TransitionOption.None);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 

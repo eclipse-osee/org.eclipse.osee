@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.actions.OpenInAtsWorldAction;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 
 /**
@@ -25,7 +25,7 @@ public class OpenInAtsWorldActionTest2 extends AbstractAtsActionRunTest {
 
    @Override
    public OpenInAtsWorldAction createAction() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       OpenInAtsWorldAction action = new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {
          changes.execute();

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,7 +59,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
 
    protected AtsUser getUser() {
       if (this.user == null && useCurrentUser) {
-         this.user = AtsClientService.get().getUserService().getCurrentUser();
+         this.user = AtsApiService.get().getUserService().getCurrentUser();
       }
       return this.user;
    }
@@ -116,7 +116,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select User", active);
       int result = ld.open();
       if (result == 0) {
-         selectedUser = AtsClientService.get().getUserService().getUserById(ld.getSelection());
+         selectedUser = AtsApiService.get().getUserService().getUserById(ld.getSelection());
          return;
       }
       cancelled = true;

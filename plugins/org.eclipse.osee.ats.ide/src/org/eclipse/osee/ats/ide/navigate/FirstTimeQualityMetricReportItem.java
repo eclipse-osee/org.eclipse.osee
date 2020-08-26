@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.config.version.VersionMetrics;
 import org.eclipse.osee.ats.ide.config.version.VersionTeamMetrics;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -68,7 +68,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
       try {
          teamReleaseableDefinitions =
-            AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both);
+            AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Both);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }
@@ -140,13 +140,13 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       monitor.beginTask("Processing Versions", verMets.size());
       for (VersionMetrics verMet : verMets) {
          Date thisReleaseStartDate = verMet.getReleaseStartDate();
-         Date thisReleaseEndDate = AtsClientService.get().getVersionService().getReleaseDate(verMet.getVerArt());
+         Date thisReleaseEndDate = AtsApiService.get().getVersionService().getReleaseDate(verMet.getVerArt());
          Date nextReleaseStartDate = null;
          Date nextReleaseEndDate = null;
          VersionMetrics nextVerMet = verMet.getNextVerMetViaReleaseDate();
          if (nextVerMet != null) {
             nextReleaseStartDate = nextVerMet.getReleaseStartDate();
-            nextReleaseEndDate = AtsClientService.get().getVersionService().getReleaseDate(nextVerMet.getVerArt());
+            nextReleaseEndDate = AtsApiService.get().getVersionService().getReleaseDate(nextVerMet.getVerArt());
          }
          Integer numOrigDurningNextReleaseCycle = 0;
          if (nextReleaseStartDate != null && nextReleaseEndDate != null) {
@@ -155,7 +155,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             for (TeamWorkFlowArtifact team : arts) {
                String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.Priority, "");
                if (!team.isCancelled() && ChangeTypeUtil.getChangeType(team,
-                  AtsClientService.get()) == ChangeType.Problem && (priorityStr.equals(
+                  AtsApiService.get()) == ChangeType.Problem && (priorityStr.equals(
                      "1") || priorityStr.equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }

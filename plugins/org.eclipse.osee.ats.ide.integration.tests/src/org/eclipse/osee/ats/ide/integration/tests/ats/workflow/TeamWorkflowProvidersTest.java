@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class TeamWorkflowProvidersTest {
 
    @Test
    public void test() throws Exception {
-      AtsClientService.get().getTeamWorkflowProviders();
+      AtsApiService.get().getTeamWorkflowProviders();
       List<ITeamWorkflowProvider> providers = TeamWorkflowProviders.getTeamWorkflowProviders();
       Assert.assertEquals(1, providers.size());
 

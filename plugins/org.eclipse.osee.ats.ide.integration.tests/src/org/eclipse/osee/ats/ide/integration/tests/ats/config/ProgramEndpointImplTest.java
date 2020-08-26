@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class ProgramEndpointImplTest {
 
    @Test
    public void testGetProgramVersions() {
-      List<ProgramVersions> progVers = AtsClientService.get().getServerEndpoints().getProgramEp().getVersions(null);
+      List<ProgramVersions> progVers = AtsApiService.get().getServerEndpoints().getProgramEp().getVersions(null);
       Assert.assertNotNull(progVers);
    }
 

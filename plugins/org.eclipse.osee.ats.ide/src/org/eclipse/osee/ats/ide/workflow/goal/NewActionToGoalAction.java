@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -82,7 +82,7 @@ public class NewActionToGoalAction extends Action {
             List<Artifact> atsTeams = agileTeam.getRelatedArtifacts(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam);
             for (Artifact atsTeam : atsTeams) {
                for (Artifact ai : atsTeam.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-                  ais.add(AtsClientService.get().getActionableItemService().getActionableItemById(ai));
+                  ais.add(AtsApiService.get().getActionableItemService().getActionableItemById(ai));
                }
             }
          }
@@ -100,11 +100,11 @@ public class NewActionToGoalAction extends Action {
                }
                if (dropTarget != null) {
                   collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
-                     AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+                     AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
                   if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-                     AtsClientService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
+                     AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
                   } else if (memberProvider.isSprint()) {
-                     AtsClientService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
+                     AtsApiService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
                   }
                }
 

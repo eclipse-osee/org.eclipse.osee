@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -178,7 +178,7 @@ public class WfeDetailsSection extends SectionPart implements IWfeEventHandle {
             }
          } else {
             try {
-               User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
+               User user = UserManager.getUserByArtId(AtsApiService.get().getUserService().getCurrentUser());
                ids = accessControl.getContextId(user, workingBranch);
                message = ids.toString();
             } catch (Exception ex) {

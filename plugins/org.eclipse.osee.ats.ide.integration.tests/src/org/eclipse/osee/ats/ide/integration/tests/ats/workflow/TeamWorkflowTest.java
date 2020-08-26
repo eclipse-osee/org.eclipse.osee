@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class TeamWorkflowTest {
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais.iterator().next());
 
       TeamWorkflow tWf =
-         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get(), teamWf);
+         new TeamWorkflow(AtsApiService.get().getLogger(), AtsApiService.get(), teamWf);
       Set<IAtsActionableItem> ais1 = tWf.getActionableItems();
       Assert.assertEquals(1, ais1.size());
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais1.iterator().next());
@@ -51,7 +51,7 @@ public class TeamWorkflowTest {
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef);
 
       TeamWorkflow tWf =
-         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get(), teamWf);
+         new TeamWorkflow(AtsApiService.get().getLogger(), AtsApiService.get(), teamWf);
       IAtsTeamDefinition teamDef1 = tWf.getTeamDefinition();
       Assert.assertNotNull(teamDef1);
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef1);

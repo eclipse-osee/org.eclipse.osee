@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -55,7 +55,7 @@ public class ParentIdColumn extends XViewerAtsColumn implements IAtsXViewerPreCo
    public String getText(Object element) {
       try {
          if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return AtsClientService.get().getWorkItemService().getCombinedPcrId(
+            return AtsApiService.get().getWorkItemService().getCombinedPcrId(
                (IAtsWorkItem) ((AbstractWorkflowArtifact) element).getParentAWA());
          }
       } catch (OseeCoreException ex) {

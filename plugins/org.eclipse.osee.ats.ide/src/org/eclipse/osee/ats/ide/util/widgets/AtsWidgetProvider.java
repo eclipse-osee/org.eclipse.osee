@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.ide.column.OperationalImpactXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
 import org.eclipse.osee.ats.ide.util.validate.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.ide.util.validate.AtsOperationalImpactWithWorkaroundValidator;
@@ -128,7 +128,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       } else if (widgetName.equals("XAtsProgramActiveComboWidget")) {
          try {
             List<IAtsProgram> activePrograms = new ArrayList<>();
-            for (IAtsProgram program : AtsClientService.get().getProgramService().getPrograms()) {
+            for (IAtsProgram program : AtsApiService.get().getProgramService().getPrograms()) {
                if (program.isActive()) {
                   activePrograms.add(program);
                }

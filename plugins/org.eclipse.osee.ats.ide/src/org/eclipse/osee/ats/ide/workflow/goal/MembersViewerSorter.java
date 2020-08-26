@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -35,8 +35,8 @@ public class MembersViewerSorter extends ViewerComparator {
          try {
             AbstractWorkflowArtifact awa1 = (AbstractWorkflowArtifact) o1;
             AbstractWorkflowArtifact awa2 = (AbstractWorkflowArtifact) o2;
-            boolean g1Fav = FavoritesManager.isFavorite(awa1, AtsClientService.get().getUserService().getCurrentUser());
-            boolean g2Fav = FavoritesManager.isFavorite(awa2, AtsClientService.get().getUserService().getCurrentUser());
+            boolean g1Fav = FavoritesManager.isFavorite(awa1, AtsApiService.get().getUserService().getCurrentUser());
+            boolean g2Fav = FavoritesManager.isFavorite(awa2, AtsApiService.get().getUserService().getCurrentUser());
             if (g1Fav && g2Fav) {
                return compare(awa1, awa2);
             } else if (g1Fav && !g2Fav) {

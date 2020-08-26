@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -65,19 +65,19 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
 
    public static ActionResult createActionWithAllAis() {
       // Clear out config cache to ensure only get live configs
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       Set<IAtsActionableItem> aias = new HashSet<>();
-      for (IAtsActionableItem aia : AtsClientService.get().getConfigService().getConfigurations().getIdToAi().values()) {
+      for (IAtsActionableItem aia : AtsApiService.get().getConfigService().getConfigurations().getIdToAi().values()) {
          if (aia.isActionable() && aia.isAllowUserActionCreation()) {
             aias.add(aia);
          }
       }
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Action using all AIs");
-      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Big Action Test - Delete Me",
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Action using all AIs");
+      ActionResult action = AtsApiService.get().getActionFactory().createAction(null, "Big Action Test - Delete Me",
          "Description", ChangeType.Improvement, "1", false, null, aias, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
       return action;
    }

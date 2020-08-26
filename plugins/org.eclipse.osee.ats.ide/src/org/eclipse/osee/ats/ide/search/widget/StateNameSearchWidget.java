@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.search.widget;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -44,6 +44,6 @@ public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public Collection<String> getInput() {
-      return AtsClientService.get().getConfigService().getConfigurations().getValidStateNames();
+      return AtsApiService.get().getConfigService().getConfigurations().getValidStateNames();
    }
 }

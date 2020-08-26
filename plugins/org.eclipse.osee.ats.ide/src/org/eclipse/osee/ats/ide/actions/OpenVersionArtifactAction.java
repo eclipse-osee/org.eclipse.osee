@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -36,9 +36,9 @@ public class OpenVersionArtifactAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      if (AtsClientService.get().getVersionService().hasTargetedVersion(sma)) {
-         RendererManager.open(AtsClientService.get().getQueryServiceClient().getArtifact(
-            AtsClientService.get().getVersionService().getTargetedVersion(sma)), PresentationType.DEFAULT_OPEN);
+      if (AtsApiService.get().getVersionService().hasTargetedVersion(sma)) {
+         RendererManager.open(AtsApiService.get().getQueryServiceIde().getArtifact(
+            AtsApiService.get().getVersionService().getTargetedVersion(sma)), PresentationType.DEFAULT_OPEN);
       }
    }
 }

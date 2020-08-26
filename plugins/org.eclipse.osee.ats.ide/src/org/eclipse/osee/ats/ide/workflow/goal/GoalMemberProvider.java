@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.agile.BacklogXViewerFactory;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -115,7 +115,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
 
    @Override
    public boolean isBacklog() {
-      return AtsClientService.get().getAgileService().isBacklog(getArtifact());
+      return AtsApiService.get().getAgileService().isBacklog(getArtifact());
    }
 
    @Override

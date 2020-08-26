@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskStates;
@@ -88,7 +88,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
          dispose();
       }
       try {
-         if (AtsClientService.get().getTaskService().hasTasks(teamWf)) {
+         if (AtsApiService.get().getTaskService().hasTasks(teamWf)) {
             dispose();
             getStateStatus(teamWf, forState);
          } else {
@@ -114,8 +114,8 @@ public class TaskInfoXWidget extends XLabelValueBase {
 
    public static Result areTasksComplete(IAtsTeamWorkflow teamWf, IStateToken state) {
       try {
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTask(teamWf)) {
-            if (task.getStateMgr().getStateType().isInWork() && AtsClientService.get().getTaskService().isRelatedToState(
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTask(teamWf)) {
+            if (task.getStateMgr().getStateType().isInWork() && AtsApiService.get().getTaskService().isRelatedToState(
                task, state.getName())) {
                return new Result(false, "Task " + task.getIdString() + " Not Complete");
             }
@@ -135,7 +135,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
       HashMap<String, Integer> countingMap = new HashMap<String, Integer>();
       HashMap<String, Integer> colorMap = new HashMap<String, Integer>();
       int numStates = 0;
-      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(currWf)) {
+      for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(currWf)) {
          if (task.getStateDefinition() == null) {
             continue;
          }
@@ -159,7 +159,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
       tasksCompositeLabel.setLayout(new GridLayout(gridSpaces, false));
       tasksCompositeLabel.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false));
       setValueText(String.format(" Total: %d  |  Current State \"%s\": %s", numStates, currState.getName(),
-         AtsClientService.get().getTaskService().getTasks(currWf, currState).size()));
+         AtsApiService.get().getTaskService().getTasks(currWf, currState).size()));
       Label leftAlignLab = new Label(tasksCompositeLabel, SWT.NONE);
       leftAlignLab.setText("          ");
       for (String key : countingMap.keySet()) {
@@ -172,7 +172,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
    public void addAdminRightClickOption() {
       try {
          // If ATS Admin, allow right-click to auto-complete tasks
-         if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getStoreService().isProductionDb()) {
+         if (AtsApiService.get().getUserService().isAtsAdmin() && !AtsApiService.get().getStoreService().isProductionDb()) {
             labelWidget.addListener(SWT.MouseUp, new Listener() {
                @Override
                public void handleEvent(Event event) {
@@ -182,19 +182,19 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      try {
-                        for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf, forState)) {
+                        for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf, forState)) {
                            TaskArtifact taskArt = (TaskArtifact) task.getStoreObject();
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(
-                                    AtsClientService.get().getUserService().getCurrentUser());
+                                    AtsApiService.get().getUserService().getCurrentUser());
                               }
                               TransitionHelper helper = new TransitionHelper("Transition to Completed",
                                  Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, null,
-                                 AtsClientService.get(), TransitionOption.OverrideTransitionValidityCheck,
+                                 AtsApiService.get(), TransitionOption.OverrideTransitionValidityCheck,
                                  TransitionOption.None);
                               TransitionResults results =
-                                 AtsClientService.get().getWorkItemServiceClient().transition(helper);
+                                 AtsApiService.get().getWorkItemServiceIde().transition(helper);
                               if (!results.isEmpty()) {
                                  AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                                  return;

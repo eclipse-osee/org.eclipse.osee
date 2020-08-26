@@ -18,7 +18,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -43,7 +43,7 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
          setup(getWidget());
          Long workPackageId = data.getWorkPackageId();
          if (workPackageId != null && workPackageId > 0) {
-            IAtsWorkPackage workPackage = AtsClientService.get().getProgramService().getWorkPackage(workPackageId);
+            IAtsWorkPackage workPackage = AtsApiService.get().getProgramService().getWorkPackage(workPackageId);
             XComboViewer combo = getWidget();
             combo.setSelected(Arrays.asList(workPackage));
          }
@@ -56,7 +56,7 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
          Object selected = insertionActivityWidget.getWidget().getSelected();
          if (selected != null && selected instanceof IAtsInsertionActivity) {
             return Collections.castAll(
-               AtsClientService.get().getEarnedValueService().getWorkPackages(insertionActivityWidget.get()));
+               AtsApiService.get().getEarnedValueService().getWorkPackages(insertionActivityWidget.get()));
          }
       }
       return java.util.Collections.emptyList();

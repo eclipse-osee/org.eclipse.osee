@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -53,7 +53,7 @@ public class AtsQueryImplTest {
 
    @Test
    public void test() {
-      AtsApi atsApi = AtsClientService.get();
+      AtsApi atsApi = AtsApiService.get();
       IAtsQueryService queryService = atsApi.getQueryService();
 
       AtsUser joeSmith = atsApi.getUserService().getUserByUserId("3333");
@@ -152,9 +152,9 @@ public class AtsQueryImplTest {
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
 
-      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemService().getTeamWf(
+      IAtsTeamWorkflow codeWf = AtsApiService.get().getWorkItemService().getTeamWf(
          DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
-      IAtsTask codeTask = (IAtsTask) AtsClientService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
+      IAtsTask codeTask = (IAtsTask) AtsApiService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
          CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();
 
       Conditions.checkNotNull(codeWf, "Code Team Workflow");
@@ -193,7 +193,7 @@ public class AtsQueryImplTest {
 
    @Test
    public void testWorkPackage() {
-      IAtsClient client = AtsClientService.get();
+      AtsApiIde client = AtsApiService.get();
 
       IAtsWorkPackage workPackage =
          (IAtsWorkPackage) client.getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andName(

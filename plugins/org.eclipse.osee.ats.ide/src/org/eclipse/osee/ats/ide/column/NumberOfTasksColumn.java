@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -63,7 +63,7 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);
@@ -72,7 +72,7 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
             return Collections.toString(", ", strs);
          }
          if (element instanceof TeamWorkFlowArtifact) {
-            int num = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) element).size();
+            int num = AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) element).size();
             if (num == 0) {
                return "";
             }

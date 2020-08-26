@@ -48,7 +48,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -111,9 +111,9 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, AtsClientService.get().getAtsBranch())) {
+                     actionableItemName, AtsApiService.get().getAtsBranch())) {
                      IAtsActionableItem ai =
-                        AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
+                        AtsApiService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -126,7 +126,7 @@ public class ExcelAtsActionArtifactExtractor {
                   } else {
                      IAtsActionableItem aia = aias.iterator().next();
                      teamDefs.addAll(
-                        AtsClientService.get().getActionableItemService().getImpactedTeamDefs(Arrays.asList(aia)));
+                        AtsApiService.get().getActionableItemService().getImpactedTeamDefs(Arrays.asList(aia)));
                      if (teamDefs.isEmpty()) {
                         rd.error(
                            "Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
@@ -145,12 +145,12 @@ public class ExcelAtsActionArtifactExtractor {
          if (!aData.version.equals("")) {
             try {
                for (IAtsTeamDefinition teamDef : teamDefs) {
-                  if (AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef) == null) {
+                  if (AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef) == null) {
                      rd.errorf("No Team Definitions Holding Versions found for Team Definition [%s]", teamDef);
                   }
                   IAtsTeamDefinition teamDefHolVer =
-                     AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
-                  if (AtsClientService.get().getVersionService().getVersion(teamDefHolVer, aData.version) == null) {
+                     AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
+                  if (AtsApiService.get().getVersionService().getVersion(teamDefHolVer, aData.version) == null) {
                      rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version, teamDef);
                   }
                }
@@ -166,7 +166,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  AtsUser user = AtsClientService.get().getUserService().getUserByName(assignee);
+                  AtsUser user = AtsApiService.get().getUserService().getUserByName(assignee);
                   if (user == null) {
                      rd.error("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -202,7 +202,7 @@ public class ExcelAtsActionArtifactExtractor {
                rd.errorf("Invalid team name [%s] for points [%s]", aData.agileTeamName, aData.agilePoints);
             } else {
                AttributeTypeId pointsAttrType =
-                  AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
+                  AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
                if (pointsAttrType == null) {
                   rd.errorf("Points not configured for team [%s]", aData.agileTeamName);
                }
@@ -217,29 +217,29 @@ public class ExcelAtsActionArtifactExtractor {
       Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
       Date createdDate = new Date();
       try {
-         AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+         AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
             ActionResult actionResult = actionNameToAction.get(aData.title);
             if (actionResult == null) {
                ChangeType changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
-               ActionResult aResult = AtsClientService.get().getActionFactory().createAction(null, aData.title,
+               ActionResult aResult = AtsApiService.get().getActionFactory().createAction(null, aData.title,
                   aData.desc, changeType, priorityStr, false, null,
-                  AtsClientService.get().getActionableItemService().getActionableItems(aData.actionableItems),
+                  AtsApiService.get().getActionableItemService().getActionableItems(aData.actionableItems),
                   createdDate, createdBy, null, changes);
                actionNameToAction.put(aData.title, aResult);
                for (IAtsTeamWorkflow teamWf : aResult.getTeams()) {
                   processTeamWorkflow(changes, aData, teamWf);
                   teamWfs.add(teamWf);
                }
-               actionArts.add(AtsClientService.get().getQueryServiceClient().getArtifact(aResult.getActionArt()));
+               actionArts.add(AtsApiService.get().getQueryServiceIde().getArtifact(aResult.getActionArt()));
             } else {
                Set<IAtsActionableItem> aias = new HashSet<>();
                for (String actionableItemName : aData.actionableItems) {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, AtsClientService.get().getAtsBranch())) {
+                     actionableItemName, AtsApiService.get().getAtsBranch())) {
                      IAtsActionableItem ai =
-                        AtsClientService.get().getActionableItemService().getActionableItemById(aiaArt);
+                        AtsApiService.get().getActionableItemService().getActionableItemById(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -247,7 +247,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
-                  IAtsTeamWorkflow teamWf = AtsClientService.get().getActionFactory().createTeamWorkflow(
+                  IAtsTeamWorkflow teamWf = AtsApiService.get().getActionFactory().createTeamWorkflow(
                      actionResult.getAction(), entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate,
                      createdBy, null, CreateTeamOption.Duplicate_If_Exists);
                   actionResult.getTeams().add(teamWf);
@@ -261,7 +261,7 @@ public class ExcelAtsActionArtifactExtractor {
             for (IAtsTeamWorkflow teamWf : teamWfs) {
                try {
                   changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-                     AtsClientService.get().getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
+                     AtsApiService.get().getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
                }
@@ -309,12 +309,12 @@ public class ExcelAtsActionArtifactExtractor {
 
       if (!aData.version.equals("")) {
          IAtsTeamDefinition teamDefHoldVer =
-            AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
-         IAtsVersion version = AtsClientService.get().getVersionService().getVersion(teamDefHoldVer, aData.version);
+            AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(teamWf.getTeamDefinition());
+         IAtsVersion version = AtsApiService.get().getVersionService().getVersion(teamDefHoldVer, aData.version);
          if (version == null) {
             rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version, teamWf.getTeamDefinition());
          }
-         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
+         AtsApiService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
       }
       if (aData.estimatedHours != null) {
          changes.setSoleAttributeValue((ArtifactId) teamWf, AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
@@ -347,7 +347,7 @@ public class ExcelAtsActionArtifactExtractor {
       // If Agile points, add points to workflow
       if (Strings.isValid(aData.agilePoints)) {
          IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
-         AttributeTypeToken attrType = AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
+         AttributeTypeToken attrType = AtsApiService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
          if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
             changes.setSoleAttributeValue(teamWf, attrType, aData.agilePoints);
          } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {
@@ -362,7 +362,7 @@ public class ExcelAtsActionArtifactExtractor {
    private IAgileTeam getAgileTeamByName(String agileTeamName) {
       IAgileTeam team = teamNameByTeamMap.get(agileTeamName);
       if (team == null) {
-         IAgileTeam aTeam = AtsClientService.get().getAgileService().getAgileTeamByName(agileTeamName);
+         IAgileTeam aTeam = AtsApiService.get().getAgileService().getAgileTeamByName(agileTeamName);
          if (aTeam != null) {
             teamNameByTeamMap.put(agileTeamName, aTeam);
             team = aTeam;
@@ -374,7 +374,7 @@ public class ExcelAtsActionArtifactExtractor {
    private IAgileSprint getAgileSprint(String agileTeamName, String agileSprintName) {
       IAgileTeam aTeam = getAgileTeamByName(agileTeamName);
       if (aTeam != null) {
-         for (IAgileSprint teamSprint : AtsClientService.get().getAgileService().getAgileSprints(aTeam)) {
+         for (IAgileSprint teamSprint : AtsApiService.get().getAgileService().getAgileSprints(aTeam)) {
             if (teamSprint.getName().equals(agileSprintName)) {
                return teamSprint;
             }
@@ -384,16 +384,16 @@ public class ExcelAtsActionArtifactExtractor {
    }
 
    private IAgileBacklog getAgileBacklog(String agileTeamName) {
-      IAgileTeam aTeam = AtsClientService.get().getAgileService().getAgileTeamByName(agileTeamName);
+      IAgileTeam aTeam = AtsApiService.get().getAgileService().getAgileTeamByName(agileTeamName);
       if (aTeam != null) {
-         return AtsClientService.get().getAgileService().getAgileBacklog(aTeam);
+         return AtsApiService.get().getAgileService().getAgileBacklog(aTeam);
       }
       return null;
    }
 
    private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) {
       if (toGoal != null) {
-         GoalArtifact goal = (GoalArtifact) AtsClientService.get().getQueryService().getArtifact(toGoal);
+         GoalArtifact goal = (GoalArtifact) AtsApiService.get().getQueryService().getArtifact(toGoal);
          if (goal == null) {
             throw new OseeArgumentException("Goal artifact does not exist for goal %s", toGoal.toStringWithId());
          }
@@ -408,7 +408,7 @@ public class ExcelAtsActionArtifactExtractor {
       Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = new HashMap<>();
       for (IAtsActionableItem aia : aias) {
          IAtsTeamDefinition teamDef =
-            AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
+            AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
          if (teamDefToAias.containsKey(teamDef)) {
             teamDefToAias.get(teamDef).add(aia);
          } else {
@@ -645,7 +645,7 @@ public class ExcelAtsActionArtifactExtractor {
       private void processOriginator(String[] cols, ActionData aData, int i) {
          String origStr = cols[i];
          if (Strings.isValid(origStr)) {
-            AtsUser orig = AtsClientService.get().getUserService().getUserByName(origStr);
+            AtsUser orig = AtsApiService.get().getUserService().getUserByName(origStr);
             if (orig == null) {
                resultData.errorf("Invalid name for originator [%s] rown %s", origStr, i);
             } else {

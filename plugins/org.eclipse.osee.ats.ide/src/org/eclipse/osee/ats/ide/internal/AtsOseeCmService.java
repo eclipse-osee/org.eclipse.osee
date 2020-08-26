@@ -43,7 +43,7 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public void openArtifact(ArtifactId artifact, OseeCmEditor oseeCmEditor) {
-      AtsEditors.openATSArtifact(AtsClientService.get().getQueryService().getArtifact(artifact));
+      AtsEditors.openATSArtifact(AtsApiService.get().getQueryService().getArtifact(artifact));
    }
 
    @Override
@@ -61,7 +61,7 @@ public class AtsOseeCmService implements IOseeCmService {
       boolean toReturn = false;
       if (art instanceof TeamWorkFlowArtifact) {
          try {
-            toReturn = AtsClientService.get().getBranchService().isBranchesAllCommittedExcept(
+            toReturn = AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(
                (TeamWorkFlowArtifact) art, branch);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);

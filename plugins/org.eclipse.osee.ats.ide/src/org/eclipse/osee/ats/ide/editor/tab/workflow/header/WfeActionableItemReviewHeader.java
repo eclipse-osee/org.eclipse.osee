@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -48,7 +48,7 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
    private final AbstractReviewArtifact review;
 
    public static boolean isApplicable(IAtsWorkItem workItem) {
-      return workItem.isReview() && AtsClientService.get().getActionableItemService().hasActionableItems((workItem));
+      return workItem.isReview() && AtsApiService.get().getActionableItemService().hasActionableItems((workItem));
    }
 
    public WfeActionableItemReviewHeader(Composite parent, XFormToolkit toolkit, AbstractReviewArtifact review, final WorkflowEditor editor) {
@@ -95,8 +95,8 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
       diag.setExpandChecked(true);
       try {
          Collection<IAtsActionableItem> actionableItems =
-            AtsClientService.get().getActionableItemService().getUserEditableActionableItems(
-               AtsClientService.get().getActionableItemService().getActionableItems(review));
+            AtsApiService.get().getActionableItemService().getUserEditableActionableItems(
+               AtsApiService.get().getActionableItemService().getActionableItems(review));
          diag.setInitialSelections(actionableItems);
 
          if (diag.open() != 0) {
@@ -107,9 +107,9 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
             AWorkbench.popup("Can't remove all Actionable Items");
             return;
          }
-         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet("Edit Actionable Items",
-            AtsClientService.get().getUserService().getCurrentUser());
-         AtsClientService.get().getActionableItemService().setActionableItems(review, checked, changes);
+         IAtsChangeSet changes = AtsApiService.get().getStoreService().createAtsChangeSet("Edit Actionable Items",
+            AtsApiService.get().getUserService().getCurrentUser());
+         AtsApiService.get().getActionableItemService().setActionableItems(review, checked, changes);
          changes.executeIfNeeded();
          refresh();
       } catch (Exception ex) {
@@ -124,7 +124,7 @@ public class WfeActionableItemReviewHeader extends Composite implements IWfeEven
       //
          "\" is review of Actionable Items  \"" +
          //
-         AtsClientService.get().getActionableItemService().getActionableItemsStr(review) + "\" ");
+         AtsApiService.get().getActionableItemService().getActionableItemsStr(review) + "\" ");
       label.update();
       layout();
    }

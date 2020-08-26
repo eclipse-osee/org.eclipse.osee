@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.demo.populate;
 
 import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.util.SubscribeManagerUI;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -30,13 +30,13 @@ public class Pdd94CreateDemoFavorites {
    public void run() throws Exception {
       // Mark all CIS Code "Team Workflows" as Favorites for Joe Smith
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsDemoOseeTypes.DemoCodeTeamWorkflow,
-         "Diagram View", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         "Diagram View", AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
       }
 
       // Mark all Tools Team "Team Workflows" as Subscribed for Joe Smith
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsDemoOseeTypes.DemoCodeTeamWorkflow, "Even",
-         AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         AtsApiService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);
       }
    }

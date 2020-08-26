@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 
 /**
  * Allows setting of workingBranchInWork and branchInCommit for testing purposes. If not set, uses default from
@@ -36,7 +36,7 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean overrideTransitionValidityCheck = null;
 
    public MockTransitionHelper(String name, Collection<IAtsWorkItem> awas, String toStateName, Collection<AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
-      super(name, awas, toStateName, toAssignees, cancellationReason, changes, AtsClientService.get(),
+      super(name, awas, toStateName, toAssignees, cancellationReason, changes, AtsApiService.get(),
          transitionOption);
    }
 

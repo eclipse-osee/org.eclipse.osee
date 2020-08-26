@@ -56,7 +56,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -261,12 +261,12 @@ public class AtsTestUtil {
 
       AtsTestUtil.postFixName = postFixName;
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
       IAtsActionableItem topAi =
-         AtsClientService.get().getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
+         AtsApiService.get().getActionableItemService().getActionableItemById(AtsArtifactToken.TopActionableItem);
 
-      testAi = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI", postFixName),
+      testAi = AtsApiService.get().getActionableItemService().createActionableItem(getTitle("AI", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
@@ -274,7 +274,7 @@ public class AtsTestUtil {
       testAi.setActionable(true);
       changes.addChild(topAi, testAi);
 
-      testAi2 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI2", postFixName),
+      testAi2 = AtsApiService.get().getActionableItemService().createActionableItem(getTitle("AI2", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
@@ -282,7 +282,7 @@ public class AtsTestUtil {
       testAi2.setActionable(true);
       changes.addChild(testAi, testAi2);
 
-      testAi3 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI3", postFixName),
+      testAi3 = AtsApiService.get().getActionableItemService().createActionableItem(getTitle("AI3", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
@@ -290,7 +290,7 @@ public class AtsTestUtil {
       testAi3.setActionable(true);
       changes.addChild(testAi, testAi3);
 
-      testAi4 = AtsClientService.get().getActionableItemService().createActionableItem(getTitle("AI4", postFixName),
+      testAi4 = AtsApiService.get().getActionableItemService().createActionableItem(getTitle("AI4", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
@@ -298,16 +298,16 @@ public class AtsTestUtil {
       testAi4.setActionable(true);
       changes.addChild(testAi, testAi4);
 
-      teamDef = AtsClientService.get().getTeamDefinitionService().createTeamDefinition(
+      teamDef = AtsApiService.get().getTeamDefinitionService().createTeamDefinition(
          getTitle("Team Def", postFixName), Lib.generateArtifactIdAsInt(), changes);
-      AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().put(teamDef.getId(), teamDef);
+      AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().put(teamDef.getId(), teamDef);
 
       // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
          DemoWorkDefinitionTokens.WorkDef_Team_AtsTestUtil, changes);
 
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
-      changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
+      changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsApiService.get().getUserService().getCurrentUser());
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi2);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi3);
@@ -317,51 +317,51 @@ public class AtsTestUtil {
       testAi3.setTeamDefId(teamDef.getId());
       testAi4.setTeamDefId(teamDef.getId());
       IAtsTeamDefinition topTeamDef =
-         AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(AtsArtifactToken.TopTeamDefinition);
+         AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(AtsArtifactToken.TopTeamDefinition);
       changes.addChild(topTeamDef, teamDef);
 
-      verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
+      verArt1 = AtsApiService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
       verArt1.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt1.getId());
 
-      verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName),
+      verArt2 = AtsApiService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
       verArt2.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt2.getId());
 
-      verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName),
+      verArt3 = AtsApiService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
       verArt3.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt3.getId());
 
-      verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName),
+      verArt4 = AtsApiService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName),
          Lib.generateArtifactIdAsInt(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
       verArt4.setTeamDefId(teamDef.getId());
       teamDef.getVersions().add(verArt4.getId());
 
-      ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
          getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1", false, null,
-         Arrays.asList(testAi), new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         Arrays.asList(testAi), new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
 
       actionArt = (IAtsAction) result.getAction().getStoreObject();
       teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       changes.execute();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
       ensureLoaded();
       if (taskArtWf1 == null) {
          Collection<IAtsTask> createTasks =
-            AtsClientService.get().getTaskService().createTasks(teamWf, Arrays.asList(getTitle("Task", postFixName)),
-               null, new Date(), AtsClientService.get().getUserService().getCurrentUser(), teamWf.getCurrentStateName(),
+            AtsApiService.get().getTaskService().createTasks(teamWf, Arrays.asList(getTitle("Task", postFixName)),
+               null, new Date(), AtsApiService.get().getUserService().getCurrentUser(), teamWf.getCurrentStateName(),
                null, null, getName() + " Create Task");
          taskArtWf1 = (TaskArtifact) createTasks.iterator().next().getStoreObject();
       }
@@ -374,11 +374,11 @@ public class AtsTestUtil {
          List<IAtsDecisionReviewOption> options = new ArrayList<>();
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
-         decRevArt = (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamWf,
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser().getUserId())));
+         decRevArt = (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamWf,
             reviewBlockType, AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
-            "Decision Review", options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
-            new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes).getStoreObject();
+            "Decision Review", options, Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
+            new Date(), AtsApiService.get().getUserService().getCurrentUser(), changes).getStoreObject();
       }
       return decRevArt;
    }
@@ -417,7 +417,7 @@ public class AtsTestUtil {
    private static void deleteTeamWf(TeamWorkFlowArtifact teamWfToDelete) {
       if (teamWfToDelete != null) {
          IAtsChangeSet changes =
-            AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
+            AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
 
          if (teamWfToDelete.getWorkingBranch().isValid()) {
             Result result = AtsBranchUtil.deleteWorkingBranch(teamWfToDelete, true);
@@ -425,7 +425,7 @@ public class AtsTestUtil {
                throw new OseeStateException("Error deleting working branch [%s]", result.getText());
             }
          }
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWfToDelete)) {
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWfToDelete)) {
             changes.addToDelete(task);
          }
          for (AbstractReviewArtifact revArt : ReviewManager.getReviews(teamWfToDelete)) {
@@ -456,7 +456,7 @@ public class AtsTestUtil {
       }
 
       IAtsChangeSet changes =
-         AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
+         AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       delete(changes, (Artifact) peerRev);
       delete(changes, decRevArt);
       delete(changes, taskArtWf1);
@@ -466,16 +466,16 @@ public class AtsTestUtil {
       delete(changes, (Artifact) actionArt3);
       delete(changes, (Artifact) actionArt4);
       if (verArt1 != null) {
-         delete(changes, AtsClientService.get().getQueryServiceClient().getArtifact(verArt1));
+         delete(changes, AtsApiService.get().getQueryServiceIde().getArtifact(verArt1));
       }
       if (verArt2 != null) {
-         delete(changes, AtsClientService.get().getQueryServiceClient().getArtifact(verArt2));
+         delete(changes, AtsApiService.get().getQueryServiceIde().getArtifact(verArt2));
       }
       if (verArt3 != null) {
-         delete(changes, AtsClientService.get().getQueryServiceClient().getArtifact(verArt3));
+         delete(changes, AtsApiService.get().getQueryServiceIde().getArtifact(verArt3));
       }
       if (verArt4 != null) {
-         delete(changes, AtsClientService.get().getQueryServiceClient().getArtifact(verArt4));
+         delete(changes, AtsApiService.get().getQueryServiceIde().getArtifact(verArt4));
       }
       if (!changes.isEmpty()) {
          changes.execute();
@@ -486,11 +486,11 @@ public class AtsTestUtil {
       deleteTeamWf(teamArt3);
       deleteTeamWf(teamArt4);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
          AtsTestUtil.class.getSimpleName() + " - cleanup config");
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
          if (config != null) {
-            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(config);
+            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(config);
             if (art != null) {
                art.deleteAndPersist(transaction);
             }
@@ -533,7 +533,7 @@ public class AtsTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(),
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsApiService.get().getAtsBranch(),
             EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
@@ -578,8 +578,8 @@ public class AtsTestUtil {
 
    private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, TransitionOption... transitionOptions) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
-         toState.getName(), Arrays.asList(user), null, null, AtsClientService.get(), transitionOptions);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+         toState.getName(), Arrays.asList(user), null, null, AtsApiService.get(), transitionOptions);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       if (results.isEmpty()) {
          return Result.TrueResult;
       }
@@ -609,8 +609,8 @@ public class AtsTestUtil {
       ensureLoaded();
       try {
          if (peerRev == null) {
-            peerRev = AtsClientService.get().getReviewService().createNewPeerToPeerReview(
-               AtsClientService.get().getWorkDefinitionService().getDefaultPeerToPeerWorkflowDefinition(), teamWf,
+            peerRev = AtsApiService.get().getReviewService().createNewPeerToPeerReview(
+               AtsApiService.get().getWorkDefinitionService().getDefaultPeerToPeerWorkflowDefinition(), teamWf,
                AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
             changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
@@ -623,11 +623,11 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf2() {
       ensureLoaded();
       if (teamArt2 == null) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result =
-            AtsClientService.get().getActionFactory().createAction(null, getTitle("Team WF2", postFixName),
+            AtsApiService.get().getActionFactory().createAction(null, getTitle("Team WF2", postFixName),
                "description", ChangeType.Improvement, "1", false, null, Arrays.asList(testAi2), new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+               AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt2 = (IAtsAction) result.getAction().getStoreObject();
          teamArt2 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
          changes.execute();
@@ -643,11 +643,11 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf3() {
       ensureLoaded();
       if (teamArt3 == null) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result =
-            AtsClientService.get().getActionFactory().createAction(null, getTitle("Team WF3", postFixName),
+            AtsApiService.get().getActionFactory().createAction(null, getTitle("Team WF3", postFixName),
                "description", ChangeType.Improvement, "1", false, null, Arrays.asList(testAi3), new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+               AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt3 = (IAtsAction) result.getAction().getStoreObject();
          teamArt3 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
          changes.execute();
@@ -663,14 +663,14 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf4() {
       ensureLoaded();
       if (teamArt4 == null) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          ActionResult result =
-            AtsClientService.get().getActionFactory().createAction(null, getTitle("Team WF4", postFixName),
+            AtsApiService.get().getActionFactory().createAction(null, getTitle("Team WF4", postFixName),
                "description", ChangeType.Improvement, "1", false, null, Arrays.asList(testAi4), new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+               AtsApiService.get().getUserService().getCurrentUser(), null, changes);
          actionArt4 = (IAtsAction) result.getAction().getStoreObject();
          teamArt4 = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
-         AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4, changes);
+         AtsApiService.get().getVersionService().setTargetedVersion(teamArt4, verArt4, changes);
          changes.execute();
       }
       return teamArt4;
@@ -729,7 +729,7 @@ public class AtsTestUtil {
 
          @Override
          public List<Artifact> getSelectedAtsArtifacts() {
-            return Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(getTeamWf()));
+            return Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(getTeamWf()));
          }
 
          @Override
@@ -743,8 +743,8 @@ public class AtsTestUtil {
    public static Result createWorkingBranchFromTeamWf() {
       configureVer1ForWorkingBranch();
 
-      AtsClientService.get().reloadServerAndClientCaches();
-      AtsClientService.get().clearCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
+      AtsApiService.get().clearCaches();
 
       Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
@@ -757,12 +757,12 @@ public class AtsTestUtil {
 
    public static void configureVer1ForWorkingBranch() {
       IAtsVersion version = getVerArt1();
-      Artifact verArt = AtsClientService.get().getQueryServiceClient().getArtifact(version);
+      Artifact verArt = AtsApiService.get().getQueryServiceIde().getArtifact(version);
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow,
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(getTeamWf())));
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(getTeamWf())));
       verArt.persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
    }
 

@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,7 +31,7 @@ public class MyFavoritesSearchItemTest {
    @Test
    public void search() {
       MyFavoritesSearchItem search =
-         new MyFavoritesSearchItem("Search", AtsClientService.get().getUserService().getCurrentUser());
+         new MyFavoritesSearchItem("Search", AtsApiService.get().getUserService().getCurrentUser());
       Collection<Artifact> results = search.performSearchGetResults();
       DemoTestUtil.assertTypes(results, 3, IAtsTeamWorkflow.class);
    }

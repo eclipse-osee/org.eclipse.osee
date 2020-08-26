@@ -17,7 +17,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -45,7 +45,7 @@ public class EditBlockedStatusAction extends AbstractAtsAction {
       boolean fetchedBlockedStatus = false;
       String blockedReason = "";
       for (Artifact workItem : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set blocked status");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Set blocked status");
          if (!fetchedBlockedStatus) {
             blockedReason = workItem.getSoleAttributeValue(AtsAttributeTypes.BlockedReason, "");
             if (blockedReason.equals("")) {

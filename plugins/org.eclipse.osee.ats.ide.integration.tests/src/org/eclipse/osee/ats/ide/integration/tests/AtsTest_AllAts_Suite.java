@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsTest_Ats_Suite.class,
-   AtsClientServiceTest.class,
+   AtsApiServiceTest.class,
    // Long running tests at bottom for ease of development/re-run
    TransitionManagerTest.class,
    AtsTest_Action_Suite.class //

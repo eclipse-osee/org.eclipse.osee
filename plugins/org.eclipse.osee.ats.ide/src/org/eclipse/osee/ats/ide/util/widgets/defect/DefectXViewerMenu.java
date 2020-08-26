@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -325,9 +325,9 @@ public class DefectXViewerMenu {
    }
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Defects");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Defects");
       ReviewDefectManager defectManager = new ReviewDefectManager(
-         AtsClientService.get().getQueryServiceClient().getArtifact(review), AtsClientService.get());
+         AtsApiService.get().getQueryServiceIde().getArtifact(review), AtsApiService.get());
       for (ReviewDefectItem defectItem : defectItems) {
          defectManager.addOrUpdateDefectItem(defectItem);
          defectXViewer.update(defectItem, null);
@@ -355,7 +355,7 @@ public class DefectXViewerMenu {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUserId().equals(user.getUserId())) {
-            AtsUser atsUser = AtsClientService.get().getUserService().getUserById(user);
+            AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
             defectItem.setUser(atsUser);
             // at least one in the list has been changed.
             if (!modified) {

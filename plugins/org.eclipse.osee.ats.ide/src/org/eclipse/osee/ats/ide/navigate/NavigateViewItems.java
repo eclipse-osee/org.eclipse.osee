@@ -55,7 +55,7 @@ import org.eclipse.osee.ats.ide.ev.EvNavigateItems;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.internal.OseePerspective;
 import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.ide.notify.EmailActionsBlam;
@@ -177,10 +177,10 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          createOpenViewsSection(item, items);
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
 
-         if (AgileUtil.isAgileUser(AtsClientService.get())) {
+         if (AgileUtil.isAgileUser(AtsApiService.get())) {
             createAgileSection(item, items);
          }
-         if (AgileUtil.isEarnedValueUser(AtsClientService.get())) {
+         if (AgileUtil.isEarnedValueUser(AtsApiService.get())) {
             EvNavigateItems.createSection(item, items);
          }
 
@@ -239,7 +239,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void createAdminItems(XNavigateItem parent, List<XNavigateItem> items) {
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          createWorkDefinitionsSection(parent, items);
          createExampleItems(parent, items);
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
@@ -312,8 +312,8 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
-      if (AtsClientService.get().getUserService().isUserMember(
-         CoreUserGroups.OseeAdmin) || AtsClientService.get().getUserService().isUserMember(CoreUserGroups.Everyone)) {
+      if (AtsApiService.get().getUserService().isUserMember(
+         CoreUserGroups.OseeAdmin) || AtsApiService.get().getUserService().isUserMember(CoreUserGroups.Everyone)) {
          XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
 
          new ResultsEditorExample(exampleItems);
@@ -354,7 +354,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new GenerateFullVersionReportItem(releaseItems);
 
          // Admin
-         if (AtsClientService.get().getUserService().isAtsAdmin()) {
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
             new MassEditTeamVersionItem("Team Versions (Admin)", releaseItems, FrameworkImage.VERSION);
             new CreateNewVersionItem(releaseItems, null);
             new ReleaseVersionItem(releaseItems, null);

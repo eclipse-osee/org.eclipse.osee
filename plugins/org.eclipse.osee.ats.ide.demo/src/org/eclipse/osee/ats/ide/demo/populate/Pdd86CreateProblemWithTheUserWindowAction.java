@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -35,14 +35,14 @@ public class Pdd86CreateProblemWithTheUserWindowAction implements IPopulateDemoD
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Timesheet_AI);
 
-      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",
          ChangeType.Problem, "4", false, null, aias, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
+         AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
          changes);
 
       transitionTo(actionResult.getFirstTeam(), TeamState.Implement, changes);

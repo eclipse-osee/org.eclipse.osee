@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *
  * @author Donald G. Dunne
  */
-public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl implements IAtsWorkItemServiceClient {
+public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl implements IAtsWorkItemServiceIde {
 
    private static Set<IAtsWorkItemHookIde> workflowHooksIde = new HashSet<>();
 
@@ -99,7 +99,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       transData.setWorkItems(helper.getWorkItems());
 
       // Set dummy cancel reason
-      IAtsStateDefinition toStateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(
+      IAtsStateDefinition toStateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(
          helper.getWorkItems().iterator().next(), helper.getToStateName());
       if (toStateDef.getStateType() == StateType.Cancelled) {
          transData.setCancellationReason("temp reason");
@@ -149,13 +149,13 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
    private void reload(TransitionResults transResults) {
       List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
       for (IAtsWorkItem workItem : transResults.getWorkItems()) {
-         boolean changed = AtsClientService.get().getStoreService().isChangedInDb(workItem);
+         boolean changed = AtsApiService.get().getStoreService().isChangedInDb(workItem);
          if (changed) {
             workItemsToReload.add(workItem);
          }
       }
       if (!workItemsToReload.isEmpty()) {
-         AtsClientService.get().getStoreService().reload(workItemsToReload);
+         AtsApiService.get().getStoreService().reload(workItemsToReload);
       }
    }
 

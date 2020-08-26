@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -35,14 +35,14 @@ public class Pdd81CreateButtonWDoesntWorkAction implements IPopulateDemoDatabase
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
-      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+      ActionResult actionResult = AtsApiService.get().getActionFactory().createAction(null,
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",
          ChangeType.Problem, "3", false, null, aias, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
+         AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
          changes);
 
       setValidationRequired(changes, actionResult.getFirstTeam());

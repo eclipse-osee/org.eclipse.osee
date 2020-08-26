@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StateHoursSpentXWidge
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XCancelWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
@@ -90,8 +90,8 @@ public class WfeWorkflowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-         page.getStateDefinition(), AtsClientService.get().getUserService());
+      isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), sma,
+         page.getStateDefinition(), AtsApiService.get().getUserService());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite();
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
    }
@@ -189,7 +189,7 @@ public class WfeWorkflowSection extends SectionPart {
       }
 
       // Add any dynamic XWidgets declared for page by IAtsWorkItemHook extensions
-      for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
+      for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -218,7 +218,7 @@ public class WfeWorkflowSection extends SectionPart {
       createSectionBody(statePage, workComp);
 
       // Add any dynamic XWidgets declared for page by IAtsWorkItemHook extensions
-      for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
+      for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
          for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
@@ -312,7 +312,7 @@ public class WfeWorkflowSection extends SectionPart {
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          try {
-            if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(sma.getWorkDefinition())) {
+            if (AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(sma.getWorkDefinition())) {
                allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
                   isCurrentState(), editor));
             }
@@ -415,7 +415,7 @@ public class WfeWorkflowSection extends SectionPart {
             IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
             }
          } else if (sma.isCancelled()) {
             if (!sma.getCurrentStateName().equals(StateType.Cancelled.toString())) {
@@ -426,7 +426,7 @@ public class WfeWorkflowSection extends SectionPart {
             IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
             }
          }
          if (sma.getStateMgr().getAssignees().size() > 0) {
@@ -445,7 +445,7 @@ public class WfeWorkflowSection extends SectionPart {
          if (item != null) {
             sb.append(item.getDate(DateUtil.MMDDYYHHMM));
             sb.append(" by ");
-            sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
+            sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
          }
       }
       return sb.toString();
@@ -471,11 +471,11 @@ public class WfeWorkflowSection extends SectionPart {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsWorkItemHookIde item : AtsClientService.get().getWorkItemServiceClient().getWorkItemHooksIde()) {
+            for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
                try {
                   item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
-                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-                        sma.getStateDefinition(), AtsClientService.get().getUserService()));
+                     WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), sma,
+                        sma.getStateDefinition(), AtsApiService.get().getUserService()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

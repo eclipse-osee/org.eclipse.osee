@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -66,11 +66,11 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
       boolean modified = false;
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact selectedArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact selectedArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             AbstractWorkflowArtifact useAwa = null;
-            if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
+            if (selectedArt instanceof IAtsAction && AtsApiService.get().getWorkItemService().getTeams(
                selectedArt).size() == 1) {
-               useAwa = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+               useAwa = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
                   selectedArt).getStoreObject();
             } else if (selectedArt instanceof AbstractWorkflowArtifact) {
                useAwa = (AbstractWorkflowArtifact) selectedArt;
@@ -108,7 +108,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas) {
       List<ArtifactId> ids = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : awas) {
-         IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);
+         IAtsWorkPackage workPkg = AtsApiService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);
          if (workPkg != null) {
             if (!ids.contains(workPkg.getStoreObject())) {
                ids.add(ArtifactId.valueOf(workPkg.getId()));
@@ -120,11 +120,11 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
       } else {
          if (ids.size() == 1) {
             AtsEditors.openArtifact(
-               ArtifactQuery.getArtifactFromId(ids.iterator().next(), AtsClientService.get().getAtsBranch()),
+               ArtifactQuery.getArtifactFromId(ids.iterator().next(), AtsApiService.get().getAtsBranch()),
                OseeCmEditor.ArtifactEditor);
          } else {
-            List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
-            ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
+            List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(ids, AtsApiService.get().getAtsBranch());
+            ArtifactQuery.getArtifactListFrom(ids, AtsApiService.get().getAtsBranch());
             MassArtifactEditor.editArtifacts("Edit Work Packages", artifacts);
          }
       }
@@ -134,7 +134,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnService().getColumn(atsColumnId).getColumnText((IAtsObject) element);
+         result = AtsApiService.get().getColumnService().getColumn(atsColumnId).getColumnText((IAtsObject) element);
       }
       return result;
    }

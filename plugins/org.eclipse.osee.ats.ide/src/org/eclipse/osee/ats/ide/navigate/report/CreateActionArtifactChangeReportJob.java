@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -115,9 +115,9 @@ public class CreateActionArtifactChangeReportJob extends Job {
             teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (CommitConfigItem commitConfigItem : AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
+         for (CommitConfigItem commitConfigItem : AtsApiService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
             teamArt)) {
-            processTeam(teamArt, AtsClientService.get().getBranchService().getBranchShortName(commitConfigItem),
+            processTeam(teamArt, AtsApiService.get().getBranchService().getBranchShortName(commitConfigItem),
                attributeType, commitConfigItem, rd);
          }
          x++;

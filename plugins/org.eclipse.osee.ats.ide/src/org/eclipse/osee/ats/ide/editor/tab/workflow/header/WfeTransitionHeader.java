@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
@@ -98,14 +98,14 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       editor.getWorkFlowTab().getManagedForm().getToolkit().adapt(this);
 
       // Register for events and deregister on dispose
-      AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+      AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
       final WfeTransitionHeader fThis = this;
       addDisposeListener(new DisposeListener() {
 
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
+            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
          }
       });
 
@@ -198,7 +198,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WfeTransitionHeader wfeTransitionHeader) {
-      ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get()) {
+      ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
 
          @Override
          public String getToStateName() {
@@ -208,7 +208,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          @Override
          public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
             AbstractWorkflowArtifact awa =
-               (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
+               (AbstractWorkflowArtifact) AtsApiService.get().getQueryService().getArtifact(workItem);
             return awa.getTransitionAssignees();
          }
 
@@ -225,7 +225,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                public void run() {
                   IAtsStateDefinition toStateDef;
                   try {
-                     toStateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(awa,
+                     toStateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa,
                         getToStateName());
                      if (toStateDef.getStateType().isCancelledState()) {
                         EntryDialog cancelDialog;
@@ -275,7 +275,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          @Override
          public Collection<IAtsTransitionHook> getTransitionListeners() {
             try {
-               return AtsClientService.get().getWorkItemService().getTransitionHooks();
+               return AtsApiService.get().getWorkItemService().getTransitionHooks();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -284,7 +284,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
 
          @Override
          public AtsApi getServices() {
-            return AtsClientService.get();
+            return AtsApiService.get();
          }
 
          @Override
@@ -304,7 +304,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
          @Override
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
-            results.setAtsApi(AtsClientService.get());
+            results.setAtsApi(AtsApiService.get());
             if (results.isErrors()) {
                TransitionResultsUi.reportDialog("Transition Failed", results);
                AtsUtilClient.logExceptions(results);
@@ -318,7 +318,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    public void updateTransitionToAssignees() {
       Collection<AtsUser> assignees = null;
       // Determine if the is an override set of assignees
-      for (IAtsWorkItemHook item : AtsClientService.get().getWorkItemService().getWorkItemHooks()) {
+      for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
          String decisionValueIfApplicable = "";
          if (awa.isOfType(
             AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
@@ -348,7 +348,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       }
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
-      for (IAtsTransitionHook item : AtsClientService.get().getWorkItemService().getTransitionHooks()) {
+      for (IAtsTransitionHook item : AtsApiService.get().getWorkItemService().getTransitionHooks()) {
          transitionStateOverride = item.getOverrideTransitionToStateName(editor.getWorkItem());
          if (transitionStateOverride != null) {
             break;
@@ -408,7 +408,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setInitialSelections(aba.getTransitionAssignees());
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(
+         uld.setTeamMembers(AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(
             awa.getParentTeamWorkflow().getTeamDefinition()));
       }
       if (uld.open() != 0) {
@@ -429,7 +429,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
       if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
          if (this.isDisposed()) {
-            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
             return;
          }
          Displays.ensureInDisplayThread(new Runnable() {

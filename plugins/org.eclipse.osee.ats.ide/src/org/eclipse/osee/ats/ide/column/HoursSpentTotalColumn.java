@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,7 +58,7 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
       try {
          if (element instanceof IAtsWorkItem) {
             return AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element, AtsClientService.get()));
+               HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element, AtsApiService.get()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

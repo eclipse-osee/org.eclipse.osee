@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -103,14 +103,14 @@ public class AtsConfigOperation extends AbstractOperation {
          throw new OseeStateException("Error created new Work Definition for Team Def %s", teamDef.toStringWithId());
       }
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(name);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(name);
 
-      teamDef = createTeamDefinition(changes, AtsClientService.get());
+      teamDef = createTeamDefinition(changes, AtsApiService.get());
 
       // Relate new team def to workflow artifact
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef, workDefinition, changes);
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef, workDefinition, changes);
 
-      actionableItems = createActionableItems(changes, teamDef, AtsClientService.get());
+      actionableItems = createActionableItems(changes, teamDef, AtsApiService.get());
 
       createVersions(changes, teamDef);
 
@@ -120,12 +120,12 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, AtsApi atsApi) {
       TeamDefinition teamDef =
-         AtsClientService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes);
-      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
-         AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
-      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
-         AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
-      changes.relate(AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition(),
+         AtsApiService.get().getTeamDefinitionService().createTeamDefinition(teamDefName, changes);
+      changes.relate(AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+         AtsRelationTypes.TeamMember_Member, AtsApiService.get().getUserService().getCurrentUser());
+      changes.relate(AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
+         AtsRelationTypes.TeamLead_Lead, AtsApiService.get().getUserService().getCurrentUser());
+      changes.relate(AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition(),
          CoreRelationTypes.DefaultHierarchical_Child, teamDef);
       atsApi.getConfigService().getConfigurations().addTeamDef(teamDef);
       return teamDef;
@@ -136,15 +136,15 @@ public class AtsConfigOperation extends AbstractOperation {
 
       // Create top actionable item
       ActionableItem parentAi =
-         AtsClientService.get().getActionableItemService().createActionableItem(teamDefName, changes);
+         AtsApiService.get().getActionableItemService().createActionableItem(teamDefName, changes);
       changes.setSoleAttributeValue(parentAi, AtsAttributeTypes.Actionable, false);
       parentAi.setActionable(false);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, parentAi);
       parentAi.setTeamDefId(teamDef.getId());
-      IAtsActionableItem topAi = AtsClientService.get().getActionableItemService().getTopActionableItem(atsApi);
+      IAtsActionableItem topAi = AtsApiService.get().getActionableItemService().getTopActionableItem(atsApi);
       changes.relate(topAi, CoreRelationTypes.DefaultHierarchical_Child, parentAi);
       parentAi.setParentId(topAi.getId());
-      changes.relate(AtsClientService.get().getActionableItemService().getTopActionableItem(AtsClientService.get()),
+      changes.relate(AtsApiService.get().getActionableItemService().getTopActionableItem(AtsApiService.get()),
          CoreRelationTypes.DefaultHierarchical_Child, parentAi);
 
       atsApi.getConfigService().getConfigurations().addAi(parentAi);
@@ -152,7 +152,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         ActionableItem childAi = AtsClientService.get().getActionableItemService().createActionableItem(name, changes);
+         ActionableItem childAi = AtsApiService.get().getActionableItemService().createActionableItem(name, changes);
          changes.setSoleAttributeValue(childAi, AtsAttributeTypes.Actionable, true);
          childAi.setActionable(true);
          changes.addChild(parentAi.getStoreObject(), childAi.getStoreObject());
@@ -167,8 +167,8 @@ public class AtsConfigOperation extends AbstractOperation {
    private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef) {
       if (versionNames != null) {
          for (String name : versionNames) {
-            IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name, changes);
-            AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef, changes);
+            IAtsVersion version = AtsApiService.get().getVersionService().createVersion(name, changes);
+            AtsApiService.get().getVersionService().setTeamDefinition(version, teamDef, changes);
             ((TeamDefinition) teamDef).getVersions().add(version.getId());
             ((Version) version).setTeamDefId(teamDef.getId());
          }
@@ -176,7 +176,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsWorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
-      return AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+      return AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
          AtsWorkDefinitionTokens.WorkDef_Team_Default);
    }
 
@@ -188,14 +188,14 @@ public class AtsConfigOperation extends AbstractOperation {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  Artifact teamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(teamDef);
+                  Artifact teamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(teamDef);
                   AtsEditors.openATSAction(teamDefArt, AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(aia),
+                     AtsEditors.openATSAction(AtsApiService.get().getQueryService().getArtifact(aia),
                         AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsClientService.get().getAtsBranch()),
+                     workDefinition.getName(), AtsApiService.get().getAtsBranch()),
                      PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

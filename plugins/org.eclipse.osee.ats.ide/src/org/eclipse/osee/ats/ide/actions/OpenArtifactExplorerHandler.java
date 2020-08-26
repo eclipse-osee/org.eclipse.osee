@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 
 /**
@@ -25,7 +25,7 @@ public class OpenArtifactExplorerHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      ArtifactExplorer.exploreBranch(AtsClientService.get().getAtsBranch());
+      ArtifactExplorer.exploreBranch(AtsApiService.get().getAtsBranch());
       return null;
    }
 }

@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.UserIdSorter;
@@ -52,7 +52,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
 
    public UserCheckTreeDialog() {
       this("Select Users", "Select to assign.\nDeSelect to un-assign.",
-         AtsClientService.get().getUserService().getUsers(Active.Active));
+         AtsApiService.get().getUserService().getUsers(Active.Active));
    }
 
    public UserCheckTreeDialog(String title, String message, Collection<AtsUser> users) {
@@ -89,7 +89,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                getCheckboxTreeViewer().setSelection(new StructuredSelection(java.util.Collections.emptyList()));
-               fUld.setInitialSelections(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
+               fUld.setInitialSelections(Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()));
                okPressed();
             }
          });
@@ -101,7 +101,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeDialog<AtsUser> {
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
                List<AtsUser> users = new LinkedList<>(fUld.getChecked());
-               users.add(AtsClientService.get().getUserService().getCurrentUser());
+               users.add(AtsApiService.get().getUserService().getCurrentUser());
                fUld.setInitialSelections(users);
                okPressed();
             }

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.review.ReviewDefectError;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectData;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectLabelProvider;
@@ -64,7 +64,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, DefectRefreshListener, IArtifactEventListener {
    private static final List<IEventFilter> EVENT_FILTERS =
-      Arrays.asList(new BranchIdEventFilter(AtsClientService.get().getAtsBranch()),
+      Arrays.asList(new BranchIdEventFilter(AtsApiService.get().getAtsBranch()),
          new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview));
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
@@ -140,7 +140,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
             try {
                DefectData data = new DefectData();
                data.setError(
-                  ReviewDefectValidator.isValid(AtsClientService.get().getQueryServiceClient().getArtifact(review)));
+                  ReviewDefectValidator.isValid(AtsApiService.get().getQueryServiceIde().getArtifact(review)));
                refreshMessageLabel(data);
             } catch (Exception ex) {
                // do nothing
@@ -181,7 +181,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
    @Override
    public void refreshActionHandler() {
       if (xViewer != null) {
-         AtsClientService.get().getQueryServiceClient().getArtifact(review).reloadAttributesAndRelations();
+         AtsApiService.get().getQueryServiceIde().getArtifact(review).reloadAttributesAndRelations();
          xViewer.loadTable(this);
       }
    }
@@ -200,7 +200,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (artifactEvent.isModified(
-         AtsClientService.get().getQueryServiceClient().getArtifact(review.getStoreObject()))) {
+         AtsApiService.get().getQueryServiceIde().getArtifact(review.getStoreObject()))) {
          refreshActionHandler();
          refreshMessageLabel();
       }

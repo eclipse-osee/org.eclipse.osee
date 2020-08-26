@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -76,16 +76,16 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
    public static Set<User> getActionableItemOwners(Object element) {
       Set<User> users = new HashSet<>();
       if (element instanceof IAtsAction) {
-         for (IAtsTeamWorkflow teamArt : AtsClientService.get().getWorkItemServiceClient().getTeams(element)) {
+         for (IAtsTeamWorkflow teamArt : AtsApiService.get().getWorkItemServiceIde().getTeams(element)) {
             users.addAll(getActionableItemOwners(teamArt));
          }
       } else if (element instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt =
             (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
-            for (IAtsActionableItem aia : AtsClientService.get().getActionableItemService().getActionableItems(
+            for (IAtsActionableItem aia : AtsApiService.get().getActionableItemService().getActionableItems(
                teamArt)) {
-               for (ArtifactToken art : AtsClientService.get().getRelationResolver().getRelated(aia.getStoreObject(),
+               for (ArtifactToken art : AtsApiService.get().getRelationResolver().getRelated(aia.getStoreObject(),
                   AtsRelationTypes.ActionableItem_User)) {
                   users.add((User) art);
                }

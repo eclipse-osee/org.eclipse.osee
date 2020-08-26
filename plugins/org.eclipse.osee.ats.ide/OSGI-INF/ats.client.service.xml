@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
-   <implementation class="org.eclipse.osee.ats.ide.util.internal.AtsClientImpl"/>
+   <implementation class="org.eclipse.osee.ats.ide.util.internal.AtsApiIdeImpl"/>
    <service>
-      <provide interface="org.eclipse.osee.ats.ide.util.IAtsClient"/>
       <provide interface="org.eclipse.osee.ats.api.AtsApi"/>
+      <provide interface="org.eclipse.osee.ats.ide.util.AtsApiIde"/>
    </service>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
 	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>

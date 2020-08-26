@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.config;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -53,6 +53,6 @@ public class ActionableItemResourceTest extends AbstractRestTest {
 
    private Artifact getSawCodeAi() {
       return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, "SAW Code",
-         AtsClientService.get().getAtsBranch());
+         AtsApiService.get().getAtsBranch());
    }
 }

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -44,7 +44,7 @@ public class SubscribeManager {
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {
       try {
-         return isSubscribed(workflow, AtsClientService.get().getUserService().getCurrentUser());
+         return isSubscribed(workflow, AtsApiService.get().getUserService().getCurrentUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -56,15 +56,15 @@ public class SubscribeManager {
 
    public static void toggleSubscribe(Collection<AbstractWorkflowArtifact> awas) {
       if (SubscribeManager.amISubscribed(awas.iterator().next())) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Toggle Subscribed");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.removeSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
+            SubscribeManager.removeSubscribed(awa, AtsApiService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       } else {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Toggle Subscribed");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.addSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
+            SubscribeManager.addSubscribed(awa, AtsApiService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       }

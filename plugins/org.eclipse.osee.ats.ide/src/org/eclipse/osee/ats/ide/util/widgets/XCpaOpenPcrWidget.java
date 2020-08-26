@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.cpa.CpaFactory;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,7 +38,7 @@ public class XCpaOpenPcrWidget extends XHyperlinkLabel implements IArtifactWidge
    }
 
    protected String getCpaBasepath() {
-      return AtsClientService.get().getConfigValue(CpaFactory.CPA_BASEPATH_KEY);
+      return AtsApiService.get().getConfigValue(CpaFactory.CPA_BASEPATH_KEY);
    }
 
    @Override

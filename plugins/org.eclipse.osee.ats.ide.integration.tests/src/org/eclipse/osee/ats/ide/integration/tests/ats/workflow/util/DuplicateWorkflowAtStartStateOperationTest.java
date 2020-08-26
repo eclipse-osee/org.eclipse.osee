@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -53,12 +53,12 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       teamWf2.setName(teamWf2Name);
       teamWf2.persist(getClass().getSimpleName());
 
-      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsApiService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
 
       DuplicateWorkflowAtStartStateOperation operation =
-         new DuplicateWorkflowAtStartStateOperation(teamWfs, "", null, AtsClientService.get());
+         new DuplicateWorkflowAtStartStateOperation(teamWfs, "", null, AtsApiService.get());
       XResultData results = operation.validate();
 
       Assert.assertEquals(2, results.getNumErrors());
@@ -68,7 +68,7 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       results = operation.validate();
       Assert.assertEquals(1, results.getNumErrors());
 
-      operation = new DuplicateWorkflowAtStartStateOperation(teamWfs, "", user, AtsClientService.get());
+      operation = new DuplicateWorkflowAtStartStateOperation(teamWfs, "", user, AtsApiService.get());
 
       results = operation.validate();
       Assert.assertEquals(0, results.getNumErrors());
@@ -78,7 +78,7 @@ public class DuplicateWorkflowAtStartStateOperationTest {
 
       IAtsAction action = teamWf.getParentAction();
       IAtsTeamWorkflow foundTeamWf = null;
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(action)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(action)) {
          if (team.getName().equals("Copy of " + teamWfName)) {
             foundTeamWf = team;
             break;
@@ -86,22 +86,22 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       }
       Assert.assertNotNull("New Team Workflow \"first\" NOT Found", foundTeamWf);
       // Description attribute should not be copied
-      Assert.assertEquals("description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          foundTeamWf, AtsAttributeTypes.Description, ""));
-      Assert.assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(foundTeamWf).isDirty());
+      Assert.assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(foundTeamWf).isDirty());
 
       foundTeamWf = null;
       action = teamWf2.getParentAction();
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(action)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(action)) {
          if (team.getName().equals("Copy of " + teamWf2Name)) {
             foundTeamWf = team;
             break;
          }
       }
       Assert.assertNotNull("New Team Workflow \"second\" NOT Found", foundTeamWf);
-      Assert.assertEquals("description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          foundTeamWf, AtsAttributeTypes.Description, ""));
-      Assert.assertFalse(AtsClientService.get().getQueryServiceClient().getArtifact(foundTeamWf).isDirty());
+      Assert.assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(foundTeamWf).isDirty());
 
    }
 

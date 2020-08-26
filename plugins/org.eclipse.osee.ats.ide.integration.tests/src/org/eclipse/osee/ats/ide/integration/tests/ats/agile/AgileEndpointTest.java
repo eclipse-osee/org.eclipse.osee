@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,13 +47,13 @@ public class AgileEndpointTest {
 
    @Before
    public void setup() {
-      agile = AtsClientService.get().getServerEndpoints().getAgile();
+      agile = AtsApiService.get().getServerEndpoints().getAgile();
       teamId = Lib.generateArtifactIdAsInt();
    }
 
    @After
    public void cleanup() {
-      Artifact agileTeam = AtsClientService.get().getQueryServiceClient().getArtifact(teamId);
+      Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(teamId);
       if (agileTeam != null) {
          agile.deleteTeam(teamId);
       }
@@ -87,7 +87,7 @@ public class AgileEndpointTest {
 
       // Test Delete
       agile.deleteTeam(teamId);
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(teamId));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(teamId));
    }
 
    private JaxNewAgileTeam newJaxAgileTeam() {
@@ -123,7 +123,7 @@ public class AgileEndpointTest {
       // Test Delete
       agile.deleteSprint(teamId, sprint.getId());
       sprints = agile.getSprints(teamId);
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(sprint.getId()));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(sprint.getId()));
    }
 
    @Test
@@ -154,7 +154,7 @@ public class AgileEndpointTest {
       agile.deleteFeatureGroup(teamId, newGroup.getId());
       groups = agile.getFeatureGroups(teamId);
       Assert.assertTrue(groups.isEmpty());
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(newGroup.getId()));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(newGroup.getId()));
    }
 
    @Test
@@ -234,10 +234,10 @@ public class AgileEndpointTest {
       XResultData results =
          agile.storeSprintReports(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
       Assert.assertFalse(results.toString(), results.isErrors());
-      AtsClientService.get().getQueryServiceClient().getArtifact(
+      AtsApiService.get().getQueryServiceIde().getArtifact(
          DemoArtifactToken.SAW_Sprint_2).reloadAttributesAndRelations();
       Assert.assertEquals(4,
-         AtsClientService.get().getRelationResolver().getChildren(DemoArtifactToken.SAW_Sprint_2).size());
+         AtsApiService.get().getRelationResolver().getChildren(DemoArtifactToken.SAW_Sprint_2).size());
    }
 
 }

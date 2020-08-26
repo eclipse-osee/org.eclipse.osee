@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
 import org.eclipse.osee.ats.core.query.AtsSearchDataSearch;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,7 +47,7 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      AtsSearchDataSearch query = new AtsSearchDataSearch(data, AtsClientService.get(), this);
+      AtsSearchDataSearch query = new AtsSearchDataSearch(data, AtsApiService.get(), this);
       return Collections.castAll(query.performSearch());
    }
 

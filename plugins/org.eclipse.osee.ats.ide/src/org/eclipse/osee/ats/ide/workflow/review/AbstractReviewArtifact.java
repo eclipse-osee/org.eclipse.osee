@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -129,7 +129,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public boolean isStandAloneReview() {
-      return AtsClientService.get().getActionableItemService().hasActionableItems(this);
+      return AtsApiService.get().getActionableItemService().hasActionableItems(this);
    }
 
    public Artifact getArtifact() {
@@ -145,7 +145,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
-      return AtsClientService.get().getActionableItemService().getActionableItems(this);
+      return AtsApiService.get().getActionableItemService().getActionableItems(this);
    }
 
    @Override

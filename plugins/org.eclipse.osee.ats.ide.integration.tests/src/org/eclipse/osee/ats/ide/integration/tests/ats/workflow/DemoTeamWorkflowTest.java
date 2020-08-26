@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
@@ -51,7 +51,7 @@ public class DemoTeamWorkflowTest {
    @After
    public void cleanup() throws Exception {
       assertTrue("This can not be run on production databse.",
-         !AtsClientService.get().getStoreService().isProductionDb());
+         !AtsApiService.get().getStoreService().isProductionDb());
 
       AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }
@@ -59,37 +59,37 @@ public class DemoTeamWorkflowTest {
    @Test
    public void testCreateSawTestWf() throws Exception {
       Collection<IAtsActionableItem> aias = new HashSet<>();
-      aias.add(AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Test_AI));
+      aias.add(AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Test_AI));
       String title = getClass().getSimpleName() + " testCreateSawTestWf";
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create SAW Test Action title: " + title);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create SAW Test Action title: " + title);
 
       ActionResult result =
-         AtsClientService.get().getActionFactory().createAction(null, title, title, ChangeType.Improvement, "1", false,
-            null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         AtsApiService.get().getActionFactory().createAction(null, title, title, ChangeType.Improvement, "1", false,
+            null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       //*** Transition Action to Analyze
       TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
-         TeamState.Analyze.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         null, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+         TeamState.Analyze.getName(), Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
+         null, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       //*** Transition Action to Implement
       helper = new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null,
-         AtsClientService.get(), TransitionOption.OverrideAssigneeCheck,
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         AtsApiService.get(), TransitionOption.OverrideAssigneeCheck,
          TransitionOption.OverrideTransitionValidityCheck);
-      results = AtsClientService.get().getWorkItemService().transition(helper);
+      results = AtsApiService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       IAtsVersion sawBuild2Version =
-         AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+         AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
       assertNotNull(sawBuild2Version);
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
       changes.execute();
 
       //*** Create a new workflow branch

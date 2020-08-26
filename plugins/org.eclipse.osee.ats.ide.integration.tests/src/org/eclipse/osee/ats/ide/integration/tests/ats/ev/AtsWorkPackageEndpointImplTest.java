@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class AtsWorkPackageEndpointImplTest {
 
    @Before
    public void setup() {
-      workPackageEp = AtsClientService.get().getServerEndpoints().getWorkPackageEndpoint();
+      workPackageEp = AtsApiService.get().getServerEndpoints().getWorkPackageEndpoint();
    }
 
    @Test
@@ -58,7 +58,7 @@ public class AtsWorkPackageEndpointImplTest {
       assertEquals(2, workItems.size());
       IAtsWorkItem workItem = workItems.iterator().next();
       JaxWorkPackageData data = new JaxWorkPackageData();
-      data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      data.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
       data.getWorkItemIds().add(workItem.getId());
 
       workPackageEp.deleteWorkPackageItems(0L, data);

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -90,24 +90,24 @@ public class OpenAgileTasksAction extends Action {
          card = card.replaceFirst("PUT_TITLE_HERE", workItem.getName());
 
          card = card.replaceFirst("PUT_POINTS_HERE",
-            AtsClientService.get().getAgileService().getAgileTeamPointsStr(workItem));
+            AtsApiService.get().getAgileService().getAgileTeamPointsStr(workItem));
          card = card.replaceFirst("PUT_FEATURE_HERE",
-            AtsClientService.get().getAgileService().getAgileFeatureGroupStr(workItem));
+            AtsApiService.get().getAgileService().getAgileFeatureGroupStr(workItem));
 
          card = card.replaceFirst("PUT_CHANGE_TYPE_HERE",
-            ChangeTypeUtil.getChangeTypeStr(workItem, AtsClientService.get()));
+            ChangeTypeUtil.getChangeTypeStr(workItem, AtsApiService.get()));
          card = card.replaceFirst("PUT_PRIORITY_HERE",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Priority, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Priority, workItem));
 
          card = card.replaceFirst("PUT_ASSIGNEES_HERE",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, workItem));
 
          card = card.replaceFirst("PUT_ATSID_HERE",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.AtsId, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.AtsId, workItem));
          card = card.replaceFirst("PUT_AI_HERE",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.ActionableItem, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.ActionableItem, workItem));
          card = card.replaceFirst("PUT_VERSION_HERE",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.TargetedVersion, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.TargetedVersion, workItem));
       }
       return card;
    }

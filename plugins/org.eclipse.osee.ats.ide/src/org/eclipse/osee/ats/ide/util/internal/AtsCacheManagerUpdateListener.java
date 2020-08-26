@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -76,7 +76,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    private boolean isSingleServerDeployment() {
       if (singleServerDeployment == null) {
-         singleServerDeployment = AtsClientService.get().isSingleServerDeployment();
+         singleServerDeployment = AtsApiService.get().isSingleServerDeployment();
       }
       return singleServerDeployment;
    }
@@ -88,7 +88,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             try {
                RelationTypeToken typeByGuid = tokenService.getRelationType(guidRel.getRelTypeGuid());
                if (configReloadRelationTypeGuids.contains(typeByGuid.getId())) {
-                  AtsClientService.get().reloadServerAndClientCaches();
+                  AtsApiService.get().reloadServerAndClientCaches();
                   break;
                }
             } catch (OseeCoreException ex) {
@@ -109,7 +109,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
       if (reload) {
          try {
-            AtsClientService.get().reloadServerAndClientCaches();
+            AtsApiService.get().reloadServerAndClientCaches();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

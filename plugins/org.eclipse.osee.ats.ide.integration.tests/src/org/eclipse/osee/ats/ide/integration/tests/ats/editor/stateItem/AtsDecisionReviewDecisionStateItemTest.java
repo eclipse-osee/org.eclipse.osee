@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.hooks.AtsDecisionReviewDecisionWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -46,16 +46,16 @@ public class AtsDecisionReviewDecisionStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
+      assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
 
       if (decRevArt == null) {
          // setup fake review artifact with decision options set
          decRevArt = (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-            AtsClientService.get().getAtsBranch());
+            AtsApiService.get().getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
          decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
-            AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
-               AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions()));
+            AtsApiService.get().getReviewService().getDecisionReviewOptionsString(
+               AtsApiService.get().getReviewService().getDefaultDecisionReviewOptions()));
          decRevArt.persist(getClass().getSimpleName());
       }
    }
@@ -102,7 +102,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       AtsDecisionReviewDecisionWorkItemHookIde stateItem = new AtsDecisionReviewDecisionWorkItemHookIde();
       Collection<AtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
-      Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(), users.iterator().next());
+      Assert.assertEquals(AtsApiService.get().getUserService().getCurrentUser(), users.iterator().next());
 
       // Set No
       decisionComboDam.set(2);

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.ide.column.FoundInVersionColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
@@ -61,7 +61,7 @@ public class XFoundInVersionWidget extends XHyperlabelVersionSelection implement
    @Override
    public boolean handleClear() {
       selectedVersions.clear();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Update Found-In-Version");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Update Found-In-Version");
       changes.unrelateAll(getArtifact(), getRelation());
       changes.executeIfNeeded();
       notifyXModifiedListeners();

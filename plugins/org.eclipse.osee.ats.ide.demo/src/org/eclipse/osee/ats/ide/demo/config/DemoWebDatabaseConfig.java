@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.demo.config;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
@@ -35,7 +35,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
    public void run() {
       TestUtil.setDemoDb(true);
 
-      BranchId atsBranch = AtsClientService.get().getAtsBranch();
+      BranchId atsBranch = AtsApiService.get().getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);
       headingArt.persist(transaction);
@@ -44,7 +44,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
       headingArt.addChild(oseeWebArt);
 
       Artifact sawProgram =
-         (Artifact) AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_PL_Program);
+         (Artifact) AtsApiService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_PL_Program);
       oseeWebArt.addRelation(CoreRelationTypes.UniversalGrouping_Members, sawProgram);
       oseeWebArt.persist(transaction);
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.task.related.AbstractAtsTaskRelatedService;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -50,7 +50,7 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
    }
 
    private DerivedFromTaskData getTaskRelatedData(DerivedFromTaskData trd, ChangeData changeData) {
-      final IAutoGenTaskData data = AtsClientService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
+      final IAutoGenTaskData data = AtsApiService.get().getTaskRelatedService().getAutoGenTaskData(trd.getTask());
 
       if (data.isNoChangedArtifact()) {
          trd.getResults().error("No changed artifact to show");

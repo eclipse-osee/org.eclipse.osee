@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.workflow.util.IDuplicateWorkflowListener;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.duplicate.CloneWorkflowAction;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
@@ -85,11 +85,11 @@ public class CloneActionToGoalAction extends Action {
                   changes.relate(collectorArt, memberProvider.getMemberRelationTypeSide(), teamWf.getStoreObject());
                }
                collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
-                  AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
                if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-                  AtsClientService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
+                  AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
                } else if (memberProvider.isSprint()) {
-                  AtsClientService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
+                  AtsApiService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
                }
                changes.add(collectorArt);
 

@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -52,7 +52,7 @@ public class AtsProgramServiceTest {
 
    @Before
    public void setup() {
-      programService = AtsClientService.get().getProgramService();
+      programService = AtsApiService.get().getProgramService();
       sawProgram = getSawProgram();
    }
 
@@ -123,7 +123,7 @@ public class AtsProgramServiceTest {
    @Test
    public void testGetWorkPackage() {
       IAtsWorkPackage workPackage =
-         (IAtsWorkPackage) AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andAttr(
+         (IAtsWorkPackage) AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andAttr(
             CoreAttributeTypes.Name, "Work Pkg 0B").getConfigObjectResultSet().getExactlyOne();
 
       assertEquals("COMM Page", programService.getInsertionActivity(workPackage).getName());
@@ -193,7 +193,7 @@ public class AtsProgramServiceTest {
       if (sawProgram == null) {
          sawProgram = programService.getProgramById(DemoArtifactToken.SAW_Program);
          ArtifactToken art = sawProgram.getArtifactToken();
-         AtsClientService.get().getStoreService().reloadArts(Arrays.asList(art));
+         AtsApiService.get().getStoreService().reloadArts(Arrays.asList(art));
       }
       return sawProgram;
    }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.ConvertWorkflowStatesOperation;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -46,10 +46,10 @@ public class ConvertWorkflowStatesOperationTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
          "ConvertWorkflowStatesOperationTest.cleanup");
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "ConvertWorkflowStatesOperationTest", AtsClientService.get().getAtsBranch(),
+         "ConvertWorkflowStatesOperationTest", AtsApiService.get().getAtsBranch(),
          QueryOption.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
@@ -91,7 +91,7 @@ public class ConvertWorkflowStatesOperationTest {
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow,
-         AtsClientService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork");
+         AtsApiService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       teamWf.addAttribute(AtsAttributeTypes.State, "Analyze;");
       teamWf.addAttribute(AtsAttributeTypes.State, "Endorse;");
@@ -130,7 +130,7 @@ public class ConvertWorkflowStatesOperationTest {
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow,
-         AtsClientService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork_persist");
+         AtsApiService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork_persist");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       workflows.add((AbstractWorkflowArtifact) teamWf);
 

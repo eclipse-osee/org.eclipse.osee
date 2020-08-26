@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.config.AtsConfigOperation;
 import org.eclipse.osee.ats.ide.config.AtsConfigOperation.Display;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -88,14 +88,14 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(teamDef),
+                  AtsEditors.openATSAction(AtsApiService.get().getQueryService().getArtifact(teamDef),
                      AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(aia),
+                     AtsEditors.openATSAction(AtsApiService.get().getQueryService().getArtifact(aia),
                         AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsClientService.get().getAtsBranch()),
+                     workDefinition.getName(), AtsApiService.get().getAtsBranch()),
                      PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItemSorter;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -54,8 +54,8 @@ public class XActionableItemCombo extends XComboViewer {
 
       Collection<IAtsActionableItem> ais = null;
       try {
-         ais = AtsClientService.get().getActionableItemService().getActionableItems(active,
-            AtsClientService.get().getQueryService());
+         ais = AtsApiService.get().getActionableItemService().getActionableItems(active,
+            AtsApiService.get().getQueryService());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading actionable items", ex);
       }

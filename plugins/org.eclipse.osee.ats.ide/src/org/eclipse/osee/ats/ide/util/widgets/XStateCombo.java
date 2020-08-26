@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +49,7 @@ public class XStateCombo extends XComboDam {
             workDef = ((AbstractWorkflowArtifact) getArtifact()).getParentTeamWorkflow().getWorkDefinition();
          }
          if (workDef != null) {
-            for (String stateName : AtsClientService.get().getWorkDefinitionService().getStateNames(workDef)) {
+            for (String stateName : AtsApiService.get().getWorkDefinitionService().getStateNames(workDef)) {
                if (!validStates.contains(stateName)) {
                   validStates.add(stateName);
                }

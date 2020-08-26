@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -111,8 +111,8 @@ public class EventColumn extends XViewerValueColumn {
 
    public String processCurrentStateChange(Change change) {
       try {
-         WorkState was = AtsClientService.get().getWorkStateFactory().fromStoreStr(change.getWasValue());
-         WorkState is = AtsClientService.get().getWorkStateFactory().fromStoreStr(change.getIsValue());
+         WorkState was = AtsApiService.get().getWorkStateFactory().fromStoreStr(change.getWasValue());
+         WorkState is = AtsApiService.get().getWorkStateFactory().fromStoreStr(change.getIsValue());
          if (change.getWasValue().equals("")) {
             return "Created in [" + is.getName() + "] state";
          } else if (!was.getName().equals(is.getName())) {

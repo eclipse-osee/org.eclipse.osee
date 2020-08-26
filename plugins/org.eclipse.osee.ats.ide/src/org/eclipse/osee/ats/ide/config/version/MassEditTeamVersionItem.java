@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -49,7 +49,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          return selectedTeamDef;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
+      dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();
@@ -64,7 +64,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          if (selectedTeamDef == null) {
             return;
          }
-         if (AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedTeamDef) == null) {
+         if (AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedTeamDef) == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;
          }
@@ -77,8 +77,8 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    public List<Artifact> getResults() {
       Collection<IAtsVersion> versions =
-         AtsClientService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(selectedTeamDef);
-      Collection<ArtifactToken> verArtToks = AtsClientService.get().getQueryService().getArtifactsFromObjects(versions);
+         AtsApiService.get().getVersionService().getVersionsFromTeamDefHoldingVersions(selectedTeamDef);
+      Collection<ArtifactToken> verArtToks = AtsApiService.get().getQueryService().getArtifactsFromObjects(versions);
       return Collections.castAll(verArtToks);
    }
 

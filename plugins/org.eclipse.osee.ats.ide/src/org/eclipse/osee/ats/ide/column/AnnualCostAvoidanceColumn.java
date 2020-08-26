@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -82,7 +82,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             if (!team.isCompleted() && !team.isCancelled()) {
                hours += getWorldViewAnnualCostAvoidance(team);
             }
@@ -91,7 +91,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
          double benefit = getWorldViewWeeklyBenefit(teamArt);
-         double remainHrs = AtsClientService.get().getEarnedValueService().getRemainHoursTotal(teamArt);
+         double remainHrs = AtsApiService.get().getEarnedValueService().getRemainHoursTotal(teamArt);
          return benefit * 52 - remainHrs;
       } else if (object instanceof IAtsWorkItem) {
          return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());
@@ -112,7 +112,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
 
    public static Result isWorldViewAnnualCostAvoidanceValid(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             Result result = isWorldViewAnnualCostAvoidanceValid(team);
             if (result.isFalse()) {
                return result;

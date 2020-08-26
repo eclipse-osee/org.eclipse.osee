@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -54,7 +54,7 @@ public class VersionTeamMetrics {
 
    private void bulkLoadArtifacts() {
       RelationManager.getRelatedArtifacts(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(this.verTeamDef)), 6,
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(this.verTeamDef)), 6,
          CoreRelationTypes.DefaultHierarchical_Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_TeamWorkflow, AtsRelationTypes.TeamWfToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);
@@ -65,8 +65,8 @@ public class VersionTeamMetrics {
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<>();
-         for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(verTeamDef)) {
-            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+         for (IAtsVersion verArt : AtsApiService.get().getVersionService().getVersions(verTeamDef)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
                verArt)) {
                Date origDate = team.getCreatedDate();
                teamWorkflowToOrigDate.put((TeamWorkFlowArtifact) team.getStoreObject(), origDate);
@@ -83,9 +83,9 @@ public class VersionTeamMetrics {
    }
 
    private void orderReleasedVersions() {
-      for (IAtsVersion verArt : AtsClientService.get().getVersionService().getVersions(verTeamDef)) {
+      for (IAtsVersion verArt : AtsApiService.get().getVersionService().getVersions(verTeamDef)) {
          VersionMetrics verMet = new VersionMetrics(verArt, this);
-         Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
+         Date relDate = AtsApiService.get().getVersionService().getReleaseDate(verArt);
          if (relDate != null) {
             relDateToVerMet.put(relDate, verMet);
          }

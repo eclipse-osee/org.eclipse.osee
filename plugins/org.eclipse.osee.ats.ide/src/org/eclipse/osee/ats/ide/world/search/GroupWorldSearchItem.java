@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -126,7 +126,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedGroups != null) {
          return;
       }
-      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsClientService.get().getAtsBranch());
+      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsApiService.get().getAtsBranch());
 
       FilteredCheckboxTreeArtifactDialog gld =
          new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);

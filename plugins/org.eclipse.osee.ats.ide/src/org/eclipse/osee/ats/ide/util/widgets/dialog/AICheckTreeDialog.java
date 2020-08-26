@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
@@ -53,7 +53,7 @@ public class AICheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsActionable
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(
-            AtsClientService.get().getActionableItemService().getTopLevelActionableItems(active));
+            AtsApiService.get().getActionableItemService().getTopLevelActionableItems(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
@@ -61,7 +61,7 @@ public class AICheckTreeDialog extends FilteredCheckboxTreeDialog<IAtsActionable
                   for (IAtsActionableItem aia : getChecked()) {
                      if (!aia.isActionable()) {
                         AWorkbench.popup("ERROR",
-                           AtsClientService.get().getActionableItemService().getNotActionableItemError(aia));
+                           AtsApiService.get().getActionableItemService().getNotActionableItemError(aia));
                      }
                   }
                } catch (Exception ex) {

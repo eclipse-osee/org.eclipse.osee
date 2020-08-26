@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranchEnablement;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -221,16 +221,16 @@ public abstract class BranchRegressionTest {
 
       // Purge Action if already exists
       Collection<IAtsAction> actionArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
+         AtsApiService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
             AtsAttributeTypes.LegacyPcrId, getLegacyPcrId()).createFilter().getActions());
 
       Set<Artifact> artsToDel = new HashSet<>();
       for (IAtsAction actionArt : actionArts) {
          artsToDel.add((Artifact) actionArt.getStoreObject());
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
             artsToDel.add((Artifact) team.getStoreObject());
             artsToDel.addAll(
-               Collections.castAll(AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
+               Collections.castAll(AtsObjects.getArtifacts(AtsApiService.get().getTaskService().getTasks(team))));
          }
       }
 
@@ -348,14 +348,14 @@ public abstract class BranchRegressionTest {
    }
 
    protected void validateNoBoostrapUser() {
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
          team.getStateMgr().validateNoBootstrapUser();
       }
    }
 
    public void testXCommitManagerAfterActionCreate() {
       Assert.assertEquals("Should be no committed branches", 0,
-         AtsClientService.get().getBranchService().getBranchesCommittedTo(reqTeam).size());
+         AtsApiService.get().getBranchService().getBranchesCommittedTo(reqTeam).size());
    }
 
    public void testCreateBranchFirstTime() {
@@ -387,7 +387,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testXCommitManagerAfterDeleteBranch() {
-      IAtsBranchService branchService = AtsClientService.get().getBranchService();
+      IAtsBranchService branchService = AtsApiService.get().getBranchService();
       Collection<CommitConfigItem> configArtSet = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       for (CommitConfigItem configArt : configArtSet) {
          CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configArt);
@@ -416,7 +416,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testBranchesListedInXCommitManager() {
-      IAtsBranchService branchService = AtsClientService.get().getBranchService();
+      IAtsBranchService branchService = AtsApiService.get().getBranchService();
       Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Verify the Parallel Branches listed in the XCommitManager
       Assert.assertTrue("parallel workingBranch check failed => " + configItems.size(),
@@ -525,7 +525,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testWorkingBranchCommit() {
-      IAtsBranchService branchService = AtsClientService.get().getBranchService();
+      IAtsBranchService branchService = AtsApiService.get().getBranchService();
       Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       // Since commit workingBranch is a separate job, a callback will resume this thread
       // commit all of the branches
@@ -578,7 +578,7 @@ public abstract class BranchRegressionTest {
       Assert.assertFalse("Delete Button should be disabled", enablement.isDeleteBranchButtonEnabled());
 
       // Verify the XCommitManager's status; All branches should be CommitStatus.Committed
-      IAtsBranchService branchService = AtsClientService.get().getBranchService();
+      IAtsBranchService branchService = AtsApiService.get().getBranchService();
       Collection<CommitConfigItem> configItems = branchService.getConfigArtifactsConfiguredToCommitTo(reqTeam);
       for (CommitConfigItem configItem : configItems) {
          CommitStatus xCommitStatus = branchService.getCommitStatus(reqTeam, configItem);
@@ -645,11 +645,11 @@ public abstract class BranchRegressionTest {
 
    public void testRequirementsWorkflowCompletion() {
       // Complete Requirements and Start Code/Test
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("testRequirementsWorkflowCompletion");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("testRequirementsWorkflowCompletion");
       TransitionHelper helper =
          new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+            null, changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
       if (!results.isEmpty()) {
          Assert.fail("Complete Requirements Failed " + results.toString());
       }
@@ -692,7 +692,7 @@ public abstract class BranchRegressionTest {
     */
    protected void testCodeTaskCreationAfterReqCompletion() {
 
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
          if (team.getTeamDefinition().toString().contains("Req")) {
             continue;
          }
@@ -706,16 +706,16 @@ public abstract class BranchRegressionTest {
 
          int loopCount = 0;
          int count = 0;
-         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(team);
+         Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(team);
          while (getFinalTaskNames().size() != count && loopCount < 10) {
             try {
                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                // do nothing
             }
-            AtsClientService.get().getStoreService().reload(Arrays.asList(team));
+            AtsApiService.get().getStoreService().reload(Arrays.asList(team));
 
-            tasks = AtsClientService.get().getTaskService().getTasks(team);
+            tasks = AtsApiService.get().getTaskService().getTasks(team);
             count = tasks.size();
 
             loopCount++;
@@ -805,15 +805,15 @@ public abstract class BranchRegressionTest {
    }
 
    protected void testTasksAgainstExpected(IAtsTeamWorkflow teamWf, Collection<String> expected) {
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
       Assert.assertEquals(expected.size(), tasks.size());
 
       for (IAtsTask task : tasks) {
          boolean contains = expected.contains(task.getName());
          Assert.assertTrue(String.format("Expected task [%s] and not found in %s", task.getName(), expected), contains);
 
-         boolean deReferenced = AtsClientService.get().getTaskService().isAutoGenDeReferenced(task);
-         boolean autoGen = AtsClientService.get().getTaskService().isAutoGen(task);
+         boolean deReferenced = AtsApiService.get().getTaskService().isAutoGenDeReferenced(task);
+         boolean autoGen = AtsApiService.get().getTaskService().isAutoGen(task);
 
          if (deReferenced) {
             Assert.assertFalse(autoGen);

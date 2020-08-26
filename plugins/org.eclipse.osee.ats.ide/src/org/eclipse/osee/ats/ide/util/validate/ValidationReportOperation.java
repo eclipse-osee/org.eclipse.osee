@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -135,9 +135,9 @@ public class ValidationReportOperation extends AbstractOperation {
    }
 
    private boolean isSkipRelationCheck(String ruleTitle) {
-      IAtsClient atsClient = AtsClientService.get();
-      Conditions.checkNotNull(atsClient, "AtsClientService");
-      IAtsBranchService branchService = atsClient.getBranchService();
+      AtsApiIde atsApi = AtsApiService.get();
+      Conditions.checkNotNull(atsApi, "AtsApiService");
+      IAtsBranchService branchService = atsApi.getBranchService();
       Conditions.checkNotNull(branchService, "AtsBranchService");
       return branchService.isBranchesAllCommitted(teamArt) && ruleTitle.equals("Relations Check:");
    }

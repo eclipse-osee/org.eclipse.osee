@@ -19,7 +19,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
@@ -48,8 +48,8 @@ public final class DeleteSearchAction extends Action {
 
    @Override
    public void run() {
-      List<AtsSearchData> searchDatas = AtsClientService.get().getQueryService().getSavedSearches(
-         AtsClientService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
+      List<AtsSearchData> searchDatas = AtsApiService.get().getQueryService().getSavedSearches(
+         AtsApiService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Delete Saved Search", "Select Search to Delete",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -57,7 +57,7 @@ public final class DeleteSearchAction extends Action {
 
       if (dialog.open() == 0) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
-         AtsClientService.get().getQueryService().removeSearch(AtsClientService.get().getUserService().getCurrentUser(),
+         AtsApiService.get().getQueryService().removeSearch(AtsApiService.get().getUserService().getCurrentUser(),
             selected);
 
          TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);

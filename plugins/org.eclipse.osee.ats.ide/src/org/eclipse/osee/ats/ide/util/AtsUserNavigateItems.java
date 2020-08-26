@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.CreateNewUsersByNameItem;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.operation.PurgeUser;
@@ -40,7 +40,7 @@ public class AtsUserNavigateItems implements IUserNavigateItem {
    @Override
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) {
       List<XNavigateItem> items = new ArrayList<>();
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          items.add(new XNavigateItemBlam(parentItem, new PurgeUser(), FrameworkImage.X_RED));
          items.add(new XNavigateItemBlam(parentItem, new ReAssignATSObjectsToUser(), AtsImage.ACTION));
          items.add(new CreateNewUsersByNameItem(parentItem));

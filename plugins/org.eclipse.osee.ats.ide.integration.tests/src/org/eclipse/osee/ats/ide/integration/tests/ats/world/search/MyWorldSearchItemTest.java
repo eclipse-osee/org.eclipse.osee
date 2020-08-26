@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -35,7 +35,7 @@ public class MyWorldSearchItemTest {
 
    @Test
    public void testMyWorldSearchItem() {
-      AtsUser currentUser = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
       DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
@@ -44,7 +44,7 @@ public class MyWorldSearchItemTest {
       DemoTestUtil.assertTypes(results, 2, IAtsPeerToPeerReview.class);
 
       search = new MyWorldSearchItem("Search",
-         AtsClientService.get().getUserService().getUserByUserId(DemoUsers.Kay_Jones.getUserId()));
+         AtsApiService.get().getUserService().getUserByUserId(DemoUsers.Kay_Jones.getUserId()));
       results = search.performSearchGetResults();
       DemoTestUtil.assertTypes(results, 13, IAtsWorkItem.class);
       DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);

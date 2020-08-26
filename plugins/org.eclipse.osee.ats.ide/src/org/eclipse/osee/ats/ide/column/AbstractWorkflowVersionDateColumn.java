@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,7 +53,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);
@@ -89,12 +89,12 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(AttributeTypeId attributeType, Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
+         IAtsVersion verArt = AtsApiService.get().getVersionService().getTargetedVersion(teamArt);
          if (verArt != null) {
             if (attributeType == AtsAttributeTypes.ReleaseDate) {
-               return AtsClientService.get().getVersionService().getReleaseDate(verArt);
+               return AtsApiService.get().getVersionService().getReleaseDate(verArt);
             } else if (attributeType == AtsAttributeTypes.EstimatedReleaseDate) {
-               return AtsClientService.get().getVersionService().getEstimatedReleaseDate(verArt);
+               return AtsApiService.get().getVersionService().getEstimatedReleaseDate(verArt);
             }
          }
       } else if (object instanceof AbstractWorkflowArtifact) {
@@ -120,7 +120,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       String versionDate = getDateStrFromTargetedVersion(attributeType, artifact);
       if (Strings.isValid(workflowDate) && Strings.isValid(versionDate)) {
          return String.format("%s; [%s - %s]", workflowDate,
-            AtsClientService.get().getVersionService().getTargetedVersion(artifact), versionDate);
+            AtsApiService.get().getVersionService().getTargetedVersion(artifact), versionDate);
       } else if (Strings.isValid(workflowDate)) {
          return workflowDate;
       } else if (Strings.isValid(versionDate)) {

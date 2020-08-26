@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.ide.actions.NewGoal;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -31,9 +31,9 @@ public class NewGoalTest extends AbstractAtsActionRunTest {
    @AfterClass
    public static void cleanup() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), NewGoalTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), NewGoalTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName(NewGoalTest.class.getSimpleName(),
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();

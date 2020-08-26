@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.DuplicateWidgetUpdateResolver;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.XWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -67,10 +67,10 @@ public class WfeCustomHeader extends Composite {
       this.editor = editor;
       editor.getToolkit().adapt(this);
 
-      isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), workItem,
-         workItem.getStateDefinition(), AtsClientService.get().getUserService());
-      isReadOnly = AtsClientService.get().getStoreService().isReadOnly(workItem);
-      isAccessControlWrite = AtsClientService.get().getStoreService().isAccessControlWrite(workItem);
+      isEditable = WorkflowManagerCore.isEditable(AtsApiService.get().getUserService().getCurrentUser(), workItem,
+         workItem.getStateDefinition(), AtsApiService.get().getUserService());
+      isReadOnly = AtsApiService.get().getStoreService().isReadOnly(workItem);
+      isAccessControlWrite = AtsApiService.get().getStoreService().isAccessControlWrite(workItem);
       isGlobalEditable = !isReadOnly && isAccessControlWrite;
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
 

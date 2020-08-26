@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -165,7 +165,7 @@ public class TransitionToMenu {
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
-      final ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get()) {
+      final ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
 
          @Override
          public String getToStateName() {
@@ -191,7 +191,7 @@ public class TransitionToMenu {
                   IAtsWorkItem workItem = getWorkItems().iterator().next();
                   IAtsStateDefinition stateDef = null;
                   try {
-                     stateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(workItem,
+                     stateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem,
                         getToStateName());
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -242,7 +242,7 @@ public class TransitionToMenu {
          public Collection<IAtsTransitionHook> getTransitionListeners() {
             try {
                Set<IAtsTransitionHook> listeners = new HashSet<>();
-               listeners.addAll(AtsClientService.get().getWorkItemService().getTransitionHooks());
+               listeners.addAll(AtsApiService.get().getWorkItemService().getTransitionHooks());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -251,7 +251,7 @@ public class TransitionToMenu {
 
          @Override
          public AtsApi getServices() {
-            return AtsClientService.get();
+            return AtsApiService.get();
          }
 
          @Override

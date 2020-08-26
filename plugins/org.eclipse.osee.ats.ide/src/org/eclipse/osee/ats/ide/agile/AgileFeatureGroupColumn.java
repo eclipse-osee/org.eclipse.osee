@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.column.IAtsXViewerPreComputedColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -121,7 +121,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          return false;
       }
 
-      AgileEndpointApi agileEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
+      AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
       long teamId = items.getCommonBacklog().getTeamId();
       try {
@@ -178,7 +178,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(
             AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
-            IAgileFeatureGroup featureGroup = AtsClientService.get().getAgileService().getAgileFeatureGroup(featureArt);
+            IAgileFeatureGroup featureGroup = AtsApiService.get().getAgileService().getAgileFeatureGroup(featureArt);
             if (featureGroup.isActive()) {
                selected.add(createJaxAgileFeatureGroupFromAgileFeatureGroup(featureGroup));
             }
@@ -209,17 +209,17 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      Collection<ArtifactId> workItemArts = AtsObjects.getTeamWfArtifacts(objects, AtsClientService.get());
+      Collection<ArtifactId> workItemArts = AtsObjects.getTeamWfArtifacts(objects, AtsApiService.get());
       // Change NamedId to ArtifactToken when merge to 25.0
       for (ArtifactId workItemId : workItemArts) {
          try {
-            Artifact workItem = AtsClientService.get().getQueryServiceClient().getArtifact(workItemId);
+            Artifact workItem = AtsApiService.get().getQueryServiceIde().getArtifact(workItemId);
             List<Artifact> featureArts =
                workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup);
             if (workItem.isOfType(AtsArtifactTypes.Action)) {
                Set<String> strs = new HashSet<>();
-               for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(workItem)) {
-                  for (ArtifactToken featureArt : AtsClientService.get().getQueryServiceClient().getArtifact(
+               for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(workItem)) {
+                  for (ArtifactToken featureArt : AtsApiService.get().getQueryServiceIde().getArtifact(
                      teamWf).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup)) {
                      strs.add(featureArt.getName());
                   }
@@ -244,7 +244,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
-            Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (art != null && art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                awas.add((AbstractWorkflowArtifact) art);
                arts.add(art);

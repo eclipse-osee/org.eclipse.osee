@@ -39,8 +39,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -70,7 +70,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
          supportedTypes = new LinkedList<>();
          supportedTypes.addAll(Arrays.asList(Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal,
             AgileSprint, AgileBacklog));
-         IAtsClient atsClient = AtsClientService.get();
+         AtsApiIde atsClient = AtsApiService.get();
          IAtsStoreService storeService = atsClient.getStoreService();
          supportedTypes.addAll(storeService.getTeamWorkflowArtifactTypes());
       }
@@ -128,7 +128,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       disabledUserCreationTypes.add(AgileTeam);
       disabledUserCreationTypes.add(AgileFeatureGroup);
       disabledUserCreationTypes.add(AgileSprint);
-      String configValue = AtsClientService.get().getConfigValue(AtsUtil.USER_CREATION_DISABLED);
+      String configValue = AtsApiService.get().getConfigValue(AtsUtil.USER_CREATION_DISABLED);
       if (Strings.isValid(configValue)) {
          for (String artifactTypeNamedIdStr : configValue.split(";")) {
             ArtifactTypeId artifactTypeId = createArtifactTypeIdFromToken(artifactTypeNamedIdStr);

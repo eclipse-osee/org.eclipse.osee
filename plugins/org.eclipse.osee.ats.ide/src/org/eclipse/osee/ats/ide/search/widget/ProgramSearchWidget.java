@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -41,7 +41,7 @@ public class ProgramSearchWidget extends AbstractXComboViewerSearchWidget<IAtsPr
          ArtifactId programId = ArtifactId.valueOf(data.getProgramId());
          XComboViewer combo = getWidget();
          if (programId.isValid()) {
-            IAtsProgram program = AtsClientService.get().getProgramService().getProgramById(programId);
+            IAtsProgram program = AtsApiService.get().getProgramService().getProgramById(programId);
             combo.setSelected(Arrays.asList(program));
          }
       }
@@ -49,7 +49,7 @@ public class ProgramSearchWidget extends AbstractXComboViewerSearchWidget<IAtsPr
 
    @Override
    public Collection<IAtsProgram> getInput() {
-      return Collections.castAll(AtsClientService.get().getProgramService().getPrograms());
+      return Collections.castAll(AtsApiService.get().getProgramService().getPrograms());
    }
 
 }

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -55,8 +55,8 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHoo
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, PeerWorkDefId, changes);
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, PeerWorkDefId, changes);
       changes.execute();
 
       teamWf.persist("PeerReviewDefinitionManagerTest");
@@ -67,8 +67,8 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHoo
 
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf), TeamState.Implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
-      TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 

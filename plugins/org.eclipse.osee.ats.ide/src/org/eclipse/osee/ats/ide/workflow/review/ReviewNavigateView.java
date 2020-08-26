@@ -29,7 +29,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.AtsNavigateComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
@@ -123,11 +123,11 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
                         Label label = new Label(xNavComp, SWT.None);
                         String str = getWhoAmI();
-                        if (AtsClientService.get().getUserService().isAtsAdmin()) {
+                        if (AtsApiService.get().getUserService().isAtsAdmin()) {
                            str += " - Admin";
                         }
                         if (!str.equals("")) {
-                           if (AtsClientService.get().getUserService().isAtsAdmin()) {
+                           if (AtsApiService.get().getUserService().isAtsAdmin()) {
                               label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                            } else {
                               label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
@@ -187,7 +187,7 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    private String getWhoAmI() {
       try {
-         String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
+         String userName = AtsApiService.get().getUserService().getCurrentUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {

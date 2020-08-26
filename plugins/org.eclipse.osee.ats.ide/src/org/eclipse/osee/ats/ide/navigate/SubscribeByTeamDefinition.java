@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -53,11 +53,11 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          false);
       try {
          List<IAtsTeamDefinition> objs = new ArrayList<>();
-         for (ArtifactToken art : AtsClientService.get().getRelationResolver().getRelated(
-            (IAtsObject) AtsClientService.get().getUserService().getCurrentUser(),
+         for (ArtifactToken art : AtsApiService.get().getRelationResolver().getRelated(
+            (IAtsObject) AtsApiService.get().getUserService().getCurrentUser(),
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               objs.add(AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(art));
+               objs.add(AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(art));
             }
          }
          diag.setInitialTeamDefs(objs);
@@ -66,9 +66,9 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          }
          Collection<IAtsTeamDefinition> selected = diag.getChecked();
          Collection<Artifact> arts =
-            Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(selected));
+            Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(selected));
 
-         User user = UserManager.getUserByArtId(AtsClientService.get().getUserService().getCurrentUser());
+         User user = UserManager.getUserByArtId(AtsApiService.get().getUserService().getCurrentUser());
          SubscribeUtility.setSubcriptionsAndPersist(user, AtsRelationTypes.SubscribedUser_Artifact, arts,
             AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");

@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -74,7 +74,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<AtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     AtsUser atsUser = AtsClientService.get().getUserService().getUserById(art);
+                     AtsUser atsUser = AtsApiService.get().getUserService().getUserById(art);
                      assignees.add(atsUser);
                   }
                }
@@ -107,9 +107,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   if (assignees.isEmpty()) {
                      assignees.add(AtsCoreUsers.UNASSIGNED_USER);
                   }
-                  IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeamWf(artifact);
-                  AtsClientService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
-                     AtsClientService.get().getUserService().getCurrentUser(), null, null, null, commitComment);
+                  IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeamWf(artifact);
+                  AtsApiService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
+                     AtsApiService.get().getUserService().getCurrentUser(), null, null, null, commitComment);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
@@ -69,7 +69,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
          Set<IAtsTeamDefinition> teamDefinitions = null;
          try {
             teamDefinitions =
-               AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active);
+               AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
          }

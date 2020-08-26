@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,7 +65,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (AtsObjects.isAtsWorkItemOrAction(element)) {
          try {
-            return getOperationalImpact(AtsClientService.get().getQueryServiceClient().getArtifact(element));
+            return getOperationalImpact(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             return LogUtil.getCellExceptionString(ex);
@@ -80,8 +80,8 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       }
       if (art.isOfType(AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<>();
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
-            strs.add(getOperationalImpact(AtsClientService.get().getQueryServiceClient().getArtifact(team)));
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(art)) {
+            strs.add(getOperationalImpact(AtsApiService.get().getQueryServiceIde().getArtifact(team)));
          }
          return Collections.toString(", ", strs);
       }

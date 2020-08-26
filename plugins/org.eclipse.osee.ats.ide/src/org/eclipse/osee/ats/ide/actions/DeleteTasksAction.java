@@ -21,7 +21,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -94,7 +94,7 @@ public class DeleteTasksAction extends AbstractAtsAction {
       if (delete) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Delete Tasks");
+               TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<>();
             ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<>();

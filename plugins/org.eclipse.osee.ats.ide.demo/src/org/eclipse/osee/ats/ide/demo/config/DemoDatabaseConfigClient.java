@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.demo.config;
 
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -29,7 +29,7 @@ public class DemoDatabaseConfigClient implements IDbInitializationTask {
    @Override
    public void run() {
 
-      XResultData results = AtsClientService.get().getServerEndpoints().getConfigEndpoint().demoDbInit();
+      XResultData results = AtsApiService.get().getServerEndpoints().getConfigEndpoint().demoDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }
@@ -37,7 +37,7 @@ public class DemoDatabaseConfigClient implements IDbInitializationTask {
       TestUtil.setDemoDb(true);
 
       // Reload caches cause Demo sheet import added new users
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
    }
 
 }

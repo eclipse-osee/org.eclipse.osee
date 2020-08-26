@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -106,7 +106,7 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
             editor.doSave(null);
          }
          if (TargetedVersionColumnUI.getInstance().promptChangeVersion((TeamWorkFlowArtifact) teamWf,
-            AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+            AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             VersionLockedType.UnLocked)) {
 
             return true;
@@ -121,8 +121,8 @@ public class WfeTargetedVersionHeader extends Composite implements IWfeEventHand
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         if (AtsClientService.get().getVersionService().hasTargetedVersion(teamWf)) {
-            value = AtsClientService.get().getVersionService().getTargetedVersion(teamWf).getName();
+         if (AtsApiService.get().getVersionService().hasTargetedVersion(teamWf)) {
+            value = AtsApiService.get().getVersionService().getTargetedVersion(teamWf).getName();
          }
          valueLabel.setText(value);
          valueLabel.getParent().getParent().layout();

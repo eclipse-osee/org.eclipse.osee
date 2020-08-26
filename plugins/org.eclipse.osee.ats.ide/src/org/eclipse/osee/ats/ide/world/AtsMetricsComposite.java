@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.WorkflowMetrics;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -136,9 +136,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
       addSpace();
 
       try {
-         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersion() != null && AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersion() != null && AtsApiService.get().getVersionService().getEstimatedReleaseDate(
             iAtsMetricsProvider.getMetricsVersion()) != null) {
-            estimatedReleaseXDate.setDate(AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+            estimatedReleaseXDate.setDate(AtsApiService.get().getVersionService().getEstimatedReleaseDate(
                iAtsMetricsProvider.getMetricsVersion()));
          }
       } catch (OseeCoreException ex) {
@@ -163,16 +163,16 @@ public class AtsMetricsComposite extends ScrolledComposite {
          return estimatedReleaseXDate.getDate();
       }
       if (iAtsMetricsProvider.getMetricsVersion() != null) {
-         return AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+         return AtsApiService.get().getVersionService().getEstimatedReleaseDate(
             iAtsMetricsProvider.getMetricsVersion());
       }
       // Try to find an estimated release date from one of the workflows
       for (Artifact artifact : iAtsMetricsProvider.getMetricsWorkItems()) {
          if (artifact instanceof IAtsTeamWorkflow) {
             IAtsVersion verArt =
-               AtsClientService.get().getVersionService().getTargetedVersion((IAtsTeamWorkflow) artifact);
+               AtsApiService.get().getVersionService().getTargetedVersion((IAtsTeamWorkflow) artifact);
             if (verArt != null) {
-               Date estRelDate = AtsClientService.get().getVersionService().getEstimatedReleaseDate(verArt);
+               Date estRelDate = AtsApiService.get().getVersionService().getEstimatedReleaseDate(verArt);
                if (estRelDate != null) {
                   return estRelDate;
                }
@@ -228,8 +228,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          lines.add(new XBarGraphLine("Targeted Version", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getName()));
          String estimatedReleaseDateStr =
-            iAtsMetricsProvider.getMetricsVersion() == null || AtsClientService.get().getVersionService().getEstimatedReleaseDate(
-               iAtsMetricsProvider.getMetricsVersion()) == null ? "Not Set" : AtsClientService.get().getVersionService().getEstimatedReleaseDate(
+            iAtsMetricsProvider.getMetricsVersion() == null || AtsApiService.get().getVersionService().getEstimatedReleaseDate(
+               iAtsMetricsProvider.getMetricsVersion()) == null ? "Not Set" : AtsApiService.get().getVersionService().getEstimatedReleaseDate(
                   iAtsMetricsProvider.getMetricsVersion()).toString();
          lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : estimatedReleaseDateStr));
@@ -281,7 +281,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
                      cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
-                        AtsClientService.get());
+                        AtsApiService.get());
                      processedArts.add(awa);
                   }
                }
@@ -334,7 +334,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                Collection<AtsUser> users = new HashSet<>();
                users.addAll(team.getStateMgr().getAssignees());
                if (users.contains(user)) {
-                  double hours = AtsClientService.get().getEarnedValueService().getRemainHoursTotal(team);
+                  double hours = AtsApiService.get().getEarnedValueService().getRemainHoursTotal(team);
                   if (hours > 0) {
                      userHoursRemain += hours / users.size();
                   }

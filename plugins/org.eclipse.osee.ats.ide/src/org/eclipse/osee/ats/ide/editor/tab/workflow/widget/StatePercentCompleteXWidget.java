@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -85,15 +85,15 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          StringBuffer sb = new StringBuffer(
             String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
-         if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
+         if (sma instanceof TeamWorkFlowArtifact && AtsApiService.get().getTaskService().hasTasks(
             (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Percent: %d",
-               AtsClientService.get().getEarnedValueService().getPercentCompleteFromTasks(sma, page)));
+               AtsApiService.get().getEarnedValueService().getPercentCompleteFromTasks(sma, page)));
             breakoutNeeded = true;
          }
-         if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
+         if (sma.isTeamWorkflow() && AtsApiService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Percent: %d",
-               AtsClientService.get().getEarnedValueService().getPercentCompleteFromReviews(sma, page)));
+               AtsApiService.get().getEarnedValueService().getPercentCompleteFromReviews(sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
@@ -101,7 +101,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
             return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page,
-               AtsClientService.get()));
+               AtsApiService.get()));
          } else {
             return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
          }

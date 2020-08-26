@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -80,23 +80,23 @@ public class WorldContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof Artifact) {
          try {
-            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(parentElement);
+            Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(parentElement);
             if (artifact.isDeleted()) {
                return new Object[] {};
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
                relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-                  AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(artifact))));
-               return AtsClientService.get().getWorkItemService().getTeams(artifact).toArray();
+                  AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(artifact))));
+               return AtsApiService.get().getWorkItemService().getTeams(artifact).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               List<Artifact> arts = AtsClientService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
+               List<Artifact> arts = AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);
             }
             if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-               List<Artifact> arts = AtsClientService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
+               List<Artifact> arts = AtsApiService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);
@@ -106,7 +106,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                List<Artifact> arts = new ArrayList<>();
                arts.addAll(ReviewManager.getReviews(teamArt));
                arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-                  AtsClientService.get().getTaskService().getTasks(teamArt)));
+                  AtsApiService.get().getTaskService().getTasks(teamArt)));
                relatedArts.addAll(arts);
                return arts.toArray();
             }
@@ -121,7 +121,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       if (element instanceof Artifact) {
          try {
-            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+            Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(element);
             if (artifact.isDeleted()) {
                return null;
             }
@@ -155,7 +155,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof String) {
          return false;
       }
-      if (AtsClientService.get().getQueryServiceClient().getArtifact(element).isDeleted()) {
+      if (AtsApiService.get().getQueryServiceIde().getArtifact(element).isDeleted()) {
          return false;
       }
       if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {

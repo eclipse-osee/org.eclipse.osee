@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -50,7 +50,7 @@ public class AttributeValueQuickSearch {
       if (values != null && values.size() > 0) {
          for (String value : values) {
             List<Artifact> searchResult = ArtifactQuery.getArtifactListFromAttributeKeywords(
-               AtsClientService.get().getAtsBranch(), value, false, EXCLUDE_DELETED, false, attributeType);
+               AtsApiService.get().getAtsBranch(), value, false, EXCLUDE_DELETED, false, attributeType);
             // Since quick search is tokenized, re-validate if exactMatch is desired
             if (exactMatch) {
                for (Artifact artifact : searchResult) {

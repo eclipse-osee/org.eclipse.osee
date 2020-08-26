@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XVersionList;
 import org.eclipse.osee.ats.ide.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -137,7 +137,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
             try {
                if (version != null) {
-                  selectedBranch = AtsClientService.get().getVersionService().getBaselineBranchIdInherited(version);
+                  selectedBranch = AtsApiService.get().getVersionService().getBaselineBranchIdInherited(version);
                   reportBranchWidget.setSelection(selectedBranch);
                }
             } catch (OseeCoreException ex) {
@@ -160,13 +160,13 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
             try {
                IAtsTeamDefinition teamDefHoldingVersions =
-                  AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedProgram);
+                  AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedProgram);
                if (teamDefHoldingVersions == null) {
                   versionsListViewer.setInputAtsObjects(new ArrayList<>());
                   reportBranchWidget.setSelection(null);
                } else {
                   Collection<IAtsVersion> versionArtifacts =
-                     AtsClientService.get().getVersionService().getVersions(teamDefHoldingVersions);
+                     AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions);
                   versionsListViewer.setInputAtsObjects(versionArtifacts);
                   reportBranchWidget.setSelection(null);
                   versionsListViewer.addSelectionChangedListener(branchSelectionListener);
@@ -583,7 +583,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       for (IAtsVersion version : versions) {
          Collection<IAtsTeamWorkflow> targetedForTeamArtifacts =
-            AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(version);
+            AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(version);
          double increment = 100.0 / targetedForTeamArtifacts.size();
          double progress = 0;
          for (IAtsTeamWorkflow workflow : targetedForTeamArtifacts) {
@@ -618,7 +618,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) {
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(workflow);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(workflow);
 
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
@@ -637,7 +637,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             }
 
             int percentComplete =
-               PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get());
+               PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
             requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
                task.getStateMgr().getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());

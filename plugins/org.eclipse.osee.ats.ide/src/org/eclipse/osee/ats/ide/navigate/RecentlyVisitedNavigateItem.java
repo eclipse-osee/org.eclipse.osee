@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.navigate;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,14 +46,14 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       // Load artifact to check for deleted
-      Artifact workItemArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(item.getIdToken(),
-         AtsClientService.get().getAtsBranch(), DeletionFlag.INCLUDE_DELETED);
+      Artifact workItemArt = (Artifact) AtsApiService.get().getQueryService().getArtifact(item.getIdToken(),
+         AtsApiService.get().getAtsBranch(), DeletionFlag.INCLUDE_DELETED);
       if (workItemArt != null) {
          if (workItemArt.isDeleted()) {
             AWorkbench.popup("Item has been deleted.");
             return;
          }
-         IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(workItemArt);
+         IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workItemArt);
          if (workItem == null) {
             AWorkbench.popupf("Item %s can not be found.", item.getIdToken());
             return;

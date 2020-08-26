@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.trace.TraceabilityResultsEditor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -58,10 +58,10 @@ public class ShowRelatedTestCasesAction extends AbstractShowRelatedAction {
          protected IStatus run(IProgressMonitor monitor) {
             for (IAtsTask task : tasks) {
                try {
-                  DerivedFromTaskData reqData = AtsClientService.get().getTaskRelatedService().getDerivedFromTaskData(task);
+                  DerivedFromTaskData reqData = AtsApiService.get().getTaskRelatedService().getDerivedFromTaskData(task);
 
                   BranchId workingBranch =
-                     AtsClientService.get().getBranchService().getWorkingBranchInWork(task.getParentTeamWorkflow());
+                     AtsApiService.get().getBranchService().getWorkingBranchInWork(task.getParentTeamWorkflow());
                   Artifact artRef = (Artifact) reqData.getHeadArtifact();
                   if (artRef == null) {
                      taskArtsNotFound.add(task);

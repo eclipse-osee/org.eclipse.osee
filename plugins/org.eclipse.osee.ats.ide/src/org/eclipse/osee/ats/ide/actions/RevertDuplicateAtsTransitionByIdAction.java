@@ -22,7 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -75,11 +75,11 @@ public class RevertDuplicateAtsTransitionByIdAction extends Action {
                   }
                   XResultData results = new XResultData();
                   SkynetTransaction trans =
-                     TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
+                     TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getName());
 
                   boolean changed = false;
                   for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds,
-                     AtsClientService.get().getAtsBranch())) {
+                     AtsApiService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                      if (revertTransition(art, results, persist, trans)) {
                         changed = true;
@@ -90,7 +90,7 @@ public class RevertDuplicateAtsTransitionByIdAction extends Action {
 
                   if (!atsIds.isEmpty()) {
                      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId,
-                        atsIds, AtsClientService.get().getAtsBranch(), 50)) {
+                        atsIds, AtsApiService.get().getAtsBranch(), 50)) {
                         results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                         if (revertTransition(art, results, persist, trans)) {
                            changed = true;

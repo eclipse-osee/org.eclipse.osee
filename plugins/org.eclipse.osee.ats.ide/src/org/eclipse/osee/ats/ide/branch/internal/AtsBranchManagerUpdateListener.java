@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -56,11 +56,11 @@ public class AtsBranchManagerUpdateListener implements IBranchEventListener {
          if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;
             if (branchEvent.getEventType() == BranchEventType.Added) {
-               AtsClientService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, false);
+               AtsApiService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, false);
             } else if (branchEvent.getEventType() == BranchEventType.Committing) {
-               AtsClientService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, true);
+               AtsApiService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, true);
             } else if (branchEvent.getEventType() == BranchEventType.Committed || branchEvent.getEventType() == BranchEventType.CommitFailed) {
-               AtsClientService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, false);
+               AtsApiService.get().getBranchService().setWorkingBranchCreationInProgress(teamArt, false);
             }
          }
       } catch (OseeCoreException ex) {

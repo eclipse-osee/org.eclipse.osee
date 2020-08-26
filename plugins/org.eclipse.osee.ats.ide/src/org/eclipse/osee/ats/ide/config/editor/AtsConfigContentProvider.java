@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 
 /**
@@ -78,9 +78,9 @@ public class AtsConfigContentProvider implements ITreeContentProvider {
    private Object[] getTeamDefChildren(Object data) {
       IAtsTeamDefinition teamDef = (IAtsTeamDefinition) data;
       List<Object> children = new LinkedList<>();
-      children.addAll(AtsClientService.get().getTeamDefinitionService().getChildrenTeamDefinitions(teamDef));
-      children.addAll(AtsClientService.get().getActionableItemService().getActionableItems(teamDef));
-      children.addAll(AtsClientService.get().getVersionService().getVersions(teamDef));
+      children.addAll(AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(teamDef));
+      children.addAll(AtsApiService.get().getActionableItemService().getActionableItems(teamDef));
+      children.addAll(AtsApiService.get().getVersionService().getVersions(teamDef));
       return children.toArray();
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalXViewerFactory;
@@ -92,10 +92,10 @@ public class GoalOrderColumn extends AbstractMembersOrderColumn {
          if (treeItem.getData() instanceof Artifact) {
             if (parentGoalArtifact != null) {
                changedGoal = new GoalManager().promptChangeMemberOrder(parentGoalArtifact,
-                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(treeItem));
             } else {
                changedGoal = new GoalManager().promptChangeGoalOrder(
-                  AtsClientService.get().getQueryServiceClient().getArtifact(treeItem));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(treeItem));
             }
             if (changedGoal != null) {
                xViewer.refresh(changedGoal);

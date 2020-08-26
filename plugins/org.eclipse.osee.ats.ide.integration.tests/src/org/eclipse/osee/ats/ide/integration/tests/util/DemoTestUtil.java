@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -65,14 +65,14 @@ public class DemoTestUtil {
     * Creates an action with the name title and demo code workflow
     */
    public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) {
-      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, title, "Description",
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, title, "Description",
          ChangeType.Improvement, "2", false, null,
-         AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-         new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
 
       IAtsTeamWorkflow teamWf = null;
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(result)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(result)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamWf = team;
          }
@@ -81,7 +81,7 @@ public class DemoTestUtil {
    }
 
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) {
-      return AtsClientService.get().getActionableItemService().getActionableItems(
+      return AtsApiService.get().getActionableItemService().getActionableItems(
          Arrays.asList(demoActionableItems.getName()));
    }
 
@@ -92,14 +92,14 @@ public class DemoTestUtil {
    public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       Collection<IAtsTeamDefinition> teamDefs =
-         AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
+         AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(actionableItems);
 
-      AtsClientService.get().getActionFactory().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), null);
+      AtsApiService.get().getActionFactory().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), changes, new Date(),
+         AtsApiService.get().getUserService().getCurrentUser(), null);
 
       IAtsTeamWorkflow teamArt = null;
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(action)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(action)) {
          if (team.getTeamDefinition().getName().contains("Test")) {
             teamArt = team;
          }
@@ -115,9 +115,9 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(teamArt, names,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), relatedToState, null, null,
+      Collection<IAtsTask> createTasks = AtsApiService.get().getTaskService().createTasks(teamArt, names,
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), new Date(),
+         AtsApiService.get().getUserService().getCurrentUser(), relatedToState, null, null,
          "DemoTestUtil.creatSimpleTasks");
       return Collections.castAll(createTasks);
    }
@@ -125,7 +125,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsClientService.get().getAtsBranch())) {
+            AtsApiService.get().getAtsBranch())) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
@@ -175,7 +175,7 @@ public class DemoTestUtil {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            teamDef = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(artifactId);
+            teamDef = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(artifactId);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          }

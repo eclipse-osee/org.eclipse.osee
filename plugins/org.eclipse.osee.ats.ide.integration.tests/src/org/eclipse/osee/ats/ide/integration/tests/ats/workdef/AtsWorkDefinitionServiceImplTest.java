@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.junit.AfterClass;
@@ -55,16 +55,16 @@ public class AtsWorkDefinitionServiceImplTest {
    public void teamDefinitionRelatedPeerWorkDefinitionTest() {
 
       // Test Peer Work Def
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       List<IAtsActionableItem> aias = new LinkedList<IAtsActionableItem>();
       aias.add(
-         AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_SW_Design_AI));
-      ActionResult actionArt = AtsClientService.get().getActionFactory().createAction(null,
+         AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_SW_Design_AI));
+      ActionResult actionArt = AtsApiService.get().getActionFactory().createAction(null,
          getClass().getSimpleName() + " relatedPeerTest", "description", ChangeType.Improvement, "3", false, null, aias,
-         new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       IAtsTeamWorkflow teamWf = actionArt.getFirstTeam();
 
-      IAtsPeerToPeerReview peerReview = AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamWf,
+      IAtsPeerToPeerReview peerReview = AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamWf,
          getClass().getSimpleName() + " - Peer Review", null, changes);
 
       changes.execute();
@@ -74,14 +74,14 @@ public class AtsWorkDefinitionServiceImplTest {
 
       // Test Task Work Def
       NewTaskData taskData = new NewTaskData();
-      taskData.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      taskData.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
       taskData.setTeamWfId(teamWf.getId());
       taskData.setCommitComment(getClass().getSimpleName());
 
       JaxAtsTask jTask = new JaxAtsTask();
       jTask.setName(getClass().getSimpleName() + " - My Task");
       jTask.setDescription("description");
-      jTask.setCreatedByUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      jTask.setCreatedByUserId(AtsApiService.get().getUserService().getCurrentUserId());
       jTask.setCreatedDate(new Date());
       jTask.setTaskWorkDef(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getIdString());
       taskData.getNewTasks().add(jTask);
@@ -89,9 +89,9 @@ public class AtsWorkDefinitionServiceImplTest {
       NewTaskDatas datas = new NewTaskDatas();
       datas.add(taskData);
 
-      JaxAtsTasks tasks = AtsClientService.get().getServerEndpoints().getTaskEp().create(datas);
+      JaxAtsTasks tasks = AtsApiService.get().getServerEndpoints().getTaskEp().create(datas);
       JaxAtsTask task = tasks.getTasks().iterator().next();
-      IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(task.getId());
+      IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(task.getId());
 
       Assert.assertTrue(workItem.isTask());
       Assert.assertEquals(DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign.getId(), workItem.getWorkDefinition().getId());

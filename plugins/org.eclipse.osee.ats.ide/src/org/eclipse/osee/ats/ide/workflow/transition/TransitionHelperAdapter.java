@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 
 /**
  * @author Donald G. Dunne
@@ -39,12 +39,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
-      return AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf);
+      return AtsApiService.get().getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) {
-      return AtsClientService.get().getBranchService().isBranchInCommit(teamWf);
+      return AtsApiService.get().getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
@@ -62,7 +62,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public AtsUser getTransitionUser() {
       AtsUser user = transitionUser;
       if (user == null) {
-         user = AtsClientService.get().getUserService().getCurrentUser();
+         user = AtsApiService.get().getUserService().getCurrentUser();
       }
       return user;
    }

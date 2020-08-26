@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.ide.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.event.EventType;
@@ -186,7 +186,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                if (provider != null) {
                   oseeTarget = provider.getText();
                }
-               boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+               boolean atsAdmin = AtsApiService.get().getUserService().isAtsAdmin();
                boolean oseeTargetIsValid = Strings.isValid(oseeTarget);
                if (oseeTargetIsValid) {
                   str += " - [" + oseeTarget + "]";
@@ -253,8 +253,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    private String getWhoAmI() {
       try {
-         String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
-         return String.format("[%s] - [%s]", AtsClientService.get().getAtsBranch().getName(), userName);
+         String userName = AtsApiService.get().getUserService().getCurrentUser().getName();
+         return String.format("[%s] - [%s]", AtsApiService.get().getAtsBranch().getName(), userName);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
 import org.eclipse.osee.ats.ide.util.SubscribeManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -74,7 +74,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
          ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
-         for (ArtifactTypeToken artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
+         for (ArtifactTypeToken artifactType : AtsApiService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
             ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
          }
       }
@@ -105,11 +105,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
-         if (SubscribeManager.isSubscribed(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
+         if (SubscribeManager.isSubscribed(stateMachine, AtsApiService.get().getUserService().getCurrentUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (FavoritesManager.isFavorite(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(stateMachine, AtsApiService.get().getUserService().getCurrentUser())) {
             // was 7,0
             return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

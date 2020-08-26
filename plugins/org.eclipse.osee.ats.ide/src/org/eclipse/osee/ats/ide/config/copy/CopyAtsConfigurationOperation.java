@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -68,7 +68,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          if (resultData.isErrors()) {
             return;
          }
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
 
          getCopyAtsValidation().validate();
          if (resultData.isErrors()) {
@@ -99,8 +99,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             return;
          }
 
-         if (AtsClientService.get().isSingleServerDeployment()) {
-            AtsClientService.get().reloadServerAndClientCaches();
+         if (AtsApiService.get().isSingleServerDeployment()) {
+            AtsApiService.get().reloadServerAndClientCaches();
          }
          persistOrUndoChanges(changes);
          XResultDataUI.report(resultData, getName());
@@ -113,7 +113,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
     * Has potential of returning null if this fromAi has already been processed.
     */
    protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi, IAtsActionableItem parentAi) {
-      Artifact fromAiArt = AtsClientService.get().getQueryServiceClient().getArtifact(fromAi);
+      Artifact fromAiArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromAi);
 
       if (processedFromAis.contains(fromAiArt)) {
          resultData.log(String.format("Skipping already processed fromAi [%s]", fromAiArt));
@@ -121,7 +121,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       } else {
          processedFromAis.add(fromAiArt);
       }
-      Artifact parentAiArt = AtsClientService.get().getQueryServiceClient().getArtifact(parentAi);
+      Artifact parentAiArt = AtsApiService.get().getQueryServiceIde().getArtifact(parentAi);
 
       // Get or create new actionable item
       Pair<Artifact, IAtsConfigObject> newAiArtResult = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);
@@ -135,14 +135,14 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_TeamDefinition,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(fromTeamDefArt);
+            AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(fromTeamDefArt);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
             resultData.warningf("No related Team Definition [%s] in scope for AI [%s].  Configure by hand.",
                fromTeamDefArt, newAiArt);
          } else {
-            Artifact newTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(newTeamDef);
+            Artifact newTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(newTeamDef);
             newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_TeamDefinition, newTeamDefArt);
             changes.add(newTeamDefArt);
          }
@@ -152,7 +152,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromAiArt : fromAiArt.getChildren()) {
          if (childFromAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
             IAtsActionableItem childAi =
-               AtsClientService.get().getActionableItemService().getActionableItemById(childFromAiArt);
+               AtsApiService.get().getActionableItemService().getActionableItemById(childFromAiArt);
             IAtsActionableItem newChildAi = newAiArtToNewAi.get(newAiArt);
             createActionableItems(changes, childAi, newChildAi);
          }
@@ -162,8 +162,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
    protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef) {
       // Get or create new team definition
-      Artifact parentTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(parentTeamDef);
-      Artifact fromTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(fromTeamDef);
+      Artifact parentTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(parentTeamDef);
+      Artifact fromTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromTeamDef);
 
       Pair<Artifact, IAtsConfigObject> teamDefResult = duplicateTeamDefinitionOrActionableItem(changes, fromTeamDefArt);
       Artifact newTeamDefArt = teamDefResult.getFirst();
@@ -182,8 +182,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef =
-               AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
-            AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
+               AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
+            AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(childFromTeamDefArt);
             createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
          }
       }
@@ -191,8 +191,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    }
 
    private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef) {
-      Artifact fromTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(fromTeamDef);
-      Artifact newTeamDefArt = AtsClientService.get().getQueryServiceClient().getArtifact(newTeamDef);
+      Artifact fromTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromTeamDef);
+      Artifact newTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(newTeamDef);
 
       Collection<Artifact> leads = newTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead);
       for (Artifact user : fromTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead)) {
@@ -222,8 +222,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
           * Clear server and client caches so these new ATS Config objects are seen. This will only work in a singleton
           * server environment.
           */
-         AtsClientService.get().reloadServerAndClientCaches();
-         AtsClientService.get().clearCaches();
+         AtsApiService.get().reloadServerAndClientCaches();
+         AtsApiService.get().clearCaches();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {
@@ -252,12 +252,12 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
       // duplicate all but baseline branch id
       Artifact newArt =
-         fromArt.duplicate(AtsClientService.get().getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchId));
+         fromArt.duplicate(AtsApiService.get().getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchId));
       IAtsConfigObject newConfigObj = null;
       if (fromArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
-         newConfigObj = AtsClientService.get().getTeamDefinitionService().createTeamDefinition(newArt);
+         newConfigObj = AtsApiService.get().getTeamDefinitionService().createTeamDefinition(newArt);
       } else if (fromArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-         newConfigObj = AtsClientService.get().getActionableItemService().createActionableItem(newArt);
+         newConfigObj = AtsApiService.get().getActionableItemService().createActionableItem(newArt);
          newAiArtToNewAi.put(newArt, (IAtsActionableItem) newConfigObj);
       } else {
          throw new OseeArgumentException("Unexpected artifact type %s", fromArt.getArtifactTypeName());

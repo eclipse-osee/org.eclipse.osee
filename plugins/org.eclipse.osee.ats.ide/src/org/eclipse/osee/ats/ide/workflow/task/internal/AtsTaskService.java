@@ -42,8 +42,8 @@ import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
-import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -72,12 +72,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTaskServiceClient {
+public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTaskServiceIde {
 
-   private final IAtsClient atsClient;
+   private final AtsApiIde atsClient;
    private final AtsApi atsApi;
 
-   public AtsTaskService(IAtsClient atsClient) {
+   public AtsTaskService(AtsApiIde atsClient) {
       super(atsClient);
       this.atsClient = atsClient;
       this.atsApi = atsClient;
@@ -104,7 +104,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
    }
 
    private void processForEvents(NewTaskData newTaskData, JaxAtsTasks jaxTasks, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
-      Artifact teamWf = atsClient.getQueryServiceClient().getArtifact(newTaskData.getTeamWfId());
+      Artifact teamWf = atsClient.getQueryServiceIde().getArtifact(newTaskData.getTeamWfId());
 
       List<Long> artIds = new LinkedList<>();
 
@@ -118,7 +118,7 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
 
          RelationLink relation = getRelation(teamWf, task);
          if (relation != null) {
-            Artifact taskArt = atsClient.getQueryServiceClient().getArtifact(task.getId());
+            Artifact taskArt = atsClient.getQueryServiceIde().getArtifact(task.getId());
 
             DefaultBasicIdRelation guidRelation = new DefaultBasicIdRelation(atsApi.getAtsBranch(),
                AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),

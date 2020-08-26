@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -62,7 +62,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       BranchId workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
-         AtsClientService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
+         AtsApiService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
          if (workflowWorkingBranch.isInvalid()) {
             throw new OseeStateException("Commit Branch Failed: Can not locate branch for workflow [%s]",
                teamArt.getAtsId());
@@ -73,7 +73,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (teamArt.isTeamWorkflow()) {
             for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                AbstractReviewArtifact reviewArt =
-                  (AbstractReviewArtifact) AtsClientService.get().getQueryService().getArtifact(review);
+                  (AbstractReviewArtifact) AtsApiService.get().getQueryService().getArtifact(review);
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
                   AWorkbench.popup("Commit Branch Error!",
                      "All blocking reviews must be completed before committing the working branch.  Please complete all blocking reviews in order to continue.");
@@ -85,11 +85,11 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (!overrideStateValidation) {
             final MutableBoolean adminOverride = new MutableBoolean(false);
             // Check extension points for valid commit
-            for (IAtsWorkItemHook item : AtsClientService.get().getWorkItemService().getWorkItemHooks()) {
+            for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation
-                  if (AtsClientService.get().getUserService().isAtsAdmin()) {
+                  if (AtsApiService.get().getUserService().isAtsAdmin()) {
                      Displays.pendInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
@@ -114,7 +114,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
             new ConflictManagerExternal(destinationBranch, workflowWorkingBranch);
 
          if (commitPopup) {
-            boolean atsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
+            boolean atsAdmin = AtsApiService.get().getUserService().isAtsAdmin();
             branchCommitted = CommitHandler.commitBranch(conflictManager, atsAdmin, archiveWorkingBranch);
          } else {
             BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, false);
@@ -122,7 +122,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          }
          if (branchCommitted) {
             // Create reviews as necessary
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Reviews upon Commit");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Reviews upon Commit");
             boolean added = AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt,
                new Date(), AtsCoreUsers.SYSTEM_USER, changes);
             if (added) {
@@ -131,7 +131,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          }
       } finally {
          if (workflowWorkingBranch != null) {
-            AtsClientService.get().getBranchService().getBranchesInCommit().remove(workflowWorkingBranch);
+            AtsApiService.get().getBranchService().getBranchesInCommit().remove(workflowWorkingBranch);
          }
       }
    }

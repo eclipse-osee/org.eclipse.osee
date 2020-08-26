@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -80,8 +80,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          boolean modified = false;
          XViewer xViewer = null;
          if (treeItem.getData() instanceof IAtsAction) {
-            if (AtsClientService.get().getWorkItemService().getTeams(workItem).size() == 1) {
-               workItem = AtsClientService.get().getWorkItemService().getFirstTeam(workItem);
+            if (AtsApiService.get().getWorkItemService().getTeams(workItem).size() == 1) {
+               workItem = AtsApiService.get().getWorkItemService().getFirstTeam(workItem);
             } else {
                return false;
             }
@@ -97,7 +97,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
 
          if (modified && isPersistViewer(xViewer)) {
-            AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", workItem);
+            AtsApiService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", workItem);
          }
          if (modified) {
             xViewer.update(workItem.getStoreObject(), null);
@@ -127,7 +127,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             return false;
          }
       }
-      Collection<AtsUser> users = AtsClientService.get().getUserService().getActiveAndAssignedInActive(workItems);
+      Collection<AtsUser> users = AtsApiService.get().getUserService().getActiveAndAssignedInActive(workItems);
 
       // unassigned is not useful in the selection choice dialog
       users.remove(AtsCoreUsers.UNASSIGNED_USER);
@@ -139,7 +139,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       IAtsTeamWorkflow parentWorklfow = workItems.iterator().next().getParentTeamWorkflow();
       if (parentWorklfow != null) {
          uld.setTeamMembers(
-            AtsClientService.get().getTeamDefinitionService().getMembersAndLeads(parentWorklfow.getTeamDefinition()));
+            AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(parentWorklfow.getTeamDefinition()));
       }
       if (workItems.size() == 1) {
          uld.setInitialSelections(workItems.iterator().next().getStateMgr().getAssignees());
@@ -159,7 +159,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          workItem.getStateMgr().setAssignees(selected);
       }
       if (persist) {
-         AtsClientService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
+         AtsApiService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
       }
       return true;
    }
@@ -175,7 +175,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
                   teamWfs.add(teamWf);
                }
             } else if (item.getData() instanceof IAtsAction) {
-               teamWfs.add(AtsClientService.get().getWorkItemService().getFirstTeam(item.getData()));
+               teamWfs.add(AtsApiService.get().getWorkItemService().getFirstTeam(item.getData()));
             }
          }
          if (teamWfs.isEmpty()) {
@@ -193,7 +193,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       try {
          if (element instanceof Artifact) {
             return AssigneeColumnUI.getAssigneeImage(
-               AtsClientService.get().getQueryServiceClient().getArtifact(element));
+               AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
       } catch (Exception ex) {
          // do nothing
@@ -217,9 +217,9 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          return FrameworkArtifactImageProvider.getUserImage(users);
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
             Image image =
-               AssigneeColumnUI.getAssigneeImage(AtsClientService.get().getQueryServiceClient().getArtifact(team));
+               AssigneeColumnUI.getAssigneeImage(AtsApiService.get().getQueryServiceIde().getArtifact(team));
             if (image != null) {
                return image;
             }

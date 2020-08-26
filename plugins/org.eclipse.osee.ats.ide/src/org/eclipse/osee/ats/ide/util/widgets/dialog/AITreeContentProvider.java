@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -45,8 +45,8 @@ public class AITreeContentProvider implements ITreeContentProvider {
          if (showChildren) {
             try {
                IAtsActionableItem ai = (IAtsActionableItem) parentElement;
-               List<IAtsActionableItem> aias = AtsClientService.get().getActionableItemService().getActive(
-                  AtsClientService.get().getActionableItemService().getChildren(ai, false), active);
+               List<IAtsActionableItem> aias = AtsApiService.get().getActionableItemService().getActive(
+                  AtsApiService.get().getActionableItemService().getChildren(ai, false), active);
                return aias.toArray();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

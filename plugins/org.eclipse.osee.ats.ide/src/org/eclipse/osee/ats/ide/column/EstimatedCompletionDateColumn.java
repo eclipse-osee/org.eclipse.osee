@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.DeadlineManager;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -84,7 +84,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
 
    public static Result isWorldViewEcdAlerting(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
             Result result = isWorldViewEcdAlerting(team);
             if (result.isTrue()) {
                return result;
@@ -98,7 +98,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
 
    public static Date getDate(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
+         return getDate(AtsApiService.get().getWorkItemService().getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          Date date =
             ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);

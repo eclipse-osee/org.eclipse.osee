@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -57,7 +57,7 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
       if (element instanceof IAtsObject) {
          try {
             result =
-               AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Implementers, (IAtsObject) element);
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Implementers, (IAtsObject) element);
          } catch (OseeCoreException ex) {
             result = LogUtil.getCellExceptionString(ex);
          }

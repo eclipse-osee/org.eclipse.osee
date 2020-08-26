@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -36,7 +36,7 @@ public class AtsUserTest {
    @BeforeClass
    public static void setUp() {
       user = UserManager.getUser();
-      atsUser = AtsClientService.get().getUserService().getCurrentUser();
+      atsUser = AtsApiService.get().getUserService().getCurrentUser();
    }
 
    @org.junit.Test
@@ -57,15 +57,15 @@ public class AtsUserTest {
    @org.junit.Test
    public void testRemove() {
       Collection<AtsUser> assignees = new HashSet<>();
-      assignees.add(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
-      assignees.add(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      assignees.add(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
+      assignees.add(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
-            AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith))));
+         Arrays.asList(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay),
+            AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith))));
 
-      assignees.remove(AtsClientService.get().getUserService().getCurrentUser());
+      assignees.remove(AtsApiService.get().getUserService().getCurrentUser());
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay))));
+         Arrays.asList(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay))));
    }
 
 }

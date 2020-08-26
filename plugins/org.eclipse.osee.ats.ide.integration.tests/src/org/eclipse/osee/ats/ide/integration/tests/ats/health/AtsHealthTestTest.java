@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -36,7 +36,7 @@ public class AtsHealthTestTest {
    public void testAtsHealthTest() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      XResultData rd = AtsClientService.get().getServerEndpoints().getConfigEndpoint().validate();
+      XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().validate();
       String html = XResultDataUI.getReport(rd, "").getManipulatedHtml();
       Matcher m = Pattern.compile("Error:.*$").matcher(html);
       while (m.find()) {

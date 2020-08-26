@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.config.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.ide.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.ide.world.search.ArtifactTypeSearchItem;
@@ -60,7 +60,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(team);
+            results = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(team);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -112,13 +112,13 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem(
                "Show Open " + teamDef + " Workflows", new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))));
             // Handle all children teams
-            for (IAtsTeamDefinition childTeamDef : AtsClientService.get().getTeamDefinitionService().getChildren(
+            for (IAtsTeamDefinition childTeamDef : AtsApiService.get().getTeamDefinitionService().getChildren(
                teamDef, true)) {
                new SearchNavigateItem(teamItems,
                   new OpenWorkflowsByTeamDefSearchItem("Show Open " + childTeamDef + " Workflows",
                      new SimpleTeamDefinitionProvider(Arrays.asList(childTeamDef))));
             }
-            if (AtsClientService.get().getVersionService().isTeamUsesVersions(teamDef)) {
+            if (AtsApiService.get().getVersionService().isTeamUsesVersions(teamDef)) {
                if (team.getName().contains("SAW")) {
                   new XNavigateUrlItem(teamItems, "Open SAW Website", "http://www.cisst.org/cisst/saw/", false);
                } else if (team.getName().contains("CIS")) {

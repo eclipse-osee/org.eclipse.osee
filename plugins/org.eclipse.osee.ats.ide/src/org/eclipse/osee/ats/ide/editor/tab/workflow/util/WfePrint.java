@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.column.DeadlineColumn;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.Overview;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -83,10 +83,10 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(sma)),
+            AtsApiService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-            AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, sma)),
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
@@ -98,18 +98,18 @@ public class WfePrint extends Action {
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ",
-            ChangeTypeUtil.getChangeTypeStr(sma, AtsClientService.get())),
+            ChangeTypeUtil.getChangeTypeStr(sma, AtsApiService.get())),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ",
             sma.getSoleAttributeValue(AtsAttributeTypes.Priority, "")),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
-      String computedId = AtsClientService.get().getWorkItemService().getCombinedPcrId(sma);
+      String computedId = AtsApiService.get().getWorkItemService().getCombinedPcrId(sma);
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", computedId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
-      for (NoteItem note : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
+      for (NoteItem note : AtsApiService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
          if (note.getState().equals("")) {
             resultData.addRaw(note.toHTML() + AHTML.newline());
          }
@@ -120,8 +120,8 @@ public class WfePrint extends Action {
       }
       resultData.addRaw(AHTML.newline());
       resultData.addRaw(AtsLogUtility.getHtml(sma.getLog(),
-         AtsClientService.get().getLogFactory().getLogProvider(sma, AtsClientService.get().getAttributeResolver()),
-         AtsClientService.get().getUserService()));
+         AtsApiService.get().getLogFactory().getLogProvider(sma, AtsApiService.get().getAttributeResolver()),
+         AtsApiService.get().getUserService()));
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
@@ -141,14 +141,14 @@ public class WfePrint extends Action {
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
          rd.addRaw(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution", "ID"}));
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
             TaskArtifact art = (TaskArtifact) task;
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-               AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, art),
-               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsClientService.get()) + "",
-               HoursSpentUtil.getHoursSpentTotal(art, AtsClientService.get()) + "",
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnId.Assignees, art),
+               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsApiService.get()) + "",
+               HoursSpentUtil.getHoursSpentTotal(art, AtsApiService.get()) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getAtsId()}));
          }
@@ -171,7 +171,7 @@ public class WfePrint extends Action {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();
-            for (NoteItem note : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
+            for (NoteItem note : AtsApiService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
                if (note.getState().equals(statePage.getName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());

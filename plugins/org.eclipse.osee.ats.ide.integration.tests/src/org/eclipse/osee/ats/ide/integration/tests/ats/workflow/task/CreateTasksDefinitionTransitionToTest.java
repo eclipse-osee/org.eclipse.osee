@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
@@ -53,59 +53,42 @@ public class CreateTasksDefinitionTransitionToTest {
    @AfterClass
    public static void cleanup() {
       IAtsChangeSet changes =
-         AtsClientService.get().createChangeSet(CreateTasksDefinitionTransitionToTest.class.getSimpleName());
+         AtsApiService.get().createChangeSet(CreateTasksDefinitionTransitionToTest.class.getSimpleName());
       if (teamWf != null) {
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
             changes.deleteArtifact(task);
          }
-         for (IAtsAbstractReview review : AtsClientService.get().getReviewService().getReviews(teamWf)) {
+         for (IAtsAbstractReview review : AtsApiService.get().getReviewService().getReviews(teamWf)) {
             changes.deleteArtifact(review);
          }
          changes.deleteArtifact(teamWf);
       }
       changes.executeIfNeeded();
-      //      for (String title : titles) {
-      //         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(),
-      //            EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
-      //         for (Artifact art : arts) {
-      //            if (art instanceof IAtsTeamWorkflow) {
-      //               for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((IAtsTeamWorkflow) art)) {
-      //                  artifacts.add((Artifact) task.getStoreObject());
-      //               }
-      //               for (IAtsAbstractReview review : AtsClientService.get().getReviewService().getReviews(
-      //                  (IAtsTeamWorkflow) art)) {
-      //                  artifacts.add((Artifact) review.getStoreObject());
-      //               }
-      //            }
-      //         }
-      //         artifacts.addAll(artifacts);
-      //      }
-      //      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
    @Test
    public void testTransitionTo() {
 
       CreateTasksDefinitionBuilder implementTaskSet =
-         AtsClientService.get().getTaskService().createTasksSetDefinitionBuilder(ImplementTaskSetToken) //
+         AtsApiService.get().getTaskService().createTasksSetDefinitionBuilder(ImplementTaskSetToken) //
             .andTransitionTo(StateToken.Analyze) //
             .andStaticTask("First Task", "desc", null) //
             .andStaticTask("Second Task", "desc2", StateToken.Implement) //
             .andStaticTask("Third Task", "desc2", StateToken.Implement, DemoWorkDefinitions.WorkDef_Task_Demo_SwDesign); //
 
-      IAtsWorkDefinition swDesignWorkDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+      IAtsWorkDefinition swDesignWorkDef = AtsApiService.get().getWorkDefinitionService().getWorkDefinition(
          DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
       swDesignWorkDef.addCreateTasksDefinition(implementTaskSet);
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       String title = getClass().getSimpleName();
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_SW_Design_AI);
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       String priority = "3";
 
       ActionResult actionResult =
-         AtsClientService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
+         AtsApiService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
             ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       teamWf = actionResult.getFirstTeam();
       boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -113,10 +96,10 @@ public class CreateTasksDefinitionTransitionToTest {
       Assert.assertEquals(StateToken.Endorse.getName(), teamWf.getStateMgr().getCurrentStateName());
 
       changes.execute();
-      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - 2");
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");
 
       TeamWorkFlowManager dtwm =
-         new TeamWorkFlowManager(teamWf, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
+         new TeamWorkFlowManager(teamWf, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
 
       TeamState toState = TeamState.Analyze;
       Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
@@ -126,9 +109,9 @@ public class CreateTasksDefinitionTransitionToTest {
       }
       changes.execute();
 
-      AtsClientService.get().getStoreService().reload(Arrays.asList(teamWf));
+      AtsApiService.get().getStoreService().reload(Arrays.asList(teamWf));
 
-      Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks(teamWf);
+      Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks(teamWf);
       Assert.assertEquals(3, tasks.size());
 
    }

@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
 
 /**
@@ -45,9 +45,9 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          try {
             IAtsTeamDefinition teamDef = (IAtsTeamDefinition) parentElement;
             Set<IAtsTeamDefinition> children =
-               AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, false);
+               AtsApiService.get().getTeamDefinitionService().getChildren(teamDef, false);
             Collection<IAtsTeamDefinition> teamDefs =
-               AtsClientService.get().getTeamDefinitionService().getActive(children, active);
+               AtsApiService.get().getTeamDefinitionService().getActive(children, active);
             results = teamDefs;
          } catch (Exception ex) {
             // do nothing
@@ -57,7 +57,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
             TeamDefinition teamDef = (TeamDefinition) parentElement;
             for (Long id : teamDef.getChildren()) {
                TeamDefinition td =
-                  AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+                  AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
                if (active == Active.Both || (active == Active.Active && td.isActive()) || (active == Active.InActive && !td.isActive())) {
                   results.add(td);
                }
@@ -72,11 +72,11 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
    @Override
    public Object getParent(Object element) {
       if (element instanceof IAtsTeamDefinition) {
-         return (AtsClientService.get().getTeamDefinitionService().getParentTeamDef((IAtsTeamDefinition) element));
+         return (AtsApiService.get().getTeamDefinitionService().getParentTeamDef((IAtsTeamDefinition) element));
       } else if (element instanceof TeamDefinition) {
          Long id = ((TeamDefinition) element).getId();
          if (id > 0) {
-            TeamDefinition td = AtsClientService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+            TeamDefinition td = AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
             return td;
          }
       }

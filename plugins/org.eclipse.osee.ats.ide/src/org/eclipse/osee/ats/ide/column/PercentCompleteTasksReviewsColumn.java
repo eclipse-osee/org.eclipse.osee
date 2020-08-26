@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -67,7 +67,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
          if (element instanceof IAtsObject) {
             if (((IAtsObject) element).isOfType(TeamWorkflow, Action)) {
                return String.valueOf(getPercentCompleteFromTasksAndReviews(
-                  AtsClientService.get().getQueryServiceClient().getArtifact(element)));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(element)));
             }
          }
       } catch (OseeCoreException ex) {
@@ -82,31 +82,31 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
    public static int getPercentCompleteFromTasksAndReviews(Artifact artifact) {
       if (artifact.isOfType(Action)) {
          double percent = 0;
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
                percent += getPercentCompleteFromTasksAndReviews(
-                  AtsClientService.get().getQueryServiceClient().getArtifact(team));
+                  AtsApiService.get().getQueryServiceIde().getArtifact(team));
             }
          }
          if (percent == 0) {
             return 0;
          }
-         Double rollPercent = percent / AtsClientService.get().getWorkItemService().getTeams(artifact).size();
+         Double rollPercent = percent / AtsApiService.get().getWorkItemService().getTeams(artifact).size();
          return rollPercent.intValue();
       }
       int spent = 0;
       int size = 0;
       if (artifact.isOfType(TeamWorkflow)) {
-         Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) artifact);
+         Collection<IAtsTask> tasks = AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) artifact);
          for (IAtsTask task : tasks) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get());
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsApiService.get());
          }
          size = tasks.size();
 
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
-         Collection<IAtsAbstractReview> reviewArts = AtsClientService.get().getReviewService().getReviews(teamWf);
+         Collection<IAtsAbstractReview> reviewArts = AtsApiService.get().getReviewService().getReviews(teamWf);
          for (IAtsAbstractReview reviewArt : reviewArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsClientService.get());
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsApiService.get());
          }
          size += reviewArts.size();
       }

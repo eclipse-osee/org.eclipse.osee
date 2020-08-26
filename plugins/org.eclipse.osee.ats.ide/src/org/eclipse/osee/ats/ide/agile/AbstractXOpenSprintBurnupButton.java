@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -59,12 +59,12 @@ public abstract class AbstractXOpenSprintBurnupButton extends XButton implements
 
    @Override
    public Artifact getArtifact() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(sprint);
    }
 
    protected Artifact getAgileTeam() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(
-         AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
+      return AtsApiService.get().getQueryServiceIde().getArtifact(
+         AtsApiService.get().getRelationResolver().getRelatedOrNull(sprint,
             AtsRelationTypes.AgileTeamToSprint_AgileTeam));
    };
 

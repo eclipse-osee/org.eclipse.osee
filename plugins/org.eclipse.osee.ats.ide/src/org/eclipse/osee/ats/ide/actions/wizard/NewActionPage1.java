@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
@@ -155,7 +155,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
       try {
          if (selectableAis == null) {
             List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
-            IAtsClient atsClient = AtsClientService.get();
+            AtsApiIde atsClient = AtsApiService.get();
             AtsConfigurations configs = atsClient.getConfigService().getConfigurations();
             for (Long aiId : configs.getIdToAi().get(configs.getTopActionableItem().getId()).getChildren()) {
                ActionableItem ai = configs.getIdToAi().get(aiId);
@@ -232,7 +232,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
       try {
          ((XText) getXWidget(TITLE)).set("tt");
          if (atsAi == null) {
-            atsAi = AtsClientService.get().getActionableItemService().getActionableItemById(
+            atsAi = AtsApiService.get().getActionableItemService().getActionableItemById(
                AtsArtifactToken.TopActionableItem);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
@@ -273,7 +273,7 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
             selected.add((IAtsActionableItem) obj);
          } else if (obj instanceof ActionableItem) {
             ActionableItem ai = (ActionableItem) obj;
-            selected.add(AtsClientService.get().getQueryService().getConfigItem(ai.getId()));
+            selected.add(AtsApiService.get().getQueryService().getConfigItem(ai.getId()));
          }
       }
       return selected;
@@ -293,13 +293,13 @@ public class NewActionPage1 extends WizardPage implements IsEnabled {
          for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
             if (!aia.isActionable() || !userActionCreationEnabled(aia)) {
                AWorkbench.popup("ERROR",
-                  AtsClientService.get().getActionableItemService().getNotActionableItemError(aia));
+                  AtsApiService.get().getActionableItemService().getNotActionableItemError(aia));
                treeViewer.setChecked(aia, false);
                return false;
             }
          }
          Collection<IAtsTeamDefinition> teamDefs =
-            AtsClientService.get().getTeamDefinitionService().getImpactedTeamDefs(getSelectedIAtsActionableItems());
+            AtsApiService.get().getTeamDefinitionService().getImpactedTeamDefs(getSelectedIAtsActionableItems());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

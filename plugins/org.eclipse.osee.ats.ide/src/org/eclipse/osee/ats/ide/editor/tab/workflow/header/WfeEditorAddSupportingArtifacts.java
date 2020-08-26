@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -49,7 +49,7 @@ public class WfeEditorAddSupportingArtifacts extends Job {
          results.error("Must pass in supporting artifacts");
       }
       for (Artifact art : supportingArtifacts) {
-         if (!art.isOnBranch(AtsClientService.get().getAtsBranch())) {
+         if (!art.isOnBranch(AtsApiService.get().getAtsBranch())) {
             results.error("Can not relate artifacts that are not on the ATS Branch");
          }
       }
@@ -62,9 +62,9 @@ public class WfeEditorAddSupportingArtifacts extends Job {
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Related supporting artifacts");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Related supporting artifacts");
       for (Artifact art : supportingArtifacts) {
-         if (!AtsClientService.get().getRelationResolver().areRelated(workItem.getStoreObject(),
+         if (!AtsApiService.get().getRelationResolver().areRelated(workItem.getStoreObject(),
             CoreRelationTypes.SupportingInfo_SupportingInfo, art)) {
             changes.relate(workItem, CoreRelationTypes.SupportingInfo_SupportingInfo, art);
          }

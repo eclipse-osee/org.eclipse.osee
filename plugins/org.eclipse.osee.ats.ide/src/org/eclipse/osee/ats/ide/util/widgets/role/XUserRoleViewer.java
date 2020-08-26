@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.role.UserRoleError;
@@ -297,7 +297,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          "Delete Roles", "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Review Roles");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Review Roles");
             removeUserRoleHelper(items, changes);
             changes.execute();
          } catch (Exception ex) {
@@ -322,7 +322,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
          try {
-            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Roles");
+            IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Review Roles");
             for (AtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
                roleMgr.addOrUpdateUserRole(userRole);
@@ -414,9 +414,9 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          html.append(AHTML.startBorderTable(100, normalColor, ""));
          html.append(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
-         ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt, AtsClientService.get());
+         ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt, AtsApiService.get());
          for (UserRole item : roleMgr.getUserRoles()) {
-            AtsUser atsUser = UserRoleManager.getUser(item, AtsClientService.get());
+            AtsUser atsUser = UserRoleManager.getUser(item, AtsApiService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                atsUser.getName(),

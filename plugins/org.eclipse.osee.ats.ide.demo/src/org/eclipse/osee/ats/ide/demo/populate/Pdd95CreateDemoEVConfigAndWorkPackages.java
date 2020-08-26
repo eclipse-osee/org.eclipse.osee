@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -54,7 +54,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    }
 
    public void setWorkPacakgeForWfs() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       // set work packages
       TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();
@@ -74,7 +74,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
 
    private void createAndSetWorkPackages() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create Work Packages");
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Create Work Packages");
 
       Artifact codeTeamArt = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code);
 
@@ -117,12 +117,12 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
 
    private void relateInsertionActivity(Artifact workPackageArt, DemoInsertionActivity insertionActivity) {
       Artifact insertionActivityArt =
-         AtsClientService.get().getQueryServiceClient().getArtifact(insertionActivity.getId());
+         AtsApiService.get().getQueryServiceIde().getArtifact(insertionActivity.getId());
       insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 
    private Artifact createWorkPackage(ArtifactToken workPackageToken, String activityId) {
-      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsClientService.get().getAtsBranch());
+      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsApiService.get().getAtsBranch());
       char charAt = workPackageToken.getName().charAt(workPackageToken.getName().length() - 1);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + charAt);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");
@@ -135,26 +135,26 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    // configure USG for country, program, insertion, activity and work package
    private void createUsgCountryConfig() {
       try {
-         CountryEndpointApi countryEp = AtsClientService.get().getServerEndpoints().getCountryEp();
-         InsertionEndpointApi insertionEp = AtsClientService.get().getServerEndpoints().getInsertionEp();
+         CountryEndpointApi countryEp = AtsApiService.get().getServerEndpoints().getCountryEp();
+         InsertionEndpointApi insertionEp = AtsApiService.get().getServerEndpoints().getInsertionEp();
          InsertionActivityEndpointApi insertionActivityEp =
-            AtsClientService.get().getServerEndpoints().getInsertionActivityEp();
+            AtsApiService.get().getServerEndpoints().getInsertionActivityEp();
 
          // create country
          createCountry(countryEp, DemoCountry.usg);
 
          // relate country to programs
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create USG Country Config");
+            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Create USG Country Config");
          Artifact country =
-            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getId(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getId(), AtsApiService.get().getAtsBranch());
          Artifact program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getId(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getId(), AtsApiService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
 
          program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getId(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getId(), AtsApiService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
          country.persist(transaction);
@@ -175,11 +175,11 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private void createCntryCountryConfig() {
       try {
          DemoCountry country = DemoCountry.cntry;
-         CountryEndpointApi countryEp = AtsClientService.get().getServerEndpoints().getCountryEp();
-         ProgramEndpointApi programEp = AtsClientService.get().getServerEndpoints().getProgramEp();
-         InsertionEndpointApi insertionEp = AtsClientService.get().getServerEndpoints().getInsertionEp();
+         CountryEndpointApi countryEp = AtsApiService.get().getServerEndpoints().getCountryEp();
+         ProgramEndpointApi programEp = AtsApiService.get().getServerEndpoints().getProgramEp();
+         InsertionEndpointApi insertionEp = AtsApiService.get().getServerEndpoints().getInsertionEp();
          InsertionActivityEndpointApi insertionActivityEp =
-            AtsClientService.get().getServerEndpoints().getInsertionActivityEp();
+            AtsApiService.get().getServerEndpoints().getInsertionActivityEp();
 
          // create country
          createCountry(countryEp, country);

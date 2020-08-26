@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
@@ -64,7 +64,7 @@ public class WfePrintTest {
          XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 3500);
 
       TaskArtifact taskArt = null;
-      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(teamWf)) {
+      for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
          if (task.getName().equals("Deploy release")) {
             taskArt = (TaskArtifact) task.getStoreObject();
          }
@@ -77,7 +77,7 @@ public class WfePrintTest {
       Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2600);
 
       teamWf = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "Button S doesn't work on help", AtsClientService.get().getAtsBranch());
+         "Button S doesn't work on help", AtsApiService.get().getAtsBranch());
       Assert.assertNotNull(teamWf);
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
       smaPrint = new WfePrint(decArt);

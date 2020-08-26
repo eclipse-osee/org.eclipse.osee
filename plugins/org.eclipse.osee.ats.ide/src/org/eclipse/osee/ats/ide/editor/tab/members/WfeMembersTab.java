@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.CloneActionToGoalAction;
@@ -489,8 +489,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
       private Artifact getSelectedArtifact(DropTargetEvent event) {
          if (event.item != null && event.item.getData() instanceof Artifact) {
-            return AtsClientService.get().getQueryServiceClient().getArtifact(
-               AtsClientService.get().getQueryServiceClient().getArtifact(event.item.getData()));
+            return AtsApiService.get().getQueryServiceIde().getArtifact(
+               AtsApiService.get().getQueryServiceIde().getArtifact(event.item.getData()));
          }
          return null;
       }

@@ -22,7 +22,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
@@ -52,8 +52,8 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
 
    @Override
    public void run() {
-      List<AtsSearchData> searchDatas = AtsClientService.get().getQueryService().getSavedSearches(
-         AtsClientService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
+      List<AtsSearchData> searchDatas = AtsApiService.get().getQueryService().getSavedSearches(
+         AtsApiService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
       Collections.sort(searchDatas, new QuickSearchDataComparator());
       FilteredTreeDialog dialog = new FilteredTreeDialog("Load Saved Search", "Select Search",
          new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -79,8 +79,8 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
       fMenu = new Menu(parent);
 
       try {
-         List<AtsSearchData> searchDatas = AtsClientService.get().getQueryService().getSavedSearches(
-            AtsClientService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
+         List<AtsSearchData> searchDatas = AtsApiService.get().getQueryService().getSavedSearches(
+            AtsApiService.get().getUserService().getCurrentUser(), searchItem.getNamespace());
          Collections.sort(searchDatas, new QuickSearchDataComparator());
 
          for (AtsSearchData data : searchDatas) {

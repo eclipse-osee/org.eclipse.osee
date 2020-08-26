@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +41,7 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
       Conditions.checkNotNull(artifactType, getName());
-      return ArtifactQuery.getArtifactListFromType(artifactType, AtsClientService.get().getAtsBranch());
+      return ArtifactQuery.getArtifactListFromType(artifactType, AtsApiService.get().getAtsBranch());
    }
 
    @Override

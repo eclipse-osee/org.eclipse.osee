@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -88,20 +88,20 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
             String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
-         if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
+         if (sma instanceof TeamWorkFlowArtifact && AtsApiService.get().getTaskService().hasTasks(
             (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
-               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get())));
+               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsApiService.get())));
             breakoutNeeded = true;
          }
-         if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
+         if (sma.isTeamWorkflow() && AtsApiService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Hours: %5.2f", getHoursSpent((TeamWorkFlowArtifact) sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
             setToolTip(sb.toString());
             return String.format("%5.2f",
-               HoursSpentUtil.getHoursSpentStateTotal(sma, page, AtsClientService.get()));
+               HoursSpentUtil.getHoursSpentStateTotal(sma, page, AtsApiService.get()));
          } else {
             return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
          }
@@ -119,7 +119,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamArt, relatedToState)) {
-         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get());
+         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsApiService.get());
       }
       return spent;
    }

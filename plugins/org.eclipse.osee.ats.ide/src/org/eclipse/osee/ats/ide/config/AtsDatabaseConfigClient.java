@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.config;
 
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -26,7 +26,7 @@ public class AtsDatabaseConfigClient implements IDbInitializationTask {
    @Override
    public void run() {
 
-      XResultData results = AtsClientService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
+      XResultData results = AtsApiService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }

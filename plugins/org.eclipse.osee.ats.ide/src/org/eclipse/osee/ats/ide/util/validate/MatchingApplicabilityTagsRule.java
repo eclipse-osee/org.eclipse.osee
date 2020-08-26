@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.validate;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
@@ -40,7 +40,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
 
    @Override
    public void validate(ArtifactToken artToken, XResultData results) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artToken);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(artToken);
       String wordml = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 
       if (validFeatureValues == null) {

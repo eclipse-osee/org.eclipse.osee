@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.workdef;
 
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -31,7 +31,7 @@ public class ValidateWorkDefinitionNavigateItem extends XNavigateItem {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      XResultData results = AtsClientService.get().getWorkDefinitionService().validateWorkDefinitions();
+      XResultData results = AtsApiService.get().getWorkDefinitionService().validateWorkDefinitions();
       XResultDataUI.report(results, getName());
    }
 

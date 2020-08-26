@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -49,7 +49,7 @@ public class CompletedDateColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(CompletedDateColumnTest.class.getSimpleName(),
             changes).getStoreObject();
@@ -62,9 +62,9 @@ public class CompletedDateColumnTest {
       Assert.assertEquals("", CompletedDateColumn.getCompletedDateStr(teamArt));
 
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
-         TeamState.Completed.getName(), null, null, null, AtsClientService.get(),
+         TeamState.Completed.getName(), null, null, null, AtsApiService.get(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       date = CompletedDateColumn.getCompletedDate(teamArt);
@@ -74,10 +74,10 @@ public class CompletedDateColumnTest {
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
 
       helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null,
-         AtsClientService.get(), TransitionOption.OverrideTransitionValidityCheck,
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         AtsApiService.get(), TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
-      results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+      results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       teamArt = (TeamWorkFlowArtifact) teamArt.reloadAttributesAndRelations();

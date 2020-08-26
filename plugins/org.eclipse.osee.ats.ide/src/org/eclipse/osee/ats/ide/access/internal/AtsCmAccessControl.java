@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.access.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
@@ -41,10 +41,10 @@ public class AtsCmAccessControl implements CmAccessControl {
    public boolean isApplicable(ArtifactToken user, Object object) {
       boolean result = false;
       if (object != null) {
-         if (object instanceof Artifact && !AtsClientService.get().getQueryServiceClient().getArtifact(
-            object).isOnBranch(AtsClientService.get().getAtsBranch())) {
+         if (object instanceof Artifact && !AtsApiService.get().getQueryServiceIde().getArtifact(
+            object).isOnBranch(AtsApiService.get().getAtsBranch())) {
             result = atsBranchAccessManager.isApplicable(
-               AtsClientService.get().getQueryServiceClient().getArtifact(object).getBranch());
+               AtsApiService.get().getQueryServiceIde().getArtifact(object).getBranch());
          }
          if (object instanceof BranchId) {
             result = atsBranchAccessManager.isApplicable((BranchId) object);
@@ -56,10 +56,10 @@ public class AtsCmAccessControl implements CmAccessControl {
    @Override
    public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
       if (object != null) {
-         if (object instanceof Artifact && !AtsClientService.get().getQueryServiceClient().getArtifact(
-            object).isOnBranch(AtsClientService.get().getAtsBranch())) {
+         if (object instanceof Artifact && !AtsApiService.get().getQueryServiceIde().getArtifact(
+            object).isOnBranch(AtsApiService.get().getAtsBranch())) {
             return atsBranchAccessManager.getContextId(
-               AtsClientService.get().getQueryServiceClient().getArtifact(object).getBranch());
+               AtsApiService.get().getQueryServiceIde().getArtifact(object).getBranch());
          }
          if (object instanceof BranchId) {
             return atsBranchAccessManager.getContextId((BranchId) object);

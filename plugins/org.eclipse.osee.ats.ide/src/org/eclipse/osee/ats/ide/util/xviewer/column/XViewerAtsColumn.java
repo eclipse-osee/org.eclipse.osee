@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.ide.column.ReleaseDateColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
@@ -196,7 +196,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    public boolean isColorColumn() {
       if (hasColorColumn == null) {
          colorColumn =
-            AtsClientService.get().getConfigService().getConfigurations().getColorColumns().getColumnById(getId());
+            AtsApiService.get().getConfigService().getConfigurations().getColorColumns().getColumnById(getId());
          hasColorColumn = colorColumn != null;
          if (hasColorColumn) {
             elementToForegroundColor = new HashMap<>(100);

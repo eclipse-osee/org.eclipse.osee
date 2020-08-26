@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -199,7 +199,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
 
          AtsUtilClient.setEmailEnabled(emailPocs);
          NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Spreadsheet",
-            AtsClientService.get().getUserService().getCurrentUser(), teamWf);
+            AtsApiService.get().getUserService().getCurrentUser(), teamWf);
          newTaskData.setFixTitles(fixTitles);
 
          Job job = Jobs.startJob(new TaskImportJob(file,
@@ -208,7 +208,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
 
          if (rd.isSuccess()) {
             NewTaskDatas tasks = new NewTaskDatas(newTaskData);
-            return AtsClientService.get().getTaskService().createTasks(tasks);
+            return AtsApiService.get().getTaskService().createTasks(tasks);
          }
 
       } catch (Exception ex) {

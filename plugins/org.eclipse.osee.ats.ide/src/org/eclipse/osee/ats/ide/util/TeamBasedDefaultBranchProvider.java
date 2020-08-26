@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,17 +35,17 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
    @Override
    public Collection<BranchId> getDefaultInitialBranches() {
-      AtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+      AtsUser user = AtsApiService.get().getUserService().getCurrentUser();
       try {
          Collection<IAtsTeamDefinition> teams = new ArrayList<>();
-         for (ArtifactToken art : AtsClientService.get().getRelationResolver().getRelated((IAtsObject) user,
+         for (ArtifactToken art : AtsApiService.get().getRelationResolver().getRelated((IAtsObject) user,
             AtsRelationTypes.TeamMember_Team)) {
-            teams.add(AtsClientService.get().getTeamDefinitionService().getTeamDefinitionById(art));
+            teams.add(AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(art));
          }
 
          Collection<BranchId> branches = new LinkedList<>();
          for (IAtsTeamDefinition teamDef : teams) {
-            branches.add(AtsClientService.get().getTeamDefinitionService().getTeamBranchId(teamDef));
+            branches.add(AtsApiService.get().getTeamDefinitionService().getTeamBranchId(teamDef));
          }
 
          return branches;

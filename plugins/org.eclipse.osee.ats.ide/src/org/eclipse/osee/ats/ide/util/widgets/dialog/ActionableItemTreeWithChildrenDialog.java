@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
@@ -42,7 +42,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    Collection<IAtsActionableItem> actionableItems;
 
    public ActionableItemTreeWithChildrenDialog(Active active) {
-      this(active, AtsClientService.get().getActionableItemService().getTopLevelActionableItems(active));
+      this(active, AtsApiService.get().getActionableItemService().getTopLevelActionableItems(active));
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {
@@ -61,7 +61,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
          IAtsActionableItem ai = (IAtsActionableItem) obj;
          aias.add(ai);
          if (recurseChildren) {
-            aias.addAll(AtsClientService.get().getActionableItemService().getChildren(ai, true));
+            aias.addAll(AtsApiService.get().getActionableItemService().getChildren(ai, true));
          }
       }
       return aias;

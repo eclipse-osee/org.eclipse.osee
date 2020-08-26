@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.ide.column.WorkDaysNeededColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -118,10 +118,10 @@ public class WorkflowMetrics {
       for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursUtil.getEstimatedHours(team);
-         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team, AtsClientService.get());
+         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team, AtsApiService.get());
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
-            PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsClientService.get());
+            PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsApiService.get());
          String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
          points += Strings.isNumeric(ptsStr) ? Integer.valueOf(ptsStr) : 0;
          pointsNumeric += team.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
@@ -137,7 +137,7 @@ public class WorkflowMetrics {
       Date today = new Date();
       daysTillRel = 0;
       if (version != null && estimatedReleaseDate == null) {
-         estimatedReleaseDate = AtsClientService.get().getVersionService().getEstimatedReleaseDate(version);
+         estimatedReleaseDate = AtsApiService.get().getVersionService().getEstimatedReleaseDate(version);
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);

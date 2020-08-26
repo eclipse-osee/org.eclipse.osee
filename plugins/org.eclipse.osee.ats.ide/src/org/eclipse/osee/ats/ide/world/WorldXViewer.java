@@ -54,7 +54,7 @@ import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
 import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -215,7 +215,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+               transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
                   "Reset Action off Children");
                for (IAtsAction actionArt : getSelectedActions()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
@@ -257,7 +257,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
       final Set<Artifact> useArts = new HashSet<>();
       for (TreeItem item : treeItems) {
-         Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
          try {
             if (art.isAttributeTypeValid(attributeType)) {
                useArts.add(art);
@@ -311,7 +311,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             return false;
          }
          try {
-            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+            Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(item);
             if (!artifact.isAttributeTypeValid(attributeType)) {
                return false;
             }
@@ -380,7 +380,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       updateEditMenuActions();
 
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);
@@ -428,7 +428,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (getRoot() != null) {
          for (Object artifact : (Collection<?>) getRoot()) {
             if (artifact instanceof Artifact) {
-               arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(artifact));
+               arts.add(AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
             }
          }
       }
@@ -460,7 +460,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(item));
+            arts.add(AtsApiService.get().getQueryServiceIde().getArtifact(item));
          }
       }
       return arts;
@@ -494,9 +494,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             }
             if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
                try {
-                  if (AtsClientService.get().getWorkItemService().getTeams(item.getData()).size() == 1) {
+                  if (AtsApiService.get().getWorkItemService().getTeams(item.getData()).size() == 1) {
                      teamArts.addAll(Collections.castAll(
-                        AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(item.getData()))));
+                        AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(item.getData()))));
                   }
                } catch (OseeCoreException ex) {
                   // Do Nothing
@@ -521,7 +521,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                smaArts.add((AbstractWorkflowArtifact) obj);
             } else if (Artifacts.isOfType(obj, AtsArtifactTypes.Action)) {
                smaArts.addAll(Collections.castAll(
-                  AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(obj))));
+                  AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(obj))));
             }
          }
       } catch (OseeCoreException ex) {
@@ -548,7 +548,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add(AtsClientService.get().getQueryServiceClient().getArtifact(item));
+            arts.add(AtsApiService.get().getQueryServiceIde().getArtifact(item));
          }
       }
       return arts;

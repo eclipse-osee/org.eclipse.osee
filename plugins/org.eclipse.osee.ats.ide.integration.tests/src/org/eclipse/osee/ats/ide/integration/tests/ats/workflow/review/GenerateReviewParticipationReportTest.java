@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.GenerateReviewParticipationReport;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +32,7 @@ public class GenerateReviewParticipationReportTest {
    @Test
    public void test() {
       GenerateReviewParticipationReport report = new GenerateReviewParticipationReport(null);
-      report.setSelectedUser(AtsClientService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
+      report.setSelectedUser(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Set<Artifact> results = report.getResults();
       Assert.assertEquals(6, results.size());
       int decRevCount = 0, peerRevCount = 0;

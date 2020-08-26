@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,7 +48,7 @@ public class WorkPackageConfigLoader {
       loadWorkPackageConfiguration();
 
       for (Artifact workPackageArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkPackage,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
 
          workPackageGuidToWorkPackageArt.put(workPackageArt.getGuid(), workPackageArt);
 
@@ -99,7 +99,7 @@ public class WorkPackageConfigLoader {
 
    private void loadWorkPackageConfiguration() {
       for (Artifact workPackageArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkPackage,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
 
          Artifact insertionActivityArt =
             workPackageArt.getRelatedArtifactOrNull(AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);

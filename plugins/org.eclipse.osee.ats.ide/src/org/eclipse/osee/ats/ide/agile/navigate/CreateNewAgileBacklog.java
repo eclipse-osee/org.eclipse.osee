@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,7 +58,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsClientService.get().getAtsBranch())) {
+         AtsApiService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -71,7 +71,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi agileEp = AtsClientService.get().getServerEndpoints().getAgileEndpoint();
+                  AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
                   JaxNewAgileBacklog newBacklog = new JaxNewAgileBacklog();
                   newBacklog.setName(ed.getEntry());
                   Artifact firstArtifact = dialog.getSelectedFirst();
@@ -89,7 +89,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                   if (entity != null) {
                      JaxAgileBacklog backlog = (JaxAgileBacklog) entity;
                      Artifact backlogart =
-                        ArtifactQuery.getArtifactFromId(backlog.getId(), AtsClientService.get().getAtsBranch());
+                        ArtifactQuery.getArtifactFromId(backlog.getId(), AtsApiService.get().getAtsBranch());
                      backlogart.getParent().reloadAttributesAndRelations();
                      AtsEditors.openArtifactById(ArtifactId.valueOf(backlog.getId()), OseeCmEditor.CmPcrEditor);
                   } else {

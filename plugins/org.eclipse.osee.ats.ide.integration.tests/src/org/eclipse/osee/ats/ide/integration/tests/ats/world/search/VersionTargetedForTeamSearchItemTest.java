@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
@@ -33,7 +33,7 @@ public class VersionTargetedForTeamSearchItemTest {
 
    @Test
    public void testByVersion() {
-      IAtsVersion version = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion version = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
       VersionTargetedForTeamSearchItem search =
          new VersionTargetedForTeamSearchItem(null, version, false, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();

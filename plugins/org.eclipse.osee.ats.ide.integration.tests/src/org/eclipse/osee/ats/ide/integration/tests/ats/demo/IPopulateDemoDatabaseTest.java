@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -65,10 +65,10 @@ public interface IPopulateDemoDatabaseTest {
    default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, ArtifactTypeToken artifactType, IAtsTeamDefinition teamDef) {
       Assert.assertEquals(currentStateName, teamWf.getStateMgr().getCurrentStateName());
       Assert.assertEquals(priority,
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
       // want targeted version, not error/exception
       String targetedVerStr = "";
-      IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       if (version != null) {
          targetedVerStr = version.getName();
       }
@@ -77,7 +77,7 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertEquals(teamDef, teamWf.getTeamDefinition());
       Assert.assertEquals(assigneeStr, teamWf.getStateMgr().getAssigneesStr());
       Assert.assertEquals(actionableItemStr,
-         AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));
+         AtsApiService.get().getActionableItemService().getActionableItemsStr(teamWf));
    }
 
    default void testSwDesign1PeerAnd1DecisionReview(TeamWorkFlowArtifact designTeam) {

@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -94,10 +94,10 @@ public class ConfigData {
 
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parentTeamDef = null;
-      if (AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
-         parentTeamDef = AtsClientService.get().getTeamDefinitionService().getParentTeamDef(teamDef);
+      if (AtsApiService.get().getTeamDefinitionService().getParentTeamDef(teamDef) != null) {
+         parentTeamDef = AtsApiService.get().getTeamDefinitionService().getParentTeamDef(teamDef);
       } else {
-         parentTeamDef = AtsClientService.get().getTeamDefinitionService().getTopTeamDefinition();
+         parentTeamDef = AtsApiService.get().getTeamDefinitionService().getTopTeamDefinition();
       }
       return parentTeamDef;
    }
@@ -106,12 +106,12 @@ public class ConfigData {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
       Collection<ActionableItem> fromAias =
-         AtsClientService.get().getActionableItemService().getActionableItems(teamDef);
+         AtsApiService.get().getActionableItemService().getActionableItems(teamDef);
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
          parentActionableItem =
-            AtsClientService.get().getActionableItemService().getTopActionableItem(AtsClientService.get());
+            AtsApiService.get().getActionableItemService().getTopActionableItem(AtsApiService.get());
       }
       return parentActionableItem;
    }

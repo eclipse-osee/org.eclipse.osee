@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.validate;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -35,7 +35,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
 
    @Override
    public void validate(ArtifactToken artToken, XResultData results) {
-      Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(artToken);
+      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(artToken);
       Conditions.assertNotNull(artifact, "artifact not found for %s", artToken.toStringWithId());
       IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artifact);
 

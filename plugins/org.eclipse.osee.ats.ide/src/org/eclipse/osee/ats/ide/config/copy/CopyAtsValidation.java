@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.ide.health.ValidateResults;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,14 +56,14 @@ public class CopyAtsValidation {
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<>();
-      aias.addAll(Collections.castAll(AtsClientService.get().getQueryService().getArtifactsFromObjects(
-         AtsClientService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
+      aias.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(
+         AtsApiService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
             configData.getActionableItem()))));
 
       // Validate TeamDefs have Workflow Definitions
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.addAll(
-         AtsClientService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(configData.getTeamDef()));
+         AtsApiService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(configData.getTeamDef()));
 
       results.addResultsMapToResultData(resultData);
    }
@@ -73,7 +73,7 @@ public class CopyAtsValidation {
       if (newName.equals(teamDef.getName())) {
          resultData.errorf("Could not get new name from name conversion for Team Definition [%s]", teamDef.getName());
       }
-      for (IAtsTeamDefinition childTeamDef : AtsClientService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(
+      for (IAtsTeamDefinition childTeamDef : AtsApiService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(
          teamDef)) {
          if (teamDef.notEqual(childTeamDef)) {
             validateTeamDefinition(childTeamDef);
@@ -86,7 +86,7 @@ public class CopyAtsValidation {
       if (newName.equals(aiArt.getName())) {
          resultData.errorf("Could not get new name from name conversion for ActionableItem [%s]", aiArt.getName());
       }
-      for (IAtsActionableItem childAiArt : AtsClientService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
+      for (IAtsActionableItem childAiArt : AtsApiService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
          aiArt)) {
          if (aiArt.notEqual(childAiArt)) {
             validateActionableItem(childAiArt);

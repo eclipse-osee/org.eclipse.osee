@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -123,10 +123,10 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       }
 
       try {
-         if (AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt)) {
+         if (AtsApiService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt)) {
             labelWidget.setText(getLabel() + ": Branch Creation in Progress");
-         } else if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(
-            teamArt) && !AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+         } else if (!AtsApiService.get().getBranchService().isWorkingBranchInWork(
+            teamArt) && !AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt)) {
             labelWidget.setText(getLabel() + ": No Working Branch or Committed changes available.");
          } else {
 
@@ -140,7 +140,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             createTaskActionBar(tableComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
-            if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getStoreService().isProductionDb()) {
+            if (AtsApiService.get().getUserService().isAtsAdmin() && !AtsApiService.get().getStoreService().isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   @Override
                   public void handleEvent(Event event) {
@@ -151,7 +151,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         }
                         try {
                            Collection<BranchId> branches =
-                              AtsClientService.get().getBranchService().getBranchesLeftToCommit(teamArt);
+                              AtsApiService.get().getBranchService().getBranchesLeftToCommit(teamArt);
                            for (Iterator<BranchId> it = branches.iterator(); it.hasNext();) {
                               BranchId destinationBranch = it.next();
                               IOperation operation = AtsBranchManager.commitWorkingBranch(teamArt, false, true,
@@ -167,7 +167,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             }
 
             xCommitManager = new CommitXManager(tableComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, teamArt,
-               AtsClientService.get());
+               AtsApiService.get());
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
             xCommitManager.setContentProvider(new XCommitContentProvider());
@@ -247,7 +247,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
             Collection<Object> commitMgrInputObjs =
-               AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+               AtsApiService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
             xCommitManager.setInput(commitMgrInputObjs);
             xCommitManager.refresh();
             refresh();
@@ -305,8 +305,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
-            boolean workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
-            if (workingBranchInWork && !AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
+            boolean workingBranchInWork = AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt);
+            if (workingBranchInWork && !AtsApiService.get().getBranchService().isAllObjectsToCommitToConfigured(
                xCommitManager.getXCommitViewer().getTeamArt())) {
                infoStr = "All branches must be committed, configured, or overridden before transitioning";
                backgroundColor = SWT.COLOR_RED;

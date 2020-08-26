@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -71,7 +71,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       addAllTeamDefIds(monitor, Collections.castAll(teamDefs), includeChildrenTeamDefs, ids);
       addAllAisIds(monitor, ais, includeChildrenAis, ids);
 
-      for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch())) {
+      for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFrom(ids, AtsApiService.get().getAtsBranch())) {
          for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
             if (activeWorkPkgs == Active.Both || active && activeWorkPkgs == Active.Active || !active && activeWorkPkgs == Active.InActive) {
@@ -98,7 +98,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
          ids.add(teamDef.getStoreObject());
          if (includeChildrenTeamDefs2) {
             addAllTeamDefIds(monitor,
-               AtsClientService.get().getTeamDefinitionService().getChildrenTeamDefinitions(teamDef),
+               AtsApiService.get().getTeamDefinitionService().getChildrenTeamDefinitions(teamDef),
                includeChildrenTeamDefs2, ids);
             checkForCancelledStatus(monitor);
          }
@@ -113,7 +113,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       Set<IAtsWorkPackage> resultWorkPgks = new HashSet<>();
       for (Artifact art : results) {
          resultWorkPgks.add(
-            new WorkPackage(AtsClientService.get().getLogger(), AtsClientService.get(), art));
+            new WorkPackage(AtsApiService.get().getLogger(), AtsApiService.get(), art));
       }
       return resultWorkPgks;
    }

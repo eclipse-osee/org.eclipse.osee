@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -36,10 +36,10 @@ public class AtsArtifactQuery {
       List<Artifact> artifacts = new LinkedList<>();
 
       if (GUID.isValid(guidOrAtsId)) {
-         artifacts.add(ArtifactQuery.getArtifactFromId(guidOrAtsId, AtsClientService.get().getAtsBranch()));
+         artifacts.add(ArtifactQuery.getArtifactFromId(guidOrAtsId, AtsApiService.get().getAtsBranch()));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId,
-            Collections.singleton(guidOrAtsId), AtsClientService.get().getAtsBranch(), 1));
+            Collections.singleton(guidOrAtsId), AtsApiService.get().getAtsBranch(), 1));
       }
 
       if (artifacts.isEmpty()) {
@@ -64,13 +64,13 @@ public class AtsArtifactQuery {
       }
 
       if (!guids.isEmpty()) {
-         List<Artifact> fromIds = ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch());
+         List<Artifact> fromIds = ArtifactQuery.getArtifactListFromIds(guids, AtsApiService.get().getAtsBranch());
          toReturn.addAll(fromIds);
       }
 
       if (!atsIds.isEmpty()) {
          List<Artifact> fromIds = ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds,
-            AtsClientService.get().getAtsBranch(), atsIds.size());
+            AtsApiService.get().getAtsBranch(), atsIds.size());
          toReturn.addAll(fromIds);
       }
 
@@ -78,11 +78,11 @@ public class AtsArtifactQuery {
    }
 
    public static Artifact getArtifactFromId(long id) {
-      return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(id), AtsClientService.get().getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(id), AtsApiService.get().getAtsBranch());
    }
 
    public static Artifact getArtifactFromIdOrNull(Long id) {
-      return ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(id), AtsClientService.get().getAtsBranch(),
+      return ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(id), AtsApiService.get().getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED);
    }
 }

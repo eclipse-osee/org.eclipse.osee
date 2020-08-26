@@ -56,9 +56,9 @@ import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IXTaskViewer;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -129,14 +129,14 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
    private final WorkflowEditor editor;
    private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
    private final ReloadJobChangeAdapter reloadAdapter;
-   private final IAtsClient client;
+   private final AtsApiIde client;
    private final IAtsTeamWorkflow teamWf;
    private final TeamWorkFlowArtifact teamArt;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction;
 
-   public WfeTasksTab(WorkflowEditor editor, IAtsTeamWorkflow teamWf, IAtsClient client) {
+   public WfeTasksTab(WorkflowEditor editor, IAtsTeamWorkflow teamWf, AtsApiIde client) {
       super(editor, ID, "Tasks");
       this.editor = editor;
       this.teamWf = teamWf;
@@ -540,7 +540,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(taskComposite.getTeamArt(), null));
 
                Collection<CreateTasksDefinitionBuilder> taskSets =
-                  AtsClientService.get().getTaskService().getTaskSets(teamWf);
+                  AtsApiService.get().getTaskService().getTaskSets(teamWf);
                new MenuItem(fMenu, SWT.SEPARATOR);
                addActionToMenu(fMenu, new CreateManualTaskPlaceholder("Create Task Set - Instructions"));
                if (!taskSets.isEmpty()) {

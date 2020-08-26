@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -52,14 +52,14 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
       try {
 
          int numColumns = 8;
-         if (!AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+         if (!AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
             numColumns = 10;
          }
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(numColumns, false));
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+         if (AtsApiService.get().getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
             percentLabel = FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
                "Calculation: Sum of percent for all states (including all tasks and reviews) / # statusable states (if configured)");
          } else {
@@ -90,14 +90,14 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
          }
          if (percentLabel != null && !percentLabel.isDisposed()) {
             percentLabel.setText(String.valueOf(
-               PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get())));
+               PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get())));
          }
          if (estimatedHoursHeader != null) {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentTotal(workItem, AtsClientService.get()))));
+               HoursSpentUtil.getHoursSpentTotal(workItem, AtsApiService.get()))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(workItem);

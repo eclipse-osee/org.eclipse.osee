@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -87,7 +87,7 @@ public class WfeUndefinedStateSection extends SectionPart {
    public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa) {
       // Display pages that are in data store, but not in Work Definition
       Collection<String> stateNamesDefined =
-         AtsClientService.get().getWorkDefinitionService().getStateNames(awa.getWorkDefinition());
+         AtsApiService.get().getWorkDefinitionService().getStateNames(awa.getWorkDefinition());
       List<String> stateNamesUndefined = new ArrayList<>();
       for (String pageName : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
          String justPage = pageName.replaceFirst(";.*$", "");

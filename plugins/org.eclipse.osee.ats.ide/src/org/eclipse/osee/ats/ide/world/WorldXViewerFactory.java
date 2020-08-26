@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.column.ev.WorkPackageIdColumnUI;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageNameColumnUI;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageProgramColumnUI;
 import org.eclipse.osee.ats.ide.column.ev.WorkPackageTypeColumnUI;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
@@ -203,7 +203,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     * Provides XViewerColumn for non-attribute based columns like Type and State
     */
    public static XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
-      return new AtsColumnIdUI(columnToken, AtsClientService.get());
+      return new AtsColumnIdUI(columnToken, AtsApiService.get());
    }
 
    /**
@@ -212,7 +212,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     */
    public static XViewerColumn getAttributeConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
-      for (AtsAttributeValueColumn column : AtsClientService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn column : AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;

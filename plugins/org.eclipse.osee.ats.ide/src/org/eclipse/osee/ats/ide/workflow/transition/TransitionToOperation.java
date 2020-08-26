@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public class TransitionToOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       try {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(helper.getName() + ".preSave");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(helper.getName() + ".preSave");
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) workItem;
             if (awa.isDirty()) {
@@ -52,7 +52,7 @@ public class TransitionToOperation extends AbstractOperation {
          }
          changes.executeIfNeeded();
 
-         results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
+         results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          if (results == null) {

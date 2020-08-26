@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -105,7 +105,7 @@ public class WfeWorkPackage extends Composite implements IWfeEventHandle {
    public void refresh() {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
-         IAtsWorkPackage workPackage = AtsClientService.get().getEarnedValueService().getWorkPackage(workItem);
+         IAtsWorkPackage workPackage = AtsApiService.get().getEarnedValueService().getWorkPackage(workItem);
          if (workPackage != null) {
             value = workPackage.toString();
          }

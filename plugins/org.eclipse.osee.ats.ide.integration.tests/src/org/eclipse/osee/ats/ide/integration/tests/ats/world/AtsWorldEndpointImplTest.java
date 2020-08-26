@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.PriorityColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -71,7 +71,7 @@ public class AtsWorldEndpointImplTest {
 
    @Before
    public void setup() {
-      atsApi = AtsClientService.get();
+      atsApi = AtsApiService.get();
       worldEp = atsApi.getServerEndpoints().getWorldEndpoint();
    }
 
@@ -113,7 +113,7 @@ public class AtsWorldEndpointImplTest {
    @Test
    public void testGetCollectionandCollectionUIAndCollectionUICustomized() {
       ArtifactToken backlog =
-         AtsClientService.get().getQueryService().getArtifactByName(AtsArtifactTypes.AgileBacklog, "SAW Backlog");
+         AtsApiService.get().getQueryService().getArtifactByName(AtsArtifactTypes.AgileBacklog, "SAW Backlog");
       Collection<IAtsWorkItem> items = worldEp.getCollection(backlog);
       Assert.assertNotNull(items);
       Assert.assertFalse(items.isEmpty());

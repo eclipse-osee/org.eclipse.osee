@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.column.FoundInVersionColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.widgets.XFoundInVersionWidget;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -37,14 +37,14 @@ public class FoundInVersionColumnTest {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      IAtsVersion demoVersion = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion demoVersion = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
 
       // FIV not set
       Assert.assertEquals("",
          FoundInVersionColumnUI.getInstance().getColumnText(codeArt, FoundInVersionColumnUI.getInstance(), 0));
 
       // FIV set
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Update Found-In-Version Test");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Update Found-In-Version Test");
       changes.setRelation(codeArt, XFoundInVersionWidget.FOUND_VERSION_RELATION, demoVersion);
       changes.executeIfNeeded();
       Assert.assertEquals(demoVersion.toString(),

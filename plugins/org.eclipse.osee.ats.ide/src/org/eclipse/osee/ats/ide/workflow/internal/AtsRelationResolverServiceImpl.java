@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -39,9 +39,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServiceImpl {
 
-   private final IAtsClient atsClient;
+   private final AtsApiIde atsClient;
 
-   public AtsRelationResolverServiceImpl(IAtsClient atsClient) {
+   public AtsRelationResolverServiceImpl(AtsApiIde atsClient) {
       this.atsClient = atsClient;
    }
 
@@ -86,16 +86,16 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    public Artifact getArtifact(Object object) {
       Artifact useArt = null;
       if (object instanceof Artifact) {
-         useArt = AtsClientService.get().getQueryServiceClient().getArtifact(object);
+         useArt = AtsApiService.get().getQueryServiceIde().getArtifact(object);
       } else if (object instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) object;
          if (atsObject.getStoreObject() instanceof Artifact) {
-            useArt = AtsClientService.get().getQueryServiceClient().getArtifact(atsObject);
+            useArt = AtsApiService.get().getQueryServiceIde().getArtifact(atsObject);
          } else {
-            useArt = atsClient.getQueryServiceClient().getArtifact(atsObject.getId());
+            useArt = atsClient.getQueryServiceIde().getArtifact(atsObject.getId());
          }
       } else if (object instanceof ArtifactId) {
-         useArt = atsClient.getQueryServiceClient().getArtifact(((ArtifactId) object).getId());
+         useArt = atsClient.getQueryServiceIde().getArtifact(((ArtifactId) object).getId());
       }
       return useArt;
    }
@@ -212,7 +212,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       List<ArtifactToken> results = new LinkedList<>();
       Artifact art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelatedArtifacts(relationType)) {
-         if (AtsClientService.get().getQueryServiceClient().getArtifact(related).isOfType(artifactType)) {
+         if (AtsApiService.get().getQueryServiceIde().getArtifact(related).isOfType(artifactType)) {
             results.add(related);
          }
       }

@@ -33,8 +33,8 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.ide.util.IAtsClient;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -55,12 +55,12 @@ public class AtsTaskEndpointImplTest {
 
    private AtsTaskEndpointApi taskEp;
    private long taskId1, taskId2, taskId3, taskId4, codeTeamWfId;
-   private IAtsClient client;
+   private AtsApiIde client;
 
    @Before
    public void setup() {
-      client = AtsClientService.get();
-      taskEp = AtsClientService.get().getServerEndpoints().getTaskEp();
+      client = AtsApiService.get();
+      taskEp = AtsApiService.get().getServerEndpoints().getTaskEp();
       taskId1 = Lib.generateArtifactIdAsInt();
       taskId2 = Lib.generateArtifactIdAsInt();
       taskId3 = Lib.generateArtifactIdAsInt();
@@ -245,11 +245,11 @@ public class AtsTaskEndpointImplTest {
 
       // Test Delete
       taskEp.delete(taskId1);
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId1));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(taskId1));
       taskEp.delete(taskId2);
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId2));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(taskId2));
       taskEp.delete(taskId3);
-      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId3));
+      Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(taskId3));
    }
 
    private JaxAtsTask createJaxAtsTask(long taskId, String title, String description, String createdByUserId, Date createdDate, List<String> assigneeUserIds) {

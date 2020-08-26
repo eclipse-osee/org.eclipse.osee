@@ -21,7 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
@@ -86,7 +86,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
             AWorkbench.popup("No valid parent Team Workflow found");
          }
 
-         BranchId branch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWorkflow);
+         BranchId branch = AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWorkflow);
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
          Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
 
@@ -112,7 +112,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
 
    @Override
    public Artifact getArtifact() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(workItem);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
    }
 
    @Override
@@ -123,8 +123,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
          data.setArtifact(ArtifactId.valueOf(workItem.getStoreObject().getId()));
          data.setApplIds(Collections.castAll(selectedAppls));
          appDatas.add(data);
-         AtsClientService.get().getOseeClient().getApplicabilityEndpoint(
-            AtsClientService.get().getAtsBranch()).setApplicabilityReference(appDatas);
+         AtsApiService.get().getOseeClient().getApplicabilityEndpoint(
+            AtsApiService.get().getAtsBranch()).setApplicabilityReference(appDatas);
       }
    }
 
@@ -136,8 +136,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    private List<ApplicabilityToken> getStoredApplicabilities() {
       List<ApplicabilityToken> tokens = new ArrayList<ApplicabilityToken>();
       try {
-         IOseeBranch branch = AtsClientService.get().getAtsBranch();
-         ApplicabilityEndpoint applicEndpoint = AtsClientService.get().getOseeClient().getApplicabilityEndpoint(branch);
+         IOseeBranch branch = AtsApiService.get().getAtsBranch();
+         ApplicabilityEndpoint applicEndpoint = AtsApiService.get().getOseeClient().getApplicabilityEndpoint(branch);
          List<ApplicabilityToken> applicTokens =
             applicEndpoint.getApplicabilityReferenceTokens(workItem.getArtifactId());
          for (ApplicabilityToken tok : applicTokens) {

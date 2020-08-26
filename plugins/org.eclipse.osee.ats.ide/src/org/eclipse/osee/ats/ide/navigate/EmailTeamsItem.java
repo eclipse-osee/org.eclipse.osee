@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -65,14 +65,14 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (AtsUser user : AtsClientService.get().getTeamDefinitionService().getMembers(teamDef)) {
+            for (AtsUser user : AtsApiService.get().getTeamDefinitionService().getMembers(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
             }
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (AtsUser user : AtsClientService.get().getTeamDefinitionService().getLeads(teamDef)) {
+            for (AtsUser user : AtsApiService.get().getTeamDefinitionService().getLeads(teamDef)) {
                if (Strings.isValid(user.getEmail()) && user.isActive()) {
                   emails.add(user.getEmail());
                }
@@ -91,13 +91,13 @@ public class EmailTeamsItem extends XNavigateItemAction {
       if (teamDef != null) {
          Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          teamDefs.add(teamDef);
-         teamDefs.addAll(AtsClientService.get().getTeamDefinitionService().getChildren(teamDef, true));
+         teamDefs.addAll(AtsApiService.get().getTeamDefinitionService().getChildren(teamDef, true));
          return teamDefs;
       }
       TeamDefinitionTreeWithChildrenDialog ld = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
       int result = ld.open();
       if (result == 0) {
-         return AtsClientService.get().getTeamDefinitionService().getTeamDefs(ld.getResultAndRecursedTeamDefs());
+         return AtsApiService.get().getTeamDefinitionService().getTeamDefs(ld.getResultAndRecursedTeamDefs());
       }
       return java.util.Collections.emptyList();
    }

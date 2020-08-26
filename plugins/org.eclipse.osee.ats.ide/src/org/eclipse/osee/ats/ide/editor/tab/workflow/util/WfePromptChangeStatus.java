@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -45,7 +45,7 @@ public class WfePromptChangeStatus {
 
    public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
       WfePromptChangeStatus promptChangeStatus = new WfePromptChangeStatus(awas);
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Prompt Change Status");
       boolean result = promptChangeStatus.promptChangeStatus(changes).isTrue();
       if (result) {
          changes.execute();
@@ -100,7 +100,7 @@ public class WfePromptChangeStatus {
    }
 
    public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Status");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Status");
       performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
       changes.execute();
    }
@@ -112,10 +112,10 @@ public class WfePromptChangeStatus {
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getStateMgr().isUnAssigned()) {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
-            workItem.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
+            workItem.getStateMgr().addAssignee(AtsApiService.get().getUserService().getCurrentUser());
          }
          workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true,
-            AtsClientService.get().getUserService().getCurrentUser());
+            AtsApiService.get().getUserService().getCurrentUser());
          changes.add(workItem);
       }
    }

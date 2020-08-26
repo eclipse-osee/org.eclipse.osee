@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class AtsNotifyEndpointImplTest {
 
    @Test
    public void testAtsNotify() {
-      AtsNotifyEndpointApi notifyEndpoint = AtsClientService.get().getServerEndpoints().getNotifyEndpoint();
+      AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
       Assert.assertNotNull(notifyEndpoint);
    }
 

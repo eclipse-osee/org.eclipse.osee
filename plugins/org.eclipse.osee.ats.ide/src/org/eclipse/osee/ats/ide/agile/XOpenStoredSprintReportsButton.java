@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -66,7 +66,7 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
 
    @Override
    public Artifact getArtifact() {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(sprint);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(sprint);
    }
 
    @Override
@@ -100,10 +100,10 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
    public void openExternally() {
       boolean found = false;
       for (AgileReportType rpt : AgileReportType.values()) {
-         ArtifactToken rptArt = AtsClientService.get().getRelationResolver().getChildNamedOrNull(sprint, rpt.name());
+         ArtifactToken rptArt = AtsApiService.get().getRelationResolver().getChildNamedOrNull(sprint, rpt.name());
          if (rptArt != null) {
             found = true;
-            RendererManager.open(AtsClientService.get().getQueryServiceClient().getArtifact(rptArt),
+            RendererManager.open(AtsApiService.get().getQueryServiceIde().getArtifact(rptArt),
                PresentationType.PREVIEW);
          }
       }
@@ -115,9 +115,9 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
    public void openInternally() {
       List<IResultsEditorTab> tabs = new LinkedList<>();
       for (AgileReportType rpt : AgileReportType.values()) {
-         ArtifactToken rptArt = AtsClientService.get().getRelationResolver().getChildNamedOrNull(sprint, rpt.name());
+         ArtifactToken rptArt = AtsApiService.get().getRelationResolver().getChildNamedOrNull(sprint, rpt.name());
          if (rptArt != null) {
-            String html = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(rptArt,
+            String html = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(rptArt,
                CoreAttributeTypes.NativeContent, null);
             if (Strings.isValid(html)) {
                tabs.add(new ResultsEditorHtmlTab(rpt.name(), rpt.name(), AHTML.simplePage(html)));

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -84,7 +84,7 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
                      if (dialog.open() == 0) {
                         Integer intValue = dialog.getInt();
                         workItem.getStateMgr().setPercentCompleteValue(intValue);
-                        AtsClientService.get().getStoreService().executeChangeSet(
+                        AtsApiService.get().getStoreService().executeChangeSet(
                            "ATS Workflow Editor - set Percent Complete", workItem);
                      }
                   } catch (Exception ex) {
@@ -112,10 +112,10 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
    }
 
    public String getPercentCompleteStr() {
-      int awaPercent = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+      int awaPercent = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.PercentComplete, 0);
       int totalPecent =
-         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get());
+         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsApiService.get());
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {

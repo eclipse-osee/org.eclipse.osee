@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.ide.world.WorldXWidgetActionPage;
 import org.eclipse.osee.framework.core.util.Result;
@@ -224,8 +224,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       if (searchId > 0) {
-         AtsSearchData data = AtsClientService.get().getQueryService().getSearch(
-            AtsClientService.get().getUserService().getCurrentUser(), searchId);
+         AtsSearchData data = AtsApiService.get().getQueryService().getSearch(
+            AtsApiService.get().getUserService().getCurrentUser(), searchId);
          if (data != null) {
             loadWidgets(data);
             searchName = data.getSearchName();

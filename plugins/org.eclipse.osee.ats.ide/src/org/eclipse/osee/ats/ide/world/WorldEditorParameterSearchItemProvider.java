@@ -18,7 +18,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
@@ -85,7 +85,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             }
 
             CustomizeData custData = worldEditor.getWorldComposite().getCustomizeDataCopy();
-            AtsSearchData data = AtsClientService.get().getQueryService().createSearchData(
+            AtsSearchData data = AtsApiService.get().getQueryService().createSearchData(
                workflowSearchItem.getNamespace(), workflowSearchItem.getSearchName());
             workflowSearchItem.loadSearchData(data);
             data.setCustomizeData(custData);
@@ -94,7 +94,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
                @Override
                public void run() {
-                  ResultRows resultRows = AtsClientService.get().getServerEndpoints().getWorldEndpoint().search(data);
+                  ResultRows resultRows = AtsApiService.get().getServerEndpoints().getWorldEndpoint().search(data);
                   ResultsEditor.open("Search Results", resultRows, false, data.getCustomizeData());
                   super.run();
                }

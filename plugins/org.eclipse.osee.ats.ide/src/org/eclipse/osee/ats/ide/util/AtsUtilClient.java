@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionWorkItemResult;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -45,7 +45,7 @@ public class AtsUtilClient {
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
    private static BranchIdEventFilter commonBranchIdEventFilter =
-      new BranchIdEventFilter(AtsClientService.get().getAtsBranch());
+      new BranchIdEventFilter(AtsApiService.get().getAtsBranch());
 
    public static boolean isEmailEnabled() {
       return emailEnabled;

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AbstractShowRelatedAction;
 import org.eclipse.osee.ats.ide.workflow.task.related.ShowRelatedRequirementAction;
 import org.eclipse.osee.ats.ide.workflow.task.related.ShowRelatedRequirementDiffsAction;
@@ -56,7 +56,7 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int rating = NO_MATCH;
       try {
-         if (artifact instanceof IAtsTask && AtsClientService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(
+         if (artifact instanceof IAtsTask && AtsApiService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(
             (IAtsTask) artifact)) {
             rating = getPresentationType(presentationType);
          }

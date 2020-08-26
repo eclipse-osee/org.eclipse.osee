@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractAtsArtifact;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -126,7 +126,7 @@ public class AtsDeleteManager {
                   Operations.executeWorkAndCheckStatus(new PurgeArtifacts(allDeleteArts));
                } else if (!allDeleteArts.isEmpty()) {
                   SkynetTransaction transaction =
-                     TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Delete ATS Objects");
+                     TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Delete ATS Objects");
                   ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, allDeleteArts);
                   transaction.execute();
                }
@@ -149,9 +149,9 @@ public class AtsDeleteManager {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
-            AtsClientService.get().getAtsId(deleteArt), deleteArt.getName()) + "\n");
+            AtsApiService.get().getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
-            for (IAtsTeamWorkflow art : AtsClientService.get().getWorkItemService().getTeams(deleteArt)) {
+            for (IAtsTeamWorkflow art : AtsApiService.get().getWorkItemService().getTeams(deleteArt)) {
                atsDelete((AbstractWorkflowArtifact) art, relatedArts, ignoredArts);
             }
          } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
@@ -161,7 +161,7 @@ public class AtsDeleteManager {
                if (loopArt.notEqual(deleteArt)) {
                   delBuilder.append(
                      String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]", loopArt.getArtifactTypeName(),
-                        AtsClientService.get().getAtsId(loopArt), loopArt.getName()) + "\n");
+                        AtsApiService.get().getAtsId(loopArt), loopArt.getName()) + "\n");
                }
             }
          }
@@ -172,11 +172,11 @@ public class AtsDeleteManager {
                if (actionArt != null) {
                   if (!allDeleteArts.contains(actionArt)) {
                      Collection<ArtifactId> teamWfArts =
-                        AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(actionArt));
+                        AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(actionArt));
                      if (allDeleteArts.containsAll(teamWfArts)) {
                         relatedArts.add(actionArt);
                         delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                           actionArt.getArtifactTypeName(), AtsClientService.get().getAtsId(actionArt),
+                           actionArt.getArtifactTypeName(), AtsApiService.get().getAtsId(actionArt),
                            actionArt.getName()) + "\n");
                      }
                   }
@@ -201,7 +201,7 @@ public class AtsDeleteManager {
          for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
             atsDelete(reviewArt, deleteArts, allRelated);
          }
-         for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) awa)) {
+         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) awa)) {
             atsDelete((AbstractWorkflowArtifact) task.getStoreObject(), deleteArts, allRelated);
          }
       }

@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.CountryColumn;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 
@@ -54,7 +54,7 @@ public class CountryColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = CountryColumn.getCountryStr((IAtsObject) element, AtsClientService.get());
+         result = CountryColumn.getCountryStr((IAtsObject) element, AtsApiService.get());
       }
       return result;
    }

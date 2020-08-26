@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,7 +49,7 @@ public class VersionMetrics {
       sb.append("\n");
       try {
          sb.append("Workflows: ");
-         sb.append(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt).size());
+         sb.append(AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(verArt).size());
          sb.append(" Problem: ");
          sb.append(getTeamWorkFlows(ChangeType.Problem).size());
          sb.append(" Improve: ");
@@ -57,7 +57,7 @@ public class VersionMetrics {
          sb.append(" Support: ");
          sb.append(getTeamWorkFlows(ChangeType.Support).size());
          sb.append(" Release Date: ");
-         sb.append(AtsClientService.get().getVersionService().getReleaseDate(verArt));
+         sb.append(AtsApiService.get().getVersionService().getReleaseDate(verArt));
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
             sb.append(" Prev Release Version: <not found>");
@@ -65,7 +65,7 @@ public class VersionMetrics {
             sb.append(" Prev Release Version \"");
             sb.append(prevVerMet);
             sb.append("\"   Release Date: ");
-            sb.append(AtsClientService.get().getVersionService().getReleaseDate(verArt));
+            sb.append(AtsApiService.get().getVersionService().getReleaseDate(verArt));
          }
          sb.append(" Start Date: ");
          sb.append(getReleaseStartDate());
@@ -82,7 +82,7 @@ public class VersionMetrics {
       if (startDate == null) {
          return null;
       }
-      Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
+      Date relDate = AtsApiService.get().getVersionService().getReleaseDate(verArt);
       if (relDate == null) {
          return null;
       }
@@ -94,16 +94,16 @@ public class VersionMetrics {
       if (prevVerMet == null) {
          return null;
       }
-      Date relDate = AtsClientService.get().getVersionService().getReleaseDate(verArt);
+      Date relDate = AtsApiService.get().getVersionService().getReleaseDate(verArt);
       return relDate;
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<>();
-      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) team.getStoreObject();
-         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt, AtsClientService.get()))) {
+         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt, AtsApiService.get()))) {
             teams.add(teamArt);
          }
       }
@@ -111,7 +111,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getPreviousVerMetViaReleaseDate() {
-      if (AtsClientService.get().getVersionService().getReleaseDate(verArt) == null) {
+      if (AtsApiService.get().getVersionService().getReleaseDate(verArt) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -122,7 +122,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getNextVerMetViaReleaseDate() {
-      if (AtsClientService.get().getVersionService().getReleaseDate(verArt) == null) {
+      if (AtsApiService.get().getVersionService().getReleaseDate(verArt) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);

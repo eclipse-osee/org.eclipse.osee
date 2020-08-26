@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.workflow.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -50,37 +50,37 @@ public class ChangeTypeColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(codeArt, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(codeArt, AtsApiService.get()));
       Assert.assertNotNull(
          ChangeTypeColumnUI.getInstance().getColumnImage(codeArt, ChangeTypeColumnUI.getInstance(), 0));
 
       IAtsAction action = codeArt.getParentAction();
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsApiService.get()));
 
       // clear our req change type
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - Set Change Type");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - Set Change Type");
       ChangeTypeUtil.setChangeType(reqArt, ChangeType.None, changes);
       changes.execute();
 
-      Assert.assertEquals(ChangeType.None, ChangeTypeUtil.getChangeType(reqArt, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.None, ChangeTypeUtil.getChangeType(reqArt, AtsApiService.get()));
       Assert.assertNull(ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
 
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsApiService.get()));
       Assert.assertEquals("Problem",
          ChangeTypeColumnUI.getInstance().getColumnText(action, ChangeTypeColumnUI.getInstance(), 0));
 
       // set change type to Improvement
-      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - Set Change Type 2");
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - Set Change Type 2");
       ChangeTypeUtil.setChangeType(reqArt, ChangeType.Improvement, changes);
       changes.execute();
 
-      Assert.assertEquals(ChangeType.Improvement, ChangeTypeUtil.getChangeType(reqArt, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.Improvement, ChangeTypeUtil.getChangeType(reqArt, AtsApiService.get()));
       Assert.assertNotNull(
          ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
 
-      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsClientService.get()));
+      Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action, AtsApiService.get()));
       String columnText = ChangeTypeColumnUI.getInstance().getColumnText(action, ChangeTypeColumnUI.getInstance(), 0);
       Assert.assertTrue(columnText.equals("Problem; Improvement") || columnText.equals("Improvement; Problem"));
 

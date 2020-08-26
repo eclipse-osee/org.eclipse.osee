@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.config.AtsConfigOperation;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -90,7 +90,7 @@ public class AtsBranchConfigurationTest {
 
    @Before
    public void testSetup() throws Exception {
-      if (AtsClientService.get().getStoreService().isProductionDb()) {
+      if (AtsApiService.get().getStoreService().isProductionDb()) {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
    }
@@ -117,7 +117,7 @@ public class AtsBranchConfigurationTest {
       Collection<String> actionableItems = appendToName(BRANCH_VIA_VERSIONS, "A1", "A2");
       AtsConfigOperation operation = configureAts(namespace, name, versions, actionableItems);
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       // create main branch
       if (DEBUG) {
@@ -134,7 +134,7 @@ public class AtsBranchConfigurationTest {
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
       long version1Id = 0L, version2Id = 0L;
-      Collection<IAtsVersion> versions2 = AtsClientService.get().getVersionService().getVersions(teamDef);
+      Collection<IAtsVersion> versions2 = AtsApiService.get().getVersionService().getVersions(teamDef);
       for (IAtsVersion vArt : versions2) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
@@ -145,14 +145,14 @@ public class AtsBranchConfigurationTest {
       }
 
       Assert.assertNotNull(versionToTarget);
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchId,
          viaTeamDefBranch.getIdString());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
       // create action and target for version
       if (DEBUG) {
@@ -161,26 +161,26 @@ public class AtsBranchConfigurationTest {
       }
 
       Collection<IAtsActionableItem> selectedActionableItems =
-         AtsClientService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
+         AtsApiService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null,
          BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeType.Problem, "1", false, null,
-         selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeams(result).iterator().next();
-      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
+         selectedActionableItems, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+      IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
+      AtsApiService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
 
-      AtsClientService.get().reloadServerAndClientCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
 
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get());
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get());
 
       // Transition to desired state
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      dtwm.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       ((TeamWorkFlowArtifact) teamWf.getStoreObject()).persist("Branch Configuration Test");
 
       WorkflowEditor.edit(teamWf);
@@ -253,7 +253,7 @@ public class AtsBranchConfigurationTest {
             "Configuring team def to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, viaTeamDefBranch.getIdString());
       // setup team def to allow create/commit of branch
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
@@ -265,27 +265,27 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
       }
       Collection<IAtsActionableItem> selectedActionableItems =
-         AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsApiService.get().getActionableItemService().getActionableItems(
             appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.reset("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
-      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, actionTitle, "description",
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, actionTitle, "description",
          ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 
-      final IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeams(result).iterator().next();
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get());
+      final IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsApiService.get());
 
       // Transition to desired state
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
       changes.reset("Test branch via team definition: create action");
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
+      dtwm.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
 
       // create branch
@@ -321,11 +321,11 @@ public class AtsBranchConfigurationTest {
    public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
       String namespace = "org.branchTest." + branch.getName().toLowerCase();
       Artifact aArt = ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
-         branch.getName() + " Req Changes", AtsClientService.get().getAtsBranch());
+         branch.getName() + " Req Changes", AtsApiService.get().getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
-         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(aArt)) {
+            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
+         for (IAtsTeamWorkflow teamWf : AtsApiService.get().getWorkItemService().getTeams(aArt)) {
             WorkflowEditor.close(Collections.singleton(teamWf), false);
             ((TeamWorkFlowArtifact) teamWf.getStoreObject()).deleteAndPersist(transaction, true);
          }
@@ -335,11 +335,11 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsClientService.get().getQueryService().createQuery(
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
+      for (IAtsVersion version : AtsApiService.get().getQueryService().createQuery(
          AtsArtifactTypes.Version).getItems(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
-            Artifact artifact = AtsClientService.get().getQueryServiceClient().getArtifact(version);
+            Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(version);
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }
@@ -349,18 +349,18 @@ public class AtsBranchConfigurationTest {
 
       // Delete Team Definitions
       transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
-         branch.getName(), AtsClientService.get().getAtsBranch())) {
+         branch.getName(), AtsApiService.get().getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
       }
       transaction.execute();
 
       // Delete AIs
       transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
       for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-         branch.getName(), AtsClientService.get().getAtsBranch())) {
+         branch.getName(), AtsApiService.get().getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
          }
@@ -371,10 +371,10 @@ public class AtsBranchConfigurationTest {
 
       // Work Definition
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsApiService.get().getAtsBranch());
       if (arts.size() > 0) {
          transaction =
-            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+            TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
                workArt.deleteAndPersist(transaction, true);
@@ -402,7 +402,7 @@ public class AtsBranchConfigurationTest {
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       IOperation op = AtsBranchManager.commitWorkingBranch(teamWf, false, true,
-         BranchManager.getParentBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
+         BranchManager.getParentBranch(AtsApiService.get().getBranchService().getWorkingBranch(teamWf)), true);
       Operations.executeWorkAndCheckStatus(op);
    }
 
@@ -414,7 +414,7 @@ public class AtsBranchConfigurationTest {
       }
       AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
 
-      BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf, true);
+      BranchId workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf, true);
       Assert.assertTrue("No working branch created", workingBranch.isValid());
       return workingBranch;
    }

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.branch.BranchStatus;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -136,22 +136,22 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    }
 
    private void updateBranchState() {
-      workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
+      workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamArt, true);
       workingBranchCreationInProgress =
-         AtsClientService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt);
-      workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
+         AtsApiService.get().getBranchService().isWorkingBranchCreationInProgress(teamArt);
+      workingBranchInWork = AtsApiService.get().getBranchService().isWorkingBranchInWork(teamArt);
 
       if (workingBranch.isInvalid()) {
          workingBranchCommitInProgress = false;
       } else {
          BranchState state = BranchManager.getState(workingBranch);
          workingBranchCreationInProgress |= state.isCreationInProgress();
-         workingBranchCommitInProgress = AtsClientService.get().getBranchService().isWorkingBranchCommitInProgress(
+         workingBranchCommitInProgress = AtsApiService.get().getBranchService().isWorkingBranchCommitInProgress(
             teamArt) || state.isCommitInProgress();
          workingBranchCommitWithMergeInProgress =
             BranchManager.hasMergeBranches(workingBranch) && !state.isRebaselineInProgress();
       }
-      committedBranchExists = AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt);
+      committedBranchExists = AtsApiService.get().getBranchService().isCommittedBranchExists(teamArt);
       disableAll = workingBranchCommitInProgress;
    }
 

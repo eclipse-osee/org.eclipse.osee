@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -266,7 +266,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeToken attributeType) {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), attributeType);
       Assert.assertEquals(teamWf, attribute.getArtId());
       Assert.assertEquals(attributeType, attribute.getAttributeType());
@@ -281,12 +281,12 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionStringAttributeByType() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
       Assert.assertTrue(teamWf.getTags().isEmpty());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "asdf");
       changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "qwer");
       changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "zxcv");
@@ -312,21 +312,21 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionFloatAttributeByType() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals(0,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
             AtsAttributeTypes.EstimatedHours).size());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.EstimatedHours, 3.5);
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.EstimatedHours);
       Assert.assertEquals(1,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
             AtsAttributeTypes.EstimatedHours).size());
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.EstimatedHours.getIdString(),
@@ -334,26 +334,26 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.EstimatedHours);
-      Assert.assertEquals((Double) 4.5, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals((Double) 4.5, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.EstimatedHours, 1.0));
    }
 
    @Test
    public void testSetActionIntegerAttributeByType() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals(0,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
             AtsAttributeTypes.PercentRework).size());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.PercentRework, 3);
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.PercentRework);
-      Assert.assertEquals((Integer) 3, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals((Integer) 3, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.PercentRework, 4));
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.PercentRework.getIdString(),
@@ -361,28 +361,28 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.PercentRework);
-      Assert.assertEquals((Integer) 4, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals((Integer) 4, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.PercentRework, 1.0));
    }
 
    @Test
    public void testSetActionDateAttributeByType() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      Assert.assertEquals((Date) null, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals((Date) null, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.NeedBy, null));
 
       Date date = new Date();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.NeedBy, date);
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.NeedBy);
       Assert.assertEquals(1,
-         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
             AtsAttributeTypes.NeedBy).size());
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.NeedBy.getIdString(),
@@ -390,7 +390,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.NeedBy);
-      Date date2 = (Date) AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
+      Date date2 = (Date) AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
          AtsAttributeTypes.NeedBy, null);
       Long dateTime = date2.getTime();
       Assert.assertEquals(446579845, dateTime.intValue());
@@ -398,19 +398,19 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionBooleanAttributeByType() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      Assert.assertEquals(false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, false));
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, true);
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.ValidationRequired);
-      Assert.assertEquals(true, AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
+      Assert.assertEquals(true, AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
          AtsAttributeTypes.ValidationRequired, false));
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.ValidationRequired.getIdString(),
@@ -418,14 +418,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.ValidationRequired);
-      Assert.assertEquals(false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, true));
    }
 
    @Test
    public void testQueryByLegacyIds() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) teamWf, AtsAttributeTypes.LegacyPcrId, "PCR 2344");
       TeamWorkFlowArtifact teamWf2 = DemoUtil.getSawTestCommittedWf();
@@ -449,7 +449,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionTitleByKey() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
       String origTitle = teamWf.getName();
@@ -481,40 +481,40 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionVersionByKey() {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertEquals(DemoArtifactToken.SAW_Bld_2, version);
 
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       // Set to Build 1 by id
-      IAtsVersion sawBld1Ver = AtsClientService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
+      IAtsVersion sawBld1Ver = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_1);
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
          Collections.singletonList(sawBld1Ver.getIdString()));
 
-      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
-      IAtsVersion newVer = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      AtsApiService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertEquals(sawBld1Ver, newVer);
 
       // Clear version
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(), Collections.emptyList());
 
-      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
-      IAtsVersion newVer3 = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      AtsApiService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer3 = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertNull(newVer3);
 
       // Set back to Build 2 by name
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
          Collections.singletonList(DemoArtifactToken.SAW_Bld_2.getName()));
 
-      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
-      IAtsVersion newVer2 = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      AtsApiService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer2 = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertEquals(DemoArtifactToken.SAW_Bld_2.getName(), newVer2.getName());
 
    }
 
    @Test
    public void testSetActionAssigneesByKey() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       List<AtsUser> assignees = teamWf.getStateMgr().getAssignees();
       Assert.assertEquals(1, assignees.size());
@@ -526,8 +526,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamWf.reloadAttributesAndRelations();
       assignees = teamWf.getStateMgr().getAssignees();
       Assert.assertEquals(2, assignees.size());
-      Assert.assertTrue(assignees.contains(AtsClientService.get().getUserService().getUserById(DemoUsers.Kay_Jones)));
-      Assert.assertTrue(assignees.contains(AtsClientService.get().getUserService().getUserById(DemoUsers.Joe_Smith)));
+      Assert.assertTrue(assignees.contains(AtsApiService.get().getUserService().getUserById(DemoUsers.Kay_Jones)));
+      Assert.assertTrue(assignees.contains(AtsApiService.get().getUserService().getUserById(DemoUsers.Joe_Smith)));
 
       // reset back to Joe
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),
@@ -540,7 +540,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionOriginatorByKey() {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       AtsUser createdBy = teamWf.getCreatedBy();
       Assert.assertEquals(DemoUsers.Joe_Smith, createdBy);
@@ -550,10 +550,10 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeToken attrType, AttributeKey attrKey) {
-      AtsActionEndpointApi actionEp = AtsClientService.get().getServerEndpoints().getActionEndpoint();
+      AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      String orig = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf, attrType,
+      String orig = AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf, attrType,
          defaultAttrValue);
       teamWf = testAttributeTypeMatchesRestAttributes(attrType);
 
@@ -561,14 +561,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       actionEp.setActionAttributeByType(teamWf.getIdString(), attrKey.name(), Arrays.asList(newValue));
 
       teamWf.reloadAttributesAndRelations();
-      Assert.assertEquals(newValue, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+      Assert.assertEquals(newValue, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, attrType, defaultAttrValue));
    }
 
    @Test
    public void testCreateActionFromActionData() {
       NewActionData data = new NewActionData();
-      data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      data.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
       data.setTitle("My Action");
       Date createDate = new Date();
       data.setCreatedDateLong(String.valueOf(createDate.getTime()));
@@ -579,37 +579,37 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));
       data.setPriority("3");
       IAtsActionableItem ai =
-         AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
+         AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       data.setAiIds(Arrays.asList(ai.getIdString()));
       data.addAttrValue(AtsAttributeTypes.ColorTeam, "Blue Team");
       data.addAttrValue(AtsAttributeTypes.IPT, "My IPT");
-      NewActionResult result = AtsClientService.get().getServerEndpoints().getActionEndpoint().createAction(data);
+      NewActionResult result = AtsApiService.get().getServerEndpoints().getActionEndpoint().createAction(data);
       Assert.assertFalse(result.getResults().toString(), result.getResults().isErrors());
       Assert.assertNotNull(result.getAction());
       Assert.assertEquals(1, result.getTeamWfs().size());
       ArtifactId teamWfArt = result.getTeamWfs().iterator().next();
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(teamWfArt);
+      IAtsTeamWorkflow teamWf = AtsApiService.get().getQueryService().getTeamWf(teamWfArt);
       Assert.assertNotNull(teamWf);
       Assert.assertEquals("My Action", teamWf.getName());
       Assert.assertEquals("desc", teamWf.getDescription());
       Assert.assertEquals(createDate, teamWf.getCreatedDate());
       Assert.assertEquals(DemoUsers.Alex_Kay, teamWf.getCreatedBy().getStoreObject());
       Assert.assertEquals(DemoUsers.Joe_Smith,
-         AtsClientService.get().getQueryServiceClient().getArtifact(teamWf).getLastModifiedBy());
+         AtsApiService.get().getQueryServiceIde().getArtifact(teamWf).getLastModifiedBy());
       Assert.assertEquals(ChangeType.Improvement.name(),
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
       Assert.assertEquals("3",
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.Priority, ""));
       Assert.assertEquals(ai, teamWf.getActionableItems().iterator().next());
       Assert.assertEquals(needBy,
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
       Assert.assertEquals("Blue Team",
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ColorTeam, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ColorTeam, ""));
       Assert.assertEquals("My IPT",
-         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.IPT, ""));
+         AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.IPT, ""));
 
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
    }
 
    @Test
@@ -662,7 +662,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          String atsId = path.replaceFirst("^.*/", "");
 
          teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
-            AtsClientService.get().getAtsBranch());
+            AtsApiService.get().getAtsBranch());
          Assert.assertNotNull(teamArt);
       } catch (Exception ex) {
          // do nothing
@@ -670,7 +670,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       // Cleanup test
       if (teamArt != null) {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
          changes.deleteArtifact(teamArt.getParentAction().getStoreObject());
          changes.deleteArtifact((Artifact) teamArt);
          changes.executeIfNeeded();
@@ -680,21 +680,21 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testCreateEmptyAction() throws Exception {
       IAtsActionableItem ai =
-         AtsClientService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
+         AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       String aiStr = ai.getIdString();
 
-      String newAction = AtsClientService.get().getServerEndpoints().getActionEndpoint().createEmptyAction(
-         AtsClientService.get().getUserService().getCurrentUserId(), aiStr, "New Action");
+      String newAction = AtsApiService.get().getServerEndpoints().getActionEndpoint().createEmptyAction(
+         AtsApiService.get().getUserService().getCurrentUserId(), aiStr, "New Action");
 
       JsonNode root = JsonUtil.readTree(newAction);
       Long id = root.path("id").asLong();
 
       TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(id, AtsClientService.get().getAtsBranch());
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(id, AtsApiService.get().getAtsBranch());
       Assert.assertNotNull(teamArt);
 
       // Cleanup test
-      AtsClientService.get().getQueryServiceClient().getArtifact(teamArt.getParentAction()).deleteAndPersist();
+      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist();
       teamArt.deleteAndPersist();
    }
 

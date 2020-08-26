@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -55,11 +55,11 @@ public class SprintItems {
          if (workItemArt instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) workItemArt;
             try {
-               ArtifactId backlogArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(workItem,
+               ArtifactId backlogArt = AtsApiService.get().getRelationResolver().getRelatedOrNull(workItem,
                   AtsRelationTypes.AgileBacklog_AgileBacklog);
                Artifact relatedBacklogArt = null;
                if (backlogArt != null && backlogArt.isValid()) {
-                  relatedBacklogArt = AtsClientService.get().getQueryServiceClient().getArtifact(backlogArt);
+                  relatedBacklogArt = AtsApiService.get().getQueryServiceIde().getArtifact(backlogArt);
                }
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
@@ -73,7 +73,7 @@ public class SprintItems {
                noBacklogDetected = true;
             }
 
-            multipleSprints.addAll(AtsClientService.get().getRelationResolver().getRelated(workItem,
+            multipleSprints.addAll(AtsApiService.get().getRelationResolver().getRelated(workItem,
                AtsRelationTypes.AgileSprintToItem_AgileSprint));
             commonSelectedSprint = multipleSprints.size() <= 1;
          }
@@ -104,7 +104,7 @@ public class SprintItems {
    public IAgileBacklog getCommonBacklog() {
       IAgileBacklog backlog = null;
       if (commonBacklog != null) {
-         backlog = AtsClientService.get().getWorkItemService().getAgileBacklog(commonBacklog);
+         backlog = AtsApiService.get().getWorkItemService().getAgileBacklog(commonBacklog);
       }
       return backlog;
    }
@@ -112,7 +112,7 @@ public class SprintItems {
    public Set<IAgileSprint> getMultipleSprints() {
       Set<IAgileSprint> sprints = new HashSet<>();
       for (ArtifactToken art : multipleSprints) {
-         sprints.add(AtsClientService.get().getWorkItemService().getAgileSprint(art));
+         sprints.add(AtsApiService.get().getWorkItemService().getAgileSprint(art));
       }
       return sprints;
    }

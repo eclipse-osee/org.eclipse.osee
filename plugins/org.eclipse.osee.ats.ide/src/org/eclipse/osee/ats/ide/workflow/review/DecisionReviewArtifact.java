@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.workflow.review;
 
 import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -29,7 +29,7 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IA
 
    public DecisionReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
-      decisionOptions = new DecisionReviewOptions(this, AtsClientService.get());
+      decisionOptions = new DecisionReviewOptions(this, AtsApiService.get());
    }
 
 }

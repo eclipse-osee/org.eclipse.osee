@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -59,12 +59,12 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             }
          }
          if (xCol.getId().equals(AtsColumnToken.TypeColumn.getId())) {
-            return ArtifactImageManager.getImage(AtsClientService.get().getQueryServiceClient().getArtifact(element));
+            return ArtifactImageManager.getImage(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
          if (xCol.getId().equals(AtsColumnToken.StateColumn.getId())) {
             if (element instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
-               String isBlocked = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+               String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
                   AtsAttributeTypes.BlockedReason, "");
                if (Strings.isValid(isBlocked)) {
                   return ImageManager.getImage(FrameworkImage.X_RED);

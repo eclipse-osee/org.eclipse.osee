@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -66,14 +66,14 @@ public class NewPeerToPeerReviewJob extends Job {
          if (teamParent != null && actionableItem != null) {
             throw new OseeArgumentException("Either Team Workflow or Actionable Item must be null");
          }
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet("New Peer To Peer Review");
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("New Peer To Peer Review");
          PeerToPeerReviewArtifact peerArt = null;
          if (teamParent != null) {
-            peerArt = (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(
+            peerArt = (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(
                teamParent, reviewTitle, againstState, changes);
          } else {
-            peerArt = (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(
-               actionableItem, reviewTitle, null, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
+            peerArt = (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(
+               actionableItem, reviewTitle, null, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
                changes);
          }
          if (blockType != null) {

@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -61,7 +61,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       try {
          if (teamDef != null) {
             name += " - " + teamDef.getName();
-            selectedVersionArt = AtsClientService.get().getVersionService().getNextReleaseVersion(teamDef);
+            selectedVersionArt = AtsApiService.get().getVersionService().getNextReleaseVersion(teamDef);
             name += selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "";
          }
       } catch (Exception ex) {
@@ -83,14 +83,14 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       if (isCancelled()) {
          return EMPTY_SET;
       }
-      if (AtsClientService.get().getVersionService().getNextReleaseVersion(getTeamDefinition()) == null) {
+      if (AtsApiService.get().getVersionService().getNextReleaseVersion(getTeamDefinition()) == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return EMPTY_SET;
       }
       List<Artifact> arts = new ArrayList<>();
       List<Artifact> castAll =
-         Collections.castAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
-            AtsClientService.get().getVersionService().getNextReleaseVersion(getTeamDefinition())));
+         Collections.castAll(AtsApiService.get().getVersionService().getTargetedForTeamWorkflows(
+            AtsApiService.get().getVersionService().getNextReleaseVersion(getTeamDefinition())));
       arts.addAll(castAll);
       if (isCancelled()) {
          return EMPTY_SET;
@@ -110,7 +110,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       try {
          TeamDefinitionDialog dialog = new TeamDefinitionDialog();
          dialog.setInput(
-            AtsClientService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
+            AtsApiService.get().getTeamDefinitionService().getTeamReleaseableDefinitions(Active.Active));
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDef = dialog.getSelectedFirst();

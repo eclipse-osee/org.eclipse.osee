@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd52CreateWorkingWithDiagramTreeActions;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -43,7 +43,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActionsTest implements IPopulateDe
       for (ArtifactToken version : create.getVersionToWorkflowToken().keySet()) {
          ArtifactToken teamWfArtToken = create.getVersionToWorkflowToken().get(version);
 
-         IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(teamWfArtToken);
+         IAtsTeamWorkflow teamWf = AtsApiService.get().getQueryService().getTeamWf(teamWfArtToken);
          Assert.assertNotNull(teamWf);
 
          testTeamContents(teamWf, teamWfArtToken.getName(), "3", version.getName(), getState(version).getName(),

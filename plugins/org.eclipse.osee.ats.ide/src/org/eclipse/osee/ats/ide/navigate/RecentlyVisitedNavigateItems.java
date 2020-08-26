@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -81,8 +81,8 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       ensureLoaded();
       List<ArtifactToken> workItems = new ArrayList<>();
       for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
-         IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(item.getIdToken());
-         if (workItem != null && !AtsClientService.get().getStoreService().isDeleted(item.getIdToken())) {
+         IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(item.getIdToken());
+         if (workItem != null && !AtsApiService.get().getStoreService().isDeleted(item.getIdToken())) {
             workItems.add(workItem.getStoreObject());
          }
       }
@@ -104,7 +104,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    private static void ensureLoaded() {
       if (visitedItems == null) {
          try {
-            String recentlyVisistedTokensJson = AtsClientService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
+            String recentlyVisistedTokensJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (Strings.isValid(recentlyVisistedTokensJson)) {
                ObjectMapper mapper = JsonUtil.getMapper();
                visitedItems = mapper.readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
@@ -112,9 +112,9 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
                visitedItems = new RecentlyVisitedItems();
             }
          } catch (Exception ex) {
-            AtsClientService.get().getLogger().error(
+            AtsApiService.get().getLogger().error(
                "Unable to read visited items from Ats Config attribute on user artifact %s",
-               AtsClientService.get().getUserService().getCurrentUser());
+               AtsApiService.get().getUserService().getCurrentUser());
             visitedItems = new RecentlyVisitedItems();
          }
       }
@@ -136,9 +136,9 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
          if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
             ObjectMapper mapper = JsonUtil.getMapper();
             String toStoreJson = mapper.writeValueAsString(visitedItems);
-            String fromStoreJson = AtsClientService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
+            String fromStoreJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (!toStoreJson.equals(fromStoreJson)) {
-               AtsClientService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);
+               AtsApiService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);
             }
          }
       } catch (Exception ex) {

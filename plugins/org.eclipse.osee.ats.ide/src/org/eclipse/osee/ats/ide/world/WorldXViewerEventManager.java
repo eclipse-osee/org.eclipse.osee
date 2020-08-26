@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,7 +91,7 @@ public class WorldXViewerEventManager {
             }
          }
          try {
-            if (artifactEvent.isOnBranch(AtsClientService.get().getAtsBranch())) {
+            if (artifactEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
                Runnable runnable = createDisplayRunnable(artifactEvent, handlers);
                Displays.ensureInDisplayThread(runnable);
             }
@@ -119,7 +119,7 @@ public class WorldXViewerEventManager {
             if (art instanceof IAtsWorkItem) {
                IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
                if (teamWf != null) {
-                  allModAndParents.add(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+                  allModAndParents.add(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
                }
             }
          }
@@ -128,7 +128,7 @@ public class WorldXViewerEventManager {
             if (art instanceof IAtsWorkItem) {
                IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
                if (teamWf != null) {
-                  allModAndParents.add(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf));
+                  allModAndParents.add(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
                }
             }
          }

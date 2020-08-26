@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,17 +103,17 @@ public class WfeActionableItemHeader extends Composite implements IWfeEventHandl
       if (parentAction == null) {
          label.setText(" " + "Error: No Parent Action.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else if (AtsClientService.get().getActionableItemService().getActionableItems(parentAction).isEmpty()) {
+      } else if (AtsApiService.get().getActionableItemService().getActionableItems(parentAction).isEmpty()) {
          label.setText(" " + "Error: No Actionable Items identified.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       } else {
          StringBuffer sb =
-            new StringBuffer(AtsClientService.get().getActionableItemService().getActionableItemsStr(teamWf));
-         if (AtsClientService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
+            new StringBuffer(AtsApiService.get().getActionableItemService().getActionableItemsStr(teamWf));
+         if (AtsApiService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
             sb.append("         Other: ");
-            for (IAtsTeamWorkflow workflow : AtsClientService.get().getWorkItemService().getTeams(parentAction)) {
+            for (IAtsTeamWorkflow workflow : AtsApiService.get().getWorkItemService().getTeams(parentAction)) {
                if (workflow.notEqual(teamWf)) {
-                  sb.append(AtsClientService.get().getActionableItemService().getActionableItemsStr(workflow));
+                  sb.append(AtsApiService.get().getActionableItemService().getActionableItemsStr(workflow));
                   sb.append(", ");
                }
             }

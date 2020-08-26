@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -74,7 +74,7 @@ public class WfeAssigneesHeader extends Composite implements IWfeEventHandle {
                   }
                   if (!isEditable && !workItem.getStateMgr().getAssignees().contains(
                      AtsCoreUsers.UNASSIGNED_USER) && !workItem.getStateMgr().getAssignees().contains(
-                        AtsClientService.get().getUserService().getCurrentUser())) {
+                        AtsApiService.get().getUserService().getCurrentUser())) {
                      AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;
                   }

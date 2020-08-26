@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -89,8 +89,8 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       // Re-authenticate so we can continue
       IdeClientSession session = ClientSessionManager.getSession();
       UserManager.releaseUser();
-      AtsClientService.get().reloadServerAndClientCaches();
-      AtsClientService.get().clearCaches();
+      AtsApiService.get().reloadServerAndClientCaches();
+      AtsApiService.get().clearCaches();
 
       Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
          session.getUserId());
@@ -119,7 +119,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
    public static void testPopulateDemoDb() {
       try {
          // This test should only be run on test db
-         assertFalse(AtsClientService.get().getStoreService().isProductionDb());
+         assertFalse(AtsApiService.get().getStoreService().isProductionDb());
          // Confirm test setup with demo data
          Result result = DemoUtil.isDbPopulatedWithDemoData();
          assertTrue(result.getText(), result.isTrue());
@@ -129,7 +129,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
          // Confirm user is Joe Smith
          assertTrue(
             "Authenticated user should be \"3333\" and is not.  Check that Demo Application Server is being run.",
-            AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
+            AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
       } catch (Exception ex) {
          Assert.fail(Lib.exceptionToString(ex));
       }

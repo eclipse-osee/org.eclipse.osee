@@ -56,7 +56,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.walker.action.OpenActionViewAction;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -152,7 +152,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          }
 
          // Register for events and deregister on dispose
-         AtsClientService.get().getEventService().registerAtsWorkItemTopicEvent(this,
+         AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this,
             AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
 
          List<IOperation> ops = new ArrayList<>();
@@ -165,7 +165,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-               AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
+               AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(fThis);
             }
          });
 
@@ -187,7 +187,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             formTitle = String.format("%s", artifactTypeName);
          }
          managedForm.getForm().setText(formTitle);
-         if (AtsClientService.get().getAgileService().isBacklog(awa)) {
+         if (AtsApiService.get().getAgileService().isBacklog(awa)) {
             managedForm.getForm().setImage(
                ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG)));
          } else {
@@ -419,8 +419,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
       toolBarMgr.removeAll();
 
-      if (awa.isTeamWorkflow() && (AtsClientService.get().getBranchService().isCommittedBranchExists(
-         (TeamWorkFlowArtifact) awa) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
+      if (awa.isTeamWorkflow() && (AtsApiService.get().getBranchService().isCommittedBranchExists(
+         (TeamWorkFlowArtifact) awa) || AtsApiService.get().getBranchService().isWorkingBranchInWork(
             (TeamWorkFlowArtifact) awa))) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
@@ -433,14 +433,14 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       toolBarMgr.add(new AddNoteAction(awa, editor));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
       toolBarMgr.add(new OpenActionViewAction());
-      if (AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (AtsApiService.get().getUserService().isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
       toolBarMgr.add(new OpenVersionArtifactAction(awa));
       if (awa instanceof TeamWorkFlowArtifact) {
          toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
       }
-      toolBarMgr.add(new CopyActionDetailsAction(awa, AtsClientService.get()));
+      toolBarMgr.add(new CopyActionDetailsAction(awa, AtsApiService.get()));
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new ResourceHistoryAction(awa));
       if (awa.isTeamWorkflow()) {
@@ -598,7 +598,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       if (topicEvent.equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED) || topicEvent.equals(
          AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED)) {
          if (this.isDisposed()) {
-            AtsClientService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
+            AtsApiService.get().getEventService().deRegisterAtsWorkItemTopicEvent(this);
             return;
          }
          Displays.ensureInDisplayThread(new Runnable() {

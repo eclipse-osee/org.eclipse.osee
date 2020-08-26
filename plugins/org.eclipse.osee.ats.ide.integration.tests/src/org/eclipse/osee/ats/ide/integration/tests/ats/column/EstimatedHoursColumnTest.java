@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.EstimatedHoursUtil;
@@ -49,7 +49,7 @@ public class EstimatedHoursColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
          (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(),
             changes).getStoreObject();
@@ -58,21 +58,21 @@ public class EstimatedHoursColumnTest {
       TeamWorkFlowArtifact teamArt2 = (TeamWorkFlowArtifact) DemoTestUtil.addTeamWorkflow(action,
          EstimatedHoursColumnTest.class.getSimpleName(), changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt =
-         (PeerToPeerReviewArtifact) AtsClientService.get().getReviewService().createNewPeerToPeerReview(teamArt1,
+         (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamArt1,
             getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
 
-      Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(teamArt1,
+      Collection<IAtsTask> createTasks = AtsApiService.get().getTaskService().createTasks(teamArt1,
          Arrays.asList(getClass().getSimpleName(), getClass().getSimpleName() + " 2"), null, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), null, null, null, getClass().getSimpleName());
+         AtsApiService.get().getUserService().getCurrentUser(), null, null, null, getClass().getSimpleName());
 
       Artifact taskArt1 = null, taskArt2 = null;
       for (IAtsTask task : createTasks) {
          if (task.getName().endsWith("2")) {
-            taskArt2 = AtsClientService.get().getQueryServiceClient().getArtifact(task);
+            taskArt2 = AtsApiService.get().getQueryServiceIde().getArtifact(task);
          } else {
-            taskArt1 = AtsClientService.get().getQueryServiceClient().getArtifact(task);
+            taskArt1 = AtsApiService.get().getQueryServiceIde().getArtifact(task);
          }
       }
 

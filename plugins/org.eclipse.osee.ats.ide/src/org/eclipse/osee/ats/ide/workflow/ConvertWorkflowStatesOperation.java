@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -66,7 +66,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
+         transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), getName());
       }
       if (fromStateToStateMap.isEmpty()) {
          rd.error("Must enter FromToState pairs");

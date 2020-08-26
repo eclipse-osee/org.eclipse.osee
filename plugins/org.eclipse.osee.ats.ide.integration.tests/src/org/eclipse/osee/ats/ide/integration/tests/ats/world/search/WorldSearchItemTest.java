@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.search.WorldSearchItem;
@@ -84,7 +84,7 @@ public class WorldSearchItemTest {
 
       // Add a completed workflow, test that it comes back
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName() + " - AssigneesCompleted");
-      AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser());
+      AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsApiService.get().getUserService().getCurrentUser());
 
       data.setTeamDefIds(Arrays.asList(AtsTestUtil.getTestTeamDef().getId()));
       search = new WorldSearchItem(data);
@@ -94,7 +94,7 @@ public class WorldSearchItemTest {
       // Add a cancelled workflow, test that it comes back
       IAtsTeamWorkflow teamWf2 = AtsTestUtil.getTeamWf2();
       AtsTestUtil.transitionTo(teamWf2, AtsTestUtilState.Cancelled,
-         AtsClientService.get().getUserService().getCurrentUser());
+         AtsApiService.get().getUserService().getCurrentUser());
       data.setStateTypes(Arrays.asList(StateType.Cancelled));
       search = new WorldSearchItem(data);
       results = search.performSearch(SearchType.Search);

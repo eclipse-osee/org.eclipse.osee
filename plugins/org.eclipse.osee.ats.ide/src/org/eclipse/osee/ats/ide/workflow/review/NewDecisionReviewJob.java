@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 
@@ -59,9 +59,9 @@ public class NewDecisionReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
          DecisionReviewArtifact decArt =
-            (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamParent,
+            (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamParent,
                reviewBlockType, reviewTitle, againstState, description, options, assignees, createdDate, createdBy,
                changes).getStoreObject();
          changes.execute();

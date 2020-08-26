@@ -27,7 +27,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -77,11 +77,11 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          if (treeItem.getData() instanceof Artifact) {
-            Artifact useArt = AtsClientService.get().getQueryServiceClient().getArtifact(treeItem);
+            Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = AtsClientService.get().getQueryServiceClient().getArtifact(
-                     AtsClientService.get().getWorkItemService().getFirstTeam(useArt));
+               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = AtsApiService.get().getQueryServiceIde().getArtifact(
+                     AtsApiService.get().getWorkItemService().getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -111,7 +111,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       for (AbstractWorkflowArtifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Group));
       }
-      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsClientService.get().getAtsBranch());
+      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsApiService.get().getAtsBranch());
       FilteredCheckboxTreeArtifactDialog dialog =
          new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);
       dialog.setInitialSelections(selected);
@@ -131,18 +131,18 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<Artifact> groups = new HashSet<>();
-            Artifact actionArt = AtsClientService.get().getQueryServiceClient().getArtifact(element);
+            Artifact actionArt = AtsApiService.get().getQueryServiceIde().getArtifact(element);
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.UniversalGrouping_Group));
             // Roll up if same for all children
-            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
-               groups.addAll(Collections.castAll(AtsClientService.get().getRelationResolver().getRelatedArtifacts(team,
+            for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(actionArt)) {
+               groups.addAll(Collections.castAll(AtsApiService.get().getRelationResolver().getRelatedArtifacts(team,
                   CoreRelationTypes.UniversalGrouping_Group)));
             }
             return Collections.toString("; ", groups);
          }
          if (element instanceof Artifact) {
             return Collections.toString("; ",
-               AtsClientService.get().getQueryServiceClient().getArtifact(element).getRelatedArtifacts(
+               AtsApiService.get().getQueryServiceIde().getArtifact(element).getRelatedArtifacts(
                   CoreRelationTypes.UniversalGrouping_Group));
          }
       } catch (OseeCoreException ex) {
@@ -157,7 +157,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             if (item.getData() instanceof Artifact) {
-               Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(item);
+               Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   awas.add((AbstractWorkflowArtifact) art);
                }

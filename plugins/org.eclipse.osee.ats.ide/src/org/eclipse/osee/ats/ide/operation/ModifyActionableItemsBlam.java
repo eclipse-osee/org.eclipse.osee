@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.AITreeContentProvider;
@@ -244,7 +244,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   wfTree.setInitalChecked(actionableItems);
 
                   Set<IAtsActionableItem> ais = new HashSet<>();
-                  for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(
+                  for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(
                      teamWf.getParentAction())) {
                      if (team.notEqual(teamWf)) {
                         ais.addAll(team.getActionableItems());
@@ -253,7 +253,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   otherTree.getViewer().setInput(ais);
 
                   newTree.getViewer().setInput(
-                     AtsClientService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
+                     AtsApiService.get().getActionableItemService().getTopLevelActionableItems(Active.Active));
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -294,7 +294,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       }
       try {
          currAIsForAllWfs = new HashSet<>();
-         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemServiceClient().getTeams(
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemServiceIde().getTeams(
             teamWf.getParentAction())) {
             currAIsForAllWfs.addAll(team.getActionableItems());
          }
@@ -302,10 +302,10 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
 
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
-         AtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
+         AtsUser modifiedBy = AtsApiService.get().getUserService().getCurrentUser();
 
          ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs,
-            currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility(), AtsClientService.get());
+            currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility(), AtsApiService.get());
          job.performModification();
 
          if (!logOnly) {
@@ -362,11 +362,11 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
             IAtsTeamWorkflow newTeamWf =
-               AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
+               AtsApiService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(), data.getTeamDef(),
                   data.getActionableItems(), new LinkedList<AtsUser>(data.getAssignees()), changes, createdDate,
                   data.getCreatedBy(), null, data.getCreateTeamOption());
             newTeamWfs.add(newTeamWf);
@@ -374,11 +374,11 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
             results.logf("Actionable Item [%s] will be added to this workflow\n", checkedAi);
-            AtsClientService.get().getActionableItemService().addActionableItem(teamWf, checkedAi, changes);
+            AtsApiService.get().getActionableItemService().addActionableItem(teamWf, checkedAi, changes);
          }
          for (IAtsActionableItem currAi : job.getRemoveAis()) {
             results.logf("Actionable Item [%s] will be removed from this workflow\n", currAi);
-            AtsClientService.get().getActionableItemService().removeActionableItem(teamWf, currAi, changes);
+            AtsApiService.get().getActionableItemService().removeActionableItem(teamWf, currAi, changes);
             changes.add(teamWf);
          }
          if (!changes.isEmpty()) {

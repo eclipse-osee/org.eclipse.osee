@@ -22,7 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,14 +65,14 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                IOseeBranch branchToUpdate = getWorkingBranch();
                if (branchToUpdate != null) {
                   Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchToUpdate);
-                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemService().getWorkItem(associatedArtifact);
+                  IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(associatedArtifact);
                   if (workItem == null || !workItem.isTeamWorkflow()) {
                      AWorkbench.popup("Working Branch must have associated Team Workflow");
                      return;
                   }
                   IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
                   BranchId targetedBranch =
-                     AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
+                     AtsApiService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
                   if (BranchManager.isUpdatable(branchToUpdate)) {
                      if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
                         RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);

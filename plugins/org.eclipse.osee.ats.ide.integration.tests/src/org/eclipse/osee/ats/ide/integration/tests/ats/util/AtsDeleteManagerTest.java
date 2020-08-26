@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
@@ -75,7 +75,7 @@ public class AtsDeleteManagerTest {
    public void testTeamArtDeleteOneWorkflow() throws Exception {
       // Create Action
       IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtDeleteOneWorkflow,
-         AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
@@ -83,7 +83,7 @@ public class AtsDeleteManagerTest {
 
       // Delete
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify doesn't exist
       verifyExists(TestNames.TeamArtDeleteOneWorkflow, 0, 0, 0, 0, 0);
@@ -97,7 +97,7 @@ public class AtsDeleteManagerTest {
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
       IAtsTeamWorkflow teamWf = createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
-         AtsClientService.get().getActionableItemService().getActionableItems(
+         AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())));
 
       // Verify exists
@@ -105,7 +105,7 @@ public class AtsDeleteManagerTest {
 
       // Delete
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify Action and Req Workflow still exist
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 0, 1, 0, 0);
@@ -115,7 +115,7 @@ public class AtsDeleteManagerTest {
    public void testTeamArtPurge() throws Exception {
       // Create Action
       IAtsTeamWorkflow teamWf =
-         createAction(TestNames.TeamArtPurge, AtsClientService.get().getActionableItemService().getActionableItems(
+         createAction(TestNames.TeamArtPurge, AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
@@ -123,7 +123,7 @@ public class AtsDeleteManagerTest {
 
       // Delete
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Purge);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Purge);
 
       // Verify doesn't exist
       verifyExists(TestNames.TeamArtPurge, 0, 0, 0, 0, 0);
@@ -133,7 +133,7 @@ public class AtsDeleteManagerTest {
    public void testActionDelete() throws Exception {
       // Create Action
       IAtsTeamWorkflow teamWf =
-         createAction(TestNames.ActionDelete, AtsClientService.get().getActionableItemService().getActionableItems(
+         createAction(TestNames.ActionDelete, AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
@@ -141,7 +141,7 @@ public class AtsDeleteManagerTest {
 
       // Delete
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Delete);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Delete);
 
       // Verify doesn't exist
       verifyExists(TestNames.ActionDelete, 0, 0, 0, 0, 0);
@@ -151,7 +151,7 @@ public class AtsDeleteManagerTest {
    public void testActionPurge() throws Exception {
       // Create Action
       IAtsTeamWorkflow teamWf =
-         createAction(TestNames.ActionPurge, AtsClientService.get().getActionableItemService().getActionableItems(
+         createAction(TestNames.ActionPurge, AtsApiService.get().getActionableItemService().getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName())));
 
       // Verify exists
@@ -159,7 +159,7 @@ public class AtsDeleteManagerTest {
 
       // Delete
       AtsDeleteManager.handleDeletePurgeAtsObject(
-         Arrays.asList(AtsClientService.get().getQueryServiceClient().getArtifact(teamWf)), true, DeleteOption.Purge);
+         Arrays.asList(AtsApiService.get().getQueryServiceIde().getArtifact(teamWf)), true, DeleteOption.Purge);
 
       // Verify doesn't exist
       verifyExists(TestNames.ActionPurge, 0, 0, 0, 0, 0);
@@ -167,7 +167,7 @@ public class AtsDeleteManagerTest {
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(),
-         AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
+         AtsApiService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<ArtifactTypeToken> countMap = new CountingMap<>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());
@@ -186,31 +186,31 @@ public class AtsDeleteManagerTest {
    }
 
    private IAtsTeamWorkflow createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems) {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Manager Test - testActionPurge");
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Manager Test - testActionPurge");
 
       Date createdDate = new Date();
-      AtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
-      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, testName.name(), "Description",
+      AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
+      ActionResult result = AtsApiService.get().getActionFactory().createAction(null, testName.name(), "Description",
          ChangeType.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
 
       IAtsTeamWorkflow teamWf = null;
-      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(result)) {
+      for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(result)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamWf = team;
          }
       }
 
       DecisionReviewArtifact decRev =
-         (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamWf,
+         (DecisionReviewArtifact) AtsApiService.get().getReviewService().createNewDecisionReview(teamWf,
             ReviewBlockType.None, testName.name(), TeamState.Endorse.getName(), "Description",
-            AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), createdDate, createdBy,
+            AtsApiService.get().getReviewService().getDefaultDecisionReviewOptions(),
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), createdDate, createdBy,
             changes).getStoreObject();
       changes.add(decRev);
 
       changes.execute();
 
-      AtsClientService.get().getTaskService().createTasks(teamWf,
+      AtsApiService.get().getTaskService().createTasks(teamWf,
          Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), (List<AtsUser>) null, createdDate,
          createdBy, null, null, null, getClass().getSimpleName());
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeDragAndDrop;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -56,7 +56,7 @@ public class WfeRelationsSection extends RelationsFormSection implements IWfeEve
    protected synchronized void createSection(Section section, FormToolkit toolkit) {
       super.createSection(section, toolkit);
       // Don't allow users to see all relations
-      if (!AtsClientService.get().getUserService().isAtsAdmin()) {
+      if (!AtsApiService.get().getUserService().isAtsAdmin()) {
          getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
       }
    }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -50,7 +50,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
-      return AtsClientService.get().getQueryServiceClient().getArtifact(artifact).getAttributesToStringList(
+      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getAttributesToStringList(
          attributeType);
    }
 
@@ -72,7 +72,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
       String result = defaultValue;
-      Artifact art = AtsClientService.get().getQueryServiceClient().getArtifact(artifact);
+      Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(artifact);
       if (art != null) {
          result = art.getSoleAttributeValueAsString(attributeType, defaultValue);
       }
@@ -94,9 +94,9 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
-      ArtifactId art = AtsClientService.get().getQueryService().getArtifact(artifact);
+      ArtifactId art = AtsApiService.get().getQueryService().getArtifact(artifact);
       if (art instanceof Artifact) {
-         return AtsClientService.get().getQueryServiceClient().getArtifact(art);
+         return AtsApiService.get().getQueryServiceIde().getArtifact(art);
       }
       return null;
    }

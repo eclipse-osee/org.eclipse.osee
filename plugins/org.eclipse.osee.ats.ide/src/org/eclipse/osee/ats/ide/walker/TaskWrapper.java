@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.walker;
 
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,7 +40,7 @@ public class TaskWrapper implements IActionWalkerItem {
    @Override
    public String toString() {
       try {
-         return String.format(AtsClientService.get().getTaskService().getTasks(teamArt).size() + " Tasks");
+         return String.format(AtsApiService.get().getTaskService().getTasks(teamArt).size() + " Tasks");
       } catch (OseeCoreException ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }
@@ -90,7 +90,7 @@ public class TaskWrapper implements IActionWalkerItem {
    public void handleDoubleClick() {
       try {
          AtsEditors.openInAtsTaskEditor("Tasks",
-            Collections.castAll(Artifact.class, AtsClientService.get().getTaskService().getTasks(teamArt)));
+            Collections.castAll(Artifact.class, AtsApiService.get().getTaskService().getTasks(teamArt)));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

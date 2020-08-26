@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.api.util.IColumn;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsClientService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -70,7 +70,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
       for (IAtsWorkPackage workPkg : workPackages) {
          checkForCancelledStatus(monitor);
          for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.WorkPackageReference,
-            workPkg.getIdString(), AtsClientService.get().getAtsBranch())) {
+            workPkg.getIdString(), AtsApiService.get().getAtsBranch())) {
             checkForCancelledStatus(monitor);
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             EarnedValueReportResult result = new EarnedValueReportResult(workPkg, art);
@@ -83,7 +83,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());
             result.setValue(Related_Action_Percent,
                String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) art,
-                  AtsClientService.get())));
+                  AtsApiService.get())));
             result.setValue(Related_Action_ArtId, art.getIdString());
          }
       }
