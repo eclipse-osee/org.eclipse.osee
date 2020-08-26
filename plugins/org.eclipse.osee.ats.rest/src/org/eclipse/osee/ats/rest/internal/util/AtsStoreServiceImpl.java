@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -52,7 +51,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  */
 public class AtsStoreServiceImpl implements IAtsStoreService {
 
-   private final IAttributeResolver attributeResolver;
    private final OrcsApi orcsApi;
    private final IAtsStateFactory stateFactory;
    private final IAtsLogFactory logFactory;
@@ -61,14 +59,13 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    private final JdbcService jdbcService;
 
-   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier, JdbcService jdbcService) {
+   public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
       this.atsApi = atsApi;
-      this.attributeResolver = attributeResolver;
       this.orcsApi = orcsApi;
       this.logFactory = logFactory;
       this.stateFactory = stateFactory;
       this.notifier = notifier;
-      this.jdbcService = jdbcService;
+      this.jdbcService = atsApi.getJdbcService();
    }
 
    @Override
@@ -84,8 +81,8 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
-      return new AtsChangeSet(atsApi, attributeResolver, orcsApi, stateFactory, logFactory, comment, asUser, notifier,
-         branch);
+      return new AtsChangeSet(atsApi, atsApi.getAttributeResolver(), orcsApi, stateFactory, logFactory, comment, asUser,
+         notifier, branch);
    }
 
    public QueryBuilder getQuery() {

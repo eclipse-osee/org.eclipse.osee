@@ -18,18 +18,16 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
-import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
-import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
+public interface IAtsServer extends AtsApi, IAtsNotifier {
 
    OrcsApi getOrcsApi();
 

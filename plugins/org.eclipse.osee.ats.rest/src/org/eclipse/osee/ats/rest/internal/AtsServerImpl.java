@@ -118,7 +118,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
 
       storeService =
-         new AtsStoreServiceImpl(attributeResolverService, this, orcsApi, stateFactory, logFactory, this, jdbcService);
+         new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory, this);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);

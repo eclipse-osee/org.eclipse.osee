@@ -18,13 +18,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -58,8 +56,6 @@ public class HoursSpentUtilTest {
    @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsWorkItemServiceProvider workItemServiceProvider;
    @Mock IAttributeResolver attrResolver;
-   @Mock IAtsBranchServiceProvider branchServiceProvider;
-   @Mock IAtsReviewServiceProvider reviewServiceProvider;
    @Mock AtsApi atsApi;
 
    // @formatter:on
