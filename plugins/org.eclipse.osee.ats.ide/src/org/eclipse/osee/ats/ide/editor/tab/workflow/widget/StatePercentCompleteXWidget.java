@@ -101,7 +101,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
             return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page,
-               AtsClientService.get().getServices()));
+               AtsClientService.get()));
          } else {
             return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
          }

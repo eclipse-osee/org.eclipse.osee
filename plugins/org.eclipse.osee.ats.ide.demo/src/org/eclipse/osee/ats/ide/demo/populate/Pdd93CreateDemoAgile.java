@@ -370,7 +370,7 @@ public class Pdd93CreateDemoAgile {
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+            null, changes, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());

@@ -183,7 +183,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private void makeChanges7(IAtsTeamWorkflow teamWf) {
       TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
-         null, null, AtsClientService.get().getServices(), TransitionOption.None);
+         null, null, AtsClientService.get(), TransitionOption.None);
       TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());

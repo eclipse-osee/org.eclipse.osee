@@ -198,7 +198,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, IAtsStateDefinition toStateDef, final WfeTransitionHeader wfeTransitionHeader) {
-      ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
+      ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get()) {
 
          @Override
          public String getToStateName() {
@@ -284,7 +284,7 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
 
          @Override
          public AtsApi getServices() {
-            return AtsClientService.get().getServices();
+            return AtsClientService.get();
          }
 
          @Override

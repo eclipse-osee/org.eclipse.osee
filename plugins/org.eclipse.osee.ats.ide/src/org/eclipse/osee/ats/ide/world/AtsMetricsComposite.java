@@ -281,7 +281,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
                      cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
-                        AtsClientService.get().getServices());
+                        AtsClientService.get());
                      processedArts.add(awa);
                   }
                }

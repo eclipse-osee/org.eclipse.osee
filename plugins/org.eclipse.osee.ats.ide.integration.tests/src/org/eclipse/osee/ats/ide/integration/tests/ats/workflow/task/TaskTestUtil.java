@@ -48,7 +48,7 @@ public class TaskTestUtil {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
       }
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-         TaskStates.Completed.getName(), null, null, null, AtsClientService.get().getServices());
+         TaskStates.Completed.getName(), null, null, null, AtsClientService.get());
       TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
 
       if (results.isEmpty()) {
@@ -62,7 +62,7 @@ public class TaskTestUtil {
          return Result.TrueResult;
       }
       TransitionHelper helper = new TransitionHelper("Transition to InWork", Arrays.asList(taskArt),
-         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsClientService.get().getServices(),
+         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, AtsClientService.get(),
          TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       if (!results.isEmpty()) {

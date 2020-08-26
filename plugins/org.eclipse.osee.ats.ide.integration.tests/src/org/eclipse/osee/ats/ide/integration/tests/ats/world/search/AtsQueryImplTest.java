@@ -53,7 +53,7 @@ public class AtsQueryImplTest {
 
    @Test
    public void test() {
-      AtsApi atsApi = AtsClientService.get().getServices();
+      AtsApi atsApi = AtsClientService.get();
       IAtsQueryService queryService = atsApi.getQueryService();
 
       AtsUser joeSmith = atsApi.getUserService().getUserByUserId("3333");

@@ -62,17 +62,17 @@ public class StateManagerTest {
       results = AtsClientService.get().getWorkItemService().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      Assert.assertEquals(3.3, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);
+      Assert.assertEquals(3.3, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get()), 0.001);
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
       AtsClientService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
-      Assert.assertEquals(1.1, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);
+      Assert.assertEquals(1.1, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get()), 0.001);
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
       AtsClientService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
-      Assert.assertEquals(0, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);
+      Assert.assertEquals(0, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get()), 0.001);
 
       AtsTestUtil.cleanup();
    }

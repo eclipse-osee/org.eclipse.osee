@@ -278,7 +278,7 @@ public class AtsBranchConfigurationTest {
       changes.execute();
 
       final IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getTeams(result).iterator().next();
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get());
 
       // Transition to desired state
       if (DEBUG) {

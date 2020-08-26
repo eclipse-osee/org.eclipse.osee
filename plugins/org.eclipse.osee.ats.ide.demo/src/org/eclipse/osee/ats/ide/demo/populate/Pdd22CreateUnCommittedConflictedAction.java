@@ -65,7 +65,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
          Arrays.asList(new ArtifactTokenActionListener()), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state

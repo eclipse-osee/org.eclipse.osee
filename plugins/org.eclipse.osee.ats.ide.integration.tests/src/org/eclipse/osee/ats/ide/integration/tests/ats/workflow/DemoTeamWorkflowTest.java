@@ -74,14 +74,14 @@ public class DemoTeamWorkflowTest {
       //*** Transition Action to Analyze
       TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         null, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+         null, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       //*** Transition Action to Implement
       helper = new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, null,
-         AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck,
+         AtsClientService.get(), TransitionOption.OverrideAssigneeCheck,
          TransitionOption.OverrideTransitionValidityCheck);
       results = AtsClientService.get().getWorkItemService().transition(helper);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());

@@ -59,7 +59,7 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
       try {
          if (element instanceof IAtsWorkItem) {
             return AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentStateReview((IAtsWorkItem) element, AtsClientService.get().getServices()));
+               HoursSpentUtil.getHoursSpentStateReview((IAtsWorkItem) element, AtsClientService.get()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

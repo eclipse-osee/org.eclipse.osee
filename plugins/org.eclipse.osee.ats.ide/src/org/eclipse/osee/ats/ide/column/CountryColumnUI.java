@@ -54,7 +54,7 @@ public class CountryColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = CountryColumn.getCountryStr((IAtsObject) element, AtsClientService.get().getServices());
+         result = CountryColumn.getCountryStr((IAtsObject) element, AtsClientService.get());
       }
       return result;
    }

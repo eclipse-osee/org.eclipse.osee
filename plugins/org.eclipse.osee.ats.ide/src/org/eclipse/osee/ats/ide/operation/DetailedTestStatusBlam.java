@@ -637,7 +637,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             }
 
             int percentComplete =
-               PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get().getServices());
+               PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get());
             requirementStatus.addPartitionStatus(percentComplete, taskNameMatcher.group(1),
                task.getStateMgr().getCurrentStateName());
             requirementStatus.setTestPocs(task.getImplementers());

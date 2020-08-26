@@ -60,7 +60,7 @@ public class Pdd23CreateNoBranchAction implements IPopulateDemoDatabase {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
             TransitionOption.OverrideAssigneeCheck);
 
          if (isSwDesign) {

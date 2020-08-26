@@ -116,7 +116,7 @@ public class CreateTasksDefinitionTransitionToTest {
       changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - 2");
 
       TeamWorkFlowManager dtwm =
-         new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+         new TeamWorkFlowManager(teamWf, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
 
       TeamState toState = TeamState.Analyze;
       Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);

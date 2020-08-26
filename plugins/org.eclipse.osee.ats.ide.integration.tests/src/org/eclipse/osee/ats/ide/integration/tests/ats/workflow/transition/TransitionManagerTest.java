@@ -100,7 +100,7 @@ public class TransitionManagerTest {
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
             Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-            AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
+            AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get(),
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -112,7 +112,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__ToStateNotNull() {
       TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          null, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
+         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get(),
          TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -124,7 +124,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__InvalidToState() {
       TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          "InvalidStateName", Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
+         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get(),
          TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -143,7 +143,7 @@ public class TransitionManagerTest {
       TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
+         AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get(),
          TransitionOption.None);
       helper.setExecuteChanges(true);
       TransitionManager transMgr = new TransitionManager(helper);
@@ -675,7 +675,7 @@ public class TransitionManagerTest {
       // transition workflow to cancelled - peer review not cancelled
       changes.clear();
       TransitionHelper transHelper = new TransitionHelper("Transition Team Workflow Review", Arrays.asList(teamArt),
-         "Cancelled", new ArrayList<AtsUser>(), "", changes, AtsClientService.get().getServices(),
+         "Cancelled", new ArrayList<AtsUser>(), "", changes, AtsClientService.get(),
          TransitionOption.OverrideAssigneeCheck);
       transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
       TransitionManager mgr = new TransitionManager(transHelper);
@@ -687,7 +687,7 @@ public class TransitionManagerTest {
       results.clear();
       changes.clear();
       transHelper = new TransitionHelper("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
-         new ArrayList<AtsUser>(), "", changes, AtsClientService.get().getServices(),
+         new ArrayList<AtsUser>(), "", changes, AtsClientService.get(),
          TransitionOption.OverrideAssigneeCheck);
       transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
       mgr = new TransitionManager(transHelper);

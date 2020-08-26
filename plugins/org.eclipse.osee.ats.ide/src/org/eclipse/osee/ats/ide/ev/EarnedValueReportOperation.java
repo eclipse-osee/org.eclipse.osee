@@ -83,7 +83,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());
             result.setValue(Related_Action_Percent,
                String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) art,
-                  AtsClientService.get().getServices())));
+                  AtsClientService.get())));
             result.setValue(Related_Action_ArtId, art.getIdString());
          }
       }

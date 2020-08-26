@@ -43,6 +43,4 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
 
    IAtsWorkItemServiceClient getWorkItemServiceClient();
 
-   AtsApi getServices();
-
 }

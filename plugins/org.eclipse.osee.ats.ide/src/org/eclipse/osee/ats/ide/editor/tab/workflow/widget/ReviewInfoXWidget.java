@@ -317,7 +317,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
-                        TeamState.Completed.getName(), null, null, null, AtsClientService.get().getServices(),
+                        TeamState.Completed.getName(), null, null, null, AtsClientService.get(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
                      if (!results.isEmpty()) {

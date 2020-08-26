@@ -97,7 +97,7 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
          Collection<IAtsAbstractReview> reviews =
             AtsClientService.get().getReviewService().getReviews((TeamWorkFlowArtifact) artifact);
          for (IAtsAbstractReview review : reviews) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, AtsClientService.get().getServices());
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(review, AtsClientService.get());
          }
          if (spent == 0) {
             return 0;

@@ -85,7 +85,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
                teamWf.getWorkDefinition().getName());
          }
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state

@@ -54,7 +54,7 @@ public interface IPopulateDemoDatabase {
    // Transition to desired state
    default void transitionTo(IAtsTeamWorkflow teamWf, TeamState state, IAtsChangeSet changes) {
 
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get(),
          TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
       Result result = dtwm.transitionTo(state, teamWf.getAssignees().iterator().next(), false, changes);

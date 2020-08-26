@@ -578,7 +578,7 @@ public class AtsTestUtil {
 
    private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, TransitionOption... transitionOptions) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
-         toState.getName(), Arrays.asList(user), null, null, AtsClientService.get().getServices(), transitionOptions);
+         toState.getName(), Arrays.asList(user), null, null, AtsClientService.get(), transitionOptions);
       TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       if (results.isEmpty()) {
          return Result.TrueResult;

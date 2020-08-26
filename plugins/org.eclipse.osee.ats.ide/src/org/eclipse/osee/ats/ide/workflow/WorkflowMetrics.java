@@ -118,10 +118,10 @@ public class WorkflowMetrics {
       for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursUtil.getEstimatedHours(team);
-         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team, AtsClientService.get().getServices());
+         hrsSpent += HoursSpentUtil.getHoursSpentTotal(team, AtsClientService.get());
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
-            PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsClientService.get().getServices());
+            PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsClientService.get());
          String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
          points += Strings.isNumeric(ptsStr) ? Integer.valueOf(ptsStr) : 0;
          pointsNumeric += team.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);

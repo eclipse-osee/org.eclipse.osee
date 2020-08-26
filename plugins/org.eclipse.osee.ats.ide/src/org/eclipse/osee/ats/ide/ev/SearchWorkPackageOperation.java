@@ -113,7 +113,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       Set<IAtsWorkPackage> resultWorkPgks = new HashSet<>();
       for (Artifact art : results) {
          resultWorkPgks.add(
-            new WorkPackage(AtsClientService.get().getLogger(), AtsClientService.get().getServices(), art));
+            new WorkPackage(AtsClientService.get().getLogger(), AtsClientService.get(), art));
       }
       return resultWorkPgks;
    }

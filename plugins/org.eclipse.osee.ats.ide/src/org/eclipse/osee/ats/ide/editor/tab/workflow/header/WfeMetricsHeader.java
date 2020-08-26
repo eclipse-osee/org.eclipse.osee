@@ -90,14 +90,14 @@ public class WfeMetricsHeader extends Composite implements IWfeEventHandle {
          }
          if (percentLabel != null && !percentLabel.isDisposed()) {
             percentLabel.setText(String.valueOf(
-               PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get().getServices())));
+               PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get())));
          }
          if (estimatedHoursHeader != null) {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentTotal(workItem, AtsClientService.get().getServices()))));
+               HoursSpentUtil.getHoursSpentTotal(workItem, AtsClientService.get()))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(workItem);

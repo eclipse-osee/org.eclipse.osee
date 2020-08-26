@@ -58,7 +58,7 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
       try {
          if (element instanceof IAtsWorkItem) {
             return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) element,
-               AtsClientService.get().getServices()));
+               AtsClientService.get()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

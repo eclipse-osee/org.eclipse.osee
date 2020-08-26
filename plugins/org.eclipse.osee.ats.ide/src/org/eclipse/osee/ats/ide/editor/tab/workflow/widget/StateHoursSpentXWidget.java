@@ -91,7 +91,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
             (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
-               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get().getServices())));
+               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get())));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && AtsClientService.get().getReviewService().hasReviews((TeamWorkFlowArtifact) sma)) {
@@ -101,7 +101,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          if (breakoutNeeded) {
             setToolTip(sb.toString());
             return String.format("%5.2f",
-               HoursSpentUtil.getHoursSpentStateTotal(sma, page, AtsClientService.get().getServices()));
+               HoursSpentUtil.getHoursSpentStateTotal(sma, page, AtsClientService.get()));
          } else {
             return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
          }
@@ -119,7 +119,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(teamArt, relatedToState)) {
-         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get().getServices());
+         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get());
       }
       return spent;
    }

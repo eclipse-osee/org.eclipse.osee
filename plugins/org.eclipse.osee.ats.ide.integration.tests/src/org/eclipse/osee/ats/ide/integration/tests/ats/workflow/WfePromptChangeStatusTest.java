@@ -117,7 +117,7 @@ public class WfePromptChangeStatusTest {
 
       // test that if one task is cancelled, can't change status
       TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask),
-         TaskStates.Cancelled.getName(), null, null, null, AtsClientService.get().getServices(), TransitionOption.None);
+         TaskStates.Cancelled.getName(), null, null, null, AtsClientService.get(), TransitionOption.None);
       TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       assertEquals("Transition should have no errors", true, results.isEmpty());
 
@@ -162,9 +162,9 @@ public class WfePromptChangeStatusTest {
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
          assertEquals("Percent wrong for " + awa.getAtsId(),
-            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get().getServices()), totalPercent);
+            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get()), totalPercent);
          assertEquals("Hours Spent wrong for " + awa.getAtsId(),
-            HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get().getServices()), hoursSpent, 0.0);
+            HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get()), hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkState state = AtsClientService.get().getWorkStateFactory().fromStoreStr(xml);

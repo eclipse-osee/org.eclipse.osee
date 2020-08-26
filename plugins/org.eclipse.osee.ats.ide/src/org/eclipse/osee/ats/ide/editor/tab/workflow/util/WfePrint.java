@@ -147,8 +147,8 @@ public class WfePrint extends Action {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
                AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, art),
-               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsClientService.get().getServices()) + "",
-               HoursSpentUtil.getHoursSpentTotal(art, AtsClientService.get().getServices()) + "",
+               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsClientService.get()) + "",
+               HoursSpentUtil.getHoursSpentTotal(art, AtsClientService.get()) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getAtsId()}));
          }

@@ -62,7 +62,7 @@ public class CancelledDateColumnTest {
       Assert.assertEquals("", CancelledDateColumn.getCancelledDateStr(teamArt));
 
       TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(teamArt),
-         TeamState.Cancelled.getName(), null, "reason", null, AtsClientService.get().getServices(),
+         TeamState.Cancelled.getName(), null, "reason", null, AtsClientService.get(),
          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -75,7 +75,7 @@ public class CancelledDateColumnTest {
 
       helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
          Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, null,
-         AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
+         AtsClientService.get(), TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
       results = AtsClientService.get().getWorkItemServiceClient().transition(helper);
       Assert.assertTrue(results.toString(), results.isEmpty());

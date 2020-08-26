@@ -54,7 +54,7 @@ public class ProgramColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = ProgramColumn.getProgramStr((IAtsObject) element, AtsClientService.get().getServices());
+         result = ProgramColumn.getProgramStr((IAtsObject) element, AtsClientService.get());
       }
       return result;
    }

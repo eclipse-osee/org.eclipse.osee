@@ -99,14 +99,14 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       if (artifact.isOfType(TeamWorkflow)) {
          Collection<IAtsTask> tasks = AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) artifact);
          for (IAtsTask task : tasks) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get().getServices());
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get());
          }
          size = tasks.size();
 
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
          Collection<IAtsAbstractReview> reviewArts = AtsClientService.get().getReviewService().getReviews(teamWf);
          for (IAtsAbstractReview reviewArt : reviewArts) {
-            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsClientService.get().getServices());
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsClientService.get());
          }
          size += reviewArts.size();
       }

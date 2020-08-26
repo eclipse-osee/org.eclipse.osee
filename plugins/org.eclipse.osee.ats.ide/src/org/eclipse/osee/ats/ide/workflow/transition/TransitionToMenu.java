@@ -165,7 +165,7 @@ public class TransitionToMenu {
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
-      final ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
+      final ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get()) {
 
          @Override
          public String getToStateName() {
@@ -251,7 +251,7 @@ public class TransitionToMenu {
 
          @Override
          public AtsApi getServices() {
-            return AtsClientService.get().getServices();
+            return AtsClientService.get();
          }
 
          @Override

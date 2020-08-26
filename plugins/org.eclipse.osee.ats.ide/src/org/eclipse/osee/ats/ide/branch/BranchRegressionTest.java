@@ -648,7 +648,7 @@ public abstract class BranchRegressionTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("testRequirementsWorkflowCompletion");
       TransitionHelper helper =
          new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeam), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+            null, changes, AtsClientService.get(), TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsClientService.get().getWorkItemService().transition(helper);
       if (!results.isEmpty()) {
          Assert.fail("Complete Requirements Failed " + results.toString());

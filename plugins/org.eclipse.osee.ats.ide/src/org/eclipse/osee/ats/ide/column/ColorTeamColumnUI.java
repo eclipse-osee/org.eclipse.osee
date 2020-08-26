@@ -79,7 +79,7 @@ public class ColorTeamColumnUI extends XViewerAtsAttributeValueColumn implements
             if (element instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                Pair<String, Boolean> result =
-                  ColorTeamColumn.getWorkItemColorTeam(workItem, AtsClientService.get().getServices());
+                  ColorTeamColumn.getWorkItemColorTeam(workItem, AtsClientService.get());
                preComputedValueMap.put(workItem.getId(), result.getFirst());
             }
          } catch (OseeCoreException ex) {

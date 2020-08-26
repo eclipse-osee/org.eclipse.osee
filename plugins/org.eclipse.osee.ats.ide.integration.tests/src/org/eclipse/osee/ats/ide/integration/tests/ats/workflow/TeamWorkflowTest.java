@@ -37,7 +37,7 @@ public class TeamWorkflowTest {
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais.iterator().next());
 
       TeamWorkflow tWf =
-         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get().getServices(), teamWf);
+         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get(), teamWf);
       Set<IAtsActionableItem> ais1 = tWf.getActionableItems();
       Assert.assertEquals(1, ais1.size());
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais1.iterator().next());
@@ -51,7 +51,7 @@ public class TeamWorkflowTest {
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef);
 
       TeamWorkflow tWf =
-         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get().getServices(), teamWf);
+         new TeamWorkflow(AtsClientService.get().getLogger(), AtsClientService.get(), teamWf);
       IAtsTeamDefinition teamDef1 = tWf.getTeamDefinition();
       Assert.assertNotNull(teamDef1);
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef1);

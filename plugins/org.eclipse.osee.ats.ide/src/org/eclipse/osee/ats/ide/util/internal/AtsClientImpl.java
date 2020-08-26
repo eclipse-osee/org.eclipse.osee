@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -203,11 +202,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          }
       }
       return result;
-   }
-
-   @Override
-   public AtsApi getServices() {
-      return this;
    }
 
    @Override

@@ -115,7 +115,7 @@ public class WfePercentCompleteHeader extends Composite implements IWfeEventHand
       int awaPercent = AtsClientService.get().getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.PercentComplete, 0);
       int totalPecent =
-         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get().getServices());
+         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get());
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {

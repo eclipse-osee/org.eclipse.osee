@@ -59,7 +59,7 @@ public class HoursSpentStateTotalColumn extends XViewerAtsColumn implements IXVi
       try {
          if (element instanceof IAtsWorkItem) {
             return AtsUtil.doubleToI18nString(
-               HoursSpentUtil.getHoursSpentStateTotal((IAtsWorkItem) element, AtsClientService.get().getServices()));
+               HoursSpentUtil.getHoursSpentStateTotal((IAtsWorkItem) element, AtsClientService.get()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
