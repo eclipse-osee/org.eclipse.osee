@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.ColorTeamAttributeType.ColorTeamEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -36,8 +38,13 @@ public class ColorTeamAttributeType extends AttributeTypeEnum<ColorTeamEnum> {
    public final ColorTeamEnum PlaidTeam = new ColorTeamEnum(9, "Plaid Team");
    public final ColorTeamEnum Unspecified = new ColorTeamEnum(10, "Unspecified");
 
-   public ColorTeamAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1364016837443371647L, namespace, "ats.Color Team", mediaType, "", taggerType, 11);
+   public ColorTeamAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1364016837443371647L, namespace, "ats.Color Team", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ColorTeamAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 11);
    }
 
    public class ColorTeamEnum extends EnumToken {

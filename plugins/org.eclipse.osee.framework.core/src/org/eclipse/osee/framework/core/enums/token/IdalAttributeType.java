@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,8 +32,13 @@ public class IdalAttributeType extends AttributeTypeEnum<IdalEnum> {
    public final IdalEnum E = new IdalEnum(4, "E");
    public final IdalEnum Unspecified = new IdalEnum(5, "Unspecified");
 
-   public IdalAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(2612838829556295211L, namespace, "IDAL", mediaType, "Item Development Assurance Level", taggerType, 6);
+   public IdalAttributeType(NamespaceToken namespace, int enumCount) {
+      super(2612838829556295211L, namespace, "IDAL", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public IdalAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class IdalEnum extends EnumToken {

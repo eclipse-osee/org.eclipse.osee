@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -32,8 +33,13 @@ public class CsciAttributeType extends AttributeTypeEnum<CsciEnum> {
    public final CsciEnum Unspecified = new CsciEnum(4, "Unspecified");
    public final CsciEnum Visual = new CsciEnum(5, "Visual");
 
-   public CsciAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847136L, namespace, "CSCI", mediaType, "", taggerType, 6);
+   public CsciAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847136L, namespace, "CSCI", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public CsciAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class CsciEnum extends EnumToken {

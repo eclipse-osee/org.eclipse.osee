@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.IptAttributeType.IptEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -34,8 +36,13 @@ public class IptAttributeType extends AttributeTypeEnum<IptEnum> {
    public final IptEnum Ah6 = new IptEnum(7, "AH-6");
    public final IptEnum NCO = new IptEnum(8, "NCO");
 
-   public IptAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(6025996821081174931L, namespace, "ats.IPT", mediaType, "", taggerType, 9);
+   public IptAttributeType(NamespaceToken namespace, int enumCount) {
+      super(6025996821081174931L, namespace, "ats.IPT", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public IptAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 9);
    }
 
    public class IptEnum extends EnumToken {

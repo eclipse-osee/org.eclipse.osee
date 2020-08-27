@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -27,8 +28,13 @@ public class TestFrequencyAttributeType extends AttributeTypeEnum<TestFrequencyE
    public final TestFrequencyEnum OneTime = new TestFrequencyEnum(0, "One Time");
    public final TestFrequencyEnum Recurring = new TestFrequencyEnum(1, "Recurring");
 
-   public TestFrequencyAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847103L, namespace, "Test Frequency", mediaType, "", taggerType, 2);
+   public TestFrequencyAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847103L, namespace, "Test Frequency", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public TestFrequencyAttributeType() {
+      this(NamespaceToken.OSEE, 2);
    }
 
    public class TestFrequencyEnum extends EnumToken {

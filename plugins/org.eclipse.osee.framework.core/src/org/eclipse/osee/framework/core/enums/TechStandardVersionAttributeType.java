@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -28,9 +29,14 @@ public final class TechStandardVersionAttributeType extends AttributeTypeEnum<Fa
    public final FaceVersionEnum Face_3_0 = new FaceVersionEnum(2, "FACE 3.0");
    public final FaceVersionEnum Face_3_1 = new FaceVersionEnum(3, "FACE 3.1");
 
-   public TechStandardVersionAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(8567252650750079789L, namespace, "Tech Standard Version", mediaType,
-         "Enumeration to describe The Tech Standard Version for the FACE UoC", taggerType, 4);
+   public TechStandardVersionAttributeType(NamespaceToken namespace, int enumCount) {
+      super(8567252650750079789L, namespace, "Tech Standard Version", MediaType.TEXT_PLAIN,
+         "Enumeration to describe The Tech Standard Version for the FACE UoC", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public TechStandardVersionAttributeType() {
+      this(CoreTypeTokenProvider.FACE, 4);
    }
 
    public class FaceVersionEnum extends EnumToken {

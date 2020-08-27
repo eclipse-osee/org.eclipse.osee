@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -29,8 +30,13 @@ public class FeatureValueAttributeType extends AttributeTypeEnum<FeatureValueTyp
    public final FeatureValueTypeEnum Decimal = new FeatureValueTypeEnum(2, "Decimal");
    public final FeatureValueTypeEnum Integer = new FeatureValueTypeEnum(3, "Integer");
 
-   public FeatureValueAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(31669009535111027L, namespace, "Feature Value Type", mediaType, "", taggerType, 4);
+   public FeatureValueAttributeType(NamespaceToken namespace, int enumCount) {
+      super(31669009535111027L, namespace, "Feature Value Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public FeatureValueAttributeType() {
+      this(NamespaceToken.OSEE, 4);
    }
 
    public class FeatureValueTypeEnum extends EnumToken {

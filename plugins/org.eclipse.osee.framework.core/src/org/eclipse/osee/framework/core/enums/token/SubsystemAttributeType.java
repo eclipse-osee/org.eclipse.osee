@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -39,8 +40,13 @@ public class SubsystemAttributeType extends AttributeTypeEnum<SubsystemEnum> {
    public final SubsystemEnum Unknown = new SubsystemEnum(12, "Unknown");
    public final SubsystemEnum Unspecified = new SubsystemEnum(13, "Unspecified");
 
-   public SubsystemAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847112L, namespace, "Subsystem", mediaType, "", taggerType, 14);
+   public SubsystemAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847112L, namespace, "Subsystem", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public SubsystemAttributeType() {
+      this(NamespaceToken.OSEE, 14);
    }
 
    public class SubsystemEnum extends EnumToken {

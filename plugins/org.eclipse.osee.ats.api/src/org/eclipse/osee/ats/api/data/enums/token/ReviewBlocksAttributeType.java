@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewBlocksAttributeType.ReviewBlocksEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -28,8 +30,13 @@ public class ReviewBlocksAttributeType extends AttributeTypeEnum<ReviewBlocksEnu
    public final ReviewBlocksEnum Transition = new ReviewBlocksEnum(1, "Transition");
    public final ReviewBlocksEnum Commit = new ReviewBlocksEnum(2, "Commit");
 
-   public ReviewBlocksAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847176L, namespace, "ats.Review Blocks", mediaType, "", taggerType, 3);
+   public ReviewBlocksAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847176L, namespace, "ats.Review Blocks", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ReviewBlocksAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 3);
    }
 
    public class ReviewBlocksEnum extends EnumToken {

@@ -33,16 +33,16 @@ public interface AtsDemoOseeTypes {
    // @formatter:off
    AttributeTypeString ChangeType = atsDemo.createString(1152921504606847253L, "demo.code.Change Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Action = atsDemo.createString(1152921504606847254L, "demo.code.Action", MediaType.TEXT_PLAIN, "");
-   CodeCategoryAttributeType Category = atsDemo.createEnumNoTag(CodeCategoryAttributeType::new, MediaType.TEXT_PLAIN);
+   CodeCategoryAttributeType Category = atsDemo.createEnumNoTag(new CodeCategoryAttributeType());
    AttributeTypeString CloseDetection = atsDemo.createString(1152921504606847239L, "demo.code.Close Detection", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CodeChangeReq = atsDemo.createString(1152921504606847240L, "demo.code.Code Change Req", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = atsDemo.createString(1152921504606847241L, "demo.code.CSCI", MediaType.TEXT_PLAIN, "");
-   CodeDefectCodeAttributeType DefectCode = atsDemo.createEnumNoTag(CodeDefectCodeAttributeType::new, MediaType.TEXT_PLAIN);
-   CodeDetectionAttributeType Detection = atsDemo.createEnumNoTag(CodeDetectionAttributeType::new, MediaType.TEXT_PLAIN);
+   CodeDefectCodeAttributeType DefectCode = atsDemo.createEnumNoTag(new CodeDefectCodeAttributeType());
+   CodeDetectionAttributeType Detection = atsDemo.createEnumNoTag(new CodeDetectionAttributeType());
    AttributeTypeString IncludeBuild = atsDemo.createString(6624602983846643901L, "demo.code.Include Build", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger LocAffected = atsDemo.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OriginatingBuild = atsDemo.createString(6539429238794418072L, "demo.code.Originating Build", MediaType.TEXT_PLAIN, "");
-   CodeReqDocAttributeType ReqDoc = atsDemo.createEnumNoTag(CodeReqDocAttributeType::new, MediaType.TEXT_PLAIN);
+   CodeReqDocAttributeType ReqDoc = atsDemo.createEnumNoTag(new CodeReqDocAttributeType());
    AttributeTypeString Subsystem = atsDemo.createString(1152921504606847248L, "demo.code.Subsystem", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TestBuild = atsDemo.createString(1152921504606847249L, "demo.code.Test Build", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TestMode = atsDemo.createString(1152921504606847250L, "demo.code.Test Mode", MediaType.TEXT_PLAIN, "");

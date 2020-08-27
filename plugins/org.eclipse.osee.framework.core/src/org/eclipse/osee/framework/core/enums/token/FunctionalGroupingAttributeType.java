@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -29,8 +30,13 @@ public class FunctionalGroupingAttributeType extends AttributeTypeEnum<Functiona
    public final FunctionalGroupingEnum EngineFuelHydraulics = new FunctionalGroupingEnum(2, "Engine/Fuel/Hydraulics");
    public final FunctionalGroupingEnum Electrical = new FunctionalGroupingEnum(3, "Electrical");
 
-   public FunctionalGroupingAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1741310787702764470L, namespace, "Functional Grouping", mediaType, "", taggerType, 4);
+   public FunctionalGroupingAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1741310787702764470L, namespace, "Functional Grouping", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public FunctionalGroupingAttributeType() {
+      this(NamespaceToken.OSEE, 4);
    }
 
    public class FunctionalGroupingEnum extends EnumToken {

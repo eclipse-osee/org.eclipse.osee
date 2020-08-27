@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -34,10 +35,14 @@ public class QualificationMethodAttributeType extends AttributeTypeEnum<Qualific
    public final QualificationMethodEnum Legacy = new QualificationMethodEnum(7, "Legacy");
    public final QualificationMethodEnum Unspecified = new QualificationMethodEnum(8, "Unspecified");
 
-   public QualificationMethodAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847113L, namespace, "Qualification Method", mediaType,
+   public QualificationMethodAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847113L, namespace, "Qualification Method", MediaType.TEXT_PLAIN,
          "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set.",
-         taggerType, 9);
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public QualificationMethodAttributeType() {
+      this(NamespaceToken.OSEE, 9);
    }
 
    public class QualificationMethodEnum extends EnumToken {

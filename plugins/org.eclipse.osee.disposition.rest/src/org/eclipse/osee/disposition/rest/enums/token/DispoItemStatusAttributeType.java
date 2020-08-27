@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.disposition.rest.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.disposition.rest.DispoTypeTokenProvider;
 import org.eclipse.osee.disposition.rest.enums.token.DispoItemStatusAttributeType.DispoItemStatusEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -30,8 +32,13 @@ public class DispoItemStatusAttributeType extends AttributeTypeEnum<DispoItemSta
    public final DispoItemStatusEnum CompleteAnalyzed = new DispoItemStatusEnum(3, "COMPLETE-ANALYZED");
    public final DispoItemStatusEnum Unspecified = new DispoItemStatusEnum(4, "Unspecified");
 
-   public DispoItemStatusAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(3458764513820541336L, namespace, "dispo.item.Status", mediaType, "", taggerType, 5);
+   public DispoItemStatusAttributeType(NamespaceToken namespace, int enumCount) {
+      super(3458764513820541336L, namespace, "dispo.item.Status", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public DispoItemStatusAttributeType() {
+      this(DispoTypeTokenProvider.DISPO, 5);
    }
 
    public class DispoItemStatusEnum extends EnumToken {

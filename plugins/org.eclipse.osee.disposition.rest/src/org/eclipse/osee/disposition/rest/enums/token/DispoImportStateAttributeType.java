@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.disposition.rest.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.disposition.rest.DispoTypeTokenProvider;
 import org.eclipse.osee.disposition.rest.enums.token.DispoImportStateAttributeType.DispoImportStateEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -32,8 +34,13 @@ public class DispoImportStateAttributeType extends AttributeTypeEnum<DispoImport
    public final DispoImportStateEnum Failed = new DispoImportStateEnum(5, "Failed");
    public final DispoImportStateEnum Unspecified = new DispoImportStateEnum(6, "Unspecified");
 
-   public DispoImportStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(3458764513820541334L, namespace, "dispo.Import State", mediaType, "", taggerType, 7);
+   public DispoImportStateAttributeType(NamespaceToken namespace, int enumCount) {
+      super(3458764513820541334L, namespace, "dispo.Import State", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public DispoImportStateAttributeType() {
+      this(DispoTypeTokenProvider.DISPO, 7);
    }
 
    public class DispoImportStateEnum extends EnumToken {

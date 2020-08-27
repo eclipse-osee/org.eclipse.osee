@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -30,8 +32,13 @@ public class PriorityAttributeType extends AttributeTypeEnum<PriorityEnum> {
    public final PriorityEnum Priority4 = new PriorityEnum(3, "4");
    public final PriorityEnum Priority5 = new PriorityEnum(4, "5");
 
-   public PriorityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847179L, namespace, "ats.Priority", mediaType, "", taggerType, 5);
+   public PriorityAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847179L, namespace, "ats.Priority", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public PriorityAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 5);
    }
 
    public class PriorityEnum extends EnumToken {

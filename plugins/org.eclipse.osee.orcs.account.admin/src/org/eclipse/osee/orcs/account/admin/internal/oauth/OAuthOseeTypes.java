@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token.OAuthClien
 public interface OAuthOseeTypes {
    // @formatter:off
    AttributeTypeString OAuthClientAuthorizedAudience = oauth.createString(7160371155049131554L, "oauth.client.Authorized Audience", MediaType.TEXT_PLAIN, "");
-   OAuthClientGrantAttributeType OAuthClientAuthorizedGrantType = oauth.createEnum(OAuthClientGrantAttributeType::new, MediaType.TEXT_PLAIN);
+   OAuthClientGrantAttributeType OAuthClientAuthorizedGrantType = oauth.createEnum(new OAuthClientGrantAttributeType());
    AttributeTypeString OAuthClientAuthorizedRedirectUri = oauth.createString(5424134645937614632L, "oauth.client.Authorized Redirect URI", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OAuthClientAuthorizedScope = oauth.createString(3555983643778551674L, "oauth.client.Authorized Scope", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean OAuthClientIsConfidential = oauth.createBoolean(537327028164749105L, "oauth.client.Is Confidential", MediaType.TEXT_PLAIN, "");

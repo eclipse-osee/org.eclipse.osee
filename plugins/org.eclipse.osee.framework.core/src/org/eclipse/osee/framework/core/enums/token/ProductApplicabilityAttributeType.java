@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -26,8 +27,13 @@ public class ProductApplicabilityAttributeType extends AttributeTypeEnum<Product
 
    public final ProductApplicabilityEnum String = new ProductApplicabilityEnum(0, "OFP");
 
-   public ProductApplicabilityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(4522673803793808650L, namespace, "Product Applicability", mediaType, "", taggerType, 1);
+   public ProductApplicabilityAttributeType(NamespaceToken namespace, int enumCount) {
+      super(4522673803793808650L, namespace, "Product Applicability", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ProductApplicabilityAttributeType() {
+      this(NamespaceToken.OSEE, 1);
    }
 
    public class ProductApplicabilityEnum extends EnumToken {

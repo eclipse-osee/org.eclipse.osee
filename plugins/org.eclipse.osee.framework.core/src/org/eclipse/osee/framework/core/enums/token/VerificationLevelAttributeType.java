@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -30,8 +31,13 @@ public class VerificationLevelAttributeType extends AttributeTypeEnum<Verificati
    public final VerificationLevelEnum Unspecified = new VerificationLevelEnum(3, "Unspecified");
    public final VerificationLevelEnum NA = new VerificationLevelEnum(4, "N/A");
 
-   public VerificationLevelAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847115L, namespace, "Verification Level", mediaType, "", taggerType, 5);
+   public VerificationLevelAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847115L, namespace, "Verification Level", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public VerificationLevelAttributeType() {
+      this(NamespaceToken.OSEE, 5);
    }
 
    public class VerificationLevelEnum extends EnumToken {

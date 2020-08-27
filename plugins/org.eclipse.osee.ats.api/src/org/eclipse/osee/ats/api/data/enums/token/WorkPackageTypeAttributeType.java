@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.WorkPackageTypeAttributeType.WorkPackageTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -32,8 +34,13 @@ public class WorkPackageTypeAttributeType extends AttributeTypeEnum<WorkPackageT
    public final WorkPackageTypeEnum LOE_Planning = new WorkPackageTypeEnum(5, "LOE_Planning");
    public final WorkPackageTypeEnum Planning = new WorkPackageTypeEnum(6, "Planning");
 
-   public WorkPackageTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(72057594037928065L, namespace, "ats.Work Package Type", mediaType, "", taggerType, 7);
+   public WorkPackageTypeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(72057594037928065L, namespace, "ats.Work Package Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public WorkPackageTypeAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 7);
    }
 
    public class WorkPackageTypeEnum extends EnumToken {

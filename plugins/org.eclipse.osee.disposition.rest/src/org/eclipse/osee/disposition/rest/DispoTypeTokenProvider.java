@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
  * @author Ryan D. Brooks
  */
 public final class DispoTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   private static final NamespaceToken DISPO =
+   public static final NamespaceToken DISPO =
       NamespaceToken.valueOf(4, "dispo", "Namespace for dispo system and content management types");
 
    public static final OrcsTypeTokens dispo = new OrcsTypeTokens(DISPO);

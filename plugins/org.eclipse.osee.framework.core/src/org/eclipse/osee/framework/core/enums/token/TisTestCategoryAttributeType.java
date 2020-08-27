@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -28,8 +29,13 @@ public class TisTestCategoryAttributeType extends AttributeTypeEnum<TisTestCateg
    public final TisTestCategoryEnum DEV = new TisTestCategoryEnum(1, "DEV");
    public final TisTestCategoryEnum USG = new TisTestCategoryEnum(2, "USG");
 
-   public TisTestCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847119L, namespace, "TIS Test Category", mediaType, "TIS Test Category", taggerType, 3);
+   public TisTestCategoryAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847119L, namespace, "TIS Test Category", MediaType.TEXT_PLAIN, "TIS Test Category",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public TisTestCategoryAttributeType() {
+      this(NamespaceToken.OSEE, 3);
    }
 
    public class TisTestCategoryEnum extends EnumToken {

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType.ChangeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -29,8 +31,13 @@ public class ChangeTypeAttributeType extends AttributeTypeEnum<ChangeTypeEnum> {
    public final ChangeTypeEnum Support = new ChangeTypeEnum(2, "Support");
    public final ChangeTypeEnum Refinement = new ChangeTypeEnum(3, "Refinement");
 
-   public ChangeTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847180L, namespace, "ats.Change Type", mediaType, "", taggerType, 4);
+   public ChangeTypeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847180L, namespace, "ats.Change Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ChangeTypeAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 4);
    }
 
    public class ChangeTypeEnum extends EnumToken {

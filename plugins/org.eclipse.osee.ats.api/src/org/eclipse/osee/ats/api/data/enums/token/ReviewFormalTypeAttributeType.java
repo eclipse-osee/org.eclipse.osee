@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.ReviewFormalTypeAttributeType.ReviewFormalTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -27,8 +29,13 @@ public class ReviewFormalTypeAttributeType extends AttributeTypeEnum<ReviewForma
    public final ReviewFormalTypeEnum InFormal = new ReviewFormalTypeEnum(0, "InFormal");
    public final ReviewFormalTypeEnum Formal = new ReviewFormalTypeEnum(1, "Formal");
 
-   public ReviewFormalTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847177L, namespace, "ats.Review Formal Type", mediaType, "", taggerType, 2);
+   public ReviewFormalTypeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847177L, namespace, "ats.Review Formal Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ReviewFormalTypeAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 2);
    }
 
    public class ReviewFormalTypeEnum extends EnumToken {

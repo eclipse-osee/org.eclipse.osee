@@ -40,7 +40,7 @@ public interface DispoOseeTypes {
    AttributeTypeDate DispoDateCreated = dispo.createDate(1152921504606847889L, "dispo.Date Created", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString DispoDiscrepanciesJson = dispo.createString(1152921504606847879L, "dispo.Discrepancies JSON", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoImportPath = dispo.createString(1152921504606847881L, "dispo.Import Path", MediaType.TEXT_PLAIN, "");
-   DispoImportStateAttributeType DispoImportState = dispo.createEnum(DispoImportStateAttributeType::new, MediaType.TEXT_PLAIN);
+   DispoImportStateAttributeType DispoImportState = dispo.createEnum(new DispoImportStateAttributeType());
    AttributeTypeBoolean DispoIsMultiEnv = dispo.createBoolean(3587620131443940337L, "dispo.Is Multi-Env", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean DispoItemAborted = dispo.createBoolean(3458764513820541448L, "dispo.item.Aborted", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemAssignee = dispo.createString(3458764513820541441L, "dispo.item.Assignee", MediaType.TEXT_PLAIN, "");
@@ -54,7 +54,7 @@ public interface DispoOseeTypes {
    AttributeTypeBoolean DispoItemNeedsReview = dispo.createBoolean(2903020690286924090L, "dispo.item.Needs Review", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemNotes = dispo.createString(3458764513820541456L, "dispo.item.Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemPercentComplete = dispo.createString(3458764513820541449L, "dispo.item.Percent Complete", MediaType.TEXT_PLAIN, "");
-   DispoItemStatusAttributeType DispoItemStatus = dispo.createEnum(DispoItemStatusAttributeType::new, MediaType.TEXT_PLAIN);
+   DispoItemStatusAttributeType DispoItemStatus = dispo.createEnum(new DispoItemStatusAttributeType());
    AttributeTypeString DispoItemTeam = dispo.createString(3160880792426011047L, "dispo.Team", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemTotalPoints = dispo.createString(3458764513820541443L, "dispo.item.Total Points", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoItemVersion = dispo.createString(3458764513820541440L, "dispo.item.Version", MediaType.TEXT_PLAIN, "");

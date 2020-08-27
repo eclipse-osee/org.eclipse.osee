@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
  */
 public final class CoreTypeTokenProvider extends OrcsTypeTokenProviderBase {
    public static final OrcsTypeTokens osee = new OrcsTypeTokens(NamespaceToken.OSEE);
-   private static final NamespaceToken FACE =
+   public static final NamespaceToken FACE =
       NamespaceToken.valueOf(108, "face", "Namespace for Future Airborne Capability Environment Consortium");
    public static final OrcsTypeTokens face = new OrcsTypeTokens(FACE);
-   private static final NamespaceToken OTE =
+   public static final NamespaceToken OTE =
       NamespaceToken.valueOf(3, "ote", "Namespace for ote system and content management types");
    public static final OrcsTypeTokens ote = new OrcsTypeTokens(OTE);
 

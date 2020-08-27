@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.demo.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeDetectionAttributeType.CodeDetectionEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -31,8 +33,13 @@ public class CodeDetectionAttributeType extends AttributeTypeEnum<CodeDetectionE
    public final CodeDetectionEnum PeerReview = new CodeDetectionEnum(4, "Peer Review");
    public final CodeDetectionEnum Other = new CodeDetectionEnum(6, "Other");
 
-   public CodeDetectionAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847243L, namespace, "demo.code.Detection", mediaType, "", taggerType, 7);
+   public CodeDetectionAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847243L, namespace, "demo.code.Detection", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public CodeDetectionAttributeType() {
+      this(AtsTypeTokenProvider.ATSDEMO, 7);
    }
 
    public class CodeDetectionEnum extends EnumToken {

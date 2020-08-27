@@ -20,7 +20,6 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.enums.OSS_ProfileAttributeType;
 import org.eclipse.osee.framework.core.enums.SegmentAttributeType;
 import org.eclipse.osee.framework.core.enums.TechStandardVersionAttributeType;
@@ -31,9 +30,9 @@ import org.eclipse.osee.framework.core.enums.TechStandardVersionAttributeType;
 public interface FaceOseeTypes {
 
    // @formatter:off
-   TechStandardVersionAttributeType TechStandardVersion = face.createEnum(TechStandardVersionAttributeType::new, MediaType.TEXT_PLAIN);
-   OSS_ProfileAttributeType OSS_Profile = face.createEnum(OSS_ProfileAttributeType::new, MediaType.TEXT_PLAIN);
-   SegmentAttributeType Segment = face.createEnum(SegmentAttributeType::new, MediaType.TEXT_PLAIN);
+   TechStandardVersionAttributeType TechStandardVersion = face.createEnum(new TechStandardVersionAttributeType());
+   OSS_ProfileAttributeType OSS_Profile = face.createEnum(new OSS_ProfileAttributeType());
+   SegmentAttributeType Segment = face.createEnum(new SegmentAttributeType());
 
    ArtifactTypeToken UnitOfConformance = face.add(face.artifactType(3993898326810521606L, "Unit of Conformance", false, Artifact)
       .exactlyOne(TechStandardVersion, "Unspecified")

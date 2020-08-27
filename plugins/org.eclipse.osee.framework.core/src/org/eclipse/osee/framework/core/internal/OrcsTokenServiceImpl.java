@@ -189,8 +189,12 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public void registerAttributeType(AttributeTypeGeneric<?> attributeType) {
       AttributeTypeGeneric<?> existingType = attributeTypes.putIfAbsent(attributeType.getId(), attributeType);
       if (existingType != null) {
-         throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
-            existingType, attributeType);
+         if (existingType.getClass().isAssignableFrom(attributeType.getClass())) {
+            attributeTypes.put(attributeType.getId(), attributeType);
+         } else {
+            throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
+               existingType, attributeType);
+         }
       }
    }
 

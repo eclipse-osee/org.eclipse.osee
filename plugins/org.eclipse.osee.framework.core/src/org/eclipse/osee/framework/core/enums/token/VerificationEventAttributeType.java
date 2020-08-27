@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -32,8 +33,13 @@ public class VerificationEventAttributeType extends AttributeTypeEnum<Verificati
    public final VerificationEventEnum ComponentTest = new VerificationEventEnum(5, "Component Test");
    public final VerificationEventEnum Unspecified = new VerificationEventEnum(6, "Unspecified");
 
-   public VerificationEventAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847124L, namespace, "Verification Event", mediaType, "", taggerType, 7);
+   public VerificationEventAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847124L, namespace, "Verification Event", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public VerificationEventAttributeType() {
+      this(NamespaceToken.OSEE, 7);
    }
 
    public class VerificationEventEnum extends EnumToken {

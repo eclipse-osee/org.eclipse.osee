@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,9 +32,13 @@ public class LegacyDalAttributeType extends AttributeTypeEnum<LegacyDalEnum> {
    public final LegacyDalEnum E = new LegacyDalEnum(4, "E");
    public final LegacyDalEnum Unspecified = new LegacyDalEnum(5, "Unspecified");
 
-   public LegacyDalAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847120L, namespace, "Legacy DAL", mediaType,
-         "Legacy Development Assurance Level (original DAL)", taggerType, 6);
+   public LegacyDalAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847120L, namespace, "Legacy DAL", MediaType.TEXT_PLAIN,
+         "Legacy Development Assurance Level (original DAL)", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public LegacyDalAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class LegacyDalEnum extends EnumToken {

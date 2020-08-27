@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.demo.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeDefectCodeAttributeType.CodeDefectCodeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -33,8 +35,13 @@ public class CodeDefectCodeAttributeType extends AttributeTypeEnum<CodeDefectCod
    public final CodeDefectCodeEnum Nc04HardwareError = new CodeDefectCodeEnum(14, "NC04 - Hardware Error");
    public final CodeDefectCodeEnum Te99OtherToolError = new CodeDefectCodeEnum(19, "TE99 - Other Tool Error");
 
-   public CodeDefectCodeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847242L, namespace, "demo.code.Defect Code", mediaType, "", taggerType, 20);
+   public CodeDefectCodeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847242L, namespace, "demo.code.Defect Code", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public CodeDefectCodeAttributeType() {
+      this(AtsTypeTokenProvider.ATSDEMO, 20);
    }
 
    public class CodeDefectCodeEnum extends EnumToken {

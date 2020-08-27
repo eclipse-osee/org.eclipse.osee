@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -29,9 +30,13 @@ public final class OSS_ProfileAttributeType extends AttributeTypeEnum<FaceProfil
    public final FaceProfileEnum Safety_Extended = new FaceProfileEnum(3, "Safety - Extended");
    public final FaceProfileEnum General_Purpose = new FaceProfileEnum(4, "General_Purpose");
 
-   public OSS_ProfileAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(2499150216801464545L, namespace, "OSS Profile", mediaType,
-         "Enumeration to describe The OSS Profile for the FACE UoC", taggerType, 5);
+   public OSS_ProfileAttributeType(NamespaceToken namespace, int enumCount) {
+      super(2499150216801464545L, namespace, "OSS Profile", MediaType.TEXT_PLAIN,
+         "Enumeration to describe The OSS Profile for the FACE UoC", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public OSS_ProfileAttributeType() {
+      this(CoreTypeTokenProvider.FACE, 5);
    }
 
    public class FaceProfileEnum extends EnumToken {

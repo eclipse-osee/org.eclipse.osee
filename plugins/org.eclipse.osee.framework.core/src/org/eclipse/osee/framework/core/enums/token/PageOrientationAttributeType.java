@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -27,9 +28,13 @@ public class PageOrientationAttributeType extends AttributeTypeEnum<PageOrientat
    public final PageOrientationEnum Portrait = new PageOrientationEnum(0, "Portrait");
    public final PageOrientationEnum Landscape = new PageOrientationEnum(1, "Landscape");
 
-   public PageOrientationAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847091L, namespace, "Page Orientation", mediaType, "Page Orientation: Landscape/Portrait",
-         taggerType, 2);
+   public PageOrientationAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847091L, namespace, "Page Orientation", MediaType.TEXT_PLAIN,
+         "Page Orientation: Landscape/Portrait", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public PageOrientationAttributeType() {
+      this(NamespaceToken.OSEE, 2);
    }
 
    public class PageOrientationEnum extends EnumToken {

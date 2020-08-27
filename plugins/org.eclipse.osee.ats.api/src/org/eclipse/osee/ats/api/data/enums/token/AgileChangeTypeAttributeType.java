@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.ChangeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -35,8 +37,13 @@ public class AgileChangeTypeAttributeType extends AttributeTypeEnum<ChangeTypeEn
    public final ChangeTypeEnum CustomerFeature = new ChangeTypeEnum(8, "Customer Feature");
    public final ChangeTypeEnum Requirement = new ChangeTypeEnum(9, "Requirement");
 
-   public AgileChangeTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606851584L, namespace, "agile.Change Type", mediaType, "", taggerType, 10);
+   public AgileChangeTypeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606851584L, namespace, "agile.Change Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public AgileChangeTypeAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 10);
    }
 
    public class ChangeTypeEnum extends EnumToken {

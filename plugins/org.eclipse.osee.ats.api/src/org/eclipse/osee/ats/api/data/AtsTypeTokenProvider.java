@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
  * @author Ryan D. Brooks
  */
 public final class AtsTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   private static final NamespaceToken ATS =
+   public static final NamespaceToken ATS =
       NamespaceToken.valueOf(2, "ats", "Namespace for ats system and content management types");
    public static final OrcsTypeTokens ats = new OrcsTypeTokens(ATS);
 
-   private static final NamespaceToken ATSDEMO =
+   public static final NamespaceToken ATSDEMO =
       NamespaceToken.valueOf(10, "ats demo", "Namespace for ats demo system and content management types");
    public static final OrcsTypeTokens atsDemo = new OrcsTypeTokens(ATSDEMO);
 

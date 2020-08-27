@@ -55,7 +55,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean AllowUserActionCreation = ats.createBoolean(1322118789779953012L, "ats.Allow User Action Creation", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean AllowWebExport = ats.createBoolean(1244831604424847172L, "ats.Allow Web Export", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", MediaType.TEXT_PLAIN, "");
-   ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(ApplicableToProgramAttributeType::new, MediaType.TEXT_PLAIN);
+   ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType());
    AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", MediaType.TEXT_PLAIN, "");
@@ -71,7 +71,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", MediaType.TEXT_PLAIN, "CSCI this Team is reponsible for.");
-   CancelReasonAttributeType CancelReason = ats.createEnum(CancelReasonAttributeType::new, MediaType.TEXT_PLAIN);
+   CancelReasonAttributeType CancelReason = ats.createEnum(new CancelReasonAttributeType());
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", MediaType.TEXT_PLAIN, "UserId of the user who cancelled workflow.");
    AttributeTypeDate CancelledDate = ats.createDate(1152921504606847169L, "ats.Cancelled Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was cancelled.");
    AttributeTypeString CancelledFromState = ats.createString(1152921504606847172L, "ats.Cancelled From State", MediaType.TEXT_PLAIN, "State workflow was in when cancelled.");
@@ -80,11 +80,11 @@ public interface AtsAttributeTypes {
    AttributeTypeString Category1 = ats.createString(1152921504606847212L, "ats.Category1", MediaType.TEXT_PLAIN, "Open field for user to be able to enter text to use for categorizing/sorting.");
    AttributeTypeString Category2 = ats.createString(1152921504606847217L, "ats.Category2", MediaType.TEXT_PLAIN, Category1.getDescription());
    AttributeTypeString Category3 = ats.createString(1152921504606847218L, "ats.Category3", MediaType.TEXT_PLAIN, Category1.getDescription());
-   ChangeTypeAttributeType ChangeType = ats.createEnum(ChangeTypeAttributeType::new, MediaType.TEXT_PLAIN);
+   ChangeTypeAttributeType ChangeType = ats.createEnum(new ChangeTypeAttributeType());
    AttributeTypeBoolean ClosureActive = ats.createBoolean(1152921875139002555L, "ats.Closure Active", MediaType.TEXT_PLAIN, "Closure Active status of Program");
-   ClosureStateAttributeType ClosureState = ats.createEnum(ClosureStateAttributeType::new, MediaType.TEXT_PLAIN);
+   ClosureStateAttributeType ClosureState = ats.createEnum(new ClosureStateAttributeType());
    AttributeTypeString CognosUniqueId = ats.createString(72063457009467630L, "ats.Cognos Unique Id", MediaType.TEXT_PLAIN, "");
-   ColorTeamAttributeType ColorTeam = ats.createEnum(ColorTeamAttributeType::new, MediaType.TEXT_PLAIN);
+   ColorTeamAttributeType ColorTeam = ats.createEnum(new ColorTeamAttributeType());
    AttributeTypeString CommitOverride = ats.createString(104739333325561L, "ats.Commit Override", MediaType.TEXT_PLAIN, "Commit was overridden by user.");
    AttributeTypeString CompletedBy = ats.createString(1152921504606847167L, "ats.Completed By", MediaType.TEXT_PLAIN, "UserId of the user who completed workflow.");
    AttributeTypeDate CompletedDate = ats.createDate(1152921504606847166L, "ats.Completed Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was completed.");
@@ -110,7 +110,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", MediaType.TEXT_PLAIN, "Vote for order item belongs to within goal.");
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
-   IptAttributeType IPT = ats.createEnum(IptAttributeType::new, MediaType.TEXT_PLAIN);
+   IptAttributeType IPT = ats.createEnum(new IptAttributeType());
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
    AttributeTypeString KanbanStoryName = ats.createString(72645877009467643L, "ats.kb.Story Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LegacyPcrId = ats.createString(1152921504606847219L, "ats.Legacy PCR Id", MediaType.TEXT_PLAIN, "Field to register problem change report id from legacy items imported into ATS.");
@@ -139,10 +139,10 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger PercentComplete = ats.createInteger(1152921504606847183L, "ats.Percent Complete", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger PercentRework = ats.createInteger(1152921504606847189L, "ats.Percent Rework", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger PlannedPoints = ats.createInteger(232851836925913430L, "ats.Planned Points", MediaType.TEXT_PLAIN, "");
-   PointAttributeType Points = ats.createEnum(PointAttributeType::new, MediaType.TEXT_PLAIN);
+   PointAttributeType Points = ats.createEnum(new PointAttributeType());
    AttributeTypeString PointsAttributeType = ats.createString(1152921573057888257L, "ats.Points Attribute Type", MediaType.TEXT_PLAIN, "Used to store the agile points type name (ats.Points or ats.Points Numeric).");
    AttributeTypeDouble PointsNumeric = ats.createDouble(1728793301637070003L, "ats.Points Numeric", MediaType.TEXT_PLAIN, "Abstract value that describes risk, complexity, and size of Actions as float.");
-   PriorityAttributeType Priority = ats.createEnum(PriorityAttributeType::new, MediaType.TEXT_PLAIN);
+   PriorityAttributeType Priority = ats.createEnum(new PriorityAttributeType());
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", MediaType.TEXT_PLAIN, "Problem found during analysis.");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.");
@@ -155,9 +155,9 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean Released = ats.createBoolean(1152921504606847155L, "ats.Released", MediaType.TEXT_PLAIN, "True if object is in a released state.");
    AttributeTypeBoolean RequireTargetedVersion = ats.createBoolean(1152921504606847159L, "ats.Require Targeted Version", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Resolution = ats.createString(1152921504606847195L, "ats.Resolution", MediaType.TEXT_PLAIN, "Implementation details.");
-   ReviewBlocksAttributeType ReviewBlocks = ats.createEnum(ReviewBlocksAttributeType::new, MediaType.TEXT_PLAIN);
+   ReviewBlocksAttributeType ReviewBlocks = ats.createEnum(new ReviewBlocksAttributeType());
    AttributeTypeString ReviewDefect = ats.createString(1152921504606847222L, "ats.Review Defect", MediaType.TEXT_PLAIN, "");
-   ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(ReviewFormalTypeAttributeType::new, MediaType.TEXT_PLAIN);
+   ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(new ReviewFormalTypeAttributeType());
    AttributeTypeString Role = ats.createString(1152921504606847226L, "ats.Role", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RuleDefinition = ats.createString(1152921504606847150L, "ats.Rule Definition", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", AttributeTypeToken.TEXT_CALENDAR, "");
@@ -189,7 +189,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkPackageProgram = ats.createString(1152921504606847873L, "ats.Work Package Program", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId WorkPackageReference = ats.createArtifactId(473096133909456789L, "ats.Work Package Reference", MediaType.TEXT_PLAIN, "Designated accounting work package for completing workflow.");
-   WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(WorkPackageTypeAttributeType::new, MediaType.TEXT_PLAIN);
+   WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType());
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", MediaType.TEXT_PLAIN, "Work Type of this Team.");
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact");
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Workflow Notes", MediaType.TEXT_PLAIN, "Notes applicable to ATS Workflow");
@@ -200,7 +200,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Shortname = ats.createStringNoTag(1152921904606847240L, "Shortname", MediaType.TEXT_PLAIN, "");
    AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "TaskCountForProject", MediaType.TEXT_PLAIN, "");
    AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", MediaType.TEXT_PLAIN, "");
-   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(AgileChangeTypeAttributeType::new, MediaType.TEXT_PLAIN);
+   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(new AgileChangeTypeAttributeType());
    AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", MediaType.TEXT_PLAIN, "");
 

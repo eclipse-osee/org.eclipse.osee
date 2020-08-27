@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,9 +32,13 @@ public class FdalAttributeType extends AttributeTypeEnum<FdalEnum> {
    public final FdalEnum E = new FdalEnum(4, "E");
    public final FdalEnum Unspecified = new FdalEnum(5, "Unspecified");
 
-   public FdalAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(8007959514939954596L, namespace, "FDAL", mediaType, "Functional Development Assurance Level", taggerType,
-         6);
+   public FdalAttributeType(NamespaceToken namespace, int enumCount) {
+      super(8007959514939954596L, namespace, "FDAL", MediaType.TEXT_PLAIN, "Functional Development Assurance Level",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public FdalAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class FdalEnum extends EnumToken {

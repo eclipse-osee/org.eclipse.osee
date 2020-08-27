@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,9 +32,13 @@ public final class SegmentAttributeType extends AttributeTypeEnum<FaceSegmentEnu
    public final FaceSegmentEnum IOSS = new FaceSegmentEnum(5, "IOSS");
    public final FaceSegmentEnum TSS = new FaceSegmentEnum(6, "TSS");
 
-   public SegmentAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(4630657574707057068L, namespace, "Segment", mediaType,
-         "Enumeration to describe The Segment for the FACE UoC", taggerType, 7);
+   public SegmentAttributeType(NamespaceToken namespace, int enumCount) {
+      super(4630657574707057068L, namespace, "Segment", MediaType.TEXT_PLAIN,
+         "Enumeration to describe The Segment for the FACE UoC", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public SegmentAttributeType() {
+      this(CoreTypeTokenProvider.FACE, 7);
    }
 
    public class FaceSegmentEnum extends EnumToken {

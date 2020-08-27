@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.demo.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeReqDocAttributeType.CodeReqDocEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -28,8 +30,13 @@ public class CodeReqDocAttributeType extends AttributeTypeEnum<CodeReqDocEnum> {
    public final CodeReqDocEnum SRS = new CodeReqDocEnum(3, "SRS");
    public final CodeReqDocEnum Other = new CodeReqDocEnum(4, "Other");
 
-   public CodeReqDocAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1740569308658341L, namespace, "demo.code.Req Doc", mediaType, "", taggerType, 5);
+   public CodeReqDocAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1740569308658341L, namespace, "demo.code.Req Doc", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public CodeReqDocAttributeType() {
+      this(AtsTypeTokenProvider.ATSDEMO, 5);
    }
 
    public class CodeReqDocEnum extends EnumToken {

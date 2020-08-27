@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.QuinFunction;
-import org.eclipse.osee.framework.jdk.core.type.TriFunction;
 
 /**
  * OSEE type token providers should instantiate a static instance of this class and call the add methods for each type
@@ -237,14 +236,13 @@ public class OrcsTypeTokens {
    /**
     * Methods for creating Enumerated AttributeType
     */
-   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
-      return attributeTypes.addAndReturn(
-         attributeEnumConstructor.apply(determineTaggerType(mediaType), mediaType, namespace));
+
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(T attributeType) {
+      return attributeTypes.addAndReturn(attributeType);
    }
 
-   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(TriFunction<TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, String mediaType) {
-      return attributeTypes.addAndReturn(
-         attributeEnumConstructor.apply(TaggerTypeToken.SENTINEL, mediaType, namespace));
+   public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(T attributeType) {
+      return attributeTypes.addAndReturn(attributeType);
    }
 
    public <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(QuinFunction<Long, String, TaggerTypeToken, String, NamespaceToken, T> attributeEnumConstructor, Long id, String name, String mediaType) {
@@ -307,19 +305,16 @@ public class OrcsTypeTokens {
    public static String defaultFileExtension(String mediaType) {
       switch (mediaType) {
          case MediaType.TEXT_PLAIN:
+         case AttributeTypeToken.APPLICATION_ZIP:
             return "txt";
          case MediaType.TEXT_XML:
-            return "xml";
          case AttributeTypeToken.APPLICATION_MSWORD:
             return "xml";
          case MediaType.TEXT_HTML:
             return "html";
          case MediaType.APPLICATION_OCTET_STREAM:
-            return "bin";
          case AttributeTypeToken.IMAGE:
             return "bin";
-         case AttributeTypeToken.APPLICATION_ZIP:
-            return "txt";
          default:
             return "";
       }

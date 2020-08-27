@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.CancelReasonAttributeType.CancelReasonEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -30,8 +32,13 @@ public class CancelReasonAttributeType extends AttributeTypeEnum<CancelReasonEnu
    public final CancelReasonEnum OtherMustEnterCancelledDetails =
       new CancelReasonEnum(3, "Other (Must enter cancelled details)");
 
-   public CancelReasonAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(5718762723487704057L, namespace, "ats.Cancel Reason", mediaType, "", taggerType, 4);
+   public CancelReasonAttributeType(NamespaceToken namespace, int enumCount) {
+      super(5718762723487704057L, namespace, "ats.Cancel Reason", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public CancelReasonAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 4);
    }
 
    public class CancelReasonEnum extends EnumToken {

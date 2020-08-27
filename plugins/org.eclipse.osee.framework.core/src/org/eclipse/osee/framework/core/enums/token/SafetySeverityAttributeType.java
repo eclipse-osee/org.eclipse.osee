@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,8 +32,13 @@ public class SafetySeverityAttributeType extends AttributeTypeEnum<SafetySeverit
    public final SafetySeverityEnum Unspecified = new SafetySeverityEnum(4, "Unspecified");
    public final SafetySeverityEnum None = new SafetySeverityEnum(5, "None");
 
-   public SafetySeverityAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(846763346271224762L, namespace, "Safety Severity", mediaType, "", taggerType, 6);
+   public SafetySeverityAttributeType(NamespaceToken namespace, int enumCount) {
+      super(846763346271224762L, namespace, "Safety Severity", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public SafetySeverityAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class SafetySeverityEnum extends EnumToken {

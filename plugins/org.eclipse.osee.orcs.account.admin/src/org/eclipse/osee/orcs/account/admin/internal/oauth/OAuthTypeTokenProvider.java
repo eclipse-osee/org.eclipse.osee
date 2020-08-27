@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
  * @author Ryan D. Brooks
  */
 public final class OAuthTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   private static final NamespaceToken OAUTH =
+   public static final NamespaceToken OAUTH =
       NamespaceToken.valueOf(6, "oauth", "Namespace for oauth system and content management types");
 
    public static final OrcsTypeTokens oauth = new OrcsTypeTokens(OAUTH);

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType.ClosureStateEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -29,8 +31,13 @@ public class ClosureStateAttributeType extends AttributeTypeEnum<ClosureStateEnu
    public final ClosureStateEnum CloseOut = new ClosureStateEnum(2, "Close Out");
    public final ClosureStateEnum Closed = new ClosureStateEnum(3, "Closed");
 
-   public ClosureStateAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847452L, namespace, "ats.closure.Closure State", mediaType, "", taggerType, 4);
+   public ClosureStateAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847452L, namespace, "ats.closure.Closure State", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public ClosureStateAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 4);
    }
 
    public class ClosureStateEnum extends EnumToken {

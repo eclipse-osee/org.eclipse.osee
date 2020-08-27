@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,9 +32,13 @@ public class SoftwareControlCategoryAttributeType extends AttributeTypeEnum<Soft
    public final SoftwareControlCategoryEnum _5Nsi = new SoftwareControlCategoryEnum(4, "5(NSI)");
    public final SoftwareControlCategoryEnum Unspecified = new SoftwareControlCategoryEnum(5, "Unspecified");
 
-   public SoftwareControlCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1958401980089733639L, namespace, "Software Control Category", mediaType,
-         "Software Control Category Classification", taggerType, 6);
+   public SoftwareControlCategoryAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1958401980089733639L, namespace, "Software Control Category", MediaType.TEXT_PLAIN,
+         "Software Control Category Classification", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public SoftwareControlCategoryAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class SoftwareControlCategoryEnum extends EnumToken {

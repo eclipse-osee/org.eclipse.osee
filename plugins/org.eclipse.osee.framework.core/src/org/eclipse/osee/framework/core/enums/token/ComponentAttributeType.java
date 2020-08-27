@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -27,8 +28,13 @@ public class ComponentAttributeType extends AttributeTypeEnum<ComponentEnum> {
    public final ComponentEnum TopLevelProductComponent = new ComponentEnum(0, "Top level product component");
    public final ComponentEnum Unspecified = new ComponentEnum(1, "Unspecified");
 
-   public ComponentAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847125L, namespace, "Component", mediaType, "", taggerType, 2);
+   public ComponentAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847125L, namespace, "Component", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public ComponentAttributeType() {
+      this(NamespaceToken.OSEE, 2);
    }
 
    public class ComponentEnum extends EnumToken {

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -28,8 +29,13 @@ public class GfeCfeAttributeType extends AttributeTypeEnum<GfeCfeEnum> {
    public final GfeCfeEnum GFE = new GfeCfeEnum(1, "GFE");
    public final GfeCfeEnum Unspecified = new GfeCfeEnum(2, "Unspecified");
 
-   public GfeCfeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847144L, namespace, "GFE / CFE", mediaType, "", taggerType, 3);
+   public GfeCfeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847144L, namespace, "GFE / CFE", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public GfeCfeAttributeType() {
+      this(NamespaceToken.OSEE, 3);
    }
 
    public class GfeCfeEnum extends EnumToken {

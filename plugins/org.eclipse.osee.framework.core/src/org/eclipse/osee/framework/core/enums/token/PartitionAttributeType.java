@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -32,8 +33,13 @@ public class PartitionAttributeType extends AttributeTypeEnum<PartitionEnum> {
    public final PartitionEnum Navigation = new PartitionEnum(5, "Navigation");
    public final PartitionEnum Unspecified = new PartitionEnum(6, "Unspecified");
 
-   public PartitionAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847111L, namespace, "Partition", mediaType, "", taggerType, 7);
+   public PartitionAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847111L, namespace, "Partition", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public PartitionAttributeType() {
+      this(NamespaceToken.OSEE, 7);
    }
 
    public class PartitionEnum extends EnumToken {

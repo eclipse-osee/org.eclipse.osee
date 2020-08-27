@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -31,9 +32,13 @@ public class SeverityCategoryAttributeType extends AttributeTypeEnum<SeverityCat
    public final SeverityCategoryEnum NH = new SeverityCategoryEnum(4, "NH");
    public final SeverityCategoryEnum Unspecified = new SeverityCategoryEnum(5, "Unspecified");
 
-   public SeverityCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847114L, namespace, "Severity Category", mediaType, "Severity Category Classification",
-         taggerType, 6);
+   public SeverityCategoryAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847114L, namespace, "Severity Category", MediaType.TEXT_PLAIN,
+         "Severity Category Classification", TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public SeverityCategoryAttributeType() {
+      this(NamespaceToken.OSEE, 6);
    }
 
    public class SeverityCategoryEnum extends EnumToken {

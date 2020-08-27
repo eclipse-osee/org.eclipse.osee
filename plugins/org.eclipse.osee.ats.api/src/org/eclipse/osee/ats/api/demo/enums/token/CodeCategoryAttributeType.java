@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.demo.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.demo.enums.token.CodeCategoryAttributeType.CodeCategoryEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -30,8 +32,13 @@ public class CodeCategoryAttributeType extends AttributeTypeEnum<CodeCategoryEnu
    public final CodeCategoryEnum NonMission = new CodeCategoryEnum(3, "Non-Mission");
    public final CodeCategoryEnum Workaround = new CodeCategoryEnum(4, "Workaround");
 
-   public CodeCategoryAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847238L, namespace, "demo.code.Category", mediaType, "", taggerType, 5);
+   public CodeCategoryAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847238L, namespace, "demo.code.Category", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public CodeCategoryAttributeType() {
+      this(AtsTypeTokenProvider.ATSDEMO, 5);
    }
 
    public class CodeCategoryEnum extends EnumToken {

@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypeTokenProvider;
 import org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token.OAuthClientGrantAttributeType.OAuthClientGrantEnum;
 
 /**
@@ -30,8 +32,13 @@ public class OAuthClientGrantAttributeType extends AttributeTypeEnum<OAuthClient
       new OAuthClientGrantEnum(2, "Resource Owner Password Credentials Grant");
    public final OAuthClientGrantEnum ClientCredentialsGrant = new OAuthClientGrantEnum(3, "Client Credentials Grant");
 
-   public OAuthClientGrantAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1935002343589638144L, namespace, "oauth.client.Authorized Grant Type", mediaType, "", taggerType, 4);
+   public OAuthClientGrantAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1935002343589638144L, namespace, "oauth.client.Authorized Grant Type", MediaType.TEXT_PLAIN, "",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public OAuthClientGrantAttributeType() {
+      this(OAuthTypeTokenProvider.OAUTH, 4);
    }
 
    public class OAuthClientGrantEnum extends EnumToken {

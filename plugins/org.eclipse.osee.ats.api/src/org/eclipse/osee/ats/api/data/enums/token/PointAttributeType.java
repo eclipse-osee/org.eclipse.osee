@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.ats.api.data.enums.token;
 
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.data.AtsTypeTokenProvider;
 import org.eclipse.osee.ats.api.data.enums.token.PointAttributeType.PointEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
@@ -37,8 +39,13 @@ public class PointAttributeType extends AttributeTypeEnum<PointEnum> {
    public final PointEnum P_150 = new PointEnum(10, "150");
    public final PointEnum Epic = new PointEnum(11, "Epic");
 
-   public PointAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847178L, namespace, "ats.Points", mediaType, "", taggerType, 12);
+   public PointAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847178L, namespace, "ats.Points", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
+         enumCount);
+   }
+
+   public PointAttributeType() {
+      this(AtsTypeTokenProvider.ATS, 12);
    }
 
    public class PointEnum extends EnumToken {

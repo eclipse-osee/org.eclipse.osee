@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -35,10 +36,14 @@ public class DataRightsClassificationAttributeType extends AttributeTypeEnum<Dat
    public final DataRightsClassificationEnum ExportControlledItar =
       new DataRightsClassificationEnum(6, "Export Controlled ITAR");
 
-   public DataRightsClassificationAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847317L, namespace, "Data Rights Classification", mediaType,
+   public DataRightsClassificationAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847317L, namespace, "Data Rights Classification", MediaType.TEXT_PLAIN,
          "Restricted Rights:  Rights are retained by the company\n\nRestricted Rights Mixed:  contains some Restricted Rights that need separation of content with other rights\n\nOther:  does not contain content with Restricted Rights\n\nUnspecified: not yet specified",
-         taggerType, 7);
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public DataRightsClassificationAttributeType() {
+      this(NamespaceToken.OSEE, 7);
    }
 
    public class DataRightsClassificationEnum extends EnumToken {

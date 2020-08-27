@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -27,8 +28,13 @@ public class TisTestTypeAttributeType extends AttributeTypeEnum<TisTestTypeEnum>
    public final TisTestTypeEnum StationaryVehicle = new TisTestTypeEnum(0, "Stationary Vehicle");
    public final TisTestTypeEnum InOperation = new TisTestTypeEnum(1, "In Operation");
 
-   public TisTestTypeAttributeType(TaggerTypeToken taggerType, String mediaType, NamespaceToken namespace) {
-      super(1152921504606847118L, namespace, "TIS Test Type", mediaType, "TIS Test Type", taggerType, 2);
+   public TisTestTypeAttributeType(NamespaceToken namespace, int enumCount) {
+      super(1152921504606847118L, namespace, "TIS Test Type", MediaType.TEXT_PLAIN, "TIS Test Type",
+         TaggerTypeToken.PlainTextTagger, enumCount);
+   }
+
+   public TisTestTypeAttributeType() {
+      this(NamespaceToken.OSEE, 2);
    }
 
    public class TisTestTypeEnum extends EnumToken {
