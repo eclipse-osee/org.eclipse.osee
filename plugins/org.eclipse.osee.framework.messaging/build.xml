@@ -95,7 +95,7 @@
 		<path id="@dot.classpath">
 			<pathelement path="../../../../OSEE/plugins/jms.libraries_0.9.9.v201109031253/libs/geronimo-j2ee-management_1.0_spec-1.0.jar"/>
 			<pathelement path="../../../../OSEE/plugins/jms.libraries_0.9.9.v201109031253/libs/geronimo-jms_1.1_spec-1.1.1.jar"/>
-			<pathelement path="../../../../OSEE/plugins/jms.libraries_0.9.9.v201109031253/libs/activemq-core-5.3.0.jar"/>
+			<pathelement path="../../../../OSEE/plugins/jms.libraries_0.9.9.v201109031253/libs/activemq-all-5.14.0.jar"/>
 			<pathelement path="../../../../OSEE/plugins/javax.xml_1.3.4.v201005080400.jar"/>
 			<pathelement path="../../../../OSEE/plugins/org.eclipse.osgi_3.7.0.v20110613.jar"/>
 			<pathelement path="../../../../OSEE/plugins/org.eclipse.equinox.servletbridge.extensionbundle_1.2.0.v20100503.jar"/>

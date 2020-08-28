@@ -4,5 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="libs/geronimo-j2ee-management_1.0_spec-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/geronimo-jms_1.1_spec-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/activemq-core-5.3.0.jar" sourcepath="C:/Documents and Settings/b1528444/Desktop/activemq-parent-5.3.0-source-release.zip"/>
+	<classpathentry exported="true" kind="lib" path="libs/activemq-all-5.14.0.jar" sourcepath="C:/Documents and Settings/b1528444/Desktop/activemq-parent-5.14.0-source-release.zip"/>
 </classpath>
