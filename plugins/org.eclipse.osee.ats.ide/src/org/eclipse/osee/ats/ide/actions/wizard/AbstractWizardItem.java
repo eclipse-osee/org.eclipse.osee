@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
@@ -82,8 +81,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    @Override
    public void getWizardXWidgetExtensions(Collection<IAtsActionableItem> ais, Composite comp) {
 
-      Collection<IAtsTeamDefinition> teamDefs =
-         AtsApiService.get().getActionableItemService().getImpactedTeamDefs(ais);
+      Collection<IAtsTeamDefinition> teamDefs = AtsApiService.get().getActionableItemService().getImpactedTeamDefs(ais);
       boolean first = true;
       for (IAtsTeamDefinition teamDef : teamDefs) {
 
@@ -473,9 +471,9 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          for (IAtsWorkItem workItem : changes.getWorkItemsCreated()) {
             if (workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow().getTeamDefinition().equals(teamDef)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem.getParentTeamWorkflow().getStoreObject();
-               Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
+               Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(teamArt);
                if (result.isTrue()) {
-                  AtsBranchUtil.createWorkingBranch_Create(teamArt);
+                  AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamArt);
                }
             }
          }

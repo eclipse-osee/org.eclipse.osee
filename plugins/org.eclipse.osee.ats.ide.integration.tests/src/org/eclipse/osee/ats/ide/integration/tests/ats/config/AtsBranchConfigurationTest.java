@@ -32,8 +32,6 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.config.AtsConfigOperation;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -205,8 +203,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
-      ChangeData changeData =
-         AtsBranchManager.getChangeDataFromEarliestTransactionId((TeamWorkFlowArtifact) teamWf.getStoreObject());
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(
+         (TeamWorkFlowArtifact) teamWf.getStoreObject());
       assertFalse("No changes detected", changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
@@ -308,8 +306,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
       }
-      ChangeData changeData =
-         AtsBranchManager.getChangeDataFromEarliestTransactionId((TeamWorkFlowArtifact) teamWf.getStoreObject());
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(
+         (TeamWorkFlowArtifact) teamWf.getStoreObject());
       assertTrue("No changes detected", !changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
@@ -336,8 +334,8 @@ public class AtsBranchConfigurationTest {
       // Delete VersionArtifacts
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsApiService.get().getQueryService().createQuery(
-         AtsArtifactTypes.Version).getItems(IAtsVersion.class)) {
+      for (IAtsVersion version : AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.Version).getItems(
+         IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
             Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(version);
             if (artifact != null) {
@@ -401,18 +399,19 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
-      IOperation op = AtsBranchManager.commitWorkingBranch(teamWf, false, true,
+      IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamWf, false, true,
          BranchManager.getParentBranch(AtsApiService.get().getBranchService().getWorkingBranch(teamWf)), true);
       Operations.executeWorkAndCheckStatus(op);
    }
 
    public static BranchId createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
-      Result result = AtsBranchUtil.createWorkingBranch_Validate((TeamWorkFlowArtifact) teamWf.getStoreObject());
+      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(
+         (TeamWorkFlowArtifact) teamWf.getStoreObject());
       if (result.isFalse()) {
          AWorkbench.popup(result);
          return BranchId.SENTINEL;
       }
-      AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamWf, true);
 
       BranchId workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf, true);
       Assert.assertTrue("No working branch created", workingBranch.isValid());

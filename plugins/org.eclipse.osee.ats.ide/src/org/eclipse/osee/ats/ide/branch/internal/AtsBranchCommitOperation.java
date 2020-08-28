@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -123,8 +122,8 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (branchCommitted) {
             // Create reviews as necessary
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Create Reviews upon Commit");
-            boolean added = AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt,
-               new Date(), AtsCoreUsers.SYSTEM_USER, changes);
+            boolean added = AtsApiService.get().getBranchServiceIde().createNecessaryBranchEventReviews(
+               StateEventType.CommitBranch, teamArt, new Date(), AtsCoreUsers.SYSTEM_USER, changes);
             if (added) {
                changes.execute();
             }

@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,7 +52,7 @@ public class ShowChangeReportAction extends Action {
 
    @Override
    public void run() {
-      AtsBranchManager.showChangeReport(teamArt);
+      AtsApiService.get().getBranchServiceIde().showChangeReport(teamArt);
    }
 
    @Override

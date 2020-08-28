@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -96,12 +95,12 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
       if (reqTeamArt == null) {
          throw new OseeArgumentException("Can't locate Req team.");
       }
-      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeamArt);
+      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(reqTeamArt);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamArt, true);
 
       Artifact branchArtifact =
          DemoDbUtil.getArtTypeRequirements(isDebug(), CoreArtifactTypes.SoftwareRequirementMsWord,

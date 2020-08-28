@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -127,7 +126,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, CommitConfigItem commitConfigItem, XResultData rd) {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-      ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigItem);
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeData(teamArt, commitConfigItem);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,
          ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);

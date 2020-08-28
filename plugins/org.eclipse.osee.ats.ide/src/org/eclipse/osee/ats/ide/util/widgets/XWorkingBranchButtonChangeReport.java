@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -35,7 +35,7 @@ public class XWorkingBranchButtonChangeReport extends XWorkingBranchButtonAbstra
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            AtsBranchManager.showChangeReport(getTeamArt());
+            AtsApiService.get().getBranchServiceIde().showChangeReport(getTeamArt());
          }
       });
    }

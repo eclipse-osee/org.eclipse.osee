@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -115,7 +114,7 @@ public final class PortPairsOperation extends AbstractOperation {
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
       if (destinationWorkflow.getWorkingBranchForceCacheUpdate() == null) {
-         AtsBranchUtil.createWorkingBranch_Create(destinationWorkflow, true);
+         AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(destinationWorkflow, true);
       }
 
       BranchId destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();

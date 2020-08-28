@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -114,7 +113,7 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
          } else {
             IAtsBranchService branchService = AtsApiService.get().getBranchService();
             if (branchService.isWorkingBranchInWork(sourceTeamWf)) {
-               changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(sourceTeamWf);
+               changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(sourceTeamWf);
             } else {
                IAtsVersion taskTargetedVersion = AtsApiService.get().getVersionService().getTargetedVersion(task);
                Collection<TransactionRecord> transactions =

@@ -359,7 +359,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testCreateBranchFirstTime() {
-      AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeam, true);
       workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
 
@@ -374,7 +374,7 @@ public abstract class BranchRegressionTest {
 
    public void testDeleteBranch() {
       // verify deletion of the workingBranch
-      AtsBranchManager.deleteWorkingBranch(reqTeam, false, true);
+      AtsApiService.get().getBranchServiceIde().deleteWorkingBranch(reqTeam, false, true);
       Assert.assertTrue(reqTeam.getWorkingBranch().isInvalid());
 
       XWorkingBranchEnablement enablement = new XWorkingBranchEnablement(reqTeam);
@@ -398,7 +398,7 @@ public abstract class BranchRegressionTest {
    }
 
    public void testCreateBranchSecondTime() {
-      AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeam, true);
       workingBranch = reqTeam.getWorkingBranchForceCacheUpdate();
       Assert.assertNotNull("workingBranch returned null", workingBranch);
    }
@@ -540,7 +540,7 @@ public abstract class BranchRegressionTest {
             configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
 
-            IOperation op = AtsBranchManager.commitWorkingBranch(reqTeam, false, true, branch,
+            IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
                branchService.isBranchesAllCommittedExcept(reqTeam, branch));
             Operations.executeWorkAndCheckStatus(op);
             committed = true;
@@ -554,7 +554,7 @@ public abstract class BranchRegressionTest {
          if (branchService.isBranchValid(
             configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
-            IOperation op = AtsBranchManager.commitWorkingBranch(reqTeam, false, true, branch,
+            IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
                branchService.isBranchesAllCommittedExcept(reqTeam, branch));
             Operations.executeWorkAndCheckStatus(op);
             commitCount++;
@@ -591,7 +591,7 @@ public abstract class BranchRegressionTest {
    public void testChangesMadeWereCommitted() {
       // Verify that the changes made on the workingBranch were committed to the main workingBranch
       // TODO This needs to be updated do handle multiple config artifacts when test gets updated to test for multiples
-      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(reqTeam);
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(reqTeam);
 
       // Check for modified artifacts
       Collection<Artifact> artifactsModified =

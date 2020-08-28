@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.rule.validation.AbstractValidationRule;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -65,7 +64,7 @@ public class ValidationReportOperation extends AbstractOperation {
          "<b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
 
       try {
-         ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
+         ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(teamArt);
          Collection<Artifact> changedArtifacts =
             changeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.APPLICABILITY,
                ModificationType.INTRODUCED, ModificationType.MERGED, ModificationType.REPLACED_WITH_VERSION,

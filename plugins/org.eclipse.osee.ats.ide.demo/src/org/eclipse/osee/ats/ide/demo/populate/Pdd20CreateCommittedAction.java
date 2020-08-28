@@ -29,8 +29,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
@@ -117,11 +115,11 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       if (reqTeamArt == null) {
          throw new OseeArgumentException("Can't locate Req team.");
       }
-      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeamArt);
+      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(reqTeamArt);
       if (result.isFalse()) {
          throw new OseeArgumentException("Error creating working branch: " + result);
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamArt, true);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Robot,
          reqTeamArt.getWorkingBranch())) {
@@ -168,7 +166,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       Artifact parentArtifact = testCommitBranchHttpRequestOperationSetup(reqTeamArt, testArtifact, testRelArtifact);
 
-      IOperation op = AtsBranchManager.commitWorkingBranch(reqTeamArt, false, true,
+      IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamArt, false, true,
          AtsApiService.get().getBranchService().getBranch(
             AtsApiService.get().getVersionService().getTargetedVersion(reqTeamArt)),
          true);

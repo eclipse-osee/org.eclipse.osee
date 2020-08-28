@@ -41,16 +41,18 @@ import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
+import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.AtsServerEndpointProviderImpl;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
-import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemServiceClientImpl;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
@@ -85,6 +87,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    private AtsQueryServiceIde queryServiceIde;
    private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
+   private AtsBranchServiceIde branchServiceIde;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -317,5 +320,12 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IUserGroupService getUserGroupService() {
       return UserGroupService.instance();
+   }
+
+   public AtsBranchServiceIde getBranchServiceIde() {
+      if (branchServiceIde == null) {
+         branchServiceIde = new AtsBranchServiceIdeImpl();
+      }
+      return branchServiceIde;
    }
 }

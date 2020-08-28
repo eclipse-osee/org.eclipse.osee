@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,7 +52,7 @@ public class ShowBranchChangeDataAction extends AbstractAtsAction {
          return;
       }
       XResultData result = new XResultData();
-      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(teamArt);
       result.log("Number of changes " + changeData.getChanges().size() + "\n");
       for (Change change : changeData.getChanges()) {
          result.log(String.format("Change [%s]", change));

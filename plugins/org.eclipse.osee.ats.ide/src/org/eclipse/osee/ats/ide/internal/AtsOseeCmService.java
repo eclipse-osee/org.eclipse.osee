@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
@@ -104,7 +103,7 @@ public class AtsOseeCmService implements IOseeCmService {
          IOperation operation;
          try {
             operation =
-               AtsBranchManager.commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch, isArchiveSource);
+               AtsApiService.get().getBranchServiceIde().commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch, isArchiveSource);
             Operations.executeAsJob(operation, true);
 
          } catch (OseeCoreException ex) {

@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
@@ -147,12 +146,12 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       if (reqTeamArt == null) {
          throw new OseeArgumentException("Can't locate Req team.");
       }
-      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeamArt);
+      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(reqTeamArt);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeamArt, true);
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamArt, true);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.Functional,
          reqTeamArt.getWorkingBranch())) {

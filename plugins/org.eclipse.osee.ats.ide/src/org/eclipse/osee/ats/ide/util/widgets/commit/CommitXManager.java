@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverride;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.commit.menu.CommitOverrideAction;
@@ -151,12 +150,12 @@ public class CommitXManager extends XViewer {
                "Talk to project lead as to why commit disabled for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
             IOperation operation =
-               AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
+               AtsApiService.get().getBranchServiceIde().commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
                   AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
                      branch));
             Operations.executeAsJob(operation, true);
          } else if (commitStatus == CommitStatus.Committed) {
-            AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
+            AtsApiService.get().getBranchServiceIde().showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             handleCommittedWithMerge(branch);
          }
@@ -175,11 +174,11 @@ public class CommitXManager extends XViewer {
       }
       // change report
       if (result == 0) {
-         AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
+         AtsApiService.get().getBranchServiceIde().showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
       }
       // merge manager
       else {
-         AtsBranchManager.showMergeManager(xCommitManager.getTeamArt());
+         AtsApiService.get().getBranchServiceIde().showMergeManager(xCommitManager.getTeamArt());
       }
    }
 

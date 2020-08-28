@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.task.related.DerivedFromTaskData;
 import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.task.related.AbstractAtsTaskRelatedService;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.KindType;
@@ -44,7 +43,7 @@ public class AtsTaskRelatedService extends AbstractAtsTaskRelatedService {
 
    @Override
    public void getRelatedChangedArtifactFromChangeReport(DerivedFromTaskData trd) {
-      ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(
+      ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeDataFromEarliestTransactionId(
          (TeamWorkFlowArtifact) trd.getDerivedFromTeamWf().getStoreObject());
       getTaskRelatedData(trd, changeData);
    }

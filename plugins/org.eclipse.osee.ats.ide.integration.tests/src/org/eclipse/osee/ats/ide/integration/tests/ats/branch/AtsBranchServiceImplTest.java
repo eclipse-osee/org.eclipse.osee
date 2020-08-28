@@ -38,7 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test unit for {@AtsBranchServiceImpl}
+ * Test unit for {@AtsBranchServiceIdeImpl}
  *
  * @author Shawn F. Cook
  */

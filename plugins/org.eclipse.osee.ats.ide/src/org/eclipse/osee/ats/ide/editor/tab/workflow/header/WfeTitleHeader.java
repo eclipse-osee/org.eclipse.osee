@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 

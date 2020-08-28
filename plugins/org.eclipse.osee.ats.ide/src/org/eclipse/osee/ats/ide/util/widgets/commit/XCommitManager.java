@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -154,7 +153,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                               AtsApiService.get().getBranchService().getBranchesLeftToCommit(teamArt);
                            for (Iterator<BranchId> it = branches.iterator(); it.hasNext();) {
                               BranchId destinationBranch = it.next();
-                              IOperation operation = AtsBranchManager.commitWorkingBranch(teamArt, false, true,
+                              IOperation operation = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamArt, false, true,
                                  destinationBranch, !it.hasNext());
                               Operations.executeWorkAndCheckStatus(operation);
                            }

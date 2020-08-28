@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
+import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -38,5 +39,7 @@ public interface AtsApiIde extends AtsApi, IAtsNotifier {
    IAtsTaskServiceIde getTaskServiceIde();
 
    IAtsWorkItemServiceIde getWorkItemServiceIde();
+
+   AtsBranchServiceIde getBranchServiceIde();
 
 }

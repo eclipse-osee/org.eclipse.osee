@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -93,7 +92,7 @@ public class DemoTeamWorkflowTest {
       changes.execute();
 
       //*** Create a new workflow branch
-      Job createBranchJob = AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
+      Job createBranchJob = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamWf, true);
       createBranchJob.join();
 
       // verify working branch has title in it

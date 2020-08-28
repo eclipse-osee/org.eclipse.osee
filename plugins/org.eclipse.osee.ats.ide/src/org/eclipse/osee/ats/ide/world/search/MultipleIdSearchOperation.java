@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
-import org.eclipse.osee.ats.ide.branch.AtsBranchManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -141,7 +140,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             public void run() {
                for (Artifact art : addedArts) {
                   if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                     AtsBranchManager.showChangeReport((TeamWorkFlowArtifact) art);
+                     AtsApiService.get().getBranchServiceIde().showChangeReport((TeamWorkFlowArtifact) art);
                   }
                }
             }
@@ -163,7 +162,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                      return;
                   }
                   for (Object obj : dialog.getResult()) {
-                     AtsBranchManager.showChangeReport((TeamWorkFlowArtifact) obj);
+                     AtsApiService.get().getBranchServiceIde().showChangeReport((TeamWorkFlowArtifact) obj);
                   }
                }
             }

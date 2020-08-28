@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.ide.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -67,7 +66,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
                         "Committed branch already exists. Can not create another working branch once changes have been committed.");
                      return;
                   }
-                  AtsBranchUtil.createWorkingBranch(teamArt, parentTransactionId, true);
+                  AtsApiService.get().getBranchServiceIde().createWorkingBranch(teamArt, parentTransactionId, true);
                } else {
                   AWorkbench.popup("ERROR", "Must enter a Team Workflow ID");
                   return;
