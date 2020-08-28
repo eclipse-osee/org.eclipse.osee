@@ -26,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -198,6 +199,11 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.TEXT_HTML)
    String getViewTable(@QueryParam("filter") String filter);
 
+   @GET
+   @Path("matrix")
+   @Produces(MediaType.TEXT_HTML)
+   String getConfigMatrix(@QueryParam("matrixtype") String matrixType, @QueryParam("filter") String filter);
+
    /**
     * Set the applicability in osee_txs for the given artifacts. This affects whether the artifact is included in a
     * branch view.
@@ -246,5 +252,10 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
    XResultData isAccess();
+
+   @GET
+   @Path("featureMatrix")
+   @Produces(MediaType.APPLICATION_XML)
+   public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter);
 
 }

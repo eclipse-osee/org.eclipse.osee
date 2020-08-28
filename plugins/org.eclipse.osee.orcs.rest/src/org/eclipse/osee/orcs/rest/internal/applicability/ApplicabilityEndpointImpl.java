@@ -18,6 +18,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -38,6 +42,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
+import org.eclipse.osee.orcs.rest.internal.writer.ApplicabilityFeatureMatrixStreamingOutput;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -181,6 +186,15 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public String getConfigMatrix(String matrixType, String filter) {
+      String mType = "all";
+      if (matrixType != null) {
+         mType = matrixType;
+      }
+      return applicabilityQuery.getConfigMatrix(branch, mType, filter);
+   }
+
+   @Override
    public FeatureDefinition getFeature(String featureNameOrId) {
       return ops.getFeature(featureNameOrId, branch);
    }
@@ -315,4 +329,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    }
 
+   @Override
+   public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter) {
+      StreamingOutput streamingOutput = new ApplicabilityFeatureMatrixStreamingOutput(orcsApi, branchId, filter);
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      builder.header("Content-Disposition", "attachment; filename=" + "FeatureMatrix.xml");
+      return builder.build();
+   }
 }

@@ -258,6 +258,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public List<ArtifactToken> getConfigurationsForBranch(BranchId branch) {
+      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
+   }
+
+   @Override
    public List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch) {
       List<ArtifactToken> views =
          queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
@@ -297,14 +302,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
     */
    @Override
    public String getViewTable(BranchId branch, String filter) {
-      StringBuilder html = new StringBuilder(
-         "<!DOCTYPE html><html><head><style> table { border-spacing: 0px } th,td { padding: 3px; } </style></head><body>");
+      return getConfigMatrix(branch, "all", filter);
+   }
 
-      html.append(String.format("<h1>Features for branch [%s]</h1>",
-         branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+   private void printTable(StringBuilder html, List<ArtifactToken> branchViews, BranchId branch, String filter) {
       html.append("<table border=\"1\">");
-      List<ArtifactToken> branchViews = this.getViewsForBranch(branch);
-
       if (Strings.isValid(filter)) {
          branchViews.removeIf(art -> art.getName().matches(filter));
       }
@@ -339,8 +341,49 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          }
          html.append("</tr>");
       }
-      html.append("</table></body></html>");
+      html.append("</table>");
+   }
+
+   @Override
+   public String getConfigMatrix(BranchId branch, String matrixType, String filter) {
+      StringBuilder html = getHtmlStart();
+
+      List<ArtifactToken> branchViews = new ArrayList<ArtifactToken>();
+
+      if (matrixType.equals("configs")) {
+         html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
+            branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+         branchViews = this.getConfigurationsForBranch(branch);
+         printTable(html, branchViews, branch, filter);
+      } else if (matrixType.equals("groups")) {
+         html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
+            branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+         branchViews = this.getConfigurationGroupsForBranch(branch);
+         printTable(html, branchViews, branch, filter);
+      } else if (matrixType.equals("all")) {
+         html.append(String.format("<h3>Configurations and Groups Feature Matrix for branch: %s</h3>",
+            branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+         branchViews = this.getViewsForBranch(branch);
+         printTable(html, branchViews, branch, filter);
+      } else {
+         html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
+            branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+         branchViews = this.getConfigurationGroupsForBranch(branch);
+         printTable(html, branchViews, branch, filter);
+         html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
+            branchQuery.andId(branch).getResults().getExactlyOne().getName()));
+         branchViews = this.getConfigurationsForBranch(branch);
+         printTable(html, branchViews, branch, filter);
+      }
+
+      html.append("</body></html>");
       return html.toString();
+   }
+
+   private StringBuilder getHtmlStart() {
+      StringBuilder html = new StringBuilder(
+         "<!DOCTYPE html><html><head><style> table { border-spacing: 0px } th,td { padding: 3px; } </style></head><body>");
+      return html;
    }
 
    private void printColumnHeadings(StringBuilder html, List<ArtifactToken> branchViews, BranchId branch) {

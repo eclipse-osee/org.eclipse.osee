@@ -1070,6 +1070,12 @@ app
                         $scope.resetHtmlVarsAndFlags();
                      }
                      
+                     $scope.handleExportFeatureMatrix = function() {
+                    	 var url = '/orcs/branch/'+$scope.selectedBranch.id+'/applic/featureMatrix';
+                    	 var win = window.open(url, '_blank');
+                    	  win.focus();
+                    			 
+                    }
                      // //////////////////////////////////////
                      // Handle Show All Feature Columns
                      // //////////////////////////////////////

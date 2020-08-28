@@ -76,4 +76,8 @@ public interface ApplicabilityQuery {
    boolean applicabilityExistsOnBranchView(BranchId branch, ArtifactId viewId, String applicability);
 
    List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch);
+
+   String getConfigMatrix(BranchId branch, String matrixtype, String filter);
+
+   List<ArtifactToken> getConfigurationsForBranch(BranchId branch);
 }
