@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.disposition.rest.integration.util;
 
-import org.eclipse.osee.disposition.rest.DispoOseeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 
 /**
  * @author Angel Avila

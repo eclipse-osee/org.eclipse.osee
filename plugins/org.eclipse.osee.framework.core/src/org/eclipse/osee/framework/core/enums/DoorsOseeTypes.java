@@ -10,11 +10,11 @@
  * Contributors:
  *     Robert Bosch Engineering and Business Solutions Ltd India - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.doors.connector.ui.handler;
+package org.eclipse.osee.framework.core.enums;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static org.eclipse.osee.doors.connector.ui.handler.DoorsTypeTokenProvider.doors;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
+import static org.eclipse.osee.framework.core.enums.DoorsTypeTokenProvider.doors;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 
@@ -35,8 +35,6 @@ public interface DoorsOseeTypes {
    AttributeTypeString DoorReqModuleName = doors.createString(5764607523034243076L, "Door Req Module Name", TEXT_PLAIN, "");
    AttributeTypeString DoorReqName = doors.createString(5764607523034243075L, "Door Req Name", TEXT_PLAIN, "");
    AttributeTypeString DoorReqUrl = doors.createString(8198L, "Door Req URL", TEXT_PLAIN, "");
-
-
 
    ArtifactTypeToken DoorsRequirement = doors.add(doors.artifactType(5764607523034243073L, "Doors Requirement", false, Requirement)
       .zeroOrOne(DoorReqDatabaseName, "")

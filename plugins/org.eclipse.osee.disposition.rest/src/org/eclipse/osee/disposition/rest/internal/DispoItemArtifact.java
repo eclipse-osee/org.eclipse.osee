@@ -19,8 +19,8 @@ import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.rest.DispoOseeTypes;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 

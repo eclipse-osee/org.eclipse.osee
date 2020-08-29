@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.disposition.rest;
+package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageOseeTypes;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
@@ -21,14 +20,14 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 /**
  * @author Ryan D. Brooks
  */
-public final class DispoTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   public static final NamespaceToken DISPO =
-      NamespaceToken.valueOf(4, "dispo", "Namespace for dispo system and content management types");
+public final class DoorsTypeTokenProvider extends OrcsTypeTokenProviderBase {
+   public static final NamespaceToken DOORS =
+      NamespaceToken.valueOf(7, "doors", "Namespace for doors system and content management types");
 
-   public static final OrcsTypeTokens dispo = new OrcsTypeTokens(DISPO);
+   public static final OrcsTypeTokens doors = new OrcsTypeTokens(DOORS);
 
-   public DispoTypeTokenProvider() {
-      super(dispo);
-      loadClasses(DispoOseeTypes.DISPO_ARTIFACT, CoverageOseeTypes.Assignees);
+   public DoorsTypeTokenProvider() {
+      super(doors);
+      loadClasses(DoorsOseeTypes.DoorReqId);
    }
 }

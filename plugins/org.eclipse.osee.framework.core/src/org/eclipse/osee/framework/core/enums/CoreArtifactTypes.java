@@ -294,10 +294,10 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Zip, ""));
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup, "false"));
-   ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .any(DoorsId, "")
       .zeroOrOne(DoorsHierarchy, ""));
-   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
+   ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
       .any(DoorsId, "")
       .zeroOrOne(DoorsHierarchy, ""));
    ArtifactTypeToken SubscriptionGroup = osee.add(osee.artifactType(6753071794573299176L, "Subscription Group", false, UserGroup));

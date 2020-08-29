@@ -10,8 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
-package org.eclipse.osee.doors.connector.ui.handler;
+package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
@@ -20,14 +19,14 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 /**
  * @author Ryan D. Brooks
  */
-public final class DoorsTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   private static final NamespaceToken DOORS =
-      NamespaceToken.valueOf(7, "doors", "Namespace for doors system and content management types");
+public final class OAuthTypeTokenProvider extends OrcsTypeTokenProviderBase {
+   public static final NamespaceToken OAUTH =
+      NamespaceToken.valueOf(6, "oauth", "Namespace for oauth system and content management types");
 
-   public static final OrcsTypeTokens doors = new OrcsTypeTokens(DOORS);
+   public static final OrcsTypeTokens oauth = new OrcsTypeTokens(OAUTH);
 
-   public DoorsTypeTokenProvider() {
-      super(doors);
-      loadClasses(DoorsOseeTypes.DoorReqId);
+   public OAuthTypeTokenProvider() {
+      super(oauth);
+      loadClasses(OAuthOseeTypes.OAuthClient);
    }
 }

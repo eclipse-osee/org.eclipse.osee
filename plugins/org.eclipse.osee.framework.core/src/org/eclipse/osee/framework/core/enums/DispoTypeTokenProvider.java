@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.orcs.account.admin.internal.oauth;
+
+package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeTokenProviderBase;
@@ -19,14 +20,14 @@ import org.eclipse.osee.framework.core.data.OrcsTypeTokens;
 /**
  * @author Ryan D. Brooks
  */
-public final class OAuthTypeTokenProvider extends OrcsTypeTokenProviderBase {
-   public static final NamespaceToken OAUTH =
-      NamespaceToken.valueOf(6, "oauth", "Namespace for oauth system and content management types");
+public final class DispoTypeTokenProvider extends OrcsTypeTokenProviderBase {
+   public static final NamespaceToken DISPO =
+      NamespaceToken.valueOf(4, "dispo", "Namespace for dispo system and content management types");
 
-   public static final OrcsTypeTokens oauth = new OrcsTypeTokens(OAUTH);
+   public static final OrcsTypeTokens dispo = new OrcsTypeTokens(DISPO);
 
-   public OAuthTypeTokenProvider() {
-      super(oauth);
-      loadClasses(OAuthOseeTypes.OAuthClient);
+   public DispoTypeTokenProvider() {
+      super(dispo);
+      loadClasses(DispoOseeTypes.DISPO_ARTIFACT, CoverageOseeTypes.Assignees);
    }
 }

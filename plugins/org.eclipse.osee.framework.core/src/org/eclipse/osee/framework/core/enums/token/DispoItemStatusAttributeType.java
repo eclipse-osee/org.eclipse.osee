@@ -11,15 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.disposition.rest.enums.token;
+package org.eclipse.osee.framework.core.enums.token;
 
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.disposition.rest.DispoTypeTokenProvider;
-import org.eclipse.osee.disposition.rest.enums.token.DispoItemStatusAttributeType.DispoItemStatusEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
+import org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.token.DispoItemStatusAttributeType.DispoItemStatusEnum;
 
 /**
  * @author Stephen J. Molaro

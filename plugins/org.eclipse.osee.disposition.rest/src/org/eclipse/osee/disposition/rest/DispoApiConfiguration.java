@@ -14,6 +14,7 @@
 package org.eclipse.osee.disposition.rest;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 
 /**
  * @author Dominic A. Guss

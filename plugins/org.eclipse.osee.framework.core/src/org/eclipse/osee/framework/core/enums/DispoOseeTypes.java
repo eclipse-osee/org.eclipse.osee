@@ -11,22 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.disposition.rest;
+package org.eclipse.osee.framework.core.enums;
 
-import static org.eclipse.osee.disposition.rest.DispoTypeTokenProvider.dispo;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.dispo;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.disposition.rest.enums.token.DispoImportStateAttributeType;
-import org.eclipse.osee.disposition.rest.enums.token.DispoItemStatusAttributeType;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.token.DispoImportStateAttributeType;
+import org.eclipse.osee.framework.core.enums.token.DispoItemStatusAttributeType;
 
 /**
  * @author Angel Avila

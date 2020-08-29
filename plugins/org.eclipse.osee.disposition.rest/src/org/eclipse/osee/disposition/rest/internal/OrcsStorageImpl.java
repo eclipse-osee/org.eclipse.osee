@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.disposition.rest.DispoOseeTypes.DISPO_ARTIFACT;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DispoOseeTypes.DISPO_ARTIFACT;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +36,6 @@ import org.eclipse.osee.disposition.model.DispoStorageMetadata;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.disposition.rest.DispoOseeTypes;
-import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageOseeTypes;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -50,6 +48,8 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoverageOseeTypes;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;

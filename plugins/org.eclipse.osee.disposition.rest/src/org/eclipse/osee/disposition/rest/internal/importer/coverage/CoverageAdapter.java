@@ -28,6 +28,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
+import org.eclipse.osee.framework.core.enums.CoverageOseeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

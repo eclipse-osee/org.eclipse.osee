@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthOseeTypes.OAuthClient;
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthOseeTypes.OAUTH_TYPES;
+import static org.eclipse.osee.framework.core.enums.OAuthOseeTypes.OAUTH_TYPES;
+import static org.eclipse.osee.framework.core.enums.OAuthOseeTypes.OAuthClient;
 import com.google.common.io.ByteSource;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.OAuthOseeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

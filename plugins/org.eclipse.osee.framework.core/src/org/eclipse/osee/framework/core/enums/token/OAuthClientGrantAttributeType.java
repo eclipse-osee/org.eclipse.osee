@@ -11,15 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token;
+package org.eclipse.osee.framework.core.enums.token;
 
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypeTokenProvider;
-import org.eclipse.osee.orcs.account.admin.internal.oauth.enums.token.OAuthClientGrantAttributeType.OAuthClientGrantEnum;
+import org.eclipse.osee.framework.core.enums.OAuthTypeTokenProvider;
+import org.eclipse.osee.framework.core.enums.token.OAuthClientGrantAttributeType.OAuthClientGrantEnum;
 
 /**
  * @author Stephen J. Molaro

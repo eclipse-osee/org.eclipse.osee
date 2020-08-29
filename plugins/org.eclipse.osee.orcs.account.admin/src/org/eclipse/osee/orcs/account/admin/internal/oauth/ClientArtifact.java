@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.OAuthOseeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
