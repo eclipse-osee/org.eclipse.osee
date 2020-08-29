@@ -19,8 +19,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.result.table.XResultTable;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -331,5 +333,24 @@ public class XResultData {
 
    public void setTables(List<XResultTable> tables) {
       this.tables = tables;
+   }
+
+   public void addResultsTag() {
+      log("PUT_RESULTS_HERE");
+   }
+
+   @JsonIgnore
+   public String getHtml() {
+      String html = toString();
+      html = AHTML.textToHtml(html);
+      html = html.replaceFirst("PUT_RESULTS_HERE", getResultsString());
+      html = html.replaceAll("Error:", Matcher.quoteReplacement(AHTML.color("RED", "Error:")));
+      html = html.replaceAll("Warning:", Matcher.quoteReplacement(AHTML.color("BLUE", "Warning:")));
+      html = html.replaceAll("\n", "<br/>");
+      return html;
+   }
+
+   private String getResultsString() {
+      return String.format("Error: %s, Warning: %s", getErrorCount(), getWarningCount());
    }
 }

@@ -94,6 +94,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    ExternalArtifactManager proxyManager;
 
+   // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService) {
+   // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi) {
+
    public void setLogger(Log logger) {
       this.logger = logger;
    }

@@ -47,6 +47,10 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    private final Account bootstrapAccount = null;
    private final Supplier<ResultSet<Account>> anonymousAccountSupplier = Suppliers.memoize(getAnonymousSupplier());
 
+   // for ReviewOsgiXml public void setLogger(Log logger) {
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi) {
+   // for ReviewOsgiXml public void setAccountFactory(AccountFactory factory) {
+
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
    }

@@ -34,6 +34,8 @@ import org.osgi.framework.BundleContext;
  */
 public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
 
+   // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
+
    public AtsEventServiceIdeImpl() {
       // for jax-rs instantiation
    }

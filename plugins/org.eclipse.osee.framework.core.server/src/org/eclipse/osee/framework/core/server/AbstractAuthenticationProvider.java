@@ -37,7 +37,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       this.logger = logger;
    }
 
-   protected Log getLogger() {
+   public Log getLogger() {
       return logger;
    }
 

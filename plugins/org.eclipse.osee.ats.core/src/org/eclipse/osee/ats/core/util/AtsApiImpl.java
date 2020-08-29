@@ -166,6 +166,10 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       searchDataProviders.remove(provider);
    }
 
+   public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
+      this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
+   }
+
    public void start() {
 
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
@@ -543,10 +547,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
          taskSetDefinitionProviderService = new AtsTaskSetDefinitionProviderService();
       }
       return taskSetDefinitionProviderService;
-   }
-
-   public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
-      this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
    }
 
    @Override

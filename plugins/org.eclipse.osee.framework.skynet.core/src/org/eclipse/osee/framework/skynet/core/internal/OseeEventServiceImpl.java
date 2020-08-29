@@ -261,12 +261,12 @@ public class OseeEventServiceImpl implements OseeEventService {
    }
 
    @Override
-   public void addListener(EventQosType qos, IEventListener listener) {
+   public void addListener(EventQosType qos, IEventListener listener) { // ReviewOsgiXml.IgnoreLine
       listeners.addListener(qos, listener);
    }
 
    @Override
-   public void removeListener(EventQosType qos, IEventListener listener) {
+   public void removeListener(EventQosType qos, IEventListener listener) { // ReviewOsgiXml.IgnoreLine
       listeners.removeListener(qos, listener);
    }
 

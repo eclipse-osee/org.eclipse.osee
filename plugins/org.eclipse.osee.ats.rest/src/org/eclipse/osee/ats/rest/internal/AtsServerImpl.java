@@ -101,6 +101,15 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       notifiers.remove(notifier);
    }
 
+   // for ReviewOsgiXml public void setAtsEventService(IAtsEventService eventService)
+   // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService)
+   // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
+   // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
+   // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
+   // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
+
    @Override
    public void start() {
       configurationsService = new AtsConfigurationsService(this, orcsApi);
@@ -117,8 +126,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
 
-      storeService =
-         new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory, this);
+      storeService = new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory, this);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);

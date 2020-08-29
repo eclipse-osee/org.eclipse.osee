@@ -25,6 +25,8 @@ public class AtsEventServiceServerImpl extends AbstractAtsEventServiceImpl {
       // for jax-rs instantiation
    }
 
+   // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
+
    @Override
    public BundleContext getBundleContext(String pluginId) {
       throw new UnsupportedOperationException("Not supported on server.");

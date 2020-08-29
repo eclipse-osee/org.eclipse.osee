@@ -25,6 +25,11 @@ import org.osgi.framework.ServiceReference;
  */
 public final class JaxRsProvidersManager extends JaxRsDynamicServiceManager<Object> {
 
+   // for ReviewOsgiXml public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry)
+   // for ReviewOsgiXml public void addObject(ServiceReference<T> reference) {
+   // for ReviewOsgiXml public void removeObject(ServiceReference<T> reference) {
+   // for ReviewOsgiXml public void unsetJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
+
    @Override
    public void register(JaxRsApplicationRegistry registry, ServiceReference<Object> reference) {
       String componentName = JaxRsUtils.getComponentName(reference);

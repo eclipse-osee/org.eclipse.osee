@@ -26,6 +26,13 @@ public final class JaxRsApplicationManager extends JaxRsDynamicServiceManager<Ap
 
    private JaxRsConfiguration config;
 
+   // for ReviewOsgiXml public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry)
+   // for ReviewOsgiXml public void addObject(ServiceReference<T> reference)
+   // for ReviewOsgiXml public void removeObject(ServiceReference<T> reference)
+   // for ReviewOsgiXml public void addApplication(ServiceReference<T> reference)
+   // for ReviewOsgiXml public void removeApplication(ServiceReference<T> reference)
+   // for ReviewOsgiXml public void unsetJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
+
    @Override
    public void update(Map<String, Object> props) {
       super.update(props);

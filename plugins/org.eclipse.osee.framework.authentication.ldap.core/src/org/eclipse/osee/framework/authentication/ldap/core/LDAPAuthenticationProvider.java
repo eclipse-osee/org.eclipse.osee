@@ -36,6 +36,9 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
    private final String LDAP_SERVER_PREFIX = "ldap://";
    private LDAPConnector connector;
 
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
+
    /**
     * This function runs only if the user is authenticated and returns a user token from the user data store.
     *

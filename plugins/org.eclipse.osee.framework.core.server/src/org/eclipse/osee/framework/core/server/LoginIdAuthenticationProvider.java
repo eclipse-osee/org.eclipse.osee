@@ -38,6 +38,9 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
 
    private JdbcService jdbcService;
 
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
+
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
    }

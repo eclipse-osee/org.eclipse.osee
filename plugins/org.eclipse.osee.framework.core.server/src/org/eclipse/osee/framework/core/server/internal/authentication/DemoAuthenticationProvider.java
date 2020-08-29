@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
    private final boolean autoAuthenticate = true;
 
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
+
    @Override
    public UserToken asOseeUserId(OseeCredential credential) {
       for (UserToken token : DemoUsers.values()) {

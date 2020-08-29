@@ -26,6 +26,9 @@ public class ConsolidateRelationsCommand extends AbstractDatastoreConsoleCommand
 
    private SqlJoinFactory joinFactory;
 
+   // for ReviewOsgiXml public void setLogger(Log logger) {
+   // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService) {
+
    public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
       this.joinFactory = joinFactory;
    }

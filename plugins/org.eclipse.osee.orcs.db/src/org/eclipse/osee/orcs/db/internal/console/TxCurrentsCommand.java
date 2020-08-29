@@ -23,6 +23,9 @@ import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsOpFactory;
  */
 public class TxCurrentsCommand extends AbstractDatastoreConsoleCommand {
 
+   // for ReviewOsgiXml public void setLogger(Log logger) {
+   // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService) {
+
    @Override
    public String getName() {
       return "db_tx_currents";

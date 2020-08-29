@@ -15,5 +15,4 @@
    <reference bind="setWorkDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProviderService" name="IAtsWorkDefinitionProviderService" policy="static"/>
    <reference bind="setTaskSetDefinitionProviderService" cardinality="1..1" interface="org.eclipse.osee.ats.api.task.create.IAtsTaskSetDefinitionProviderService" name="IAtsTaskSetDefinitionProviderService" policy="static"/>
    <reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>
-   <reference bind="setJaxRsApi" cardinality="1..1" interface="org.eclipse.osee.framework.core.JaxRsApi" name="jaxRsApi" policy="static"/>
 </scr:component>

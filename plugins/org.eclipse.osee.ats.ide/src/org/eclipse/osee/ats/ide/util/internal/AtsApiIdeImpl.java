@@ -102,6 +102,18 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       Jobs.startJob(loadAtsConfig);
    }
 
+   // for ReviewOsgiXml public void setJdbcService(JdbcService jdbcService)
+   // for ReviewOsgiXml public void setEventAdmin(EventAdmin eventAdmin)
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setAtsEventService(IAtsEventService eventService)
+   // for ReviewOsgiXml public void setWorkDefinitionProviderService(IAtsWorkDefinitionProviderService workDefinitionProviderService)
+   // for ReviewOsgiXml public void setAtsUserService(IAtsUserService userServiceClient)
+   // for ReviewOsgiXml public void addSearchDataProvider(IAtsSearchDataProvider provider)
+   // for ReviewOsgiXml public void removeSearchDataProvider(IAtsSearchDataProvider provider) {
+   // for ReviewOsgiXml public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService)
+   // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
+   // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
+
    @Override
    public void start() {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
@@ -321,6 +333,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       return UserGroupService.instance();
    }
 
+   @Override
    public AtsBranchServiceIde getBranchServiceIde() {
       if (branchServiceIde == null) {
          branchServiceIde = new AtsBranchServiceIdeImpl();

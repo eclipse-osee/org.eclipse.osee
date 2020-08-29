@@ -27,8 +27,7 @@ import org.osgi.framework.ServiceReference;
 public abstract class JaxRsDynamicServiceManager<T> {
 
    private final List<ServiceReference<T>> pendingReg = new ArrayList<>();
-   private final AtomicReference<JaxRsApplicationRegistry> registryRef =
-      new AtomicReference<>();
+   private final AtomicReference<JaxRsApplicationRegistry> registryRef = new AtomicReference<>();
 
    public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
       registryRef.set(registry);
@@ -73,7 +72,17 @@ public abstract class JaxRsDynamicServiceManager<T> {
       //
    }
 
-   public void addService(ServiceReference<T> reference) {
+   // for ReviewOsgiXml
+   public void addApplication(ServiceReference<T> reference) {
+      addObject(reference);
+   }
+
+   // for ReviewOsgiXml
+   public void removeApplication(ServiceReference<T> reference) {
+      removeObject(reference);
+   }
+
+   public void addObject(ServiceReference<T> reference) {
       JaxRsApplicationRegistry registry = getRegistry();
       if (registry != null) {
          register(registry, reference);
@@ -84,7 +93,7 @@ public abstract class JaxRsDynamicServiceManager<T> {
       }
    }
 
-   public void removeService(ServiceReference<T> reference) {
+   public void removeObject(ServiceReference<T> reference) {
       JaxRsApplicationRegistry registry = getRegistry();
       if (registry != null) {
          deregister(registry, reference);

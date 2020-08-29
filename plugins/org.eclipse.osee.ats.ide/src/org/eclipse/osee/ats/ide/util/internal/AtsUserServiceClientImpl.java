@@ -33,6 +33,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
       // For OSGI Instantiation
    }
 
+   // for ReviewOsgiXml public void setConfigurationService(IAtsConfigurationsService configurationService)
+
    @Override
    public void setCurrentUser(AtsUser currentUser) {
       this.currentUser = currentUser;

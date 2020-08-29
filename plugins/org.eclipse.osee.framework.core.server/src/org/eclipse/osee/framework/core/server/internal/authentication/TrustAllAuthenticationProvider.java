@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TrustAllAuthenticationProvider extends AbstractAuthenticationProvider {
 
+   // for ReviewOsgiXml public void setLogger(Log logger)
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
+
    @Override
    public boolean authenticate(OseeCredential credential) {
       return true;

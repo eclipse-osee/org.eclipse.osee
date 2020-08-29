@@ -35,6 +35,10 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements SubscriptionStorage {
 
+   // for ReviewOsgiXml public void setLogger(Log logger) {
+   // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi) {
+   // for ReviewOsgiXml public void setAccountFactory(AccountFactory factory) {
+
    @Override
    public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
       ResultSet<ArtifactReadable> accountResults =
