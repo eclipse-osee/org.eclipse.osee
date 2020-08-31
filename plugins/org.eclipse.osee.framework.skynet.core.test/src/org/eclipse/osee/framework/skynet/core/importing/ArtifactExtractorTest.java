@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -157,7 +158,7 @@ public class ArtifactExtractorTest {
 
    @org.junit.Test
    public void testProcessing() throws Exception {
-      RoughArtifact parent = new RoughArtifact(RoughArtifactKind.PRIMARY);
+      RoughArtifact parent = new RoughArtifact(CoreArtifactTypes.Artifact);
       RoughArtifactCollector actualCollector = new RoughArtifactCollector(parent);
       RoughArtifactCollector expectedCollector = new RoughArtifactCollector(parent);
       for (ParseTestData testData : getParseTestData()) {
@@ -289,8 +290,8 @@ public class ArtifactExtractorTest {
       // Randomly generated - just check the format
       Assert.assertTrue(GUID.isValid(actual.getGuid()));
       Assert.assertEquals(expected.getName(), actual.getName());
-      Assert.assertEquals(expected.getPrimaryArtifactType(), actual.getPrimaryArtifactType());
-      Assert.assertEquals(expected.getRoughArtifactKind(), actual.getRoughArtifactKind());
+      Assert.assertEquals(expected.getArtifactType(), actual.getArtifactType());
+      Assert.assertEquals(expected.getArtifactType(), actual.getArtifactType());
       Assert.assertEquals(expected.getRoughParent(), actual.getRoughParent());
 
       Assert.assertEquals(expected.getAttributes(), actual.getAttributes());

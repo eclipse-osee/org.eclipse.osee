@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -59,7 +59,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
          if (file.isFile()) {
             processFile(file, collector, parentArtifact);
          } else if (file.isDirectory()) {
-            RoughArtifact directoryArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, file.getName());
+            RoughArtifact directoryArtifact = new RoughArtifact(CoreArtifactTypes.Folder, file.getName());
             collector.addChildRoughArtifact(directoryArtifact);
             File[] subFiles = file.listFiles(extractor.getFileFilter());
             if (files.length > 0) {

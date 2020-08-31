@@ -20,7 +20,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
- * @see RoughArtifactTest
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
@@ -36,21 +34,23 @@ public class RoughArtifact {
    private RoughArtifact roughParent;
    private ReqNumbering number;
    private String guid;
-   private RoughArtifactKind roughArtifactKind;
+   private ArtifactTypeToken artifactType;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
-   private ArtifactTypeToken primaryArtifactType;
-   private ArtifactTypeToken type = ArtifactTypeToken.SENTINEL;
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
+   public RoughArtifact(ArtifactTypeToken artifactType, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<>();
-      this.roughArtifactKind = roughArtifactKind;
+      this.artifactType = artifactType;
       setName(name);
    }
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
-      this(roughArtifactKind, "unnamed");
+   public RoughArtifact(ArtifactTypeToken artifactType) {
+      this(artifactType, "unnamed");
+   }
+
+   public RoughArtifact() {
+      this(ArtifactTypeToken.SENTINEL);
    }
 
    public void setName(String name) {
@@ -63,7 +63,6 @@ public class RoughArtifact {
       guid = null;
       number = null;
       roughParent = null;
-      primaryArtifactType = null;
    }
 
    public Set<String> getAttributeTypeNames() {
@@ -140,8 +139,8 @@ public class RoughArtifact {
    private boolean isMultipleEnum(String typeName, String value) {
       boolean result = false;
       try {
-         AttributeType type = AttributeTypeManager.getType(typeName);
-         if (type.isEnumerated() && type.getMaxOccurrences() > 1 && value.contains(",")) {
+         AttributeTypeToken attributeType = AttributeTypeManager.getType(typeName);
+         if (attributeType.isEnumerated() && artifactType.getMax(attributeType) > 1 && value.contains(",")) {
             result = true;
          }
       } catch (OseeCoreException ex) {
@@ -193,12 +192,8 @@ public class RoughArtifact {
       return guid;
    }
 
-   public RoughArtifactKind getRoughArtifactKind() {
-      return roughArtifactKind;
-   }
-
-   public void setRoughArtifactKind(RoughArtifactKind roughArtifactKind) {
-      this.roughArtifactKind = roughArtifactKind;
+   public ArtifactTypeToken getArtifactType() {
+      return artifactType;
    }
 
    public String getName() {
@@ -209,19 +204,7 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public ArtifactTypeToken getPrimaryArtifactType() {
-      return primaryArtifactType;
-   }
-
-   public void setPrimaryArtifactType(ArtifactTypeToken primaryArtifactType) {
-      this.primaryArtifactType = primaryArtifactType;
-   }
-
-   public ArtifactTypeToken getType() {
-      return type;
-   }
-
-   public void setType(ArtifactTypeToken type) {
-      this.type = type;
+   public void setArtifactType(ArtifactTypeToken artifactType) {
+      this.artifactType = artifactType;
    }
 }

@@ -57,7 +57,6 @@ import org.junit.runners.Suite;
    RelationFilterUtilTest.class,
    RelationOrderingTest.class,
    RelationOrderMergeUtilityTest.class,
-   RoughArtifactTest.class,
    SkynetTransactionTest.class,
    TransactionEventLocalTest.class,
    TransactionEventRemoteTest.class,

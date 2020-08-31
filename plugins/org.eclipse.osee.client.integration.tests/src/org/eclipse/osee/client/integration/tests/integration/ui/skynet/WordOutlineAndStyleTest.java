@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
@@ -168,7 +167,7 @@ public final class WordOutlineAndStyleTest {
          IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(
             ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID, CoreArtifactTypes.HeadingMsWord, null, true, true);
 
-         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(CoreArtifactTypes.Artifact));
          collector.reset();
 
          IArtifactExtractor extractor = new WordOutlineExtractor();

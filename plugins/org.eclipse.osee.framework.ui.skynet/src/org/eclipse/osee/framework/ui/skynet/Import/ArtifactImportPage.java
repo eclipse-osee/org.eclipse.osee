@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
@@ -95,7 +94,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       super(PAGE_NAME);
       selectedArtifactTypes = new ArrayList<>();
       selectionLatch = new SelectionLatch();
-      collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+      collector = new RoughArtifactCollector(new RoughArtifact());
       artifactSelectPanel = new ArtifactSelectPanel();
       artifactSelectPanel.setDialogTitle("Select Destination Artifact");
       artifactSelectPanel.setDialogMessage(

@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.client.demo.DemoOseeTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -82,17 +84,17 @@ public class DoorsArtifactExtractorTest {
       "Verification Level",
       IMAGE_CONTENT};
 
-   private static final RoughArtifactKind[] ARTIFACT_TYPES = {
-      RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.PRIMARY};
+   private static final ArtifactTypeToken[] ARTIFACT_TYPES = {
+      CoreArtifactTypes.HtmlArtifact,
+      CoreArtifactTypes.HtmlArtifact,
+      CoreArtifactTypes.HeadingHtml,
+      CoreArtifactTypes.HeadingHtml,
+      CoreArtifactTypes.HtmlArtifact,
+      CoreArtifactTypes.HeadingHtml,
+      CoreArtifactTypes.HeadingHtml,
+      CoreArtifactTypes.HtmlArtifact,
+      CoreArtifactTypes.HtmlArtifact,
+      CoreArtifactTypes.HtmlArtifact};
 
    private static final String DOCUMENT_APPLICABILITY = "Document 1";
 
@@ -152,8 +154,8 @@ public class DoorsArtifactExtractorTest {
          String actualName = artifact.getName();
          assertEquals("Artifact Name is incorrect", expectedName, actualName);
 
-         RoughArtifactKind expectedType = ARTIFACT_TYPES[index];
-         RoughArtifactKind actualType = artifact.getRoughArtifactKind();
+         ArtifactTypeToken expectedType = ARTIFACT_TYPES[index];
+         ArtifactTypeToken actualType = artifact.getArtifactType();
          assertEquals("Artifact Type is incorrect", expectedType, actualType);
 
          /***********************************************************

@@ -13,16 +13,17 @@
 
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HtmlArtifact;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Queue;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
 /**
  * @author David W. Miller
@@ -61,14 +62,10 @@ public class DoorsArtifactBuilder {
    }
 
    private RoughArtifact initRoughArtifact(DoorsTableRow dr) {
-      RoughArtifactKind rk = kindFromDataType(dr);
-      RoughArtifact toReturn = new RoughArtifact(rk, rowCollector.getPreferredName(dr));
+      RoughArtifact toReturn = new RoughArtifact(kindFromDataType(dr), rowCollector.getPreferredName(dr));
       String paragraph = rowCollector.getSimpleText(dr, DoorsColumnType.OBJECT_NUMBER);
       toReturn.setSectionNumber(paragraph);
       toReturn.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraph);
-      if (rk == RoughArtifactKind.SECONDARY) {
-         toReturn.setPrimaryArtifactType(CoreArtifactTypes.HeadingHtml);
-      }
       String guidString = rowCollector.getSimpleText(dr, DoorsColumnType.GUID);
 
       if (!GUID.isValid(guidString) && dr.isMainRow()) {
@@ -118,19 +115,13 @@ public class DoorsArtifactBuilder {
       }
    }
 
-   private RoughArtifactKind kindFromDataType(DoorsTableRow dr) {
-      RoughArtifactKind kind = null;
+   private ArtifactTypeToken kindFromDataType(DoorsTableRow dr) {
       DoorsDataType dt = dr.getDataType();
-      switch (dt) {
-         case HEADER:
-         case HEADING:
-            kind = RoughArtifactKind.SECONDARY;
-            break;
-         default:
-            kind = RoughArtifactKind.PRIMARY;
-            break;
+      if (dt.equals(DoorsDataType.HEADER) || dt.equals(DoorsDataType.HEADING)) {
+         return CoreArtifactTypes.HeadingHtml;
+      } else {
+         return CoreArtifactTypes.HtmlArtifact;
       }
-      return kind;
    }
 
    private void combineDoorsArtifacts(RoughArtifact combined, RoughArtifact add) {
@@ -148,9 +139,8 @@ public class DoorsArtifactBuilder {
    }
 
    private void mergeArtifactKind(RoughArtifact combined, RoughArtifact add) {
-      if (add.getRoughArtifactKind().equals(RoughArtifactKind.PRIMARY)) {
-         combined.setPrimaryArtifactType(CoreArtifactTypes.HtmlArtifact);
-         combined.setRoughArtifactKind(RoughArtifactKind.PRIMARY);
+      if (add.getArtifactType().equals(HtmlArtifact)) {
+         combined.setArtifactType(HtmlArtifact);
       }
    }
 

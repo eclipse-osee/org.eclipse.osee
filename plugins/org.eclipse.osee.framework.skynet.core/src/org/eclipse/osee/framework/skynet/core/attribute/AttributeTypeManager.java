@@ -111,8 +111,8 @@ public class AttributeTypeManager {
    /**
     * @throws OseeTypeDoesNotExist if it does not exist.
     */
-   public static AttributeType getType(String name) {
-      return getCache().getByName(name);
+   public static AttributeTypeToken getType(String name) {
+      return getTokenService().getAttributeType(name);
    }
 
    public static int getMinOccurrences(AttributeTypeId attributeType) {

@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -321,7 +320,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String outlineNumber, OperationLogger logger) {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(outlineNumber);
       if (duplicateArtifact == null) {
-         RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
+         RoughArtifact roughArtifact = new RoughArtifact();
          duplicateCatcher.put(outlineNumber, roughArtifact);
 
          if (collector != null) {

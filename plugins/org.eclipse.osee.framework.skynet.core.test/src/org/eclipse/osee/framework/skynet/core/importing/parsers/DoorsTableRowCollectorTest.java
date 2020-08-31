@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.jsoup.select.Elements;
 import org.junit.Assert;
@@ -50,7 +49,7 @@ public final class DoorsTableRowCollectorTest {
 
    @Test(expected = OseeStateException.class)
    public void testCreateArtifactsEmpty() {
-      RoughArtifact roughParent = new RoughArtifact(RoughArtifactKind.CONTAINER);
+      RoughArtifact roughParent = new RoughArtifact();
       RoughArtifactCollector collector = new RoughArtifactCollector(roughParent);
       dtc.createArtifacts(collector);
       // exception because there is no data

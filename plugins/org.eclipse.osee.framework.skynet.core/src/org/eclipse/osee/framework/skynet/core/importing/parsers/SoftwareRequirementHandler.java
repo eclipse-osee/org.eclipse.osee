@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 
 /**
  * @author Robert A. Fisher
@@ -47,7 +47,7 @@ public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDel
       }
 
       if (!isRequirement) {
-         roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
+         roughArtifact.setArtifactType(CoreArtifactTypes.HeadingMsWord);
       }
 
       roughArtifact.setName(text.toString().trim());

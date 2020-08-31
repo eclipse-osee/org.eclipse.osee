@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
- * @see RoughArtifactTest
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  * @author David W. Miller

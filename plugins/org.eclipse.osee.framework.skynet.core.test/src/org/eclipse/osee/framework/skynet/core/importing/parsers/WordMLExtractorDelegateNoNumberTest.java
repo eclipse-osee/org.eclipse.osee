@@ -14,9 +14,9 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.net.URL;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.StringOperationLogger;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public final class WordMLExtractorDelegateNoNumberTest {
    public void testBadNumbering() throws Exception {
       StringOperationLogger logger = new StringOperationLogger();
       URL url = getClass().getResource(NUMBERING_PROBLEM_FILE);
-      RoughArtifact parent = new RoughArtifact(RoughArtifactKind.PRIMARY);
+      RoughArtifact parent = new RoughArtifact(CoreArtifactTypes.Artifact);
       RoughArtifactCollector collector = new RoughArtifactCollector(parent);
       extractor.extractFromSource(logger, url.toURI(), collector);
    }

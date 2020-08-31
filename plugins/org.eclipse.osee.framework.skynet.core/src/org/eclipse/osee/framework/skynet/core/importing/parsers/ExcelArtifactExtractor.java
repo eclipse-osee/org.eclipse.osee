@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.RoughRelation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -187,7 +186,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             }
             collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
-            RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
+            RoughArtifact roughArtifact = new RoughArtifact(primaryDescriptor);
             if (!rowIndexToRowTypeMap.isEmpty()) {
                for (int rowIndex = 0; rowIndex < row.length; rowIndex++) {
                   RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);

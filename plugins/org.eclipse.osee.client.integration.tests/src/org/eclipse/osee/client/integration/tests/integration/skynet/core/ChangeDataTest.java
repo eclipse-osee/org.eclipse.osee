@@ -24,13 +24,13 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -67,7 +67,8 @@ public class ChangeDataTest {
       workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName());
       ArrayList<Change> theChanges = new ArrayList<>();
 
-      Artifact artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
+      Artifact artifactStart =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);
       Artifact artifactEnd = artifactStart.duplicate(workingBranch);
       artifactStart.setName("test artifact 1");
       artifactEnd.setName("test artifact 1");
@@ -100,7 +101,7 @@ public class ChangeDataTest {
          "1.2", null, "", null, AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
-      AttributeType nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
+      AttributeTypeToken nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
       change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, modType,
          "test artifact 2A", null, "test artifact 2", null, AttributeId.SENTINEL, nameAttributeType, modType, false,
          artifactStart, artDelta);

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.CompleteArtifactImportOperation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.FilterArtifactTypesByAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -76,7 +75,7 @@ public final class ArtifactImportOperationFactory {
    public static IOperation completeOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError, SkynetTransaction governingTransaction, boolean executeTransaction) {
       CheckAndThrow(sourceFile, destinationArtifact, extractor, resolver);
 
-      RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+      RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact());
 
       if (logger == null) {
          logger = NullOperationLogger.getSingleton();

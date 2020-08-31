@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.ExcelArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -100,7 +99,8 @@ public final class ArtifactImportWizardTest {
 
       artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D"));
 
-      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "B"));
+      myRootArtifact.addChild(
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, SAW_Bld_1, "B"));
 
       myRootArtifact.persist("ArtifactImportWizardTest");
    }
@@ -188,7 +188,7 @@ public final class ArtifactImportWizardTest {
             ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
                CoreArtifactTypes.SystemRequirementMsWord, null, true, true);
 
-         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact());
          collector.reset();
 
          IOperation operation = ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,

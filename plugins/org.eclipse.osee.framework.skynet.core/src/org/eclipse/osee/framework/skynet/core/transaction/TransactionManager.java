@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
@@ -307,7 +306,7 @@ public final class TransactionManager {
 
       boolean changed = false;
       for (AttributeRow attr : attributesFromArtifactAndTransaction) {
-         AttributeType type = AttributeTypeManager.getType(attr.getAttributeType());
+         AttributeTypeToken type = AttributeTypeManager.getType(attr.getAttributeType());
          if (attr.getModType() == ModificationType.NEW) {
             changed = true;
             if (persist) {
@@ -315,7 +314,7 @@ public final class TransactionManager {
             }
             results.logf("Deleting created attribute type [%s]\n", type);
          } else if (attr.getModType() == ModificationType.MODIFIED) {
-            if (type.getMaxOccurrences() == 1) {
+            if (prevArt.getArtifactType().getMax(type) == 1) {
                Object curValue = art.getSoleAttributeValue(type, null);
                Object prevValue = getPreviousValue(prevArt, attr.getAttrId());
                changed = true;

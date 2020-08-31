@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.SourceToRoughArtifactOperation;
@@ -76,12 +75,12 @@ public class WfeEditorAddSupportingFiles extends Job {
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
-         "Import and relate supporting files");
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Import and relate supporting files");
       for (File file : supportingFiles) {
          IArtifactExtractor extractor =
             ArtifactExplorerDragAndDrop.getArtifactExtractor(CoreArtifactTypes.GeneralDocument);
-         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact());
          IArtifactImportResolver resolver =
             ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
                CoreArtifactTypes.GeneralDocument, Arrays.asList(CoreAttributeTypes.Name), true, false);
