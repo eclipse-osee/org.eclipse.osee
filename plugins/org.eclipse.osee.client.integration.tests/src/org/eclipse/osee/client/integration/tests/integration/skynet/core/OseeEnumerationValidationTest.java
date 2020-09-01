@@ -82,14 +82,19 @@ public class OseeEnumerationValidationTest {
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<>();
 
-      addTest(data, "Test 1: Null", null, errorStatus("No enum const [enum.req.gfe.cfe].[null]"));
-      addTest(data, "Test 2: Empty String", "", errorStatus("No enum const [enum.req.gfe.cfe].[]"));
-      addTest(data, "Test 3: Invalid", "asbasdfasdfa", errorStatus("No enum const [enum.req.gfe.cfe].[asbasdfasdfa]"));
+      addTest(data, "Test 1: Null", null,
+         errorStatus("The enumerated value [null] is not valid for the attribute type [GFE / CFE]"));
+      addTest(data, "Test 2: Empty String", "",
+         errorStatus("The enumerated value [] is not valid for the attribute type [GFE / CFE]"));
+      addTest(data, "Test 3: Invalid", "asbasdfasdfa",
+         errorStatus("The enumerated value [asbasdfasdfa] is not valid for the attribute type [GFE / CFE]"));
       addTest(data, "Test 4: Valid", "CFE", Status.OK_STATUS);
       addTest(data, "Test 5: Valid", "GFE", Status.OK_STATUS);
       addTest(data, "Test 5: Valid", "Unspecified", Status.OK_STATUS);
-      addTest(data, "Test 6: Valid", "cfe", errorStatus("No enum const [enum.req.gfe.cfe].[cfe]"));
-      addTest(data, "Test 7: Invalid Class", 0, errorStatus("java.lang.Integer cannot be cast to java.lang.String"));
+      addTest(data, "Test 6: Valid", "cfe",
+         errorStatus("The enumerated value [cfe] is not valid for the attribute type [GFE / CFE]"));
+      addTest(data, "Test 7: Invalid Class", 0,
+         errorStatus("The enumerated value [0] is not valid for the attribute type [GFE / CFE]"));
 
       return data;
    }

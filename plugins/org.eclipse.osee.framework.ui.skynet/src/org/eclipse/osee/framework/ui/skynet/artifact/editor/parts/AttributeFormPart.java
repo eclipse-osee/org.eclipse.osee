@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -249,8 +247,7 @@ public class AttributeFormPart extends AbstractFormPart {
          for (XWidgetRendererItem item : concreteWidgets) {
             if (item.getXWidgetName().equals("XTextDam")) {
                if (!item.isFillVertically()) {
-                  AttributeType attrType = AttributeTypeManager.getType(attributeType);
-                  if (attrType.getMaxOccurrences() == 1) {
+                  if (artifact.getArtifactType().getMax(attributeType) == 1) {
                      String value = artifact.getSoleAttributeValue(attributeType, "");
                      if (value != null && value.contains(System.getProperty("line.separator"))) {
                         item.setFillVertically(true);

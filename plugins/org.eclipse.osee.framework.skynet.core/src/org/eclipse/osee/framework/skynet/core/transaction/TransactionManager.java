@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeRow;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -306,7 +305,7 @@ public final class TransactionManager {
 
       boolean changed = false;
       for (AttributeRow attr : attributesFromArtifactAndTransaction) {
-         AttributeTypeToken type = AttributeTypeManager.getType(attr.getAttributeType());
+         AttributeTypeToken type = attr.getAttributeType();
          if (attr.getModType() == ModificationType.NEW) {
             changed = true;
             if (persist) {

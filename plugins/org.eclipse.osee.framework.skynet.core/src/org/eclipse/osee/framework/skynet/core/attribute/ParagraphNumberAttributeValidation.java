@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +31,7 @@ public class ParagraphNumberAttributeValidation implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
+   public boolean isApplicable(Artifact artifact, AttributeTypeToken attributeType) {
       return attributeType.equals(CoreAttributeTypes.ParagraphNumber);
    }
 

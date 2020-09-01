@@ -24,15 +24,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.utility.NormalizeHtml;
@@ -726,19 +725,15 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, AttributeTypeToken type) {
+   private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, AttributeTypeEnum<?> type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
-      OseeEnumType enumType = AttributeTypeManager.getType(type).getOseeEnumType();
-      Set<String> theValues = enumType.valuesAsOrderedStringSet();
+      Set<String> enums = type.getEnumStrValues();
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {
          singleItem += theTokens.nextToken();
-         for (String item : theValues) {
-            if (item.equals(singleItem)) {
-               roughArtifact.addAttribute(type, singleItem);
-               singleItem = "";
-               break;
-            }
+         if (enums.contains(singleItem)) {
+            roughArtifact.addAttribute(type, singleItem);
+            singleItem = "";
          }
          if (Strings.isValid(singleItem)) {
             singleItem += " ";

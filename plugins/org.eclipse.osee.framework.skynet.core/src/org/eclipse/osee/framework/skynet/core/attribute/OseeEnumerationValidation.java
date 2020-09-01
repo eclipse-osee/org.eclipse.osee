@@ -15,10 +15,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.model.type.OseeEnumType;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 
@@ -33,17 +32,18 @@ public class OseeEnumerationValidation implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
-      return AttributeTypeManager.getType(attributeType).isEnumerated();
+   public boolean isApplicable(Artifact artifact, AttributeTypeToken attributeType) {
+      return attributeType.isEnumerated();
    }
 
    @Override
    public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
-      String text = (String) proposedObject;
-      AttributeType type = AttributeTypeManager.getType(attributeType);
-      OseeEnumType enumType = type.getOseeEnumType();
-      enumType.valueOf(text);
-      return Status.OK_STATUS;
-   }
+      AttributeTypeEnum<?> enumType = (AttributeTypeEnum<?>) attributeType;
 
+      if (proposedObject != null && enumType.isValidEnum(proposedObject.toString())) {
+         return Status.OK_STATUS;
+      }
+      throw new OseeStateException("The enumerated value [%s] is not valid for the attribute type [%s]", proposedObject,
+         enumType);
+   }
 }

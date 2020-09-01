@@ -98,16 +98,12 @@ public class OseeEnumType extends AbstractOseeType {
     * return the enum with the given name. Tolerates leading and trailing whitespace using trim()
     */
    public OseeEnumEntry valueOf(String entryName) {
-      OseeEnumEntry toReturn = null;
       for (OseeEnumEntry oseeEnumEntry : values()) {
          if (oseeEnumEntry.getName().equals(entryName)) {
-            toReturn = oseeEnumEntry;
+            return oseeEnumEntry;
          }
       }
-      if (toReturn == null) {
-         throw new OseeArgumentException("No enum const [%s].[%s]", getName(), entryName);
-      }
-      return toReturn;
+      throw new OseeArgumentException("No enum const [%s].[%s]", getName(), entryName);
    }
 
    public void setEntries(List<OseeEnumEntry> entries) {

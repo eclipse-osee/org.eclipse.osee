@@ -24,7 +24,6 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.KindType;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -101,10 +99,9 @@ public class ChangeDataTest {
          "1.2", null, "", null, AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
-      AttributeTypeToken nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
       change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart, null, modType,
-         "test artifact 2A", null, "test artifact 2", null, AttributeId.SENTINEL, nameAttributeType, modType, false,
-         artifactStart, artDelta);
+         "test artifact 2A", null, "test artifact 2", null, AttributeId.SENTINEL, CoreAttributeTypes.Name, modType,
+         false, artifactStart, artDelta);
       theChanges.add(change);
 
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch);

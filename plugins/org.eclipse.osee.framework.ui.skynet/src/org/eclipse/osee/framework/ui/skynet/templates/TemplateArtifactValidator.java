@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.ui.skynet.templates;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -37,7 +36,7 @@ public class TemplateArtifactValidator implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
+   public boolean isApplicable(Artifact artifact, AttributeTypeToken attributeType) {
       return artifact.isOfType(CoreArtifactTypes.RendererTemplateWholeWord) && attributeType.equals(
          CoreAttributeTypes.TemplateMatchCriteria);
    }
