@@ -226,6 +226,7 @@ public final class RenderingUtil {
       IFolder toReturn = null;
       switch (presentationType) {
          case MERGE:
+         case DIFF_NO_ATTRIBUTES:
          case DIFF:
             compareFolder = getOrCreateFolder(compareFolder, ".compare");
             toReturn = compareFolder;

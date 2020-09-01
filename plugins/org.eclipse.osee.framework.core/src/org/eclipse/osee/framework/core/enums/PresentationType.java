@@ -22,6 +22,7 @@ public enum PresentationType {
    GENERALIZED_EDIT, // open using general editor (i.e. artifact editor)
    SPECIALIZED_EDIT, // open using application specific editor
    DIFF,
+   DIFF_NO_ATTRIBUTES,
    F5_DIFF,
    PREVIEW, // open read-only using application specific editor
    MERGE,
