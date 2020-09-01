@@ -631,12 +631,12 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) {
-      if (!isAttributeTypeValid(attributeType)) {
-         throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]", attributeType,
-            getArtifactTypeName());
-      }
       Attribute<T> attribute = getSoleAttribute(attributeType);
       if (attribute == null) {
+         if (!isAttributeTypeValid(attributeType)) {
+            throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
+               attributeType, getArtifactTypeName());
+         }
          attribute = initializeAttribute(attributeType, ModificationType.NEW, true, true);
       }
       return attribute;
