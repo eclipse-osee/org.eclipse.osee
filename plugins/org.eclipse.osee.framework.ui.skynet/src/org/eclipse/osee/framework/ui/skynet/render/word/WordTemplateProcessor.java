@@ -69,6 +69,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactHierarchyComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -123,8 +124,11 @@ public class WordTemplateProcessor {
    //Outlining Options
    private AttributeTypeId headingAttributeType;
    private boolean outlining;
+   private boolean outlineOnlyHeadersFolders = false;
+   private boolean overrideOutlineNumber = false;
    private boolean recurseChildren;
    private String outlineNumber = null;
+   private boolean templateFooter = false;
    private boolean includeEmptyHeaders = false;
 
    //Attribute Options
@@ -515,6 +519,20 @@ public class WordTemplateProcessor {
       }
    }
 
+   /**
+    * <b>Outlining:</b> Whether or not to include various outlining elements on all artifacts, includes
+    * headers/sectioning<br/>
+    * <b>OutlineOnlyHeadersFolders:</b> Only outline the header and footer artifacts, this then excludes Requirements
+    * from being outlined and treats them as content<br/>
+    * <b>OverrideOutlineNumber:</b> The outline number/level will be manually computed at time of publish and set.
+    * Useful for diffs when artifacts are processed separately<br/>
+    * <b>RecurseChildren:</b> Recurse through the children of the artifacts being processed<br/>
+    * <b>IncludeEmptyHeaders:</b> Headers without published children will not be included<br/>
+    * <b>OutlineNumber:</b> The starting outline number for the document if included<br/>
+    * <b>TemplateFooter:</b> Whether or not to process the footer of that artifact, or just use whatever is in the Word
+    * Template Content or on the RendererTemplate<br/>
+    * <b>HeadingAttributeType:</b> Which attribute type to use as the outlining header<br/>
+    */
    private void parseOutliningOptions(String templateOptions) {
       try {
          ObjectMapper objMap = new ObjectMapper();
@@ -522,14 +540,24 @@ public class WordTemplateProcessor {
          JsonNode attributeOptions = jsonObject.findValue("OutliningOptions");
 
          outlining = attributeOptions.findValue("Outlining").asBoolean();
+         JsonNode outlineOnlyHeadersFolders = attributeOptions.findValue("OulineOnlyHeadersFolders");
+         if (outlineOnlyHeadersFolders != null) {
+            this.outlineOnlyHeadersFolders = outlineOnlyHeadersFolders.asBoolean();
+         }
+         JsonNode overrideOutlineNumber = attributeOptions.findValue("OverrideOutlineNumber");
+         if (overrideOutlineNumber != null) {
+            this.overrideOutlineNumber = overrideOutlineNumber.asBoolean();
+         }
          recurseChildren = attributeOptions.findValue("RecurseChildren").asBoolean();
-         try {
-            includeEmptyHeaders = attributeOptions.findValue("IncludeEmptyHeaders").asBoolean();
-         } catch (Exception ex) {
-            // The template file json may not have this defined, default is false
-            includeEmptyHeaders = false;
+         JsonNode includeEmptyHeaders = attributeOptions.findValue("IncludeEmptyHeaders");
+         if (includeEmptyHeaders != null) {
+            this.includeEmptyHeaders = includeEmptyHeaders.asBoolean();
          }
          outlineNumber = attributeOptions.findValue("OutlineNumber").asText();
+         JsonNode templateFooter = attributeOptions.findValue("TemplateFooter");
+         if (templateFooter != null) {
+            this.templateFooter = templateFooter.asBoolean();
+         }
          String headingAttrType = attributeOptions.findValue("HeadingAttributeType").asText();
          headingAttributeType = AttributeTypeManager.getType(headingAttrType);
       } catch (IOException ex) {
@@ -675,10 +703,14 @@ public class WordTemplateProcessor {
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = (boolean) renderer.getRendererOptionValue(RendererOption.TEMPLATE_ONLY);
+            boolean headerOrFolder =
+               artifact.isOfType(CoreArtifactTypes.HeadingMsWord) || artifact.isOfType(CoreArtifactTypes.Folder);
+            boolean includeOutline = templateOnly ? false : (outlineOnlyHeadersFolders ? headerOrFolder : true);
+
             boolean includeUUIDs = (boolean) renderer.getRendererOptionValue(RendererOption.INCLUDE_UUIDS);
 
             if (!ignoreArtifact && !ignoreArtType) {
-               if (outlining && !templateOnly) {
+               if (outlining && includeOutline) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
                   if (includeUUIDs) {
@@ -691,8 +723,12 @@ public class WordTemplateProcessor {
                      headingText = headingText.concat(" [MERGED]");
                   }
 
-                  if (!publishInline && !templateOnly) {
-                     paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                  if (!publishInline) {
+                     if (overrideOutlineNumber) {
+                        paragraphNumber = startOutlineSubSectionOverride(wordMl, artifact, headingText);
+                     } else {
+                        paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                     }
                      startedSection = true;
                   }
 
@@ -716,11 +752,14 @@ public class WordTemplateProcessor {
                      }
                   }
                }
-               PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
-               String footer = data.getContent(artifact, orientation);
+
+               String footer = "";
+               if (!templateFooter) {
+                  PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
+                  footer = data.getContent(artifact, orientation);
+               }
 
                processMetadata(artifact, wordMl);
-
                processAttributes(artifact, wordMl, presentationType, publishInline, footer);
             }
 
@@ -883,5 +922,23 @@ public class WordTemplateProcessor {
       for (ArtifactTypeToken token : excludeTokens) {
          excludeArtifactTypes.add(token);
       }
+   }
+
+   private CharSequence startOutlineSubSectionOverride(WordMLProducer wordMl, Artifact artifact, String headingText) {
+      String paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+      if (paragraphNumber.isEmpty()) {
+         ArtifactHierarchyComparator comparator = new ArtifactHierarchyComparator();
+         paragraphNumber = comparator.getHierarchyPosition(artifact);
+      }
+      int outlineLevel = 1;
+      for (int i = 0; i < paragraphNumber.length(); i++) {
+         char charAt = paragraphNumber.charAt(i);
+         if (charAt == '.') {
+            outlineLevel++;
+         }
+      }
+      wordMl.startOutlineSubSection("Heading" + outlineLevel, paragraphNumber, "Times New Roman", headingText);
+
+      return paragraphNumber;
    }
 }
