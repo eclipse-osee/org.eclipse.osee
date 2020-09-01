@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -230,30 +229,32 @@ public final class RendererManager {
 
    public static void diffInJob(ArtifactDelta artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      Operations.executeAsJob(new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions), true);
+      Operations.executeAsJob(
+         new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions, PresentationType.DIFF), true);
    }
 
    public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
       IRenderer renderer = new WordTemplateRenderer(rendererOptions);
       DiffUsingRenderer operation =
-         new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, rendererOptions);
+         new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, rendererOptions, PresentationType.DIFF);
       Operations.executeWork(operation);
    }
 
    public static void diff(CompareDataCollector collector, ArtifactDelta artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
-      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions);
+      DiffUsingRenderer operation =
+         new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions, PresentationType.DIFF);
       Operations.executeWork(operation);
    }
 
-   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer) {
-      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferedRenderer,
-         new HashMap<RendererOption, Object>());
+   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, PresentationType presentationType) {
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferedRenderer, new HashMap<RendererOption, Object>(),
+         presentationType);
    }
 
-   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Map<RendererOption, Object> rendererOptions) {
+   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Map<RendererOption, Object> rendererOptions, PresentationType presentationType) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation =
-         new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferedRenderer, rendererOptions);
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferedRenderer,
+         rendererOptions, presentationType);
       Operations.executeAsJob(operation, true);
    }
 
@@ -262,12 +263,13 @@ public final class RendererManager {
    }
 
    public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
-      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, null, rendererOptions);
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, null, rendererOptions, PresentationType.DIFF);
    }
 
    public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, rendererOptions);
+      IOperation operation =
+         new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, rendererOptions, PresentationType.DIFF);
       IProgressMonitor monitor = null;
       if (rendererOptions.containsKey(RendererOption.PROGRESS_MONITOR)) {
          monitor = (IProgressMonitor) rendererOptions.get(RendererOption.PROGRESS_MONITOR);
@@ -282,8 +284,8 @@ public final class RendererManager {
 
    public static void diffWithRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferredRenderer, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation =
-         new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferredRenderer, rendererOptions);
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferredRenderer,
+         rendererOptions, PresentationType.DIFF);
       IProgressMonitor monitor = null;
       if (rendererOptions.containsKey(RendererOption.PROGRESS_MONITOR)) {
          monitor = (IProgressMonitor) rendererOptions.get(RendererOption.PROGRESS_MONITOR);

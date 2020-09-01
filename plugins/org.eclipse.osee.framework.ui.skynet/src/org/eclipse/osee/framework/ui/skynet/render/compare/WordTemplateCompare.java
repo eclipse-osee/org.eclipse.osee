@@ -69,7 +69,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
 
       CompareData data = new CompareData(resultPath, vbsPath);
 
-      addArtifactDeltas(monitor, artifactDeltas, data);
+      addArtifactDeltas(monitor, artifactDeltas, data, presentationType);
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
@@ -83,7 +83,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
       collector.onCompare(data);
    }
 
-   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data) {
+   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data, PresentationType presentationType) {
       double workAmount = 0.70 / artifactDeltas.size();
 
       for (ArtifactDelta artifactDelta : artifactDeltas) {
@@ -92,7 +92,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
          }
 
          try {
-            addToCompare(monitor, data, PresentationType.DIFF, artifactDelta);
+            addToCompare(monitor, data, presentationType, artifactDelta);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          } catch (Exception ex) {
