@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewBranchContentChangeReportHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
@@ -62,6 +63,15 @@ public class ChangeXViewer extends XViewer {
       public void keyReleased(KeyEvent e) {
          if (e.keyCode == SWT.F5) {
             ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
+            if (handler.isEnabled()) {
+               try {
+                  handler.execute(null);
+               } catch (ExecutionException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         } else if (e.keyCode == SWT.F6) {
+            ViewBranchContentChangeReportHandler handler = new ViewBranchContentChangeReportHandler();
             if (handler.isEnabled()) {
                try {
                   handler.execute(null);

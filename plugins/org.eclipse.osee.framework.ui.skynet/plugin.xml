@@ -263,6 +263,9 @@
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
        </command>
        <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command">
+       </command>
+       <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
        </command>
        <separator
@@ -539,6 +542,18 @@
         </with>
      </enabledWhen>
       </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewBranchContentChangeReportHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+  </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewChangeReportWasIsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
      <enabledWhen>
         <with
@@ -1092,6 +1107,10 @@
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command"
+        name="View Branch Content Change Report - F6">
+  </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command" name="View Was/Is Comparison">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">

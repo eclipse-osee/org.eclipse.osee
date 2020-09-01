@@ -44,8 +44,10 @@ import org.eclipse.osee.ats.ide.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.OpenVersionArtifactAction;
 import org.eclipse.osee.ats.ide.actions.ReloadAction;
 import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
+import org.eclipse.osee.ats.ide.actions.ShowBranchContentChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
+import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.relations.WfeRelationsSection;
@@ -152,8 +154,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          }
 
          // Register for events and deregister on dispose
-         AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this,
-            AtsTopicEvent.WORK_ITEM_TRANSITIONED, AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
+         AtsApiService.get().getEventService().registerAtsWorkItemTopicEvent(this, AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+            AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED);
 
          List<IOperation> ops = new ArrayList<>();
          ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
@@ -424,6 +426,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             (TeamWorkFlowArtifact) awa))) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
+         toolBarMgr.add(new ShowWordChangeReportAction((TeamWorkFlowArtifact) awa));
+         toolBarMgr.add(new ShowBranchContentChangeReportAction((TeamWorkFlowArtifact) awa));
       }
       toolBarMgr.add(new FavoriteAction(editor));
       if (awa.getParentAWA() != null) {

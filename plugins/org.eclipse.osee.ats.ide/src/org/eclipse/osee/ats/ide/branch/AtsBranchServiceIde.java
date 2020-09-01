@@ -49,6 +49,18 @@ public interface AtsBranchServiceIde {
    void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, BranchId destinationBranch);
 
    /**
+    * Grabs changes from that Team Workflow and sends them into a Word Diff Change Report
+    */
+   void generateWordChangeReport(IAtsTeamWorkflow teamArt);
+
+   /**
+    * Grabs changes from supplied TeamWorkflow, uses WordChangeUtil to generate a list of artifacts that give context to
+    * the ones that have Word Template Content Changes, and then sorts them in order. These artifacts are then used to
+    * create ArtifactDeltas that are then used in a Word Diff. No attributes other than Word Template Content are used.
+    */
+   void generateBranchContentChangeReport(IAtsTeamWorkflow teamArt);
+
+   /**
     * @param commitPopup if true, pop-up errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     * used for developmental testing or automation

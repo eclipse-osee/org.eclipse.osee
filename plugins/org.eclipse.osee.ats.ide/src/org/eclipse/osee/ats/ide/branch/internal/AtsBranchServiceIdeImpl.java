@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -72,6 +73,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.change.WordChangeUtil;
 import org.eclipse.osee.framework.ui.skynet.util.NameLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
@@ -292,6 +294,18 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't show change report.", ex);
       }
+   }
+
+   @Override
+   public void generateWordChangeReport(IAtsTeamWorkflow teamArt) {
+      List<Change> localChanges = (List<Change>) getChangeData(teamArt, null).getChanges();
+      WordChangeUtil.generateWordTemplateChangeReport(localChanges, PresentationType.DIFF, false, false);
+   }
+
+   @Override
+   public void generateBranchContentChangeReport(IAtsTeamWorkflow teamArt) {
+      List<Change> localChanges = (List<Change>) getChangeData(teamArt, null).getChanges();
+      WordChangeUtil.generateWordTemplateChangeReport(localChanges, PresentationType.DIFF_NO_ATTRIBUTES, true, true);
    }
 
    /**

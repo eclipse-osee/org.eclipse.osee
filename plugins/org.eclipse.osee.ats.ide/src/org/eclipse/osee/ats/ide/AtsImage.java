@@ -27,6 +27,7 @@ public enum AtsImage implements KeyedImage {
    ACTIONABLE_ITEM("AI.gif"),
    ART_VIEW("artView.gif"),
    ATS("atsPerspective.gif"),
+   BRANCH_CONTENT_CHANGE_REPORT("branchContentChangeReport.gif"),
    CENTER("center.gif"),
    CHECK_BLUE("check.gif"),
    CHECK_CLIPBOARD("checkClipboard.gif"),
