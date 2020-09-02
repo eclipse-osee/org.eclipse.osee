@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -106,7 +106,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       // Always reload art to get latest sarches and user groups
       ArtifactToken userArt = atsApi.getQueryService().getArtifact(user.getStoreObject().getId());
       user.getSavedSearches().addAll(
-         atsApi.getAttributeResolver().getAttributesToStringList(userArt, AtsAttributeTypes.AtsQuickSearch));
+         atsApi.getAttributeResolver().getAttributesToStringList(userArt, CoreAttributeTypes.AtsActionSearch));
       user.getUserGroups().clear();
       for (ArtifactToken userGroup : atsApi.getRelationResolver().getRelated(userArt,
          CoreRelationTypes.Users_Artifact)) {

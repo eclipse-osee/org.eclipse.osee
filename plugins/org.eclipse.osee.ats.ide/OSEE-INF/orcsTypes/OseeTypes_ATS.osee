@@ -345,12 +345,6 @@ artifactType "Work Package" extends "Artifact" {
    attribute "ats.Cognos Unique Id"
 }
 
-overrides artifactType "User" {
-	inheritAll
-	add attribute "ATS Quick Search"
-	add attribute "ATS User Config"
-}
-
 attributeType "ats.Task Set Id" extends LongAttribute {
 	id 2412431655932432
 	dataProvider DefaultAttributeDataProvider
@@ -408,24 +402,6 @@ attributeType "ats.Cognos Unique Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
-attributeType "ATS Quick Search" extends StringAttribute {
-	id 72063457009467643
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
-attributeType "ATS User Config" extends StringAttribute {
-	id 2348752981434455
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }

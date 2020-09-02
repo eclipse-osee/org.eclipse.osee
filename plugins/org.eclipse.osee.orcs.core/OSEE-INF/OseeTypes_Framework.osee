@@ -153,9 +153,29 @@ attributeType "Product Applicability" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 }  
 
+attributeType "ATS Action Search" extends StringAttribute {
+	id 72063457009467643
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ATS User Config" extends StringAttribute {
+	id 2348752981434455
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 artifactType "User" extends "Artifact" {
 	id 5
 	attribute "Active"
+	attribute "ATS Action Search"
+	attribute "ATS User Config"
 	attribute "City"
 	attribute "Company Title"
 	attribute "Company"

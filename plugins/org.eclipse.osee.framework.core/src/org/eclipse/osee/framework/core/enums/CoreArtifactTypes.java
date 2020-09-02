@@ -271,6 +271,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken SupportingContent = osee.add(osee.artifactType(49L, "Supporting Content", false, Url));
    ArtifactTypeToken User = osee.add(osee.artifactType(5L, "User", false, Artifact)
       .exactlyOne(Active, "true")
+      .any(AtsActionSearch, "")
+      .any(AtsUserConfig, "")
       .zeroOrOne(City, "")
       .zeroOrOne(Company, "")
       .zeroOrOne(CompanyTitle, "")

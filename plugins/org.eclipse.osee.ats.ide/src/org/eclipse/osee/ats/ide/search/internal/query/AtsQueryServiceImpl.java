@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
@@ -51,6 +50,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -131,7 +131,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
-            changes.addAttribute(userArt, AtsAttributeTypes.AtsQuickSearch, jaxRsApi.toJson(data));
+            changes.addAttribute(userArt, CoreAttributeTypes.AtsActionSearch, jaxRsApi.toJson(data));
          } else {
             changes.setAttribute(userArt, attr, jaxRsApi.toJson(data));
          }
@@ -146,7 +146,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
       for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(artifact,
-         AtsAttributeTypes.AtsQuickSearch)) {
+         CoreAttributeTypes.AtsActionSearch)) {
          String jsonValue = (String) attr.getValue();
          try {
             AtsSearchData data = fromJson(jsonValue);

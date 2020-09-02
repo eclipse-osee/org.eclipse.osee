@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAc
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
  * @author Donald G. Dunne
@@ -59,9 +58,6 @@ public interface AtsArtifactTypes {
       .any(CSCI, "")
       .zeroOrOne(ProgramId, "")
       .any(WorkType, ""));
-   ArtifactTypeToken AtsUser = ats.add(ats.artifactType(58889929L, "User", false, CoreArtifactTypes.User)
-      .any(AtsQuickSearch, "")
-      .any(AtsUserConfig, ""));
    ArtifactTypeToken Configuration = ats.add(ats.artifactType(93802085744703L, "Configuration", false, Artifact)
       .zeroOrOne(AtsConfiguredBranch, "")
       .zeroOrOne(Default, "")

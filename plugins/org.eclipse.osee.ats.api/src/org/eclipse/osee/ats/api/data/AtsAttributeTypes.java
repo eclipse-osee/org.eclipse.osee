@@ -64,8 +64,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString AtsId = ats.createString(1152921504606847877L, "ats.Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString AtsIdPrefix = ats.createString(1162773128791720837L, "ats.ATS Id Prefix", MediaType.TEXT_PLAIN, "ATS Id Prefix");
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", MediaType.TEXT_PLAIN, "ATS Id Sequence Name");
-   AttributeTypeString AtsQuickSearch = ats.createString(72063457009467643L, "ATS Quick Search", MediaType.TEXT_PLAIN, "Saved ATS Quick Searches.");
-   AttributeTypeString AtsUserConfig = ats.createString(2348752981434455L, "ATS User Config", MediaType.TEXT_PLAIN, "Saved ATS Configures");
    AttributeTypeString BaselineBranchId = ats.createString(1152932018686787753L, "ats.Baseline Branch Id", MediaType.TEXT_PLAIN, "Baseline branch associated with ATS object.");
    AttributeTypeString BlockedReason = ats.createString(7797797474874870503L, "ats.Blocked Reason", MediaType.TEXT_PLAIN, "Reason for action being blocked");
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");

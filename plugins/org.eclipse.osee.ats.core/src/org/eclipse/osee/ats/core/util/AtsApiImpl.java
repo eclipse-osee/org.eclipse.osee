@@ -236,7 +236,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
          Collection<IAttribute<String>> attributes =
-            getAttributeResolver().getAttributes(userArt, AtsAttributeTypes.AtsUserConfig);
+            getAttributeResolver().getAttributes(userArt, CoreAttributeTypes.AtsUserConfig);
          for (IAttribute<String> attr : attributes) {
             String str = attr.getValue();
             if (str.startsWith(key)) {
@@ -246,7 +246,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
             }
          }
          if (!found) {
-            changes.addAttribute(userArt, AtsAttributeTypes.AtsUserConfig, keyValue);
+            changes.addAttribute(userArt, CoreAttributeTypes.AtsUserConfig, keyValue);
          }
          changes.executeIfNeeded();
       }
@@ -517,7 +517,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       ArtifactToken userArt = getUserService().getCurrentUser().getStoreObject();
       if (userArt != null) {
          for (String configKeyValueStr : getAttributeResolver().getAttributesToStringList(userArt,
-            AtsAttributeTypes.AtsUserConfig)) {
+            CoreAttributeTypes.AtsUserConfig)) {
             if (configKeyValueStr.startsWith(key)) {
                result = configKeyValueStr.replaceFirst(key + "=", "");
                break;

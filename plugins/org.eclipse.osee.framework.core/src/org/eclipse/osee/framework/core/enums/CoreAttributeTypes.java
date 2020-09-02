@@ -63,6 +63,8 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean Active = osee.createBoolean(1152921504606847065L, "Active", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Annotation = osee.createString(1152921504606847094L, "Annotation", MediaType.TEXT_PLAIN, "");
    AttributeTypeArtifactId ArtifactReference = osee.createArtifactId(1153126013769613560L, "Artifact Reference", AttributeTypeToken.MODEL_OSEE, "Light-weight artifact reference");
+   AttributeTypeString AtsActionSearch = osee.createString(72063457009467643L, "ATS Action Search", MediaType.TEXT_PLAIN, "Saved ATS Quick Searches.");
+   AttributeTypeString AtsUserConfig = osee.createString(2348752981434455L, "ATS User Config", MediaType.TEXT_PLAIN, "Saved ATS Configures");
    AttributeTypeArtifactId BaselinedBy = osee.createArtifactIdNoTag(1152921504606847247L, "Baselined By", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate BaselinedTimestamp = osee.createDateNoTag(1152921504606847244L, "Baselined Timestamp", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeBranchId BranchReference = osee.createBranchId(1153126013769613563L, "Branch Reference", AttributeTypeToken.MODEL_OSEE, "Light-weight branch reference");
