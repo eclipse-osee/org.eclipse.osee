@@ -72,6 +72,55 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       setFieldLogException(ATTRIBUTE_MEDIA_TYPE_FIELD_KEY, mediaType);
    }
 
+   public String getAttrBaseType() {
+      return getFieldValue(ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY);
+   }
+
+   @Override
+   public boolean isString() {
+      return getAttrBaseType().endsWith("StringAttribute");
+   }
+
+   @Override
+   public boolean isEnumerated() {
+      return getOseeEnumTypeId() != -1;
+   }
+
+   @Override
+   public boolean isBoolean() {
+      return getAttrBaseType().endsWith("BooleanAttribute");
+   }
+
+   @Override
+   public boolean isDate() {
+      return getAttrBaseType().endsWith("DateAttribute");
+   }
+
+   @Override
+   public boolean isInteger() {
+      return getAttrBaseType().endsWith("IntegerAttribute");
+   }
+
+   @Override
+   public boolean isDouble() {
+      return getAttrBaseType().endsWith("FloatingPointAttribute");
+   }
+
+   @Override
+   public boolean isLong() {
+      return getAttrBaseType().endsWith("IntegerAttribute");
+   }
+
+   @Override
+   public boolean isArtifactId() {
+      return getAttrBaseType().endsWith("ArtifactReferenceAttribute");
+   }
+
+   @Override
+   public boolean isBranchId() {
+      return getAttrBaseType().endsWith("BranchReferenceAttribute");
+   }
+
    @Override
    public String getDefaultValue() {
       return getFieldValueLogException(null, ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY);
@@ -139,11 +188,6 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
          toReturn = Strings.isValid(taggerId.trim());
       }
       return toReturn;
-   }
-
-   @Override
-   public boolean isEnumerated() {
-      return getOseeEnumTypeId() != -1;
    }
 
 }
