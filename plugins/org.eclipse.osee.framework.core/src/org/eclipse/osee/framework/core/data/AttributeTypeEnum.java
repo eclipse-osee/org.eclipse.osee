@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
  * @author Ryan D. Brooks
  */
 public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
-   private final List<T> enumTokens;
+   private List<T> enumTokens;
 
    public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount) {
       super(id, namespace, name, mediaType, description, taggerType, "", null);
@@ -87,5 +87,9 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
          enumTokens.add(null);
       }
       enumTokens.set(ordinal, enumeration);
+   }
+
+   <E extends T> void replaceEnumValues(AttributeTypeEnum<E> attributeType) {
+      enumTokens = org.eclipse.osee.framework.jdk.core.util.Collections.cast(attributeType.enumTokens);
    }
 }

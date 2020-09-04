@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.internal;
+package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,14 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OrcsTypeTokenProvider;
-import org.eclipse.osee.framework.core.data.RelationTypeJoin;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -189,7 +181,9 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public void registerAttributeType(AttributeTypeGeneric<?> attributeType) {
       AttributeTypeGeneric<?> existingType = attributeTypes.putIfAbsent(attributeType.getId(), attributeType);
       if (existingType != null) {
-         if (existingType.getClass().isAssignableFrom(attributeType.getClass())) {
+         if (existingType instanceof AttributeTypeEnum && existingType.getClass().isAssignableFrom(
+            attributeType.getClass())) {
+            existingType.toEnum().replaceEnumValues(attributeType.toEnum());
             attributeTypes.put(attributeType.getId(), attributeType);
          } else {
             throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
