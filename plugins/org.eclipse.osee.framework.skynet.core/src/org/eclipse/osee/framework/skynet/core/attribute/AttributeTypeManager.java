@@ -89,7 +89,8 @@ public class AttributeTypeManager {
       return getTokenService().getAttributeType(id);
    }
 
-   public static AttributeType getTypeById(Long id) {
+   public static AttributeType getType(AttributeTypeId type) {
+      Long id = type.getId();
       if (id == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", id);
       }
@@ -102,10 +103,6 @@ public class AttributeTypeManager {
          }
       }
       return attributeType;
-   }
-
-   public static AttributeType getType(AttributeTypeId type) {
-      return getTypeById(type.getId());
    }
 
    /**

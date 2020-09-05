@@ -72,7 +72,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    }
 
    public XViewerAtsAttributeValueColumn(AtsAttributeValueColumn column) {
-      super(AttributeTypeManager.getTypeById(column.getAttrTypeId()), column.getId(), column.getName(),
+      super(AttributeTypeManager.getAttributeType(column.getAttrTypeId()), column.getId(), column.getName(),
          column.getWidth(), AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
       setInheritParent(column.isInheritParent());
@@ -111,8 +111,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(
-            element).isDeleted()) {
+         if (element instanceof Artifact && AtsApiService.get().getQueryServiceIde().getArtifact(element).isDeleted()) {
             return "<deleted>";
          }
          if (isBooleanShow() && column.getSortDataType() == SortDataType.Boolean) {

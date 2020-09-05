@@ -177,7 +177,8 @@ public class WfeArtifactEventManager implements IArtifactEventListener, EventHan
                      try {
                         if (!handler.isDisposed()) {
                            if (handler.getWorkflowEditor().getArtifactFromEditorInput().equals(workItemArtId)) {
-                              handler.getWorkflowEditor().handleEvent(AttributeTypeManager.getTypeById(attrTypeId));
+                              handler.getWorkflowEditor().handleEvent(
+                                 AttributeTypeManager.getAttributeType(attrTypeId));
                            }
                         }
                      } catch (Exception ex) {

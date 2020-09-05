@@ -284,7 +284,7 @@ public class SwtXWidgetRenderer {
          try {
             AttributeTypeToken type = null;
             if (layoutData.getStoreId() > 0) {
-               type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
+               type = AttributeTypeManager.getAttributeType(layoutData.getStoreId());
             }
             if (type == null && Strings.isValid(layoutData.getStoreName())) {
                try {
@@ -315,7 +315,7 @@ public class SwtXWidgetRenderer {
       if (xWidget instanceof IAttributeWidget) {
          AttributeTypeToken attributeType = null;
          if (xWidgetLayoutData.getStoreId() > 0) {
-            attributeType = AttributeTypeManager.getTypeById(xWidgetLayoutData.getStoreId());
+            attributeType = AttributeTypeManager.getAttributeType(xWidgetLayoutData.getStoreId());
          }
          if (attributeType == null && Strings.isValid(xWidgetLayoutData.getStoreName())) {
             attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());

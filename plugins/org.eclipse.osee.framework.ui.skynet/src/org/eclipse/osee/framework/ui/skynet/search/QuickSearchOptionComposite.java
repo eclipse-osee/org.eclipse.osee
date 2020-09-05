@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -513,7 +512,7 @@ public class QuickSearchOptionComposite extends Composite {
             for (String entry : items) {
                try {
                   Long id = Long.parseLong(entry);
-                  AttributeType type = AttributeTypeManager.getTypeById(id);
+                  AttributeTypeToken type = AttributeTypeManager.getAttributeType(id);
                   configuration.add(type);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

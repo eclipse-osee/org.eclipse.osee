@@ -93,7 +93,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
          AttributeTypeToken attributeType = null;
          if (Long.parseLong(col.getId()) > 0) {
-            attributeType = AttributeTypeManager.getTypeById(Long.parseLong(col.getId()));
+            attributeType = AttributeTypeManager.getAttributeType(Long.parseLong(col.getId()));
          }
          if (attributeType == null && Strings.isValid(col.getName())) {
             attributeType = AttributeTypeManager.getType(col.getName());

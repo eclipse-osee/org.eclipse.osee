@@ -89,7 +89,7 @@ public class WidgetPageUtil {
          }
          AttributeTypeToken type = null;
          if (layoutData.getStoreId() > 0) {
-            type = AttributeTypeManager.getTypeById(layoutData.getStoreId());
+            type = AttributeTypeManager.getAttributeType(layoutData.getStoreId());
          }
          if (type == null && Strings.isValid(layoutData.getStoreName())) {
             type = AttributeTypeManager.getType(layoutData.getStoreName());

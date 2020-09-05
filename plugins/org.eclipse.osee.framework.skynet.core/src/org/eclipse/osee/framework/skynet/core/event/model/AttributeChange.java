@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * @author Jeff C. Phillips
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -138,7 +138,7 @@ public class AttributeChange implements FrameworkEvent {
    public String toString() {
       try {
          return String.format("[AttrChg: %s - %s - %s]", AttributeEventModificationType.getType(modTypeGuid),
-            AttributeTypeManager.getTypeById(attrTypeGuid), data);
+            AttributeTypeManager.getAttributeType(attrTypeGuid), data);
       } catch (OseeCoreException ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }

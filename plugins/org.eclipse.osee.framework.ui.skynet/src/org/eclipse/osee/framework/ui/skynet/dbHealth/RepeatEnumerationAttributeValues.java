@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -77,7 +77,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
                attrData.getArtifactId().toString(),
-               AttributeTypeManager.getTypeById(attrData.getAttributeTypeId()).getName(),
+               AttributeTypeManager.getAttributeType(attrData.getAttributeTypeId()).getName(),
                attrData.getValue()}));
          }
       }
@@ -101,7 +101,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
                "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactId(), branch);
-               AttributeType attributeType = AttributeTypeManager.getTypeById(attrData.getAttributeTypeId());
+               AttributeTypeToken attributeType = AttributeTypeManager.getAttributeType(attrData.getAttributeTypeId());
                if (attributeType.isEnumerated()) {
                   artifact.setAttributeValues(attributeType, artifact.getAttributesToStringList(attributeType));
                   artifact.persist(transaction);

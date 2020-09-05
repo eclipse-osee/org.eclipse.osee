@@ -20,11 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -147,7 +147,7 @@ public class ChangeData {
                      if (change instanceof AttributeChange) {
                         Integer id = artifact.getArtId();
                         long typeId = change.getItemTypeId().getId();
-                        AttributeType attributeType = AttributeTypeManager.getTypeById(typeId);
+                        AttributeTypeToken attributeType = AttributeTypeManager.getAttributeType(typeId);
                         if (excludeArtifact.containsKey(id)) {
                            if (!artifactTypesToIgnore.contains(attributeType)) {
                               if (excludeArtifact.get(id)) {

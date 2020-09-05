@@ -98,7 +98,7 @@ public class WorldXViewerUtil {
          try {
             AttributeTypeToken attrType = null;
             try {
-               attrType = AttributeTypeManager.getTypeById(column.getAttrTypeId());
+               attrType = AttributeTypeManager.getAttributeType(column.getAttrTypeId());
             } catch (OseeTypeDoesNotExist ex) {
                continue;
             }
