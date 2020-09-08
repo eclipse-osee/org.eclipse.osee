@@ -116,7 +116,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
                actionArt = results.iterator().next();
             }
          }
-         parentAction = atsApi.getWorkItemService().getAction(actionArt);
+         if (actionArt != null) {
+            parentAction = atsApi.getWorkItemService().getAction(actionArt);
+         }
       }
       return parentAction;
    }

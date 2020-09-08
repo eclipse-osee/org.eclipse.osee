@@ -123,8 +123,6 @@ public class AtsHealthCheckOperation {
 
          // Break artifacts into blocks so don't run out of memory
          List<Collection<Long>> artIdLists = loadWorkingWorkItemIds(rd);
-         int size = artIdLists.size();
-         int num = 1;
          for (Collection<Long> artIdList : artIdLists) {
 
             Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
@@ -145,9 +143,7 @@ public class AtsHealthCheckOperation {
                   }
                   IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(artifact);
                   Date date = new Date();
-                  // TBD Add IAtsChangeSet and send to check for fixes
                   try {
-                     // TBD check.check(artifact, workItem, vResults, atsApi, changes);
                      check.check(artifact, workItem, vResults, atsApi, null);
                   } catch (Exception ex) {
                      vResults.log(artifact, check.getName(), "Error: Exception: " + Lib.exceptionToString(ex));
@@ -491,7 +487,7 @@ public class AtsHealthCheckOperation {
       // For single or re-runs of subset
       //      artIds.addAll(Arrays.asList(8381138L, 600305128L, 9115994L, 8003310L, 8646243L, 8660113L, 9036993L, 8646249L));
       // OR
-      // Load all inwork workflows
+      // Load all in work workflows
       rd.log("getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       try {
