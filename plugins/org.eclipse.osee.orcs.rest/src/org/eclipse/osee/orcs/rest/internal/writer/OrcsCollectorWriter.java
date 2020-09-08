@@ -209,7 +209,7 @@ public class OrcsCollectorWriter {
                      }
                   } else if (attrType.equals(CoreAttributeTypes.WordTemplateContent)) {
                      if (!newValue.contains("<w:p><w:r><w:t>")) {
-                        newValue = "<w:p><w:r><w:t>" + newValue + "</w:t></w:r></w:p>";
+                        newValue = "<w:p><w:r><w:t>" + AXml.textToXml(newValue) + "</w:t></w:r></w:p>";
                      }
                      if (currValue == null && newValue != null || currValue != null && !currValue.equals(newValue)) {
                         logChange(artifact, attrType, currValue, newValue);
