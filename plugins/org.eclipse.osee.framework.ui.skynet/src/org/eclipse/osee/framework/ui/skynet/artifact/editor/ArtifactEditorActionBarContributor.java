@@ -33,9 +33,9 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.CopyArtifactURLAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenArtifactInBrowserAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenHistoryAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PartInitException;
@@ -58,7 +58,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       manager.add(new DeleteArtifactAction());
       manager.add(new Separator());
       manager.add(new OpenOutlineAction());
-      manager.add(new OpenHistoryAction());
+      manager.add(new OpenHistoryAction(artifact));
       manager.add(new RevealInExplorerAction(artifact));
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
@@ -118,24 +118,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
-
-   private final class OpenHistoryAction extends Action {
-
-      public OpenHistoryAction() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE));
-         setToolTipText("Show this artifact in the Resource History");
-      }
-
-      @Override
-      public void run() {
-         try {
-            HistoryView.open(artifact);
-         } catch (Exception ex) {
-            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }

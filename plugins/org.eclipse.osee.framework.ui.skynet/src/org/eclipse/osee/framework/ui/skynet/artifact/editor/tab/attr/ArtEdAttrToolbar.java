@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenHistoryAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.AddAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.DeleteAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.action.EditAttributeAction;
@@ -44,9 +45,11 @@ public class ArtEdAttrToolbar {
       toolBarMgr.add(new EditAttributeAction(attrXViewer));
       toolBarMgr.add(new DeleteAttributeAction(attrXViewer));
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new RefreshAction(refreshActionHandler));
-      toolBarMgr.add(new Separator());
       toolBarMgr.add(attrXViewer.getCustomizeAction());
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new OpenHistoryAction(attrXViewer.getArtifact()));
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new RefreshAction(refreshActionHandler));
       scrolledForm.updateToolBar();
    }
 
