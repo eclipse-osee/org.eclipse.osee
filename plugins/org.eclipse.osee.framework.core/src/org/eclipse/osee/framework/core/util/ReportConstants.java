@@ -32,7 +32,7 @@ public class ReportConstants {
    public static final String NO_DATA_RIGHTS =
       "<w:p>[\\s||\\S]+?<w:r><w:t>NO DATA RIGHTS ARTIFACT FOUND</w:t></w:r>[\\s\\S]+?</w:p>";
    public static final String EMPTY_SECTION_BREAK =
-      "<w:sectPr[^>]*><w:pgSz[^>]*>(</w:pgSz>)*<w:pgMar[^>]*>(</w:pgMar>)*<w:cols[^>]*>(</w:cols>)*</w:sectPr>";
+      "<w:sectPr[^>]*>(<w:type[^>]*>(</w:type>)*)*<w:pgSz[^>]*>(</w:pgSz>)*<w:pgMar[^>]*>(</w:pgMar>)*<w:cols[^>]*>(</w:cols>)*</w:sectPr>";
 
    //wordml
    public static final String PG_SZ = "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/>";
