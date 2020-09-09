@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.ide.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.OpenVersionArtifactAction;
 import org.eclipse.osee.ats.ide.actions.ReloadAction;
 import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
-import org.eclipse.osee.ats.ide.actions.ShowBranchContentChangeReportAction;
+import org.eclipse.osee.ats.ide.actions.ShowContextChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
@@ -427,7 +427,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowWordChangeReportAction((TeamWorkFlowArtifact) awa));
-         toolBarMgr.add(new ShowBranchContentChangeReportAction((TeamWorkFlowArtifact) awa));
+         toolBarMgr.add(new ShowContextChangeReportAction((TeamWorkFlowArtifact) awa));
       }
       toolBarMgr.add(new FavoriteAction(editor));
       if (awa.getParentAWA() != null) {

@@ -303,7 +303,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    }
 
    @Override
-   public void generateBranchContentChangeReport(IAtsTeamWorkflow teamArt) {
+   public void generateContextChangeReport(IAtsTeamWorkflow teamArt) {
       List<Change> localChanges = (List<Change>) getChangeData(teamArt, null).getChanges();
       WordChangeUtil.generateWordTemplateChangeReport(localChanges, PresentationType.DIFF_NO_ATTRIBUTES, true, true);
    }

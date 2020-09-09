@@ -263,7 +263,7 @@
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
        </command>
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command">
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewContextChangeReport.command">
        </command>
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
@@ -543,8 +543,8 @@
      </enabledWhen>
       </handler>
   <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewBranchContentChangeReportHandler"
-        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command">
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewContextChangeReportHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewContextChangeReport.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -1108,8 +1108,8 @@
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>
   <command
-        id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewBranchContentChangeReport.command"
-        name="View Branch Content Change Report - F6">
+        id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewContextChangeReport.command"
+        name="View Context Change Report - F6">
   </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command" name="View Was/Is Comparison">
          </command>

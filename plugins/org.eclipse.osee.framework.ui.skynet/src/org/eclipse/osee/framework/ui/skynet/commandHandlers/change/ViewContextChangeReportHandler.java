@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 /**
  * @author Branden W. Phillips
  */
-public class ViewBranchContentChangeReportHandler extends CommandHandler {
+public class ViewContextChangeReportHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {

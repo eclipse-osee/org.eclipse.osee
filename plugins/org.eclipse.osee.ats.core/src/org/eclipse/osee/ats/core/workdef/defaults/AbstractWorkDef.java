@@ -64,8 +64,7 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
             new WidgetDefinition("XWorkingBranchButtonArtifactExplorer", "XWorkingBranchButtonArtifactExplorer"), //
             new WidgetDefinition("XWorkingBranchButtonChangeReport", "XWorkingBranchButtonChangeReport"), //
             new WidgetDefinition("XWorkingBranchButtonWordChangeReport", "XWorkingBranchButtonWordChangeReport"),
-            new WidgetDefinition("XWorkingBranchButtonBranchContentChangeReport",
-               "XWorkingBranchButtonBranchContentChangeReport"), //
+            new WidgetDefinition("XWorkingBranchButtonContextChangeReport", "XWorkingBranchButtonContextChangeReport"), //
             new WidgetDefinition("XWorkingBranchButtonDelete", "XWorkingBranchButtonDelete"), //
             new WidgetDefinition("XWorkingBranchButtonFavorites", "XWorkingBranchButtonFavorites"), //
             new WidgetDefinition("XWorkingBranchButtonLock", "XWorkingBranchButtonLock"), //

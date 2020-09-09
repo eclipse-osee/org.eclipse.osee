@@ -23,18 +23,18 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Branden W. Phillips
  */
-public class XWorkingBranchButtonBranchContentChangeReport extends XWorkingBranchButtonAbstract {
+public class XWorkingBranchButtonContextChangeReport extends XWorkingBranchButtonAbstract {
 
-   public static String WIDGET_NAME = XWorkingBranchButtonBranchContentChangeReport.class.getSimpleName();
+   public static String WIDGET_NAME = XWorkingBranchButtonContextChangeReport.class.getSimpleName();
 
    @Override
    protected void initButton(Button button) {
-      button.setToolTipText("Generate Branch Content Change Report");
-      button.setImage(ImageManager.getImage(AtsImage.BRANCH_CONTENT_CHANGE_REPORT));
+      button.setToolTipText("Generate Context Change Report");
+      button.setImage(ImageManager.getImage(AtsImage.CONTEXT_CHANGE_REPORT));
       button.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            AtsApiService.get().getBranchServiceIde().generateBranchContentChangeReport(getTeamArt());
+            AtsApiService.get().getBranchServiceIde().generateContextChangeReport(getTeamArt());
          }
       });
    }

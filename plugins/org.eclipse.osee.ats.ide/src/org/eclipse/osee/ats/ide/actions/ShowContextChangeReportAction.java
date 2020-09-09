@@ -27,17 +27,17 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  * @author Branden W. Phillips
  */
-public class ShowBranchContentChangeReportAction extends Action {
+public class ShowContextChangeReportAction extends Action {
 
    private final TeamWorkFlowArtifact teamArt;
 
    /**
     * Since this accessControlService is only going to be added for the Implement state, Location. AllState will work
     */
-   public ShowBranchContentChangeReportAction(TeamWorkFlowArtifact teamArt) {
+   public ShowContextChangeReportAction(TeamWorkFlowArtifact teamArt) {
       super();
       this.teamArt = teamArt;
-      setText("Generate Branch Content Change Report");
+      setText("Generate Context Change Report");
       setToolTipText(getText());
       boolean enabled = false;
       try {
@@ -54,12 +54,12 @@ public class ShowBranchContentChangeReportAction extends Action {
 
    @Override
    public void run() {
-      AtsApiService.get().getBranchServiceIde().generateBranchContentChangeReport(teamArt);
+      AtsApiService.get().getBranchServiceIde().generateContextChangeReport(teamArt);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.BRANCH_CONTENT_CHANGE_REPORT);
+      return ImageManager.getImageDescriptor(AtsImage.CONTEXT_CHANGE_REPORT);
    }
 
 }

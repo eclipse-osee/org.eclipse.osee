@@ -58,7 +58,7 @@ public interface AtsBranchServiceIde {
     * the ones that have Word Template Content Changes, and then sorts them in order. These artifacts are then used to
     * create ArtifactDeltas that are then used in a Word Diff. No attributes other than Word Template Content are used.
     */
-   void generateBranchContentChangeReport(IAtsTeamWorkflow teamArt);
+   void generateContextChangeReport(IAtsTeamWorkflow teamArt);
 
    /**
     * @param commitPopup if true, pop-up errors associated with results

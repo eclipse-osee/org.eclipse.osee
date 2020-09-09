@@ -97,8 +97,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XWorkingBranchButtonChangeReport();
       } else if (widgetName.equals(XWorkingBranchButtonWordChangeReport.WIDGET_NAME)) {
          toReturn = new XWorkingBranchButtonWordChangeReport();
-      } else if (widgetName.equals(XWorkingBranchButtonBranchContentChangeReport.WIDGET_NAME)) {
-         toReturn = new XWorkingBranchButtonBranchContentChangeReport();
+      } else if (widgetName.equals(XWorkingBranchButtonContextChangeReport.WIDGET_NAME)) {
+         toReturn = new XWorkingBranchButtonContextChangeReport();
       } else if (widgetName.equals(XWorkingBranchUpdate.WIDGET_NAME)) {
          toReturn = new XWorkingBranchUpdate();
       } else if (widgetName.equals(XWorkingBranchButtonDeleteMergeBranches.WIDGET_NAME)) {
