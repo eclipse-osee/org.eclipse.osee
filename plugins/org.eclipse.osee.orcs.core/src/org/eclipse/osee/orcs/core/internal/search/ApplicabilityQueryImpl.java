@@ -80,6 +80,23 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public List<String> getPossibleApplicabilities(BranchId branch) {
+      List<String> apps = new ArrayList<String>();
+      for (ArtifactToken view : getViewsForBranch(branch)) {
+         apps.add("Config = " + view.getName());
+      }
+      for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
+         for (String val : feature.getValues()) {
+            apps.add(feature.getName() + " = " + val);
+         }
+      }
+      for (ArtifactToken group : getConfigurationGroupsForBranch(branch)) {
+         apps.add("ConfigurationGroup = " + group.getName());
+      }
+      return apps;
+   }
+
+   @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch) {
       return applicabilityDsQuery.getApplicabilityTokens(artIds, branch);
    }

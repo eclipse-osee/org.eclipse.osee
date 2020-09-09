@@ -72,6 +72,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public Collection<String> getPossibleApplicabilities() {
+      return applicabilityQuery.getPossibleApplicabilities(branch);
+   }
+
+   @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds) {
       return applicabilityQuery.getApplicabilityTokens(artIds, branch);
    }
@@ -137,6 +142,20 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
+      tx.setApplicability(applicId, artifacts);
+      return tx.commit();
+   }
+
+   @Override
+   public TransactionToken setApplicabilityByString(String applicTag, List<? extends ArtifactId> artifacts) {
+      XResultData access = isAccess();
+      if (access.isErrors()) {
+         return TransactionToken.SENTINEL;
+      }
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
+      Long putIfAbsent = orcsApi.getKeyValueOps().putIfAbsent(applicTag);
+      ApplicabilityToken applicId = new ApplicabilityToken(putIfAbsent, applicTag);
       tx.setApplicability(applicId, artifacts);
       return tx.commit();
    }

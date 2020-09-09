@@ -33,6 +33,8 @@ public interface ApplicabilityQuery {
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
 
+   List<String> getPossibleApplicabilities(BranchId branch);
+
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
 
    List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact, BranchId branch);

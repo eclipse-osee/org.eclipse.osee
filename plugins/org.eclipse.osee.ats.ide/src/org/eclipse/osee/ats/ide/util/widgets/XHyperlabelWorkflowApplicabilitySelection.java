@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilterTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityTokenFilterTreeDialog;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
@@ -90,8 +90,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
          Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
 
-         ViewApplicabilityFilterTreeDialog dialog =
-            new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
+         ViewApplicabilityTokenFilterTreeDialog dialog =
+            new ViewApplicabilityTokenFilterTreeDialog("Select View Applicability", "Select View Applicability");
          dialog.setInput(applicabilityTokens);
          dialog.setMultiSelect(true);
          int result = dialog.open();

@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -47,15 +45,14 @@ public class ViewApplicabilityUtil {
    public static boolean changeApplicability(List<? extends ArtifactToken> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
-      Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
-
+      Iterable<String> possibleApplicabilities = applEndpoint.getPossibleApplicabilities();
       ViewApplicabilityFilterTreeDialog dialog = new ViewApplicabilityFilterTreeDialog("Select View Applicability",
          "Select View Applicability.  Saves immediately.");
-      dialog.setInput(applicabilityTokens);
+      dialog.setInput(possibleApplicabilities);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         applEndpoint.setApplicability(ApplicabilityId.valueOf(dialog.getSelection().getId()), artifacts);
+         applEndpoint.setApplicabilityByString(dialog.getSelection(), artifacts);
          return true;
       }
       return false;

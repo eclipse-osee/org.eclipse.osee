@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,11 +35,11 @@ import org.eclipse.swt.widgets.Control;
  * @param allValidViewApplicabilities contains the valid list of active and inactive View Applicabilities
  * @author Donald G. Dunne
  */
-public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
-   private String selection;
+public class ViewApplicabilityTokenFilterTreeDialog extends FilteredTreeDialog {
+   private ApplicabilityToken selection;
    XCheckBox showAll = new XCheckBox("Show All View Applicabilities");
 
-   public ViewApplicabilityFilterTreeDialog(String title, String message) {
+   public ViewApplicabilityTokenFilterTreeDialog(String title, String message) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
    }
 
@@ -54,7 +55,7 @@ public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
                if (sel.isEmpty()) {
                   selection = null;
                } else {
-                  selection = (String) sel.getFirstElement();
+                  selection = (ApplicabilityToken) sel.getFirstElement();
                }
                updateStatusLabel();
             }
@@ -81,7 +82,7 @@ public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public String getSelection() {
+   public ApplicabilityToken getSelection() {
       return selection;
    }
 
