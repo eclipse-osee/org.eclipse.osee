@@ -29,6 +29,6 @@ public class EnumeratedAttribute extends StringAttribute {
    @Override
    public String getDisplayableString() {
       String toDisplay = getDataProxy().getDisplayableString();
-      return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
+      return Strings.isValid(toDisplay) ? toDisplay : "Unspecified";
    }
 }

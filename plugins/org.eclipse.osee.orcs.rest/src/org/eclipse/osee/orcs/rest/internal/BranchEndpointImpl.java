@@ -237,7 +237,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<JsonArtifact> getArtifactDetailsByType(BranchId branchId, ArtifactId viewId, String artifactTypes) {
       List<JsonArtifact> arts = new ArrayList<JsonArtifact>();
-      List<Long> typesLong = (Collections.fromString(artifactTypes, ",", Long::valueOf));
+      List<Long> typesLong = Collections.fromString(artifactTypes, ",", Long::valueOf);
       List<ArtifactTypeToken> types = new ArrayList<ArtifactTypeToken>();
 
       for (Long typeId : typesLong) {

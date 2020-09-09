@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
@@ -292,7 +293,9 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private void checkMultiplicity(Artifact artifact, Attribute<?> attr) {
-      if (attr.getAttributeType().getMaxOccurrences() == 1 && artifact.getAttributeCount(attr.getAttributeType()) > 1) {
+      AttributeTypeToken attributeType = attr.getAttributeType();
+      if (attr.getArtifact().getArtifactType().getMax(attributeType) == 1 && artifact.getAttributeCount(
+         attributeType) > 1) {
          throw new OseeStateException("Artifact %s can only have 1 [%s] attribute but has %d",
             artifact.toStringWithId(), attr.getAttributeType().getName(),
             artifact.getAttributeCount(attr.getAttributeType()));

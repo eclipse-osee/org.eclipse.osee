@@ -84,7 +84,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       //builder.append(".");
       String extension = null; //operator.getOutfileExtension();
       if (!Strings.isValid(extension)) {
-         extension = getAttribute().getAttributeType().getFileTypeExtension();
+         extension = getAttribute().getAttributeType().getFileExtension();
       }
       builder.append(extension);
       return builder.toString();

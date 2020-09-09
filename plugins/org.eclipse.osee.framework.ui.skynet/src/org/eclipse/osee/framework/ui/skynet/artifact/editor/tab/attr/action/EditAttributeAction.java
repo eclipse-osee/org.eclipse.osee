@@ -61,7 +61,8 @@ public class EditAttributeAction extends Action {
             AWorkbench.popup("Artifact is READ Only");
             return;
          }
-         if (attribute.getAttributeType().getMaxOccurrences() == 1) {
+
+         if (attribute.getArtifact().getArtifactType().getMax(attribute.getAttributeType()) == 1) {
             ArtifactPromptChange.promptChangeAttribute(attribute.getAttributeType(), Arrays.asList(artifact), true);
          } else if (attribute instanceof StringAttribute) {
             EntryDialog dialog = new EntryDialog("Change Value", "New Value");

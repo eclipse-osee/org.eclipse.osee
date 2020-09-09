@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -242,7 +243,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       private String getContentFromAttribute(Attribute<?> attribute) {
          try {
             Object value = attribute.getValue();
-            if (!attribute.getAttributeType().getTaggerId().contains("Default")) {
+            if (!attribute.getAttributeType().getTaggerType().equals(TaggerTypeToken.PlainTextTagger)) {
                return Lib.inputStreamToString(new XmlTextInputStream((String) value));
             } else if (value instanceof String) {
                return (String) value;

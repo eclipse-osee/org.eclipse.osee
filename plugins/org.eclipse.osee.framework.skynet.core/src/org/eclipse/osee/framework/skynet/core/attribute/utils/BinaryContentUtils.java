@@ -69,7 +69,7 @@ public class BinaryContentUtils {
    }
 
    private static String getExtension(Attribute<?> attribute) {
-      String fileTypeExtension = attribute.getAttributeType().getFileTypeExtension();
+      String fileTypeExtension = attribute.getAttributeType().getFileExtension();
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = attribute.getArtifact().getSoleAttributeValue(CoreAttributeTypes.Extension, "");
       }

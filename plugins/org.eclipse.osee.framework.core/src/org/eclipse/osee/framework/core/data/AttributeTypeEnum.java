@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks
@@ -56,6 +57,15 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
          }
       }
       return false;
+   }
+
+   public Long getEnumOrdinal(String enumName) {
+      for (T enumToken : enumTokens) {
+         if (enumToken.getName().equals(enumName)) {
+            return enumToken.getId();
+         }
+      }
+      throw new OseeArgumentException("[%s] is not a valid enum name for [%s]", enumName, this);
    }
 
    public boolean isValidEnum(ArtifactTypeToken artTypeToken, String enumName) {

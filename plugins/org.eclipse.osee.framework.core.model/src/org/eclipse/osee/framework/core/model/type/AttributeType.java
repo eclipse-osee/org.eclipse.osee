@@ -152,10 +152,6 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       setField(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, enumType);
    }
 
-   public String getFileTypeExtension() {
-      return getFieldValueLogException("", ATTRIBUTE_FILE_EXTENSION_FIELD_KEY);
-   }
-
    /**
     * Get the registered tagger id for this attribute type
     *
@@ -189,5 +185,4 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       }
       return toReturn;
    }
-
 }
