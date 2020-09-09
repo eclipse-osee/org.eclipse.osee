@@ -242,7 +242,11 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ReleaseDate, "")
       .zeroOrOne(Released, "false")
       .zeroOrOne(TestRunToSourceLocator, "")
-      .zeroOrOne(VersionLocked, "false"));
+      .zeroOrOne(VersionLocked, "false")
+      .zeroOrOne(SignalDbSystemId, "")
+      .zeroOrOne(IsDcs, "")
+      .zeroOrOne(LegacyBuildId, "")
+      );
    ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, Artifact)
       .zeroOrOne(DslSheet, ""));
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, Artifact)

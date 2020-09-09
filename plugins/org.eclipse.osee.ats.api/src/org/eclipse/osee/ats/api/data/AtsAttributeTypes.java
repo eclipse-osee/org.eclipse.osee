@@ -109,9 +109,11 @@ public interface AtsAttributeTypes {
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", MediaType.TEXT_PLAIN, "");
    IptAttributeType IPT = ats.createEnum(new IptAttributeType());
+   AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", MediaType.TEXT_PLAIN, "Is Direct Commercial Sale");
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", MediaType.TEXT_PLAIN, "");
    AttributeTypeString KanbanStoryName = ats.createString(72645877009467643L, "ats.kb.Story Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString LegacyPcrId = ats.createString(1152921504606847219L, "ats.Legacy PCR Id", MediaType.TEXT_PLAIN, "Field to register problem change report id from legacy items imported into ATS.");
+   AttributeTypeString LegacyBuildId = ats.createString(4636732132432803380L, "ats.Legacy Build Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger LocChanged = ats.createInteger(1152921504606847207L, "ats.LOC Changed", MediaType.TEXT_PLAIN, "Total Lines of Code Changed");
    AttributeTypeInteger LocReviewed = ats.createInteger(1152921504606847208L, "ats.LOC Reviewed", MediaType.TEXT_PLAIN, "Total Lines of Code Reviewed");
    AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", MediaType.TEXT_PLAIN, "Enter location of materials to review.");
@@ -158,6 +160,7 @@ public interface AtsAttributeTypes {
    ReviewFormalTypeAttributeType ReviewFormalType = ats.createEnum(new ReviewFormalTypeAttributeType());
    AttributeTypeString Role = ats.createString(1152921504606847226L, "ats.Role", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RuleDefinition = ats.createString(1152921504606847150L, "ats.Rule Definition", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", MediaType.TEXT_PLAIN, "");
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", MediaType.TEXT_PLAIN, "States of workflow state machine.");
    AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "");

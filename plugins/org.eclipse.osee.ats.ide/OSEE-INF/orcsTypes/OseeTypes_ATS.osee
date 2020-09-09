@@ -224,6 +224,10 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Test Run To Source Locator"
 	attribute "ats.closure.Closure State"
 	attribute "ats.Allow Web Export"
+	attribute "ats.Signal Db System Id"
+	attribute "ats.Legacy Build Id"
+	attribute "ats.Is DCS"
+	
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
@@ -343,6 +347,32 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "ats.CAM"
    attribute "ats.Color Team"
    attribute "ats.Cognos Unique Id"
+}
+
+attributeType "ats.Signal Db System Id" extends StringAttribute {
+   id 1153126013769613779
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.Legacy Build Id" extends StringAttribute {
+   id 4636732132432803380
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
+}
+
+attributeType "ats.Is DCS" extends BooleanAttribute {
+   id 3199233956221339044
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   description "Is Direct Commercial Sale"
+   mediaType "text/plain"
 }
 
 attributeType "ats.Task Set Id" extends LongAttribute {
