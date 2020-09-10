@@ -60,7 +60,9 @@ public class GenericReportCode {
       report.level("Related Code Unit", report.query().follow(CoreRelationTypes.CodeRequirement_CodeUnit)). //
          column("Artifact Id"). //
          column("Code Unit", CoreAttributeTypes.Name). //
-         column("File System Path", CoreAttributeTypes.FileSystemPath); //
+         filter(CoreAttributeTypes.Name, ".+\\.VMF$"). //
+         column("File System Path", CoreAttributeTypes.FileSystemPath). //
+         filter(CoreAttributeTypes.FileSystemPath, ".+\\Fail\\.+"); //
 
    }
 

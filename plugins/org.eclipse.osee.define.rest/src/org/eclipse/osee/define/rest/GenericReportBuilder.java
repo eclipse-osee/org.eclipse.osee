@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.define.api.GenericReport;
 import org.eclipse.osee.define.api.report.ReportColumn;
+import org.eclipse.osee.define.api.report.ReportFilter;
 import org.eclipse.osee.define.api.report.ReportLevel;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -77,6 +78,12 @@ public class GenericReportBuilder implements GenericReport {
    @Override
    public GenericReport column(AttributeTypeToken type) {
       currentLevel.column(type);
+      return this;
+   }
+
+   @Override
+   public GenericReport filter(AttributeTypeToken type, String regex) {
+      currentLevel.filter(type, regex);
       return this;
    }
 
@@ -146,8 +153,16 @@ public class GenericReportBuilder implements GenericReport {
    private void fillReportDataFromQuery(ArtifactReadable art, List<Object[]> rows, String[] row, int pos, int depth) {
       ReportLevel level = this.getLevels().get(depth);
       for (ReportColumn column : level.getColumns()) {
-         row[pos++] = column.getReportData(art);
+         String columnData = column.getReportData(art);
+         for (ReportFilter filter : column.getFilters()) {
+            if (filter.filterMatches(columnData)) {
+               // skip this row (and possibly all of the next levels)
+               return;
+            }
+         }
+         row[pos++] = columnData;
       }
+
       if (isFinalLevel(depth)) {
          finishRow(rows, row, pos);
       } else {

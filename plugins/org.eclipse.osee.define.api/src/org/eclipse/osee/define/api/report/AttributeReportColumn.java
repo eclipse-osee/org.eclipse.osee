@@ -40,4 +40,8 @@ public class AttributeReportColumn extends ReportColumn {
       return artifact.getAttributeValuesAsString(type);
    }
 
+   public AttributeTypeToken getType() {
+      return type;
+   }
+
 }

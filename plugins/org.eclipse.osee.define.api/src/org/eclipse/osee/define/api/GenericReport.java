@@ -29,6 +29,8 @@ public interface GenericReport {
 
    public GenericReport column(AttributeTypeToken type);
 
+   public GenericReport filter(AttributeTypeToken type, String regex);
+
    public QueryBuilder query();
 
    public OrcsApi getOrcsApi();

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.api.report;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -20,6 +22,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class ReportColumn {
    private final String name;
+   private final List<ReportFilter> filters = new LinkedList<>();
 
    public ReportColumn(String name) {
       this.name = name;
@@ -29,5 +32,14 @@ public abstract class ReportColumn {
       return name;
    }
 
+   public void addFilter(String regex) {
+      filters.add(new ReportFilter(regex));
+   }
+
+   public List<ReportFilter> getFilters() {
+      return filters;
+   }
+
    public abstract String getReportData(ArtifactReadable artifact);
+
 }

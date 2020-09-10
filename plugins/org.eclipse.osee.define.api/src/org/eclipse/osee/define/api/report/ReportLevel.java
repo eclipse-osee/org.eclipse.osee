@@ -25,6 +25,8 @@ public class ReportLevel {
    private final String levelName;
    private int depth = 0;
    private final List<ReportColumn> columns = new LinkedList<ReportColumn>();
+   private Boolean filtered = false;
+
    private RelationTypeSide relation = null;
 
    public ReportLevel(String levelName) {
@@ -44,6 +46,20 @@ public class ReportLevel {
    public ReportLevel column(AttributeTypeToken type) {
       columns.add(new AttributeReportColumn(type.getName(), type));
       return this;
+   }
+
+   public void filter(AttributeTypeToken type, String filterRegex) {
+      for (ReportColumn column : getColumnsOfType(type)) {
+         column.addFilter(filterRegex);
+      }
+   }
+
+   public Boolean isFiltered() {
+      return filtered;
+   }
+
+   public void setFiltered() {
+      filtered = true;
    }
 
    public String getLevelName() {
@@ -68,5 +84,18 @@ public class ReportLevel {
 
    public void setRelation(RelationTypeSide relation) {
       this.relation = relation;
+   }
+
+   private List<ReportColumn> getColumnsOfType(AttributeTypeToken type) {
+      List<ReportColumn> results = new LinkedList<>();
+      for (ReportColumn column : columns) {
+         if (column instanceof AttributeReportColumn) {
+            AttributeReportColumn attrColumn = (AttributeReportColumn) column;
+            if (attrColumn.getType().equals(type)) {
+               results.add(attrColumn);
+            }
+         }
+      }
+      return results;
    }
 }
