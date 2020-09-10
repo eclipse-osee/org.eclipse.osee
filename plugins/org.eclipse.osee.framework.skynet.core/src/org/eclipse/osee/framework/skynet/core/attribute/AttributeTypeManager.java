@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -87,22 +86,6 @@ public class AttributeTypeManager {
 
    public static AttributeTypeGeneric<?> getAttributeType(Long id) {
       return getTokenService().getAttributeType(id);
-   }
-
-   public static AttributeType getType(AttributeTypeId type) {
-      Long id = type.getId();
-      if (id == null) {
-         throw new OseeArgumentException("[%s] is not a valid guid", id);
-      }
-      AttributeType attributeType = getCache().getByGuid(id);
-      if (attributeType == null) {
-         getCacheService().reloadTypes();
-         attributeType = getCache().getByGuid(id);
-         if (attributeType == null) {
-            throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", id);
-         }
-      }
-      return attributeType;
    }
 
    /**

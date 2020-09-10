@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
 import java.lang.ref.Reference;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
@@ -41,7 +42,7 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    /////////
 
-   void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue);
+   void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService);
 
    ArtifactToken getContainer();
 

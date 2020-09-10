@@ -140,8 +140,6 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       }
    }
 
-   Object getDefaultValue();
-
    default boolean isUri() {
       String mediaType = getMediaType();
       if (mediaType.equals(AttributeTypeToken.TEXT_URI_LIST) || mediaType.equals(

@@ -23,6 +23,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HI
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Design_Design;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -125,6 +127,7 @@ public class DataFactoryImplTest {
       when(attrData.getId()).thenReturn(SHARED_ID);
       when(attrData.getModType()).thenReturn(ModificationType.MODIFIED);
       when(attrData.getType()).thenReturn(Name);
+      doReturn(CoreAttributeTypes.Name).when(tokenService).getAttributeType(CoreAttributeTypes.Name.getId());
       when(attrData.getBaseModType()).thenReturn(ModificationType.NEW);
       when(attrData.getBaseType()).thenReturn(Active);
       when(attrData.getArtifactId()).thenReturn(art88);

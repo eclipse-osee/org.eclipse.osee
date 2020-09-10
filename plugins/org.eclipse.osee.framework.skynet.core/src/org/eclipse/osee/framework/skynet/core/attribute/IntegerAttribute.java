@@ -13,14 +13,10 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 /**
  * @author Ryan D. Brooks
  */
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
-
-   private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
 
    @Override
    public Integer getValue() {
@@ -29,34 +25,6 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
 
    @Override
    public Integer convertStringToValue(String value) {
-      Integer toReturn = null;
-      if (isValidInteger(value)) {
-         toReturn = Integer.valueOf(value);
-      } else {
-         toReturn = getDefaultValue();
-      }
-      return toReturn;
-   }
-
-   public Integer getDefaultValue() {
-      Integer toReturn = DEFAULT_INTEGER;
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (isValidInteger(defaultValue)) {
-         toReturn = Integer.valueOf(defaultValue);
-      }
-      return toReturn;
-   }
-
-   private boolean isValidInteger(String value) {
-      boolean result = false;
-      if (Strings.isValid(value)) {
-         try {
-            Integer.parseInt(value);
-            result = true;
-         } catch (NumberFormatException ex) {
-            // Do Nothing;
-         }
-      }
-      return result;
+      return Integer.valueOf(value);
    }
 }

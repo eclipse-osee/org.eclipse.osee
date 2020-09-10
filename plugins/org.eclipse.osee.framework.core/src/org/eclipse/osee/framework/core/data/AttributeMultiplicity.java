@@ -39,44 +39,60 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this.artifactType = artifactType;
    }
 
-   public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+   public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue));
       return this;
    }
 
-   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+   public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType) {
+      return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+   }
+
+   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue));
       return this;
    }
 
-   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType) {
+      return exactlyOne(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+   }
+
+   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue));
       return this;
    }
 
-   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType, String defaultValue) {
+   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType) {
+      return zeroOrOne(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+   }
+
+   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType, T defaultValue) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType) {
+      return atLeastOne(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+   }
+
+   public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity exactlyOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity exactlyOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity zeroOrOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity zeroOrOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity atLeastOne(AttributeTypeEnum<T> attributeType, String defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity atLeastOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue, enumeratedValues));
       return this;
@@ -94,9 +110,9 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
       return get(attributeType).getMultiplicity();
    }
-
-   public String getAttributeDefault(AttributeTypeToken attributeType) {
-      return get(attributeType).getDefaultValue();
+   
+   public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
+      return (T) get(attributeType).getDefaultValue();
    }
 
    public ArtifactTypeToken get() {

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -106,7 +107,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeToken attributeType, ModificationType modType, ArtifactId artifactId, T value, String uri, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, Integer id, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artifactId, T value, String uri, ApplicabilityId applicId) {
       DataProxy<T> proxy = proxyFactory.createProxy(attributeType, value, uri);
       return createAttributeFromRow(version, id, attributeType, modType, attributeType, modType, artifactId, proxy,
          applicId);
@@ -115,7 +116,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    @Override
    public <T> AttributeData<T> createCopy(AttributeData<T> source) {
       VersionData newVersion = createCopy(source.getVersion());
-      AttributeTypeToken attributeType = source.getType();
+      AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(source.getType().getId());
       DataProxy<T> sourceProxy = source.getDataProxy();
       DataProxy<T> newProxy = proxyFactory.createProxy(attributeType, sourceProxy.getRawValue(), sourceProxy.getUri());
       return createAttributeFromRow(newVersion, source.getId().intValue(), attributeType, source.getModType(),
@@ -123,7 +124,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, Integer generateArtId, AttributeTypeToken attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, Integer generateArtId, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
       DataProxy<T> proxy = proxyFactory.createProxy(attributeType, "", "");
       return createAttributeFromRow(version, generateArtId, attributeType, modType, attributeType, modType, artId,
          proxy, applicId);
@@ -147,7 +148,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private <T> AttributeData<T> createAttributeFromRow(VersionData version, int id, AttributeTypeToken attributeType, ModificationType modType, AttributeTypeToken baseAttributeType, ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
+   private <T> AttributeData<T> createAttributeFromRow(VersionData version, int id, AttributeTypeGeneric<?> attributeType, ModificationType modType, AttributeTypeToken baseAttributeType, ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
       AttributeData<T> data = new AttributeDataImpl<>(version);
       data.setLocalId(id);
       data.setType(attributeType);

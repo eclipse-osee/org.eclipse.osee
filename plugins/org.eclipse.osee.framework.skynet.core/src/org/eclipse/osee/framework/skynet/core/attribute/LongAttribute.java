@@ -13,14 +13,10 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 /**
  * @author Donald G. Dunne
  */
 public class LongAttribute extends CharacterBackedAttribute<Long> {
-
-   private static final Long DEFAULT_LONG = Long.MIN_VALUE;
 
    @Override
    public Long getValue() {
@@ -29,34 +25,6 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
 
    @Override
    public Long convertStringToValue(String value) {
-      Long toReturn = null;
-      if (isValidLong(value)) {
-         toReturn = Long.valueOf(value);
-      } else {
-         toReturn = getDefaultValue();
-      }
-      return toReturn;
-   }
-
-   public Long getDefaultValue() {
-      Long toReturn = DEFAULT_LONG;
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (isValidLong(defaultValue)) {
-         toReturn = Long.valueOf(defaultValue);
-      }
-      return toReturn;
-   }
-
-   private boolean isValidLong(String value) {
-      boolean result = false;
-      if (Strings.isValid(value)) {
-         try {
-            Long.getLong(value);
-            result = true;
-         } catch (NumberFormatException ex) {
-            // Do Nothing;
-         }
-      }
-      return result;
+      return Long.valueOf(value);
    }
 }

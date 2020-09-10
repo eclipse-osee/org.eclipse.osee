@@ -16,6 +16,8 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -43,11 +45,13 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    private Reference<AttributeContainer> containerReference;
    private final Log logger = null;
    private AttributeData<T> attributeData;
+   private OrcsTokenService tokenService;
 
    @Override
-   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue) {
+   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService) {
       this.containerReference = containerReference;
       this.attributeData = attributeData;
+      this.tokenService = tokenService;
 
       if (setDefaultValue) {
          setToDefaultValue();
@@ -109,7 +113,9 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    }
 
    private void setToDefaultValue() {
-      T defaultValue = getSafeDefaultValue();
+      AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(getAttributeType().getId());
+      T defaultValue = (T) containerReference.get().getArtifactType().getAttributeDefault(attributeType);
+
       if (defaultValue != null) {
          subClassSetValue(defaultValue);
       }
@@ -307,25 +313,12 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
 
    @Override
    public T convertStringToValue(String proposedValue) {
-      try {
-         return subclassConvertStringToValue(proposedValue);
-      } catch (Exception ex) {
-         return getSafeDefaultValue();
-      }
-   }
-
-   private T getSafeDefaultValue() {
-      try {
-         String defaultValue = containerReference.get().getArtifactType().getAttributeDefault(getAttributeType());
-         return defaultValue == null ? null : subclassConvertStringToValue(defaultValue);
-      } catch (Exception ex) {
-         return (T) attributeData.getType().getDefaultValue();
-      }
+      return subclassConvertStringToValue(proposedValue);
    }
 
    /**
     * @return result of converting the string value of this attribute or throw an exception so the super class can
     * supply a default
     */
-   abstract T subclassConvertStringToValue(String value) throws Exception;
+   abstract T subclassConvertStringToValue(String value);
 }

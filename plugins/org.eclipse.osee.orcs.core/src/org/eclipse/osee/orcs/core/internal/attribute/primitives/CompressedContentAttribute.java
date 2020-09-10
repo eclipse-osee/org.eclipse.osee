@@ -60,8 +60,12 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   InputStream subclassConvertStringToValue(String value) throws UnsupportedEncodingException {
-      return Lib.stringToInputStream(value);
+   InputStream subclassConvertStringToValue(String value) {
+      try {
+         return Lib.stringToInputStream(value);
+      } catch (UnsupportedEncodingException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    @Override

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.TechStandardVersionAttributeType.Fa
  */
 public final class TechStandardVersionAttributeType extends AttributeTypeEnum<FaceVersionEnum> {
 
-   public final FaceVersionEnum Uspecified = new FaceVersionEnum(0, "Unspecified");
+   public final FaceVersionEnum Unspecified = new FaceVersionEnum(0, "Unspecified");
    public final FaceVersionEnum Face_2_1 = new FaceVersionEnum(1, "FACE 2.1");
    public final FaceVersionEnum Face_3_0 = new FaceVersionEnum(2, "FACE 3.0");
    public final FaceVersionEnum Face_3_1 = new FaceVersionEnum(3, "FACE 3.1");

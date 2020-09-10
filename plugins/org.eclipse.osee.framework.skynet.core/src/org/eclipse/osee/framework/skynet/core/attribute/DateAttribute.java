@@ -30,16 +30,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    }
 
    @Override
-   protected void setToDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (defaultValue == null) {
-         subClassSetValue(new Date());
-      } else {
-         setFromStringNoDirty(defaultValue);
-      }
-   }
-
-   @Override
    public String getDisplayableString() {
       return getAsFormattedString(MMDDYYHHMM);
    }

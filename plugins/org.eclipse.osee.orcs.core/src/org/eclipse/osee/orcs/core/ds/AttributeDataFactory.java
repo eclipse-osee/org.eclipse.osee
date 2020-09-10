@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public interface AttributeDataFactory<T> {
 
-   AttributeData<T> create(ArtifactData parent, AttributeTypeToken attributeType);
+   AttributeData<T> create(ArtifactData parent, AttributeTypeGeneric attributeType);
 
    AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData);
 

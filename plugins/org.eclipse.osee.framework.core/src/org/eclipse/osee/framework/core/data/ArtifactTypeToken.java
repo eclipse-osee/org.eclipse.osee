@@ -46,7 +46,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes).get();
    }
 
-   String getAttributeDefault(AttributeTypeToken attributeType);
+   <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType);
 
    default boolean inheritsFromAny(Collection<ArtifactTypeToken> artTypes) {
       for (ArtifactTypeToken inheritType : artTypes) {
@@ -181,7 +181,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          }
 
          @Override
-         public String getAttributeDefault(AttributeTypeToken attributeType) {
+         public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
             return attributeTypes.getAttributeDefault(attributeType);
          }
 

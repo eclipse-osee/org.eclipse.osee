@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.SegmentAttributeType.FaceSegmentEnu
  */
 public final class SegmentAttributeType extends AttributeTypeEnum<FaceSegmentEnum> {
 
-   public final FaceSegmentEnum Uspecified = new FaceSegmentEnum(0, "Unspecified");
+   public final FaceSegmentEnum Unspecified = new FaceSegmentEnum(0, "Unspecified");
    public final FaceSegmentEnum PSSS_PSDS = new FaceSegmentEnum(1, "PSSS-PSDS");
    public final FaceSegmentEnum PSSS_PSCS = new FaceSegmentEnum(2, "PSSS-PSCS");
    public final FaceSegmentEnum PSSS_PSGS = new FaceSegmentEnum(3, "PSSS-PSGS");

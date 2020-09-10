@@ -121,11 +121,6 @@ public class AttributeType extends AbstractOseeType implements AttributeTypeToke
       return getAttrBaseType().endsWith("BranchReferenceAttribute");
    }
 
-   @Override
-   public String getDefaultValue() {
-      return getFieldValueLogException(null, ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY);
-   }
-
    public int getMaxOccurrences() {
       return getFieldValueLogException(0, ATTRIBUTE_MAX_OCCURRENCE_FIELD_KEY);
    }

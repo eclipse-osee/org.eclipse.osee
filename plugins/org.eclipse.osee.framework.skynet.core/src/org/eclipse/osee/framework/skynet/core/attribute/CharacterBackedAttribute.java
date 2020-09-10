@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.lang.reflect.ParameterizedType;
+import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
@@ -38,7 +39,13 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
       }
       Class<?> parameterclazz =
          (Class<?>) ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
+
       if (!parameterclazz.isInstance(value)) {
+         if (value.getClass().getSuperclass().getSimpleName().equals("EnumToken")) {
+            EnumToken enumToken = (EnumToken) value;
+            String stringValue = enumToken.getName();
+            return getAttributeDataProvider().setValue(stringValue);
+         }
          throw new ClassCastException(
             parameterclazz + " attribute subClassSetValue called with type " + value.getClass());
       }

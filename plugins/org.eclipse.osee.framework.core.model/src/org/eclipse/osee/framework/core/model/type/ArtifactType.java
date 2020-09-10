@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -213,8 +214,8 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    }
 
    @Override
-   public String getAttributeDefault(AttributeTypeToken attributeType) {
-      return "";
+   public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
+      return null;
    }
 
    @Override

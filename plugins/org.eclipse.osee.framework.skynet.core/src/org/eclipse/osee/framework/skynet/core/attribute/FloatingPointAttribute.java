@@ -13,14 +13,10 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 /**
  * @author Ryan D. Brooks
  */
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
-
-   private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
 
    @Override
    public Double getValue() {
@@ -29,34 +25,6 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    @Override
    public Double convertStringToValue(String value) {
-      Double toReturn = null;
-      if (isValidDouble(value)) {
-         toReturn = Double.valueOf(value);
-      } else {
-         toReturn = getDefaultValue();
-      }
-      return toReturn;
-   }
-
-   public Double getDefaultValue() {
-      Double toReturn = DEFAULT_DOUBLE;
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (isValidDouble(defaultValue)) {
-         toReturn = Double.valueOf(defaultValue);
-      }
-      return toReturn;
-   }
-
-   private boolean isValidDouble(String value) {
-      boolean result = false;
-      if (Strings.isValid(value)) {
-         try {
-            Double.parseDouble(value);
-            result = true;
-         } catch (NumberFormatException ex) {
-            // Do Nothing;
-         }
-      }
-      return result;
+      return Double.valueOf(value);
    }
 }

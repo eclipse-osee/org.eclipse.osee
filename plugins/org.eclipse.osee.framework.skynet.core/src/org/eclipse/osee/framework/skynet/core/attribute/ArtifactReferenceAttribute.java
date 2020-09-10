@@ -21,8 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
 
-   public static final String SENTINEL = "-1";
-
    @Override
    public ArtifactId convertStringToValue(String value) {
       return ArtifactId.valueOf(value);
@@ -34,20 +32,10 @@ public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
    }
 
    @Override
-   protected void setToDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (defaultValue == null) {
-         defaultValue = SENTINEL;
-      }
-      setFromStringNoDirty(defaultValue);
-   }
-
-   @Override
    public String toString() {
       if (getValue() == null) {
          return this.getAttributeType().toString();
       }
       return getValue().getIdString();
    }
-
 }

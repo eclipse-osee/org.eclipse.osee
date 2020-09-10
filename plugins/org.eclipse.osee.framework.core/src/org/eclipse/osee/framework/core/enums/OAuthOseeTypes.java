@@ -39,15 +39,15 @@ public interface OAuthOseeTypes {
    AttributeTypeString OAuthClientWebsiteUri = oauth.createString(7824657901879283800L, "oauth.client.Website URI", MediaType.TEXT_PLAIN, "");
 
    ArtifactTypeToken OAuthClient = oauth.add(oauth.artifactType(756912961500447526L, "OAuth Client", false, Artifact)
-      .any(ImageContent, "")
-      .any(OAuthClientAuthorizedAudience, "")
-      .any(OAuthClientAuthorizedGrantType, "")
-      .any(OAuthClientAuthorizedRedirectUri, "")
-      .any(OAuthClientAuthorizedScope, "")
-      .exactlyOne(OAuthClientIsConfidential, "true")
-      .zeroOrOne(OAuthClientLogoUri, "")
-      .zeroOrOne(OAuthClientProperties, "")
-      .zeroOrOne(OAuthClientWebsiteUri, ""));
+      .any(ImageContent)
+      .any(OAuthClientAuthorizedAudience)
+      .any(OAuthClientAuthorizedGrantType, null)
+      .any(OAuthClientAuthorizedRedirectUri)
+      .any(OAuthClientAuthorizedScope)
+      .exactlyOne(OAuthClientIsConfidential, Boolean.TRUE)
+      .zeroOrOne(OAuthClientLogoUri)
+      .zeroOrOne(OAuthClientProperties)
+      .zeroOrOne(OAuthClientWebsiteUri));
    ArtifactToken OAUTH_TYPES = ArtifactToken.valueOf(7067755, "OAuthTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
    // @formatter:on
 

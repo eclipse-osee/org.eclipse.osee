@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -163,9 +163,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    }
 
    protected void setToDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
+      AttributeTypeGeneric<?> attributeType = AttributeTypeManager.getAttributeType(attributeTypeToken.getId());
+      T defaultValue = (T) getArtifact().getArtifactType().getAttributeDefault(attributeType);
       if (defaultValue != null) {
-         setFromStringNoDirty(defaultValue);
+         subClassSetValue(defaultValue);
       }
    }
 
@@ -236,8 +237,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
     * @return attributeType Attribute Type Information
     */
    @Override
-   public AttributeType getAttributeType() {
-      return AttributeTypeManager.getType(attributeTypeToken);
+   public AttributeTypeToken getAttributeType() {
+      return AttributeTypeManager.getAttributeType(attributeTypeToken.getId());
    }
 
    public AttributeTypeId getAttributeTypeToken() {

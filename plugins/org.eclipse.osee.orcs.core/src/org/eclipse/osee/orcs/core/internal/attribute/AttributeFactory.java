@@ -55,7 +55,7 @@ public class AttributeFactory {
    }
 
    public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeToken attributeType) {
-      AttributeData<T> data = dataFactory.create(artifactData, attributeType);
+      AttributeData<T> data = dataFactory.create(artifactData, tokenService.getAttributeType(attributeType.getId()));
       return createAttribute(container, data, true, true);
    }
 
@@ -73,7 +73,7 @@ public class AttributeFactory {
 
       Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
-      attribute.internalInitialize(artifactRef, data, isDirty, createWithDefaults);
+      attribute.internalInitialize(artifactRef, data, isDirty, createWithDefaults, tokenService);
       container.add(data.getType(), attribute);
 
       return attribute;
@@ -132,7 +132,7 @@ public class AttributeFactory {
          try {
             destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
             Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
-            destinationAttribute.internalInitialize(artifactRef, attributeData, true, false);
+            destinationAttribute.internalInitialize(artifactRef, attributeData, true, false, tokenService);
          } catch (AttributeDoesNotExist ex) {
             destinationAttribute = createAttribute(destination, attributeData);
          }

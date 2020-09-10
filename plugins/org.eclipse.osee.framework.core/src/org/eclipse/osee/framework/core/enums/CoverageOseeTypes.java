@@ -41,21 +41,21 @@ public interface CoverageOseeTypes {
 
    //Artifact Types
    ArtifactTypeToken AbstractCoverageUnit = dispo.add(dispo.artifactType(76L, "Abstract Coverage Unit", true, GeneralData)
-      .zeroOrOne(Assignees, "")
-      .any(CoverageItem, "")
-      .zeroOrOne(FileContents, "")
-      .zeroOrOne(Location, "")
-      .zeroOrOne(Namespace, "")
-      .zeroOrOne(Notes, "")
-      .zeroOrOne(Order, ""));
+      .zeroOrOne(Assignees)
+      .any(CoverageItem)
+      .zeroOrOne(FileContents)
+      .zeroOrOne(Location)
+      .zeroOrOne(Namespace)
+      .zeroOrOne(Notes)
+      .zeroOrOne(Order));
    ArtifactTypeToken CoverageFolder = dispo.add(dispo.artifactType(77L, "Coverage Folder", false, AbstractCoverageUnit));
    ArtifactTypeToken CoveragePackage = dispo.add(dispo.artifactType(75L, "Coverage Package", false, GeneralData)
-      .exactlyOne(Active, "true")
-      .zeroOrOne(CoverageOptions, "")
-      .zeroOrOne(UnitTestTable, "")
-      .any(WorkProductPcrGuid, ""));
+      .exactlyOne(Active, Boolean.TRUE)
+      .zeroOrOne(CoverageOptions)
+      .zeroOrOne(UnitTestTable)
+      .any(WorkProductPcrGuid));
    ArtifactTypeToken CoverageUnit = dispo.add(dispo.artifactType(78L, "Coverage Unit", false, AbstractCoverageUnit)
-      .zeroOrOne(WorkProductTaskGuid, ""));
+      .zeroOrOne(WorkProductTaskGuid));
    //@formatter:on
 
 }

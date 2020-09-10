@@ -39,6 +39,10 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
       this.defaultValue = defaultValue;
    }
 
+   public T getBaseAttributeTypeDefaultValue() {
+      return defaultValue;
+   }
+
    @Override
    public String getMediaType() {
       return mediaType;
@@ -80,10 +84,5 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    @Override
    public boolean isTaggable() {
       return taggerType.isValid();
-   }
-
-   @Override
-   public T getDefaultValue() {
-      return defaultValue;
    }
 }

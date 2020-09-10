@@ -35,9 +35,9 @@ public interface FaceOseeTypes {
    SegmentAttributeType Segment = face.createEnum(new SegmentAttributeType());
 
    ArtifactTypeToken UnitOfConformance = face.add(face.artifactType(3993898326810521606L, "Unit of Conformance", false, Artifact)
-      .exactlyOne(TechStandardVersion, "Unspecified")
-      .exactlyOne(OSS_Profile, "Unspecified")
-      .exactlyOne(Segment, "Unspecified"));
+      .exactlyOne(TechStandardVersion, TechStandardVersion.Unspecified)
+      .exactlyOne(OSS_Profile, OSS_Profile.Unspecified)
+      .exactlyOne(Segment, Segment.Unspecified));
 
    RelationTypeToken AbstractSpecRequirementToUnitOfConformance = face.add(990220659578923911L, "Abstract Spec Requirement", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, AbstractSpecRequirement, "Abstract Spec Requirement", UnitOfConformance, "Unit Of Conformance");
    RelationTypeSide AbstractSpecRequirementToUnitOfConformance_AbstractSpecRequirement = RelationTypeSide.create(AbstractSpecRequirementToUnitOfConformance, SIDE_A);

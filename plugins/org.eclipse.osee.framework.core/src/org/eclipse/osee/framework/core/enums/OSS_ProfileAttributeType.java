@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.OSS_ProfileAttributeType.FaceProfil
  */
 public final class OSS_ProfileAttributeType extends AttributeTypeEnum<FaceProfileEnum> {
 
-   public final FaceProfileEnum Uspecified = new FaceProfileEnum(0, "Unspecified");
+   public final FaceProfileEnum Unspecified = new FaceProfileEnum(0, "Unspecified");
    public final FaceProfileEnum Security = new FaceProfileEnum(1, "Security");
    public final FaceProfileEnum Safety_Base = new FaceProfileEnum(2, "Safety - Base");
    public final FaceProfileEnum Safety_Extended = new FaceProfileEnum(3, "Safety - Extended");
