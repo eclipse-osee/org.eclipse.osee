@@ -61,6 +61,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -78,6 +79,9 @@ public class XHistoryWidget extends GenericXWidget {
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String NO_HISTORY = "No History changes were found";
+   private final static Image dbImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE_EDIT);
+   private final static Image loadingClockImage = ImageManager.getImage(FrameworkImage.CLOCK);
+   protected Label infoImageLabel;
    protected Label extraInfoLabel;
    private Artifact artifact;
    private ToolBar toolBar;
@@ -142,11 +146,15 @@ public class XHistoryWidget extends GenericXWidget {
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
+      leftComp.setLayout(new GridLayout(2, false));
       leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
 
+      infoImageLabel = new Label(leftComp, SWT.NONE);
+      infoImageLabel.setLayoutData(new GridData(GridData.BEGINNING));
+      infoImageLabel.setImage(dbImage);
+
       extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      extraInfoLabel.setLayoutData(new GridData(GridData.END | GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
 
       rightComp = new Composite(bComp, SWT.NONE);
@@ -319,7 +327,15 @@ public class XHistoryWidget extends GenericXWidget {
       this.artifact = artifact;
       String numberTransactionsToShowStr =
          numberTransactionsToShow == Integer.MAX_VALUE ? "All" : String.valueOf(numberTransactionsToShow);
-      extraInfoLabel.setText(String.format("Loading %s Transactions...", numberTransactionsToShowStr));
+      if (loadHistory) {
+         infoImageLabel.setImage(loadingClockImage);
+         extraInfoLabel.setText(String.format("Loading %s Transactions...", numberTransactionsToShowStr));
+         xHistoryViewer.setLoading(true);
+      } else {
+         infoImageLabel.setImage(dbImage);
+         extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+         xHistoryViewer.setLoading(false);
+      }
       extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       extraInfoLabel.setFont(FontManager.getCourierNew12Bold());
 
@@ -353,7 +369,8 @@ public class XHistoryWidget extends GenericXWidget {
                               fNumnberTransactionsToShowStr, artifact.getName(), shortName);
                         }
 
-                        if (Widgets.isAccessible(extraInfoLabel)) {
+                        if (Widgets.isAccessible(extraInfoLabel) && Widgets.isAccessible(infoImageLabel)) {
+                           infoImageLabel.setImage(dbImage);
                            extraInfoLabel.setText(infoLabel);
                         }
                         if (Widgets.isAccessible(xHistoryViewer.getControl())) {
@@ -363,7 +380,8 @@ public class XHistoryWidget extends GenericXWidget {
                            xHistoryViewer.setInputXViewer(changes);
                         }
                      } else {
-                        if (Widgets.isAccessible(extraInfoLabel)) {
+                        if (Widgets.isAccessible(extraInfoLabel) && Widgets.isAccessible(infoImageLabel)) {
+                           infoImageLabel.setImage(dbImage);
                            extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
                         }
                      }

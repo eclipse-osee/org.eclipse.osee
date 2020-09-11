@@ -79,7 +79,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       StringBuilder sb = new StringBuilder();
       sb.append("<form>");
       sb.append("<p>");
-      if (!changeData.isLoaded()) {
+      if (!changeData.isLoaded() && !changeData.isLoadOnOpenEnabled()) {
          sb.append("<b>Cleared on shut down. Press refresh to reload</b><br/><br/>");
       }
       addInterpretation(sb);

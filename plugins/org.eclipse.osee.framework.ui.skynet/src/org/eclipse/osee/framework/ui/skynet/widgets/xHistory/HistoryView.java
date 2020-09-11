@@ -15,8 +15,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -109,6 +111,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
    private final AtomicBoolean viewClosed;
+   private static Set<Long> loadingSet = new HashSet<>();
 
    public HistoryView() {
       super();
@@ -356,7 +359,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             if (Strings.isNumeric(id) && Strings.isValid(name) && Strings.isNumeric(branchId)) {
                ArtifactToken artTok =
                   ArtifactToken.valueOf(Long.valueOf(id), name, BranchId.valueOf(Long.valueOf(branchId)));
-               openViewUpon(artTok, false);
+               if (!loadingSet.contains(artTok.getId())) {
+                  openViewUpon(artTok, false);
+               }
             } else {
                closeView();
             }
@@ -433,7 +438,10 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    public static void open(Artifact artifact) {
       Conditions.checkNotNull(artifact, "artifact");
-      HistoryView.openViewUpon(artifact, true);
+      if (!loadingSet.contains(artifact.getId())) {
+         loadingSet.add(artifact.getId());
+         HistoryView.openViewUpon(artifact, true);
+      }
    }
 
    private static void openViewUpon(final ArtifactToken artifactTok, final boolean loadHistory) {
@@ -459,6 +467,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            if (loadingSet.contains(artifactTok.getId())) {
+               loadingSet.remove(artifactTok.getId());
             }
             return Status.OK_STATUS;
          }

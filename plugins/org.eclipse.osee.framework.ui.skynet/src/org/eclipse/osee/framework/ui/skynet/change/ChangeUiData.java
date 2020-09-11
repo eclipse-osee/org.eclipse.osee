@@ -25,7 +25,7 @@ public class ChangeUiData {
    private Artifact associatedArtifact;
    private boolean isLoaded;
    private boolean loadOnOpen;
-   private boolean areBranchesValid;
+   private boolean areBranchesValid = true;
    private CompareType compareType;
 
    private TransactionDelta txDelta;

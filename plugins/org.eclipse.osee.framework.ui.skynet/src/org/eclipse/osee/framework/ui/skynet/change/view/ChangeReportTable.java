@@ -125,6 +125,8 @@ public class ChangeReportTable implements EditorSection.IWidget, IOseeTreeReport
          } else {
             input = changeData.getChanges();
          }
+      } else if (changeData.isLoadOnOpenEnabled()) {
+         input = Arrays.asList("Loading...");
       } else {
          input = Arrays.asList("Not Loaded");
       }
