@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
@@ -50,8 +49,8 @@ public final class PromptFactory implements IPromptFactory {
             NumberFormat.getNumberInstance(), false);
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
-         promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType, displayName, persist);
+      } else if (attributeType.isEnumerated()) {
+         promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType.toEnum(), displayName, persist);
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, multiLine);
       } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {

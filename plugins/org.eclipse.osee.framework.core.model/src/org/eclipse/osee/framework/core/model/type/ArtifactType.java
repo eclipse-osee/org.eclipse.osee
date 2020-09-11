@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -214,5 +215,10 @@ public class ArtifactType extends AbstractOseeType implements ArtifactTypeToken 
    @Override
    public String getAttributeDefault(AttributeTypeToken attributeType) {
       return "";
+   }
+
+   @Override
+   public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
+      return null;
    }
 }

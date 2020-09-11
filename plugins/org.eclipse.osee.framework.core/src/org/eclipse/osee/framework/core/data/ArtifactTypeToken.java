@@ -36,6 +36,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
    }
 
+   Multiplicity getMultiplicity(AttributeTypeToken attributeType);
+
    default void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
       //This implementation should never be called
    }
@@ -166,6 +168,11 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
                return attributeTypes.getMaximum(attributeType);
             }
             return -1;
+         }
+
+         @Override
+         public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
+            return attributeTypes.getMultiplicity(attributeType);
          }
 
          @Override

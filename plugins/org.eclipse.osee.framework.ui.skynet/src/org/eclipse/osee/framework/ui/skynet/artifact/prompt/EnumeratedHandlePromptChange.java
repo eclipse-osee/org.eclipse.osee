@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,7 +45,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
    private final boolean persist;
    private boolean isSingletonAttribute = true;
 
-   public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, String displayName, boolean persist) {
+   public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeEnum<?> attributeType, String displayName, boolean persist) {
       super();
       this.artifacts = artifacts;
       this.attributeType = attributeType;

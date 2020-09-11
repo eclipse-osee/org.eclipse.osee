@@ -52,6 +52,7 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.swt.graphics,
+ org.eclipse.ui.dialogs,
  org.osgi.framework
 Require-Bundle: org.junit,
  org.objenesis,

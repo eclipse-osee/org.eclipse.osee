@@ -14,18 +14,21 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttribtueMultiplicityResolver;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeMultiplicitySelectionOption;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,71 +36,71 @@ import org.junit.Test;
 /**
  * @author Jeremy A. Midvidy
  */
-public class EnumAttribtueMultiplicityTest {
+public class EnumAttributeMultiplicityTest {
 
    private Artifact artifact;
+   private final Collection<Artifact> artifacts = new ArrayList<Artifact>();
 
    @Before
    public void setup() {
-      artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.WorkFlowDefinition, CoreBranches.COMMON);
+      artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.AbstractSpecRequirement, CoreBranches.COMMON);
 
       // Currently tests on strictly Enums, but should hold for all attr types
       // with different multiplicities
 
-      // 0 ... 1 :: Singelton, Removable
-      artifact.addAttribute(CoreAttributeTypes.TestProcedureStatus);
+      // 0 ... 1 :: ZeroOROne, Singelton, Removable
+      artifact.addAttribute(CoreAttributeTypes.DoorsHierarchy);
 
-      // 0 ... inf :: Non-Singelton, Removable
+      // 0 ... inf :: any :: Non-Singelton, Removable
       artifact.addAttribute(CoreAttributeTypes.DoorsId);
 
-      // 1 ... 1 :: Singelton, Not-Removable
-      artifact.addAttribute(CoreAttributeTypes.FeatureValueType);
+      // 1 ... 1 :: ExactlyOne, Singelton, Not-Removable
+      //already exists on artifact creation
 
       // 1 ... inf :: Not-Singelton, Not-Removable
-      artifact.addAttribute(CoreAttributeTypes.Partition);
+      //already exists on artifact creation
+
+      artifacts.add(artifact);
    }
 
    @Test
    public void enumAttrMultiplicityTest() {
-      AttribtueMultiplicityResolver resolver;
+      EnumSelectionDialog enumSelection;
       for (Attribute<?> attr : artifact.getAttributes()) {
          // core test logic
-         AttributeTypeId attrIdToken = attr.getAttributeTypeToken();
+         AttributeTypeGeneric<?> attributeTypeGen =
+            AttributeTypeManager.getAttributeType(attr.getAttributeType().getId());
+         if (!attributeTypeGen.isEnumerated()) {
+            continue;
+         }
+         AttributeTypeEnum<?> attributeType = attributeTypeGen.toEnum();
          assertTrue("attrIdToken is null", attr != null);
-
-         resolver = new AttribtueMultiplicityResolver(attr.getAttributeTypeToken());
+         enumSelection = new EnumSelectionDialog(attributeType.toEnum(), artifacts);
          HashMap<AttributeMultiplicitySelectionOption, Boolean> optionMap =
             AttributeMultiplicitySelectionOption.getOptionMap();
-         int minVal = AttributeTypeManager.getMinOccurrences(attrIdToken);
-         int maxVal = AttributeTypeManager.getMaxOccurrences(attrIdToken);
-         boolean isSingelton = resolver.isSingeltonAttribute();
-         boolean isRemovalAllowed = resolver.isRemovalAllowed();
+         int minVal = artifact.getArtifactType().getMin(attributeType);
+         int maxVal = artifact.getArtifactType().getMax(attributeType);
+         boolean isSingelton = EnumSelectionDialog.isSingletonAttribute(attributeType, artifacts);
+         boolean isRemovalAllowed = enumSelection.isRemovalAllowed();
 
-         if (minVal == 0 && maxVal == 0) { // 0 ... 0 :: trival case
-            assertTrue(isSingelton == false);
-            assertTrue(isRemovalAllowed == false);
-         } else if (minVal == 0 && maxVal == 1) { // 0 ... 1 :: Singelton, Removable
-            assertTrue(isSingelton == true);
+         if (minVal == 0 && maxVal == 1) { // 0 ... 1 :: Singelton, Removable
             assertTrue(isRemovalAllowed == true);
             optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
          } else if (minVal == 0 && maxVal == Integer.MAX_VALUE) { // 0 ... inf :: Non-Singelton, Removable
-            assertTrue(isSingelton == false);
             assertTrue(isRemovalAllowed == true);
             for (AttributeMultiplicitySelectionOption key : optionMap.keySet()) {
                optionMap.put(key, true);
             }
          } else if (minVal == 1 && maxVal == 1) { // 1 ... 1 :: Singelton, Not-Removable
-            assertTrue(isSingelton == true);
             assertTrue(isRemovalAllowed == false);
             optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
          } else if (minVal == 1 && maxVal == Integer.MAX_VALUE) { // 1 ... inf :: Not-Singelton, Not-Removable
-            assertTrue(isSingelton == false);
             assertTrue(isRemovalAllowed == false);
             optionMap.put(AttributeMultiplicitySelectionOption.AddSelection, true);
             optionMap.put(AttributeMultiplicitySelectionOption.ReplaceAll, true);
          }
 
-         Set<AttributeMultiplicitySelectionOption> selOptions = resolver.getSelectionOptions();
+         Set<AttributeMultiplicitySelectionOption> selOptions = enumSelection.getSelectionOptions();
          if (!isSingelton && optionMap.get(AttributeMultiplicitySelectionOption.AddSelection).equals(true)) {
             assertTrue(selOptions.contains(AttributeMultiplicitySelectionOption.AddSelection));
          }

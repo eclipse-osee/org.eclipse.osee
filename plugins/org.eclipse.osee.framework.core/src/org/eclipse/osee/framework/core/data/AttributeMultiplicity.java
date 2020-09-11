@@ -91,6 +91,10 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
          Multiplicity.ZERO_OR_ONE) ? 1 : Integer.MAX_VALUE;
    }
 
+   public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
+      return get(attributeType).getMultiplicity();
+   }
+
    public String getAttributeDefault(AttributeTypeToken attributeType) {
       return get(attributeType).getDefaultValue();
    }
