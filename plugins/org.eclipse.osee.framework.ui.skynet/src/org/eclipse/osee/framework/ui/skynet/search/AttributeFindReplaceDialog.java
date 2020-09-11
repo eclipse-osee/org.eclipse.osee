@@ -34,7 +34,6 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -135,7 +134,7 @@ public class AttributeFindReplaceDialog extends Dialog {
       cmbAttributeDescriptors.setSorter(new ViewerSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((AttributeType) e1).getName(), ((AttributeType) e2).getName());
+            return getComparator().compare(((AttributeTypeToken) e1).getName(), ((AttributeTypeToken) e2).getName());
          }
       });
 

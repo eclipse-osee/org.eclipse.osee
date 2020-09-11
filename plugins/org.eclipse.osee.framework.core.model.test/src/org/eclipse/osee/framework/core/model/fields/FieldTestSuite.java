@@ -19,7 +19,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
    ArtifactSuperTypeFieldTest.class, //
-   ArtifactTypeAttributesFieldTest.class, //
    AssociatedArtifactFieldTest.class, //
    BranchAliasesFieldTest.class, //
    CollectionFieldTest.class, //

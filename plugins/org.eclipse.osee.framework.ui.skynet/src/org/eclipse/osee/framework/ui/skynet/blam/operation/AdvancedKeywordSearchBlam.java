@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -63,7 +63,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
          AWorkbench.popup("Must enter keyword groups");
          return;
       }
-      Collection<AttributeType> attrTypes = variableMap.getAttributeTypes("Include Attribute Values in Results");
+      Collection<AttributeTypeToken> attrTypes = variableMap.getAttributeTypes("Include Attribute Values in Results");
       HashCollection<Artifact, String> artifactToMatch = new HashCollection<>(100);
       for (String keywords : keywordgroups.split(System.getProperty("line.separator"))) {
          for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(branch, keywords, true, EXCLUDE_DELETED,
@@ -78,7 +78,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       resultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       List<String> headerList = new ArrayList<>();
       headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link", "Artifact Type"));
-      for (AttributeType attrType : attrTypes) {
+      for (AttributeTypeToken attrType : attrTypes) {
          headerList.add(attrType.getName());
       }
       resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(headerList));
@@ -87,7 +87,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
          valueList.addAll(Arrays.asList(entry.getKey().getName(), Collections.toString(";", entry.getValue()),
             entry.getKey().getGuid(), XResultDataUI.getHyperlink("open", entry.getKey()),
             entry.getKey().getArtifactTypeName()));
-         for (AttributeType attrType : attrTypes) {
+         for (AttributeTypeToken attrType : attrTypes) {
             valueList.add(entry.getKey().getAttributesToString(attrType));
          }
          resultData.addRaw(AHTML.addRowMultiColumnTable(valueList.toArray(new String[valueList.size()]), null));

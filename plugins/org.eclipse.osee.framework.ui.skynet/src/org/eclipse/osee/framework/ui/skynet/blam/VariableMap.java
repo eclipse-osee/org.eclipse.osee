@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,12 +88,12 @@ public class VariableMap {
       return getSingleCollectionValue(Artifact.class, parameterName);
    }
 
-   public AttributeType getAttributeType(String parameterName) {
-      return getSingleCollectionValue(AttributeType.class, parameterName);
+   public AttributeTypeToken getAttributeType(String parameterName) {
+      return getSingleCollectionValue(AttributeTypeToken.class, parameterName);
    }
 
-   public List<AttributeType> getAttributeTypes(String parameterName) {
-      Collection<AttributeType> attrTypes = getCollection(AttributeType.class, parameterName);
+   public List<AttributeTypeToken> getAttributeTypes(String parameterName) {
+      Collection<AttributeTypeToken> attrTypes = getCollection(AttributeTypeToken.class, parameterName);
       if (attrTypes == null) {
          return new ArrayList<>();
       }

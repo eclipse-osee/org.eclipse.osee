@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -115,7 +114,7 @@ public class ExportArtifacts extends AbstractBlam {
       }
 
       attributeTypes.remove(CoreAttributeTypes.Name);
-      attributeColumns = attributeTypes.toArray(new AttributeType[attributeTypes.size()]);
+      attributeColumns = attributeTypes.toArray(new AttributeTypeToken[attributeTypes.size()]);
       Arrays.sort(attributeColumns);
    }
 

@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -42,17 +41,14 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
          Collection<String> values = attributeSet.getAttributeValueList(attributeType);
          if (!values.isEmpty()) {
             boolean setValues = false;
-            if (attributeType instanceof AttributeType) {
-               AttributeType type = (AttributeType) attributeType;
-               if (type.isBoolean()) {
-                  ArrayList<Boolean> booleanValues = new ArrayList<>();
-                  for (String state : values) {
-                     Boolean value = new Boolean(state.equalsIgnoreCase("True"));
-                     booleanValues.add(value);
-                  }
-                  artifact.setAttributeFromValues(attributeType, booleanValues);
-                  setValues = true;
+            if (attributeType.isBoolean()) {
+               ArrayList<Boolean> booleanValues = new ArrayList<>();
+               for (String state : values) {
+                  Boolean value = new Boolean(state.equalsIgnoreCase("True"));
+                  booleanValues.add(value);
                }
+               artifact.setAttributeFromValues(attributeType, booleanValues);
+               setValues = true;
             }
             if (!setValues) {
                artifact.setAttributeFromValues(attributeType, values);

@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -52,7 +52,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) {
       BranchId branch = variableMap.getBranch("Branch");
-      List<AttributeType> attributeTypes = variableMap.getAttributeTypes("Attribute Type");
+      List<AttributeTypeToken> attributeTypes = variableMap.getAttributeTypes("Attribute Type");
       String input = variableMap.getString(ARTIFACT_IDS_WIDGET_NAME);
       Conditions.checkNotNullOrEmpty(input, ARTIFACT_IDS_WIDGET_NAME);
       List<String> inputGuids = Arrays.asList(input.split("[,\\s]+"));
@@ -60,7 +60,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
       if (arts != null && !arts.isEmpty()) {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(branch, "BLAM: Delete invalid attribute type");
-         for (AttributeType attrType : attributeTypes) {
+         for (AttributeTypeToken attrType : attributeTypes) {
             deleteInvalidAttributeType(arts, attrType, transaction);
          }
          transaction.execute();
@@ -68,7 +68,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
 
    }
 
-   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeType attrType, SkynetTransaction transaction) {
+   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeTypeToken attrType, SkynetTransaction transaction) {
       for (Artifact art : artifacts) {
          if (!art.isAttributeTypeValid(attrType)) {
             delete(art, attrType);
@@ -79,7 +79,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
       }
    }
 
-   private void delete(Artifact art, AttributeType attrType) {
+   private void delete(Artifact art, AttributeTypeToken attrType) {
       List<Attribute<?>> attrs = art.getAttributes();
       for (Attribute<?> attr : attrs) {
          if (attr.isOfType(attrType)) {

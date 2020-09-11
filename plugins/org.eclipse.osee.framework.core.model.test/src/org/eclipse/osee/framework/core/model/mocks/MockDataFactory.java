@@ -14,7 +14,6 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 
 /**
@@ -62,17 +60,5 @@ public final class MockDataFactory {
 
    public static OseeEnumType createEnumType(Long id, int index) {
       return new OseeEnumType(id, "enum_" + index);
-   }
-
-   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) {
-      return createAttributeType(index, oseeEnumType, ThreadLocalRandom.current().nextLong());
-   }
-
-   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType, Long id) {
-      AttributeType type =
-         new AttributeType(id, "attrType_" + index, "baseClass_" + index, "providerId_" + index, "ext_" + index,
-            "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index, "mediaType_" + index);
-      type.setOseeEnumType(oseeEnumType);
-      return type;
    }
 }

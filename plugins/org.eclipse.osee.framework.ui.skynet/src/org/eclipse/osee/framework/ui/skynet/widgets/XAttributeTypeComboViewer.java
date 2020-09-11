@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -34,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XAttributeTypeComboViewer extends XComboViewer {
    public static final String WIDGET_ID = XAttributeTypeComboViewer.class.getSimpleName();
-   private AttributeType selectedAttributeType = null;
+   private AttributeTypeToken selectedAttributeType = null;
 
    public XAttributeTypeComboViewer() {
       super("AttributeType Type", SWT.READ_ONLY);
@@ -58,12 +57,12 @@ public class XAttributeTypeComboViewer extends XComboViewer {
 
          @Override
          public void widgetModified(XWidget widget) {
-            selectedAttributeType = (AttributeType) getSelected();
+            selectedAttributeType = (AttributeTypeToken) getSelected();
          }
       });
    }
 
-   public AttributeType getSelectedTeamDef() {
+   public AttributeTypeToken getSelectedTeamDef() {
       return selectedAttributeType;
    }
 
