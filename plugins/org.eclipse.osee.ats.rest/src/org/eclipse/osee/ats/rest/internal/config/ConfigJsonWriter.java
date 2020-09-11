@@ -24,8 +24,10 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -46,7 +48,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
-import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -240,40 +241,45 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public static void addAttributeData(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
-      Collection<AttributeTypeGeneric<?>> attrTypes = orcsApi.tokenService().getAttributeTypes();
+      Collection<AttributeTypeToken> attrTypes = getAttributeTypes(artifact);
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       boolean fieldsAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
       boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
-         for (AttributeTypeGeneric<?> attrType : attrTypes) {
+         for (AttributeTypeToken attrType : attrTypes) {
             boolean isDateType = attrType.isDate();
-            if (artifact.isAttributeTypeValid(attrType)) {
-               List<Object> attributeValues = artifact.getAttributeValues(attrType);
-               if (!attributeValues.isEmpty()) {
+            List<Object> attributeValues = artifact.getAttributeValues(attrType);
+            if (!attributeValues.isEmpty()) {
 
-                  if (attributeValues.size() > 1) {
-                     if (fieldsAsIds) {
-                        writer.writeArrayFieldStart(attrType.getIdString());
-                     } else {
-                        writer.writeArrayFieldStart(attrType.getName());
-                     }
-                     for (Object value : attributeValues) {
-                        writeObjectValue(writer, datesAsLong, isDateType, value);
-                     }
-                     writer.writeEndArray();
-                  } else if (attributeValues.size() == 1) {
-
-                     String field = fieldsAsIds ? attrType.getIdString() : attrType.getName();
-                     writer.writeFieldName(field);
-
-                     Object value = attributeValues.iterator().next();
+               if (attributeValues.size() > 1) {
+                  if (fieldsAsIds) {
+                     writer.writeArrayFieldStart(attrType.getIdString());
+                  } else {
+                     writer.writeArrayFieldStart(attrType.getName());
+                  }
+                  for (Object value : attributeValues) {
                      writeObjectValue(writer, datesAsLong, isDateType, value);
                   }
+                  writer.writeEndArray();
+               } else if (attributeValues.size() == 1) {
 
+                  String field = fieldsAsIds ? attrType.getIdString() : attrType.getName();
+                  writer.writeFieldName(field);
+
+                  Object value = attributeValues.iterator().next();
+                  writeObjectValue(writer, datesAsLong, isDateType, value);
                }
             }
          }
       }
+   }
+
+   private static Collection<AttributeTypeToken> getAttributeTypes(ArtifactReadable artifact) {
+      Set<AttributeTypeToken> types = new HashSet<>();
+      for (AttributeReadable<?> attr : artifact.getAttributes()) {
+         types.add(attr.getAttributeType());
+      }
+      return types;
    }
 
    public static void addAttributeDataWithIds(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
