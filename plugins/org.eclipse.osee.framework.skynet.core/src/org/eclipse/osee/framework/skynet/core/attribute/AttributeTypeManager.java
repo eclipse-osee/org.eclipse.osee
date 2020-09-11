@@ -112,14 +112,6 @@ public class AttributeTypeManager {
       return getTokenService().getAttributeType(name);
    }
 
-   public static int getMinOccurrences(AttributeTypeId attributeType) {
-      return getType(attributeType).getMinOccurrences();
-   }
-
-   public static int getMaxOccurrences(AttributeTypeId attributeType) {
-      return getType(attributeType).getMaxOccurrences();
-   }
-
    @SuppressWarnings("rawtypes")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, AttributeTypeId attributeType) {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeMultiplicitySelectionOption;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -52,8 +51,11 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       this.persist = persist;
 
       try {
-         if (AttributeTypeManager.getMaxOccurrences(attributeType) != 1) {
-            this.isSingletonAttribute = false;
+         for (Artifact artifact : artifacts) {
+            if (artifact.getArtifactType().getMax(attributeType) != 1) {
+               this.isSingletonAttribute = false;
+               break;
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

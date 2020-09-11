@@ -1638,8 +1638,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return equals;
    }
 
-   public final int getRemainingAttributeCount(AttributeTypeId attributeType) {
-      return AttributeTypeManager.getMaxOccurrences(attributeType) - getAttributeCount(attributeType);
+   public final int getRemainingAttributeCount(AttributeTypeToken attributeType) {
+      return artifactType.getMax(attributeType) - getAttributeCount(attributeType);
    }
 
    public final int getAttributeCount(AttributeTypeId attributeType) {

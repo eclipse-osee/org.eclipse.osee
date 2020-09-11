@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -60,8 +59,8 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
-      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
+      int minOccurrence = artifact.getArtifactType().getMin(attributeType);
+      int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
       setRequiredSelection(minOccurrence, maxOccurrence);
       setSelected(getStored());

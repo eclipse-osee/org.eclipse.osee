@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeEditPresenter.Display.OperationType;
 
 public class AttributeTypeEditPresenter {
@@ -85,7 +84,7 @@ public class AttributeTypeEditPresenter {
          AttributeTypeToken type = iterator.next();
          if (validTypesPerBranch.contains(type)) {
             int occurrencesAfterRemoval = artifact.getAttributes(type).size() - 1;
-            if (occurrencesAfterRemoval < AttributeTypeManager.getMinOccurrences(type)) {
+            if (occurrencesAfterRemoval < artifact.getArtifactType().getMin(type)) {
                iterator.remove();
             }
          }

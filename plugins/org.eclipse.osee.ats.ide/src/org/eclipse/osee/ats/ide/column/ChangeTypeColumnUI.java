@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
@@ -116,12 +115,12 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         // Only prompt change for sole attribute types
-         if (AttributeTypeManager.getMaxOccurrences(getAttributeType()) != 1) {
-            return false;
-         }
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
+            // Only prompt change for sole attribute types
+            if (useArt.getArtifactType().getMax(getAttributeType()) != 1) {
+               return false;
+            }
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
                if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
                   useArt = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(

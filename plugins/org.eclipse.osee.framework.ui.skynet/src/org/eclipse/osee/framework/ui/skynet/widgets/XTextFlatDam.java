@@ -93,8 +93,8 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
       this.artifact = artifact;
       this.attributeType = attributeType;
 
-      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
-      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
+      int minOccurrence = artifact.getArtifactType().getMin(attributeType);
+      int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
       if (minOccurrence == 0) {
          minOccurrence = 1;

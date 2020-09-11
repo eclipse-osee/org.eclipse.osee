@@ -66,8 +66,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
 
-      XWidgetRendererItem defaultData =
-         createDynamicXWidgetLayout(attributeType, AttributeTypeManager.getMinOccurrences(attributeType));
+      XWidgetRendererItem defaultData = createDynamicXWidgetLayout(attributeType, artType.getMin(attributeType));
       xWidgetLayoutData.add(defaultData);
 
       String xWidgetName;
