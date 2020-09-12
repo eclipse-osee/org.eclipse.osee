@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
@@ -28,8 +27,6 @@ import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 public interface IOseeCachingService {
 
    ArtifactTypeCache getArtifactTypeCache();
-
-   AttributeTypeCache getAttributeTypeCache();
 
    OseeEnumTypeCache getEnumTypeCache();
 

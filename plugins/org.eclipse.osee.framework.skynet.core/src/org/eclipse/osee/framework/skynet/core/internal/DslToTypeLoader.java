@@ -51,13 +51,11 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -73,7 +71,6 @@ import org.eclipse.osee.framework.skynet.core.internal.ClientCachingServiceProxy
 public class DslToTypeLoader implements TypesLoader {
 
    private final ArtifactTypeFactory artTypeFactory = new ArtifactTypeFactory();
-   private final AttributeTypeFactory attrTypeFactory = new AttributeTypeFactory();
    private final OseeEnumTypeFactory enumTypeFactory = new OseeEnumTypeFactory();
    private final OrcsTokenService tokenService;
 
@@ -105,7 +102,6 @@ public class DslToTypeLoader implements TypesLoader {
       }
 
       buffer.copyEnumTypes(caches.getEnumTypeCache());
-      buffer.copyAttrTypes(caches.getAttributeTypeCache());
       buffer.copyArtTypes(caches.getArtifactTypeCache());
    }
 
@@ -124,10 +120,6 @@ public class DslToTypeLoader implements TypesLoader {
 
       for (XOseeEnumType xEnumType : model.getEnumTypes()) {
          translateXEnumType(buffer, xEnumType);
-      }
-
-      for (XAttributeType xAttributeType : model.getAttributeTypes()) {
-         translateXAttributeType(buffer, xAttributeType);
       }
 
       for (XArtifactType xArtifactType : model.getArtifactTypes()) {
@@ -162,7 +154,7 @@ public class DslToTypeLoader implements TypesLoader {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
          Long attrUuid = Long.valueOf(xAttributeType.getId());
-         AttributeTypeToken oseeAttributeType = buffer.getAttrTypes().getByGuid(attrUuid);
+         AttributeTypeToken oseeAttributeType = tokenService.getAttributeType(attrUuid);
          if (oseeAttributeType != null) {
             Collection<AttributeTypeToken> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
@@ -308,47 +300,9 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private void translateXAttributeType(TypeBuffer buffer, XAttributeType xAttributeType) {
-      int min = Integer.parseInt(xAttributeType.getMin());
-      int max = Integer.MAX_VALUE;
-      if (!xAttributeType.getMax().equals("unlimited")) {
-         max = Integer.parseInt(xAttributeType.getMax());
-      }
-      XOseeEnumType xEnumType = xAttributeType.getEnumType();
-      OseeEnumType oseeEnumType = null;
-      if (xEnumType != null) {
-         Long enumUuid = Long.valueOf(xEnumType.getId());
-         oseeEnumType = buffer.getEnumTypes().getByGuid(enumUuid);
-      }
-
-      Long attrUuid = Long.valueOf(xAttributeType.getId());
-      attrTypeFactory.createOrUpdate(buffer.getAttrTypes(), //
-         attrUuid, //
-         xAttributeType.getName(), //
-         getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
-         getQualifiedTypeName(xAttributeType.getDataProvider()), //
-         xAttributeType.getFileExtension(), //
-         xAttributeType.getDefaultValue(), //
-         oseeEnumType, //
-         min, //
-         max, //
-         xAttributeType.getDescription(), //
-         xAttributeType.getTaggerId(), //
-         xAttributeType.getMediaType());
-   }
-
-   private String getQualifiedTypeName(String id) {
-      String value = id;
-      if (!value.contains(".")) {
-         value = "org.eclipse.osee.framework.skynet.core." + id;
-      }
-      return value;
-   }
-
    private static final class TypeBuffer {
       private final ArtifactTypeCache artTypes = new ArtifactTypeCache();
       private final OseeEnumTypeCache enumTypes = new OseeEnumTypeCache();
-      private final AttributeTypeCache attrTypes = new AttributeTypeCache();
 
       public ArtifactTypeCache getArtTypes() {
          return artTypes;
@@ -358,20 +312,12 @@ public class DslToTypeLoader implements TypesLoader {
          return enumTypes;
       }
 
-      public AttributeTypeCache getAttrTypes() {
-         return attrTypes;
-      }
-
       public void copyArtTypes(ArtifactTypeCache dest) {
          copy(artTypes, dest);
       }
 
       public void copyEnumTypes(OseeEnumTypeCache dest) {
          copy(enumTypes, dest);
-      }
-
-      public void copyAttrTypes(AttributeTypeCache dest) {
-         copy(attrTypes, dest);
       }
 
       private <T extends IOseeStorable> void copy(IOseeCache<T> src, IOseeCache<T> dest) {

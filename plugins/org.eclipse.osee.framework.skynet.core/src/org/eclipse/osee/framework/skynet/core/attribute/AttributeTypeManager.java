@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,10 +46,6 @@ public class AttributeTypeManager {
 
    private static OrcsTokenService getTokenService() {
       return getCacheService().getTokenService();
-   }
-
-   private static AbstractOseeCache<AttributeType> getCache() {
-      return getCacheService().getAttributeTypeCache();
    }
 
    public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) {

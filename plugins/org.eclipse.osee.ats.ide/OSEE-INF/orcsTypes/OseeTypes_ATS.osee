@@ -444,7 +444,6 @@ artifactType "Task" extends "ats.State Machine" {
 	attribute "ats.Task To Changed Artifact Name"
 	attribute "ats.Task To Changed Artifact Deleted"
 	attribute "ats.Work Type"
-	attribute "ats.Partition"
 	attribute "ats.WCAFE Impact"
 	attribute "ats.Signal Impact"
 	attribute "ats.Task Auto Gen Version"
@@ -481,16 +480,6 @@ oseeEnumType "enum.color.team" {
    entry "Gold Team" 
    entry "Plaid Team" 
    entry "Unspecified" 
-}
-
-attributeType "ats.IPT Team" extends EnumeratedAttribute {
-   id 1364016887343371647
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-	taggerId DefaultAttributeTaggerProvider
-   enumType "enum.ipt.team"
-   mediaType "text/plain"
 }
 
 oseeEnumType "enum.ipt.team" {
@@ -729,15 +718,6 @@ attributeType "ats.Task Auto Gen" extends BooleanAttribute {
 
 attributeType "ats.Task Auto Gen Version" extends StringAttribute {
 	id 29374282544622
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
-attributeType "ats.Partition" extends StringAttribute {
-	id 339234205417829
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

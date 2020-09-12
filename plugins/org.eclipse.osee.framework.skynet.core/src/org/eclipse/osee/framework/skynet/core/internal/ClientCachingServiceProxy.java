@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
@@ -54,7 +53,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private BranchCache branchCache;
 
    private OseeEnumTypeCache enumTypeCache;
-   private AttributeTypeCache attributeTypeCache;
    private ArtifactTypeCache artifactTypeCache;
 
    private List<IOseeCache<?>> caches;
@@ -78,22 +76,17 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();
-      attributeTypeCache = new AttributeTypeCache();
 
       caches = new ArrayList<>();
       caches.add(branchCache);
       caches.add(artifactTypeCache);
-      caches.add(attributeTypeCache);
       caches.add(enumTypeCache);
    }
 
    public void stop() {
       caches.clear();
-
       enumTypeCache = null;
-      attributeTypeCache = null;
       artifactTypeCache = null;
-
       branchCache = null;
    }
 
@@ -105,11 +98,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public ArtifactTypeCache getArtifactTypeCache() {
       return artifactTypeCache;
-   }
-
-   @Override
-   public AttributeTypeCache getAttributeTypeCache() {
-      return attributeTypeCache;
    }
 
    @Override
@@ -171,8 +159,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    private void clearAllTypes() {
       getEnumTypeCache().decacheAll();
-      getAttributeTypeCache().decacheAll();
       getArtifactTypeCache().decacheAll();
    }
-
 }
