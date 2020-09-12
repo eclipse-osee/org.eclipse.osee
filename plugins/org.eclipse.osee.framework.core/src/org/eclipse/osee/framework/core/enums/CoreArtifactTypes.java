@@ -48,7 +48,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Breaker = osee.add(osee.artifactType(188458869981236L, "Breaker", false, Artifact)
       .exactlyOne(CircuitBreakerId)
       .exactlyOne(DisplayText, "unset")
-      .zeroOrOne(FunctionalGrouping, null)
+      .zeroOrOne(FunctionalGrouping, FunctionalGrouping.Avionics)
       .exactlyOne(MaintainerText, "unset")
       .exactlyOne(RequireConfirmation));
    ArtifactTypeToken CertificationBaselineEvent = osee.add(osee.artifactType(99L, "Certification Baseline Event", false, Artifact)
@@ -261,7 +261,7 @@ public interface CoreArtifactTypes {
       .atLeastOne(TisTestType, TisTestType.StationaryVehicle));
    ArtifactTypeToken TestProcedure = osee.add(osee.artifactType(46L, "Test Procedure", false, TestUnit)
       .exactlyOne(Subsystem, Subsystem.Unspecified)
-      .zeroOrOne(TestProcedureStatus, null));
+      .zeroOrOne(TestProcedureStatus, TestProcedureStatus.NotPerformed));
    ArtifactTypeToken TestProcedureMsWord = osee.add(osee.artifactType(2349L, "Test Procedure - MS Word", false, MsWordTemplate, TestProcedure));
    ArtifactTypeToken TestProcedureNative = osee.add(osee.artifactType(48L, "Test Procedure Native", false, NativeArtifact, TestProcedure));
    ArtifactTypeToken TestProcedureWholeWord = osee.add(osee.artifactType(47L, "Test Procedure - Whole Word", false, MsWordWholeDocument, TestProcedure));

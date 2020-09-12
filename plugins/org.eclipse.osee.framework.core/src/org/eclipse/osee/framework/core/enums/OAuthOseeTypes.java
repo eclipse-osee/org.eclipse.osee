@@ -41,7 +41,7 @@ public interface OAuthOseeTypes {
    ArtifactTypeToken OAuthClient = oauth.add(oauth.artifactType(756912961500447526L, "OAuth Client", false, Artifact)
       .any(ImageContent)
       .any(OAuthClientAuthorizedAudience)
-      .any(OAuthClientAuthorizedGrantType, null)
+      .any(OAuthClientAuthorizedGrantType, OAuthClientAuthorizedGrantType.AuthorizationCodeGrant)
       .any(OAuthClientAuthorizedRedirectUri)
       .any(OAuthClientAuthorizedScope)
       .exactlyOne(OAuthClientIsConfidential, Boolean.TRUE)

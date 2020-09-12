@@ -109,7 +109,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Numeric2)
       .zeroOrOne(PeerReviewId)
       .zeroOrOne(PercentComplete)
-      .zeroOrOne(Points, null)
+      .zeroOrOne(Points, Points.P_1)
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(ReleaseDate)
       .zeroOrOne(Resolution)
@@ -129,15 +129,15 @@ public interface AtsArtifactTypes {
       .zeroOrOne(PlannedPoints)
       .zeroOrOne(UnplannedPoints));
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, AbstractWorkflowArtifact)
-      .zeroOrOne(ChangeType, null)
+      .zeroOrOne(ChangeType, ChangeType.Improvement)
       .zeroOrOne(NeedBy)
-      .zeroOrOne(Priority, null));
+      .zeroOrOne(Priority, Priority.Priority5));
    ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, Goal));
    ArtifactTypeToken AbstractReview = ats.add(ats.artifactType(64L, "ats.Review", true, AbstractWorkflowArtifact)
       .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .zeroOrOne(RelatedToState)
-      .zeroOrOne(ReviewBlocks, null));
+      .zeroOrOne(ReviewBlocks, ReviewBlocks.None));
    ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, AbstractReview)
       .zeroOrOne(Decision)
       .zeroOrOne(DecisionReviewOptions));
@@ -153,7 +153,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(PagesChanged)
       .zeroOrOne(PagesReviewed)
       .any(ReviewDefect)
-      .zeroOrOne(ReviewFormalType, null)
+      .zeroOrOne(ReviewFormalType, ReviewFormalType.Formal)
       .any(Role)
       .zeroOrOne(VerificationCodeInspection));
    ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", true, Artifact)
@@ -195,19 +195,19 @@ public interface AtsArtifactTypes {
       .any(AtsAttributeTypes.ActionableItem)
       .any(ActionableItemReference)
       .zeroOrOne(ApplicabilityWorkflow)
-      .zeroOrOne(ApplicableToProgram, null)
+      .zeroOrOne(ApplicableToProgram, ApplicableToProgram.No)
       .zeroOrOne(ApproveRequestedHoursBy)
       .zeroOrOne(ApproveRequestedHoursDate)
       .zeroOrOne(BaselineBranchId)
       .zeroOrOne(BranchMetrics)
-      .zeroOrOne(ChangeType, null)
+      .zeroOrOne(ChangeType, ChangeType.Improvement)
       .zeroOrOne(ColorTeam, ColorTeam.Unspecified)
       .any(CommitOverride)
       .zeroOrOne(Condition)
       .zeroOrOne(DuplicatedPcrId)
       .zeroOrOne(EstimateAssumptions)
       .zeroOrOne(Information)
-      .zeroOrOne(IPT, null)
+      .zeroOrOne(IPT, IPT.CEE)
       .zeroOrOne(LegacyPcrId)
       .zeroOrOne(NeedBy)
       .zeroOrOne(OperationalImpact)
@@ -217,7 +217,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OriginatingPcrId)
       .zeroOrOne(PcrToolId)
       .zeroOrOne(PercentRework)
-      .zeroOrOne(Priority, null)
+      .zeroOrOne(Priority, Priority.Priority5)
       .zeroOrOne(Problem)
       .zeroOrOne(ProgramId)
       .zeroOrOne(ProposedResolution)
@@ -259,14 +259,14 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Description)
       .zeroOrOne(EndDate)
       .zeroOrOne(EstimatedHours)
-      .zeroOrOne(IPT, null)
+      .zeroOrOne(IPT, IPT.CEE)
       .any(Notes)
       .zeroOrOne(PercentComplete)
       .zeroOrOne(PointsNumeric)
       .zeroOrOne(StartDate)
       .zeroOrOne(WorkPackageId)
       .zeroOrOne(WorkPackageProgram)
-      .zeroOrOne(WorkPackageType, null));
+      .zeroOrOne(WorkPackageType, WorkPackageType.Discrete));
 
    //iCTeam Types
    ArtifactTypeToken Project = ats.add(ats.artifactType(250L, "Project", false, Artifact)
