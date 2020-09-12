@@ -53,6 +53,4 @@ public interface OrcsTypes {
 
    Callable<Void> purgeRelationsByRelationType(Collection<? extends RelationTypeToken> relationTypes);
 
-   void invalidateAll();
-
 }

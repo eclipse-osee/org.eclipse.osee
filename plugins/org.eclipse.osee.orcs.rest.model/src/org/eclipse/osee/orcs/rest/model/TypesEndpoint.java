@@ -48,7 +48,4 @@ public interface TypesEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    Response setConfigSheets(OrcsTypesVersion version);
 
-   @POST
-   @Path("invalidate-caches")
-   Response invalidateCaches();
 }

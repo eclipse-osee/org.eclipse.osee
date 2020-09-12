@@ -76,7 +76,7 @@ public class WordTemplateContentRendererHandler {
             artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.EXCLUDE_DELETED, null);
 
          if (data == null && wtcData.getIsEdit()) {
-            data = orcsApi.getOrcsTypes().getAttributeTypes().getDefaultValue(CoreAttributeTypes.WordTemplateContent);
+            data = CoreArtifactTypes.MsWordTemplate.getAttributeDefault(CoreAttributeTypes.WordTemplateContent);
          }
 
          if (data != null) {

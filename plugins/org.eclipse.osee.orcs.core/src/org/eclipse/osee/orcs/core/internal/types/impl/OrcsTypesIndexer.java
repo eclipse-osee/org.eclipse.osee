@@ -76,7 +76,6 @@ public class OrcsTypesIndexer {
       InputStream inputStream = null;
       try {
          inputStream = source.getContent();
-         inputStream = upConvertTo17(inputStream);
          resource = OseeDslResourceUtil.loadModel(source.getLocation().toASCIIString(), inputStream);
       } finally {
          Lib.close(inputStream);
@@ -111,10 +110,6 @@ public class OrcsTypesIndexer {
          getOrCreateEnumType(enumTypeIndex, dslType);
       }
       return index;
-   }
-
-   private InputStream upConvertTo17(InputStream inputStream) throws Exception {
-      return OseeDslResourceUtil.upConvertTo17(inputStream);
    }
 
    private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, XArtifactType dslType) {

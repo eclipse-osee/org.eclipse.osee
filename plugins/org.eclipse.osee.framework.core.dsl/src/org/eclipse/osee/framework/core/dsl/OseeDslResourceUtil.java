@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.osee.framework.core.dsl.internal.OseeDslResourceImpl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -40,7 +39,6 @@ public final class OseeDslResourceUtil {
    }
 
    public static OseeDslResource loadModelUnchecked(String uri, InputStream xTextData) throws Exception {
-      xTextData = upConvertTo17(xTextData);
       OseeDslStandaloneSetup setup = new OseeDslStandaloneSetup();
       Injector injector = setup.createInjectorAndDoEMFRegistration();
       XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
@@ -56,11 +54,6 @@ public final class OseeDslResourceUtil {
 
    public static OseeDslResource loadModelUnchecked(String uri, String xTextData) throws Exception {
       return loadModelUnchecked(uri, new ByteArrayInputStream(xTextData.getBytes("UTF-8")));
-   }
-
-   public static InputStream upConvertTo17(InputStream inputStream) throws Exception {
-      String typesStr = Lib.inputStreamToString(inputStream);
-      return new ByteArrayInputStream(typesStr.getBytes("UTF-8"));
    }
 
    public static OseeDslResource loadModel(String uri, String xTextData) throws Exception {

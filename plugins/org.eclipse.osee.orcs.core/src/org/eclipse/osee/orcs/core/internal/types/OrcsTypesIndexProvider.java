@@ -18,7 +18,5 @@ package org.eclipse.osee.orcs.core.internal.types;
  */
 public interface OrcsTypesIndexProvider extends OrcsTypesIndex {
 
-   void invalidate();
-
    void setLoader(OrcsTypesLoader loader);
 }

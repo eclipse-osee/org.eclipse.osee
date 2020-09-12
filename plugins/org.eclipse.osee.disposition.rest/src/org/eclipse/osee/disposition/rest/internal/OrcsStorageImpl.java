@@ -92,10 +92,6 @@ public class OrcsStorageImpl implements Storage {
       return orcsApi.getBranchOps();
    }
 
-   private void reloadTypes() {
-      orcsApi.getOrcsTypes().invalidateAll();
-   }
-
    @Override
    public boolean typesExist() {
       try {
@@ -119,7 +115,6 @@ public class OrcsStorageImpl implements Storage {
          Lib.close(stream);
       }
       tx.commit();
-      reloadTypes();
    }
 
    @Override

@@ -76,11 +76,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public void invalidateAll() {
-      indexProvider.invalidate();
-   }
-
-   @Override
    public void loadTypes(final IResource resource) {
       indexProvider.setLoader(loaderFactory.createTypesLoader(session, new OrcsTypesResourceProvider() {
 
@@ -95,7 +90,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    public void loadTypes(String model) {
       try {
          loadTypes(new ByteResource("http.osee.model", model.getBytes("UTF-8")));
-         invalidateAll();
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }

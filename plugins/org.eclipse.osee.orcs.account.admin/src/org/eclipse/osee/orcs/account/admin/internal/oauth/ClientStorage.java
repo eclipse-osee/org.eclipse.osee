@@ -155,7 +155,6 @@ public class ClientStorage {
       }
       tx.commit();
 
-      orcsApi.getOrcsTypes().invalidateAll();
       return artifactId;
    }
 
