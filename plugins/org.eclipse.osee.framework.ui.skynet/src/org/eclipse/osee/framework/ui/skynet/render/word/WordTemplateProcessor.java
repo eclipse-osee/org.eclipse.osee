@@ -423,16 +423,16 @@ public class WordTemplateProcessor {
             options = nestedTemplateOptions.get(nestedCount);
 
             nestedCount++;
-            outlineType = nestedTemplateOptions.findValue("OutlineType").asText();
+            outlineType = options.findValue("OutlineType").asText();
             if (outlineType.isEmpty()) {
                outlineType = null;
             }
-            sectionNumber = nestedTemplateOptions.findValue("SectionNumber").asText();
-            subDocName = nestedTemplateOptions.findValue("SubDocName").asText();
-            key = nestedTemplateOptions.findValue("Key").asText();
+            sectionNumber = options.findValue("SectionNumber").asText();
+            subDocName = options.findValue("SubDocName").asText();
+            key = options.findValue("Key").asText();
             // rendererOption is either ID or NAME
             RendererOption rendererOption = RendererOption.valueOf(key.toUpperCase());
-            value = nestedTemplateOptions.findValue("Value").asText();
+            value = options.findValue("Value").asText();
 
             renderer.updateOption(rendererOption, value);
 
