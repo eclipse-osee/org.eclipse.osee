@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -52,9 +53,7 @@ import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -128,7 +127,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
    private final Cache<Collection<String>, AccessData> accessDataCache =
       CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).build();
 
-   private final IOseeCachingService cachingService;
+   private final OrcsTokenService tokenService;
    private final JdbcClient jdbcClient;
    private final OseeEventService eventService;
 
@@ -146,11 +145,11 @@ public class AccessControlServiceImpl implements IAccessControlService {
       this(null, null, null);
    }
 
-   public AccessControlServiceImpl(JdbcClient jdbcClient, IOseeCachingService cachingService, OseeEventService eventService) {
+   public AccessControlServiceImpl(JdbcClient jdbcClient, OrcsTokenService tokenService, OseeEventService eventService) {
 
       super();
       this.jdbcClient = jdbcClient;
-      this.cachingService = cachingService;
+      this.tokenService = tokenService;
       this.eventService = eventService;
    }
 
@@ -174,10 +173,6 @@ public class AccessControlServiceImpl implements IAccessControlService {
          }
          listener2 = null;
       }
-   }
-
-   private ArtifactTypeCache getArtifactTypeCache() {
-      return cachingService.getArtifactTypeCache();
    }
 
    private JdbcClient getJdbcClient() {
@@ -227,8 +222,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
          accessControlListCache.put(subjectId.getId(), branchAccessObject, permission);
          objectToSubjectCache.put(branchAccessObject, subjectId);
 
-         ArtifactTypeToken subjectArtifactType = getArtifactTypeCache().getById(stmt.getLong("art_type_id"));
-         if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
+         ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
+         if (subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
             populateGroupMembers(subjectId);
          }
       };
@@ -251,8 +246,8 @@ public class AccessControlServiceImpl implements IAccessControlService {
                AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branch);
                cacheAccessObject(subjectId, permission, accessObject);
 
-               ArtifactTypeToken subjectArtifactType = getArtifactTypeCache().getById(stmt.getLong("art_type_id"));
-               if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
+               ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
+               if (subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
                   populateGroupMembers(subjectId);
                }
             }

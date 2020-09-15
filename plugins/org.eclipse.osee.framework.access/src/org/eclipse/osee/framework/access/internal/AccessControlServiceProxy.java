@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.IAccessControlService;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,20 +48,20 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    private final List<ServiceReference<IAccessProvider>> pendingProviders = new CopyOnWriteArrayList<>();
 
    private JdbcService jdbcService;
-   private IOseeCachingService cachingService;
    private OseeEventService eventService;
    private ILifecycleService lifecycleService;
 
    private AccessControlServiceImpl accessService;
    private AccessEventListener accessEventListener;
    private Thread thread;
+   private OrcsTokenService tokenService;
+
+   public void setOrcsTokenService(OrcsTokenService tokenService) {
+      this.tokenService = tokenService;
+   }
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
    }
 
    public void setEventService(OseeEventService eventService) {
@@ -144,7 +144,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
 
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
-      accessService = new AccessControlServiceImpl(jdbcClient, cachingService, eventService);
+      accessService = new AccessControlServiceImpl(jdbcClient, tokenService, eventService);
 
       accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
       if (eventService != null) {
