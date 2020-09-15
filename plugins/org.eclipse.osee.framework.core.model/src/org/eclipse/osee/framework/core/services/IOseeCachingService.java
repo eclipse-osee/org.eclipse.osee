@@ -18,22 +18,17 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOseeCachingService {
 
-   OseeEnumTypeCache getEnumTypeCache();
-
    BranchCache getBranchCache();
 
    Collection<?> getCaches();
 
    IOseeCache<?> getCache(OseeCacheEnum cacheId);
-
-   void reloadTypes();
 
    void reloadAll();
 

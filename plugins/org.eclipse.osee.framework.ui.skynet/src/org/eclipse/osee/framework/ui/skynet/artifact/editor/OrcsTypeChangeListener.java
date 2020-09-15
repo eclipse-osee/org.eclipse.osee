@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -69,13 +68,6 @@ public class OrcsTypeChangeListener implements IArtifactEventListener {
             if (!OseeProperties.isInTest()) {
                reload = MessageDialog.openConfirm(Displays.getActiveShell(), "Reload Server Types Cache",
                   "OSEE has detected a change to the ORCS Types.\n\nWould you like to notify the server to reload types cache?");
-            }
-            if (reload) {
-               try {
-                  ServiceUtil.getOseeCacheService().reloadTypes();
-               } catch (Exception ex) {
-                  // do nothing
-               }
             }
          }
       });

@@ -52,6 +52,5 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       IOseeCachingService typeService = OsgiUtil.getService(getClass(), IOseeCachingService.class);
       typeService.clearAll();
-      typeService.reloadTypes();
    }
 }

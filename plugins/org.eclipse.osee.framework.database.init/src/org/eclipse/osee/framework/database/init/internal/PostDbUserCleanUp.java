@@ -36,6 +36,5 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
 
       IOseeCachingService typeService = OsgiUtil.getService(getClass(), IOseeCachingService.class);
       typeService.clearAll();
-      typeService.reloadTypes();
    }
 }

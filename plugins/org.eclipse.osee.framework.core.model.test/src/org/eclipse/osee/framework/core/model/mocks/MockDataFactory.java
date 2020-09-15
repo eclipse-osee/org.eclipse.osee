@@ -18,11 +18,9 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 
 /**
  * @author Roberto E. Escobar
@@ -52,13 +50,5 @@ public final class MockDataFactory {
       IOseeBranch branch = IOseeBranch.create(branchUuid, "fake test branch");
       return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), DemoUsers.Joe_Smith, value * 42,
          type, 0L);
-   }
-
-   public static OseeEnumEntry createEnumEntry(int index) {
-      return new OseeEnumEntry("entry_" + index, Math.abs(index * 37), "description");
-   }
-
-   public static OseeEnumType createEnumType(Long id, int index) {
-      return new OseeEnumType(id, "enum_" + index);
    }
 }

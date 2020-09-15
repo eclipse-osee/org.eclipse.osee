@@ -14,28 +14,20 @@
 package org.eclipse.osee.framework.skynet.core.internal;
 
 import com.google.common.io.ByteSource;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * @author Roberto E. Escobar
@@ -50,8 +42,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private OseeClient oseeClient;
    private OrcsTokenService tokenService;
    private BranchCache branchCache;
-
-   private OseeEnumTypeCache enumTypeCache;
 
    private List<IOseeCache<?>> caches;
 
@@ -69,30 +59,19 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
-
       branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient));
-
-      enumTypeCache = new OseeEnumTypeCache();
-
       caches = new ArrayList<>();
       caches.add(branchCache);
-      caches.add(enumTypeCache);
    }
 
    public void stop() {
       caches.clear();
-      enumTypeCache = null;
       branchCache = null;
    }
 
    @Override
    public BranchCache getBranchCache() {
       return branchCache;
-   }
-
-   @Override
-   public OseeEnumTypeCache getEnumTypeCache() {
-      return enumTypeCache;
    }
 
    @Override
@@ -117,37 +96,12 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    }
 
    @Override
-   public void reloadTypes() {
-      DslToTypeLoader typesLoader = new DslToTypeLoader(branchCache, tokenService);
-      typesLoader.loadTypes(this, new ByteSource() {
-         @Override
-         public InputStream openStream() {
-            OseeLog.log(Activator.class, Level.INFO, "Loading All type caches <<<<<<<<<<<<<<<<<<<<<<");
-            TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
-            try {
-               Response response = typesEndpoint.getTypes();
-               return response.hasEntity() ? response.readEntity(InputStream.class) : new ByteArrayInputStream(
-                  new byte[0]);
-            } catch (Exception ex) {
-               throw JaxRsExceptions.asOseeException(ex);
-            }
-         }
-      });
-   }
-
-   @Override
    public void reloadAll() {
       getBranchCache().reloadCache();
-      reloadTypes();
    }
 
    @Override
    public void clearAll() {
       getBranchCache().decacheAll();
-      clearAllTypes();
-   }
-
-   private void clearAllTypes() {
-      getEnumTypeCache().decacheAll();
    }
 }

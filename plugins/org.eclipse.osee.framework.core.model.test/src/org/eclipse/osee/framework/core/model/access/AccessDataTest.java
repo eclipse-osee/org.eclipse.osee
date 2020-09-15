@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
@@ -122,7 +121,10 @@ public class AccessDataTest {
 
       for (AccessDetail<?> expectedDetail : expectedDetails) {
          AccessDetail<?> actualDetail = findObject(expectedDetail, actualDetails);
-         ModelAsserts.assertEquals(expectedDetail, actualDetail);
+         Assert.assertEquals(expectedDetail, actualDetail);
+         Assert.assertEquals(expectedDetail.getPermission(), actualDetail.getPermission());
+         Assert.assertEquals(expectedDetail.getAccessObject(), actualDetail.getAccessObject());
+         Assert.assertEquals(expectedDetail.getReason(), actualDetail.getReason());
       }
    }
 
