@@ -22,10 +22,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
@@ -58,8 +54,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
-      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class,
-         attributeType) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
+      return attributeType.matches(CoreAttributeTypes.WordTemplateContent) || attributeType.matches(
+         CoreAttributeTypes.WholeWordContent) || attributeType.matches(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override
@@ -78,9 +74,9 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          } else if (useMultiLineWidget(attributeType)) {
             xWidgetName = XStackedDam.WIDGET_ID;
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(BranchReferenceAttribute.class, attributeType)) {
+         } else if (attributeType.isBranchId()) {
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+         } else if (attributeType.isArtifactId()) {
             xWidgetName = XIntegerDam.WIDGET_ID;
          } else if (xFlatAttributeTypes.contains(attributeType)) {
             xWidgetName = XTextFlatDam.WIDGET_ID;

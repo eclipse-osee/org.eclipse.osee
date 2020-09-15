@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,12 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -245,10 +238,10 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
       return new Date();
    }
 
-   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput) {
+   private XWidget getWidget(AttributeTypeToken attributeType, Composite parent, String initialInput) {
       XWidget xWidget = null;
 
-      if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+      if (attributeType.isInteger()) {
          XInteger xInteger = new XInteger("");
          xInteger.setFillHorizontally(true);
          xInteger.createWidgets(getManagedForm(), parent, 2);
@@ -256,7 +249,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xInteger.setText(initialInput);
          }
          xWidget = xInteger;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+      } else if (attributeType.isLong()) {
          XLong xLong = new XLong("");
          xLong.setFillHorizontally(true);
          xLong.createWidgets(getManagedForm(), parent, 2);
@@ -264,7 +257,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xLong.setText(initialInput);
          }
          xWidget = xLong;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+      } else if (attributeType.isDate()) {
          XDate xDate = new XDate("");
          xDate.setFillHorizontally(true);
          xDate.createWidgets(getManagedForm(), parent, 2);
@@ -272,7 +265,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xDate.setDate(toDate(initialInput));
          }
          xWidget = xDate;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+      } else if (attributeType.isDouble()) {
          XFloat xFloat = new XFloat("");
          xFloat.setFillHorizontally(true);
          xFloat.createWidgets(getManagedForm(), parent, 2);
@@ -280,7 +273,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xFloat.setText(initialInput);
          }
          xWidget = xFloat;
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryBackedAttribute.class, attributeType)) {
+      } else if (attributeType.isInputStream() || attributeType.isJavaObject()) {
          XLabel xLabel = new XLabel("");
          xLabel.setFillHorizontally(true);
          xLabel.createWidgets(getManagedForm(), parent, 2);

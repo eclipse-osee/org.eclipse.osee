@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
@@ -53,8 +51,8 @@ public class AttributeTypeToXWidgetName {
          } else {
             xWidgetName = "XComboBooleanDam";
          }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class,
-         attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
+      } else if (attributeType.matches(CoreAttributeTypes.WordTemplateContent) || attributeType.matches(
+         CoreAttributeTypes.WholeWordContent) || attributeType.matches(CoreAttributeTypes.RelationOrder)) {
          xWidgetName = "XStackedDam";
       } else if (attributeType.isDate()) {
          xWidgetName = "XDateDam";

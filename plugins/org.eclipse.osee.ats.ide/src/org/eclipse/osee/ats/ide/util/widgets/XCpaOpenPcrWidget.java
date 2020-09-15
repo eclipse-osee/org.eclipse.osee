@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.cpa.CpaFactory;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,9 +30,9 @@ public class XCpaOpenPcrWidget extends XHyperlinkLabel implements IArtifactWidge
 
    public static final String WIDGET_ID = XCpaOpenPcrWidget.class.getSimpleName();
    private Artifact artifact;
-   private final AttributeTypeId pcrIdAttr;
+   private final AttributeTypeToken pcrIdAttr;
 
-   public XCpaOpenPcrWidget(AttributeTypeId pcrIdAttr) {
+   public XCpaOpenPcrWidget(AttributeTypeToken pcrIdAttr) {
       super("open", "", false);
       this.pcrIdAttr = pcrIdAttr;
    }

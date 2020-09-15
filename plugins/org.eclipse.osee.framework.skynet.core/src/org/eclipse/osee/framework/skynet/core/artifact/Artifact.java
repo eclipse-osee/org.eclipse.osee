@@ -699,9 +699,9 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
 
-   public final String getSoleAttributeValueAsString(AttributeTypeId attributeType, String defaultReturnValue) throws MultipleAttributesExist {
+   public final String getSoleAttributeValueAsString(AttributeTypeToken attributeType, String defaultReturnValue) throws MultipleAttributesExist {
       String toReturn = defaultReturnValue;
-      if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+      if (attributeType.isArtifactId()) {
          List<Attribute<Object>> soleAttributes = getAttributes(attributeType);
          if (soleAttributes.size() == 1) {
             String value = (String) soleAttributes.iterator().next().getAttributeDataProvider().getData()[0];

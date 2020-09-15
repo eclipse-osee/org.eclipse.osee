@@ -17,13 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -37,22 +30,22 @@ public class EmbededAttributeEditorFactory {
 
    public static IEmbeddedAttributeEditor getEmbeddedEditor(AttributeTypeGeneric<?> attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
       try {
-         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+         if (attributeType.isDate()) {
             return new EmbeddedDateAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+         } else if (attributeType.isDouble()) {
             return new EmbeddedStringAttributeEditor(VALID_FLOAT_REG_EX, attributeHolder, displayName, attributeType,
                persist);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+         } else if (attributeType.isInteger()) {
             return new EmbeddedStringAttributeEditor(VALID_INTEGER_REG_EX, attributeHolder, displayName, attributeType,
                persist);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         } else if (attributeType.isLong()) {
             return new EmbeddedStringAttributeEditor(VALID_INTEGER_REG_EX, attributeHolder, displayName, attributeType,
                persist);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+         } else if (attributeType.isBoolean()) {
             return new EmbeddedBooleanAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
          } else if (attributeType.isEnumerated()) {
             return new EmbeddedEnumAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
-         } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+         } else if (attributeType.isString()) {
             return new EmbeddedStringAttributeEditor(null, attributeHolder, displayName, attributeType, persist);
          } else {
             AWorkbench.popup("ERROR", "Unhandled attribute type.  No editor defined for this type");

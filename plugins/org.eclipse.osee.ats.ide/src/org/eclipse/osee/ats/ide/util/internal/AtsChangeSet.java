@@ -52,13 +52,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -101,8 +94,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                   AtsApiService.get().getStateFactory().writeToStore(asUser, workItem, this);
                }
                if (workItem.getLog().isDirty()) {
-                  AtsApiService.get().getLogFactory().writeToStore(workItem,
-                     AtsApiService.get().getAttributeResolver(), this);
+                  AtsApiService.get().getLogFactory().writeToStore(workItem, AtsApiService.get().getAttributeResolver(),
+                     this);
                }
             }
             transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(atsObject));
@@ -462,46 +455,46 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
-         if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+         if (attributeType.isString()) {
             try {
                objValues.add(value);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
             }
-         } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+         } else if (attributeType.isDate()) {
             try {
                Date date = new Date(Long.valueOf(value));
                objValues.add(date);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
             }
-         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+         } else if (attributeType.isDouble()) {
             try {
                Double double1 = Double.valueOf(value);
                objValues.add(double1);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid double value [%v]", value);
             }
-         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+         } else if (attributeType.isInteger()) {
             try {
                Integer integer = Integer.valueOf(value);
                objValues.add(integer);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid integer value [%v]", value);
             }
-         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         } else if (attributeType.isLong()) {
             try {
                Long longVal = Long.valueOf(value);
                objValues.add(longVal);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid long value [%v]", value);
             }
-         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+         } else if (attributeType.isBoolean()) {
             try {
                Boolean bool = Boolean.valueOf(value);
                objValues.add(bool);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid long value [%v]", value);
+               throw new OseeArgumentException(ex, "Invalid boolean value [%v]", value);
             }
          } else {
             throw new OseeArgumentException("Unsupported attribute value [%v] for type [%s]", attributeType, value);

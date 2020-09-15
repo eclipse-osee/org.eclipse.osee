@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.OteArtifactTypes;
 import org.eclipse.osee.framework.core.enums.OteAttributeTypes;
@@ -139,9 +139,9 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   }
                   return "";
                } else {
-                  AttributeTypeId attributeType = AttributeTypeManager.getType(colName);
+                  AttributeTypeToken attributeType = AttributeTypeManager.getType(colName);
                   if (artifact.isAttributeTypeValid(attributeType)) {
-                     if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+                     if (attributeType.isDate()) {
                         Date date = null;
                         try {
                            date = artifact.getSoleAttributeValue(attributeType);

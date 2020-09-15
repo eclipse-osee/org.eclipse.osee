@@ -98,10 +98,10 @@ public class MassLabelProvider extends XViewerLabelProvider {
          if (attributeType == null && Strings.isValid(col.getName())) {
             attributeType = AttributeTypeManager.getType(col.getName());
          }
-         if (!artifact.isAttributeTypeValid(attributeType)) {
+         if (attributeType == null || !artifact.isAttributeTypeValid(attributeType)) {
             return "";
          }
-         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+         if (attributeType.isDate()) {
             try {
                return new DateAttribute().MMDDYYHHMM.format(artifact.getSoleAttributeValue(attributeType));
             } catch (OseeCoreException ex) {

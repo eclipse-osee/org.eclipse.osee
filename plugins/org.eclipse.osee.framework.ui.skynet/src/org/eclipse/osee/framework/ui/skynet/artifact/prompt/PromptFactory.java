@@ -18,14 +18,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 
 /**
  * @author Jeff C. Phillips
@@ -36,24 +28,24 @@ public final class PromptFactory implements IPromptFactory {
    public IHandlePromptChange createPrompt(AttributeTypeToken attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       IHandlePromptChange promptChange;
 
-      if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+      if (attributeType.isDate()) {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+      } else if (attributeType.isDouble()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
             NumberFormat.getInstance(), false);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+      } else if (attributeType.isInteger()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
             NumberFormat.getIntegerInstance(), false);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+      } else if (attributeType.isLong()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
             NumberFormat.getNumberInstance(), false);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+      } else if (attributeType.isBoolean()) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
       } else if (attributeType.isEnumerated()) {
          promptChange = new EnumeratedHandlePromptChange(artifacts, attributeType.toEnum(), displayName, persist);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+      } else if (attributeType.isString()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts, null, multiLine);
-      } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+      } else if (attributeType.isArtifactId()) {
          promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
             NumberFormat.getIntegerInstance(), false);
       } else {

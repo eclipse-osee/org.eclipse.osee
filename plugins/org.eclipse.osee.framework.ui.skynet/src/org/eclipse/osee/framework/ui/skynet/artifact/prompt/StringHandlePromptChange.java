@@ -18,13 +18,10 @@ import java.text.ParseException;
 import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -33,13 +30,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
  */
 public class StringHandlePromptChange implements IHandlePromptChange {
    private final EntryDialog entryDialog;
-   private final AttributeTypeId attributeType;
+   private final AttributeTypeToken attributeType;
    private final boolean persist;
    private final boolean multiLine;
    private final Collection<? extends Artifact> artifacts;
    private final NumberFormat format;
 
-   public StringHandlePromptChange(AttributeTypeId attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, boolean multiLine) {
+   public StringHandlePromptChange(AttributeTypeToken attributeType, boolean persist, String displayName, Collection<? extends Artifact> artifacts, NumberFormat format, boolean multiLine) {
       this.attributeType = attributeType;
       this.persist = persist;
       this.artifacts = artifacts;
@@ -75,7 +72,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, NumberFormat format, EntryDialog entryDialog) {
+   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, NumberFormat format, EntryDialog entryDialog) {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format, attributeType);
@@ -87,15 +84,15 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static String getSafeValue(String value, NumberFormat format, AttributeTypeId attributeType) {
+   private static String getSafeValue(String value, NumberFormat format, AttributeTypeToken attributeType) {
       String toReturn = value;
       if (format != null) {
          try {
-            if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+            if (attributeType.isInteger()) {
                toReturn = String.valueOf(format.parse(value).intValue());
-            } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+            } else if (attributeType.isArtifactId()) {
                toReturn = String.valueOf(format.parse(value).intValue());
-            } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+            } else if (attributeType.isLong()) {
                toReturn = String.valueOf(format.parse(value).intValue());
             } else {
                toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers

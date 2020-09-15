@@ -88,11 +88,6 @@ public class AttributeTypeManager {
       return getTokenService().getAttributeType(name);
    }
 
-   @SuppressWarnings("rawtypes")
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, AttributeTypeId attributeType) {
-      return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
-   }
-
    public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType) {
       AttributeTypeToken attributeTypeToken = getTokenService().getAttributeType(attributeType.getId());
       if (attributeTypeToken.isInputStream()) {

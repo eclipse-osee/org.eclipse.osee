@@ -14,34 +14,27 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
 public class XViewerAttributeSortDataType {
 
-   public static SortDataType get(AttributeTypeId attributeType) {
+   public static SortDataType get(AttributeTypeToken attributeType) {
       SortDataType sortType = SortDataType.String;
       try {
-         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+         if (attributeType.isDate()) {
             sortType = SortDataType.Date;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+         } else if (attributeType.isDouble()) {
             sortType = SortDataType.Float;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+         } else if (attributeType.isInteger()) {
             sortType = SortDataType.Integer;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         } else if (attributeType.isLong()) {
             sortType = SortDataType.Long;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+         } else if (attributeType.isBoolean()) {
             sortType = SortDataType.Boolean;
-         } else if (AttributeTypeManager.isBaseTypeCompatible(OutlineNumberAttribute.class, attributeType)) {
+         } else if (attributeType.isString()) {
             sortType = SortDataType.Paragraph_Number;
          }
       } catch (Exception ex) {

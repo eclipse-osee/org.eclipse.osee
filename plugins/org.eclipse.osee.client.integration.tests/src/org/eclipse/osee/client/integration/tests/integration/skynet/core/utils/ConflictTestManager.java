@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -85,7 +86,7 @@ public class ConflictTestManager {
    public static int REVERT_REL_LINK_QUERY = 6;
 
    protected static class AttributeValue {
-      protected AttributeTypeId attributeType;
+      protected AttributeTypeToken attributeType;
       protected String sourceValue;
       protected String destValue;
       protected String mergeValue;
