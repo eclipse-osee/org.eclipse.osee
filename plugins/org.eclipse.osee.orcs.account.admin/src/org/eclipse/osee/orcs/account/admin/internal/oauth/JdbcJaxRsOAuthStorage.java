@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
 import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -23,6 +24,7 @@ import org.eclipse.osee.jaxrs.server.security.OAuthToken;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -36,7 +38,12 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    private AuthCodeGrantStorage authCodeGrantStorage;
    private TokenStorage tokenStorage;
    private ClientCredentialStorage credentialStorage;
-   private ClientStorageProvider clientStorageProvider;
+   private ClientStorage clientStorage;
+   private OrcsApi orcsApi;
+
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -46,23 +53,16 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       this.jdbcService = jdbcService;
    }
 
-   public void setClientStorageProvider(ClientStorageProvider clientStorageProvider) {
-      this.clientStorageProvider = clientStorageProvider;
-   }
-
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
       authCodeGrantStorage = new AuthCodeGrantStorage(logger, jdbcClient);
       tokenStorage = new TokenStorage(logger, jdbcClient);
       credentialStorage = new ClientCredentialStorage(logger, jdbcClient);
-   }
-
-   public void stop() {
-      //
+      clientStorage = new ClientStorage(orcsApi, COMMON);
    }
 
    private ClientStorage getClientStorage() {
-      return clientStorageProvider.get();
+      return clientStorage;
    }
 
    @Override

@@ -13,11 +13,8 @@
 
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import static org.eclipse.osee.framework.core.enums.OAuthOseeTypes.OAUTH_TYPES;
 import static org.eclipse.osee.framework.core.enums.OAuthOseeTypes.OAuthClient;
 import com.google.common.io.ByteSource;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -29,9 +26,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -43,13 +38,10 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  */
 public class ClientStorage {
 
-   private final Log logger;
    private final OrcsApi orcsApi;
    private final BranchId storageBranch;
 
-   public ClientStorage(Log logger, OrcsApi orcsApi, BranchId storageBranch) {
-      super();
-      this.logger = logger;
+   public ClientStorage(OrcsApi orcsApi, BranchId storageBranch) {
       this.orcsApi = orcsApi;
       this.storageBranch = storageBranch;
    }
@@ -135,37 +127,6 @@ public class ClientStorage {
       TransactionBuilder tx = newTransaction(principal, "Delete OAuth Client");
       tx.deleteArtifact(artId);
       tx.commit();
-   }
-
-   private ResultSet<ArtifactReadable> getOAuthTypesDefinition() {
-      return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactType()).getResults();
-   }
-
-   public ArtifactId storeTypes(ByteSource resource) {
-      TransactionBuilder tx = newTransaction(null, "Initialize OAuth Type Definitions");
-      ArtifactId artifactId = tx.createArtifact(OAUTH_TYPES);
-      InputStream stream = null;
-      try {
-         stream = resource.openStream();
-         tx.setSoleAttributeFromStream(artifactId, CoreAttributeTypes.UriGeneralStringData, stream);
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
-      } finally {
-         Lib.close(stream);
-      }
-      tx.commit();
-
-      return artifactId;
-   }
-
-   public boolean typesExist() {
-      boolean result = false;
-      try {
-         result = !getOAuthTypesDefinition().isEmpty();
-      } catch (OseeCoreException ex) {
-         logger.warn(ex, "Error checking for OAuth Types");
-      }
-      return result;
    }
 
    public OAuthClient newClient(ArtifactReadable artifact, OAuthClientCredential credential) {

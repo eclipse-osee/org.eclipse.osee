@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
-import javax.script.ScriptEngineManager;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -65,7 +64,6 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -76,7 +74,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private OrcsDataStore dataStore;
    private ExecutorAdmin executorAdmin;
    private SystemProperties properties;
-   private EventAdmin eventAdmin;
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
@@ -86,7 +83,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
-   private ScriptEngineManager manager;
    private OrcsApplicabilityOps applicability;
    private UserGroupService userGroupService;
    private IAccessControlService accessControlService;
@@ -113,10 +109,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       this.properties = properties;
    }
 
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
-   }
-
    public void setActivityLog(ActivityLog activityLog) {
       this.activityLog = activityLog;
    }
@@ -129,7 +121,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
       module = dataStore.createDataModule(tokenService());
 
-      OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
       AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), tokenService());
 
       ArtifactFactory artifactFactory = new ArtifactFactory(module.getDataFactory(), attributeFactory);
@@ -234,7 +225,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public OrcsAdmin getAdminOps() {
       OrcsSession session = getSession();
-      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin(), eventAdmin);
+      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin());
    }
 
    @Override

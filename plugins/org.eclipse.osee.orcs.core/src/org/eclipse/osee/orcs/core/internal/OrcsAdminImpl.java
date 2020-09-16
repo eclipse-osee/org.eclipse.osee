@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -56,7 +56,6 @@ import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -66,16 +65,14 @@ public class OrcsAdminImpl implements OrcsAdmin {
    private final Log logger;
    private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
-   private final EventAdmin eventAdmin;
    private final QueryBuilder fromCommon;
    private final JdbcClient jdbcClient;
 
-   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, EventAdmin eventAdmin) {
+   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
-      this.eventAdmin = eventAdmin;
       fromCommon = orcsApi.getQueryFactory().fromBranch(COMMON);
       jdbcClient = dataStoreAdmin.getJdbcClient();
    }
@@ -89,7 +86,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
          typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
          dataStoreAdmin.createDataStore();
          orcsApi.getOrcsTypes().loadTypes(typeModel);
-         return new CreateSystemBranches(orcsApi, eventAdmin).create(typeModel);
+         return new CreateSystemBranches(orcsApi).create(typeModel);
       } finally {
          activityLog.setEnabled(true);
       }

@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -32,19 +31,15 @@ import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.OrcsTopicEvents;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Ryan D. Brooks
  */
 public class CreateSystemBranches {
    private final OrcsApi orcsApi;
-   private final EventAdmin eventAdmin;
    private final TransactionFactory txFactory;
    private final QueryBuilder query;
    private static String EDIT_RENDERER_OPTIONS =
@@ -56,9 +51,8 @@ public class CreateSystemBranches {
    private static String RECURSIVE_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
-   public CreateSystemBranches(OrcsApi orcsApi, EventAdmin eventAdmin) {
+   public CreateSystemBranches(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      this.eventAdmin = eventAdmin;
       txFactory = orcsApi.getTransactionFactory();
       query = orcsApi.getQueryFactory().fromBranch(COMMON);
    }
@@ -223,8 +217,6 @@ public class CreateSystemBranches {
       }
       tx.commit();
 
-      Event event = new Event(OrcsTopicEvents.DBINIT_IMPORT_TYPES, (Map<String, ?>) null);
-      eventAdmin.postEvent(event);
       return typesFolder;
    }
 
