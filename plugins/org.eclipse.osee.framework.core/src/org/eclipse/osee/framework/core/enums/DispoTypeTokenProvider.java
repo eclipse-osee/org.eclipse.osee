@@ -28,6 +28,6 @@ public final class DispoTypeTokenProvider extends OrcsTypeTokenProviderBase {
 
    public DispoTypeTokenProvider() {
       super(dispo);
-      loadClasses(DispoOseeTypes.DISPO_ARTIFACT, CoverageOseeTypes.Assignees);
+      loadClasses(DispoOseeTypes.DispoCiSet, CoverageOseeTypes.Assignees);
    }
 }

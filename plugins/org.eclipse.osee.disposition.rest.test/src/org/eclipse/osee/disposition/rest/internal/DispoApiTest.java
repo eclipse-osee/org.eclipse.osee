@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,8 +61,6 @@ public class DispoApiTest {
    private Storage storage;
    @Mock
    private DispoResolutionValidator validator;
-   @Mock
-   private StorageProvider storageProvider;
    @Mock
    private IOseeBranch mockBranch;
    @Mock
@@ -108,6 +107,8 @@ public class DispoApiTest {
    private TmoImporter tmoImporter;
    @Mock
    private LisFileParser lisImporter;
+   @Mock
+   private OrcsApi orcsApi;
 
    private final Long mockArtId = 2351315L;
 
@@ -122,15 +123,15 @@ public class DispoApiTest {
 
       when(mockBranch.getName()).thenReturn("branchName");
       when(storage.findUserByName(null)).thenReturn(author);
-      when(storageProvider.get()).thenReturn(storage);
 
-      dispoApi.setStorageProvider(storageProvider);
       dispoApi.setDataFactory(dataFactory);
       dispoApi.setDispoConnector(dispoConnector);
       dispoApi.setResolutionValidator(validator);
       dispoApi.setLogger(logger);
+      dispoApi.setOrcsApi(orcsApi);
 
       dispoApi.start(mockConfigProperties);
+      dispoApi.setStorageForTest(storage);
    }
 
    private <T> Answer<T> newAnswer(final T object) {

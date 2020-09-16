@@ -13,15 +13,9 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import org.eclipse.osee.framework.resource.management.IResource;
-
 /**
  * @author Angel Avila
  */
 public interface Storage extends DispoQuery, DispoWriter {
-
-   boolean typesExist();
-
-   void storeTypes(IResource resource);
 
 }

@@ -13,10 +13,7 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.DispoOseeTypes.DISPO_ARTIFACT;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -55,10 +52,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -71,12 +65,10 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  * @author Angel Avila
  */
 public class OrcsStorageImpl implements Storage {
-   private final Log logger;
    private final OrcsApi orcsApi;
    public static final IOseeBranch dispoParent = IOseeBranch.create(5781701693103907161L, "Dispo Parent");
 
-   public OrcsStorageImpl(Log logger, OrcsApi orcsApi) {
-      this.logger = logger;
+   public OrcsStorageImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
@@ -90,31 +82,6 @@ public class OrcsStorageImpl implements Storage {
 
    private OrcsBranch getBranchFactory() {
       return orcsApi.getBranchOps();
-   }
-
-   @Override
-   public boolean typesExist() {
-      try {
-         return getQuery().fromBranch(COMMON).andId(DISPO_ARTIFACT).getResults().getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL).isValid();
-      } catch (OseeCoreException ex) {
-         logger.warn(ex, "Error checking for Dispo Types");
-         return false;
-      }
-   }
-
-   @Override
-   public void storeTypes(IResource resource) {
-      TransactionBuilder tx = getTxFactory().createTransaction(COMMON, SystemUser.OseeSystem, "Initialize Dispo Types");
-      ArtifactId artifactId = tx.createArtifact(DISPO_ARTIFACT);
-      InputStream stream = null;
-      try {
-         stream = resource.getContent();
-         tx.setSoleAttributeFromStream(artifactId, UriGeneralStringData, stream);
-      } finally {
-         Lib.close(stream);
-      }
-      tx.commit();
    }
 
    @Override

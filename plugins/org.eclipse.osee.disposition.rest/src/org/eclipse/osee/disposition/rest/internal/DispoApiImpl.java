@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -65,20 +66,26 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class DispoApiImpl implements DispoApi {
 
-   private ExecutorAdmin executor;
+   private final Date newDate;
 
+   private Storage storage;
+   private ExecutorAdmin executor;
    private Log logger;
-   private StorageProvider storageProvider;
    private DispoDataFactory dataFactory;
    private DispoConnector dispoConnector;
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
    private DispoUpdateBroadcaster updateBroadcaster;
+   private OrcsApi orcsApi;
+
    private volatile DispoApiConfiguration config;
-   private final Date newDate;
 
    public DispoApiImpl() {
       newDate = new Date();
+   }
+
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -106,10 +113,6 @@ public class DispoApiImpl implements DispoApi {
       this.dispoConnector = dispoConnector;
    }
 
-   public void setStorageProvider(StorageProvider storageProvider) {
-      this.storageProvider = storageProvider;
-   }
-
    public void setResolutionValidator(DispoResolutionValidator resolutionValidator) {
       this.resolutionValidator = resolutionValidator;
    }
@@ -118,10 +121,18 @@ public class DispoApiImpl implements DispoApi {
       this.updateBroadcaster = updateBroadcater;
    }
 
+   /**
+    * Only for use my unit test (remove once this is integration tested)
+    */
+   public void setStorageForTest(Storage storage) {
+      this.storage = storage;
+   }
+
    public void start(Map<String, Object> props) {
       logger.trace("Starting DispoApiImpl...");
       update(props);
       importerFactory = new DispoImporterFactory(dataFactory, executor, config, logger);
+      storage = new OrcsStorageImpl(orcsApi);
    }
 
    public void update(Map<String, Object> props) {
@@ -134,11 +145,11 @@ public class DispoApiImpl implements DispoApi {
    }
 
    private DispoQuery getQuery() {
-      return storageProvider.get();
+      return storage;
    }
 
    private DispoWriter getWriter() {
-      return storageProvider.get();
+      return storage;
    }
 
    @Override
@@ -785,7 +796,7 @@ public class DispoApiImpl implements DispoApi {
          String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
          editDispoItems(destBranch, destSetId, copyData, false, operation, userName);
-         storageProvider.get().updateOperationSummary(getQuery().findUser(), destBranch, destSetId, report);
+         storage.updateOperationSummary(getQuery().findUser(), destBranch, destSetId, report);
       }
    }
 
@@ -834,7 +845,7 @@ public class DispoApiImpl implements DispoApi {
       String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
          editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation, userName);
-         storageProvider.get().updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
+         storage.updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
       }
       storeRerunData(branch, destSetId, reruns);
    }
@@ -854,7 +865,7 @@ public class DispoApiImpl implements DispoApi {
       dispoSetData.setTime(newDate);
       dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
       UserId author = getQuery().findUser();
-      storageProvider.get().updateDispoSet(author, branch, destSetId, dispoSetData);
+      storage.updateDispoSet(author, branch, destSetId, dispoSetData);
    }
 
    @Override

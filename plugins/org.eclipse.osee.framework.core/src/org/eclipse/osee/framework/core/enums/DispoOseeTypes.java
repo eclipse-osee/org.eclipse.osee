@@ -15,10 +15,8 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DispoTypeTokenProvider.dispo;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeDate;
@@ -100,11 +98,6 @@ public interface DispoOseeTypes {
       .zeroOrOne(DispoSummaryCount, "0/0")
       .zeroOrOne(DispoTime));
 
-
-   ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
-
    String FILE_EXT_REGEX = "dispo.api.file.ext.regex";
    String RESULTS_FILE_EXT_REGEX = "dispo.api.results.file.ext.regex";
-   // @formatter:on
-
 }
