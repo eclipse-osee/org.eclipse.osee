@@ -47,6 +47,7 @@ public class GenericMethodInvoker<T> {
       for (Method m : realInstance.getClass().getMethods()) {
          if (m.getName().equals(methodName)) {
             Type[] pType = m.getGenericParameterTypes();
+
             boolean argsMatch = false;
             if (pType.length == args.size()) {
                for (int i = 0; i < pType.length; ++i) {

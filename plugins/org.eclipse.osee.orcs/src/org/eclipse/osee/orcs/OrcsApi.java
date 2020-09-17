@@ -52,8 +52,6 @@ public interface OrcsApi extends OseeApi {
 
    IAccessControlService getAccessControlService();
 
-   boolean isTypesValid();
-
    JdbcService getJdbcService();
 
    ActivityLog getActivityLog();

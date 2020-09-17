@@ -60,7 +60,7 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.TransactionProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
+import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -77,7 +77,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    private QueryModule queryModule;
    private IndexerModule indexerModule;
-   private OrcsTypesModule typesModule;
    private OrcsSession systemSession;
    private DataModule module;
 
@@ -87,6 +86,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private UserGroupService userGroupService;
    private IAccessControlService accessControlService;
    private ActivityLog activityLog;
+   private OrcsTypes orcsTypes;
 
    ExternalArtifactManager proxyManager;
 
@@ -115,11 +115,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    public void start() {
       systemSession = createSession();
-
-      typesModule = new OrcsTypesModule(logger, dataStore.getTypesDataStore());
-      typesModule.start(getSystemSession());
-
       module = dataStore.createDataModule(tokenService());
+
+      orcsTypes = new OrcsTypesImpl(getSession(), dataStore.getTypesDataStore());
 
       AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), tokenService());
 
@@ -186,15 +184,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       txDataManager = null;
       txCallableFactory = null;
       module = null;
-      if (typesModule != null) {
-         typesModule.stop();
-      }
       systemSession = null;
-   }
-
-   @Override
-   public boolean isTypesValid() {
-      return dataStore.getTypesDataStore().isTypesResourcesValid();
    }
 
    @Override
@@ -252,8 +242,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
 
    @Override
    public OrcsTypes getOrcsTypes() {
-      OrcsSession session = getSession();
-      return typesModule.createOrcsTypes(session);
+      return orcsTypes;
    }
 
    private OrcsSession createSession() {

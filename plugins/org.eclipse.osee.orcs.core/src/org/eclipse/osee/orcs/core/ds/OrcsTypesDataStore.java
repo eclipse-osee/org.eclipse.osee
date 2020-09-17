@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
@@ -26,14 +26,12 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface OrcsTypesDataStore {
 
-   boolean isTypesResourcesValid();
-
-   IResource getOrcsTypesLoader(OrcsSession session);
-
    Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends ArtifactTypeToken> artifactTypes);
 
    Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends AttributeTypeId> attributeTypes);
 
    Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends RelationTypeToken> relationTypes);
+
+   InputStream getAccessInputStream();
 
 }

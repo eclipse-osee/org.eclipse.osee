@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcMigrationOptions;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
@@ -34,7 +32,6 @@ import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
-import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.MigrateDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
@@ -48,13 +45,11 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final SystemProperties properties;
-   private final OrcsTypesDataStore typesDataStore;
 
-   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, SystemProperties properties, OrcsTypesDataStore typesDataStore) {
+   public DataStoreAdminImpl(Log logger, JdbcClient jdbcClient, SystemProperties properties) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.properties = properties;
-      this.typesDataStore = typesDataStore;
    }
 
    @Override
@@ -98,26 +93,6 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
       Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
       return new FetchDatastoreInfoCallable(logger, jdbcClient, schemaProvider, properties);
-   }
-
-   @Override
-   public boolean isDataStoreInitialized() {
-      try {
-         boolean initialized = typesDataStore.isTypesResourcesValid();
-         if (initialized) {
-            String systemUuid = properties.getSystemUuid();
-            if (Strings.isValid(systemUuid)) {
-               IResource resource = typesDataStore.getOrcsTypesLoader(null);
-               if (resource != null) {
-                  initialized = true;
-               }
-            }
-         }
-         return initialized;
-      } catch (Exception ex) {
-         // do nothing;
-      }
-      return false;
    }
 
    @Override

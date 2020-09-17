@@ -85,7 +85,6 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
          typeModel += OseeInf.getResourceContents("OseeTypes_Framework.osee", getClass());
          dataStoreAdmin.createDataStore();
-         orcsApi.getOrcsTypes().loadTypes(typeModel);
          return new CreateSystemBranches(orcsApi).create(typeModel);
       } finally {
          activityLog.setEnabled(true);
@@ -156,7 +155,12 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
    @Override
    public boolean isDataStoreInitialized() {
-      return dataStoreAdmin.isDataStoreInitialized();
+      try {
+         orcsApi.getQueryFactory().fromBranch(COMMON).andIds(CoreArtifactTokens.DefaultHierarchyRoot);
+         return true;
+      } catch (Exception ex) {
+         return false;
+      }
    }
 
    @Override

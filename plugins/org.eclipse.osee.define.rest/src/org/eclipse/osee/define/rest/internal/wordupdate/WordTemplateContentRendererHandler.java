@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Morgan E. Cook
@@ -46,9 +47,11 @@ public class WordTemplateContentRendererHandler {
    private final Log logger;
 
    private WordMLApplicabilityHandler applicHandler;
+   private final QueryFactory queryFactory;
 
    public WordTemplateContentRendererHandler(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
+      queryFactory = orcsApi.getQueryFactory();
       this.logger = logger;
    }
 
@@ -59,14 +62,13 @@ public class WordTemplateContentRendererHandler {
       }
       ArtifactReadable artifact = null;
       if (txId.equals(TransactionId.SENTINEL)) {
-         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).andId(ArtifactId.valueOf(
+         artifact = queryFactory.fromBranch(wtcData.getBranch()).andId(ArtifactId.valueOf(
             wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
       } else {
-         artifact =
-            orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).fromTransaction(txId).andId(ArtifactId.valueOf(
-               wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL);
+         artifact = queryFactory.fromBranch(wtcData.getBranch()).fromTransaction(txId).andId(ArtifactId.valueOf(
+            wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL);
       }
 
       if (artifact.isValid()) {
@@ -84,8 +86,8 @@ public class WordTemplateContentRendererHandler {
             data = WordUtilities.reassignBinDataID(data);
 
             LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
-            data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
-               unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
+            data = WordMlLinkHandler.link(queryFactory, link, artifact, data, wtcData.getTxId(), unknownGuids,
+               wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
             data = WordUtilities.removeNewLines(data);
 
@@ -133,8 +135,8 @@ public class WordTemplateContentRendererHandler {
             //Non empty ms word headers are caught above correctly
             data = "";
             LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
-            data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
-               unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
+            data = WordMlLinkHandler.link(queryFactory, link, artifact, data, wtcData.getTxId(), unknownGuids,
+               wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
             data = WordUtilities.removeNewLines(data);
 

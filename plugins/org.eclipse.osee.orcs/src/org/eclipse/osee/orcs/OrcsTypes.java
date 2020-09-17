@@ -19,9 +19,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.EnumTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -36,14 +33,6 @@ public interface OrcsTypes {
          + "t2.gamma_id = txs1.gamma_id and txs1.branch_id = ? and txs1.tx_current = ? and e1 = ? and e2 = attr.attr_id and " //
          + "attr.gamma_id = txs2.gamma_id and txs2.branch_id = txs1.branch_id and txs2.tx_current = ?";
    public static final String LOAD_OSEE_TYPE_VERSIONS = "select distinct e1 from osee_tuple2 where tuple_type = ?";
-
-   AttributeTypes getAttributeTypes();
-
-   EnumTypes getEnumTypes();
-
-   void loadTypes(IResource resource);
-
-   void loadTypes(String model);
 
    Callable<Void> writeTypes(OutputStream outputStream);
 

@@ -31,8 +31,6 @@ public interface DataStoreAdmin {
 
    Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session);
 
-   boolean isDataStoreInitialized();
-
    Callable<DataStoreInfo> migrateDataStore(OrcsSession session);
 
    JdbcClient getJdbcClient();
