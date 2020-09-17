@@ -62,42 +62,48 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  * @author Donald G. Dunne
  */
 public class AtsArtifactFactory extends ArtifactFactory {
-   private final List<ArtifactTypeId> disabledUserCreationTypes = new ArrayList<>(20);
-   private List<ArtifactTypeId> supportedTypes = null;
+   private final List<ArtifactTypeToken> disabledUserCreationTypes = new ArrayList<>(20);
+   private List<ArtifactTypeToken> supportedTypes = null;
 
-   private Collection<ArtifactTypeId> getSupportedTypes() {
+   private Collection<ArtifactTypeToken> getSupportedTypes() {
       if (supportedTypes == null) {
          supportedTypes = new LinkedList<>();
          supportedTypes.addAll(Arrays.asList(Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal,
             AgileSprint, AgileBacklog));
          AtsApiIde atsClient = AtsApiService.get();
          IAtsStoreService storeService = atsClient.getStoreService();
+         // TBD Get rid of this call, handled by inheritance
          supportedTypes.addAll(storeService.getTeamWorkflowArtifactTypes());
       }
       return supportedTypes;
    }
 
    @Override
-   public boolean isResponsibleFor(ArtifactTypeId artifactType) {
-      return getSupportedTypes().contains(artifactType);
+   public boolean isResponsibleFor(ArtifactTypeToken artifactType) {
+      for (ArtifactTypeToken artType : getSupportedTypes()) {
+         if (artifactType.inheritsFrom(artType)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override
    public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeToken artifactType, boolean inDataStore) {
       Artifact toReturn;
-      if (artifactType.equals(Task)) {
+      if (artifactType.inheritsFrom(Task)) {
          toReturn = new TaskArtifact(id, guid, branch, artifactType);
       } else if (artifactType.inheritsFrom(TeamWorkflow)) {
          toReturn = new TeamWorkFlowArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.equals(DecisionReview)) {
+      } else if (artifactType.inheritsFrom(DecisionReview)) {
          toReturn = new DecisionReviewArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.equals(PeerToPeerReview)) {
+      } else if (artifactType.inheritsFrom(PeerToPeerReview)) {
          toReturn = new PeerToPeerReviewArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.matches(Goal, AgileBacklog)) {
+      } else if (artifactType.inheritsFrom(Goal)) {
          toReturn = new GoalArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.equals(AgileSprint)) {
+      } else if (artifactType.inheritsFrom(AgileSprint)) {
          toReturn = new SprintArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.equals(Action)) {
+      } else if (artifactType.inheritsFrom(Action)) {
          toReturn = new ActionArtifact(id, guid, branch, artifactType);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
@@ -131,12 +137,12 @@ public class AtsArtifactFactory extends ArtifactFactory {
       String configValue = AtsApiService.get().getConfigValue(AtsUtil.USER_CREATION_DISABLED);
       if (Strings.isValid(configValue)) {
          for (String artifactTypeNamedIdStr : configValue.split(";")) {
-            ArtifactTypeId artifactTypeId = createArtifactTypeIdFromToken(artifactTypeNamedIdStr);
-            if (artifactTypeId == null) {
+            ArtifactTypeToken artifactType = createArtifactTypeIdFromToken(artifactTypeNamedIdStr);
+            if (artifactType == null) {
                OseeLog.logf(Activator.class, Level.SEVERE,
                   "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtil.USER_CREATION_DISABLED);
             } else {
-               disabledUserCreationTypes.add(artifactTypeId);
+               disabledUserCreationTypes.add(artifactType);
             }
          }
       }
@@ -147,7 +153,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    /**
     * @param token as [name]-[uuid]
     */
-   private static ArtifactTypeId createArtifactTypeIdFromToken(String token) {
+   private static ArtifactTypeToken createArtifactTypeIdFromToken(String token) {
       Matcher matcher = nameIdPattern.matcher(token);
       if (matcher.find()) {
          long id = Long.valueOf(matcher.group(2));

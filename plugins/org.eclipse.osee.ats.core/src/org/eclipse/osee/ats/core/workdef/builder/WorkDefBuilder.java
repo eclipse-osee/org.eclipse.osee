@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -38,7 +39,12 @@ public class WorkDefBuilder {
    List<StateDefBuilder> stateDefBuilders = new ArrayList<>();
 
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken) {
+      this(workDefToken, null);
+   }
+
+   public WorkDefBuilder(AtsWorkDefinitionToken workDefToken, ArtifactTypeToken artType) {
       workDef = new WorkDefinition(workDefToken.getId(), workDefToken.getName());
+      workDef.setArtType(artType);
    }
 
    public StateDefBuilder andState(int ordinal, String name, StateType type) {

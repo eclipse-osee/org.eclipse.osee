@@ -79,7 +79,7 @@ public class CopyActionDetailsTest {
          (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze,
             AtsApiService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review, AtsApiService.get()).getDetailsString();
-      assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
+      assertEquals("\"Peer-To-Peer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());
    }
 

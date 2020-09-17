@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
@@ -21,9 +22,15 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class AbstractWorkDefItem extends NamedIdBase {
 
    protected String description;
+   private ArtifactTypeToken artType;
 
    public AbstractWorkDefItem(Long id, String name) {
       super(id, name);
+   }
+
+   public AbstractWorkDefItem(Long id, String name, ArtifactTypeToken artType) {
+      super(id, name);
+      this.artType = artType;
    }
 
    public String getDescription() {
@@ -32,6 +39,14 @@ public class AbstractWorkDefItem extends NamedIdBase {
 
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   public ArtifactTypeToken getArtType() {
+      return artType;
+   }
+
+   public void setArtType(ArtifactTypeToken artType) {
+      this.artType = artType;
    }
 
 }

@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
@@ -44,7 +45,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
    @Override
    public WorkDefinition build() {
-      WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
+      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.PeerToPeerReview);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Review) //

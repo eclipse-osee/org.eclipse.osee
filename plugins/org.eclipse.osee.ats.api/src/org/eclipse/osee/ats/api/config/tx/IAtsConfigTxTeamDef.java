@@ -80,4 +80,5 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andProgram(IAtsProgramArtifactToken program);
 
    IAtsConfigTxTeamDef andCsci(Csci... cscis);
+
 }

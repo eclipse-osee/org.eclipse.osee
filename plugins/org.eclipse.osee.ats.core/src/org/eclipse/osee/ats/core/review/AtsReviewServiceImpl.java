@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -348,7 +349,6 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       IAtsWorkDefinition workDefinition =
          atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
             actionableItem);
-      Conditions.assertNotNull(workDefinition, "WorkDefinition");
       IAtsPeerToPeerReview peerArt = createNewPeerToPeerReview(workDefinition, null, teamDef, reviewTitle, againstState,
          createdDate, createdBy, changes);
       atsApi.getActionableItemService().addActionableItem(peerArt, actionableItem, changes);
@@ -356,7 +356,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    private IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
-      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(AtsArtifactTypes.PeerToPeerReview,
+      Conditions.assertNotNull(workDefinition, "WorkDefinition");
+      ArtifactTypeToken reviewArtType = workDefinition.getArtType();
+      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(reviewArtType,
          reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamWf != null) {
@@ -364,13 +366,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       }
 
       atsApi.getActionFactory().setAtsId(peerRev, teamDef, null, changes);
-
-      if (workDefinition == null) {
-         workDefinition = atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(peerRev, null, changes);
-      } else {
-         atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(peerRev, workDefinition, changes);
-      }
-
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(peerRev, workDefinition, changes);
       atsApi.getActionFactory().initializeNewStateMachine(peerRev, null, createdDate, createdBy, workDefinition,
          changes);
 

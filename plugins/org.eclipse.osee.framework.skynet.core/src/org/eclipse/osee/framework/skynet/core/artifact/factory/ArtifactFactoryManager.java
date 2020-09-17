@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -39,7 +40,7 @@ public final class ArtifactFactoryManager {
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
    private static Set<ArtifactTypeId> eternalArtifactTypes = null;
 
-   public ArtifactFactory getFactory(ArtifactTypeId artifactType) {
+   public ArtifactFactory getFactory(ArtifactTypeToken artifactType) {
       Exception savedEx = null;
       ArtifactFactory responsibleFactory = null;
       for (ArtifactFactory factory : getFactories()) {

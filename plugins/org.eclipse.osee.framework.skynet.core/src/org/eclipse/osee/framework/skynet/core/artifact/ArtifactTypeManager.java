@@ -137,7 +137,7 @@ public class ArtifactTypeManager {
       }
    }
 
-   public static ArtifactFactory getFactory(ArtifactTypeId artifactType) {
+   public static ArtifactFactory getFactory(ArtifactTypeToken artifactType) {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }

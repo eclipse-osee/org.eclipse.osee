@@ -141,7 +141,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken DecisionReview = ats.add(ats.artifactType(66L, "Decision Review", false, AbstractReview)
       .zeroOrOne(Decision)
       .zeroOrOne(DecisionReviewOptions));
-   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "PeerToPeer Review", false, AbstractReview)
+   ArtifactTypeToken PeerToPeerReview = ats.add(ats.artifactType(65L, "Peer-To-Peer Review", false, AbstractReview)
       .zeroOrOne(ChangeType, null)
       .zeroOrOne(LocChanged)
       .zeroOrOne(LocReviewed)

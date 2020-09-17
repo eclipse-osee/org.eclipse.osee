@@ -36,10 +36,10 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Donald G. Dunne
  */
 public abstract class ArtifactFactory {
-   private final Set<ArtifactTypeId> artifactTypes = new HashSet<>(5);
+   private final Set<ArtifactTypeToken> artifactTypes = new HashSet<>(5);
 
-   protected ArtifactFactory(ArtifactTypeId... artifactTypes) {
-      for (ArtifactTypeId artifactType : artifactTypes) {
+   protected ArtifactFactory(ArtifactTypeToken... artifactTypes) {
+      for (ArtifactTypeToken artifactType : artifactTypes) {
          this.artifactTypes.add(artifactType);
       }
    }
@@ -118,7 +118,7 @@ public abstract class ArtifactFactory {
    /**
     * Return true if this artifact factory is responsible for creating artifactType.
     */
-   public boolean isResponsibleFor(ArtifactTypeId artifactType) {
+   public boolean isResponsibleFor(ArtifactTypeToken artifactType) {
       return artifactTypes.contains(artifactType);
    }
 

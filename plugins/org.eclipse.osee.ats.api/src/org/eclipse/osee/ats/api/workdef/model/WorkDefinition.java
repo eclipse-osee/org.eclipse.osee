@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 
 /**
@@ -33,7 +34,11 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private final CountingMap<String> labelCount = new CountingMap<String>();
 
    public WorkDefinition(Long id, String name) {
-      super(id, name);
+      this(id, name, null);
+   }
+
+   public WorkDefinition(Long id, String name, ArtifactTypeToken artType) {
+      super(id, name, artType);
       headerDef = new HeaderDefinition(this);
    }
 
