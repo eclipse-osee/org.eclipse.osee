@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,8 +27,8 @@ public abstract class AbstractOseeLoadingCache<T extends NamedId> extends Abstra
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
 
-   protected AbstractOseeLoadingCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor) {
-      super(cacheId);
+   protected AbstractOseeLoadingCache(IOseeDataAccessor<T> dataAccessor) {
+      super();
       this.lastLoaded = 0;
       this.wasLoaded = new AtomicBoolean(false);
       this.dataAccessor = dataAccessor;
@@ -75,7 +74,7 @@ public abstract class AbstractOseeLoadingCache<T extends NamedId> extends Abstra
    @Override
    public synchronized boolean reloadCache() {
       dataAccessor.load(this);
-      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
+      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getClass());
       setLastLoaded(System.currentTimeMillis());
       wasLoaded.set(true);
       return true;

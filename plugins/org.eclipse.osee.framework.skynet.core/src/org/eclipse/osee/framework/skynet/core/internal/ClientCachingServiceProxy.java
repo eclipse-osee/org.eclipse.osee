@@ -18,12 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -82,22 +79,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public OrcsTokenService getTokenService() {
       return tokenService;
-   }
-
-   @Override
-   public IOseeCache<?> getCache(OseeCacheEnum cacheId) {
-      Conditions.checkNotNull(cacheId, "cache id to find");
-      for (IOseeCache<?> cache : caches) {
-         if (cache.getCacheId().equals(cacheId)) {
-            return cache;
-         }
-      }
-      throw new OseeArgumentException("Unable to find cache for id [%s]", cacheId);
-   }
-
-   @Override
-   public void reloadAll() {
-      getBranchCache().reloadCache();
    }
 
    @Override

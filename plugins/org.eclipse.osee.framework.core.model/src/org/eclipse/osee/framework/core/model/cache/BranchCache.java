@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -37,7 +36,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
    private final CompositeKeyHashMap<BranchId, ArtifactId, Branch> branchViews = new CompositeKeyHashMap<>(50, false);
 
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
-      super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
+      super(dataAccessor);
    }
 
    public MergeBranch findMergeBranch(BranchId sourceBranch, BranchId destinationBranch) {

@@ -14,14 +14,11 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOseeCache<TYPE> {
-
-   OseeCacheEnum getCacheId();
 
    int size();
 

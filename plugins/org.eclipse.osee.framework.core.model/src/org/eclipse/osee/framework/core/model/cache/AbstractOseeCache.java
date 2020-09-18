@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -29,21 +28,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractOseeCache<T extends NamedId> implements IOseeCache<T> {
    private final ConcurrentHashMap<String, T> nameToTypeMap = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
-   private final OseeCacheEnum cacheId;
-
-   protected AbstractOseeCache(OseeCacheEnum cacheId) {
-      this.cacheId = cacheId;
-   }
 
    @Override
    public synchronized void decacheAll() {
       nameToTypeMap.clear();
       idToTypeMap.clear();
-   }
-
-   @Override
-   public OseeCacheEnum getCacheId() {
-      return cacheId;
    }
 
    @Override
