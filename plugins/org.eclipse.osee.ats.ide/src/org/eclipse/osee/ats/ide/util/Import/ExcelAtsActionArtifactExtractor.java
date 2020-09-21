@@ -103,6 +103,9 @@ public class ExcelAtsActionArtifactExtractor {
          if (aData.title.equals("")) {
             rd.error("Row " + rowNum + "; Invalid Title");
          }
+         if (Strings.isInValid(aData.desc)) {
+            rd.error("Row " + rowNum + "; Invalid Description");
+         }
          Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          if (aData.actionableItems.isEmpty()) {
             rd.error("Row " + rowNum + ": Must have at least one ActionableItem defined");
@@ -223,10 +226,10 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionResult == null) {
                ChangeType changeType = getChangeType(aData);
                String priorityStr = getPriority(aData);
-               ActionResult aResult = AtsApiService.get().getActionFactory().createAction(null, aData.title,
-                  aData.desc, changeType, priorityStr, false, null,
-                  AtsApiService.get().getActionableItemService().getActionableItems(aData.actionableItems),
-                  createdDate, createdBy, null, changes);
+               ActionResult aResult = AtsApiService.get().getActionFactory().createAction(null, aData.title, aData.desc,
+                  changeType, priorityStr, false, null,
+                  AtsApiService.get().getActionableItemService().getActionableItems(aData.actionableItems), createdDate,
+                  createdBy, null, changes);
                actionNameToAction.put(aData.title, aResult);
                for (IAtsTeamWorkflow teamWf : aResult.getTeams()) {
                   processTeamWorkflow(changes, aData, teamWf);
