@@ -142,4 +142,8 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
       this.hasWorkPackages = hasWorkPackages;
    }
 
+   public boolean isHasWorkPackages() {
+      return hasWorkPackages;
+   }
+
 }
