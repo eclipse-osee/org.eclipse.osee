@@ -52,8 +52,9 @@ public class MultipleIdSearchUi {
 
       @Override
       public void run() {
-         EntryDialog ed =
-            new EntryCheckDialog(data.getName(), "Enter ATS IDs or Legacy IDs one per line", "Include ArtIds");
+         String msg = String.format("Enter ATS IDs or Legacy IDs, %s", multiLine ? "one per line" : "comma delimited",
+            "Include ArtIds");
+         EntryDialog ed = new EntryCheckDialog(data.getName(), msg, "Include ArtIds");
          if (multiLine) {
             ed.setFillVertically(true);
          }
