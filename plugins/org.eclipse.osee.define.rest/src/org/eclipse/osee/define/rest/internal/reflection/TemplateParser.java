@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.define.rest.internal.reflection;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodInvocation;
@@ -25,8 +25,10 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.api.GenericReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -56,8 +58,16 @@ public final class TemplateParser {
    public void parseTemplateData(GenericReport report) {
 
       String code = getTemplateArtifact().getSoleAttributeAsString(CoreAttributeTypes.JavaCode);
-      CompilationUnit parsedCode = this.parse(code);
-
+      ASTParserUtil parser = new ASTParserUtil();
+      setPathsForParser(parser);
+      CompilationUnit parsedCode = parser.parse(code);
+      if (!parsedCode.getAST().hasBindingsRecovery()) {
+         activityLog.getDebugLogger().info("Bindings not activated in Template Parser");
+      }
+      IProblem[] problems = parsedCode.getProblems();
+      for (IProblem problem : problems) {
+         activityLog.createEntry(CoreActivityTypes.DEFAULT_ROOT, "AST Parse Compiler: " + problem.getMessage());
+      }
       TemplateVisitor visitor = new TemplateVisitor();
       parsedCode.accept(visitor);
 
@@ -87,11 +97,27 @@ public final class TemplateParser {
       }
    }
 
-   private CompilationUnit parse(String javaCode) {
-      ASTParser parser = ASTParser.newParser(AST.JLS10);
-      parser.setKind(ASTParser.K_COMPILATION_UNIT);
-      parser.setSource(javaCode.toCharArray());
-      parser.setResolveBindings(true);
-      return (CompilationUnit) parser.createAST(null);
+   private void setPathsForParser(ASTParserUtil parser) {
+      List<String> paths = new ArrayList<>();
+      String rtJarPath = System.getProperty("java.rt.path");
+      parser.addClassPath(rtJarPath);
+      try {
+         paths.add(new File(Class.forName(
+            "org.eclipse.osee.define.api.GenericReport").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+         paths.add(new File(Class.forName(
+            "org.eclipse.osee.define.rest.GenericReportBuilder").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+         paths.add(new File(Class.forName(
+            "org.eclipse.osee.orcs.search.QueryBuilder").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+         paths.add(new File(Class.forName(
+            "org.eclipse.osee.framework.jdk.core.type.ResultSet").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+         paths.add(new File(Class.forName(
+            "org.eclipse.osee.framework.core.data.ArtifactId").getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "failed to add path for TemplateParser");
+      }
+      for (String path : paths) {
+         parser.addClassPath(path);
+         activityLog.getDebugLogger().info("parser path: " + path);
+      }
    }
 }

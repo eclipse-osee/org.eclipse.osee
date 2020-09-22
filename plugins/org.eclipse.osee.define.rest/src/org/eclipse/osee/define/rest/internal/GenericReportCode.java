@@ -14,6 +14,7 @@ package org.eclipse.osee.define.rest.internal;
 
 import org.eclipse.osee.define.rest.GenericReportBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -23,8 +24,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
  */
 public class GenericReportCode {
    public void reportCode(GenericReportBuilder report) {
-
-      report.level("System Functions", report.query().andIsOfType(CoreArtifactTypes.SystemFunctionMsWord)). //
+      report.level("System Functions",
+         report.query().andIsOfType(new ArtifactTypeToken[] {CoreArtifactTypes.SystemFunctionMsWord})). //
          column("Artifact Id"). //
          column("System Function Name", CoreAttributeTypes.Name). //
          column(CoreAttributeTypes.FDAL). //
@@ -60,9 +61,7 @@ public class GenericReportCode {
       report.level("Related Code Unit", report.query().follow(CoreRelationTypes.CodeRequirement_CodeUnit)). //
          column("Artifact Id"). //
          column("Code Unit", CoreAttributeTypes.Name). //
-         filter(CoreAttributeTypes.Name, ".+\\.VMF$"). //
-         column("File System Path", CoreAttributeTypes.FileSystemPath). //
-         filter(CoreAttributeTypes.FileSystemPath, ".+\\Fail\\.+"); //
+         column("File System Path", CoreAttributeTypes.FileSystemPath); //
 
    }
 

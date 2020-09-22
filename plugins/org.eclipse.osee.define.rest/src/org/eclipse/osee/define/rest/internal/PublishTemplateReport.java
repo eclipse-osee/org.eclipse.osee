@@ -57,7 +57,11 @@ public final class PublishTemplateReport implements StreamingOutput {
    public void write(OutputStream output) {
       try {
          writer = new ExcelXmlWriter(new OutputStreamWriter(output, "UTF-8"));
-         writeReport();
+         if (reportTemplateArt.isValid()) {
+            writeReport();
+         } else {
+            writeReportFromGenericReportCode(); // default to basic subsystem code trace
+         }
          writer.endWorkbook();
       } catch (Exception ex) {
          throw new WebApplicationException(ex);
@@ -69,6 +73,18 @@ public final class PublishTemplateReport implements StreamingOutput {
       parser.parseTemplateData(report);
       int numColumns = report.getColumnCount();
       writer.startSheet(parser.getTemplateArtifact().getName(), numColumns);
+      finishFillingData();
+   }
+
+   private void writeReportFromGenericReportCode() throws IOException {
+      GenericReportCode generic = new GenericReportCode();
+      generic.traceCode(report);
+      int numColumns = report.getColumnCount();
+      writer.startSheet("Subsystem to Code trace", numColumns);
+      finishFillingData();
+   }
+
+   private void finishFillingData() throws IOException {
       List<Object[]> data = new ArrayList<>();
       report.getDataRowsFromQuery(data);
       for (Object[] row : data) {
