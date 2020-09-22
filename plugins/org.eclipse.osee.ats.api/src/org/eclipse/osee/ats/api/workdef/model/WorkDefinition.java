@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -32,6 +33,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private boolean showStateMetrics = false;
    private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
    private final CountingMap<String> labelCount = new CountingMap<String>();
+   private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, null);
@@ -121,6 +123,16 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
 
    public CountingMap<String> getLabelCount() {
       return labelCount;
+   }
+
+   @Override
+   public List<XViewerColumn> getReviewDefectColumns() {
+      return reviewDefectColumns;
+   }
+
+   @Override
+   public void setReviewDefectColumns(List<XViewerColumn> reviewDefectColumns) {
+      this.reviewDefectColumns = reviewDefectColumns;
    }
 
 }

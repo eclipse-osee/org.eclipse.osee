@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,16 +48,16 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       ReviewDefectItem defectItem = (ReviewDefectItem) element;
-      if (dCol.equals(DefectXViewerFactory.Severity_Col)) {
+      if (dCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
          return DefectSeverityToImage.getImage(defectItem.getSeverity());
-      } else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
          return ImageManager.getImage(FrameworkImage.INFO_SM);
-      } else if (dCol.equals(DefectXViewerFactory.Disposition_Col)) {
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Disposition_Col)) {
          return DefectDispositionToImage.getImage(defectItem.getDisposition());
-      } else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Closed_Col)) {
          return ImageManager.getImage(
             defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
-      } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.User_Col)) {
          try {
             AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getUserId());
             User user = UserManager.getUserByArtId(atsUser.getArtifactId());
@@ -71,7 +72,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
       ReviewDefectItem defectItem = (ReviewDefectItem) element;
-      if (aCol.equals(DefectXViewerFactory.User_Col)) {
+      if (aCol.equals(PeerReviewDefectXViewerColumns.User_Col)) {
          String name;
          try {
             AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getUserId());
@@ -81,23 +82,23 @@ public class DefectLabelProvider extends XViewerLabelProvider {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return name;
-      } else if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Closed_Col)) {
          return String.valueOf(defectItem.isClosed());
-      } else if (aCol.equals(DefectXViewerFactory.Created_Date_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Created_Date_Col)) {
          return DateUtil.getMMDDYYHHMM(defectItem.getDate());
-      } else if (aCol.equals(DefectXViewerFactory.Description_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Description_Col)) {
          return defectItem.getDescription();
-      } else if (aCol.equals(DefectXViewerFactory.Resolution_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Resolution_Col)) {
          return defectItem.getResolution();
-      } else if (aCol.equals(DefectXViewerFactory.DefectId_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.DefectId_Col)) {
          return String.valueOf(defectItem.getId());
-      } else if (aCol.equals(DefectXViewerFactory.Location_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Location_Col)) {
          return defectItem.getLocation();
-      } else if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
          return defectItem.getSeverity().equals(Severity.None) ? "" : defectItem.getSeverity().name();
-      } else if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Disposition_Col)) {
          return defectItem.getDisposition().equals(Disposition.None) ? "" : defectItem.getDisposition().name();
-      } else if (aCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
          return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
       }
       return "Unhandled Column";

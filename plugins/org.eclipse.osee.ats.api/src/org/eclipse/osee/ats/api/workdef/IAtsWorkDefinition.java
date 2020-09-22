@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.model.HeaderDefinition;
@@ -52,5 +53,9 @@ public interface IAtsWorkDefinition extends NamedId {
    ArtifactTypeToken getArtType();
 
    void setArtType(ArtifactTypeToken artType);
+
+   List<XViewerColumn> getReviewDefectColumns();
+
+   void setReviewDefectColumns(List<XViewerColumn> reviewDefectColumns);
 
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -167,6 +168,12 @@ public class WorkDefBuilder {
    public CreateTasksDefinitionBuilder createTasksSetDefinitionBuilder(Long id, String name) {
       CreateTasksDefinitionBuilder taskSetDef = new CreateTasksDefinitionBuilder(id, name);
       return taskSetDef;
+   }
+
+   public void setReviewDefectColumns(XViewerColumn... columns) {
+      for (XViewerColumn col : columns) {
+         workDef.getReviewDefectColumns().add(col);
+      }
    }
 
 }

@@ -13,6 +13,15 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.defect;
 
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Closed_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Created_Date_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Description_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Disposition_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Injection_Activity_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Location_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Resolution_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Severity_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.User_Col;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +61,8 @@ public class DefectXViewer extends XViewer {
    private final IAtsPeerToPeerReview review;
 
    public DefectXViewer(Composite parent, int style, IOseeTreeReportProvider reportProvider, IAtsPeerToPeerReview review) {
-      this(parent, style, review, new DefectXViewerFactory(reportProvider));
+      this(parent, style, review,
+         new DefectXViewerFactory(reportProvider, review.getWorkDefinition().getReviewDefectColumns()));
    }
 
    public DefectXViewer(Composite parent, int style, IAtsPeerToPeerReview review, IXViewerFactory xViewerFactory) {
@@ -61,8 +71,7 @@ public class DefectXViewer extends XViewer {
    }
 
    public ReviewDefectManager getDefectManager() {
-      return new ReviewDefectManager(AtsApiService.get().getQueryServiceIde().getArtifact(review),
-         AtsApiService.get());
+      return new ReviewDefectManager(AtsApiService.get().getQueryServiceIde().getArtifact(review), AtsApiService.get());
    }
 
    public void loadTable(DefectData data) {
@@ -196,10 +205,8 @@ public class DefectXViewer extends XViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      if (xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(
-         DefectXViewerFactory.Disposition_Col) || xCol.equals(
-            DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(
-               DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col)) {
+      if (xCol.equals(User_Col) || xCol.equals(Disposition_Col) || xCol.equals(Injection_Activity_Col) || xCol.equals(
+         Closed_Col) || xCol.equals(Severity_Col)) {
          return handleAltLeftClick(treeColumn, treeItem);
       }
       return false;
@@ -215,11 +222,9 @@ public class DefectXViewer extends XViewer {
          ReviewDefectItem defectItem = (ReviewDefectItem) treeItem.getData();
          List<ReviewDefectItem> defectItems = new ArrayList<>();
          defectItems.add(defectItem);
-         if (xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(
-            DefectXViewerFactory.Disposition_Col) || xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(
-               DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(
-                  DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(
-                     DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+         if (xCol.equals(Severity_Col) || xCol.equals(Disposition_Col) || xCol.equals(Created_Date_Col) || xCol.equals(
+            Closed_Col) || xCol.equals(Description_Col) || xCol.equals(Resolution_Col) || xCol.equals(
+               Location_Col) || xCol.equals(User_Col) || xCol.equals(Injection_Activity_Col)) {
             return getDefectMenu().promptChangeData(xCol, defectItems, false);
          }
       } catch (Exception ex) {

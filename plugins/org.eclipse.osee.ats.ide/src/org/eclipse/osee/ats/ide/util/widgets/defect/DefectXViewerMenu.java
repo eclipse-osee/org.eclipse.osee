@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -78,7 +79,7 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Severity_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Severity_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -92,7 +93,7 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Closed_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Closed_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -105,7 +106,8 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Created_Date_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Created_Date_Col, getSelectedDefectItems(),
+                  columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -118,7 +120,8 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Description_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Description_Col, getSelectedDefectItems(),
+                  columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -131,7 +134,8 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Disposition_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Disposition_Col, getSelectedDefectItems(),
+                  columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -144,7 +148,8 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Injection_Activity_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Injection_Activity_Col, getSelectedDefectItems(),
+                  columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -157,7 +162,7 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Location_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Location_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -170,7 +175,8 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.Resolution_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.Resolution_Col, getSelectedDefectItems(),
+                  columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -183,7 +189,7 @@ public class DefectXViewerMenu {
             boolean columnMultiEdit = false;
             // grab the data, prompt change
             try {
-               promptChangeData(DefectXViewerFactory.User_Col, getSelectedDefectItems(), columnMultiEdit);
+               promptChangeData(PeerReviewDefectXViewerColumns.User_Col, getSelectedDefectItems(), columnMultiEdit);
             } catch (OseeCoreException ex) {
                OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
             }
@@ -223,23 +229,23 @@ public class DefectXViewerMenu {
       boolean modified = false;
       if (defectItems != null && !defectItems.isEmpty()) {
          ReviewDefectItem defectItem = (ReviewDefectItem) defectItems.toArray()[0];
-         if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
+         if (xCol.equals(PeerReviewDefectXViewerColumns.Severity_Col)) {
             modified = handleSeverityCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Disposition_Col)) {
             modified = handleDispositionCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Created_Date_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Created_Date_Col)) {
             modified = handleCreatedDateCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Closed_Col)) {
             modified = handleClosedCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Description_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Description_Col)) {
             modified = handleDescriptionCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Resolution_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Resolution_Col)) {
             modified = handleResolutionCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.Location_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Location_Col)) {
             modified = handleLocationCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
-         } else if (xCol.equals(DefectXViewerFactory.User_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.User_Col)) {
             modified = handleUserCol(defectItems, modified);
-         } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
             modified = handleInjectionActivityCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
          }
          if (modified) {
@@ -326,8 +332,8 @@ public class DefectXViewerMenu {
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Defects");
-      ReviewDefectManager defectManager = new ReviewDefectManager(
-         AtsApiService.get().getQueryServiceIde().getArtifact(review), AtsApiService.get());
+      ReviewDefectManager defectManager =
+         new ReviewDefectManager(AtsApiService.get().getQueryServiceIde().getArtifact(review), AtsApiService.get());
       for (ReviewDefectItem defectItem : defectItems) {
          defectManager.addOrUpdateDefectItem(defectItem);
          defectXViewer.update(defectItem, null);
