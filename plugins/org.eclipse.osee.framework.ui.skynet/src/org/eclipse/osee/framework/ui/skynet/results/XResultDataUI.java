@@ -112,27 +112,32 @@ public class XResultDataUI {
 
    public static String report(XResultData resultData, final String title, final Manipulations... manipulations) {
       final String html = getReport(resultData, title, manipulations).getManipulatedHtml();
-      ResultsEditor.open(new IResultsEditorProvider() {
+      // The else should work in all cases and does in runtime, but doesn't in full release.  Call old way if no tables.
+      if (resultData.getTables().isEmpty()) {
+         ResultsEditor.open("Results", title, html);
+      } else {
+         ResultsEditor.open(new IResultsEditorProvider() {
 
-         private List<IResultsEditorTab> tabs;
+            private List<IResultsEditorTab> tabs;
 
-         @Override
-         public String getEditorName() {
-            return title;
-         }
-
-         @Override
-         public List<IResultsEditorTab> getResultsEditorTabs() {
-            if (tabs == null) {
-               tabs = new LinkedList<>();
-               tabs.add(new ResultsEditorHtmlTab(title, "Results", html));
-               for (XResultTable table : resultData.getTables()) {
-                  tabs.add(createDataTable(table));
-               }
+            @Override
+            public String getEditorName() {
+               return title;
             }
-            return tabs;
-         }
-      });
+
+            @Override
+            public List<IResultsEditorTab> getResultsEditorTabs() {
+               if (tabs == null) {
+                  tabs = new LinkedList<>();
+                  tabs.add(new ResultsEditorHtmlTab(title, "Results", html));
+                  for (XResultTable table : resultData.getTables()) {
+                     tabs.add(createDataTable(table));
+                  }
+               }
+               return tabs;
+            }
+         });
+      }
       return html;
    }
 
