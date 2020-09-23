@@ -19,6 +19,7 @@ import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.De
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Disposition_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Injection_Activity_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Location_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Notes_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Resolution_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Severity_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.User_Col;
@@ -223,8 +224,9 @@ public class DefectXViewer extends XViewer {
          List<ReviewDefectItem> defectItems = new ArrayList<>();
          defectItems.add(defectItem);
          if (xCol.equals(Severity_Col) || xCol.equals(Disposition_Col) || xCol.equals(Created_Date_Col) || xCol.equals(
-            Closed_Col) || xCol.equals(Description_Col) || xCol.equals(Resolution_Col) || xCol.equals(
-               Location_Col) || xCol.equals(User_Col) || xCol.equals(Injection_Activity_Col)) {
+            Closed_Col) || xCol.equals(Description_Col) || xCol.equals(
+               Resolution_Col) || xCol.equals(Location_Col) || xCol.equals(
+                  User_Col) || (xCol.equals(Injection_Activity_Col) || (xCol.equals(Notes_Col)))) {
             return getDefectMenu().promptChangeData(xCol, defectItems, false);
          }
       } catch (Exception ex) {

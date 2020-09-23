@@ -78,30 +78,31 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
       changes.clear();
-      ReviewDefectItem item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(),
-         Severity.Issue, Disposition.None, InjectionActivity.Code, "description", "resolution", "location", new Date());
+      ReviewDefectItem item =
+         new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue, Disposition.None,
+            InjectionActivity.Code, "description", "resolution", "location", new Date(), "notes");
       ReviewDefectManager defectManager = new ReviewDefectManager(peerArt, AtsApiService.get());
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
-         Disposition.None, InjectionActivity.Code, "description 2", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 2", "resolution", "location", new Date(), "notes 2");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
-         Disposition.None, InjectionActivity.Code, "description 3", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 3", "resolution", "location", new Date(), "notes 3");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Issue,
-         Disposition.None, InjectionActivity.Code, "description 34", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 34", "resolution", "location", new Date(), "notes 34");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Major,
-         Disposition.None, InjectionActivity.Code, "description 4", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 4", "resolution", "location", new Date(), "notes 4");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
-         Disposition.None, InjectionActivity.Code, "description 5", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 5", "resolution", "location", new Date(), "notes 5");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
-         Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date(), "notes 6");
       defectManager.addOrUpdateDefectItem(item);
       item = new ReviewDefectItem(AtsApiService.get().getUserService().getCurrentUser(), Severity.Minor,
-         Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date());
+         Disposition.None, InjectionActivity.Code, "description 6", "resolution", "location", new Date(), "notes 6");
       defectManager.addOrUpdateDefectItem(item);
       defectManager.saveToArtifact(peerArt, changes);
 
@@ -110,8 +111,7 @@ public class PeerToPeerReviewColumnsTest {
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
       roleMgr.addOrUpdateUserRole(role);
 
-      role =
-         new UserRole(Role.Moderator, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
+      role = new UserRole(Role.Moderator, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Jason_Michael));
       roleMgr.addOrUpdateUserRole(role);
 
       role = new UserRole(Role.Reviewer, AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));

@@ -129,7 +129,7 @@ public class AtsXDefectValidatorTest {
       String userId = "1234";
       ReviewDefectItem item =
          new ReviewDefectItem(userId, Severity.Issue, Disposition.Accept, InjectionActivity.Software_Design,
-            "this is the description", "this is the resolution", "this is the location", date);
+            "this is the description", "this is the resolution", "this is the location", date, "this is the notes");
       item.setClosed(true);
       return item;
    }

@@ -56,6 +56,7 @@ public class DefectXViewerMenu {
    private Action editDescriptionAction;
    private Action editLocationAction;
    private Action editResolutionAction;
+   private Action editNotesAction;
    private final DefectXViewer defectXViewer;
    private final IAtsPeerToPeerReview review;
 
@@ -195,6 +196,18 @@ public class DefectXViewerMenu {
             }
          }
       };
+      editNotesAction = new Action("Edit Notes ", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            boolean columnMultiEdit = false;
+            // grab the data, prompt change
+            try {
+               promptChangeData(PeerReviewDefectXViewerColumns.Notes_Col, getSelectedDefectItems(), columnMultiEdit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(DefectXViewer.class, OseeLevel.SEVERE_POPUP, ex.toString());
+            }
+         }
+      };
    }
 
    public void updateEditMenuActions() {
@@ -218,6 +231,8 @@ public class DefectXViewerMenu {
       editResolutionAction.setEnabled(isEditable());
       mm.insertBefore(XViewer.MENU_GROUP_PRE, editUserAction);
       editUserAction.setEnabled(isEditable());
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, editNotesAction);
+      editNotesAction.setEnabled(isEditable());
 
    }
 
@@ -247,6 +262,8 @@ public class DefectXViewerMenu {
             modified = handleUserCol(defectItems, modified);
          } else if (xCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
             modified = handleInjectionActivityCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
+         } else if (xCol.equals(PeerReviewDefectXViewerColumns.Notes_Col)) {
+            modified = handleNotesCol(xCol, defectItems, columnMultiEdit, modified, defectItem);
          }
          if (modified) {
             return executeTransaction(defectItems);
@@ -330,6 +347,15 @@ public class DefectXViewerMenu {
       return modified;
    }
 
+   private boolean handleNotesCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+      String desc = XPromptChange.promptChangeString(xCol.getName(), columnMultiEdit ? null : defectItem.getNotes(),
+         null, Option.MULTI_LINE);
+      if (desc != null) {
+         modified = setNotes(defectItems, desc);
+      }
+      return modified;
+   }
+
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Defects");
       ReviewDefectManager defectManager =
@@ -390,6 +416,20 @@ public class DefectXViewerMenu {
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.toString().equals(desc)) {
             defectItem.setDescription(desc);
+            if (!modified) {
+               modified = true;
+            }
+         }
+
+      }
+      return modified;
+   }
+
+   private boolean setNotes(Collection<ReviewDefectItem> defectItems, String desc) {
+      boolean modified = false;
+      for (ReviewDefectItem defectItem : defectItems) {
+         if (!defectItem.toString().equals(desc)) {
+            defectItem.setNotes(desc);
             if (!modified) {
                modified = true;
             }

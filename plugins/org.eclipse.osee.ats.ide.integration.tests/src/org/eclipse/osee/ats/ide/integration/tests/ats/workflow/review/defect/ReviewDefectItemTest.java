@@ -33,7 +33,7 @@ public class ReviewDefectItemTest {
       Date date = new Date();
       ReviewDefectItem item =
          new ReviewDefectItem("1234", Severity.Issue, Disposition.Duplicate, InjectionActivity.Software_Design,
-            "this is the description", "this is the resolution", "this is the location", date);
+            "this is the description", "this is the resolution", "this is the location", date, "this is the notes");
 
       ReviewDefectItem fromItem = new ReviewDefectItem(item.toXml(false), false, null);
       Assert.assertEquals("1234", fromItem.getUserId());
@@ -44,6 +44,7 @@ public class ReviewDefectItemTest {
       Assert.assertEquals(item.getResolution(), fromItem.getResolution());
       Assert.assertEquals(item.getLocation(), fromItem.getLocation());
       Assert.assertEquals(item.getDate(), fromItem.getDate());
+      Assert.assertEquals(item.getNotes(), fromItem.getNotes());
    }
 
    /**
@@ -54,7 +55,7 @@ public class ReviewDefectItemTest {
       Date date = new Date();
       ReviewDefectItem item =
          new ReviewDefectItem("1234", Severity.Issue, Disposition.Duplicate, InjectionActivity.Software_Design,
-            "this is the description", "this is the resolution", "this is the location", date);
+            "this is the description", "this is the resolution", "this is the location", date, "this is the notes");
       String xmlStr = item.toXml(false);
       String guid = GUID.create();
       xmlStr = xmlStr.replaceFirst("id>.*</id", String.format("guid>%s</guid", guid));

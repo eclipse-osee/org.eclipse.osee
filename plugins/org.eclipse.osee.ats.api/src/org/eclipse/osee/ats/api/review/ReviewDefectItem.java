@@ -40,6 +40,7 @@ public class ReviewDefectItem {
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
+   private String notes = "";
    private boolean closed = false;
    public static enum Severity {
       None,
@@ -56,11 +57,11 @@ public class ReviewDefectItem {
 
    };
 
-   public ReviewDefectItem(AtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
-      this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date);
+   public ReviewDefectItem(AtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date, String notes) {
+      this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date, notes);
    }
 
-   public ReviewDefectItem(String userId, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
+   public ReviewDefectItem(String userId, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date, String notes) {
       this.userId = userId;
       if (severity != null) {
          this.severity = severity;
@@ -82,6 +83,9 @@ public class ReviewDefectItem {
       }
       if (date != null) {
          this.date = date;
+      }
+      if (notes != null) {
+         this.notes = notes;
       }
       id = Lib.generateId();
       this.guid = String.valueOf(id);
@@ -162,7 +166,7 @@ public class ReviewDefectItem {
             //
             "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
             //
-            "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><id>" + id + "</id>");
+            "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><notes>" + notes + "</notes><id>" + id + "</id>");
       if (andGuid) {
          sb.append("<guid>" + guid + "</guid>");
       }
@@ -181,6 +185,7 @@ public class ReviewDefectItem {
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
       this.closed = AXml.getTagBooleanData(xml, "closed");
+      this.notes = AXml.getTagData(xml, "notes");
       String idStr = AXml.getTagData(xml, "id");
       if (Strings.isNumeric(idStr)) {
          this.id = Long.valueOf(idStr);
@@ -224,10 +229,6 @@ public class ReviewDefectItem {
 
    public String getUserId() {
       return userId;
-   }
-
-   public String toHTML(String labelFont) {
-      return "DEFECT (" + severity + "): " + description + " (" + userId + ")";
    }
 
    public void setUserId(String userId) {
@@ -280,6 +281,14 @@ public class ReviewDefectItem {
 
    public void setInjectionActivity(InjectionActivity injectionActivity) {
       this.injectionActivity = injectionActivity;
+   }
+
+   public String getNotes() {
+      return notes;
+   }
+
+   public void setNotes(String notes) {
+      this.notes = notes;
    }
 
    public boolean isClosed() {

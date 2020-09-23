@@ -100,6 +100,8 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return defectItem.getDisposition().equals(Disposition.None) ? "" : defectItem.getDisposition().name();
       } else if (aCol.equals(PeerReviewDefectXViewerColumns.Injection_Activity_Col)) {
          return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Notes_Col)) {
+         return defectItem.getNotes();
       }
       return "Unhandled Column";
    }

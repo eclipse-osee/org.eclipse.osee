@@ -20,6 +20,7 @@ import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.De
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Disposition_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Injection_Activity_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Location_Col;
+import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Notes_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Resolution_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.Severity_Col;
 import static org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns.User_Col;
@@ -39,7 +40,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
       super(NAMESPACE, reportProvider);
       if (defectCols.isEmpty()) {
          registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
-            Description_Col, Location_Col, Resolution_Col, DefectId_Col);
+            Description_Col, Location_Col, Resolution_Col, DefectId_Col, Notes_Col);
       } else {
          registerColumns(defectCols);
       }
