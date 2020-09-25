@@ -142,7 +142,7 @@ test_app_server_alive() {
 }
 
 pid_of_osee_app_server() {  
-  pid=`jps -v | grep $OSEE_APP_SERVER_PORT | awk '{print $1}'`
+  pid=`netstat -tulpn | grep $OSEE_APP_SERVER_PORT | awk '{print $1}'`
 }
 
 start() {
@@ -191,7 +191,7 @@ stop() {
 	 echo pid: $pid
     # process still alive, try kill
     if [ -n "$pid" ]; then
-       kill $pid
+ 		 kill $(lsof -t -i:OSEE_APP_SERVER_PORT)
        RETVAL=$?
        if [ $RETVAL == 0 ]; then
          # kill successfully sent to process
