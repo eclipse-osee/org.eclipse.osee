@@ -55,6 +55,7 @@ import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.rest.DataRightsOperationsImpl;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -116,6 +117,7 @@ public class MSWordTemplatePublisher {
    protected final Set<ArtifactId> emptyFolders = new HashSet<>();
    protected final Map<ArtifactReadable, CharSequence> artParagraphNumbers = new HashMap<>();
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
+   protected final Map<ApplicabilityId, Boolean> applicabilityMap = new HashMap<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -255,8 +257,7 @@ public class MSWordTemplatePublisher {
     */
    protected ArtifactReadable getArtifactHead(ArtifactId artifactId) {
       ArtifactReadable artifact =
-         orcsApi.getQueryFactory().fromBranch(publishingOptions.branch, publishingOptions.view).andId(
-            artifactId).getArtifact();
+         orcsApi.getQueryFactory().fromBranch(publishingOptions.branch).andId(artifactId).getArtifact();
       return artifact;
    }
 
@@ -586,6 +587,31 @@ public class MSWordTemplatePublisher {
          }
       }
       return false;
+   }
+
+   /**
+    * Method for checking the applicability of an artifact. Current method relies on a map between applicability ids and
+    * a true false to the set branch. If the applicability has been processed, the map is relied upon. If not, it is
+    * checked to see whether or not it contains a valid view.
+    */
+   protected boolean checkIsArtifactApplicable(ArtifactReadable artifact) {
+      boolean isApplicable = publishingOptions.view.equals(ArtifactId.SENTINEL);
+      if (isApplicable) {
+         return isApplicable;
+      } else {
+         ApplicabilityId applicability = artifact.getApplicability();
+         if (applicabilityMap.containsKey(applicability)) {
+            isApplicable = applicabilityMap.get(applicability);
+         } else {
+            List<ArtifactId> validViews = orcsApi.getQueryFactory().applicabilityQuery().getBranchViewsForApplicability(
+               publishingOptions.branch, applicability);
+            if (validViews.contains(publishingOptions.view)) {
+               isApplicable = true;
+            }
+            applicabilityMap.put(applicability, isApplicable);
+         }
+         return isApplicable;
+      }
    }
 
    /**

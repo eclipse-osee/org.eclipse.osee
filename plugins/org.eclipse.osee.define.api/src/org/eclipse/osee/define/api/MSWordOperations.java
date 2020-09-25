@@ -30,9 +30,9 @@ public interface MSWordOperations {
 
    public String renderWordTemplateContentWithApplicability(BranchId branchId, ArtifactId viewId, String data);
 
-   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact);
+   public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
-   default public Response msWordTemplatePublish(BranchId branch, ArtifactId template, String document, String userEmail) {
+   default public Response msWordTemplatePublish(BranchId branch, ArtifactId template, String document, ArtifactId view, String userEmail) {
       return null;
    }
 

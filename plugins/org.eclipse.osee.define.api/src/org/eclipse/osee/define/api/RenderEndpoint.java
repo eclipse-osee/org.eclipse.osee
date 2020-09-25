@@ -44,16 +44,16 @@ public interface RenderEndpoint {
    Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
 
    @GET
-   @Path("msWordTemplatePublish/{branch}/{template}/{artifact}")
+   @Path("msWordTemplatePublish/{branch}/{template}/{artifact}/{view}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
-   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact);
+   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("artifact") ArtifactId headArtifact, @PathParam("view") ArtifactId view);
 
    @GET
-   @Path("msWordTemplatePublish/{branch}/{template}/{document}/{userEmail}")
+   @Path("msWordTemplatePublish/{branch}/{template}/{document}/{view}/{userEmail}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
-   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("document") String document, @PathParam("userEmail") String userEmail);
+   Response msWordTemplatePublish(@PathParam("branch") BranchId branch, @PathParam("template") ArtifactId template, @PathParam("document") String document, @PathParam("view") ArtifactId view, @PathParam("userEmail") String userEmail);
 
    @GET
    @Path("goalWorkflowPublish/{template}/{goal}")
