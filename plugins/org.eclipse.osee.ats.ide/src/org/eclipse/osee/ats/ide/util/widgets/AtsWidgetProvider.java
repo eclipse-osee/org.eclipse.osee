@@ -190,6 +190,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
       } else if (widgetName.equals(XAssigneesHyperlinkWidget.WIDGET_ID)) {
          return new XAssigneesHyperlinkWidget(null);
+      } else if (widgetName.equals(XPeerChecklistAttachmentExampleCombo.WIDGET_ID)) {
+         return new XPeerChecklistAttachmentExampleCombo();
       }
 
       return toReturn;
