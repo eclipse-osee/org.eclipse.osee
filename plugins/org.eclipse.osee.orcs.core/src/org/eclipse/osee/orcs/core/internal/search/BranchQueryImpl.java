@@ -71,4 +71,13 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    public boolean isArchived(BranchId branchId) {
       return queryEngine.isArchived(branchId);
    }
+
+   @Override
+   public BranchToken getOneOrSentinel() {
+      ResultSet<Branch> branches = getResults();
+      if (branches.size() == 1) {
+         return branches.iterator().next();
+      }
+      return BranchToken.SENTINEL;
+   }
 }

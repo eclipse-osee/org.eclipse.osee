@@ -18,13 +18,13 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -55,7 +55,8 @@ public class DeleteArtifactHandler extends CommandHandler {
       boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
-         enabled = AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
+         enabled = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts, PermissionEnum.WRITE,
+            null).isSuccess();
       }
       return enabled;
    }

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
@@ -105,8 +105,9 @@ public class BlamContributionManager implements IXNavigateCommonItem {
             // Create categories first (so can have them up top)
             for (String category : blamOperation.getCategories()) {
                try {
-                  if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
-                     "Admin") && AccessControlManager.isOseeAdmin()) {
+                  if (OseeApiService.get().getAccessControlService().isOseeAdmin() || !category.contains(
+                     "Admin") || category.contains(
+                        "Admin") && OseeApiService.get().getAccessControlService().isOseeAdmin()) {
                      createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
                   }
                } catch (OseeCoreException ex) {

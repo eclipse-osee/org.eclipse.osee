@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 
@@ -72,8 +71,9 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             xWidgetName = XTextDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
-            xWidgetName = XStackedDam.WIDGET_ID;
+            xWidgetName = XTextDam.WIDGET_ID;
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+            defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          } else if (attributeType.isBranchId()) {
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
          } else if (attributeType.isArtifactId()) {

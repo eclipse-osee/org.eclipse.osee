@@ -15,11 +15,10 @@ package org.eclipse.osee.ats.ide.internal;
 
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.core.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemRemoteTopicEventHandler;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -38,19 +37,6 @@ public class Activator extends OseeActivator {
       context.registerService(EventHandler.class.getName(), new AtsBranchAccessManager(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 
-      // Start loading access control
-      Thread loadAccessControl = new Thread(new Runnable() {
-
-         @Override
-         public void run() {
-            try {
-               ServiceUtil.getAccessPolicy().ensurePopulated();
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-      }, "Load Access Control");
-      loadAccessControl.start();
    }
 
 }

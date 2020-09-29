@@ -23,10 +23,8 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -64,8 +62,7 @@ public class ArtifactPersistenceManager {
 
    // Confirm artifacts are fit to delete
    private static void performDeleteChecks(Collection<Artifact> artifacts) {
-      AccessPolicy policy = ServiceUtil.getAccessPolicy();
-      XResultData results = policy.isDeleteable(Collections.castAll(artifacts), new XResultData());
+      XResultData results = OseeApiService.get().getAccessControlService().isDeleteable(artifacts, new XResultData());
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }
@@ -73,8 +70,8 @@ public class ArtifactPersistenceManager {
 
    // Confirm relations are fit to delete
    public static void performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType) {
-      AccessPolicy policy = ServiceUtil.getAccessPolicy();
-      XResultData results = policy.isDeleteableRelation(artifact, relationType, new XResultData());
+      XResultData results =
+         OseeApiService.get().getAccessControlService().isDeleteableRelation(artifact, relationType, new XResultData());
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }

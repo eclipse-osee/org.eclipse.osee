@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.skynet.core.User;
  */
 public class BootStrapUser extends User {
 
-   public static BootStrapUser instance;
+   private static BootStrapUser instance;
 
    private BootStrapUser() {
-      super(CoreBranches.COMMON);
+      super(SystemUser.BootStrap.getId(), "guid", CoreBranches.COMMON);
    }
 
    public static BootStrapUser getInstance() {

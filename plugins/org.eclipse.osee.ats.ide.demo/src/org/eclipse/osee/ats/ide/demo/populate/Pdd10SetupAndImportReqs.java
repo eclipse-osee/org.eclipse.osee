@@ -21,12 +21,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.demo.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -37,6 +38,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -99,10 +102,33 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       demoDbTraceabilityTx(demoDbTraceability, SAW_Bld_1);
       demoDbTraceability.execute();
 
+      // Note: SAW_Bld_1 is created during orcs dbinit in CreateDemoBranches
+      BranchManager.setAssociatedArtifactId(SAW_Bld_1, AtsArtifactToken.AtsCmBranch);
+
       createNewBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+      BranchManager.setAssociatedArtifactId(SAW_Bld_2, AtsArtifactToken.AtsCmBranch);
       createNewBaselineBranch(SAW_Bld_2, SAW_Bld_3);
+      BranchManager.setAssociatedArtifactId(SAW_Bld_3, AtsArtifactToken.AtsCmBranch);
+
+      // Note: CIS_Bld_1 is created during orcs dbinit in CreateDemoBranches
+      BranchManager.setAssociatedArtifactId(DemoBranches.CIS_Bld_1, AtsArtifactToken.AtsCmBranch);
+
+      // Note: PL branches are created in CreateDemoBranches
+      BranchManager.setAssociatedArtifactId(DemoBranches.SAW_PL, AtsArtifactToken.AtsCmBranch);
+      setBaselineAccessControl(DemoBranches.SAW_PL);
+
+      BranchManager.setAssociatedArtifactId(DemoBranches.SAW_PL_Hardening_Branch, AtsArtifactToken.AtsCmBranch);
+      setBaselineAccessControl(DemoBranches.SAW_PL_Hardening_Branch);
 
       configureRequirementsForImplDetails();
+   }
+
+   private void setBaselineAccessControl(BranchToken branch) {
+      OseeApiService.get().getAccessControlService().removePermissions(branch);
+      ArtifactToken kayJones = UserManager.getUserByArtId(DemoUsers.Kay_Jones);
+      OseeApiService.get().getAccessControlService().setPermission(kayJones, branch, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(CoreUserGroups.Everyone, branch,
+         PermissionEnum.READ);
    }
 
    private void configureRequirementsForImplDetails() {
@@ -196,8 +222,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       try {
          childBranch = BranchManager.createBaselineBranch(srcBranch, destBranch);
 
-         AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), childBranch,
-            PermissionEnum.FULLACCESS);
+         AtsApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+            childBranch, PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);

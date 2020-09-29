@@ -22,12 +22,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -77,7 +79,7 @@ public class ArtifactExplorerUtil {
       }
    }
 
-   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, BranchId branch, BranchWarningComposite branchWarningComposite) {
+   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, BranchToken branch, BranchWarningComposite branchWarningComposite) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -89,7 +91,8 @@ public class ArtifactExplorerUtil {
                Control control = treeViewer.getTree();
                if (branch.isValid()) {
                   String warningStr = null;
-                  boolean branchReadable = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
+                  boolean branchReadable = OseeApiService.get().getAccessControlService().hasBranchPermission(branch,
+                     PermissionEnum.READ, new XResultData()).isSuccess();
                   if (artifactExplorer.isRefreshing()) {
                      warningStr = "Refreshing Artifact Explorer";
                   } else if (!branchReadable) {

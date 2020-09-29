@@ -1,0 +1,14 @@
+= Design
+Donald G. Dunne<donald.g.dunne@boeing.com>
+
+Provides the classes necessary to answer Framwork calls to compute access for branch objects like artifacts, attributes and relations
+
+See FrameworkAccessDesign.adoc for explanation of Framework Access Control, which ATS contributes to.  This design builds on top of that.
+
+== Classes: 
+
+=== AtsAccessContextTokens
+Tokens to specify certain ATS Access conditions.
+
+=== IAtsAccessContextProvider
+Interface/server to contribute Access Control from other bundles/layers.  These will be looped through to determine which provider is applicable and then computeAccess will be called to calculate access.

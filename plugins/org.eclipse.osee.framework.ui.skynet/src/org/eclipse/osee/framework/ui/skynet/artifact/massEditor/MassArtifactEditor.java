@@ -27,7 +27,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -103,7 +103,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
             try {
                Set<Artifact> accessibleArts = new HashSet<>();
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
+                  if (OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact,
+                     PermissionEnum.READ, null).isErrors()) {
                      OseeLog.log(Activator.class, Level.INFO,
                         "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;

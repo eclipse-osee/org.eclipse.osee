@@ -16,11 +16,13 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IHandlePromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 
 /**
  * @author Jeff C. Phillips
@@ -29,24 +31,27 @@ import org.eclipse.osee.framework.ui.skynet.artifact.prompt.IPromptFactory;
 public final class ArtifactPrompt {
 
    private final IPromptFactory promptFactory;
-   private final AccessPolicy policyHandler;
 
-   public ArtifactPrompt(IPromptFactory promptFactory, AccessPolicy policyHandler) {
+   public ArtifactPrompt(IPromptFactory promptFactory) {
       this.promptFactory = promptFactory;
-      this.policyHandler = policyHandler;
    }
 
-   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean toReturn = false;
-      boolean hasPermission = policyHandler.hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
-         OseeLevel.SEVERE_POPUP).matched();
+      XResultData rd =
+         OseeApiService.get().getAccessControlService().hasAttributeTypePermission(artifacts, attributeType,
+            PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Change Attribute", artifacts, attributeType));
 
-      if (hasPermission) {
-         IHandlePromptChange promptChange = promptFactory.createPrompt(attributeType,
-            attributeType.getUnqualifiedName(), artifacts, persist, multiLine);
-         if (promptChange.promptOk()) {
-            toReturn = promptChange.store();
-         }
+      if (rd.isErrors()) {
+         XResultDataDialog.open(rd, "Change Attribute", "Permission Denied Changing Attribute %s",
+            attributeType.toStringWithId());
+         return false;
+      }
+
+      IHandlePromptChange promptChange =
+         promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist, multiLine);
+      if (promptChange.promptOk()) {
+         toReturn = promptChange.store();
       }
       return toReturn;
    }

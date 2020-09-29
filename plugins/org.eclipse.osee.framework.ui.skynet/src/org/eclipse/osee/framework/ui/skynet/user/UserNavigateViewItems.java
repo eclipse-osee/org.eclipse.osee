@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -77,7 +77,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
          items.add(new XNavigateItemAction(parentItem, new OpenUsersInMassEditor("Open All Users", Active.Both),
             FrameworkImage.USER));
 
-         if (AccessControlManager.isOseeAdmin()) {
+         if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
             items.add(new XNavigateItemBlam(parentItem, new CreateNewUser(), FrameworkImage.ADD_GREEN));
             items.add(new XNavigateItemBlam(parentItem, new PopulateUserGroupBlam(), FrameworkImage.GROUP));
          }
@@ -98,7 +98,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
    @Override
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
       try {
-         boolean admin = AccessControlManager.isOseeAdmin();
+         boolean admin = OseeApiService.get().getAccessControlService().isOseeAdmin();
          if (admin) {
             XNavigateItem reviewItem = new XNavigateItem(null, "User Management", FrameworkImage.USER);
             addOseeUserSectionChildren(reviewItem);

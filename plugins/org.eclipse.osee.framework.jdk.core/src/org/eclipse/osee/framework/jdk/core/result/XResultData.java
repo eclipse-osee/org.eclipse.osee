@@ -45,6 +45,7 @@ public class XResultData {
       ConsoleOut;
    }
 
+   public static XResultData EMPTY_RD = new XResultData();
    public static final Pattern ErrorPattern = Pattern.compile("Error: ");
    public static final Pattern WarningPattern = Pattern.compile("Warning: ");
    @JsonIgnore

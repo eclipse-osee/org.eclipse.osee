@@ -13,23 +13,23 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -65,12 +65,11 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
    private boolean isLocked(RelationTypeSide relationTypeSide) {
       boolean isLocked = true;
-      AccessPolicy policyHandlerService;
       try {
-         policyHandlerService = ServiceUtil.getAccessPolicy();
-         PermissionStatus permissionStatus =
-            policyHandlerService.canRelationBeModified(artifact, null, relationTypeSide, Level.FINE);
-         isLocked = !permissionStatus.matched();
+
+         boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+            relationTypeSide, Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
+         isLocked = !hasPermission;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -138,7 +138,7 @@ public class AtsProgramServiceTest {
    public void testGetTeamDefinition() {
       assertEquals("SAW SW", programService.getTeamDefinition(sawProgram).getName());
 
-      assertEquals(6, programService.getTeamDefs(sawProgram).size());
+      assertEquals(8, programService.getTeamDefs(sawProgram).size());
 
       assertEquals(1, programService.getTeamDefs(sawProgram, WorkType.Code).size());
 
@@ -147,7 +147,7 @@ public class AtsProgramServiceTest {
 
    @Test
    public void testGetAIs() {
-      assertEquals(6, programService.getAis(sawProgram).size());
+      assertEquals(8, programService.getAis(sawProgram).size());
 
       assertEquals(1, programService.getAis(sawProgram, WorkType.Code).size());
 
@@ -157,7 +157,7 @@ public class AtsProgramServiceTest {
    @Test
    public void testGetWorkType() {
       Collection<IAtsTeamWorkflow> workflows = programService.getWorkflows(sawProgram, WorkType.Code);
-      assertEquals(4, workflows.size());
+      assertEquals(5, workflows.size());
       IAtsTeamWorkflow codeTeamWf = workflows.iterator().next();
 
       assertEquals(WorkType.Code, programService.getWorkType(codeTeamWf));

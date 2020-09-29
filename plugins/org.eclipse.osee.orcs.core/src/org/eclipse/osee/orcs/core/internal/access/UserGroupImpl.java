@@ -55,7 +55,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public boolean addMember(UserId user) {
+   public boolean addMember(UserId user, boolean persist) {
       throw new UnsupportedOperationException();
    }
 
@@ -88,7 +88,7 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public boolean removeMember(UserId user) {
+   public boolean removeMember(UserId user, boolean persist) {
       throw new UnsupportedOperationException();
    }
 

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -173,7 +173,7 @@ public class MergeInProgressHandler {
       String[] choices;
       boolean isAdmin = false;
       try {
-         if (AccessControlManager.isOseeAdmin()) {
+         if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
             isAdmin = true;
          }
       } catch (OseeCoreException ex) {

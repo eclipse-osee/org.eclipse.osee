@@ -82,6 +82,11 @@ public class UserGroupService implements IUserGroupService {
    }
 
    @Override
+   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
+      return new UserGroupImpl(userGroupArt);
+   }
+
+   @Override
    public Collection<IUserGroupArtifactToken> getMyUserGroups() {
       return UserGroupService.getUserGroupService().getMyUserGroups();
    }
@@ -110,6 +115,11 @@ public class UserGroupService implements IUserGroupService {
    @Override
    public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
+      return isUserMember(userGroup, user.getId());
    }
 
 }

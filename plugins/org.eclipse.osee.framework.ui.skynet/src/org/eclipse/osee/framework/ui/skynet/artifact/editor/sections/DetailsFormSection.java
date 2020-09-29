@@ -18,8 +18,11 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -31,6 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -54,6 +58,7 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       super.initialize(form);
       section = getSection();
       section.setText("Details");
+      section.setExpanded(false);
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       // Only load when users selects section
@@ -71,7 +76,7 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       if (!sectionCreated) {
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-         composite.setLayout(ALayout.getZeroMarginLayout());
+         composite.setLayout(ALayout.getZeroMarginLayout(2, false));
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
          composite.addDisposeListener(new DisposeListener() {
@@ -84,16 +89,8 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
             }
          });
 
-         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-         gd.widthHint = 200;
-         gd.heightHint = 250;
-
-         try {
-            browser = new Browser(composite, SWT.NONE);
-            browser.setLayoutData(gd);
-         } catch (SWTError e) {
-            // do nothing
-         }
+         createDetailsBrowser(composite);
+         createOperationsSection(composite);
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
@@ -114,12 +111,39 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          try {
             FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
             Map<String, String> detailsKeyValues = Artifacts.getDetailsKeyValues(getEditorInput().getArtifact());
-            browser.setText(
-               Artifacts.getDetailsFormText(detailsKeyValues, systemFont.getName(), systemFont.getHeight()));
+            String html = Artifacts.getDetailsFormText(detailsKeyValues, systemFont.getName(), systemFont.getHeight());
+            browser.setText(html);
          } catch (Exception ex) {
             browser.setText(Lib.exceptionToString(ex));
          }
          getManagedForm().reflow(true);
+      }
+   }
+
+   private void createOperationsSection(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      composite.setLayout(new GridLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      Label opsLabel = new Label(composite, SWT.BOLD);
+      opsLabel.setFont(FontManager.getDefaultLabelFont());
+      opsLabel.setText("Operations");
+
+      new XButtonViaAction(new AccessControlDetails(getEditor().getArtifactFromEditorInput())).createWidgets(
+         composite, 1);
+
+   }
+
+   private void createDetailsBrowser(Composite composite) {
+      try {
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gd.widthHint = 200;
+         gd.heightHint = 250;
+
+         browser = new Browser(composite, SWT.NONE);
+         browser.setLayoutData(gd);
+      } catch (SWTError e) {
+         // do nothing
       }
    }
 

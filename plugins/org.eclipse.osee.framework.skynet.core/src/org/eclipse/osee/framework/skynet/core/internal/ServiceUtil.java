@@ -14,8 +14,6 @@
 package org.eclipse.osee.framework.skynet.core.internal;
 
 import java.util.Properties;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -23,12 +21,8 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 public final class ServiceUtil {
 
@@ -63,18 +57,6 @@ public final class ServiceUtil {
 
    public static OseeClient getOseeClient() {
       return getService(OseeClient.class);
-   }
-
-   public static AccessPolicy getAccessPolicy() {
-      try {
-         Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
-         if (bundle.getState() != Bundle.ACTIVE) {
-            bundle.start();
-         }
-      } catch (BundleException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return getService(AccessPolicy.class);
    }
 
    public static boolean useOracleHints() {

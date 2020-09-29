@@ -36,6 +36,8 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    boolean isArchived(BranchId branchId);
 
+   BranchToken getOneOrSentinel();
+
    public static BranchQuery createSentinel() {
       final class BranchQuerySentinel extends NamedIdBase implements BranchQuery {
 
@@ -158,7 +160,13 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public boolean isArchived(BranchId branchId) {
             return false;
          }
+
+         @Override
+         public BranchToken getOneOrSentinel() {
+            return null;
+         }
       }
       return new BranchQuerySentinel();
    }
+
 }

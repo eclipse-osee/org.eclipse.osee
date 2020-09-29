@@ -18,14 +18,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
@@ -46,15 +45,14 @@ public class ArtifactClipboard {
       this.viewId = viewId;
    }
 
-   private List<Artifact> getArtifactsWithPermission(AccessPolicy accessService, PermissionEnum permission, List<Artifact> artifacts) {
+   private List<Artifact> getArtifactsWithPermission(PermissionEnum permission, List<Artifact> artifacts) {
       ArrayList<Artifact> toReturn = new ArrayList<>(artifacts);
       Iterator<Artifact> artIterator = toReturn.iterator();
 
       // Remove Artifact that do not have write permission.
       while (artIterator.hasNext()) {
-         Artifact cur = artIterator.next();
-         if (!accessService.hasArtifactPermission(java.util.Collections.singleton(cur), permission,
-            Level.WARNING).matched()) {
+         Artifact art = artIterator.next();
+         if (!OseeApiService.get().getAccessControlService().hasArtifactPermission(art, permission, null).isSuccess()) {
             artIterator.remove();
          }
       }
@@ -67,7 +65,7 @@ public class ArtifactClipboard {
       }
    }
 
-   public void setArtifactsToClipboard(AccessPolicy policyHandlerService, List<Artifact> artifactTransferData) {
+   public void setArtifactsToClipboard(List<Artifact> artifactTransferData) {
       if (artifactTransferData == null) {
          throw new IllegalArgumentException("Artifacts can not be null for artifact copy.");
       }
@@ -79,8 +77,7 @@ public class ArtifactClipboard {
       }
 
       List<Artifact> authFailedList = new ArrayList<>(artifactTransferData);
-      List<Artifact> authorizedArtifacts =
-         getArtifactsWithPermission(policyHandlerService, PermissionEnum.READ, artifactTransferData);
+      List<Artifact> authorizedArtifacts = getArtifactsWithPermission(PermissionEnum.READ, artifactTransferData);
 
       authFailedList.removeAll(authorizedArtifacts);
 

@@ -37,7 +37,7 @@ public class AccessControlAction extends Action {
 
    public PolicyDialog getDialog() {
       if (dialog == null) {
-         dialog = new PolicyDialog(Displays.getActiveShell(), sma);
+         dialog = PolicyDialog.createPolicyDialog(Displays.getActiveShell(), sma);
       }
       return dialog;
    }

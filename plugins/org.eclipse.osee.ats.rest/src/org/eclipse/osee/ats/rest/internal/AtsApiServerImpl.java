@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -286,6 +287,11 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public IUserGroupService getUserGroupService() {
       return orcsApi.getUserGroupService();
+   }
+
+   @Override
+   public IAccessControlService getAccessControlService() {
+      return orcsApi.getAccessControlService();
    }
 
 }

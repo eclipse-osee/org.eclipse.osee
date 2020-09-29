@@ -485,7 +485,7 @@ public class ExcelAtsActionArtifactExtractor {
          Assignees("ActionableItems"),
          Originator("Originator"),
          Priority("Priority"),
-         ChangeType("ChangeType"),
+         ChangeType("AllowDeny"),
          Version("Version"),
          EstimatedHours("EstimatedHours"),
          Goal("Goal"),

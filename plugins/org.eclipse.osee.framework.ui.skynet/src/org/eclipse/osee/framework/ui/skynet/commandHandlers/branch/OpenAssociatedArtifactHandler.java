@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -54,7 +54,8 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          AWorkbench.popup("ERROR", "No Associated Artifact");
          return null;
       }
-      if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
+      if (OseeApiService.get().getAccessControlService().hasArtifactPermission(associatedArtifact, PermissionEnum.READ,
+         null).isSuccess()) {
          IOseeCmService cmService = ServiceUtil.getOseeCmService();
          if (cmService.isPcrArtifact(associatedArtifact)) {
             cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);

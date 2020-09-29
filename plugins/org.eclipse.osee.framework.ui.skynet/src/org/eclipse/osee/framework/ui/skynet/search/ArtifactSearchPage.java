@@ -30,24 +30,24 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.util.NamedLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
@@ -161,9 +162,10 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       @Override
       public void handleEvent(Event event) {
-         BranchId branch = branchSelect.getSelection();
-         if (!isBranchReadable(branch)) {
-            AWorkbench.popup(String.format("Read Access Denied for branch [%s]", branch));
+         BranchToken branch = branchSelect.getSelection();
+         XResultData rd = isBranchReadable(branch);
+         if (rd.isErrors()) {
+            XResultDataDialog.open(rd, "Branch Access", "Read Access Denied for branch %s", branch.toStringWithId());
          }
       }
    }
@@ -557,20 +559,20 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    public void updateOKStatus() {
-      if (isBranchReadable(
-         getSelectedBranch()) && filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
+      XResultData rd = isBranchReadable(getSelectedBranch());
+      if (rd.isSuccess() && filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
          getContainer().setPerformActionEnabled(false);
       } else {
          getContainer().setPerformActionEnabled(true);
       }
    }
 
-   private static boolean isBranchReadable(BranchId branch) {
-      boolean read = false;
+   private static XResultData isBranchReadable(BranchToken branch) {
       if (branch != null) {
-         read = AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ);
+         return OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+            AccessControlArtifactUtil.getXResultAccessHeader("Branch Selection", branch));
       }
-      return read;
+      return null;
    }
 
    private String asString(FilterModel model) {

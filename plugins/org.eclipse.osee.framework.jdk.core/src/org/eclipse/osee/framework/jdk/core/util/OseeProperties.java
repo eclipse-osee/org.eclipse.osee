@@ -41,9 +41,26 @@ public class OseeProperties {
    public static final String OSEE_SHOW_TOKEN_FOR_CHANGE_NAME = "osee.show.token.for.change.name";
    public static final String OSEE_DB = "osee.db";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
+   public static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
 
    protected OseeProperties() {
       // Utility Class
+   }
+
+   protected static String getProperty(String name) {
+      return getProperty(name, "");
+   }
+
+   protected static String getProperty(String name, String defaultValue) {
+      return System.getProperty(name, defaultValue);
+   }
+
+   public static boolean isInDbInit() {
+      return Boolean.valueOf(getProperty(OSEE_IS_IN_DB_INIT));
+   }
+
+   public static void setInDbInit(boolean value) {
+      System.setProperty(OSEE_IS_IN_DB_INIT, Boolean.toString(value));
    }
 
    public static String getOseeDefaultBrokerUri() {

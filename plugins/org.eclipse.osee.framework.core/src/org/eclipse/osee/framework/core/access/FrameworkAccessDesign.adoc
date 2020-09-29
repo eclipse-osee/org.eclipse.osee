@@ -1,0 +1,49 @@
+= OSEE Access Control Design
+Donald G. Dunne<donald.g.dunne@boeing.com>
+
+Provides the design that makes up the OSEE Access Control.
+
+Access Control is provided at multiple levels:
+* Full Branch Access Control - READ/WRITE/FULL/DENY for User and User Groups
+* Artifact Access Control - READ/WRITE for User and User Groups
+* Context Branch Access
+** Artifact Token
+** Artifact Token and Children ArtifactType
+** Artifact Token and Children Relation Type
+** Artifact Type
+** Attribute Type
+** Relation Type
+
+Permission Types are defined in PermissionEnum as 
+* NONE - Open Access for all Users
+* READ - Read only access for specified user
+* WRITE - Write access for specified user
+* USER_LOCK - Locked for write by only the specified user
+* FULLACCESS - Full Access to Read, Write and Change Permissions
+* DENY - Deny all access.  Usually only if something is
+
+Ways to debug Access Control in IDE
+* Artifact Editor > Details Section > Access Control - Details
+* Artifact Editor > Cursor over lock decorator to see access details
+* Artifact Explorer
+** Enable right-click menu item:
+*** Single Launch: OSEE Navigator > Toggle Access Control
+*** All Launches: Add -Daccess.debug=true to config.ini launch config
+** Use: Artifact Explorer > Right-click > Access Control - Details
+
+== Classes: 
+
+=== AccessContextToken
+Provides token class for referencing access control mostly for Branch artifact access control. 
+
+=== *AccessContextTokens (eg: FrameworkAccessContextTokens)
+Class containing the instantiated tokens for that bundle/layer.
+
+=== AccessContext
+Provides ability to declare a single Access Control definition for a given token.  These will then be used to compute the final access control to be returned in AccessData class.
+
+=== *AccessContexts (eg FrameworkAccessControlContexts)
+Provides the built up AccessContext classes for that bundle/layer.
+
+=== IFrameworkAccessProvider
+Interface for classes/bundles/layers to answer access control questions about objects on a branch.  This will be used by the AcccessControlServiceImpl.  There are default framework implementations and also implemetations by applications, like ATS. The method computeAccess in this provider will computed an AccessData which is a rollup of what access control exists for the given object(s).  

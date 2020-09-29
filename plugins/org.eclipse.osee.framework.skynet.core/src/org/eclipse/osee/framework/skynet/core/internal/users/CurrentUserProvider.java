@@ -18,6 +18,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.Cache;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -31,8 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.jaxrs.JaxRsClient;
 

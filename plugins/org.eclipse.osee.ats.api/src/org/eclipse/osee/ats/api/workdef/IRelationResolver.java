@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.framework.core.access.context.IParentProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 /**
  * @author Donald G. Dunne
  */
-public interface IRelationResolver {
+public interface IRelationResolver extends IParentProvider {
 
    Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType);
 
@@ -67,8 +68,6 @@ public interface IRelationResolver {
    Collection<ArtifactToken> getChildren(ArtifactId artifact, ArtifactTypeToken artifactType);
 
    Collection<ArtifactToken> getChildren(ArtifactId artifact);
-
-   ArtifactToken getParent(ArtifactId artifact);
 
    int getRelatedCount(ArtifactToken artifact, RelationTypeSide relationTypeSide);
 

@@ -43,15 +43,11 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.services.CmAccessControl;
-import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -68,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements IAtsWorkItem, HasCmAccessControl, IGroupExplorerProvider {
+public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements IAtsWorkItem, IGroupExplorerProvider {
 
    private Collection<AtsUser> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
@@ -265,7 +261,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isAccessControlWrite() {
-      return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
+      return AtsApiService.get().getAccessControlService().hasArtifactPermission(this, PermissionEnum.WRITE, null).isSuccess();
    }
 
    /**
@@ -417,11 +413,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsStateManager getStateMgr() {
       return AtsApiService.get().getStateFactory().getStateManager(this);
-   }
-
-   @Override
-   public CmAccessControl getAccessControl() {
-      return OsgiUtil.getService(getClass(), CmAccessControl.class);
    }
 
    public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() {

@@ -19,8 +19,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.ats.ide.internal.OseeApiService;
+import org.eclipse.osee.framework.core.access.AccessControlData;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEventPayload;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
@@ -31,8 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -85,7 +85,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       if (branch.isInvalid()) {
          noBranch = true;
       } else {
-         someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
+         someAccessControlSet = !OseeApiService.get().getAccessControlService().getAccessControlList(branch).isEmpty();
       }
       button.setImage(ImageManager.getImage(
          noBranch || someAccessControlSet ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
@@ -93,7 +93,6 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       button.getParent().redraw();
    }
 
-   @SuppressWarnings("unlikely-arg-type")
    private void toggleWorkingBranchLock(Button button) {
       try {
          BranchId branch = getTeamArt().getWorkingBranch();
@@ -102,7 +101,8 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             return;
          }
          boolean isLocked = false, manuallyLocked = false;
-         Collection<AccessControlData> datas = AccessControlManager.getAccessControlList(branch);
+         Collection<AccessControlData> datas =
+            AtsApiService.get().getAccessControlService().getAccessControlList(branch);
          if (datas.size() > 1) {
             manuallyLocked = true;
          } else if (datas.isEmpty()) {
@@ -125,11 +125,12 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             isLocked ? "Locked" : "NOT Locked", isLocked ? "UnLock" : "Lock");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Lock", message)) {
             if (isLocked) {
-               AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
+               AtsApiService.get().getAccessControlService().removeAccessControlDataIf(true, datas.iterator().next());
             } else {
                IUserGroup everyoneGroup = UserGroupService.get(CoreUserGroups.Everyone);
                Conditions.assertTrue(everyoneGroup.getArtifact() instanceof Artifact, "Must be Artifact");
-               AccessControlManager.setPermission((Artifact) everyoneGroup.getArtifact(), branch, PermissionEnum.READ);
+               AtsApiService.get().getAccessControlService().setPermission(everyoneGroup.getArtifact(), branch,
+                  PermissionEnum.READ);
             }
             AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }

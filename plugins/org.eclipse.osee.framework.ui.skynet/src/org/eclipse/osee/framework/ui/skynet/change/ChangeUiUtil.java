@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -25,14 +24,18 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
@@ -59,10 +62,12 @@ public final class ChangeUiUtil {
     * @return true if permissions denied
     */
    public static boolean permissionsDeniedWithDialog(BranchToken branch) {
-      boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
-      if (!hasPermission) {
-         AWorkbench.popup("Access Denied",
-            String.format("Access denied to branch:\n\n%s", BranchManager.toStringWithId(branch)));
+      XResultData rd =
+         OseeApiService.get().getAccessControlService().hasBranchPermission(BranchManager.getBranch(branch),
+            PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Branch Access Denied", branch));
+      if (rd.isErrors()) {
+         XResultDataDialog.open(rd, "Branch Access Denied", "Access denied to branch:\n\n%s",
+            BranchManager.toStringWithId(branch));
          return true;
       }
       return false;
@@ -140,16 +145,16 @@ public final class ChangeUiUtil {
       Jobs.startJob(job, true);
    }
 
-   public static void open(BranchToken workingBranchId, BranchId parentBranchId, boolean b) {
-      Branch workingBranch = BranchManager.getBranch(workingBranchId);
-      if (workingBranch.isInvalid() || permissionsDeniedWithDialog(workingBranchId)) {
+   public static void open(BranchToken workingBranch, BranchId parentBranchId, boolean loadOnOpen) {
+      Branch branch = BranchManager.getBranch(workingBranch);
+      if (branch.isInvalid() || permissionsDeniedWithDialog(workingBranch)) {
          return;
       }
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
       if (parentBranch.isInvalid() || permissionsDeniedWithDialog(parentBranch)) {
          return;
       }
-      ChangeReportEditorInput input = createInput(workingBranch, true);
+      ChangeReportEditorInput input = createInput(workingBranch, loadOnOpen);
       open(input);
    }
 }

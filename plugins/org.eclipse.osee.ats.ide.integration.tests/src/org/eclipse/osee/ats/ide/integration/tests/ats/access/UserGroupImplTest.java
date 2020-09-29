@@ -27,7 +27,7 @@ public class UserGroupImplTest {
 
    @Test
    public void test() {
-      // Joe Smith is no admin by default, but is temp admin
+      // Joe Smith is not admin by default, but is temp admin
       Assert.assertFalse(UserGroupService.get(AtsUserGroups.AtsAdmin).isCurrentUserMember());
       Assert.assertTrue(UserGroupService.get(AtsUserGroups.AtsTempAdmin).isCurrentUserMember());
    }

@@ -22,16 +22,18 @@ public interface IUserGroup {
 
    ArtifactToken getArtifact();
 
-   boolean addMember(UserId user);
+   boolean addMember(UserId user, boolean persist);
 
    boolean isMember(UserId user);
 
    boolean isCurrentUserMember();
 
-   boolean removeMember(UserId user);
+   boolean removeMember(UserId user, boolean persist);
 
    Collection<UserToken> getMembers();
 
    boolean isMember(Long id);
+
+   Long getId();
 
 }

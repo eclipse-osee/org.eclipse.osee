@@ -20,10 +20,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -72,7 +72,7 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
          IWorkbench workbench = PlatformUI.getWorkbench();
          if (!workbench.isStarting() && !workbench.isClosing()) {
             try {
-               isValid = AccessControlManager.isOseeAdmin();
+               isValid = OseeApiService.get().getAccessControlService().isOseeAdmin();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

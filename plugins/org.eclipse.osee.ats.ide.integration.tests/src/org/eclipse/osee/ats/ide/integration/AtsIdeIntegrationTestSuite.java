@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration;
 import org.eclipse.osee.ats.ide.integration.tests.AtsTest_AllAts_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.DemoDbPopulateSuite;
 import org.eclipse.osee.ats.ide.integration.tests.DirtyArtifactCacheTest;
+import org.eclipse.osee.ats.ide.integration.tests.framework.access.FrameworkAccess_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkyentCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
@@ -36,6 +37,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    DbInitTest.class,
    DemoDbPopulateSuite.class,
+   FrameworkAccess_Suite.class,
    SkyentCoreArtifact_Suite.class,
    AtsTest_AllAts_Suite.class,
    FrameworkUiSkynetTest_Suite.class,

@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
@@ -155,7 +155,7 @@ public class DatabaseHealth extends AbstractBlam {
       protected void doWork(IProgressMonitor monitor) throws Exception {
          int totalTasks = fixOperations.size() + verifyOperations.size();
          double workPercentage = 1.0 / totalTasks;
-         if (!AccessControlManager.isOseeAdmin()) {
+         if (!OseeApiService.get().getAccessControlService().isOseeAdmin()) {
             throw new OseeAccessDeniedException("Must be a Developer to run this BLAM");
          } else {
             for (DatabaseHealthOperation operation : fixOperations) {

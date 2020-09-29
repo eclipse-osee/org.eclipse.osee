@@ -18,16 +18,17 @@ import java.util.Collection;
 import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.access.AccessControlData;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 
 public class PolicyContentProvider implements ITreeContentProvider {
 
-   private final Map<String, AccessControlData> accessControlList;
+   private final Map<ArtifactToken, AccessControlData> accessControlList;
    private final Collection<AccessControlData> deleteControlList;
    private final Object accessControlledObject;
 
-   public PolicyContentProvider(Map<String, AccessControlData> accessControlList, Object accessControlledObject, Collection<AccessControlData> deleteControlList) {
+   public PolicyContentProvider(Map<ArtifactToken, AccessControlData> accessControlList, Object accessControlledObject, Collection<AccessControlData> deleteControlList) {
       this.accessControlList = accessControlList;
       this.accessControlledObject = accessControlledObject;
       this.deleteControlList = deleteControlList;
@@ -46,16 +47,17 @@ public class PolicyContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getElements(Object object) {
 
-      Collection<AccessControlData> data = AccessControlManager.getAccessControlList(accessControlledObject);
+      Collection<AccessControlData> data =
+         OseeApiService.get().getAccessControlService().getAccessControlList(accessControlledObject);
       for (AccessControlData entry : data) {
          if (!deleteControlList.contains(entry)) {
-            accessControlList.put(entry.getSubject().getGuid(), entry);
+            accessControlList.put(entry.getSubject(), entry);
          }
       }
 
-      AccessControlData lockData = AccessControlManager.getAccessControlForLock(accessControlledObject);
-      if (lockData != null) {
-         accessControlList.put(lockData.getSubject().getGuid(), lockData);
+      for (AccessControlData lockData : OseeApiService.get().getAccessControlService().getAccessControlList(
+         accessControlledObject)) {
+         accessControlList.put(lockData.getSubject(), lockData);
       }
 
       Object[] accessControlListArray = accessControlList.values().toArray();

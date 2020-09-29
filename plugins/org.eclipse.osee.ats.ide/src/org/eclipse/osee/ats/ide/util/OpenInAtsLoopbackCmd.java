@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -44,7 +44,8 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
          try {
             boolean hasPermissionToRead = false;
             try {
-               hasPermissionToRead = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
+               hasPermissionToRead = AtsApiService.get().getAccessControlService().hasArtifactPermission(artifact,
+                  PermissionEnum.READ, null).isSuccess();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

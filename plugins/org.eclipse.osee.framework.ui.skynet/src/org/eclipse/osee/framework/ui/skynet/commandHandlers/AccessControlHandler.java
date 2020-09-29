@@ -32,7 +32,7 @@ public class AccessControlHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Object object = getSelection(selection);
       if (object != null) {
-         PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
+         PolicyDialog pd = PolicyDialog.createPolicyDialog(Displays.getActiveShell(), object);
          pd.open();
       } else {
          AWorkbench.popup("Selection can not be determined");

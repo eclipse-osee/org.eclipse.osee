@@ -14,12 +14,9 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.access.AccessDetail;
-import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
@@ -29,16 +26,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 public final class MockDataFactory {
    private MockDataFactory() {
       // Utility Class
-   }
-
-   public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
-      AccessDetail<T> target;
-      if (expReason != null) {
-         target = new AccessDetail<>(expAccessObject, expPermission, scope, expReason);
-      } else {
-         target = new AccessDetail<>(expAccessObject, expPermission, scope);
-      }
-      return target;
    }
 
    public static TransactionRecord createTransaction(int index, long branchUuid) {

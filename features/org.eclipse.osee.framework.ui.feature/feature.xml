@@ -31,7 +31,6 @@
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
-      <import plugin="org.eclipse.osee.framework.access"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
       <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="org.eclipse.ui.intro"/>
@@ -58,7 +57,6 @@
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.osee.ote.define"/>
-      <import plugin="org.eclipse.osee.framework.core.dsl"/>
       <import plugin="org.eclipse.xtext.ui"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui.shared"/>
@@ -70,7 +68,6 @@
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.jdt.core"/>
@@ -135,20 +132,6 @@
 
    <plugin
          id="org.eclipse.osee.ote.ui.define"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.core.dsl.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.core.dsl.ui.integration"
          download-size="0"
          install-size="0"
          version="0.0.0"

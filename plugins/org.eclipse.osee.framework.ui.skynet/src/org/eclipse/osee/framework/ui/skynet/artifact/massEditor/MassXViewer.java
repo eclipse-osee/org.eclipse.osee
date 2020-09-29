@@ -27,15 +27,16 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeAction;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.AddRelationColumnAction;
@@ -53,6 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -199,7 +202,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          @Override
          public void run() {
             try {
-               handleDeleteArtifacts();
+               handleDeleteArtifactsAdminOnly();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -217,12 +220,14 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       };
    }
 
-   protected void handleDeleteArtifacts() {
+   protected void handleDeleteArtifactsAdminOnly() {
       ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
       if (selectedArtifacts.isEmpty()) {
          AWorkbench.popup("Must select items to delete");
          return;
       }
+
+      // Admin-Only action, no access control is checked
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Artifacts",
          "Delete " + selectedArtifacts.size() + " Artifacts")) {
          SkynetTransaction transaction = TransactionManager.createTransaction(
@@ -239,6 +244,12 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
       if (selectedArtifacts.isEmpty()) {
          AWorkbench.popup("Must select items to delete");
+         return;
+      }
+      XResultData rd = OseeApiService.get().getAccessControlService().hasArtifactPermission(selectedArtifacts,
+         PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Delete Attributes Error", selectedArtifacts));
+      if (rd.isErrors()) {
+         XResultDataDialog.open(rd, "Delete Attributes Failed", "Access Denied for artifacts");
          return;
       }
       // get attributes that can be deleted (from artifact and validity)
@@ -372,7 +383,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
       PresentationType type = ArtifactDoubleClick.getPresentationType(artifact);
       PermissionEnum perEnum = ArtifactDoubleClick.getPermissionEnum(artifact);
-      if (AccessControlManager.hasPermission(artifacts, perEnum)) {
+      if (OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts, perEnum, null).isSuccess()) {
          RendererManager.openInJob(getSelectedArtifacts(), type);
       } else {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,

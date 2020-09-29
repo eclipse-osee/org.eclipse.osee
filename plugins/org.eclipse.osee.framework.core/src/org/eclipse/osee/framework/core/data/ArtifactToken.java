@@ -14,13 +14,16 @@
 package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.logging.Level;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -115,6 +118,16 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<
 
       public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
          super(id, name);
+         // Until artifacts can have long in db, ensure that tokens aren't negative when turned to int
+         int idInt = Long.valueOf(id).intValue();
+         if (idInt <= 0 && idInt != -1) {
+            String msg = String.format(
+               "Token id (as int) must be > 0 or SENTINAL, not int [%s] for long id [%s] name [%s] and type [%s])",
+               idInt, id, name, artifactType.getName());
+            // Log to console which shows the id, name and type on contruction where exception doesn't show till loading
+            OseeLog.log(ArtifactToken.class, Level.SEVERE, msg);
+            throw new OseeArgumentException(msg);
+         }
          this.branch = branch;
          this.artifactType = artifactType;
          this.guid = guid;

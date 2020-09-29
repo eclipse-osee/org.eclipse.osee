@@ -63,10 +63,20 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public boolean addMember(UserId user) {
+   public boolean addMember(UserId user, boolean persist) {
       checkGroupExists();
-      if (!getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
-         getArtifact().addRelation(CoreRelationTypes.Users_User, (Artifact) user);
+      Artifact userArt = null;
+      if (user instanceof Artifact) {
+         userArt = (Artifact) user;
+      } else {
+         userArt = UserManager.getUserByArtId(user);
+      }
+      Artifact group = getArtifact();
+      if (!group.isRelated(CoreRelationTypes.Users_User, userArt)) {
+         group.addRelation(CoreRelationTypes.Users_User, userArt);
+         if (persist) {
+            group.persist("Add Member");
+         }
          return true;
       }
       return false;
@@ -126,10 +136,20 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    }
 
    @Override
-   public boolean removeMember(UserId user) {
+   public boolean removeMember(UserId user, boolean persist) {
       checkGroupExists();
-      if (getArtifact().isRelated(CoreRelationTypes.Users_User, (Artifact) user)) {
-         getArtifact().deleteRelation(CoreRelationTypes.Users_User, (Artifact) user);
+      Artifact userArt = null;
+      if (user instanceof Artifact) {
+         userArt = (Artifact) user;
+      } else {
+         userArt = UserManager.getUserByArtId(user);
+      }
+      Artifact group = getArtifact();
+      if (group.isRelated(CoreRelationTypes.Users_User, userArt)) {
+         group.deleteRelation(CoreRelationTypes.Users_User, userArt);
+         if (persist) {
+            group.persist("Remove Member");
+         }
          return true;
       }
       return false;

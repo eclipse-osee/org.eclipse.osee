@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -56,6 +57,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.core.OseeApi;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -199,6 +201,11 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAtsChangeSet createChangeSet(String comment, BranchId branch, AtsUser asUser);
 
    IAtsServerEndpointProvider getServerEndpoints();
+
+   IAtsAccessService getAtsAccessService();
+
+   @Override
+   IAccessControlService getAccessControlService();
 
    default void reloadServerAndClientCaches() {
       getServerEndpoints().getConfigEndpoint().getWithPend();

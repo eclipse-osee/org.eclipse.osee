@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
@@ -140,7 +140,8 @@ public abstract class CommitHandler extends CommandHandler {
 
       if (branches.size() == 1) {
          BranchToken branch = branches.iterator().next();
-         return useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
+         return useParentBranchValid(
+            branch) || !useParentBranch && OseeApiService.get().getAccessControlService().isOseeAdmin();
       }
       return false;
    }

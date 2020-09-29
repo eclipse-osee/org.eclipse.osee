@@ -20,28 +20,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.access.PermissionStatus;
+import org.eclipse.osee.framework.core.access.AccessControlUtil;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -54,7 +55,9 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
+import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.action.DeleteAction;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
@@ -71,6 +74,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeEntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
@@ -107,6 +111,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    private MenuItem createMenuItem;
    private CreateRelatedMenuItem createRelatedMenuItem;
    private MenuItem accessControlMenuItem;
+   private MenuItem showAccessControlMenuItem;
    private MenuItem lockMenuItem;
    private MenuItem goIntoMenuItem;
    private MenuItem copyMenuItem;
@@ -122,6 +127,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    private Text myTextBeingRenamed;
    private MenuItem deleteMenuItem;
    private MenuItem purgeMenuItem;
+   private Menu popupMenu;
 
    public ArtifactExplorerMenu(ArtifactExplorer artifactExplorer) {
       this.artifactExplorer = artifactExplorer;
@@ -138,22 +144,22 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
       try {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Object obj = selection.getFirstElement();
-         AccessPolicy service = ServiceUtil.getAccessPolicy();
          boolean canModifyDH = false;
          boolean isArtifact = false;
          MenuPermissions permiss;
          if (obj instanceof Artifact) {
             isArtifact = true;
             Artifact art = (Artifact) obj;
-            canModifyDH = service.canRelationBeModified(art, null, CoreRelationTypes.DefaultHierarchical_Child,
-               Level.FINE).matched();
+            canModifyDH = OseeApiService.get().getAccessControlService().hasRelationTypePermission(art,
+               CoreRelationTypes.DefaultHierarchical_Child, java.util.Collections.emptyList(), PermissionEnum.WRITE,
+               null).isSuccess();
             permiss = new MenuPermissions(art);
          } else {
             permiss = new MenuPermissions((Artifact) null);
          }
          boolean isBranchEditable =
-            BranchManager.isEditable(getBranch()) && AccessControlManager.hasPermission(getBranch(),
-               PermissionEnum.WRITE);
+            BranchManager.isEditable(getBranch()) && OseeApiService.get().getAccessControlService().hasBranchPermission(
+               getBranch(), PermissionEnum.WRITE, null).isSuccess();
 
          boolean locked = permiss.isLocked();
          if (isArtifact) {
@@ -183,11 +189,11 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
          accessControlMenuItem.setEnabled(isArtifact);
          refreshMenuItem.setEnabled(isArtifact);
 
-         createRelatedMenuItem.setCreateRelatedEnabled(obj, service);
+         createRelatedMenuItem.setCreateRelatedEnabled(obj);
 
          deleteMenuItem.setEnabled(isArtifact && permiss.isWritePermission());
          purgeMenuItem.setEnabled(
-            isArtifact && permiss.isHasArtifacts() && permiss.isWritePermission() && AccessControlManager.isOseeAdmin());
+            isArtifact && permiss.isHasArtifacts() && permiss.isWritePermission() && UserManager.getUser().isOseeAdmin());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -197,7 +203,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
    public void setupPopupMenu() {
 
-      Menu popupMenu = new Menu(treeViewer.getTree().getParent());
+      popupMenu = new Menu(treeViewer.getTree().getParent());
       needArtifactListener = new NeedArtifactMenuListener(artifactExplorer);
       needProjectListener = new NeedProjectMenuListener(artifactExplorer);
       popupMenu.addMenuListener(needArtifactListener);
@@ -243,10 +249,13 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createAccessControlMenuItem(popupMenu);
+      if (AccessControlUtil.isDebugOn()) {
+         createShowAccessControlMenuItem(popupMenu);
+      }
       treeViewer.getTree().setMenu(popupMenu);
    }
 
-   private BranchId getBranch() {
+   private BranchToken getBranch() {
       return artifactExplorer.getBranch();
    }
 
@@ -261,32 +270,22 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
                IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
                Artifact parent = null;
-               // If artifact is selected, check permissions of artifact
-               if (selection.size() == 1) {
+               // Get selected and check permissions
+               if (selection.size() > 1) {
+                  AWorkbench.popup("Select single or no artifact to Add Child");
+                  return;
+               } else if (selection.size() == 1) {
                   parent = getParent();
-
-                  AccessPolicy policy = ServiceUtil.getAccessPolicy();
-
-                  PermissionStatus status = policy.canRelationBeModified(parent, null,
-                     CoreRelationTypes.DefaultHierarchical_Child, Level.FINE);
-                  if (!status.matched()) {
-                     MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
-                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
-                     return;
-                  }
-               }
-               // check branch permissions
-               else {
-                  boolean isBranchEditable =
-                     BranchManager.isEditable(getBranch()) && AccessControlManager.hasPermission(getBranch(),
-                        PermissionEnum.WRITE);
-                  if (!isBranchEditable) {
-                     MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
-                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
-                     return;
-                  }
-
+               } else {
                   parent = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
+               }
+
+               XResultData rd = OseeApiService.get().getAccessControlService().hasArtifactPermission(parent,
+                  PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Child Error", parent));
+               if (rd.isErrors()) {
+                  XResultDataDialog.open(rd, "New Child Error",
+                     "You do not have permissions to add related to artifact %s", parent.toStringWithId());
+                  return;
                }
                handleCreateChild(parent, treeViewer);
             } catch (Exception ex) {
@@ -586,10 +585,29 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
             Artifact selectedArtifact = (Artifact) selection.getFirstElement();
             try {
                if (selectedArtifact != null) {
-                  PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), selectedArtifact);
+                  PolicyDialog pd = PolicyDialog.createPolicyDialog(Displays.getActiveShell(), selectedArtifact);
                   pd.open();
                   artifactExplorer.refreshBranchWarning();
                }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      });
+   }
+
+   private void createShowAccessControlMenuItem(Menu parentMenu) {
+      showAccessControlMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      showAccessControlMenuItem.setImage(ImageManager.getImage(FrameworkImage.LOCK_DETAILS));
+      showAccessControlMenuItem.setText(AccessControlDetails.NAME);
+      showAccessControlMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+            Artifact selectedArtifact = (Artifact) selection.getFirstElement();
+            try {
+               (new AccessControlDetails(selectedArtifact)).run();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -622,10 +640,11 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
 
             try {
                if (!unlockArtifacts.isEmpty()) {
-                  AccessControlManager.unLockObjects(unlockArtifacts, UserManager.getUser());
+                  OseeApiService.get().getAccessControlService().unLockArtifacts(UserManager.getUser(),
+                     Collections.castAll(unlockArtifacts));
                }
                if (!lockArtifacts.isEmpty()) {
-                  AccessControlManager.lockObjects(lockArtifacts, UserManager.getUser());
+                  OseeApiService.get().getAccessControlService().lockArtifacts(UserManager.getUser(), lockArtifacts);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -668,7 +687,7 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
                artifactTransferData.add(artifact);
             }
          }
-         artifactClipboard.setArtifactsToClipboard(ServiceUtil.getAccessPolicy(), artifactTransferData);
+         artifactClipboard.setArtifactsToClipboard(artifactTransferData);
       }
    }
 
@@ -797,6 +816,10 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
    @Override
    public Collection<Artifact> getSelectedArtifacts() {
       return getSelection().toList();
+   }
+
+   public void resetMenu() {
+      setupPopupMenu();
    }
 
 }

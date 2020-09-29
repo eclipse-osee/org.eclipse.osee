@@ -10,87 +10,180 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import org.eclipse.osee.framework.core.access.AccessDataQuery;
-import org.eclipse.osee.framework.core.access.ArtifactCheck;
-import org.eclipse.osee.framework.core.access.IAccessControlService;
+import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.access.AbstractAccessControlService;
+import org.eclipse.osee.framework.core.access.AccessQueries;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEventPayload;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
-public class AccessControlServiceImpl implements IAccessControlService {
+public class AccessControlServiceImpl extends AbstractAccessControlService {
 
-   private final static Collection<ArtifactCheck> artifactChecks = new LinkedList<ArtifactCheck>();
+   // for ReviewOsgiXml public void addOseeAccessProvider(IOseeAccessProvider provider)
+   // for ReviewOsgiXml public void addArtifactCheck(ArtifactCheck artifactCheck)
 
-   public void addArtifactCheck(ArtifactCheck artifactCheck) {
-      artifactChecks.add(artifactCheck);
-   }
+   protected JdbcClient jdbcClient;
+   private OrcsApi orcsApi;
 
    public AccessControlServiceImpl() {
-      // for osgi instantiation
+      super(null, null);
+      // for jax-rs
    }
 
+   public AccessControlServiceImpl(OrcsApi orcsApi, JdbcClient jdbcClient, OrcsTokenService tokenService) {
+      super(tokenService, new AccessStoreOperations(orcsApi, jdbcClient));
+      this.orcsApi = orcsApi;
+      this.jdbcClient = jdbcClient;
+   }
+
+   // Caches not needed on server, load as needed
    @Override
-   public boolean hasPermission(Object object, PermissionEnum permission) {
-      throw new UnsupportedOperationException("Not available on server yet");
+   public synchronized void ensurePopulated() {
+      cache.initializeCaches();
+      populateArtifactAccessControlList();
+      populateBranchAccessControlList();
    }
 
    @Override
    public void removePermissions(BranchId branch) {
-      throw new UnsupportedOperationException("Not available on server yet");
+      jdbcClient.runPreparedUpdate(AccessQueries.DELETE_ARTIFACT_ACL_FROM_BRANCH, branch);
+      jdbcClient.runPreparedUpdate(AccessQueries.DELETE_BRANCH_ACL_FROM_BRANCH, branch);
+      // NOTE: No events are produced, so the IDE clients will not be notified.  Fix this when servers talk to clients.
    }
 
    @Override
-   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) {
-      throw new UnsupportedOperationException("Not available on server yet");
-   }
-
-   @Override
-   public XResultData isDeleteable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
-      for (ArtifactCheck check : artifactChecks) {
-         check.isDeleteable(artifacts, results);
+   public boolean isReadOnly(ArtifactToken artifact) {
+      try {
+         if (artifact instanceof ArtifactReadable) {
+            boolean deleted = ((ArtifactReadable) artifact).isDeleted();
+            boolean historical = ((ArtifactReadable) artifact).isHistorical();
+            boolean hasPermission = hasArtifactPermission(artifact, PermissionEnum.WRITE, null).isSuccess();
+            return deleted || historical || !hasPermission;
+         }
+         return true;
+      } catch (OseeCoreException ex) {
+         return true;
       }
-      return results;
-   }
-
-   @Override
-   public XResultData isRenamable(Collection<? extends ArtifactToken> artifacts, XResultData results) {
-      for (ArtifactCheck check : artifactChecks) {
-         check.isRenamable(artifacts, results);
-      }
-      return results;
-   }
-
-   @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
-      for (ArtifactCheck check : artifactChecks) {
-         check.isDeleteableRelation(artifact, relationType, results);
-      }
-      return results;
-   }
-
-   @Override
-   public void ensurePopulated() {
-      throw new UnsupportedOperationException("Not available on server yet");
-   }
-
-   @Override
-   public void clearCache() {
-      // No server caches to clear
    }
 
    @Override
    public boolean isOseeAdmin() {
+      return orcsApi.getUserGroupService().getUserGroup(CoreUserGroups.OseeAdmin).isCurrentUserMember();
+   }
+
+   @Override
+   public ArtifactToken getUserByArtId(ArtifactId subjectArtId) {
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(subjectArtId).getArtifactOrNull();
+   }
+
+   @Override
+   public void kickAccessTopicEvent(AccessTopicEventPayload event) {
+      // do nothing
+   }
+
+   @Override
+   public IUserGroupService getUserGroupService() {
+      return orcsApi.getUserGroupService();
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactListFromType(ArtifactTypeToken artType, BranchToken branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artType).asArtifactTokens();
+   }
+
+   @Override
+   public boolean isBaselineBranch(BranchToken branch) {
+      ResultSet<Branch> branches = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults();
+      if (branches.size() == 1) {
+         return branches.iterator().next().getBranchType().isBaselineBranch();
+      }
       return false;
+   }
+
+   @Override
+   protected boolean isInDbInit() {
+      return OseeProperties.isInDbInit();
+   }
+
+   @Override
+   public boolean isInDb(ArtifactToken artifact) {
+      return ((ArtifactReadable) artifact).getTransaction().equals(TransactionId.SENTINEL);
+   }
+
+   @Override
+   public ArtifactToken getUser() {
+      return null;
+   }
+
+   @Override
+   public ArtifactToken getArtifactFromId(ArtifactId subjectId, BranchToken branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andId(subjectId).asArtifactTokenOrSentinel();
+   }
+
+   @Override
+   public void populateBranchAccessControlList() {
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
+         BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
+         BranchToken branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getOneOrSentinel();
+         if (branch.isValid()) {
+            PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
+            ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
+            brchAclOps.populateBranchAccessControlListEntry(subjectId, subjectArtifactType, branch, permission);
+         }
+      };
+      jdbcClient.runQuery(consumer, AccessQueries.GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
+   }
+
+   @Override
+   public void populateArtifactAccessControlList() {
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ArtifactId subjectId = UserId.valueOf(stmt.getLong("privilege_entity_id"));
+         ArtifactId artifactId = ArtifactId.valueOf(stmt.getLong("art_id"));
+         BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
+         PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
+         ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
+
+         artAclOps.populateArtifactAccessControlListEntry(subjectId, artifactId, branchId, permission,
+            subjectArtifactType);
+      };
+
+      jdbcClient.runQuery(consumer, AccessQueries.GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
+   }
+
+   @Override
+   public void populateGroupMembers(ArtifactId groupId) {
+      if (!cache.groupToSubjectsCache.containsKey(groupId.getId())) {
+         jdbcClient.runQuery(stmt -> {
+            ArtifactId groupMember = ArtifactId.valueOf(stmt.getLong("b_art_id"));
+            userGrpOps.populateGroupMembersEntry(groupId, groupMember);
+         }, AccessQueries.USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User);
+      }
    }
 
 }

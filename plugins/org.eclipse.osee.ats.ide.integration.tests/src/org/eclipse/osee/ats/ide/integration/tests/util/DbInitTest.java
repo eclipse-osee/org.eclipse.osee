@@ -81,7 +81,7 @@ public class DbInitTest {
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
          UserManager.getUser().saveSettings();
 
-         UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser());
+         UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
 
       }
 

@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.FontData;
 
 /**
  * Share font resources among OSEE applications
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class FontManager {

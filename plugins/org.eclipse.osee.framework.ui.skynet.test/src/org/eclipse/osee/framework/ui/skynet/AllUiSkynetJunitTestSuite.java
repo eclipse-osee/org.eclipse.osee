@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.ui.skynet.renderer.RendererTestSuite;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsTestSuite;
 import org.eclipse.osee.framework.ui.skynet.util.UtilTestSuite;
@@ -24,7 +23,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   ArtifactTestSuite.class,
    RendererTestSuite.class,
    ResultsTestSuite.class,
    UtilTestSuite.class,

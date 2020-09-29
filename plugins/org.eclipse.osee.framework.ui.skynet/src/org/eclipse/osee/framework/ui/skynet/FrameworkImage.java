@@ -145,6 +145,7 @@ public enum FrameworkImage implements KeyedImage {
    LINK("link.gif"),
    LOAD("load.gif"),
    LOCKED("lock.gif"),
+   LOCK_DETAILS("lock_details.gif"),
    LOCK_LOCKED("lock_locked.gif"),
    LOCK_UNLOCKED("lock_unlocked.gif"),
    LOCK_OVERLAY("lock_overlay.gif"),

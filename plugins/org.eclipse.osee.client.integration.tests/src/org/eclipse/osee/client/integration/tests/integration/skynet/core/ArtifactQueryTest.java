@@ -23,11 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -192,7 +193,8 @@ public class ArtifactQueryTest {
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
+         PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
@@ -206,7 +208,8 @@ public class ArtifactQueryTest {
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
+         PermissionEnum.FULLACCESS);
 
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
@@ -231,7 +234,8 @@ public class ArtifactQueryTest {
    @Test
    public void testQueryById() {
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
+         PermissionEnum.FULLACCESS);
 
       List<ArtifactId> newIdsInOrder = new LinkedList<>();
       createArtifactFortestQueryById(newIdsInOrder, branch);
@@ -280,7 +284,8 @@ public class ArtifactQueryTest {
    @Test
    public void testMultipleValues() {
       QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
-      builder.and(CoreAttributeTypes.Name, Arrays.asList("Everyone", "OseeAdmin"));
+      builder.and(CoreAttributeTypes.Name,
+         Arrays.asList(CoreUserGroups.Everyone.getName(), CoreUserGroups.OseeAdmin.getName()));
       int count = builder.getCount();
       Assert.assertEquals(2, count);
    }
@@ -288,8 +293,10 @@ public class ArtifactQueryTest {
    @Test
    public void testMultipleValuesIgnoreCase() {
       QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
-      builder.and(CoreAttributeTypes.Name, Arrays.asList("everyone", "oseeadmin"), QueryOption.CASE__IGNORE);
-      int count = builder.getCount();
+      builder.and(CoreAttributeTypes.Name, Arrays.asList(CoreUserGroups.Everyone.getName().toLowerCase(),
+         CoreUserGroups.OseeAdmin.getName().toLowerCase()), QueryOption.CASE__IGNORE);
+      List<Artifact> arts = builder.getResults().getList();
+      int count = arts.size();
       Assert.assertEquals(2, count);
    }
 

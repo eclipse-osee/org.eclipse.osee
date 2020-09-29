@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 
 /**
@@ -99,7 +99,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       List<BranchType> branchTypes = new ArrayList<>(4);
 
       try {
-         boolean isAdmin = AccessControlManager.isOseeAdmin();
+         boolean isAdmin = OseeApiService.get().getAccessControlService().isOseeAdmin();
          if (isAdmin) {
             branchTypes.add(BranchType.SYSTEM_ROOT);
          }
@@ -119,7 +119,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
          if (!showChildBranchesAtMainLevel) {
-            if (AccessControlManager.isOseeAdmin()) {
+            if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
                branchesToReturn.add(SYSTEM_ROOT);
             }
             branchTypes.add(BranchType.BASELINE);

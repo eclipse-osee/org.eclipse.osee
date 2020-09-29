@@ -36,12 +36,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
-import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
+import org.eclipse.osee.ats.ide.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
@@ -152,7 +153,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
          sprintItemsCache.invalidate();
       }
 
-      AtsBranchAccessManager.clearCaches();
+      getAccessControlService().clearCaches();
+      getAtsAccessService().clearCaches();
    }
 
    @Override
@@ -288,4 +290,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       return branchServiceIde;
    }
 
+   @Override
+   public IAccessControlService getAccessControlService() {
+      return OseeApiService.get().getAccessControlService();
+   }
 }

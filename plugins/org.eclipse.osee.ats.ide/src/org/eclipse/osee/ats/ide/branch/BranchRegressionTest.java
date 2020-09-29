@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.widgets.XWorkingBranchEnablement;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -294,7 +293,8 @@ public abstract class BranchRegressionTest {
          ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SOFTWARE_REQUIREMENTS, getProgramBranch());
       Assert.assertNotNull("Can't get softReqArt", softReqArt);
 
-      AccessControlManager.setPermission(UserManager.getUser(), getProgramBranch(), PermissionEnum.FULLACCESS);
+      AtsApiService.get().getAccessControlService().setPermission(UserManager.getUser(), getProgramBranch(),
+         PermissionEnum.FULLACCESS);
 
       createSoftwareArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, softReqArt, PRE_BRANCH_ARTIFACT_NAME,
          getPreBranchCscis(), getProgramBranch());
@@ -773,12 +773,18 @@ public abstract class BranchRegressionTest {
    }
 
    protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch) {
-      SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
-      Artifact newArt = ArtifactTypeManager.addArtifact(artifactType, branch, title);
-      Artifact parentArt = setParent(parent, partitions, newArt, tx);
-      tx.addArtifact(newArt);
-      tx.addArtifact(parent);
-      tx.execute();
+      Artifact parentArt = null;
+      try {
+         SkynetTransaction.setOverrideAccess(true);
+         SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + title);
+         Artifact newArt = ArtifactTypeManager.addArtifact(artifactType, branch, title);
+         parentArt = setParent(parent, partitions, newArt, tx);
+         tx.addArtifact(newArt);
+         tx.addArtifact(parent);
+         tx.execute();
+      } finally {
+         SkynetTransaction.setOverrideAccess(false);
+      }
       return parentArt;
    }
 

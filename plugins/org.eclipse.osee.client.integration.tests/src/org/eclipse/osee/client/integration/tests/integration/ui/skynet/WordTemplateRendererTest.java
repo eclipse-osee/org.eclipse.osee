@@ -39,10 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -171,7 +171,7 @@ public class WordTemplateRendererTest {
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
-      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBranch,
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBranch,
          PermissionEnum.FULLACCESS);
 
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(rootBranch);
@@ -211,7 +211,8 @@ public class WordTemplateRendererTest {
    @Test
    public void testBlankWordTemplateContent() {
       BranchToken rootBr = BranchManager.createTopLevelBranch("Root Branch");
-      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBr, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBr,
+         PermissionEnum.FULLACCESS);
 
       SkynetTransaction tx =
          TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));

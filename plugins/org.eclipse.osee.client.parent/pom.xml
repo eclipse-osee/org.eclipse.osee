@@ -32,14 +32,9 @@
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
 
-				<module>../../plugins/org.eclipse.osee.framework.access</module>
-				<module>../../plugins/org.eclipse.osee.framework.access.provider</module>
-
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
-				<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl</module> -->
-				<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module> -->
 				<module>../../plugins/org.eclipse.osee.framework.database.init</module>
 
 				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
@@ -57,10 +52,6 @@
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.skynet</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.skynet.test</module>
-
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration.test</module>
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
@@ -106,14 +97,9 @@
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 				<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
 
-				<module>../../plugins/org.eclipse.osee.framework.access</module>
-				<module>../../plugins/org.eclipse.osee.framework.access.provider</module>
-
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
-				<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl</module> -->
-				<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module> -->
 				<module>../../plugins/org.eclipse.osee.framework.database.init</module>
 
 				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
@@ -131,10 +117,6 @@
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.skynet</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.skynet.test</module>
-
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.ui.integration.test</module>
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>

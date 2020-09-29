@@ -23,14 +23,11 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.core.data.AccessContextToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.CmAccessControl;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -162,22 +159,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else if (cCol.equals(BranchXViewerFactory.inheritAccessControl)) {
          return String.valueOf(branch.isInheritAccessControl());
-      } else if (cCol.equals(BranchXViewerFactory.branchAccessContextId)) {
-         return getBranchAccessContextId(branch);
       }
       return "";
-   }
-
-   private String getBranchAccessContextId(Branch branch) {
-      String accessContextId = "";
-      try {
-         CmAccessControl cmAccessControl = OsgiUtil.getService(getClass(), CmAccessControl.class);
-         Collection<? extends AccessContextToken> ids = cmAccessControl.getContextId(UserManager.getUser(), branch);
-         accessContextId = ids.toString();
-      } catch (Exception ex) {
-         return String.format("Exception %s", ex.getLocalizedMessage());
-      }
-      return accessContextId;
    }
 
    protected String getTransactionText(TransactionRecord transaction, XViewerColumn cCol, int columnIndex) {

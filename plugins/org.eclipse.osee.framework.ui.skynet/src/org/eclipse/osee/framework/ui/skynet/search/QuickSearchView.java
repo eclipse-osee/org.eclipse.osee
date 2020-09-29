@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,20 +31,23 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -246,7 +248,7 @@ public class QuickSearchView extends GenericViewPart {
          panel.setLayout(gL);
          panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-         if (AccessControlManager.isOseeAdmin()) {
+         if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
             idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
@@ -274,7 +276,7 @@ public class QuickSearchView extends GenericViewPart {
 
          applicability = new QuickSearchApplicabilityToken(appSearchGroup, this);
          applicability.create();
-         if (!AccessControlManager.isOseeAdmin()) {
+         if (!OseeApiService.get().getAccessControlService().isOseeAdmin()) {
             idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
             idSearchComposite.addListener(idSearchListener);
          }
@@ -345,11 +347,15 @@ public class QuickSearchView extends GenericViewPart {
       public void handleEvent(Event event) {
          if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
             branchLabel.setText("");
-            final BranchId branch = branchSelect.getData();
+            final BranchToken branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
-            } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {
-               AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
+            }
+
+            XResultData rd = OseeApiService.get().getAccessControlService().hasBranchPermission(branch,
+               PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Select Branch", branch));
+            if (rd.isErrors()) {
+               XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
             } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
                event) && Widgets.isAccessible(optionsComposite)) {
 
@@ -393,11 +399,12 @@ public class QuickSearchView extends GenericViewPart {
       public void handleEvent(Event event) {
          if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
             branchLabel.setText("");
-            final BranchId branch = branchSelect.getData();
+            final BranchToken branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
-            } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {
-               // since AttributeSearchListener is called when Select Branch is actioned, only display if this is the guid search button
+            } else if (!OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+               null).isSuccess()) {
+               // since AttributeSearchListener is called when Select Branch is selected, only display if this is the guid search button
                if (event.widget instanceof Button && ((Button) event.widget).getText().equals("Search")) {
                   AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
                }

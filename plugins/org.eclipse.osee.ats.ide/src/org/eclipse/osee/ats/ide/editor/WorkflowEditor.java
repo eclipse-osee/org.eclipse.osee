@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeOutlinePage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.internal.OseeApiService;
 import org.eclipse.osee.ats.ide.navigate.RecentlyVisitedNavigateItems;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -57,7 +58,6 @@ import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -585,7 +585,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public boolean isAccessControlWrite() {
-      return AccessControlManager.hasPermission(workItem, PermissionEnum.WRITE);
+      return OseeApiService.get().getAccessControlService().hasArtifactPermission(workItem, PermissionEnum.WRITE,
+         null).isSuccess();
    }
 
    @Override

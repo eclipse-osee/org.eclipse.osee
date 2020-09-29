@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
-   <implementation class="org.eclipse.osee.framework.access.internal.cm.CmAccessProviderProxy"/>
-   <service>
-      <provide interface="org.eclipse.osee.framework.access.IAccessProvider"/>
-   </service>
-   <reference bind="addCmAccessControl" cardinality="1..n" interface="org.eclipse.osee.framework.core.services.CmAccessControl" 
-   name="CmAccessControl" policy="dynamic" unbind="removeCmAccessControl"/>
-</scr:component>

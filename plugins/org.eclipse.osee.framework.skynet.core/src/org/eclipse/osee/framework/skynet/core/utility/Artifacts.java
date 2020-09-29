@@ -180,4 +180,13 @@ public final class Artifacts {
       strB.append(RelationManager.reportHasDirtyLinks(artifact));
       return strB.toString();
    }
+
+   public static Object toStringWithIds(Collection<? extends ArtifactToken> artifacts) {
+      StringBuilder sb = new StringBuilder();
+      for (ArtifactToken art : artifacts) {
+         sb.append(art.toStringWithId());
+         sb.append(", ");
+      }
+      return sb.toString().replaceFirst(", $", "");
+   }
 }

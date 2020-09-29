@@ -29,14 +29,10 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
 
    @Override
    public UserToken asOseeUserId(OseeCredential credential) {
-      for (UserToken token : DemoUsers.values()) {
-         if (credential.getUserName().equals(token.getName().toLowerCase())) {
-            UserToken userToken = getUserTokenFromOseeDb(token.getName());
-            if (userToken != null) {
-               return userToken;
-            } else {
-               return createUserToken(token.getName(), token.getUserId(), "", true);
-            }
+      for (UserToken userToken : DemoUsers.values()) {
+         if (credential.getUserName().equals(userToken.getUserId()) || credential.getUserName().equals(
+            userToken.getName().toLowerCase())) {
+            return userToken;
          }
       }
       return createUserToken(DemoUsers.Joe_Smith.getName(), DemoUsers.Joe_Smith.getUserId(), "joe@boeing.com", true);

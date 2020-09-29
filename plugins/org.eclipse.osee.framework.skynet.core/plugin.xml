@@ -9,7 +9,6 @@
    <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="OSEE-INF/extensionPts/ArtifactAnnotation.exsd"/>
    <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="OSEE-INF/extensionPts/OseeDbSchema.exsd"/>
    <extension-point id="WebPage" name="WebPage" schema="OSEE-INF/extensionPts/WebPage.exsd"/>
-   <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="OSEE-INF/extensionPts/ArtifactCheck.exsd"/> 
    <extension-point id="AttributeType" name="AttributeType" schema="OSEE-INF/extensionPts/AttributeType.exsd"/>
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="OSEE-INF/extensionPts/AttributeDataProvider.exsd"/>
    <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="OSEE-INF/extensionPts/OseeDbImportData.exsd"/>

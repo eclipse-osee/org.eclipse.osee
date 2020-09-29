@@ -25,7 +25,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    InternalTestSuite.class, //
    DslUtilTestSuite.class, //
-   OseeDslAccessModelTest.class, //
 })
 public class AllDslIntegrationTestSuite {
    // Test Suite

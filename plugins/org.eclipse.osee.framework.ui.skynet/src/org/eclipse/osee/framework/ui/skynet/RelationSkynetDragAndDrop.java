@@ -15,9 +15,11 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -28,6 +30,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -35,15 +38,14 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.HandleImport;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -117,36 +119,38 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
          ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
          FileTransfer fileTransfer = FileTransfer.getInstance();
-         RelationTypeSideSorter data = (RelationTypeSideSorter) selected.getData();
+         RelationTypeSideSorter relTypeSorter = (RelationTypeSideSorter) selected.getData();
          if (artTransfer.isSupportedType(event.currentDataType)) {
             try {
                ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
-               Artifact[] selectedArtifacts = artData.getArtifacts();
+               List<Artifact> relatedArts = new ArrayList<Artifact>();
+               for (Artifact relatedArt : artData.getArtifacts()) {
+                  relatedArts.add(relatedArt);
+               }
+
                String toolTipText = "";
-               Artifact relationArtifact = data.getArtifact();
+               Artifact relationArtifact = relTypeSorter.getArtifact();
 
                boolean canRelate = false;
-               for (Artifact i : selectedArtifacts) {
-                  Artifact sideA = i;
+               for (Artifact art : relatedArts) {
+                  Artifact sideA = art;
                   Artifact sideB = relationArtifact;
-                  if (data.getSide() == RelationSide.SIDE_B) {
+                  if (relTypeSorter.getSide() == RelationSide.SIDE_B) {
                      sideA = relationArtifact;
-                     sideB = i;
+                     sideB = art;
                   }
-                  canRelate = ensureRelationCanBeAdded(data.getRelationType(), sideA, sideB);
+                  canRelate = ensureRelationCanBeAdded(relTypeSorter.getRelationType(), sideA, sideB);
                   if (!canRelate) {
                      toolTipText += String.format("Relation: [%s] \n\tcannot be added to [%s]\n\tof [%s]\n",
-                        i.getName(), data.getSide().name(), data.getRelationType().getName());
+                        art.getName(), relTypeSorter, relTypeSorter.getRelationType().getName());
 
                   }
                }
 
-               AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
+               boolean hadPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+                  relTypeSorter, relatedArts, PermissionEnum.WRITE, null).isSuccess();
 
-               boolean matched = policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts),
-                  data, Level.INFO).matched();
-
-               if (matched) {
+               if (canRelate) {
                   event.detail = DND.DROP_COPY;
                   tree.setInsertMark(null, false);
                } else {
@@ -154,7 +158,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   toolTipText += "Access: Access Control has prevented this relation";
 
                }
-               if (!matched || !canRelate) {
+               if (!hadPermission || !canRelate) {
                   getErrorToolTip().setText("RELATION ERROR");
                   getErrorToolTip().setMessage(toolTipText);
                   getErrorToolTip().setVisible(true);
@@ -164,29 +168,33 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
             }
 
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
-            RelationTypeToken relationType = data.getRelationType();
+            RelationTypeToken relationType = relTypeSorter.getRelationType();
             if (relationType.equals(CoreRelationTypes.Verification_Verifier) || relationType.equals(
                CoreRelationTypes.Uses_TestUnit)) {
-               AccessPolicy policyHandlerService = null;
-               try {
-                  policyHandlerService = ServiceUtil.getAccessPolicy();
-               } catch (OseeCoreException ex1) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex1);
+               RelationTypeSide relTypeSide = null;
+               if (relationType.equals(CoreRelationTypes.Verification_Verifier)) {
+                  relTypeSide = CoreRelationTypes.Verification_Verifier;
+               } else {
+                  relTypeSide = CoreRelationTypes.Verification_Verifier;
                }
-               boolean matched = false;
-               if (policyHandlerService != null) {
-                  try {
-                     matched = policyHandlerService.canRelationBeModified(artifact, null, data, Level.INFO).matched();
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
+               ArtifactData artData = artTransfer.nativeToJava(event.currentDataType);
+               List<Artifact> relatedArts = new ArrayList<Artifact>();
+               for (Artifact relatedArt : artData.getArtifacts()) {
+                  relatedArts.add(relatedArt);
                }
+               Artifact artifact = relTypeSorter.getArtifact();
 
-               if (matched) {
+               boolean hasPermission = false;
+               try {
+                  hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+                     relTypeSide, relatedArts, PermissionEnum.WRITE, null).isSuccess();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               if (hasPermission) {
                   event.detail = DND.DROP_COPY;
                }
             }
-
          }
 
       } else if (selected != null && selected.getData() instanceof WrapperForRelationLink) {
@@ -195,18 +203,19 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
          Object obj = selection.getFirstElement();
          if (obj instanceof WrapperForRelationLink) {
             WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
-            boolean matched = false;
+            boolean hasPermission = false;
             try {
-               AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
                RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
+               List<Artifact> related = Arrays.asList(
+                  artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA());
 
-               matched = policyHandlerService.canRelationBeModified(artifact, Arrays.asList(
-                  artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
-                  rts, Level.INFO).matched();
+               hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact, rts,
+                  related, PermissionEnum.WRITE, null).isSuccess();
+
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-            if (!matched) {
+            if (!hasPermission) {
                event.detail = DND.DROP_NONE;
                getErrorToolTip().setText("MOVE ERROR");
                getErrorToolTip().setMessage("Access Control has restricted this action.");

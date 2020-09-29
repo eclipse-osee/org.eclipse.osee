@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+   <implementation class="org.eclipse.osee.framework.skynet.core.access.internal.AccessControlServiceImpl"/>
+   <reference bind="addOseeAccessProvider" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.IOseeAccessProvider" name="IOseeAccessProvider" policy="dynamic"/>
+   <reference bind="addArtifactCheck" cardinality="0..n" interface="org.eclipse.osee.framework.core.access.ArtifactCheck" name="ArtifactCheck" policy="dynamic"/>
+</scr:component>

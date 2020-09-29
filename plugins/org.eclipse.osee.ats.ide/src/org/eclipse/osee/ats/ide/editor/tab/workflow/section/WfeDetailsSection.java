@@ -17,20 +17,17 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
-import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -71,6 +68,7 @@ public class WfeDetailsSection extends SectionPart {
       Section section = getSection();
       section.setText("Details");
       section.setLayout(new GridLayout());
+      section.setExpanded(false);
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       // Only load when users selects section
@@ -151,36 +149,30 @@ public class WfeDetailsSection extends SectionPart {
 
    private String getAccessContextId(TeamWorkFlowArtifact workflow) {
       String message;
-      CmAccessControl accessControl = workflow.getAccessControl();
-      if (accessControl == null) {
-         message = "AtsCmAccessControlService not found.";
-      } else {
-         BranchId workingBranch = null;
+      IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
+      BranchId workingBranch = null;
+      try {
+         workingBranch = workflow.getWorkingBranch();
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      Collection<? extends AccessContextToken> ids = null;
+      if (workingBranch == null) {
          try {
-            workingBranch = workflow.getWorkingBranch();
+            // get what would be if branch created
+            ids = accessService.getFromWorkflow(workflow);
+            message = ids.toString();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
+            message = String.format("Error getting context id [%s]", ex.getMessage());
          }
-         Collection<? extends AccessContextToken> ids = null;
-         if (workingBranch == null) {
-            try {
-               // get what would be if branch created
-               AtsBranchAccessManager accessMgr = new AtsBranchAccessManager();
-               ids = accessMgr.internalGetFromWorkflow(workflow);
-               message = ids.toString();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-               message = String.format("Error getting context id [%s]", ex.getMessage());
-            }
-         } else {
-            try {
-               User user = UserManager.getUserByArtId(AtsApiService.get().getUserService().getCurrentUser());
-               ids = accessControl.getContextId(user, workingBranch);
-               message = ids.toString();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-               message = String.format("Error getting context id [%s]", ex.getMessage());
-            }
+      } else {
+         try {
+            ids = accessService.getContextIds(workingBranch);
+            message = ids.toString();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            message = String.format("Error getting context id [%s]", ex.getMessage());
          }
       }
       return message;

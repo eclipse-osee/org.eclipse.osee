@@ -27,14 +27,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -89,8 +87,7 @@ public class AttributeFormPart extends AbstractFormPart {
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       try {
-         AccessPolicy policy = ServiceUtil.getAccessPolicy();
-         decorator.addProvider(new XWidgetAccessDecorationProvider(policy));
+         decorator.addProvider(new XWidgetAccessDecorationProvider());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
       }

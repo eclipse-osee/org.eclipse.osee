@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.PlatformUI;
 
@@ -70,6 +70,7 @@ public class PurgeArtifactHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.isOseeAdmin() && AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
+      return OseeApiService.get().getAccessControlService().isOseeAdmin() && OseeApiService.get().getAccessControlService().hasArtifactPermission(
+         artifacts, PermissionEnum.WRITE, null).isSuccess();
    }
 }

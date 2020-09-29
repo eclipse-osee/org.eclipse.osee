@@ -23,11 +23,11 @@ public class CoreUserGroups {
 
    public static final IUserGroupArtifactToken Everyone = UserGroupArtifactToken.valueOf(48656L, "Everyone");
    public static final IUserGroupArtifactToken OseeAccessAdmin =
-      UserGroupArtifactToken.valueOf(8033605L, "OseeAccessAdmin");
+      UserGroupArtifactToken.valueOf(8033605L, "Osee Access Admin");
    public static final IUserGroupArtifactToken OseeAdmin = UserGroupArtifactToken.valueOf(52247L, "OseeAdmin");
    public static final IUserGroupArtifactToken OseeDeveloper =
-      UserGroupArtifactToken.valueOf(464565465L, "OseeDeveloper");
-   public static final IUserGroupArtifactToken OseeSupport = UserGroupArtifactToken.valueOf(10865894L, "OseeSupport");
+      UserGroupArtifactToken.valueOf(464565465L, "Osee Developer");
+   public static final IUserGroupArtifactToken OseeSupport = UserGroupArtifactToken.valueOf(10865894L, "Osee Support");
    public static IUserGroupArtifactToken AgileUser = UserGroupArtifactToken.valueOf(10635635L, "Agile User");
    public static IUserGroupArtifactToken EarnedValueUser =
       UserGroupArtifactToken.valueOf(10635662L, "Earner Value User");

@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -86,7 +86,8 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
          try {
-            if (AccessControlManager.hasPermission(parentItem, PermissionEnum.READ)) {
+            if (OseeApiService.get().getAccessControlService().hasArtifactPermission(parentItem, PermissionEnum.READ,
+               null).isSuccess()) {
                Collection<Artifact> children = parentItem.getChildren();
                List<RelationLink> relationsAll = parentItem.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
                List<Object> allChildren = new ArrayList<>();
@@ -180,7 +181,8 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
          try {
-            if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
+            if (OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
+               null).isSuccess()) {
                if (artifact.isDeleted()) {
                   return false;
                }

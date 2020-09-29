@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.DENY;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.FULLACCESS;
-import static org.eclipse.osee.framework.core.enums.PermissionEnum.USER_LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.NONE;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.USER_LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.WRITE;
 import java.util.ArrayList;
 import java.util.Collection;

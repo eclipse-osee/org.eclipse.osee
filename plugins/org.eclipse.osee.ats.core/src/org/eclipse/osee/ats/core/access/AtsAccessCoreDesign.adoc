@@ -1,0 +1,32 @@
+= Design
+Donald G. Dunne<donald.g.dunne@boeing.com>
+
+Provides the classes necessary to answer Framework calls to compute access for branch objects like artifacts, attributes and relations.
+
+ATS determines access based on 
+* Baseline Branch - ignored for now, just default to framework access control.  This should be fixed in future.
+* Working Branch - if working branch's associate artifact is a Team Worklfow, ATS controls
+** ATS Access Provider determines if this a working branch it controls (by looking at parent baseline branch)
+** Based on configured context ids for that branch based on the config below
+
+atsApi.getAccessService().getContextId(branchId) returns 0..n contextIds for a Branch which can come from one or many of
+* Team Workflow
+* Team Definition
+* Actionable Items
+
+ATS returns the ContextIds and uses the FrameworkAccessUtil to compute the access based on context ids
+
+See FrameworkAccessDesign.adoc for explanation of Framework Access Control, which ATS contributes to.  This design builds on top of that.
+See AtsAccessApiDesign.adoc for api explanation.  Core uses this API to connect ATS Access with Framework Access.
+
+== Classes: 
+
+=== AtsFrameworkAccessProvider
+ATS contribution to the Framework's Access Control.  Collects IAtsAccessContextProvider extensions and loops through to answer framework Access Control questions.
+
+=== DefaultAtsAccessContextProvider
+Provides default Access Context control when no other bundle/layer answers isApplicable().
+
+=== AtsAccessService
+AtsApi's entry into ATS Access Services.  Implements IAtsAccessService.
+

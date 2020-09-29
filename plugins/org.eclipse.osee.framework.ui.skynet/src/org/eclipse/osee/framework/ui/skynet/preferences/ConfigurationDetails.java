@@ -131,7 +131,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          String bundleVerStr = OseeCodeVersion.getBundleVersion();
          String display = verStr;
          if (!verStr.equals(bundleVerStr)) {
-            display = String.format("%s / %s/", verStr, bundleVerStr);
+            display = String.format("%s / %s", verStr, bundleVerStr);
          }
          builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + display + "</td></tr>");
       } catch (NullPointerException ex) {

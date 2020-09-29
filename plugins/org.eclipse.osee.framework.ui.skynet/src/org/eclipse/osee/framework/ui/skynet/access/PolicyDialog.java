@@ -20,27 +20,35 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.access.AccessControlData;
+import org.eclipse.osee.framework.core.access.event.AccessArtifactLockTopicEvent;
+import org.eclipse.osee.framework.core.access.event.AccessTopicEvent;
+import org.eclipse.osee.framework.core.access.object.AccessObject;
+import org.eclipse.osee.framework.core.access.object.ArtifactAccessObject;
+import org.eclipse.osee.framework.core.access.object.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -50,8 +58,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -65,38 +75,46 @@ public class PolicyDialog extends Dialog {
    private Button chkChildrenPermission;
    private Combo userCombo;
    private Combo permissionLevelCombo;
-   private final Object accessControlledObject;
-   private Label accessLabel, objectLabel;
+   private final AccessObject accessControlledObject;
+   private Label accessErrorLabel, accessTitleLabel;
    private final Shell parentShell;
-   Boolean isArtifactLockedBeforeDialog = null;
+   Boolean isArtifactLockedBeforeDialog;
+   private XResultData accessModifyEnabled;
 
-   public PolicyDialog(Shell parentShell, Object accessControlledObject) {
+   public PolicyDialog(Shell parentShell, AccessObject accessControlledObject) {
       super(parentShell);
       this.parentShell = parentShell;
       this.accessControlledObject = accessControlledObject;
       setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation() | SWT.RESIZE);
    }
 
+   public static PolicyDialog createPolicyDialog(Shell activeShell, Object object) {
+      if (object instanceof ArtifactToken) {
+         return new PolicyDialog(activeShell, ArtifactAccessObject.valueOf((ArtifactToken) object));
+      } else if (object instanceof BranchToken) {
+         return new PolicyDialog(activeShell, BranchAccessObject.valueOf((BranchToken) object));
+      }
+      throw new OseeArgumentException("Unhandled object %", object);
+   }
+
    @Override
    protected Control createDialogArea(Composite parent) {
-      getShell().setText("Access Control List: " + getHeaderName(accessControlledObject));
+      final String title = "Access Control for " + (accessControlledObject.isArtifact() ? "Artifact" : "Branch");
+      getShell().setText(title);
 
       Composite mainComposite = new Composite(parent, SWT.NONE);
       mainComposite.setFont(parent.getFont());
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       mainComposite.setLayout(new GridLayout(1, false));
 
-      accessLabel = new Label(mainComposite, SWT.NONE);
-      accessLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      createTitleComp(mainComposite, title);
+
+      accessErrorLabel = new Label(mainComposite, SWT.NONE);
+      accessErrorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
       Group group = new Group(mainComposite, SWT.NULL);
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       group.setLayout(new GridLayout(1, false));
-
-      // Setup policy table
-      objectLabel = new Label(group, SWT.NONE);
-      objectLabel.setText(
-         String.format("Access Control for [%s]", Strings.truncate(accessControlledObject.toString(), 70)));
 
       policyTableViewer = new PolicyTableViewer(group, accessControlledObject);
 
@@ -136,11 +154,44 @@ public class PolicyDialog extends Dialog {
       checkEnabled();
       setMaxModificationLevel();
 
-      if (accessControlledObject instanceof Artifact) {
-         isArtifactLockedBeforeDialog = AccessControlManager.hasLock((Artifact) accessControlledObject);
+      if (accessControlledObject instanceof ArtifactAccessObject) {
+         isArtifactLockedBeforeDialog = OseeApiService.get().getAccessControlService().hasLock(
+            ((ArtifactAccessObject) accessControlledObject).getArtifact());
       }
 
       return mainComposite;
+   }
+
+   private void createTitleComp(Composite parent, final String title) {
+      Composite titleComposite = new Composite(parent, SWT.NONE);
+      titleComposite.setFont(parent.getFont());
+      titleComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      titleComposite.setLayout(new GridLayout(2, false));
+
+      accessTitleLabel = new Label(titleComposite, SWT.NONE);
+      accessTitleLabel.setText(String.format("Access Control for %s\nUser %s",
+         Strings.truncate(accessControlledObject.toString(), 70), UserManager.getUser().toStringWithId()));
+      accessTitleLabel.setFont(FontManager.getCourierNew12Bold());
+
+      HyperLinkLabel edit = new HyperLinkLabel(titleComposite, SWT.None);
+      edit.setText("           Show Access Details");
+      edit.addListener(SWT.MouseUp, new Listener() {
+
+         @Override
+         public void handleEvent(Event event) {
+            XResultData rd = null;
+            String useTitle = "Modify " + title;
+            if (accessControlledObject.isArtifact()) {
+               rd = AccessControlArtifactUtil.getXResultAccessHeader(useTitle,
+                  (Artifact) ((ArtifactAccessObject) accessControlledObject).getArtifact());
+            } else {
+               rd = AccessControlArtifactUtil.getXResultAccessHeader(useTitle, accessControlledObject.getBranch());
+            }
+            rd.addRaw(accessModifyEnabled.toString());
+            XResultDataUI.report(rd, useTitle);
+            close();
+         }
+      });
    }
 
    private void populateInputWidgets() {
@@ -207,26 +258,29 @@ public class PolicyDialog extends Dialog {
    }
 
    private void setMaxModificationLevel() {
-      PermissionEnum permission = AccessControlManager.getPermission(accessControlledObject);
+      PermissionEnum permission = null;
+      if (accessControlledObject.isArtifact()) {
+         permission = OseeApiService.get().getAccessControlService().getPermission(
+            ((ArtifactAccessObject) accessControlledObject).getArtifact());
+      } else if (accessControlledObject.isBranch()) {
+         permission = OseeApiService.get().getAccessControlService().getPermission(
+            ((BranchAccessObject) accessControlledObject).getBranch());
+      } else {
+         throw new OseeArgumentException("Unhandled object %s", accessControlledObject);
+      }
       policyTableViewer.setMaxModificationLevel(permission);
    }
 
    private void checkEnabled() {
-      boolean isAccessEnabled = isAddAccessEnabled();
-      boolean isModifyEnabled = isModifyAccessEnabled();
+      boolean isAccessEnabled = isAccessEnabled();
 
       String displayText = "";
       if (!isAccessEnabled) {
-         displayText = "You do not have permissions to add/delete users";
-         if (!isModifyEnabled) {
-            displayText += " or modify access";
-         }
-      } else if (!isModifyEnabled) {
          displayText = "You do not have permissions to modify access";
       }
 
-      accessLabel.setText(displayText);
-      boolean isArtifact = accessControlledObject instanceof Artifact;
+      accessErrorLabel.setText(displayText);
+      boolean isArtifact = accessControlledObject.isArtifact();
 
       userCombo.setEnabled(isAccessEnabled);
       permissionLevelCombo.setEnabled(isAccessEnabled);
@@ -236,35 +290,18 @@ public class PolicyDialog extends Dialog {
    }
 
    private boolean isAccessEnabled() {
-      return isModifyAccessEnabled() || isAddAccessEnabled();
-   }
-
-   private boolean isModifyAccessEnabled() {
-      return isAccessEnabled(PermissionEnum.USER_LOCK);
-   }
-
-   private boolean isAddAccessEnabled() {
-      return isAccessEnabled(PermissionEnum.FULLACCESS);
-   }
-
-   private boolean isAccessEnabled(PermissionEnum permission) {
-      boolean enabled;
-      try {
-         IUserGroup oseeAccessGroup = UserGroupService.getOseeAccessAdmin();
-         boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
-         boolean objectHasAccessSet = !policyTableViewer.getAccessControlList().isEmpty();
-         if (isOseeAccessAdmin) {
-            enabled = true;
-         } else if (objectHasAccessSet) {
-            enabled = AccessControlManager.hasPermission(accessControlledObject, permission);
-         } else {
-            enabled = false;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         enabled = false;
+      accessModifyEnabled = new XResultData();
+      if (accessControlledObject.isArtifact()) {
+         OseeApiService.get().getAccessControlService().isModifyAccessEnabled(UserManager.getUser(),
+            ((ArtifactAccessObject) accessControlledObject).getArtifact(), accessModifyEnabled);
+      } else if (accessControlledObject.isBranch()) {
+         OseeApiService.get().getAccessControlService().isModifyAccessEnabled(UserManager.getUser(),
+            accessControlledObject.getBranch(), accessModifyEnabled);
+      } else {
+         accessModifyEnabled.errorf("User %s DOES NOT have Access Modify rights for %s: Reason [Unhandled Object]",
+            UserManager.getUser().getName(), accessControlledObject);
       }
-      return enabled;
+      return accessModifyEnabled.isSuccess();
    }
 
    @Override
@@ -272,17 +309,17 @@ public class PolicyDialog extends Dialog {
       for (AccessControlData data : policyTableViewer.getAccessControlList().values()) {
          if (data.isDirty()) {
             boolean isRecursionAllowed = chkChildrenPermission.getSelection();
-            AccessControlManager.persistPermission(data, isRecursionAllowed);
+            OseeApiService.get().getAccessControlService().persistPermission(data, isRecursionAllowed);
          }
       }
       policyTableViewer.removeDataFromDB();
-      AccessControlManager.clearCaches();
+      OseeApiService.get().getAccessControlService().clearCaches();
 
       // Send artifact locked event if changed in dialog
       if (isArtifactLockedBeforeDialog != null) {
          try {
-            Artifact artifact = (Artifact) accessControlledObject;
-            boolean isArtifactLockedAfterDialog = AccessControlManager.hasLock(artifact);
+            Artifact artifact = (Artifact) ((ArtifactAccessObject) accessControlledObject).getArtifact();
+            boolean isArtifactLockedAfterDialog = OseeApiService.get().getAccessControlService().hasLock(artifact);
             if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
                AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
                event.setBranch(artifact.getBranch());
@@ -295,16 +332,6 @@ public class PolicyDialog extends Dialog {
 
       }
       super.okPressed();
-   }
-
-   private String getHeaderName(Object object) {
-      String name = "";
-      if (object instanceof Artifact) {
-         name = ((Artifact) object).getName();
-      } else if (object instanceof BranchToken) {
-         name = ((BranchToken) object).getName();
-      }
-      return name;
    }
 
    private static final class UserComparator<T> implements Comparator<T> {

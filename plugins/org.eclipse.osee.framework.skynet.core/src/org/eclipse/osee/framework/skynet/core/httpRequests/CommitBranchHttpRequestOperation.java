@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -46,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -106,8 +106,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleResponse(TransactionToken newTransaction, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
-      AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
-      accessPolicy.removePermissions(sourceBranch);
+      OseeApiService.get().getAccessControlService().removePermissions(sourceBranch);
 
       // Update commit artifact cache with new information
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);

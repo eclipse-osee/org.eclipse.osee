@@ -155,6 +155,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new ClearAtsConfigCache(utilItems);
          new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
          new AtsConfigResultsEditorNavigateItem(utilItems);
+         new ToggleAccessControlDebug(utilItems);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.prompt.PromptFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -30,21 +29,10 @@ public final class ArtifactPromptChange {
 
    private static ArtifactPrompt prompt;
 
-   private AccessPolicy accessPolicy;
-
-   public void setAccessPolicy(AccessPolicy accessPolicy) {
-      this.accessPolicy = accessPolicy;
-   }
-
-   public void start() {
-      prompt = new ArtifactPrompt(new PromptFactory(), accessPolicy);
-   }
-
-   public void stop() {
-      prompt = null;
-   }
-
    private static ArtifactPrompt getArtifactPrompt() {
+      if (prompt == null) {
+         prompt = new ArtifactPrompt(new PromptFactory());
+      }
       return ArtifactPromptChange.prompt;
    }
 
@@ -52,12 +40,13 @@ public final class ArtifactPromptChange {
       return promptChangeAttribute(attributeType, artifacts, persist, true);
    }
 
+   @SuppressWarnings("unchecked")
    public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean result = false;
       ArtifactPrompt prompt = getArtifactPrompt();
       if (prompt != null) {
          try {
-            result = prompt.promptChangeAttribute(attributeType, artifacts, persist, multiLine);
+            result = prompt.promptChangeAttribute(attributeType, (Collection<Artifact>) artifacts, persist, multiLine);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

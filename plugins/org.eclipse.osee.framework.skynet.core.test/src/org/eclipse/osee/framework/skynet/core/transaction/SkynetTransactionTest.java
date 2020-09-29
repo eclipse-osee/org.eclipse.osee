@@ -30,7 +30,6 @@ import org.junit.Test;
 /**
  * @author Jonas Khan
  */
-
 public class SkynetTransactionTest {
 
    public static final ArtifactToken token =
@@ -50,26 +49,6 @@ public class SkynetTransactionTest {
       String errorMsg = test.getCheckAccessError(token, bID, DemoBranches.SAW_Bld_1);
       Assert.assertTrue(errorMsg, errorMsg.contains(token.getGuid()));
       Assert.assertTrue(errorMsg, errorMsg.contains(bID.getIdString()));
-   }
-
-   @Test
-   public void getCheckBranchArtifactErrorTest() {
-      SkynetTransaction test = new SkynetTransaction(null, DemoBranches.SAW_Bld_1, "");
-      String errorMsg = test.getCheckBranchError(token, DemoBranches.SAW_Bld_1);
-      Assert.assertTrue(errorMsg, errorMsg.contains(token.getIdString()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(token.getName()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(DemoBranches.SAW_Bld_1.getIdString()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(DemoBranches.SAW_Bld_1.getName()));
-   }
-
-   @Test
-   public void getCheckBranchRelationErrorTest() {
-      SkynetTransaction test = new SkynetTransaction(null, DemoBranches.SAW_Bld_1, "");
-      String errorMsg = test.getCheckBranchError(link, DemoBranches.SAW_Bld_1);
-      Assert.assertTrue(errorMsg, errorMsg.contains(artifactA.getIdString()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(artifactB.getIdString()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(DemoBranches.SAW_Bld_1.getIdString()));
-      Assert.assertTrue(errorMsg, errorMsg.contains(DemoBranches.SAW_Bld_1.getName()));
    }
 
    @Test

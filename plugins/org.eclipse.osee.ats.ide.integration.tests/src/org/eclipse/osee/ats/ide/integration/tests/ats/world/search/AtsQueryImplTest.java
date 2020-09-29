@@ -60,7 +60,7 @@ public class AtsQueryImplTest {
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      assertEquals(28, query.getResults().size());
+      assertEquals(31, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.Task);
       assertEquals(50, query.getResults().size());
@@ -68,18 +68,18 @@ public class AtsQueryImplTest {
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
-      assertEquals(8, query.getResults().size());
+      assertEquals(10, query.getResults().size());
 
       // team
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andTeam(Arrays.asList(30013695L));
-      assertEquals(4, query.getResults().size());
+      assertEquals(5, query.getResults().size());
 
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId ai = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
       query.andActionableItem(Arrays.asList(ai.getId()));
-      assertEquals(5, query.getResults().size());
+      assertEquals(6, query.getResults().size());
 
       // by ids (hijack two workflows from previous search)
       List<Long> ids = new LinkedList<>();
@@ -100,11 +100,11 @@ public class AtsQueryImplTest {
       // by state type
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(92, query.getResults().size());
+      assertEquals(95, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);
-      assertEquals(24, query.getResults().size());
+      assertEquals(27, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed);
@@ -112,23 +112,23 @@ public class AtsQueryImplTest {
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed, StateType.Working);
-      assertEquals(28, query.getResults().size());
+      assertEquals(31, query.getResults().size());
 
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId version = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getId());
-      assertEquals(17, query.getResults().size());
+      assertEquals(20, query.getResults().size());
 
       // by assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(joeSmith);
-      assertEquals(8, query.getResults().size());
+      assertEquals(10, query.getResults().size());
 
       // by originator
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andOriginator(joeSmith);
-      assertEquals(28, query.getResults().size());
+      assertEquals(31, query.getResults().size());
 
       // by favorite
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -152,8 +152,8 @@ public class AtsQueryImplTest {
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
 
-      IAtsTeamWorkflow codeWf = AtsApiService.get().getWorkItemService().getTeamWf(
-         DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
+      IAtsTeamWorkflow codeWf =
+         AtsApiService.get().getWorkItemService().getTeamWf(DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
       IAtsTask codeTask = (IAtsTask) AtsApiService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
          CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();
 

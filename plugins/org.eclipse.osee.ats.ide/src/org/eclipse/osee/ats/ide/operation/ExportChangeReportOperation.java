@@ -111,7 +111,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
 
                Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
-               // only allow SoftwareRequirements for HLR
+               // only allow SoftwareRequirementsFolder for HLR
                Iterator<ArtifactDelta> it = artifactDeltas.iterator();
                while (it.hasNext()) {
                   ArtifactDelta next = it.next();

@@ -34,12 +34,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
 
 /**
  * @author Ryan D. Brooks
@@ -141,8 +140,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    private void checkIsRenameable(T value) {
       if (getAttributeType().equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
-         AccessPolicy policy = ServiceUtil.getAccessPolicy();
-         XResultData results = policy.isRenamable(Collections.singleton(getArtifact()), new XResultData());
+         XResultData results = OseeApiService.get().getAccessControlService().isRenamable(
+            Collections.singleton(getArtifact()), new XResultData());
          if (results.isErrors()) {
             throw new OseeStateException(results.toString());
          }
@@ -162,6 +161,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       setToDefaultValue();
    }
 
+   @SuppressWarnings("unchecked")
    protected void setToDefaultValue() {
       AttributeTypeGeneric<?> attributeType = AttributeTypeManager.getAttributeType(attributeTypeToken.getId());
       T defaultValue = (T) getArtifact().getArtifactType().getAttributeDefault(attributeType);

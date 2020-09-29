@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -78,7 +77,7 @@ public class CopyHandler extends AbstractHandler {
                   clipboard.setTextToClipboard(names);
                } else if (!names.isEmpty() && !artifacts.isEmpty()) {
                   try {
-                     clipboard.setArtifactsToClipboard(ServiceUtil.getAccessPolicy(), artifacts);
+                     clipboard.setArtifactsToClipboard(artifacts);
                   } catch (OseeCoreException ex) {
                      clipboard.dispose();
                      throw new ExecutionException(ex.getLocalizedMessage());

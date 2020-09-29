@@ -28,9 +28,6 @@
 			<modules>
 				<module>../../plugins/org.eclipse.osee.framework.core</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
@@ -68,9 +65,6 @@
 			<modules>
 				<module>../../plugins/org.eclipse.osee.framework.core</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
-				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
 				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>

@@ -18,14 +18,14 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
 
@@ -45,22 +45,12 @@ public class RelationCellModifier implements ICellModifier {
    public boolean canModify(Object element, String property) {
       if (element instanceof WrapperForRelationLink) {
          WrapperForRelationLink relLink = (WrapperForRelationLink) element;
-         RelationTypeSide rts = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
-         boolean canModify = false;
-         AccessPolicy policyHandlerService = null;
-         try {
-            policyHandlerService = ServiceUtil.getAccessPolicy();
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex1);
-         }
-         if (policyHandlerService != null) {
-            try {
-               canModify = policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
-                  Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
-            } catch (OseeCoreException ex) {
-               canModify = false;
-            }
-         }
+         RelationTypeSide relationTypeSide = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
+
+         boolean canModify =
+            OseeApiService.get().getAccessControlService().hasRelationTypePermission(relLink.getArtifactA(),
+               relationTypeSide, Arrays.asList(relLink.getArtifactB()), PermissionEnum.WRITE, null).isSuccess();
+
          return canModify;
       }
       return false;

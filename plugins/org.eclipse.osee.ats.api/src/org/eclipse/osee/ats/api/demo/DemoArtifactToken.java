@@ -44,6 +44,17 @@ public final class DemoArtifactToken {
    public static final ArtifactToken EventsSwReq = ArtifactToken.valueOf(200090, "Events", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
 
    //////////////////////////////////
+   // Software Requirements
+   //////////////////////////////////
+   public static final ArtifactToken CollaborativeRobotEvents = ArtifactToken.valueOf(200092, "Collaborative robot events", DemoBranches.SAW_Bld_2);
+   public static final ArtifactToken VirtualFixes = ArtifactToken.valueOf(200095, "VirtualFixes", DemoBranches.SAW_PL_Access_Baseline_Test);
+
+   //////////////////////////////////
+   // System Requirements
+   //////////////////////////////////
+   public static final ArtifactToken PerformanceRequirements = ArtifactToken.valueOf(200112, "Performance Requirements", DemoBranches.SAW_Bld_2);
+
+   //////////////////////////////////
    // Impl Details Configuration
    //////////////////////////////////
    public static final ArtifactToken RobotInterfaceHeading = ArtifactToken.valueOf(659132, "Robot Interface Heading", DemoBranches.SAW_Bld_1, CoreArtifactTypes.HeadingMsWord);
@@ -153,6 +164,10 @@ public final class DemoArtifactToken {
    public static final ArtifactToken SAW_NoBranch_SWDesign_TeamWf = ArtifactToken.valueOf(7784565, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsArtifactTypes.TeamWorkflow);
    public static final ArtifactToken SAW_NoBranch_Req_TeamWf = ArtifactToken.valueOf(5564873, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsDemoOseeTypes.DemoReqTeamWorkflow);
    public static final ArtifactToken SAW_NoBranch_Test_TeamWf = ArtifactToken.valueOf(11548766, DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, COMMON, AtsDemoOseeTypes.DemoTestTeamWorkflow);
+
+   public static final ArtifactToken SAW_Access_Control_Req_TeamWf = ArtifactToken.valueOf(32482, "SAW Access Ctrl Test - Req", AtsDemoOseeTypes.DemoReqTeamWorkflow);
+   public static final ArtifactToken SAW_Access_Control_Code_TeamWf = ArtifactToken.valueOf(32483, "SAW Access Ctrl Test - Code", AtsDemoOseeTypes.DemoCodeTeamWorkflow);
+   public static final ArtifactToken SAW_Access_Control_Test_TeamWf = ArtifactToken.valueOf(32484, "SAW Access Ctrl Test - Test", AtsDemoOseeTypes.DemoTestTeamWorkflow);
 
    //////////////////////////////////
    // RD Agile Configuration

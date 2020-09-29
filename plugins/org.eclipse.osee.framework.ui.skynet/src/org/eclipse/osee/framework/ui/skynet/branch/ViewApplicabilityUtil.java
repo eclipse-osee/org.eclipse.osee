@@ -19,17 +19,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilterTreeDialog;
@@ -42,7 +43,6 @@ public class ViewApplicabilityUtil {
 
    public static String CHANGE_APPLICABILITY_INVAILD = "User does not have permissions to change View Applicability";
    public static String SAVE_OTHER_CHANGES = "Save all other changes before making View Applicability update";
-   private static AccessPolicy policy;
 
    public static Pair<Boolean, String> changeApplicability(List<? extends ArtifactToken> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
@@ -62,13 +62,6 @@ public class ViewApplicabilityUtil {
       return new Pair<>(false, "");
    }
 
-   private static AccessPolicy getAccessPolicy() {
-      if (policy == null) {
-         policy = ServiceUtil.getAccessPolicy();
-      }
-      return policy;
-   }
-
    public static boolean isChangeApplicabilityValid(Collection<Artifact> artifacts) {
       try {
          for (Artifact artifact : artifacts) {
@@ -76,9 +69,9 @@ public class ViewApplicabilityUtil {
                return false;
             }
          }
-         PermissionStatus permissionStatus = new PermissionStatus();
-         permissionStatus = getAccessPolicy().hasArtifactPermission(artifacts, PermissionEnum.WRITE, Level.FINE);
-         boolean isWriteable = permissionStatus.matched();
+         XResultData rd = OseeApiService.get().getAccessControlService().hasArtifactPermission(UserManager.getUser(), artifacts,
+            PermissionEnum.WRITE, null);
+         boolean isWriteable = rd.isSuccess();
          if (!isWriteable) {
             return false;
          }

@@ -21,12 +21,13 @@ import java.util.Map;
  */
 public enum PermissionEnum {
 
+   // Update FrameworkAccessDesign.adoc if these are changed
    NONE(5, "None", "Open Access for all Users"),
    READ(10, "Read", "Read only access for specified user"),
    WRITE(20, "Write", "Write access for specified user"),
    USER_LOCK(25, "Lock", "Locked for write by only the specified user"),
    FULLACCESS(30, "Full Access", "Full Access to Read, Write and Change Permissions"),
-   DENY(65535, "Deny", "Deny all access.  Usually only if something is ");
+   DENY(65535, "Deny", "Deny all access");
 
    // keeping this in sync with the number of permissions will ensure optimal memory usage
    private static final int COUNT = 4;
@@ -119,4 +120,5 @@ public enum PermissionEnum {
    public int getPermId() {
       return permissionId;
    }
+
 }

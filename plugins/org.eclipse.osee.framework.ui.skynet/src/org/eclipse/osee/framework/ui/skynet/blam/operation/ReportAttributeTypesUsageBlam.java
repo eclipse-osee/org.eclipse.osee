@@ -43,7 +43,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Report Usage of AttributeTypes on Branch", IProgressMonitor.UNKNOWN);
+      monitor.beginTask("Report Usage of AttributeType on Branch", IProgressMonitor.UNKNOWN);
 
       XResultData xResultData = new XResultData();
       BranchId branch = variableMap.getBranch("Branch");

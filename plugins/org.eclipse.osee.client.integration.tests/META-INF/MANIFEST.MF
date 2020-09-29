@@ -6,6 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs.client,
  javax.ws.rs.core,
  org.eclipse.core.runtime,
@@ -14,7 +15,6 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.client.demo,
  org.eclipse.osee.client.test.framework,
  org.eclipse.osee.define.api,
- org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.applicability,
@@ -22,9 +22,6 @@ Import-Package: javax.ws.rs.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.data.computed,
- org.eclipse.osee.framework.core.dsl,
- org.eclipse.osee.framework.core.dsl.integration,
- org.eclipse.osee.framework.core.dsl.oseeDsl,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.enums.token,
  org.eclipse.osee.framework.core.exception,
@@ -64,6 +61,4 @@ Require-Bundle: org.junit,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.define.ide,
- org.eclipse.osee.framework.core.dsl.ui.integration,
- org.eclipse.osee.framework.core.dsl.integration,
  javax.mail.glassfish;bundle-version="1.4.1"

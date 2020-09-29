@@ -21,9 +21,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.core.access.AccessControlData;
+import org.eclipse.osee.framework.core.access.object.AccessObject;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.PolicyTableXViewerFactory;
 import org.eclipse.swt.SWT;
@@ -45,7 +46,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class PolicyTableViewer {
 
-   private final Map<String, AccessControlData> accessControlList = new HashMap<>();
+   private final Map<ArtifactToken, AccessControlData> accessControlList = new HashMap<>();
    private final Collection<AccessControlData> deleteControlList = new ArrayList<>();
    private final Object object;
    private final Composite parent;
@@ -65,14 +66,14 @@ public class PolicyTableViewer {
    }
 
    public void addOrModifyItem(Artifact subject, Object object, PermissionEnum permission) {
-      AccessObject accessObject = AccessControlManager.getAccessObject(object);
-      AccessControlData data = accessControlList.get(subject.getGuid());
+      AccessObject accessObject = AccessObject.valueOf(object);
+      AccessControlData data = accessControlList.get(subject);
       if (data == null) {
          data = new AccessControlData(subject, accessObject, permission, true);
       } else {
          modifyPermissionLevel(data, permission);
       }
-      accessControlList.put(data.getSubject().getGuid(), data);
+      accessControlList.put(data.getSubject(), data);
       tableXViewer.refresh();
    }
 
@@ -107,7 +108,7 @@ public class PolicyTableViewer {
       tableXViewer.setTableViewer(this);
    }
 
-   public Map<String, AccessControlData> getAccessControlList() {
+   public Map<ArtifactToken, AccessControlData> getAccessControlList() {
       return accessControlList;
    }
 
@@ -121,13 +122,13 @@ public class PolicyTableViewer {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      accessControlList.remove(data.getSubject().getGuid());
+      accessControlList.remove(data.getSubject());
    }
 
    public void removeDataFromDB() {
       try {
          for (AccessControlData data : deleteControlList) {
-            AccessControlManager.removeAccessControlDataIf(true, data);
+            OseeApiService.get().getAccessControlService().removeAccessControlDataIf(true, data);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -162,8 +163,10 @@ public class PolicyTableViewer {
          IUserGroup oseeAccessGroup = UserGroupService.getOseeAccessAdmin();
          boolean isOseeAccessAdmin = oseeAccessGroup.isCurrentUserMember();
 
-         boolean canUnlockObject = AccessControlManager.canUnlockObject(artifact, UserManager.getUser());
-         boolean isUserFullAccess = AccessControlManager.getPermission(artifact).matches(PermissionEnum.FULLACCESS);
+         boolean canUnlockObject =
+            OseeApiService.get().getAccessControlService().canUnlockObject(artifact, UserManager.getUser());
+         boolean isUserFullAccess = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact,
+            PermissionEnum.FULLACCESS, null).isSuccess();
          return isOseeAccessAdmin || canUnlockObject || isUserFullAccess;
       }
       return false;

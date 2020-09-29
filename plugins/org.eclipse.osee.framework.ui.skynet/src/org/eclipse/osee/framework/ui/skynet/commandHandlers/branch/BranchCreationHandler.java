@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -70,8 +71,8 @@ public class BranchCreationHandler extends CommandHandler {
                BranchId branch = parentTransactionId.getBranch();
                if (branch.equals(CoreBranches.SYSTEM_ROOT)) {
                   BranchManager.createTopLevelBranch(dialog.getEntry());
-                  AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch,
-                     PermissionEnum.FULLACCESS);
+                  OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+                     branch, PermissionEnum.FULLACCESS);
                } else {
                   if (dialog.isChecked()) {
                      BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry(), null);
@@ -98,19 +99,20 @@ public class BranchCreationHandler extends CommandHandler {
       }
 
       Object object = structuredSelection.getFirstElement();
-      BranchId branch = null;
+      BranchToken branch = null;
 
       if (object instanceof BranchId) {
-         branch = (BranchId) object;
+         branch = BranchManager.getBranch((BranchId) object);
       } else if (object instanceof TransactionToken) {
-         branch = ((TransactionToken) object).getBranch();
+         branch = BranchManager.getBranch(((TransactionToken) object).getBranch());
       }
 
       if (branch == null || BranchManager.isArchived(branch)) {
          return false;
       }
 
-      enabled = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
+      enabled = OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+         null).isSuccess();
       return enabled;
    }
 }

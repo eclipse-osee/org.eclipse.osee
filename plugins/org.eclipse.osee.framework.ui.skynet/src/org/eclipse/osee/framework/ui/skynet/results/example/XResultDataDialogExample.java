@@ -37,9 +37,8 @@ public final class XResultDataDialogExample extends XNavigateItemAction {
       rd.log("This is a log message");
       rd.error("This is a error message");
       rd.warning("This is a warn message");
-      XResultDataDialog diag = new XResultDataDialog(getName(),
-         "This is the message.\n\nTo XResultData contents, select the hyperlink below.", rd);
-      diag.open();
+      XResultDataDialog.open(rd, getName(),
+         "This is the message.\n\nTo XResultData contents, select the hyperlink below.");
    }
 
 }

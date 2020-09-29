@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -163,7 +163,8 @@ public final class ViewWordChangeAndDiffTest {
    }
 
    private static void checkPermissions(List<Artifact> artifacts) {
-      boolean isReadable = AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
+      boolean isReadable =
+         OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts, PermissionEnum.READ, null).isSuccess();
       assertTrue("Valid object permissions", isReadable);
    }
 

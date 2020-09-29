@@ -22,19 +22,25 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.access.AccessControlUtil;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
+import org.eclipse.osee.framework.ui.skynet.access.AccessControlDetails;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.CopyArtifactURLAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenArtifactInBrowserAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenHistoryAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -63,11 +69,14 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
       manager.add(new AccessControlAction());
+      if (AccessControlUtil.isDebugOn()) {
+         manager.add(new AccessControlDetails(artifact));
+      }
       manager.add(new Separator());
       manager.add(new CopyArtifactURLAction(artifact));
       manager.add(new OpenArtifactInBrowserAction(artifact));
       manager.add(new Separator());
-      if (AccessControlManager.isOseeAdmin()) {
+      if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
          manager.add(new DirtyReportAction(artifact));
       }
    }
@@ -106,6 +115,15 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       @Override
       public void run() {
          try {
+            XResultData rd = OseeApiService.get().getAccessControlService().hasArtifactPermission(
+               Collections.singleton(artifact), PermissionEnum.WRITE,
+               AccessControlArtifactUtil.getXResultAccessHeader("Delete Artifact Failed", artifact));
+            if (rd.isErrors()) {
+               XResultDataDialog.open(rd, "Delete Artifact Failed", "You do not have valid access to delete %s",
+                  artifact.toStringWithId());
+               return;
+            }
+
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
                String.format(
                   "Are you sure you want to delete the artifact\n\n%s\n\nand all of the default hierarchy children?",
@@ -131,7 +149,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       @Override
       public void run() {
          try {
-            PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), artifact);
+            PolicyDialog pd = PolicyDialog.createPolicyDialog(Displays.getActiveShell(), artifact);
             pd.open();
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

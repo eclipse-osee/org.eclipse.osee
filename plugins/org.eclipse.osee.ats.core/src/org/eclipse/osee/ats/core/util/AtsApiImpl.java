@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
@@ -59,6 +60,7 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
@@ -131,6 +133,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
    protected IAtsNotificationService notificationService;
    protected List<INewActionPageAttributeFactoryProvider> attributeFactoryProviders = new LinkedList<>();
+   protected IAtsAccessService atsAccessService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -586,6 +589,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public IAtsNotificationService getNotificationService() {
       return notificationService;
+   }
+
+   @Override
+   public IAtsAccessService getAtsAccessService() {
+      if (atsAccessService == null) {
+         atsAccessService = new AtsAccessService(this);
+      }
+      return atsAccessService;
    }
 
 }

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -67,11 +66,15 @@ public class AddRequirementData implements IDbInitializationTask {
       try {
          BranchId branch = SAW_Bld_1;
 
-         //@formatter:off
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTokens.SoftwareRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord, CoreArtifactTokens.SystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord, CoreArtifactTokens.SubSystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
-         //@formatter:on
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirementMsWord,
+            CoreArtifactTokens.SoftwareRequirementsFolder,
+            OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord,
+            CoreArtifactTokens.SystemRequirementsFolder,
+            OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord,
+            CoreArtifactTokens.SubSystemRequirementsFolder,
+            OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
 
          SkynetTransaction demoDbTraceability =
             TransactionManager.createTransaction(branch, "Populate Demo DB - Create Traceability");
@@ -80,8 +83,8 @@ public class AddRequirementData implements IDbInitializationTask {
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
-         AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_2,
-            PermissionEnum.FULLACCESS);
+         OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
+            SAW_Bld_2, PermissionEnum.FULLACCESS);
 
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE, childBranch);

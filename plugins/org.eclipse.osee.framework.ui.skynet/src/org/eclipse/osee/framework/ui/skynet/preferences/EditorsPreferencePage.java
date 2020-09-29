@@ -246,9 +246,9 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          boolean editOnOpen = editButton.getSelection();
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editOnOpen));
          if (editOnOpen) {
-            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser());
+            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).removeMember(UserManager.getUser(), true);
          } else {
-            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser());
+            UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser(), true);
          }
          RendererManager.clearCaches();
 

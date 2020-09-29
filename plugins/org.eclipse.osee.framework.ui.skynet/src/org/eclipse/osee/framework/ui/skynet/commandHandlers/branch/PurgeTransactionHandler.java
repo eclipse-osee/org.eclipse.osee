@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
@@ -40,6 +40,6 @@ public class PurgeTransactionHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<TransactionToken> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
-      return transactions.size() > 0 && AccessControlManager.isOseeAdmin();
+      return transactions.size() > 0 && OseeApiService.get().getAccessControlService().isOseeAdmin();
    }
 }

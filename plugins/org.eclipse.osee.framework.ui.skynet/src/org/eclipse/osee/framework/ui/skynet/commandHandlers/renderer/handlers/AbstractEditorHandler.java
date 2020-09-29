@@ -16,10 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 import java.util.List;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
 /**
@@ -39,7 +39,8 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
-         return AccessControlManager.hasPermission(artifacts, getPermissionLevel());
+         return OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts, getPermissionLevel(),
+            null).isSuccess();
       }
       return false;
    }

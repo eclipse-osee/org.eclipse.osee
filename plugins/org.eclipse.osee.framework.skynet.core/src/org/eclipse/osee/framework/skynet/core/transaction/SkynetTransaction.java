@@ -26,9 +26,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -39,6 +37,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -48,21 +47,24 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.internal.OseeApiService;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -88,9 +90,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    private String comment;
    private User user;
-
-   private AccessPolicy access;
    private TransactionRecord transaction;
+   private static boolean overrideAccess;
 
    protected SkynetTransaction(TxMonitor<BranchId> txMonitor, BranchId branch, String comment) {
       super(txMonitor, branch, comment);
@@ -126,44 +127,35 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          String msg = getCheckAccessError(artifact, txBranch, branch);
          throw new OseeStateException(msg);
       }
-
-      checkBranch(artifact);
+      if (!SkynetTransaction.isOverrideAccess()) {
+         for (Attribute<?> attr : artifact.getAttributes()) {
+            if (attr.isDirty()) {
+               XResultData rd = OseeApiService.get().getAccessControlService().hasAttributeTypePermission(
+                  Collections.singleton(artifact), attr.getAttributeType(), PermissionEnum.WRITE,
+                  AccessControlArtifactUtil.getXResultAccessHeader("Skynet Transaction: " + comment, artifact));
+               if (rd.isErrors()) {
+                  throw new OseeCoreException(rd.toString());
+               }
+            }
+         }
+         for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+            if (rel.isDirty()) {
+               XResultData rd = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+                  rel.getRelationType(), Collections.emptyList(), PermissionEnum.WRITE,
+                  AccessControlArtifactUtil.getXResultAccessHeader("Skynet Transaction: " + comment, artifact));
+               if (rd.isErrors()) {
+                  throw new OseeCoreException(rd.toString());
+               }
+            }
+         }
+      }
       checkNotHistorical(artifact);
-      getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
    }
 
    public String getCheckAccessError(ArtifactToken artifact, BranchId txBranch, BranchToken branch) {
       String msg =
          String.format("The artifact\n\n%s\n\nis on branch\n\n%s\n\nbut this transaction is for branch\n\n%s\n\n",
             artifact.getGuid(), branch.toStringWithId(), txBranch);
-      return msg;
-   }
-
-   private void checkBranch(ArtifactToken artifact) {
-      if (!isBranchWritable(artifact.getBranch())) {
-         Branch branch = BranchManager.getBranch(artifact.getBranch());
-         String msg = getCheckBranchError(artifact, branch);
-         throw new OseeStateException(msg);
-      }
-   }
-
-   public String getCheckBranchError(ArtifactToken artifact, BranchToken branch) {
-      String msg = String.format("The artifact\n\n%s\n\nis on a non-editable branch\n\n%s\n\n",
-         artifact.toStringWithId(), branch.toStringWithId());
-      return msg;
-   }
-
-   private void checkBranch(RelationLink link) {
-      if (!isBranchWritable(link.getBranch())) {
-         Branch branch = BranchManager.getBranch(link.getBranch());
-         String msg = getCheckBranchError(link, branch);
-         throw new OseeStateException(msg);
-      }
-   }
-
-   public String getCheckBranchError(RelationLink link, BranchToken branch) {
-      String msg = String.format("The relation link\n\n%s\n\nis on a non-editable branch\n\n%s\n\n", link,
-         branch.toStringWithId());
       return msg;
    }
 
@@ -180,45 +172,24 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       return msg;
    }
 
-   private boolean isBranchWritable(BranchId branch) {
-      boolean toReturn = true;
-      if (!UserManager.duringMainUserCreation()) {
-         toReturn = getAccess().hasBranchPermission(branch, PermissionEnum.WRITE,
-            Level.FINE).matched() && BranchManager.isEditable(branch);
-      }
-      return toReturn;
-   }
-
    private void checkAccess(Artifact artifact, RelationLink link) {
       if (UserManager.duringMainUserCreation()) {
          return;
       }
-      checkBranch(link);
-      BranchId txBranch = getBranch();
-      if (!link.isOnBranch(txBranch)) {
-         Branch branch = BranchManager.getBranch(link.getBranch());
-         String msg = String.format(
-            "The relation link\n\n%s\n\nis on branch\n\n%s\n\nbut this transaction is for branch\n\n%s\n\n",
-            link.getId(), branch.toStringWithId(), txBranch);
-         throw new OseeStateException(msg);
+      if (!SkynetTransaction.isOverrideAccess()) {
+         BranchId txBranch = getBranch();
+         if (!link.isOnBranch(txBranch)) {
+            RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
+            RelationTypeSide relTypeSide = new RelationTypeSide(link.getRelationType(), sideToCheck);
+            XResultData rd =
+               OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact, relTypeSide, null,
+                  PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Relation Access Denied",
+                     Collections.singleton(artifact), relTypeSide));
+            if (rd.isErrors()) {
+               throw new OseeCoreException(rd.toString());
+            }
+         }
       }
-
-      RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
-      PermissionStatus status = getAccess().canRelationBeModified(artifact, null,
-         new RelationTypeSide(link.getRelationType(), sideToCheck), Level.FINE);
-
-      if (!status.matched()) {
-         throw new OseeCoreException(
-            "Access Denied - [%s] does not have valid permission to edit this relation\n itemsToPersist:[%s]\n reason:[%s]",
-            getAuthor(), link, status.getReason());
-      }
-   }
-
-   private AccessPolicy getAccess() {
-      if (access == null) {
-         access = ServiceUtil.getAccessPolicy();
-      }
-      return access;
    }
 
    private Collection<BaseTransactionData> getTransactionData() {
@@ -270,7 +241,9 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
             }
             return;
          }
-         checkAccess(artifact);
+         if (!SkynetTransaction.isOverrideAccess()) {
+            checkAccess(artifact);
+         }
          setTxState(TxState.MODIFIED);
 
          if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == REPLACED_WITH_VERSION || artifact.isUseBackingdata()) {
@@ -350,7 +323,9 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    private void addRelation(Artifact artifact, RelationLink link) {
       synchronized (getTxMonitor()) {
-         checkAccess(artifact, link);
+         if (!SkynetTransaction.isOverrideAccess()) {
+            checkAccess(artifact, link);
+         }
          setTxState(TxState.MODIFIED);
          link.setNotDirty();
 
@@ -469,6 +444,18 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    public void cancel() {
       getTxMonitor().cancel(getBranch(), this);
+   }
+
+   public static boolean isOverrideAccess() {
+      return overrideAccess;
+   }
+
+   public static void setOverrideAccess(boolean overrideAccess) {
+      if (OseeProperties.isInTest()) {
+         SkynetTransaction.overrideAccess = overrideAccess;
+      } else {
+         throw new OseeArgumentException("Access Control can not be overridden in production");
+      }
    }
 
 }

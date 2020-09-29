@@ -18,11 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-   AccessDataTest.class, //
-   AccessDataQueryTest.class, //
-   AccessDetailTest.class, //
    PermissionStatusTest.class, //
-   ScopeTest.class, //
 })
 /**
  * @author Roberto E. Escobar

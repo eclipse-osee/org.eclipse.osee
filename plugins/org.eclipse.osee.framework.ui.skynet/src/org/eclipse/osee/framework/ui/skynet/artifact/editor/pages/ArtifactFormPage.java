@@ -28,7 +28,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
@@ -317,8 +318,8 @@ public class ArtifactFormPage extends FormPage {
    }
 
    private String getLockedString(Artifact artifact) {
-      Artifact subject = AccessControlManager.getSubjectFromLockedObject(artifact);
-      if (subject != null) {
+      ArtifactToken subject = OseeApiService.get().getAccessControlService().getSubjectFromLockedObject(artifact);
+      if (subject.isValid()) {
          return "<b>LOCKED:</b> " + subject.getName() + " ";
       }
       return "";

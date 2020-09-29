@@ -22,7 +22,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -109,8 +109,8 @@ public class ArtifactExplorerToolbar {
 
                   @Override
                   protected IStatus run(IProgressMonitor monitor) {
-                     AccessControlService.getAccessService().clearCache();
-                     AccessControlService.getAccessService().ensurePopulated();
+                     OseeApiService.get().getAccessControlService().clearCaches();
+                     OseeApiService.get().getAccessControlService().ensurePopulated();
 
                      Displays.ensureInDisplayThread(new Runnable() {
 
@@ -119,14 +119,14 @@ public class ArtifactExplorerToolbar {
                            artifactExplorer.setRefreshing(false);
                            artifactExplorer.refreshBranchWarning();
                            ArtifactExplorer.exploreBranch(artifactExplorer.getBranch());
-                           if (AccessControlManager.isOseeAdmin()) {
+                           if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
                               CheckBoxDialog dialog =
                                  new CheckBoxDialog("Admin - Enable Debug", "Enable Branch Access Debug",
                                     "Check to enable Branch Access Debug if instructed to do so");
                               if (dialog.open() == Window.OK) {
-                                 System.setProperty(AccessControlManager.DEBUG_BRANCH_ACCESS, "true");
+                                 System.setProperty(IAccessControlService.DEBUG_BRANCH_ACCESS, "true");
                               } else {
-                                 System.setProperty(AccessControlManager.DEBUG_BRANCH_ACCESS, "false");
+                                 System.setProperty(IAccessControlService.DEBUG_BRANCH_ACCESS, "false");
                               }
                            }
                         }

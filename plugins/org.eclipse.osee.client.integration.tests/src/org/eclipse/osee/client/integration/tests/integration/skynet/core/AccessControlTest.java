@@ -14,13 +14,13 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import org.eclipse.osee.client.integration.tests.internal.OseeApiService;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -51,38 +51,39 @@ public class AccessControlTest {
 
    private static BranchToken branch;
 
-   @Test(expected = OseeStateException.class)
+   @Test(expected = OseeCoreException.class)
    public void testNoWriteOnReadAccessOnBranch() {
-      AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.READ);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(), branch, PermissionEnum.READ);
       artifact1 = new Artifact(branch, "New Name");
       artifact1.persist(testInfo.getTestName());
    }
 
-   @Test(expected = OseeStateException.class)
+   @Test(expected = OseeCoreException.class)
    public void testNoWriteOnNoneAccessOnBranch() {
-      AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.NONE);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(), branch, PermissionEnum.NONE);
       artifact2 = new Artifact(branch, "New Name");
       artifact2.persist(testInfo.getTestName());
    }
 
    @Test
    public void testWriteAccessOnBranch() {
-      AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.WRITE);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(), branch, PermissionEnum.WRITE);
       artifact3 = new Artifact(branch, "New Name");
       artifact3.persist(testInfo.getTestName());
    }
 
    @Test
    public void testWriteOnFullAccessOnBranch() {
-      AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.FULLACCESS);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(), branch,
+         PermissionEnum.FULLACCESS);
       artifact4 = new Artifact(branch, "New Name");
       artifact4.persist(testInfo.getTestName());
    }
 
-   @Test(expected = OseeStateException.class)
+   @Test(expected = OseeCoreException.class)
    public void testNoWriteOnDenyAccessOnBranch() {
       BranchToken branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.DENY);
+      OseeApiService.get().getAccessControlService().setPermission(UserManager.getUser(), branch, PermissionEnum.DENY);
       artifact5 = new Artifact(branch, "New Name");
       artifact5.persist(testInfo.getTestName());
    }

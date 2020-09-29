@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -180,6 +181,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
+      ArtifactTypeToken typeToken = token.getArtifactType();
+      if (typeToken.isInvalid()) {
+         throw new OseeArgumentException("Artifact Type Token %s is invalid for artifact creation",
+            typeToken.toStringWithId());
+      }
       return createArtifact(token.getArtifactType(), token.getName(), token.getId());
    }
 

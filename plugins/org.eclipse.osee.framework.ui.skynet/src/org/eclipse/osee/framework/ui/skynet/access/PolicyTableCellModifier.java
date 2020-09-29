@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.ui.skynet.access;
 
 import java.util.Collections;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.access.AccessControlData;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -60,8 +60,8 @@ public class PolicyTableCellModifier implements ICellModifier {
       TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
       if (policyTableViewer.isArtifact() && data.getPermission() == PermissionEnum.USER_LOCK) {
-         AccessControlManager.unLockObjects(Collections.singleton(policyTableViewer.getArtifact()),
-            UserManager.getUser());
+         OseeApiService.get().getAccessControlService().unLockArtifacts(UserManager.getUser(),
+            Collections.singleton(policyTableViewer.getArtifact()));
          policyTableViewer.removeData(data);
       } else {
          if (canDelete() && property.equals(PolicyTableColumns.delete.toString())) {

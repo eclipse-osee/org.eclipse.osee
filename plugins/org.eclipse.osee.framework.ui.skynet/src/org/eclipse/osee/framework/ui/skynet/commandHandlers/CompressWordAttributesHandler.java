@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -43,8 +43,9 @@ public class CompressWordAttributesHandler extends CommandHandler {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       if (!artifacts.isEmpty()) {
-         boolean writePermission = AccessControlManager.hasPermission(artifacts.get(0), PermissionEnum.WRITE);
-         enabled = writePermission && AccessControlManager.isOseeAdmin();
+         boolean writePermission = OseeApiService.get().getAccessControlService().hasArtifactPermission(artifacts.get(0),
+            PermissionEnum.WRITE, null).isSuccess();
+         enabled = writePermission && OseeApiService.get().getAccessControlService().isOseeAdmin();
       }
       return enabled;
    }

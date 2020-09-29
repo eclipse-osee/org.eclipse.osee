@@ -31,17 +31,7 @@ public class OseeClientProperties extends OseeProperties {
 
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
-   private static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
-
    private static final String OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS = "osee.commit.skipChecksAndEvents";
-
-   public static boolean isInDbInit() {
-      return Boolean.valueOf(getProperty(OSEE_IS_IN_DB_INIT));
-   }
-
-   public static void setInDbInit(boolean value) {
-      System.setProperty(OSEE_IS_IN_DB_INIT, Boolean.toString(value));
-   }
 
    public static boolean isSkipCommitChecksAndEvents() {
       return Boolean.valueOf(getProperty(OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS, "false"));
@@ -108,14 +98,6 @@ public class OseeClientProperties extends OseeProperties {
     */
    public static String getOseeApplicationServer() {
       return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8089");
-   }
-
-   private static String getProperty(String name) {
-      return getProperty(name, "");
-   }
-
-   private static String getProperty(String name, String defaultValue) {
-      return System.getProperty(name, defaultValue);
    }
 
    /**

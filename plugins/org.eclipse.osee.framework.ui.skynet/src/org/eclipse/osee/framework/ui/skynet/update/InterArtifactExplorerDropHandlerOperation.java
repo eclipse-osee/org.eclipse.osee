@@ -20,22 +20,25 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -66,7 +69,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.isEmpty()) {
          throw new OseeArgumentException("Invalid arguments");
       }
-      BranchId sourceBranch = sourceArtifacts.iterator().next().getBranchToken();
+      BranchToken sourceBranch = sourceArtifacts.iterator().next().getBranchToken();
       final BranchToken destinationBranch = destinationParentArtifact.getBranchToken();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
@@ -76,7 +79,9 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
                MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, UPDATE_FROM_PARENT_ERROR_MSG);
             }
          });
-      } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
+      }
+      XResultData rd = isAccessAllowed(sourceBranch, destinationBranch);
+      if (rd.isSuccess()) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -108,16 +113,22 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
+               XResultDataDialog.open(rd, ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
             }
          });
       }
       monitor.done();
    }
 
-   private boolean isAccessAllowed(BranchId sourceBranch, BranchId destinationBranch) {
-      return AccessControlManager.hasPermission(destinationBranch,
-         PermissionEnum.WRITE) && AccessControlManager.hasPermission(sourceBranch, PermissionEnum.READ);
+   private XResultData isAccessAllowed(BranchToken sourceBranch, BranchToken destinationBranch) {
+      XResultData rd = OseeApiService.get().getAccessControlService().hasBranchPermission(destinationBranch,
+         PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
+      if (rd.isErrors()) {
+         return rd;
+      }
+      rd = OseeApiService.get().getAccessControlService().hasBranchPermission(sourceBranch, PermissionEnum.READ,
+         AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
+      return rd;
    }
 
    private boolean isUpdateFromParent(BranchId sourceBranch, BranchId destinationBranch) {

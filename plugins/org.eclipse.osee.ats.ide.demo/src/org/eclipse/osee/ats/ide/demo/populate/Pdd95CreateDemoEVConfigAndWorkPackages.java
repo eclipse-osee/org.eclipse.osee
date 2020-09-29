@@ -182,7 +182,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          // create country
          createCountry(countryEp, country);
 
-         // create and relate programs
+         // create and relate programs; these calls ensure that the static tokens are loaded and thus related to proper parents
          DemoInsertion.getInsertions();
          DemoInsertionActivity.getActivities();
          for (DemoProgram program : country.getPrograms()) {

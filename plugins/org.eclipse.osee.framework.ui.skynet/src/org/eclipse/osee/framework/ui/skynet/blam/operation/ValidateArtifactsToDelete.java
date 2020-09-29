@@ -21,11 +21,10 @@ import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
@@ -57,8 +56,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       rd.log("Validation Artifacts: " + Collections.toString("; ", artifacts));
       // Confirm artifacts are fit to delete
       try {
-         AccessPolicy policy = ServiceUtil.getAccessPolicy();
-         policy.isDeleteable(Collections.castAll(artifacts), rd);
+         OseeApiService.get().getAccessControlService().isDeleteable(Collections.castAll(artifacts), rd);
          rd.log("\n");
          rd.log("Validation Complete - Any errors will be displayed.");
          XResultDataUI.report(rd, "Validate Artifacts to Delete");

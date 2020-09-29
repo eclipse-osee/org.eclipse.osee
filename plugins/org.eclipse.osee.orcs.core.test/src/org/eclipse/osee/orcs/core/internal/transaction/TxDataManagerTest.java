@@ -133,9 +133,9 @@ public class TxDataManagerTest {
       r2Guid = GUID.create();
       r3Guid = GUID.create();
 
-      Long id1 = Lib.generateUuid();
-      Long id2 = Lib.generateUuid();
-      Long id3 = Lib.generateUuid();
+      Long id1 = Lib.generateArtifactIdAsInt();
+      Long id2 = Lib.generateArtifactIdAsInt();
+      Long id3 = Lib.generateArtifactIdAsInt();
 
       artifactId1 = ArtifactToken.valueOf(id1, r1Guid, "", COMMON, null);
       artifactId2 = ArtifactToken.valueOf(id2, r2Guid, "", COMMON, null);

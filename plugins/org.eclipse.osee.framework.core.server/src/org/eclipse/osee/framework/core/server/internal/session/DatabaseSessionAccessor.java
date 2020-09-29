@@ -61,7 +61,9 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
    }
 
    private void executeTx(SessionTxType op, Iterable<Session> sessions) {
-      jdbcClient.runTransaction(new SessionTx(getJdbcClient(), op, sessions));
+      JdbcClient jdbcClient2 = getJdbcClient();
+      SessionTx transaction = new SessionTx(jdbcClient2, op, sessions);
+      jdbcClient.runTransaction(transaction);
    }
 
    @Override

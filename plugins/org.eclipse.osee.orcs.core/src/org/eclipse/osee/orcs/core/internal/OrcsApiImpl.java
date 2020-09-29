@@ -84,9 +84,9 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    private TxCallableFactory txCallableFactory;
    private OrcsApplicabilityOps applicability;
    private UserGroupService userGroupService;
-   private IAccessControlService accessControlService;
    private ActivityLog activityLog;
    private OrcsTypes orcsTypes;
+   IAccessControlService accessControlService;
 
    ExternalArtifactManager proxyManager;
 
@@ -173,7 +173,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule.start(getSystemSession(), tokenService());
 
       applicability = new OrcsApplicabilityOps(this, logger);
-      accessControlService = new AccessControlServiceImpl();
    }
 
    public void stop() {
@@ -270,11 +269,6 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    }
 
    @Override
-   public IAccessControlService getAccessControlService() {
-      return accessControlService;
-   }
-
-   @Override
    public JdbcService getJdbcService() {
       return dataStore.getJdbcService();
    }
@@ -283,4 +277,14 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public ActivityLog getActivityLog() {
       return activityLog;
    }
+
+   @Override
+   public IAccessControlService getAccessControlService() {
+      if (accessControlService == null) {
+         accessControlService =
+            new AccessControlServiceImpl(this, dataStore.getJdbcService().getClient(), tokenService());
+      }
+      return accessControlService;
+   }
+
 }

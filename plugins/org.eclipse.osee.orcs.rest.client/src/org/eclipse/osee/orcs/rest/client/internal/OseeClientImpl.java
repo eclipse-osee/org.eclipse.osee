@@ -25,6 +25,7 @@ import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -60,6 +61,9 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  * @author Roberto E. Escobar
  */
 public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExecutor {
+
+   // for ReviewOsgiXml public void setJaxRsApi(JaxRsApi jaxRsApi)
+   // for ReviewOsgiXml public void setOrcsTokenService(OrcsTokenService tokenService)
 
    private PredicateFactory predicateFactory;
 
@@ -218,4 +222,8 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
       return target.request(MediaType.TEXT_PLAIN).get(String.class);
    }
 
+   @Override
+   public IAccessControlService getAccessControlService() {
+      throw new UnsupportedOperationException("Not supported yet");
+   }
 }

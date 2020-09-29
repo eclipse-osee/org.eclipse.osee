@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ConfigurationGroupDefinition;
@@ -72,8 +73,10 @@ public class CreateDemoBranches {
       createDemoProgramBranch(CIS_Bld_1, account);
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, DemoUsers.Joe_Smith, SAW_Bld_1, ArtifactId.SENTINEL);
-      branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith, SAW_PL,
-         ArtifactId.SENTINEL);
+
+      Branch hardeningBranch = branchOps.createBaselineBranch(DemoBranches.SAW_PL_Hardening_Branch, DemoUsers.Joe_Smith,
+         SAW_PL, ArtifactId.SENTINEL);
+      orcsApi.getAccessControlService().removePermissions(hardeningBranch);
 
       createProductLineConfig(DemoBranches.SAW_PL, account);
       branchOps.createWorkingBranch(DemoBranches.SAW_PL_Working_Branch, DemoUsers.Joe_Smith, SAW_PL,
@@ -88,7 +91,7 @@ public class CreateDemoBranches {
          CoreArtifactTokens.DefaultHierarchyRoot, tx, orcsApi);
       Artifacts.getOrCreate(CoreArtifactTokens.ProductsFolder, plFolder, tx, orcsApi);
       ArtifactToken featuresFolder = Artifacts.getOrCreate(CoreArtifactTokens.FeaturesFolder, plFolder, tx, orcsApi);
-      ArtifactToken cfgFolder = Artifacts.getOrCreate(CoreArtifactTokens.PlCfgGroupsFolder, plFolder, tx, orcsApi);
+      Artifacts.getOrCreate(CoreArtifactTokens.PlCfgGroupsFolder, plFolder, tx, orcsApi);
 
       ArtifactToken productA = tx.createView(branch, "Product A");
       ArtifactToken productB = tx.createView(branch, "Product B");

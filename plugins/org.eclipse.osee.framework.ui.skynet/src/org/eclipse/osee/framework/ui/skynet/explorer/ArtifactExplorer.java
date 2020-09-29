@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -23,7 +24,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.explorer.menu.ArtifactExplorerMenu;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -76,9 +77,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Ryan D. Brooks
@@ -330,8 +333,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             if (memento != null && memento.getString(ROOT_UUID) != null && memento.getString(ROOT_BRANCH) != null) {
                BranchId branch = BranchId.valueOf(memento.getString(ROOT_BRANCH));
 
-               if (BranchManager.branchExists(
-                  branch) && !BranchManager.isArchived(branch) || AccessControlManager.isOseeAdmin()) {
+               if (BranchManager.branchExists(branch) && !BranchManager.isArchived(
+                  branch) || OseeApiService.get().getAccessControlService().isOseeAdmin()) {
                   Artifact previousArtifact =
                      ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(memento.getString(ROOT_UUID)), branch);
                   if (previousArtifact != null) {
@@ -464,6 +467,18 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       return this;
    }
 
+   public static List<ArtifactExplorer> getEditors() {
+      List<ArtifactExplorer> results = new ArrayList<>();
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IViewReference views[] = page.getViewReferences();
+      for (IViewReference view : views) {
+         if (view.getPart(false) instanceof ArtifactExplorer) {
+            results.add((ArtifactExplorer) view.getPart(false));
+         }
+      }
+      return results;
+   }
+
    @Override
    public boolean isDisposed() {
       return treeViewer.getTree() == null || treeViewer.getTree().isDisposed();
@@ -511,6 +526,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    public void setRefreshing(boolean refreshing) {
       this.refreshing = refreshing;
+   }
+
+   public void resetMenu() {
+      artifactExplorerMenu.resetMenu();
    }
 
 }

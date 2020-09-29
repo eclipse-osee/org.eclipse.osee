@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-<implementation class="org.eclipse.osee.framework.access.internal.AccessBranchTopicEventHandler"/>
-<service> 
- <provide interface="org.osgi.service.event.EventHandler"/>
-</service>
- <property name="event.topics" value="framework/access/branch/modified" />
-</scr:component>

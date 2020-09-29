@@ -14,24 +14,26 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.access;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.access.AtsAccessContextTokens;
+import org.eclipse.osee.ats.api.access.IAtsAccessService;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.access.AtsAccessService;
+import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContextTokens;
+import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,7 +43,7 @@ public class AtsBranchAccessManagerTest {
 
    @Test
    public void testIsApplicable() {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
+      AtsAccessService mgr = new AtsAccessService(AtsApiService.get());
       Assert.assertFalse(mgr.isApplicable(AtsApiService.get().getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(SAW_Bld_1));
 
@@ -55,94 +57,63 @@ public class AtsBranchAccessManagerTest {
       Assert.assertTrue(mgr.isApplicable(branch));
    }
 
-   @Before
-   @After
-   public void cleanup() {
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
-         "testGetContextIdArtifact cleanup");
-      Artifact teamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getTeamDefinition());
-      teamDefArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
-      teamDefArt.persist(transaction);
-      for (Artifact art : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-         art.deleteAttributes(CoreAttributeTypes.AccessContextId);
-         art.persist(transaction);
-      }
-      teamArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
-      teamArt.persist(transaction);
-      transaction.execute();
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.ats.ide.access.AtsBranchAccessManager#getContextId(org.eclipse.osee.framework.skynet.core.artifact.Artifact)}
-    * {@link org.eclipse.osee.ats.ide.access.AtsBranchAccessManager#getEventFilters()}.
-    * {@link org.eclipse.osee.ats.ide.access.AtsBranchAccessManager#handleArtifactEvent(org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent, org.eclipse.osee.framework.skynet.core.event.model.Sender)}
-    */
    @Test
-   public void testGetContextIdBranch() throws Exception {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+   public void testGetContextIds() throws Exception {
+      IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
+      TeamWorkFlowArtifact teamArt = DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
+      IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+      IAtsActionableItem ai = teamArt.getActionableItems().iterator().next();
 
-      // confirm that no context id returned
-      Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
-
-      String teamDefContextId1 = "1234";
-      String teamDefContextId2 = "2345";
-      Artifact teamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getTeamDefinition());
-      teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
-         Arrays.asList(teamDefContextId1, teamDefContextId2));
-      teamDefArt.persist(getClass().getSimpleName());
-
-      Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
-
-      String aiContextId = "6789";
-      Artifact aiArt = AtsApiService.get().getQueryServiceIde().getArtifact(
-         AtsApiService.get().getActionableItemService().getActionableItems(
-            Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next());
-      aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
-      aiArt.persist(getClass().getSimpleName());
-
-      Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
-
-      String teamContextId1 = "1234";
-      String teamContextId2 = "2345";
-      String teamContextId3 = "3456";
-      teamArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
-         Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
-      teamArt.persist(getClass().getSimpleName());
-
-      AtsApiService.get().clearCaches();
-
-      Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
-   }
-
-   /**
-    * Test method for {
-    *
-    * @param useCache TODO@link org.eclipse.osee.ats.ide.access.AtsBranchAccessManager#convertAccessAttributeToGuid
-    */
-   @Test
-   public void testConvertAccessAttributeToGuid() throws Exception {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-
-      // confirm that no context id returned
-      Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch()).size());
-
-      String teamDefContextId1 = "16546, this is the name";
-      Artifact teamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getTeamDefinition());
-      teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(teamDefContextId1));
-      teamDefArt.persist(getClass().getSimpleName());
-
-      mgr.clearCache();
-
-      Collection<AccessContextToken> contextIds = mgr.getContextId(teamArt.getWorkingBranch());
+      // confirm that deny context id is returned cause no branch
+      Collection<AccessContextToken> contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
       Assert.assertEquals(1, contextIds.size());
-      AccessContextToken contextId = contextIds.iterator().next();
-      Assert.assertEquals(Long.valueOf(16546), contextId.getId());
+      Assert.assertTrue(contextIds.contains(AtsAccessContextTokens.ATS_BRANCH_READ));
+
+      // create branch
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - set target ver");
+      IAtsVersion ver = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.CIS_Bld_1);
+      AtsApiService.get().getVersionService().setTargetedVersion(teamArt, ver, changes);
+      changes.execute();
+      AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(teamArt, true);
+
+      // confirm 0 contexts
+      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      Assert.assertEquals(0, contextIds.size());
+
+      // set 2 on team def
+      AtsApiService.get().getAtsAccessService().setContextIds(teamDef, DemoAtsAccessContextTokens.DEMO_CODE_CONTEXT,
+         DemoAtsAccessContextTokens.DEMO_TEST_CONTEXT);
+
+      // 2 returned
+      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      Assert.assertEquals(2, contextIds.size());
+      Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_CODE_CONTEXT));
+      Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_TEST_CONTEXT));
+
+      // set 1 on ai
+      AtsApiService.get().getAtsAccessService().setContextIds(ai, DemoAtsAccessContextTokens.DEMO_SYSTEMS_CONTEXT);
+
+      // only 1 cause AI overrides Team Def
+      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      Assert.assertEquals(1, contextIds.size());
+      Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_SYSTEMS_CONTEXT));
+
+      // set 1 on workflow
+      AtsApiService.get().getAtsAccessService().setContextIds(teamArt,
+         DemoAtsAccessContextTokens.DEMO_REQUIREMENT_CONTEXT);
+
+      // only 1 cause workflow overrides AI and Team Def
+      contextIds = accessService.getContextIds(teamArt.getWorkingBranch(), false);
+      Assert.assertEquals(1, contextIds.size());
+      Assert.assertTrue(contextIds.contains(DemoAtsAccessContextTokens.DEMO_REQUIREMENT_CONTEXT));
+
+      // cleanup
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - cleanup");
+      changes.deleteAttributes((ArtifactId) teamArt, CoreAttributeTypes.AccessContextId);
+      changes.deleteAttributes(teamDef, CoreAttributeTypes.AccessContextId);
+      changes.deleteAttributes(ai, CoreAttributeTypes.AccessContextId);
+      changes.execute();
+
    }
+
 }

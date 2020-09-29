@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -39,7 +40,7 @@ public class UserGroupService implements IUserGroupService {
    private static List<IUserGroupArtifactToken> userGrps;
 
    public static IUserGroupService instance() {
-      return userGroupService;
+      return getUserGroupService();
    }
 
    public static IUserGroup getOseeAdmin() {
@@ -68,6 +69,11 @@ public class UserGroupService implements IUserGroupService {
       } else {
          throw new OseeArgumentException("parameter must be artifact");
       }
+   }
+
+   @Override
+   public IUserGroup getUserGroup(ArtifactToken userGroupArt) {
+      return new UserGroupImpl(userGroupArt);
    }
 
    private static IUserGroupService getUserGroupService() {
@@ -132,5 +138,10 @@ public class UserGroupService implements IUserGroupService {
          return false;
       }
       return getUserGroup(userGroup).isMember(id);
+   }
+
+   @Override
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user) {
+      return isUserMember(userGroup, user.getId());
    }
 }

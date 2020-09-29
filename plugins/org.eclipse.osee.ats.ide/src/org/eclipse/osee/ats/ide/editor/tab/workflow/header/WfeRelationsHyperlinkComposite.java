@@ -58,11 +58,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -322,7 +320,6 @@ public class WfeRelationsHyperlinkComposite extends Composite {
                delArt = thisArt;
             }
 
-            AccessPolicy policy = ServiceUtil.getAccessPolicy();
             Collection<ArtifactToken> related = Arrays.asList(thatArt);
             if (thatArt instanceof IAtsObject) {
                if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Related",
@@ -333,7 +330,8 @@ public class WfeRelationsHyperlinkComposite extends Composite {
                }
                return;
             }
-            XResultData results = policy.isDeleteable(related, new XResultData());
+            XResultData results =
+               AtsApiService.get().getAccessControlService().isDeleteable(related, new XResultData());
             if (results.isErrors()) {
                AWorkbench.popup(results.toString());
                return;

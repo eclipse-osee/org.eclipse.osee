@@ -33,13 +33,13 @@ public class TeamResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsTeamsRestCall() {
-      JsonNode team = testTeamUrl("/ats/team", 25, false);
+      JsonNode team = testTeamUrl("/ats/team", 27, false);
       Assert.assertFalse(team.has("version"));
    }
 
    @Test
    public void testAtsTeamsDetailsRestCall() {
-      JsonNode team = testTeamUrl("/ats/team/details", 25, true);
+      JsonNode team = testTeamUrl("/ats/team/details", 27, true);
       Assert.assertEquals(3, team.get("version").size());
    }
 

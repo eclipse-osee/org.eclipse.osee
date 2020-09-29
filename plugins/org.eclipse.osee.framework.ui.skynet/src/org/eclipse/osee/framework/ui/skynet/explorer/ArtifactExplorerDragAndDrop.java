@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.ui.skynet.explorer;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.core.data.JsonAttribute;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParame
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -123,7 +124,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          if (dropTarget != null) {
             try {
-               AccessPolicy policy = ServiceUtil.getAccessPolicy();
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
                BranchId destinationBranch = dropTarget.getBranch();
@@ -132,15 +132,19 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                      artsOnSameBranchAsDestination.add(art);
                   }
                }
-               valid = policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
-                  CoreRelationTypes.DefaultHierarchical_Child, Level.FINE).matched();
+
+               valid = OseeApiService.get().getAccessControlService().hasRelationTypePermission(dropTarget,
+                  CoreRelationTypes.DefaultHierarchical_Child, artsOnSameBranchAsDestination, PermissionEnum.WRITE,
+                  null).isSuccess();
 
                // if we are deparenting ourself, make sure our parent's child side can be modified
                if (valid) {
                   for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
-                        valid = policy.canRelationBeModified(art.getParent(), null,
-                           CoreRelationTypes.DefaultHierarchical_Child, Level.FINE).matched();
+                        valid =
+                           OseeApiService.get().getAccessControlService().hasRelationTypePermission(art.getParent(),
+                              CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(),
+                              PermissionEnum.WRITE, null).isSuccess();
                      }
                      if (!valid) {
                         break;

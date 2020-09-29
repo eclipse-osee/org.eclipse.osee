@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
+   <implementation class="org.eclipse.osee.ats.core.access.AtsOseeAccessProvider"/>
+   <reference bind="addAtsAccessProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.access.IAtsAccessContextProvider" name="IAtsAccessContextProvider" policy="dynamic"/>
+   <service>
+      <provide interface="org.eclipse.osee.framework.core.access.IOseeAccessProvider"/>
+   </service>
+</scr:component>

@@ -15,25 +15,26 @@ package org.eclipse.osee.framework.ui.skynet.explorer.menu;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.explorer.MenuPermissions;
@@ -50,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeEntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeRelationTypeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -93,25 +96,23 @@ public class CreateRelatedMenuItem implements SelectionListener {
                relationTypeSide = RelationTypeSide.create(relationType, RelationSide.SIDE_A);
             }
 
-            AccessPolicy service = ServiceUtil.getAccessPolicy();
+            XResultData rd = OseeApiService.get().getAccessControlService().hasRelationTypePermission(existingArtifact,
+               relationTypeSide, null, PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Related",
+                  Collections.singleton(existingArtifact), relationTypeSide));
 
-            // check permissions
-            PermissionStatus status =
-               service.canRelationBeModified(existingArtifact, null, relationTypeSide, Level.FINE);
-            if (status.matched()) {
+            if (rd.isSuccess()) {
                handleCreateRelated(existingArtifact, relationType, relationTypeSide, relationSide);
             } else {
-               MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
-                  "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+               XResultDataDialog.open(rd, "New Child Error",
+                  "You do not have permissions to add a New Related artifact");
             }
          } else if (obj instanceof Artifact) {
             Artifact parentArt = (Artifact) obj;
 
-            AccessPolicy policy = ServiceUtil.getAccessPolicy();
+            boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(parentArt,
+               CoreRelationTypes.DefaultHierarchical_Child, null, PermissionEnum.WRITE, null).isSuccess();
 
-            PermissionStatus status =
-               policy.canRelationBeModified(parentArt, null, CoreRelationTypes.DefaultHierarchical_Child, Level.FINE);
-            if (!status.matched()) {
+            if (!hasPermission) {
                MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                   "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
                return;
@@ -208,7 +209,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       return dialog;
    }
 
-   public void setCreateRelatedEnabled(Object obj, AccessPolicy service) {
+   public void setCreateRelatedEnabled(Object obj) {
       if (obj instanceof ArtifactExplorerLinkNode) {
          ArtifactExplorerLinkNode linkNode = (ArtifactExplorerLinkNode) obj;
          Artifact artifact = linkNode.getArtifact();
@@ -222,8 +223,10 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
          MenuPermissions permiss = new MenuPermissions(artifact);
 
-         boolean canModifyRelation = service.canRelationBeModified(artifact, null, relationSide, Level.FINE).matched();
-         menuItem.setEnabled(permiss.isWritePermission() && canModifyRelation);
+         boolean hasPermission = OseeApiService.get().getAccessControlService().hasRelationTypePermission(artifact,
+            relationSide, Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
+
+         menuItem.setEnabled(permiss.isWritePermission() && hasPermission);
       } else if (obj instanceof Artifact) {
          Artifact artifact = (Artifact) obj;
          MenuPermissions permiss = new MenuPermissions(artifact);

@@ -17,14 +17,15 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -63,7 +64,8 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       List<BranchToken> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
       for (BranchToken branch : selectedBranches) {
          confirmDialogResults.logf("Branch: %s\n", branch.toStringWithId());
-         if (!AccessControlManager.hasPermission(branch, PermissionEnum.WRITE)) {
+         if (!OseeApiService.get().getAccessControlService().hasBranchPermission(branch, PermissionEnum.WRITE,
+            errorResults).isSuccess()) {
             errorResults.errorf("No write permission for Branch %s.\n\n", branch.toStringWithId());
          }
          if (BranchManager.hasChildren(branch)) {
@@ -72,7 +74,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       }
 
       if (errorResults.isErrors()) {
-         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, errorResults.toString());
+         XResultDataDialog.open(errorResults, type.dialogTitle, type.dialogTitle);
       } else {
          if (MessageDialog.openQuestion(Displays.getActiveShell(), type.dialogTitle, confirmDialogResults.toString())) {
             performOperation(selectedBranches);
@@ -85,7 +87,8 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return !branches.isEmpty() && (AccessControlManager.isOseeAdmin() || canEnableBranches(branches));
+      return !branches.isEmpty() && (OseeApiService.get().getAccessControlService().isOseeAdmin() || canEnableBranches(
+         branches));
    }
 
    private boolean canEnableBranches(List<? extends BranchId> branches) {

@@ -26,6 +26,8 @@ public final class DemoBranches {
    public static final BranchToken SAW_Bld_2 = BranchToken.create(5, "SAW_Bld_2");
    public static final BranchToken SAW_Bld_3 = BranchToken.create(6, "SAW_Bld_3");
 
+   public static final BranchToken SAW_PL_Access_Baseline_Test = BranchToken.create(5432, "SAW Access Control Baseline Test");
+
    public static final BranchToken SAW_PL = BranchToken.create(8, "SAW Product Line");
    public static final BranchToken SAW_PL_Hardening_Branch = BranchToken.create(9, "SAW PL Hardening Branch");
    public static final BranchToken SAW_PL_Working_Branch = BranchToken.create(10, "SAW PL Working Branch");

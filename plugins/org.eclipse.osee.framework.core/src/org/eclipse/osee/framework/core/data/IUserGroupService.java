@@ -29,7 +29,11 @@ public interface IUserGroupService {
    /**
     * Checks for existence of user group, then if member
     */
-   public boolean isUserMember(IUserGroupArtifactToken amsUsers, Long id);
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, Long id);
+
+   public boolean isUserMember(IUserGroupArtifactToken userGroup, ArtifactId user);
 
    public Collection<UserToken> getUsers(IUserGroupArtifactToken userGroup);
+
+   IUserGroup getUserGroup(ArtifactToken userGroupArt);
 }

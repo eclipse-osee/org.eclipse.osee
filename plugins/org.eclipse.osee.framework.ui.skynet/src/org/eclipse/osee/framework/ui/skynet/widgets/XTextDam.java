@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class XTextDam extends XText implements AttributeWidget {
 
-   public static final String WIDGET_ID = XStackedDam.class.getSimpleName();
+   public static final String WIDGET_ID = XTextDam.class.getSimpleName();
    private Artifact artifactStrongRef;
    private AttributeTypeToken attributeType;
    private final boolean isWeakReference;

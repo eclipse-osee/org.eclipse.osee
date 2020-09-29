@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.data.AccessContextToken;
  */
 public final class AtsAccessContextTokens {
 
-   public static final AccessContextToken DENY_CONTEXT =
-      AccessContextToken.valueOf(4870045005030602805L, "ats.branchobject.deny");
+   public static final AccessContextToken ATS_BRANCH_READ =
+      AccessContextToken.valueOf(4870045005030602805L, "ats.branch.read");
 
    private AtsAccessContextTokens() {
       // Branch Object Contexts;

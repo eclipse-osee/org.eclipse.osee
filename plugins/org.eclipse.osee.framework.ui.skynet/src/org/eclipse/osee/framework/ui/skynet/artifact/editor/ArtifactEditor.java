@@ -17,22 +17,25 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.access.internal.OseeApiService;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.ui.IEditorReference;
@@ -109,7 +112,10 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         XResultData rd =
+            AccessControlArtifactUtil.getXResultAccessHeader("Artifact Editor - Save", getEditorInput().getArtifact());
+         rd.logf("\n\n%s", Lib.exceptionToString(ex));
+         XResultDataUI.report(rd, "Artifact Editor - Save");
       }
    }
 
@@ -191,7 +197,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    private void createAttributesTab() {
-      if (AccessControlManager.isOseeAdmin()) {
+      if (OseeApiService.get().getAccessControlService().isOseeAdmin()) {
          attrTab = new ArtEdAttrTab(this, getArtifactFromEditorInput());
          try {
             addPage(attrTab);

@@ -61,7 +61,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             if (!isAdmin) {
                IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
                if (!atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.addMember(UserManager.getUser());
+                  atsAdminGroup.addMember(UserManager.getUser(), true);
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
                }
@@ -69,21 +69,21 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                IUserGroup oseeAdminGroup =
                   org.eclipse.osee.framework.skynet.core.access.UserGroupService.getOseeAdmin();
                if (!oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.addMember(UserManager.getUser());
+                  oseeAdminGroup.addMember(UserManager.getUser(), true);
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }
             } else {
                IUserGroup atsAdminGroup = UserGroupService.get(AtsUserGroups.AtsAdmin);
                if (atsAdminGroup.isCurrentUserMember()) {
-                  atsAdminGroup.removeMember(UserManager.getUser());
+                  atsAdminGroup.removeMember(UserManager.getUser(), true);
                   Conditions.assertTrue(atsAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) atsAdminGroup.getArtifact()).persist("Toggle Admin");
                }
 
                IUserGroup oseeAdminGroup = UserGroupService.get(CoreUserGroups.OseeAdmin);
                if (oseeAdminGroup.isCurrentUserMember()) {
-                  oseeAdminGroup.removeMember(UserManager.getUser());
+                  oseeAdminGroup.removeMember(UserManager.getUser(), true);
                   Conditions.assertTrue(oseeAdminGroup.getArtifact() instanceof Artifact, "Must be artifact.");
                   ((Artifact) oseeAdminGroup.getArtifact()).persist("Toggle Admin");
                }

@@ -768,3 +768,4 @@ public final class BranchManager {
    }
 
 }
+

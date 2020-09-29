@@ -39,6 +39,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core.access,
+ org.eclipse.osee.ats.core.access.demo,
  org.eclipse.osee.ats.core.agile,
  org.eclipse.osee.ats.core.agile.operations,
  org.eclipse.osee.ats.core.ai,

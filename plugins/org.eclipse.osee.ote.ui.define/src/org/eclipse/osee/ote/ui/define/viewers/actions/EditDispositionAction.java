@@ -16,7 +16,6 @@ package org.eclipse.osee.ote.ui.define.viewers.actions;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.internal.Activator;
+import org.eclipse.osee.ote.ui.define.internal.OseeApiService;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
 
 /**
@@ -66,7 +66,8 @@ public class EditDispositionAction extends AbstractActionHandler {
    }
 
    private void checkPermissions(Artifact artifact) {
-      if (true != AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
+      if (OseeApiService.get().getAccessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
+         null).isErrors()) {
          throw new OseeArgumentException("The user %s does not have read access to %s", UserManager.getUser(),
             artifact);
       }

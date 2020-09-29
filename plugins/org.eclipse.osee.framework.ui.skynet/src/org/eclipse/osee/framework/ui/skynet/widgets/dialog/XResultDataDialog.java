@@ -45,12 +45,15 @@ public class XResultDataDialog extends MessageDialog {
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final String dialogTitle;
-   private XResultData rd;
+   private XResultData detailsResultsData;
 
-   public XResultDataDialog(String dialogTitle, String dialogMessage, XResultData rd) {
+   /**
+    * @param detailsResultsData - Will open if Show Details is selected
+    */
+   public XResultDataDialog(String dialogTitle, String dialogMessage, XResultData detailsResultsData) {
       this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
          new String[] {"OK", "Cancel"}, 0);
-      this.rd = rd;
+      this.detailsResultsData = detailsResultsData;
    }
 
    public XResultDataDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
@@ -84,7 +87,7 @@ public class XResultDataDialog extends MessageDialog {
 
          @Override
          public void handleEvent(Event event) {
-            XResultDataUI.report(rd, dialogTitle);
+            XResultDataUI.report(detailsResultsData, dialogTitle);
             close();
          }
       });
@@ -111,6 +114,11 @@ public class XResultDataDialog extends MessageDialog {
 
    public void addShellCloseEventListeners(IShellCloseEvent event) {
       closeEventListeners.add(event);
+   }
+
+   public static void open(XResultData rd, String title, String format, Object... data) {
+      XResultDataDialog diag = new XResultDataDialog(title, String.format(format, data), rd);
+      diag.open();
    }
 
 }

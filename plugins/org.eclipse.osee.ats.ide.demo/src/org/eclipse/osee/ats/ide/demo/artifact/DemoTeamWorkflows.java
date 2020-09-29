@@ -45,8 +45,8 @@ public class DemoTeamWorkflows implements ITeamWorkflowProvider {
    @Override
    public String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName) {
       try {
-         if (teamWf.getTeamDefinition().getName().contains("SAW Test")) {
-            return "SAW Test - " + defaultBranchName;
+         if (teamWf.getTeamDefinition().getName().contains("SAW Code")) {
+            return "SAW Code - " + defaultBranchName;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

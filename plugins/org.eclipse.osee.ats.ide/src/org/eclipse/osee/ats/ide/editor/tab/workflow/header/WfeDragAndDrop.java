@@ -16,21 +16,24 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -72,18 +75,38 @@ public class WfeDragAndDrop extends SkynetDragAndDrop {
          ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          if (dropTarget != null) {
             try {
-               AccessPolicy policy = ServiceUtil.getAccessPolicy();
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
                BranchId destinationBranch = dropTarget.getBranch();
+               boolean onSameBranch = true;
                for (Artifact art : artifactsBeingDropped) {
                   if (art.isOnBranch(destinationBranch)) {
                      artsOnSameBranchAsDestination.add(art);
+                  } else {
+                     onSameBranch = false;
+                     break;
                   }
                }
-               valid = policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
-                  CoreRelationTypes.SupportingInfo_SupportingInfo, Level.FINE).matched();
+               if (!onSameBranch) {
+                  AWorkbench.popup("Related Artifact(s) must be on the same branch.\n\nAborting Drop.");
+                  return false;
+               }
+               if (artsOnSameBranchAsDestination.isEmpty()) {
+                  AWorkbench.popup("No Artifact(s) to relate.\n\nAborting Drop.");
+                  return false;
+               }
 
+               XResultData rd = AtsApiService.get().getAccessControlService().hasRelationTypePermission(dropTarget,
+                  CoreRelationTypes.SupportingInfo_SupportingInfo, artsOnSameBranchAsDestination, PermissionEnum.WRITE,
+                  AccessControlArtifactUtil.getXResultAccessHeader("Relating Artifacts to Workflow",
+                     artsOnSameBranchAsDestination));
+               if (rd.isErrors()) {
+                  XResultDataDialog.open(rd, "Relate Artifact(s) to Workflow",
+                     "Invalid Access for Relation.\n\nAborting Drop.");
+                  valid = false;
+               } else {
+                  valid = true;
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

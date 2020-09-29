@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -159,7 +160,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
             }
             idToArtifact.put(art.getId(), art);
          } catch (Exception ex) {
-            System.err.println("Exception " + ex.getLocalizedMessage());
+            XConsoleLogger.err("Exception " + ex.getLocalizedMessage());
          }
       }
       time2.end();
