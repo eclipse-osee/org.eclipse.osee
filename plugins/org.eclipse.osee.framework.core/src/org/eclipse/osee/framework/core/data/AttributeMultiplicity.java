@@ -110,9 +110,13 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    public Multiplicity getMultiplicity(AttributeTypeToken attributeType) {
       return get(attributeType).getMultiplicity();
    }
-   
+
    public <T> T getAttributeDefault(AttributeTypeGeneric<T> attributeType) {
-      return (T) get(attributeType).getDefaultValue();
+      try {
+         return (T) get(attributeType).getDefaultValue();
+      } catch (Exception ex) {
+         return attributeType.getBaseAttributeTypeDefaultValue();
+      }
    }
 
    public ArtifactTypeToken get() {

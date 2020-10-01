@@ -84,6 +84,7 @@ public class StateToken extends NamedIdBase {
    public static StateToken Superceded = StateToken.valueOf(563282700L, "Superceded");
    public static StateToken Test = StateToken.valueOf(1665675868L, "Test");
    public static StateToken TaskAttributes = StateToken.valueOf(1974423185L, "Task Attribute");
+   public static StateToken Trace = StateToken.valueOf(5249213611527372236L, "Trace");
    public static StateToken Unit_Tested = StateToken.valueOf(484956090L, "Unit_Tested");
    public static StateToken Verification = StateToken.valueOf(1967264839L, "Verification");
    public static StateToken Verify = StateToken.valueOf(1990859957L, "Verify");
