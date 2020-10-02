@@ -50,7 +50,6 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
    public static PriorityColumnUI instance = null;
    private final AtsAttributeValueColumn colToken;
    private final AttributeTypeEnum<?> attrToken;
-   private Artifact artifact;
 
    public static PriorityColumnUI getInstance() {
       if (instance == null) {
@@ -107,6 +106,7 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          // Only prompt change for sole attribute types
+         Artifact artifact = (Artifact) treeItem.getData();
          if (artifact.getArtifactType().getMax(getAttributeType()) != 1) {
             return false;
          }
