@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction.RemovedF
 import org.eclipse.osee.ats.ide.workflow.goal.SetCollectorOrderAction;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.ats.ide.world.BacklogContentProvider;
 import org.eclipse.osee.ats.ide.world.IMenuActionProvider;
 import org.eclipse.osee.ats.ide.world.IWorldEditor;
 import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
@@ -285,6 +286,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       if (!Widgets.isAccessible(worldComposite)) {
          worldComposite =
             new WorldComposite(this, provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
+         worldComposite.getWorldXViewer().setContentProvider(
+            new BacklogContentProvider(worldComposite.getWorldXViewer()));
 
          new MembersDragAndDrop(worldComposite, WorkflowEditor.EDITOR_ID);
          worldComposite.setLayout(ALayout.getZeroMarginLayout());
