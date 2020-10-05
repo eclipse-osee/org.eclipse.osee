@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.event.Event;
 
 /**
  * @author Donald G. Dunne
@@ -47,17 +48,15 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
    }
 
    @Override
-   protected void reloadWorkItemsAsNecessry(Collection<ArtifactId> ids) {
+   protected void reloadWorkItemsAsNecessry(Collection<ArtifactId> ids, Event event) {
       for (ArtifactId workItemId : ids) {
          Artifact artifact = ArtifactCache.getActive(workItemId, AtsApiService.get().getAtsBranch());
          if (artifact != null) {
-            if (WfeArtifactEventManager.isLoaded(artifact)) {
-               artifact.reloadAttributesAndRelations();
-            } else {
-               ArtifactCache.deCache(artifact);
-            }
+            artifact.reloadAttributesAndRelations();
          }
       }
+      // And, handle event for those WorkflowEditor listeners to specific attr, rel or arts
+      WfeArtifactEventManager.handleEventAfterReload(event);
    }
 
    @Override

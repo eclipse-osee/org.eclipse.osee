@@ -30,7 +30,7 @@ public class WorldXViewerEventHandler implements EventHandler {
    @Override
    public void handleEvent(Event event) {
       try {
-         // If artifact in opened WorkflowEditor, reload.  Else just decache.
+         // If artifact in opened WorkflowEditor, reload.
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_TRANSITIONED.getTopic())) {
             String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_IDS_KEY);
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {

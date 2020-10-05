@@ -41,5 +41,5 @@ public interface OseeEventService {
     * Kick a commit event to this local client to update artifact model for committed artifacts. This is needed cause
     * commit is made on server, but clients need to be notified of updates to commited branch artifact model.
     */
-   void sendCommitEvent(Class class1, ArtifactEvent artifactEvent);
+   void sendCommitEvent(Class<?> class1, ArtifactEvent artifactEvent);
 }

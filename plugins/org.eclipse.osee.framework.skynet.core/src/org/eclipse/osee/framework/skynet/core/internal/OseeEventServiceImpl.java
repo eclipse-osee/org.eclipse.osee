@@ -224,11 +224,13 @@ public class OseeEventServiceImpl implements OseeEventService {
       handlers.removeLocalHandler(BranchEvent.class);
       handlers.removeLocalHandler(RemoteEventServiceEventType.class);
       handlers.removeLocalHandler(TransactionEvent.class);
+      handlers.removeLocalHandler(TopicEvent.class);
 
       handlers.removeRemoteHandler(RemotePersistEvent1.class);
       handlers.removeRemoteHandler(RemoteBranchEvent1.class);
       handlers.removeRemoteHandler(RemoteBroadcastEvent1.class);
       handlers.removeRemoteHandler(RemoteTransactionEvent1.class);
+      handlers.removeRemoteHandler(RemoteTopicEvent1.class);
    }
 
    private ExecutorService createExecutor(String threadPrefix) {
@@ -271,7 +273,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    }
 
    @Override
-   public void sendCommitEvent(Class class1, ArtifactEvent artifactEvent) {
+   public void sendCommitEvent(Class<?> class1, ArtifactEvent artifactEvent) {
       eventTransport.sendCommitEvent(class1, artifactEvent);
    }
 

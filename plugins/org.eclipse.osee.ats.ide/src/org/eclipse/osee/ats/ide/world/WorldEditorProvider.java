@@ -13,8 +13,10 @@
 
 package org.eclipse.osee.ats.ide.world;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -23,13 +25,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
@@ -85,10 +86,13 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
          return;
       }
 
-      // De-cache any object so they will be reloaded during search
+      List<Artifact> artifacts = new ArrayList<Artifact>();
       for (TreeItem item : worldEditor.getWorldComposite().getXViewer().getVisibleItems()) {
-         ArtifactCache.deCache(AtsApiService.get().getQueryServiceIde().getArtifact(item));
+         if (item.getData() instanceof Artifact) {
+            artifacts.add((Artifact) item.getData());
+         }
       }
+      ArtifactQuery.reloadArtifacts(artifacts);
 
       LoadTableJob job = null;
       job = new LoadTableJob(worldEditor, this, searchType, tableLoadOptions, pend);

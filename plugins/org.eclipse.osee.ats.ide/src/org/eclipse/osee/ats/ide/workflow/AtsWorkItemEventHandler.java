@@ -38,11 +38,7 @@ public class AtsWorkItemEventHandler implements EventHandler {
             for (Long workItemId : Collections.fromString(ids, ";", Long::valueOf)) {
                Artifact artifact = ArtifactCache.getActive(workItemId, AtsApiService.get().getAtsBranch());
                if (artifact != null) {
-                  if (WfeArtifactEventManager.isLoaded(artifact)) {
-                     artifact.reloadAttributesAndRelations();
-                  } else {
-                     ArtifactCache.deCache(artifact);
-                  }
+                  artifact.reloadAttributesAndRelations();
                }
             }
             // And, handle event for those WorkflowEditor listeners to specific attr, rel or arts

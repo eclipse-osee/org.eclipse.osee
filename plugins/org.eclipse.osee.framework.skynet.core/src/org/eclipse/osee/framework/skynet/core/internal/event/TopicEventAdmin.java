@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
@@ -28,11 +29,10 @@ public class TopicEventAdmin implements IEventListener {
 
    public static EventAdmin eventAdmin;
 
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      TopicEventAdmin.eventAdmin = eventAdmin;
-   }
-
    public void handleTopicEvent(TopicEvent event, Sender sender) {
+      if (eventAdmin == null) {
+         eventAdmin = OsgiUtil.getService(TopicEventAdmin.class, EventAdmin.class);
+      }
       if (eventAdmin != null) {
          Map<String, String> properties = new HashMap<>();
          properties.putAll(event.getProperties());
