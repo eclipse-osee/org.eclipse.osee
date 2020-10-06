@@ -24,4 +24,9 @@ public interface IAgileSprint extends IAtsWorkItem, IAgileObject {
 
    public boolean isActive();
 
+   @Override
+   default boolean hasAction() {
+      return false;
+   }
+
 }

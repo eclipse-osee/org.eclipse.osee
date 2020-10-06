@@ -52,6 +52,11 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
    }
 
    @Override
+   public boolean isStandAloneReview() {
+      return !getActionableItems().isEmpty();
+   }
+
+   @Override
    public String getRelatedToState() {
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.RelatedToState, "");
    }

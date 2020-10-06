@@ -23,4 +23,11 @@ public interface IAtsAbstractReview extends IAtsWorkItem, IAtsActionableItemProv
 
    String getRelatedToState();
 
+   boolean isStandAloneReview();
+
+   @Override
+   default boolean hasAction() {
+      return !isStandAloneReview();
+   }
+
 }

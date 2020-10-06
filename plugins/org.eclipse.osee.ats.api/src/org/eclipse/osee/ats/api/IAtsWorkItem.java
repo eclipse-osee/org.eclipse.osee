@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.HasAction;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -118,6 +119,10 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    default boolean isCompletedOrCancelled() {
       return isCompleted() || isCancelled();
+   }
+
+   default boolean hasAction() {
+      return this instanceof HasAction;
    }
 
    void setStateMgr(IAtsStateManager stateMgr);

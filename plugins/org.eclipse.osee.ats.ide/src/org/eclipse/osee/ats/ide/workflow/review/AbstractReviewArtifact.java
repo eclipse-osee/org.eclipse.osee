@@ -128,10 +128,6 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       return parentTeamArt;
    }
 
-   public boolean isStandAloneReview() {
-      return AtsApiService.get().getActionableItemService().hasActionableItems(this);
-   }
-
    public Artifact getArtifact() {
       return this;
    }
@@ -151,6 +147,11 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    @Override
    public String getRelatedToState() {
       return getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
+   }
+
+   @Override
+   public boolean isStandAloneReview() {
+      return !getActionableItems().isEmpty();
    }
 
 }

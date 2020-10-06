@@ -19,5 +19,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  * @author Donald G. Dunne
  */
 public interface IAtsGoal extends IAtsWorkItem {
-   // do nothing
+
+   @Override
+   default boolean hasAction() {
+      return false;
+   }
+
 }
