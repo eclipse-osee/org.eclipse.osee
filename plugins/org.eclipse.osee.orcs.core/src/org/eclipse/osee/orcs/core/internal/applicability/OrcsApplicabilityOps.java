@@ -15,13 +15,16 @@ package org.eclipse.osee.orcs.core.internal.applicability;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -525,6 +528,32 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
+   public XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability, UserId account) {
+      XResultData results = new XResultData();
+      try {
+         UserId user = account;
+         if (user == null) {
+            user = SystemUser.OseeSystem;
+         }
+         ViewDefinition view = getView(viewId.getIdString(), branch);
+         if (orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
+            applicability)) {
+            TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+               "Remove applicability " + applicability + " from configuration: " + view.getName());
+            tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
+
+            tx.commit();
+         } else {
+            results.error(applicability + " does not exist on configuration: " + view.getName());
+         }
+
+      } catch (Exception ex) {
+         results.error(Lib.exceptionToString(ex));
+      }
+      return results;
+   }
+
+   @Override
    public ViewDefinition getView(String view, BranchId branch) {
       ViewDefinition viewDef = new ViewDefinition();
       if (Strings.isNumeric(view)) {
@@ -880,6 +909,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             }
             tx.createApplicabilityForView(viewId, applicability);
             tx.commit();
+            updateCompoundApplicabilities(branch, viewId, user);
 
          } else {
             results.error("Feature is not defined or Value is invalid.");
@@ -887,6 +917,75 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
       }
 
+      return results;
+   }
+
+   private XResultData updateCompoundApplicabilities(BranchId branch, ArtifactId viewId, UserId user) {
+      /**
+       * After updating an value on the feature value matrix for a specific view; there is a need to evaluate each of
+       * the existing compound applicabilities on a branch to see if the applicability is valid for the view.
+       */
+      XResultData results = new XResultData();
+      Collection<ApplicabilityToken> allApps =
+         orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+      List<ApplicabilityToken> compoundApps =
+         allApps.stream().filter(p -> p.getName().contains("|") || p.getName().contains("&")).collect(
+            Collectors.toList());
+      for (ApplicabilityToken app : compoundApps) {
+         boolean validApplicability = false;
+         if (app.getName().contains("|")) {
+            for (String value : app.getName().split("\\|")) {
+               /**
+                * loop through existing applicabilities for view and see if new applicability exists if so, stop else
+                * check that at least one of the | separated applicability exists
+                **/
+               Iterable<String> existingApps =
+                  orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+               for (String appl : existingApps) {
+                  if (appl.equals(value.trim())) {
+                     validApplicability = true;
+                  }
+               }
+            }
+         } else {
+            int cnt = app.getName().split("&").length;
+            int validCnt = 0;
+            for (String value : app.getName().split("&")) {
+               /**
+                * loop through existing applicabilities for view and see if new applicability exists if so, stop else
+                * check that ALL of the & separated applicability exist
+                **/
+               Iterable<String> existingApps =
+                  orcsApi.getQueryFactory().tupleQuery().getTuple2(CoreTupleTypes.ViewApplicability, branch, viewId);
+               for (String appl : existingApps) {
+                  if (appl.equals(value.trim())) {
+                     validCnt++;
+                  }
+               }
+
+            }
+            if (cnt == validCnt) {
+               validApplicability = true;
+            }
+         }
+
+         if (orcsApi.getQueryFactory().applicabilityQuery().applicabilityExistsOnBranchView(branch, viewId,
+            app.getName())) {
+            if (!validApplicability) {
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+                  "Remove invalid " + app.getName() + " compound applicability");
+               tx.deleteTuple2(CoreTupleTypes.ViewApplicability, viewId, app.getName());
+               tx.commit();
+            }
+         } else {
+            if (validApplicability) {
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, user,
+                  "Apply " + app.getName() + " now valid compound applicability");
+               tx.createApplicabilityForView(viewId, app.getName());
+               tx.commit();
+            }
+         }
+      }
       return results;
    }
 
@@ -1083,15 +1182,15 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   cfgGroup).asArtifactTokenOrSentinel();
       }
       if (cfgGroupArtToken.isValid()) {
+         List<ArtifactToken> views =
+            orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_Group,
+               cfgGroupArtToken).asArtifactTokens();
 
          for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
             String resultApp = null;
             if (feature.getValues().contains("Included")) {
                resultApp = feature.getName() + " = Excluded";
             }
-            List<ArtifactToken> views =
-               orcsApi.getQueryFactory().fromBranch(branch).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_Group,
-                  cfgGroupArtToken).asArtifactTokens();
             for (ArtifactId viewId : views) {
 
                String applicability = orcsApi.getQueryFactory().applicabilityQuery().getExistingFeatureApplicability(
@@ -1120,7 +1219,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                createApplicabilityForView(cfgGroupArtToken, resultApp, account, branch);
             }
          }
-
+         for (ArtifactId viewId : views) {
+            for (ApplicabilityToken applicabilityToken : orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(
+               viewId, branch)) {
+               if (applicabilityToken.getName().contains("|") || applicabilityToken.getName().contains("&")) {
+                  createApplicabilityForView(cfgGroupArtToken, applicabilityToken.getName(), account, branch);
+               }
+            }
+         }
       } else {
          results.error("Invalid Configuration Group name.");
       }

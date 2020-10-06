@@ -190,6 +190,20 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public XResultData removeApplicabilityFromView(ArtifactId viewId, String applicability) {
+      XResultData results = isAccess();
+      UserId user = account;
+      if (user == null) {
+         user = SystemUser.OseeSystem;
+      }
+      if (results.isErrors()) {
+         return results;
+      }
+
+      return ops.removeApplicabilityFromView(branch, viewId, applicability, user);
+   }
+
+   @Override
    public void addMissingApplicabilityFromParentBranch() {
       orcsApi.getBranchOps().addMissingApplicabilityFromParentBranch(branch);
    }

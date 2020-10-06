@@ -275,4 +275,10 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_XML)
    public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter);
 
+   @DELETE
+   @Path("view/{id}/applic")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData removeApplicabilityFromView(@PathParam("id") ArtifactId viewId, String applicability);
+
 }

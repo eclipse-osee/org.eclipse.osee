@@ -81,4 +81,6 @@ public interface OrcsApplicability {
 
    XResultData updateConfigGroup(BranchId branch, UserId account);
 
+   XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability, UserId account);
+
 }
