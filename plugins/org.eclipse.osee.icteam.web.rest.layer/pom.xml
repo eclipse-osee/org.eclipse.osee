@@ -10,15 +10,8 @@
 		<relativePath>../../plugins/org.eclipse.osee.server.parent</relativePath>
 	</parent>
 
-  <artifactId>org.eclipse.osee.icteam.web.rest.layer</artifactId>
-  <packaging>eclipse-plugin</packaging>
-
-  <name>org.eclipse.osee.icteam.web.rest.layer</name>
-  <version>1.4.0-SNAPSHOT</version>
-  
-     <!--    <properties>
-      <tycho-version>0.15.0</tycho-version>
-   </properties> -->
-    
+	<artifactId>org.eclipse.osee.icteam.web.rest.layer</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>iCTeam Web Rest Layer (Incubation)</name>
 
 </project> 

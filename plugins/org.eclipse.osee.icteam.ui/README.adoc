@@ -1,0 +1,7 @@
+= iCTeam UI Readme
+Ajay Chandrahasan <Ajay.Chandrahasan@in.bosch.com>
+
+
+This plug-in is the Angular Spring boot application which contributes ICTEAM web UI to OSEE.
+This plug-in is not part of OSEE application server build or launch and should be launched as a stand-alone Spring boot application.
+The Spring boot application communicates to OSEE application server to fetch data for ICTEAM UI.

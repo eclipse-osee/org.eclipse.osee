@@ -106,7 +106,7 @@ export class WorkitemComponent implements OnInit {
 
 
 
-    this.workitemService.getTaskTypeAndPriorities('1152921504606847180').subscribe(
+    this.workitemService.getTaskTypeAndPriorities('1152921504606851584').subscribe(
       (result: Response) => {
         this.taskTypeList = result['artifactList'];
       },
@@ -201,7 +201,7 @@ export class WorkitemComponent implements OnInit {
     userString = userString + ";;"
     this.taskData.urlinfo = urlData;
     this.taskData.attributeMap["1152921504606847192"] = new Array(userString);
-    this.taskData.attributeMap["1152921504606847180"] = new Array(this.selectedTaskType.name);
+    this.taskData.attributeMap["1152921504606851584"] = new Array(this.selectedTaskType.name);
     this.taskData.attributeMap["1152921504606847088"] = new Array(this.taskName);
     this.taskData.attributeMap["1152921504606847174"] = new Array(this.userDetails.username);
     this.taskData.attributeMap["1152921504606847196"] = new Array(this.taskDesc);
@@ -212,7 +212,7 @@ export class WorkitemComponent implements OnInit {
 
     }
     else{
-      this.taskData.attributeMap["1152921504606851479"] = new Array(this.selectedStory.toString());
+      this.taskData.attributeMap["1152921573057888257"] = new Array(this.selectedStory.toString());
     }
     
     this.taskData.attributeMap["raplink"] = new Array<String>("");

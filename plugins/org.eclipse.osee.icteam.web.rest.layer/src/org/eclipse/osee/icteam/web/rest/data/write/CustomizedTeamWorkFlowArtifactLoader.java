@@ -45,14 +45,14 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * This class is used to populate the CustomizedTeamWorkFlowArtifact from the ArtifactReadable object
- * 
+ *
  * @author Ajay Chandrahasan
  */
 public class CustomizedTeamWorkFlowArtifactLoader {
 
    /**
     * This function sets the values in the transferable artifact from artifact readable object
-    * 
+    *
     * @param readable ArtifactReadable Object holding the values
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the values will be set.
     */
@@ -82,15 +82,13 @@ public class CustomizedTeamWorkFlowArtifactLoader {
       Collection<RelationTypeToken> existingRelationTypes = readable.getExistingRelationTypes();
       try {
          for (RelationTypeToken iRelationType : existingRelationTypes) {
-            RelationTypeSide createRelationTypeSide =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_B);
+            RelationTypeSide createRelationTypeSide = RelationTypeSide.create((iRelationType), RelationSide.SIDE_B);
             ResultSet<ArtifactReadable> relatedArtifacts = readable.getRelated(createRelationTypeSide);
             if (relatedArtifacts.size() > 0) {
                fillRelations(relatedArtifacts, createRelationTypeSide, iRelationType, transArtifact);
             }
 
-            RelationTypeSide createRelationTypeSide1 =
-               RelationTypeSide.create(((RelationTypeToken) iRelationType), RelationSide.SIDE_A);
+            RelationTypeSide createRelationTypeSide1 = RelationTypeSide.create((iRelationType), RelationSide.SIDE_A);
             ResultSet<ArtifactReadable> relatedArtifacts1 = readable.getRelated(createRelationTypeSide1);
             if (relatedArtifacts1.size() > 0) {
                fillRelations(relatedArtifacts1, createRelationTypeSide1, iRelationType, transArtifact);
@@ -107,7 +105,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
    /**
     * This function sets the values in the transferable artifact object from artifact readable object but the Relations
     * will not be filled in this method
-    * 
+    *
     * @param readable ArtifactReadable Object holding the values
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the values will be set.
     */
@@ -293,7 +291,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
 
    /**
     * This function sets the estimated completion date of the task in the CustomizedTeamWorkFlowArtifact object
-    * 
+    *
     * @param string String object holding the estimated completion date information
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the ExpectedDate will be set.
     */
@@ -302,18 +300,17 @@ public class CustomizedTeamWorkFlowArtifactLoader {
 
       if (string.length() > 0) {
          try {
-            expDate = new SimpleDateFormat("E MMM dd hh:mm:ss zzz yyyy", Locale.getDefault()).parse(string);
+            expDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(string);
             transArtifact.setExpectedDate(expDate);
          } catch (ParseException e) {
             e.printStackTrace();
          }
       }
-
    }
 
    /**
     * This function sets the completion date of the task in the CustomizedTeamWorkFlowArtifact object
-    * 
+    *
     * @param string String object holding the completion date information
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the CompletionDate will be set.
     */
@@ -333,7 +330,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
 
    /**
     * This function sets the created date of the task in the CustomizedTeamWorkFlowArtifact object
-    * 
+    *
     * @param string String object holding the created date information
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the CreatedDate will be set.
     */
@@ -342,7 +339,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
 
       if (string.length() > 0) {
          try {
-            createdDate = new SimpleDateFormat("E MMM dd hh:mm:ss zzz yyyy", Locale.getDefault()).parse(string);
+            createdDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(string);
             transArtifact.setCreatedDate(createdDate);
          } catch (ParseException e) {
             e.printStackTrace();
@@ -354,7 +351,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
    /**
     * This function sets the team members and team leads information of the task in the CustomizedTeamWorkFlowArtifact
     * object
-    * 
+    *
     * @param teamArtifact ArtifactReadable object holding the team member and team lead information
     * @param transArtifact is the CustomizedTeamWorkFlowArtifact object in which the team member and team lead
     * information will be set.
@@ -409,7 +406,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
 
    /**
     * This function sets the relations in the CustomizedTeamWorkFlowArtifact object
-    * 
+    *
     * @param relatedArtifacts ResultSet<ArtifactReadable> object which holds the relations
     * @param side RelationTypeSide
     * @param iRelationType the key for the relation map, set in CustomizedTeamWorkFlowArtifact object
@@ -437,8 +434,7 @@ public class CustomizedTeamWorkFlowArtifactLoader {
             list1.add(art);
          }
       }
-      ar.putRelations(
-         ((RelationTypeToken) iRelationType).getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(),
+      ar.putRelations(iRelationType.getName() + CommonConstants.RELATION_MAP_KEY_SEPARATOR + side.getSide().name(),
          list1);
    }
 

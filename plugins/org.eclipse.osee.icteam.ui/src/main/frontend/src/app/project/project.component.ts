@@ -56,7 +56,7 @@ export class ProjectComponent implements OnInit {
       this.projectData.currentUserId = this.userDetails.username;
       this.projectData.name = projectForm.form.value["name"];
       this.projectData.attributeMap = new Map<any, Array<String>>();
-      this.projectData.attributeMap["1152921504606847228"] = new Array(projectForm.form.value["shortname"]);
+      this.projectData.attributeMap["1152921504606847340"] = new Array(projectForm.form.value["shortname"]);
       this.projectData.attributeMap["ShortName"] = new Array(projectForm.form.value["shortname"]);
       console.log(this.projectData);
       this.projectService.save(this.projectData).subscribe(

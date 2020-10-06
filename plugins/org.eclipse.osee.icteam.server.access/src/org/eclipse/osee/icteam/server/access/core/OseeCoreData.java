@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.server.access.core;
 
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -22,12 +22,12 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class OseeCoreData {
    private static OrcsApi orcsApi;
-   private static IAtsServer atsServer;
+   private static AtsApiServer atsServer;
    //    private final Set<Object> singletons = new HashSet<>();
 
    /**
     * Sets the value of OrcsApi used in org.eclipse.osee.icteam.server.access.xml
-    * 
+    *
     * @param orcsApi
     */
    public void setOrcsApi(final OrcsApi orcsApi) {
@@ -36,7 +36,7 @@ public class OseeCoreData {
 
    /**
     * To get OrcsApi value
-    * 
+    *
     * @return orcsApi value
     */
    public static OrcsApi getOrcsApi() {
@@ -45,20 +45,19 @@ public class OseeCoreData {
 
    /**
     * Sets the value of atsServer used in org.eclipse.osee.icteam.icteam.server.access.xml
-    * 
+    *
     * @param atsServer
     */
-   public void setAtsServer(final IAtsServer atsServer) {
+   public void setAtsServer(final AtsApiServer atsServer) {
       OseeCoreData.atsServer = atsServer;
    }
 
    /**
     * To get atsServer value
-    * 
+    *
     * @return atsServer value
     */
-   public static IAtsServer getAtsServer() {
+   public static AtsApiServer getAtsServer() {
       return atsServer;
    }
-
 }

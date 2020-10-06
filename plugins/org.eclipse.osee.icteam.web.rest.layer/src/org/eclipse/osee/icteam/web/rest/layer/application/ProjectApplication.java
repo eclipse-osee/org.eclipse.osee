@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs.ICTeamAtsWorkDefintionProvider;
 import org.eclipse.osee.icteam.web.rest.layer.structure.resources.ComponentsResource;
 import org.eclipse.osee.icteam.web.rest.layer.structure.resources.GeneralArtifactResource;
@@ -45,13 +45,13 @@ public class ProjectApplication extends Application {
 
    private static AtsApi atsApi;
 
-   public void setAtsServer(final IAtsServer atsServer) {
+   public void setAtsServer(final AtsApiServer atsServer) {
       atsApi = atsServer;
    }
 
    /**
     * To get atsServer value
-    * 
+    *
     * @return atsServer value
     */
    public static AtsApi getAtsServer() {
@@ -91,8 +91,6 @@ public class ProjectApplication extends Application {
 
    @Override
    public Set<Object> getSingletons() {
-
       return singletons;
    }
-
 }

@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.AgileChangeTypeEnum;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityEnum;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -467,8 +468,8 @@ public class TeamWorkflowResource extends AbstractConfigResource {
             Set<TransferableArtifact> relatedVersions = new HashSet<TransferableArtifact>();
             relatedVersions.addAll((Collection<? extends TransferableArtifact>) list);
 
-            if (((updatedReleases != null) && (updatedReleases.size() > 0)) || ((relatedVersions != null) && (relatedVersions.size() > 0))) {
-               if ((relatedVersions != null) && (relatedVersions.size() > 0)) {
+            if (!updatedReleases.isEmpty() || !relatedVersions.isEmpty()) {
+               if (!relatedVersions.isEmpty()) {
                   for (TransferableArtifact transferableArtifact : relatedVersions) {
                      ArtifactReadable releaseArtifact =
                         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(
@@ -1516,9 +1517,7 @@ public class TeamWorkflowResource extends AbstractConfigResource {
          List<String> changeTypeList = new ArrayList<String>();
          List<String> priorityTypeList = new ArrayList<String>();
          Set<String> valuesAsOrderedStringSetChangeType = new HashSet<>();
-         Collection<org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.ChangeTypeEnum> enumValues =
-            AtsAttributeTypes.AgileChangeType.getEnumValues();
-         for (org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.ChangeTypeEnum changeTypeEnum : enumValues) {
+         for (AgileChangeTypeEnum changeTypeEnum : AtsAttributeTypes.AgileChangeType.getEnumValues()) {
             valuesAsOrderedStringSetChangeType.add(changeTypeEnum.getName());
          }
 
@@ -1823,27 +1822,25 @@ public class TeamWorkflowResource extends AbstractConfigResource {
 
          List<TeamWorkFlowArtifact> listTras = new ArrayList<TeamWorkFlowArtifact>();
 
-         if (childArtifact != null) {
-            ResultSet<ArtifactReadable> result =
-               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(childArtifact).getResults();
-            ArtifactReadable readableArtifact = result.getExactlyOne();
-            CustomizedTeamWorkFlowArtifact ar = new CustomizedTeamWorkFlowArtifact();
-            CustomizedTeamWorkFlowArtifactLoader.copyArtifactReadbleToTransferableArtifactWithoutRelation(
-               readableArtifact, ar);
+         ResultSet<ArtifactReadable> result =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(childArtifact).getResults();
+         ArtifactReadable readableArtifact = result.getExactlyOne();
+         CustomizedTeamWorkFlowArtifact ar = new CustomizedTeamWorkFlowArtifact();
+         CustomizedTeamWorkFlowArtifactLoader.copyArtifactReadbleToTransferableArtifactWithoutRelation(readableArtifact,
+            ar);
 
-            String projectGuid =
-               readableArtifact.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getGuid();
-            System.out.println(projectGuid);
+         String projectGuid =
+            readableArtifact.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getGuid();
+         System.out.println(projectGuid);
 
-            String changes = String.format("New Task \"%s\" is created by %s on %s", readableArtifact.getName(),
-               ICTeamMailNotifier.getUserNameByUserId(createdUserId), DateUtil.getMMDDYY(new Date()));
-            String guid = readableArtifact.getGuid();
-            String rapLink = url + "/icteam-web/#/dashboard/" + projectGuid + "/" + guid;
-            System.out.println(rapLink);
-            sendMail(orcsApi, createdUserId, assignees, readableArtifact, estimatedDate, ICTeamNotifyType.Created,
-               changes, rapLink);
-            json1 = gson.toJson(ar);
-         }
+         String changes = String.format("New Task \"%s\" is created by %s on %s", readableArtifact.getName(),
+            ICTeamMailNotifier.getUserNameByUserId(createdUserId), DateUtil.getMMDDYY(new Date()));
+         String guid = readableArtifact.getGuid();
+         String rapLink = url + "/icteam-web/#/dashboard/" + projectGuid + "/" + guid;
+         System.out.println(rapLink);
+         sendMail(orcsApi, createdUserId, assignees, readableArtifact, estimatedDate, ICTeamNotifyType.Created, changes,
+            rapLink);
+         json1 = gson.toJson(ar);
       } catch (JsonSyntaxException e) {
          e.printStackTrace();
       } catch (OseeCoreException e) {

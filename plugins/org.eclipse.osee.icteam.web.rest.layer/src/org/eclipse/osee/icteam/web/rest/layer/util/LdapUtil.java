@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Create and Search for the User from LDAP server Util Class for LDAP user Search
- * 
+ *
  * @author Ajay Chandrahasan
  */
 
@@ -37,7 +37,7 @@ public class LdapUtil {
    /**
     * Searches the user in the LDAP directory and returns searchResult Object for the User which holds the data like
     * mail id etc
-    * 
+    *
     * @param username UserName in the form of sAMAccountName of user in LDAP Server
     * @return search result object
     */

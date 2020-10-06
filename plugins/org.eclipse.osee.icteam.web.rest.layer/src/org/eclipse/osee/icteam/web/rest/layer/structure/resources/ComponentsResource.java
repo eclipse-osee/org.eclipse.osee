@@ -56,7 +56,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
  * Component Resource to return Components and Component related queries
- * 
+ *
  * @author Ajay Chandrahasan
  */
 
@@ -69,7 +69,7 @@ public class ComponentsResource extends AbstractConfigResource {
 
    /**
     * This function gets team users for component
-    * 
+    *
     * @param attributes String guid of the component
     * @return serialize String associated team users of given component
     */
@@ -78,72 +78,67 @@ public class ComponentsResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Path("teamsuser")
    public String getAssociatedTeamsUsersForComponent(final String attributes) {
-      try {
-         OrcsApi orcsApi = OseeCoreData.getOrcsApi();
-         if (attributes != null) {
-            ArtifactReadable compArtifact =
-               CommonUtil.getArtifactFromIdExcludingDeleted(attributes, CommonUtil.getCommonBranch(orcsApi), orcsApi);
-            // to fetch only group users if group present in create task
-            TransferableArtifactsContainer container = new TransferableArtifactsContainer();
-            List<ITransferableArtifact> listOfUsers = new ArrayList<ITransferableArtifact>();
-            boolean isConfigured = false;
-            ResultSet<ArtifactReadable> listTeamArtifact =
-               compArtifact.getRelated(AtsRelationTypes.TeamActionableItem_TeamDefinition);
-            if (!isConfigured) {
-               // Get the Team Artifact
-               TransferableArtifact teamArtifact = null;
-               for (ArtifactReadable artifactReadable : listTeamArtifact) {
-                  ArtifactReadable exactlyOne = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(
-                     artifactReadable.getGuid()).getResults().getExactlyOne();
-                  teamArtifact = new TransferableArtifact();
-                  TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(artifactReadable, teamArtifact);
-                  ResultSet<ArtifactReadable> relatedArtifact = exactlyOne.getRelated(AtsRelationTypes.TeamLead_Lead);
-                  ResultSet<ArtifactReadable> relatedArtifact1 =
-                     exactlyOne.getRelated(AtsRelationTypes.TeamMember_Member);
-                  for (ArtifactReadable teamLead : relatedArtifact) {
-                     TransferableArtifact ar = new TransferableArtifact();
-                     TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(teamLead, ar);
-                     ResultSet<? extends AttributeReadable<Object>> attributes2 =
-                        teamLead.getAttributes(CoreAttributeTypes.UserId);
-                     for (AttributeReadable<Object> attributeReadable : attributes2) {
-                        List<String> l = new ArrayList<String>();
-                        l.add(attributeReadable.getValue().toString());
-                        ar.putAttributes(CoreAttributeTypes.UserId.toString(), l);
-                     }
-                     listOfUsers.add(ar);
+      OrcsApi orcsApi = OseeCoreData.getOrcsApi();
+      if (attributes != null) {
+         ArtifactReadable compArtifact =
+            CommonUtil.getArtifactFromIdExcludingDeleted(attributes, CommonUtil.getCommonBranch(orcsApi), orcsApi);
+         // to fetch only group users if group present in create task
+         TransferableArtifactsContainer container = new TransferableArtifactsContainer();
+         List<ITransferableArtifact> listOfUsers = new ArrayList<ITransferableArtifact>();
+         boolean isConfigured = false;
+         ResultSet<ArtifactReadable> listTeamArtifact =
+            compArtifact.getRelated(AtsRelationTypes.TeamActionableItem_TeamDefinition);
+         if (!isConfigured) {
+            // Get the Team Artifact
+            TransferableArtifact teamArtifact = null;
+            for (ArtifactReadable artifactReadable : listTeamArtifact) {
+               ArtifactReadable exactlyOne = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(
+                  artifactReadable.getGuid()).getResults().getExactlyOne();
+               teamArtifact = new TransferableArtifact();
+               TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(artifactReadable, teamArtifact);
+               ResultSet<ArtifactReadable> relatedArtifact = exactlyOne.getRelated(AtsRelationTypes.TeamLead_Lead);
+               ResultSet<ArtifactReadable> relatedArtifact1 = exactlyOne.getRelated(AtsRelationTypes.TeamMember_Member);
+               for (ArtifactReadable teamLead : relatedArtifact) {
+                  TransferableArtifact ar = new TransferableArtifact();
+                  TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(teamLead, ar);
+                  ResultSet<? extends AttributeReadable<Object>> attributes2 =
+                     teamLead.getAttributes(CoreAttributeTypes.UserId);
+                  for (AttributeReadable<Object> attributeReadable : attributes2) {
+                     List<String> l = new ArrayList<String>();
+                     l.add(attributeReadable.getValue().toString());
+                     ar.putAttributes(CoreAttributeTypes.UserId.toString(), l);
                   }
-                  for (ArtifactReadable teamMembers : relatedArtifact1) {
-                     TransferableArtifact ar = new TransferableArtifact();
-                     TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(teamMembers, ar);
-                     ResultSet<? extends AttributeReadable<Object>> attributes2 =
-                        teamMembers.getAttributes(CoreAttributeTypes.UserId);
-                     for (AttributeReadable<Object> attributeReadable : attributes2) {
-                        List<String> l = new ArrayList<String>();
-                        l.add(attributeReadable.getValue().toString());
-                        ar.putAttributes(CoreAttributeTypes.UserId.toString(), l);
-                     }
-                     listOfUsers.add(ar);
-                  }
+                  listOfUsers.add(ar);
                }
-               if (teamArtifact != null) {
-                  List<ITransferableArtifact> list = new ArrayList<ITransferableArtifact>();
-                  list.add(teamArtifact);
-                  container.setArtifactList(list);
+               for (ArtifactReadable teamMembers : relatedArtifact1) {
+                  TransferableArtifact ar = new TransferableArtifact();
+                  TranferableArtifactLoader.copyBasicInfoToTransferableArtifact(teamMembers, ar);
+                  ResultSet<? extends AttributeReadable<Object>> attributes2 =
+                     teamMembers.getAttributes(CoreAttributeTypes.UserId);
+                  for (AttributeReadable<Object> attributeReadable : attributes2) {
+                     List<String> l = new ArrayList<String>();
+                     l.add(attributeReadable.getValue().toString());
+                     ar.putAttributes(CoreAttributeTypes.UserId.toString(), l);
+                  }
+                  listOfUsers.add(ar);
                }
             }
-            Object[] st = listOfUsers.toArray();
-            for (Object s : st) {
-               if (listOfUsers.indexOf(s) != listOfUsers.lastIndexOf(s)) {
-                  listOfUsers.remove(listOfUsers.lastIndexOf(s));
-               }
+            if (teamArtifact != null) {
+               List<ITransferableArtifact> list = new ArrayList<ITransferableArtifact>();
+               list.add(teamArtifact);
+               container.setArtifactList(list);
             }
-            container.addAll(listOfUsers);
-            JSONSerializer serializer = new JSONSerializer();
-            String serialize = serializer.deepSerialize(container);
-            return serialize;
          }
-      } catch (OseeCoreException e) {
-         e.printStackTrace();
+         Object[] st = listOfUsers.toArray();
+         for (Object s : st) {
+            if (listOfUsers.indexOf(s) != listOfUsers.lastIndexOf(s)) {
+               listOfUsers.remove(listOfUsers.lastIndexOf(s));
+            }
+         }
+         container.addAll(listOfUsers);
+         JSONSerializer serializer = new JSONSerializer();
+         String serialize = serializer.deepSerialize(container);
+         return serialize;
       }
       return null;
    }

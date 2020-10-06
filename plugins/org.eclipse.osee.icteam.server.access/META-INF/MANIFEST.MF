@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: iCTeam Server Access
+Bundle-Name: iCTeam Server Access (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.icteam.server.access;singleton:=true
-Bundle-Version: 1.4.0.qualifier
-Bundle-Vendor: BOSCH LTD
+Bundle-Version: 0.26.0.qualifier
+Bundle-Vendor: BOSCH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true

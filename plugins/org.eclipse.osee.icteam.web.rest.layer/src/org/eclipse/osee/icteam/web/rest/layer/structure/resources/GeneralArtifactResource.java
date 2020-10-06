@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.AgileChangeTypeEnum;
 import org.eclipse.osee.ats.api.data.enums.token.PriorityAttributeType.PriorityEnum;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,7 +38,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * GeneralArtifact Resource to return enumeratyion values of attributes (task type and priorities)
- * 
+ *
  * @author Ajay Chandrahasan
  */
 
@@ -59,7 +60,7 @@ public class GeneralArtifactResource extends AbstractConfigResource {
 
    /**
     * This function gets enumeration values for a given attribute name
-    * 
+    *
     * @param attrName String name of the attribute
     * @return serialize String enumeration values of the attribute
     */
@@ -71,9 +72,7 @@ public class GeneralArtifactResource extends AbstractConfigResource {
       Set<String> valuesAsOrderedStringSet = new HashSet<>();
       try {
          if (AtsAttributeTypes.AgileChangeType.getId() == Long.parseLong(attrName)) {
-            Collection<org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.ChangeTypeEnum> enumValues =
-               AtsAttributeTypes.AgileChangeType.getEnumValues();
-            for (org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType.ChangeTypeEnum changeTypeEnum : enumValues) {
+            for (AgileChangeTypeEnum changeTypeEnum : AtsAttributeTypes.AgileChangeType.getEnumValues()) {
                valuesAsOrderedStringSet.add(changeTypeEnum.getName());
             }
          } else if (AtsAttributeTypes.Priority.getId() == Long.parseLong(attrName)) {

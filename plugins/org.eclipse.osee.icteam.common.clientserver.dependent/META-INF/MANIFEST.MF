@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iCTeam Util (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.icteam.common.clientserver.dependent;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 0.26.0.qualifier
 Bundle-ClassPath: .,
  lib/flexjson-2.1-sources.jar,
  lib/flexjson-2.1.jar
@@ -16,15 +16,16 @@ Export-Package: flexjson,
  org.eclipse.osee.icteam.common.clientserver.dependent.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.gson,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ com.google.gson,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.icteam.common.artifact.interfaces,
  org.eclipse.osee.icteam.common.clientserver.osee,
  org.eclipse.osee.icteam.common.interfaces,
  org.osgi.framework
-Require-Bundle: com.google.guava,
- org.eclipse.osee.framework.jdk.core

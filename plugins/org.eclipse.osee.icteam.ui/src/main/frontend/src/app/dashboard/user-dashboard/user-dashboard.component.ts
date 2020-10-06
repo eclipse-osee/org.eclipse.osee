@@ -115,7 +115,7 @@ export class UserDashboardComponent implements OnInit {
     const id = task.attributeMap['TaskId'][0];
     const name = task.attributeMap['Name'][0];
     const priority = task.attributeMap['ats.Priority'][0];
-    const type = task.attributeMap['ats.Change Type'][0];
+    const type = task.attributeMap['agile.Change Type'][0];
     status = task.attributeMap[ 'ats.Current State'][0].split(';')[0];
     if ( status === "New" ) {
       this.newData = this.newData + 1;
@@ -131,11 +131,13 @@ export class UserDashboardComponent implements OnInit {
     const expectedDate = task.attributeMap['ats.Estimated Completion Date'];
     const currentState = task.attributeMap['ats.Current State'];
     // const selusersIdList = task.attributeMap['ats.Current State'][0].split(';')[1].split('><');
-    if ( task.attributeMap['agile.Story Point'] === undefined) {
-      story = '';
+
+    if ( task.attributeMap['ats.Points Attribute Type'] === undefined) {
+        story = '';
     } else {
-      story = task.attributeMap['agile.Story Point'][0];
+        story = task.attributeMap['ats.Points Attribute Type'][0];
     }
+
     if (task.attributeMap['Backlog'][0] === 'false' ) {
      sprint =  task.attributeMap['SprintName'];
     } else {

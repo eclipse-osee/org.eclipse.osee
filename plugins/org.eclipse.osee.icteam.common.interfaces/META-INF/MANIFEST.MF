@@ -2,12 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iCTeam Common Interfaces (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.icteam.common.interfaces;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.icteam.common.interfaces.Activator
-Require-Bundle: org.eclipse.core.runtime,
- com.google.guava
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.icteam.common.artifact.interfaces,
  org.eclipse.osee.icteam.common.interfaces,
  org.eclipse.osee.icteam.common.interfaces.factory
+Bundle-Vendor: BOSCH
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.osgi.framework
+Require-Bundle: org.eclipse.core.runtime

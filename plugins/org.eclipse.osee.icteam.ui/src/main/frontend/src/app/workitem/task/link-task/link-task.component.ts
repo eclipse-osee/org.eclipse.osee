@@ -99,7 +99,7 @@ import { ProjectModel } from '../../../model/projectModel';
         );
 
 
-        this.workitemService.getTaskTypeAndPriorities('1152921504606847180').subscribe(
+        this.workitemService.getTaskTypeAndPriorities('1152921504606851584').subscribe(
           (result: Response) => {
             let typeListTemp=[]
             typeListTemp = result['artifactList'];

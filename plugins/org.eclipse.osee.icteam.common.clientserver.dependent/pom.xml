@@ -10,14 +10,8 @@
 		<version>0.26.0-SNAPSHOT</version>
 	</parent>
 
-  <artifactId>org.eclipse.osee.icteam.common.clientserver.dependent</artifactId>
-  <name>org.eclipse.osee.icteam.common.clientserver.dependent</name>
-  <version>1.4.0-SNAPSHOT</version>
-  
-      <!--    <properties>
-      <tycho-version>0.15.0</tycho-version>
-   </properties> -->
-    
+	<artifactId>org.eclipse.osee.icteam.common.clientserver.dependent</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>iCTeam Util (Incubation)</name>
 
-       <packaging>eclipse-plugin</packaging>
 </project> 

@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.interfaces.factory;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import org.eclipse.osee.icteam.common.artifact.interfaces.ITransferableArtifact;
 
 /**
  * Factory class for different artifacts
- * 
+ *
  * @author Ajay Chandrahasan
  */
 public class TransferableArtifactFactory {
@@ -111,7 +112,7 @@ public class TransferableArtifactFactory {
           * @return the userId
           */
          @Override
-         public String getUserId(final com.google.common.base.Function<ITransferableArtifact, String> userIdRetreiver) {
+         public String getUserId(final Function<ITransferableArtifact, String> userIdRetreiver) {
             // return !Strings.isNullOrEmpty(this.userId) ? this.userId
             // : userIdRetreiver.apply(this);
             return "";
