@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +67,23 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       } else {
          artifacts = Collections.singletonList(artifact);
       }
-      return renderToFile(artifacts, branch, presentationType);
+      return renderToFile(artifacts, branch, presentationType, null);
+   }
+
+   public IFile copyToNewFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType, IFile file) {
+      List<Artifact> artifacts;
+      if (artifact == null) {
+         artifacts = Collections.emptyList();
+      } else {
+         artifacts = Collections.singletonList(artifact);
+      }
+      InputStream contents;
+      try {
+         contents = file.getContents();
+      } catch (CoreException ex) {
+         throw new OseeCoreException("There was an issue copying the file given, creating a new version");
+      }
+      return renderToFile(artifacts, branch, presentationType, contents);
    }
 
    public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) {
@@ -80,11 +98,13 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          }
       }
 
-      return renderToFile(artifacts, initialBranch, presentationType);
+      return renderToFile(artifacts, initialBranch, presentationType, null);
    }
 
-   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
-      InputStream renderInputStream = getRenderInputStream(presentationType, branch, artifacts);
+   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, InputStream renderInputStream) {
+      if (renderInputStream == null) {
+         renderInputStream = getRenderInputStream(presentationType, branch, artifacts);
+      }
       IFile workingFile = RenderingUtil.getRenderFile(this, artifacts, branch, presentationType);
       AIFile.writeToFile(workingFile, renderInputStream);
 

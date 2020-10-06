@@ -48,7 +48,13 @@ public class ArtifactDeltaToFileConverter {
       IOseeBranch branch = artifactDelta.getBranch();
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
-      IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
+      IFile newerFile = null;
+      if (artifactDelta.getTxDelta() == null) {
+         newerFile = renderer.copyToNewFile(newerArtifact, branch, presentationType, baseFile);
+      } else {
+         newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
+      }
+
       return new Pair<>(baseFile, newerFile);
    }
 
