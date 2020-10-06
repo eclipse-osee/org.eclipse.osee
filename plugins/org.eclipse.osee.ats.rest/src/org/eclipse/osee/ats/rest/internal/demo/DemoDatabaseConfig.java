@@ -221,7 +221,8 @@ public class DemoDatabaseConfig {
          .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.UnReleased, DemoBranches.SAW_PL,
             NextRelease.Next) //
          .andVersion(DemoArtifactToken.SAW_Hardening_Branch, ReleasedOption.UnReleased,
-            DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next);
+            DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next) //
+         .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
       // SAW PL Team Defs
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code) //
@@ -336,7 +337,8 @@ public class DemoDatabaseConfig {
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion(DemoArtifactToken.SAW_Bld_1, ReleasedOption.Released, DemoBranches.SAW_Bld_1, NextRelease.None) //
          .andVersion(DemoArtifactToken.SAW_Bld_2, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_2, NextRelease.Next) //
-         .andVersion(DemoArtifactToken.SAW_Bld_3, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_3, NextRelease.None);
+         .andVersion(DemoArtifactToken.SAW_Bld_3, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_3, NextRelease.None) //
+         .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
       // SAW SW Team Defs
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Code) //

@@ -176,4 +176,13 @@ public class WorkDefBuilder {
       }
    }
 
+   public StateDefBuilder getStateDefBuilder(StateToken state) {
+      for (StateDefBuilder sBld : stateDefBuilders) {
+         if (sBld.getName().equals(state.getName())) {
+            return sBld;
+         }
+      }
+      return null;
+   }
+
 }

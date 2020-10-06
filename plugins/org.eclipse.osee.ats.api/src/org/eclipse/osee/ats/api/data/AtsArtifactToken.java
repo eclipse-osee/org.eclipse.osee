@@ -44,7 +44,7 @@ public final class AtsArtifactToken {
    public static ArtifactToken WorkDefinitionsFolder = ArtifactToken.valueOf(284655, "Work Definitions", COMMON, CoreArtifactTypes.Folder);
    public static ArtifactToken WebPrograms = ArtifactToken.valueOf(277592, "Web Programs", COMMON, CoreArtifactTypes.UniversalGroup);
    public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
-
+   public static ArtifactToken AttachmentFolder = ArtifactToken.valueOf(1962334, "Attachments", COMMON, CoreArtifactTypes.Folder);
    // Default Work Definitions
 
    // Safety Workflow configuration

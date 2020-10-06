@@ -13,7 +13,11 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.io.File;
 import java.util.Arrays;
+import org.eclipse.define.api.importing.IArtifactExtractor;
+import org.eclipse.define.api.importing.RoughArtifact;
+import org.eclipse.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -25,11 +29,27 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
+import org.eclipse.osee.define.rest.importing.operations.RoughToRealArtifactOperation;
+import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOperation;
+import org.eclipse.osee.define.rest.importing.parsers.NativeDocumentExtractor;
+import org.eclipse.osee.define.rest.importing.parsers.WholeWordDocumentExtractor;
+import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory;
+import org.eclipse.osee.define.rest.importing.resolvers.ArtifactResolverFactory.ArtifactCreationStrategy;
+import org.eclipse.osee.define.rest.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.OseeInfo;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -37,9 +57,11 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class AtsDatabaseConfig {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public AtsDatabaseConfig(AtsApi atsApi) {
+   public AtsDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    public XResultData run() {
@@ -70,7 +92,65 @@ public class AtsDatabaseConfig {
 
       createUserCreationDisabledConfig();
 
+      configureDemoPeerChecklist();
+
       return results;
+   }
+
+   private void configureDemoPeerChecklist() {
+      String CONFIG_VALUE = //
+         "Requirements Review Checklist;/c/checklists/requirements_checklist.xlsx\n" + //
+            "Code Review Checklist;/c/checklists/codeeck if_checklist.txt\n" + //
+            "Test Review Checklist;/c/checklists/test_checklist.doc\n" + //
+            "Document Review Checklist;osee:570:Document_Checklist\n" + //
+            "Process Review Checklist;osee:570:Process_Checklist";
+      atsApi.setConfigValue("DemoPeerReviewChecklist", CONFIG_VALUE);
+      IAtsChangeSet changes = atsApi.createChangeSet("Import Peer Checklist");
+      ArtifactToken atsHeader = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+      changes.createArtifact(atsHeader, AtsArtifactToken.AttachmentFolder);
+      changes.execute();
+
+      File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDatabaseConfig.class);
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
+         SystemUser.OseeSystem, "Import Peer Checklist");
+      importChecklist(file, transaction);
+      transaction.commit();
+
+      transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, SystemUser.OseeSystem,
+         "Import Peer Checklist");
+      File file2 = OseeInf.getResourceAsFile("demoPeerChecklists/Process_Checklist.xlsx", AtsDatabaseConfig.class);
+      importChecklist(file2, transaction);
+      transaction.commit();
+
+   }
+
+   private void importChecklist(File file, TransactionBuilder transaction) {
+      IArtifactExtractor extractor = getArtifactExtractor(CoreArtifactTypes.GeneralDocument);
+      XResultData resultData = new XResultData();
+      RoughArtifactCollector collector = new RoughArtifactCollector(
+         new RoughArtifact(orcsApi, resultData, CoreArtifactTypes.GeneralDocument, "Code_Checklist"));
+
+      IArtifactImportResolver resolver =
+         ArtifactResolverFactory.createResolver(transaction, ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
+            CoreArtifactTypes.GeneralDocument, Arrays.asList(CoreAttributeTypes.Name), true, false);
+      ArtifactReadable attachmentFolder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         AtsArtifactToken.AttachmentFolder).asArtifact();
+      SourceToRoughArtifactOperation sourceToRoughArtifactOperation =
+         new SourceToRoughArtifactOperation(orcsApi, resultData, extractor, file, collector);
+      sourceToRoughArtifactOperation.importFiles();
+      RoughToRealArtifactOperation roughToRealArtifactOperation = new RoughToRealArtifactOperation(orcsApi, resultData,
+         transaction, attachmentFolder, collector, resolver, false, extractor);
+      roughToRealArtifactOperation.doWork();
+   }
+
+   private IArtifactExtractor getArtifactExtractor(ArtifactTypeToken artifactType) {
+      IArtifactExtractor extractor = null;
+      if (artifactType.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
+         extractor = new NativeDocumentExtractor();
+      } else {
+         extractor = new WholeWordDocumentExtractor();
+      }
+      return extractor;
    }
 
    public static void createUserGroups(AtsApi atsApi) {

@@ -111,7 +111,7 @@ public class WfeDragAndDrop extends SkynetDragAndDrop {
                for (String item : items) {
                   files.add(new File(item));
                }
-               Jobs.startJob(new WfeEditorAddSupportingFiles(sma, files), false);
+               Jobs.startJob(new WfeEditorAddSupportingFiles(sma, files, null), false);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

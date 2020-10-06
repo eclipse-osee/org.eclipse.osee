@@ -67,7 +67,7 @@ public class WfeEditorAddSupportingFilesTest {
       Lib.writeStringToFile("test_1", file1);
       Lib.writeStringToFile("test_2", file2);
 
-      WfeEditorAddSupportingFiles job = new WfeEditorAddSupportingFiles(teamWf, Arrays.asList(file1, file2));
+      WfeEditorAddSupportingFiles job = new WfeEditorAddSupportingFiles(teamWf, Arrays.asList(file1, file2), null);
       job.validate();
       job.run(null);
 

@@ -1,0 +1,8 @@
+Example of Code Peer Review Checklist
+
+- Description of methods
+- Good Coding convention
+- No commented out code
+- No TBDs
+- Author listed in header
+

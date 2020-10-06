@@ -18,8 +18,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,7 +84,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
    }
 
    public void create() {
-      setLayout(ALayout.getZeroMarginLayout(2, false));
+      setLayout(ALayout.getZeroMarginLayout(1, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 500;
       setLayoutData(gd);
@@ -137,29 +140,34 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
                   existingRels.remove(relation.getId());
                } else {
                   createLink("This", workItemArt, " has sibling ", relation.getArtifactB(),
-                     AtsRelationTypes.ActionToWorkflow_TeamWorkflow, relation);
+                     AtsRelationTypes.ActionToWorkflow_TeamWorkflow, relation, OpenType.Edit);
                   editor.registerEvent(this, relation.getArtifactB());
                }
             }
          }
       }
       createArtifactRelationHyperlinks("This", workItemArt, "is reviewed by",
-         AtsRelationTypes.TeamWorkflowToReview_Review);
+         AtsRelationTypes.TeamWorkflowToReview_Review, OpenType.Edit);
       createArtifactRelationHyperlinks("This", workItemArt, "reviews",
-         AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow);
+         AtsRelationTypes.TeamWorkflowToReview_TeamWorkflow, OpenType.Edit);
       createArtifactRelationHyperlinks("This", workItemArt, "is superceded by",
-         CoreRelationTypes.Supercedes_SupercededBy);
-      createArtifactRelationHyperlinks("This", workItemArt, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
-      createArtifactRelationHyperlinks("This", workItemArt, "depends on", CoreRelationTypes.Dependency_Dependency);
-      createArtifactRelationHyperlinks("This", workItemArt, "is dependency of", CoreRelationTypes.Dependency_Artifact);
+         CoreRelationTypes.Supercedes_SupercededBy, OpenType.Read, OpenType.Edit, OpenType.Delete);
+      createArtifactRelationHyperlinks("This", workItemArt, "supercedes", CoreRelationTypes.Supercedes_Supercedes,
+         OpenType.Read, OpenType.Edit, OpenType.Delete);
+      createArtifactRelationHyperlinks("This", workItemArt, "depends on", CoreRelationTypes.Dependency_Dependency,
+         OpenType.Read, OpenType.Edit, OpenType.Delete);
+      createArtifactRelationHyperlinks("This", workItemArt, "is dependency of", CoreRelationTypes.Dependency_Artifact,
+         OpenType.Read, OpenType.Edit, OpenType.Delete);
 
-      createArtifactRelationHyperlinks("This", workItemArt, "is derived from", AtsRelationTypes.Derive_From);
-      createArtifactRelationHyperlinks("This", workItemArt, "derived", AtsRelationTypes.Derive_To);
+      createArtifactRelationHyperlinks("This", workItemArt, "is derived from", AtsRelationTypes.Derive_From,
+         OpenType.Read, OpenType.Edit, OpenType.Delete);
+      createArtifactRelationHyperlinks("This", workItemArt, "derived", AtsRelationTypes.Derive_To, OpenType.Read,
+         OpenType.Edit, OpenType.Delete);
 
       createArtifactRelationHyperlinks("This", workItemArt, "is supported info for",
-         CoreRelationTypes.SupportingInfo_IsSupportedBy);
+         CoreRelationTypes.SupportingInfo_IsSupportedBy, OpenType.Read, OpenType.Edit, OpenType.Delete);
       createArtifactRelationHyperlinks("This", workItemArt, "has supporting info",
-         CoreRelationTypes.SupportingInfo_SupportingInfo);
+         CoreRelationTypes.SupportingInfo_SupportingInfo, OpenType.Read, OpenType.Edit, OpenType.Delete);
 
       if (!existingRels.isEmpty()) {
          removeRelations(existingRels);
@@ -221,7 +229,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationSide) {
+   public void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationSide, OpenType... openType) {
       for (final RelationLink relation : thisArt.getRelations(relationSide)) {
          if (existingRels.contains(relation.getId())) {
             existingRels.remove(relation.getId());
@@ -230,7 +238,7 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
             if (relation.getArtifactA().equals(thisArt)) {
                thatArt = relation.getArtifactB();
             }
-            createLink(prefix, thisArt, action, thatArt, relationSide, relation);
+            createLink(prefix, thisArt, action, thatArt, relationSide, relation, openType);
          }
       }
    }
@@ -238,52 +246,51 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
    /**
     * @param relationSide or null if sibling relation
     */
-   private void createLink(String prefix, Artifact thisArt, String action, final Artifact thatArt, RelationTypeSide relationSide, RelationLink relation) {
+   private void createLink(String prefix, Artifact thisArt, String action, final Artifact thatArt, RelationTypeSide relationSide, RelationLink relation, OpenType... openType) {
       final Composite fComp = this;
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
          public void run() {
             try {
-               Label label = editor.getToolkit().createLabel(fComp,
+               Composite lComp = new Composite(fComp, SWT.NONE);
+               lComp.setLayout(ALayout.getZeroMarginLayout(4, false));
+               GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+               gd.widthHint = 500;
+               lComp.setLayoutData(gd);
+               editor.getToolkit().adapt(lComp);
+               lComp.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
+
+               Label label = editor.getToolkit().createLabel(lComp,
                   prefix + " \"" + getObjectName(thisArt) + "\" " + action + getCompletedCancelledString(
-                     thatArt) + " \"" + getObjectName(thatArt) + "\" ");
-               Hyperlink link = editor.getToolkit().createHyperlink(fComp,
-                  String.format("\"%s\" - %s",
-                     thatArt.getName().length() < 60 ? thatArt.getName() : thatArt.getName().substring(0, 60),
-                     AtsApiService.get().getAtsId(thatArt)),
-                  SWT.NONE);
-               relIdToHyperlink.put(Long.valueOf(relation.getId()), link);
-               relIdToLabel.put(Long.valueOf(relation.getId()), label);
-               link.addHyperlinkListener(new IHyperlinkListener() {
+                     thatArt) + " \"" + getObjectName(thatArt) + "\" " + String.format("\"%s\" - %s",
+                        thatArt.getName().length() < 60 ? thatArt.toStringWithId() : thatArt.getName().substring(0, 60),
+                        AtsApiService.get().getAtsId(thatArt)));
 
-                  @Override
-                  public void linkEntered(HyperlinkEvent e) {
-                     // do nothing
-                  }
+               Set<OpenType> openTypes = Collections.asHashSet(openType);
 
-                  @Override
-                  public void linkExited(HyperlinkEvent e) {
-                     // do nothing
-                  }
+               if (openTypes.contains(OpenType.Read)) {
+                  Hyperlink link = createReadHyperlink(thisArt, thatArt, lComp, editor);
+                  relIdToLabel.put(Long.valueOf(relation.getId()), label);
+                  relIdToHyperlink.put(Long.valueOf(relation.getId()), link);
 
-                  @Override
-                  public void linkActivated(HyperlinkEvent e) {
-                     if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
-                        AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
-                     } else {
-                        try {
-                           RendererManager.open(thatArt, PresentationType.DEFAULT_OPEN);
-                        } catch (OseeCoreException ex) {
-                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                        }
-                     }
-                  }
-               });
+               }
+               if (openTypes.contains(OpenType.Edit)) {
+                  Hyperlink link = createEditHyperlink(thatArt, lComp, editor);
+                  relIdToHyperlink.put(Long.valueOf(relation.getId()), link);
+                  relIdToLabel.put(Long.valueOf(relation.getId()), label);
+               }
+               if (openTypes.contains(OpenType.Delete)) {
+                  Hyperlink link = createDeleteHyperlink(thisArt, thatArt, lComp, editor);
+                  relIdToHyperlink.put(Long.valueOf(relation.getId()), link);
+                  relIdToLabel.put(Long.valueOf(relation.getId()), label);
+
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
+
       });
    }
 
@@ -298,6 +305,104 @@ public class WfeRelationsHyperlinkComposite extends Composite implements IWfeEve
    @Override
    public IAtsWorkItem getWorkItem() {
       return workItem;
+   }
+
+   public static enum OpenType {
+      Read,
+      Edit,
+      Delete,
+      ArtifactEditor;
+   }
+
+   public static Hyperlink createDeleteHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp, WorkflowEditor editor) {
+      Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Delete", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         @Override
+         public void linkEntered(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkExited(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            Artifact delArt = thatArt;
+            if (thatArt instanceof IAtsWorkItem) {
+               delArt = thisArt;
+            }
+            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Related",
+               "Are you sure you want to delete related artifact\n\n" + delArt.toStringWithId() + " ?")) {
+               IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
+               changes.deleteArtifact(delArt);
+               changes.execute();
+            }
+         }
+      });
+      return link;
+   }
+
+   public static Hyperlink createEditHyperlink(final Artifact thatArt, Composite lComp, WorkflowEditor editor) {
+      Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Edit", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         @Override
+         public void linkEntered(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkExited(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
+               AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               try {
+                  RendererManager.open(thatArt, PresentationType.SPECIALIZED_EDIT);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+      return link;
+   }
+
+   public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp, WorkflowEditor editor) {
+      Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Read", SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         @Override
+         public void linkEntered(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkExited(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            if (AtsObjects.isAtsWorkItemOrAction(thatArt)) {
+               AtsEditors.openATSAction(thatArt, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               try {
+                  RendererManager.open(thatArt, PresentationType.DEFAULT_OPEN);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+      return link;
    }
 
 }

@@ -16,7 +16,9 @@ package org.eclipse.osee.ats.core.workdef.builder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
+import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -24,8 +26,10 @@ import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -111,6 +115,44 @@ public class StateDefBuilder {
          state.getLayoutItems().add(item);
       }
       return this;
+   }
+
+   public void insertLayoutAfter(AttributeTypeToken attrTypeLocation, IAtsLayoutItem... addLayoutItems) {
+      AtomicBoolean found = new AtomicBoolean(false);
+      List<IAtsLayoutItem> currLayoutItems = new ArrayList<>(state.getLayoutItems());
+      state.getLayoutItems().clear();
+      insertLayoutAfter(state.getLayoutItems(), attrTypeLocation, currLayoutItems, found, addLayoutItems);
+      if (!found.get()) {
+         throw new OseeArgumentException("Can't find WidgetDef for [%s]", attrTypeLocation);
+      }
+   }
+
+   /**
+    * @param newItems new layout item list with insertLayoutItems added after attrTypeLocation WidgetDefinition
+    * @param currItems to loop through looking for attrTypeLocation; will recurse through CompositeLayoutItems
+    * @param found is true if attrTypeLocation was found
+    */
+   private void insertLayoutAfter(List<IAtsLayoutItem> newItems, AttributeTypeToken attrTypeLocation, List<IAtsLayoutItem> currItems, AtomicBoolean found, IAtsLayoutItem... insertLayoutItems) {
+      for (IAtsLayoutItem currItem : currItems) {
+         newItems.add(currItem);
+         if (currItem instanceof WidgetDefinition) {
+            WidgetDefinition widgetDef = (WidgetDefinition) currItem;
+            if (attrTypeLocation.equals(widgetDef.getAttributeType())) {
+               found.set(true);
+               for (IAtsLayoutItem newItem : insertLayoutItems) {
+                  newItems.add(newItem);
+               }
+            }
+         }
+         // Recurse through composite layout items
+         else if (currItem instanceof IAtsCompositeLayoutItem) {
+            IAtsCompositeLayoutItem compLayoutItem = (IAtsCompositeLayoutItem) currItem;
+            List<IAtsLayoutItem> currLayoutItems = new ArrayList<IAtsLayoutItem>(compLayoutItem.getaLayoutItems());
+            compLayoutItem.getaLayoutItems().clear();
+            insertLayoutAfter(compLayoutItem.getaLayoutItems(), attrTypeLocation, currLayoutItems, found,
+               insertLayoutItems);
+         }
+      }
    }
 
    public StateDefBuilder andRules(String... rules) {

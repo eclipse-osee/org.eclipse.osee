@@ -23,6 +23,7 @@ public class AtsWorkDefinitionTokens {
 
    public static AtsWorkDefinitionToken WorkDef_Review_Decision = new AtsWorkDefinitionToken(25335L, "WorkDef_Review_Decision");
    public static AtsWorkDefinitionToken WorkDef_Review_PeerToPeer = new AtsWorkDefinitionToken(25334L, "WorkDef_Review_PeerToPeer");
+   public static AtsWorkDefinitionToken WorkDef_Review_PeerToPeer_Demo = new AtsWorkDefinitionToken(3324222L, "WorkDef_Review_PeerToPeer_Demo");
 
    public static AtsWorkDefinitionToken WorkDef_Sprint = new AtsWorkDefinitionToken(6915497L, "WorkDef_Sprint");
 

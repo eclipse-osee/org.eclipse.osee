@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -49,11 +50,13 @@ public class WfeEditorAddSupportingFiles extends Job {
 
    private final Collection<File> supportingFiles;
    private final IAtsWorkItem workItem;
+   private final String staticId;
 
-   public WfeEditorAddSupportingFiles(IAtsWorkItem workItem, Collection<File> supportingFiles) {
+   public WfeEditorAddSupportingFiles(IAtsWorkItem workItem, Collection<File> supportingFiles, String staticId) {
       super("Add Supporting Files");
       this.workItem = workItem;
       this.supportingFiles = supportingFiles;
+      this.staticId = staticId;
    }
 
    public XResultData validate() {
@@ -93,9 +96,12 @@ public class WfeEditorAddSupportingFiles extends Job {
             new RoughToRealArtifactOperation(transaction, workItemArt, collector, resolver, false, extractor);
          roughToRealArtifactOperation.setAddRelation(false);
          roughToRealArtifactOperation.run(null);
-         Artifact artifact = roughToRealArtifactOperation.getCreatedArtifacts().iterator().next();
-         transaction.addArtifact(artifact);
-         workItemArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
+         Artifact supportingArt = roughToRealArtifactOperation.getCreatedArtifacts().iterator().next();
+         transaction.addArtifact(supportingArt);
+         workItemArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, supportingArt);
+         if (Strings.isValid(staticId)) {
+            supportingArt.addAttribute(CoreAttributeTypes.StaticId, staticId);
+         }
          transaction.addArtifact(workItemArt);
       }
       transaction.execute();

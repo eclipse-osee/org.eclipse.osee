@@ -250,7 +250,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
          results.error("ATS base config has already been completed");
          return results;
       }
-      AtsDatabaseConfig config = new AtsDatabaseConfig(atsApi);
+      AtsDatabaseConfig config = new AtsDatabaseConfig(atsApi, orcsApi);
       return config.run();
    }
 

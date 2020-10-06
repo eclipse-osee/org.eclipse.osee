@@ -35,6 +35,8 @@ import org.eclipse.osee.ats.core.workdef.defaults.AbstractWorkDef;
  */
 public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
+   private WorkDefBuilder bld;
+
    public WorkDefReviewPeerToPeer() {
       super(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer);
    }
@@ -43,9 +45,13 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
       super(workDefToken);
    }
 
+   public WorkDefBuilder getWorkDefBuilder() {
+      return bld;
+   }
+
    @Override
    public WorkDefinition build() {
-      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.PeerToPeerReview);
+      bld = new WorkDefBuilder(workDefToken, AtsArtifactTypes.PeerToPeerReview);
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Review) //
@@ -55,6 +61,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Location, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
+
             new CompositeLayoutItem(8, //
                new WidgetDefinition(AtsAttributeTypes.ReviewBlocks, "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)",
                   REQUIRED_FOR_TRANSITION, HORIZONTAL_LABEL), //
@@ -142,4 +149,5 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
 
       return bld.getWorkDefinition();
    }
+
 }

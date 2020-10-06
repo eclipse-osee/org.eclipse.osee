@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XCombo extends XButtonCommon {
 
-   private CCombo dataCombo;
+   public CCombo dataCombo;
    private Composite parent;
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display

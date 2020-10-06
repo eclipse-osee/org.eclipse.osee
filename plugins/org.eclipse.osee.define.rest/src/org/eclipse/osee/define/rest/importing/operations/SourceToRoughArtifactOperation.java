@@ -72,7 +72,7 @@ public class SourceToRoughArtifactOperation {
       return results;
    }
 
-   private XResultData processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) {
+   public XResultData processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) {
       XResultData results = new XResultData();
       RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
       try {

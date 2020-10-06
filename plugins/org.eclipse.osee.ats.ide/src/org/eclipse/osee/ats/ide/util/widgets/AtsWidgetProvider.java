@@ -192,7 +192,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XAssigneesHyperlinkWidget(null);
       } else if (widgetName.equals(XPeerChecklistAttachmentExampleCombo.WIDGET_ID)) {
          return new XPeerChecklistAttachmentExampleCombo();
-      }
+      } 
 
       return toReturn;
    }

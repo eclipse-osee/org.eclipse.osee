@@ -98,7 +98,6 @@ public class RoughToRealArtifactOperation {
             transaction.deleteArtifact(toDelete);
          }
       }
-
    }
 
    private boolean noParent(ArtifactId artifact) {
