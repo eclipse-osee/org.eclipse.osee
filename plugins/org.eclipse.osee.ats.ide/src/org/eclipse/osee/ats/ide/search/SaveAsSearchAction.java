@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -72,9 +73,10 @@ public final class SaveAsSearchAction extends Action {
          }
          Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
-         AtsApiService.get().getQueryService().saveSearch(asUser, data);
+         TransactionId transaction = AtsApiService.get().getQueryService().saveSearch(asUser, data);
 
-         TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
+         TopicEvent event =
+            new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", transaction, EventType.LocalOnly);
          OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
 
          AWorkbench.popupf("Search Saved as [%s]", data.getSearchName());

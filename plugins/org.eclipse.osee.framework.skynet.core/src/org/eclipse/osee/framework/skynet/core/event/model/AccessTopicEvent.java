@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
 import org.eclipse.osee.framework.core.event.EventType;
 
@@ -31,7 +32,7 @@ public class AccessTopicEvent extends AbstractTopicEvent {
       new AccessTopicEvent(EventType.LocalOnly, "framework/access/user/authenticated");
 
    private AccessTopicEvent(EventType eventType, String topic) {
-      super(eventType, topic);
+      super(eventType, TransactionToken.SENTINEL, topic);
    }
 
 }

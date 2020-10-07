@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.ide.navigate.SavedSearchesNavigateItem;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemEventHandler;
-import org.eclipse.osee.ats.ide.world.WorldXViewerEventHandler;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -36,7 +35,7 @@ public class Activator extends OseeActivator {
    @Override
    public void start(final BundleContext context) {
 
-      context.registerService(EventHandler.class.getName(), new WorldXViewerEventHandler(),
+      context.registerService(EventHandler.class.getName(), new AtsWorkItemEventHandler(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_TRANSITIONED.getTopic()));
       context.registerService(EventHandler.class.getName(), new AtsWorkItemEventHandler(),
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic()));

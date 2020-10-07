@@ -57,6 +57,8 @@ import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -608,16 +610,17 @@ public class TransitionManager implements IExecuteListener {
    public TransitionResults handleAllAndPersist() {
       TransitionResults result = handleAll();
       if (result.isEmpty()) {
-         helper.getChangeSet().execute();
+         TransactionId transactionId = helper.getChangeSet().execute();
+         result.setTransaction(transactionId);
 
          if (helper.getServices().getEventService() != null) {
             helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-               helper.getWorkItems());
+               helper.getWorkItems(), result.getTransaction());
          }
       } else {
          if (helper.getServices().getEventService() != null) {
             helper.getServices().getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
-               helper.getWorkItems());
+               helper.getWorkItems(), TransactionToken.SENTINEL);
          }
       }
       return result;

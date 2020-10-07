@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -57,10 +58,11 @@ public final class DeleteSearchAction extends Action {
 
       if (dialog.open() == 0) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
-         AtsApiService.get().getQueryService().removeSearch(AtsApiService.get().getUserService().getCurrentUser(),
-            selected);
+         TransactionId transaction = AtsApiService.get().getQueryService().removeSearch(
+            AtsApiService.get().getUserService().getCurrentUser(), selected);
 
-         TopicEvent event = new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", EventType.LocalOnly);
+         TopicEvent event =
+            new TopicEvent(AtsTopicEvent.SAVED_SEARCHES_MODIFIED, "", "", transaction, EventType.LocalOnly);
          OseeEventManager.kickTopicEvent(DeleteSearchAction.class, event);
 
          AWorkbench.popup("Search Deleted");

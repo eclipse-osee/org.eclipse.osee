@@ -14,9 +14,11 @@
 package org.eclipse.osee.framework.core.event;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.service.event.Event;
 
@@ -89,18 +91,28 @@ public final class EventUtil {
    /**
     * Create topic event given topic and oject to searialize to json property
     */
-   public static TopicEvent createTopic(AbstractTopicEvent topic, Object event) {
-      return createTopic(topic.getTopic(), event, topic.getEventType());
+   public static TopicEvent createTopic(AbstractTopicEvent topic, TransactionId transaction, Object event) {
+      return createTopic(topic.getTopic(), event, transaction, topic.getEventType());
    }
 
    /**
     * Create topic event given topic and oject to searialize to json property
     */
-   public static TopicEvent createTopic(String topic, Object event, EventType eventType) {
+   public static TopicEvent createTopic(String topic, Object event, TransactionId transaction, EventType eventType) {
       try {
-         return new TopicEvent(topic, "json", JsonUtil.toJson(event), eventType);
+         return new TopicEvent(topic, "json", JsonUtil.toJson(event), transaction, eventType);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error reading topic json [%s]", event.toString());
       }
    }
+
+   public static TransactionId getTransaction(Event event) {
+      TransactionId transaction = TransactionId.SENTINEL;
+      String transId = (String) event.getProperty(FrameworkTopicEvent.TRANSACTION_ID);
+      if (Strings.isNumeric(transId)) {
+         transaction = TransactionId.valueOf(transId);
+      }
+      return transaction;
+   }
+
 }

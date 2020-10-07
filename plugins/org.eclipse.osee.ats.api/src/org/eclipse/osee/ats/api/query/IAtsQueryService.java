@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -54,9 +55,9 @@ public interface IAtsQueryService {
 
    ArrayList<AtsSearchData> getSavedSearches(AtsUser atsUser, String namespace);
 
-   void saveSearch(AtsUser atsUser, AtsSearchData data);
+   TransactionId saveSearch(AtsUser atsUser, AtsSearchData data);
 
-   void removeSearch(AtsUser atsUser, AtsSearchData data);
+   TransactionId removeSearch(AtsUser atsUser, AtsSearchData data);
 
    AtsSearchData getSearch(AtsUser atsUser, Long id);
 

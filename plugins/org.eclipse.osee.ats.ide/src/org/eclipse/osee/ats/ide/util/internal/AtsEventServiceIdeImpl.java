@@ -21,7 +21,9 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.core.event.FrameworkTopicEvent;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,16 +62,19 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
    }
 
    @Override
-   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems) {
+   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems, TransactionId transaction) {
       // Send locally if need be
       if (event.getEventType() == EventType.LocalOnly || event.getEventType() == EventType.LocalAndRemote) {
-         super.postAtsWorkItemTopicEvent(event, workItems);
+         super.postAtsWorkItemTopicEvent(event, workItems, transaction);
       }
       // Send remote if need be
       if (event.getEventType() == EventType.LocalAndRemote || event.getEventType() == EventType.RemoteOnly) {
-         TopicEvent frameworkTopicEvent = new TopicEvent(event.getTopic(), AtsTopicEvent.WORK_ITEM_IDS_KEY,
-            AtsObjects.toIdsString(";", workItems), EventType.RemoteOnly);
-         OseeEventManager.kickTopicEvent(getClass(), frameworkTopicEvent);
+         TopicEvent topicEvent = new TopicEvent(event.getTopic(), AtsTopicEvent.WORK_ITEM_IDS_KEY,
+            AtsObjects.toIdsString(";", workItems), transaction, EventType.RemoteOnly);
+         if (transaction != null && transaction.isValid()) {
+            topicEvent.addProperty(FrameworkTopicEvent.TRANSACTION_ID, transaction.getIdString());
+         }
+         OseeEventManager.kickTopicEvent(getClass(), topicEvent);
       }
    }
 

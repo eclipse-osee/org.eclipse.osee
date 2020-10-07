@@ -44,7 +44,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * Common location for event handling for task and world composites in order to keep number of registrations and
- * processing to a minimum.
+ * processing to a minimum. This handles deprecated ArtifactEvent. New topic events will eventually replace client
+ * events. These are handled through AtsWorkItemEventHandler.
  *
  * @author Donald G. Dunne
  */
@@ -170,7 +171,7 @@ public class WorldXViewerEventManager {
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
                   AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
-                  Artifact smaParent = (Artifact) smaArt.getParentAtsArtifact();
+                  Artifact smaParent = smaArt.getParentAtsArtifact();
                   /**
                    * Only process parent artifacts once to reduce the amount of refresh. This is especially important
                    * for tasks and reviews where the parents of 2 or more can be the same.

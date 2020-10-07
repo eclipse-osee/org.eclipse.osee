@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.event;
 
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.osgi.service.event.Event;
 
 /**
@@ -21,10 +22,12 @@ import org.osgi.service.event.Event;
 public class AbstractTopicEvent {
 
    private EventType eventType;
+   private TransactionToken transaction = TransactionToken.SENTINEL;
    private String topic;
 
-   protected AbstractTopicEvent(EventType eventType, String topic) {
+   protected AbstractTopicEvent(EventType eventType, TransactionToken transaction, String topic) {
       this.eventType = eventType;
+      this.transaction = transaction;
       this.topic = topic;
    }
 
@@ -84,6 +87,14 @@ public class AbstractTopicEvent {
          return false;
       }
       return true;
+   }
+
+   public TransactionToken getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionToken transaction) {
+      this.transaction = transaction;
    }
 
 }

@@ -15,6 +15,9 @@ package org.eclipse.osee.framework.core.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
+import org.eclipse.osee.framework.core.event.EventType;
 
 /**
  * @author Donald G. Dunne
@@ -25,6 +28,7 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
    private String topic;
    private final Map<String, String> properties;
    private NetworkSender networkSender;
+   private TransactionId transaction;
 
    public TopicEvent(String topic) {
       this.topic = topic;
@@ -32,11 +36,12 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public TopicEvent(AbstractTopicEvent topic, String key, String value) {
-      this(topic.getTopic(), key, value, topic.getEventType());
+      this(topic.getTopic(), key, value, topic.getTransaction(), topic.getEventType());
    }
 
-   public TopicEvent(String topic, String key, String value, EventType eventType) {
+   public TopicEvent(String topic, String key, String value, TransactionId transaction, EventType eventType) {
       this(topic);
+      this.transaction = transaction;
       this.eventType = eventType;
       properties.put(key, value);
    }
@@ -49,7 +54,7 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
       this.topic = topic;
    }
 
-   public void put(String key, String value) {
+   public void addProperty(String key, String value) {
       properties.put(key, value);
    }
 
@@ -73,6 +78,14 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
 
    public void setEventType(EventType eventType) {
       this.eventType = eventType;
+   }
+
+   public TransactionId getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionId transaction) {
+      this.transaction = transaction;
    }
 
 }

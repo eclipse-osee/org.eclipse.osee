@@ -539,7 +539,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          TopicEvent event =
             new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY, Collections.toString(";",
                Arrays.asList(relation.getArtifactA().getIdString(), relation.getArtifactB().getIdString())));
-         event.put(AtsTopicEvent.WORK_ITEM_REL_TYPE_IDS_KEY, relation.getRelationId().getIdString());
+         event.addProperty(AtsTopicEvent.WORK_ITEM_REL_TYPE_IDS_KEY, relation.getRelationId().getIdString());
          OseeEventManager.kickTopicEvent(getClass(), event);
       }
    }

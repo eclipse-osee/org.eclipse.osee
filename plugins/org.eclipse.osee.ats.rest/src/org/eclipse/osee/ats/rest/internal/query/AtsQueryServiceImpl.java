@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -110,12 +111,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public void saveSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId saveSearch(AtsUser atsUser, AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public void removeSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId removeSearch(AtsUser atsUser, AtsSearchData data) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 

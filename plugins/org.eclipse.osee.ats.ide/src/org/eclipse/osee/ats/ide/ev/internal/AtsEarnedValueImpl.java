@@ -90,7 +90,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
       TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
          AtsObjects.toIdsString(";", workItems));
-      event.put(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,
+      event.addProperty(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,
          Collections.toString(";", Arrays.asList(AtsAttributeTypes.WorkPackage.getIdString(),
             AtsAttributeTypes.WorkPackageReference.getIdString())));
       OseeEventManager.kickTopicEvent(getClass(), event);

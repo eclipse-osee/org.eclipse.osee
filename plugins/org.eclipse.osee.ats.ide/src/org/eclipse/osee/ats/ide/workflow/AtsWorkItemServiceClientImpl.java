@@ -130,7 +130,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
 
    /**
     * Since transition on server, reload and post transition event for listeners to refresh. TransitionManager should
-    * NOT be used on client.
+    * NOT be used on client. This is the only way transition events get sent to other clients
     */
    private TransitionResults postEventAndReturn(TransitionData transData, TransitionResults results) {
       Conditions.assertNotNullOrEmpty(results.getWorkItemIds(), "workItemIds");
@@ -138,10 +138,10 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       if (results.isSuccess()) {
          reload(results);
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-            transData.getWorkItems());
+            transData.getWorkItems(), results.getTransaction());
       } else {
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
-            transData.getWorkItems());
+            transData.getWorkItems(), results.getTransaction());
       }
       return results;
    }

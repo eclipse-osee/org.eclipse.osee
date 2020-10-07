@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -34,6 +35,7 @@ public class TransitionResults {
    private Set<ArtifactToken> workItemIds = new HashSet<>();
    private List<TransitionResult> results = new ArrayList<>();
    private List<TransitionWorkItemResult> transitionWorkItems = new ArrayList<>();
+   private TransactionId transaction;
    @JsonIgnore
    private AtsApi atsApi;
 
@@ -198,6 +200,14 @@ public class TransitionResults {
 
    public void setWorkItemIds(Set<ArtifactToken> workItemIds) {
       this.workItemIds = workItemIds;
+   }
+
+   public TransactionId getTransaction() {
+      return transaction;
+   }
+
+   public void setTransaction(TransactionId transaction) {
+      this.transaction = transaction;
    }
 
 }

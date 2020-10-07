@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.TopicEvent;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -130,7 +131,7 @@ public final class OseeEventManager {
    // Kick LOCAL and REMOTE topic event with payload
    public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload, AccessTopicEvent accesstopicEvent) {
       try {
-         TopicEvent topicEvent = EventUtil.createTopic(accesstopicEvent, payload);
+         TopicEvent topicEvent = EventUtil.createTopic(accesstopicEvent, TransactionId.SENTINEL, payload);
          kickTopicEvent(source, topicEvent);
       } catch (Exception ex) {
          OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s][%s]", accesstopicEvent,

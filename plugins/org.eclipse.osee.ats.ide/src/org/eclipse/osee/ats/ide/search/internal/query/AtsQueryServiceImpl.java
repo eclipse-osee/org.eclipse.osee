@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -123,11 +124,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public void saveSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId saveSearch(AtsUser atsUser, AtsSearchData data) {
       ArtifactId userArt = atsApi.getStoreObject(atsUser);
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Save ATS Search", atsApi.getUserService().getCurrentUser());
 
+      TransactionId transaction = TransactionId.SENTINEL;
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
@@ -136,12 +138,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
             changes.setAttribute(userArt, attr, jaxRsApi.toJson(data));
          }
          if (!changes.isEmpty()) {
-            changes.execute();
+            transaction = changes.execute();
          }
          atsApi.getUserService().getCurrentUserNoCache();
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to store ATS Search", ex);
       }
+      return transaction;
    }
 
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
@@ -161,21 +164,23 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public void removeSearch(AtsUser atsUser, AtsSearchData data) {
+   public TransactionId removeSearch(AtsUser atsUser, AtsSearchData data) {
       ArtifactId userArt = atsApi.getStoreObject(atsUser);
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Remove ATS Search", atsApi.getUserService().getCurrentUser());
 
+      TransactionId transaction = TransactionId.SENTINEL;
       try {
          IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr != null) {
             changes.deleteAttribute(userArt, attr);
-            changes.execute();
+            transaction = changes.execute();
          }
          atsApi.getUserService().getCurrentUserNoCache();
       } catch (Exception ex) {
          throw new OseeCoreException("Unable to remove ATS Search", ex);
       }
+      return transaction;
    }
 
    @Override

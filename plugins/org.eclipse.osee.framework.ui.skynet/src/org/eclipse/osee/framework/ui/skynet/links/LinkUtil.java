@@ -19,6 +19,9 @@ import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -149,11 +152,13 @@ public class LinkUtil {
    private static void saveWebPrefsToArtifactAndKickEvent(boolean global, Artifact useArtifact, AccountWebPreferences webPrefs) throws Exception {
       String json = JsonUtil.toJson(webPrefs);
       useArtifact.setSoleAttributeValue(CoreAttributeTypes.WebPreferences, json);
-      useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());
+      TransactionId trans = useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());
+      TransactionToken transTok =
+         TransactionToken.valueOf(trans.getId(), BranchId.valueOf(useArtifact.getBranch().getId()));
 
       TopicEvent event =
          new TopicEvent(global ? FrameworkEvents.GLOBAL_WEB_PREFERENCES : FrameworkEvents.PERSONAL_WEB_PREFERENCES,
-            "links", webPrefs.getLinks().toString(), global ? EventType.LocalAndRemote : EventType.LocalOnly);
+            "links", webPrefs.getLinks().toString(), transTok, global ? EventType.LocalAndRemote : EventType.LocalOnly);
       OseeEventManager.kickTopicEvent(LinkUtil.class, event);
    }
 

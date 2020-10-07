@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
@@ -167,8 +168,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
                         addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                         // Notify listeners that Navigator is loaded
-                        TopicEvent event =
-                           new TopicEvent(FrameworkEvents.NAVIGATE_VIEW_LOADED, "", "", EventType.LocalOnly);
+                        TopicEvent event = new TopicEvent(FrameworkEvents.NAVIGATE_VIEW_LOADED, "", "",
+                           TransactionToken.SENTINEL, EventType.LocalOnly);
                         OseeEventManager.kickTopicEvent(NavigateView.class, event);
 
                      }

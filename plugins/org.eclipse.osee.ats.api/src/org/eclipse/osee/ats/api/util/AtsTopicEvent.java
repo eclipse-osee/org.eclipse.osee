@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
 import org.eclipse.osee.framework.core.event.EventType;
 
@@ -45,7 +46,7 @@ public class AtsTopicEvent extends AbstractTopicEvent {
    public static final String SAVED_SEARCHES_MODIFIED = "saveSearchesModified";
 
    private AtsTopicEvent(EventType eventType, String topic) {
-      super(eventType, topic);
+      super(eventType, TransactionToken.SENTINEL, topic);
       idToEvent.put(topic, this);
    }
 
