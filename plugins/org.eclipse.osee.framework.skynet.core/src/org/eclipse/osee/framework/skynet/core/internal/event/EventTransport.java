@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
+import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.core.event.HasEventType;
 import org.eclipse.osee.framework.core.event.HasNetworkSender;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;

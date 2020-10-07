@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;

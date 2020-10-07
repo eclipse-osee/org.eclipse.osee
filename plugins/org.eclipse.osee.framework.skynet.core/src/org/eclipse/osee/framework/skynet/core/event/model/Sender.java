@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
+import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 
 /**
  * @author Donald G. Dunne

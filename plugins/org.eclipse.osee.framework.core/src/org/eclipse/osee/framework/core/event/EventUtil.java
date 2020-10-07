@@ -11,33 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.core.event;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
-import org.eclipse.osee.framework.core.event.EventType;
-import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.service.event.Event;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
-   private static BranchIdEventFilter commonBranchUuidEvenFilter = new BranchIdEventFilter(CoreBranches.COMMON);
-
    private EventUtil() {
       // Utility Class
-   }
-
-   public static BranchIdEventFilter getCommonBranchFilter() {
-      return EventUtil.commonBranchUuidEvenFilter;
    }
 
    public static String getObjectSafeName(Object object) {
@@ -63,12 +51,12 @@ public final class EventUtil {
             }
          }
          if (ex != null) {
-            OseeLog.log(Activator.class, Level.SEVERE, formatMessage(message, args), ex);
+            OseeLog.log(EventUtil.class, Level.SEVERE, formatMessage(message, args), ex);
          } else {
-            OseeLog.log(Activator.class, Level.FINE, formatMessage(message, args));
+            OseeLog.log(EventUtil.class, Level.FINE, formatMessage(message, args));
          }
       } catch (Throwable th) {
-         OseeLog.log(Activator.class, Level.SEVERE, th);
+         OseeLog.log(EventUtil.class, Level.SEVERE, th);
       }
    }
 

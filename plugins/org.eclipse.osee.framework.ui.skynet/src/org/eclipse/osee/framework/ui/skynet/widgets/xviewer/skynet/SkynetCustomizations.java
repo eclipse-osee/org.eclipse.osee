@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
+import org.eclipse.osee.framework.skynet.core.event.EventUtilIde;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -262,7 +262,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(EventUtil.getCommonBranchFilter());
+      return Arrays.asList(EventUtilIde.getCommonBranchFilter());
    }
 
    @Override

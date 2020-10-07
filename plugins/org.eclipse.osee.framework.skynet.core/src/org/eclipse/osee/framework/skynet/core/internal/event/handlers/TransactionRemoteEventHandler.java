@@ -14,8 +14,8 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.event.EventUtil;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
