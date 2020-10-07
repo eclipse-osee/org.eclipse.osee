@@ -22,11 +22,11 @@ import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
 

@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 

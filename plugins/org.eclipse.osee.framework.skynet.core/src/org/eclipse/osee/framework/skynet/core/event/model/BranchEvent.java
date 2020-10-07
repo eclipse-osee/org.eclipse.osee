@@ -14,6 +14,9 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
+import org.eclipse.osee.framework.core.event.HasNetworkSender;
+import org.eclipse.osee.framework.core.event.NetworkSender;
 
 /**
  * @author Donald G. Dunne

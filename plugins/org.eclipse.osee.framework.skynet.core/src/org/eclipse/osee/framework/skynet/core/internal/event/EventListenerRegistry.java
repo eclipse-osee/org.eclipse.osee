@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 
 /**
  * @author Roberto E. Escobar

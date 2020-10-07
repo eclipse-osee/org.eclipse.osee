@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2010 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,14 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.event.model;
+package org.eclipse.osee.framework.core.event;
 
 /**
  * @author Donald G. Dunne
  */
-public interface HasNetworkSender {
-
-   NetworkSender getNetworkSender();
-
-   void setNetworkSender(NetworkSender sender);
+public interface FrameworkEvent {
+   // do nothing
 }

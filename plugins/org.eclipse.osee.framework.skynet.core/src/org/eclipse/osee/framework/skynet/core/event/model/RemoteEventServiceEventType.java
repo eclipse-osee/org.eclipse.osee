@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
 
 /**
  * @author Donald G. Dunne

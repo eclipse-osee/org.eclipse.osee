@@ -17,12 +17,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
 import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.service.event.Event;
 

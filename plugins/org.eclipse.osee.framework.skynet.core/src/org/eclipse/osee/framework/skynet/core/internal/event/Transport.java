@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.framework.skynet.core.internal.event;
 
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**

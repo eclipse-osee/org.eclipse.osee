@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.event.model;
+package org.eclipse.osee.framework.core.event;
 
 import java.io.Serializable;
 

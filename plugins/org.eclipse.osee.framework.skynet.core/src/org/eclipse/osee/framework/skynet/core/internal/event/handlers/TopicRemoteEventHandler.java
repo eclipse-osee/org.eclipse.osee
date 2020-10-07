@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlerRemote;
 import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
 

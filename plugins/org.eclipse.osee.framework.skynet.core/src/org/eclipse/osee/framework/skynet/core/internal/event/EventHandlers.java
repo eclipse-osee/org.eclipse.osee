@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.skynet.core.internal.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 
 /**
  * @author Roberto E. Escobar

@@ -11,12 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.event.model;
+package org.eclipse.osee.framework.core.event;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
-import org.eclipse.osee.framework.core.event.EventType;
 
 /**
  * @author Donald G. Dunne

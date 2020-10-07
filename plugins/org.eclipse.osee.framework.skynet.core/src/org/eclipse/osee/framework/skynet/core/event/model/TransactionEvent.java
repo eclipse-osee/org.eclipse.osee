@@ -15,6 +15,9 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.event.FrameworkEvent;
+import org.eclipse.osee.framework.core.event.HasNetworkSender;
+import org.eclipse.osee.framework.core.event.NetworkSender;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
 /**

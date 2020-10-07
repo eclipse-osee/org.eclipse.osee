@@ -20,6 +20,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.event.NetworkSender;
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
@@ -44,8 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
-import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
