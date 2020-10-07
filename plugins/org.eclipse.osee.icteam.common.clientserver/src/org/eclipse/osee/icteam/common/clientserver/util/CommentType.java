@@ -14,7 +14,6 @@ package org.eclipse.osee.icteam.common.clientserver.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -23,34 +22,34 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  * @author Ajay Chandrahasan
  */
 public enum CommentType {
-  Comment,
-  Question,
-  Error,
-  Other;
+   Comment,
+   Question,
+   Error,
+   Other;
 
-  /**
- * @param type 
- * @return Common Type corresponds to given type
- * @throws OseeArgumentException
- */
-public static CommentType getType(final String type) throws OseeArgumentException {
-    for (CommentType e : CommentType.values()) {
-      if (e.name().equals(type)) {
-        return e;
+   /**
+    * @param type
+    * @return Common Type corresponds to given type
+    * @throws OseeArgumentException
+    */
+   public static CommentType getType(final String type) throws OseeArgumentException {
+      for (CommentType e : CommentType.values()) {
+         if (e.name().equals(type)) {
+            return e;
+         }
       }
-    }
-    throw new OseeArgumentException("Unhandled NoteType");
-  }
+      throw new OseeArgumentException("Unhandled NoteType");
+   }
 
-  /**
- * @return all Comment types
- */
-public static List<String> getNames() {
-    List<String> names = new ArrayList<String>();
-    for (CommentType e : CommentType.values()) {
-      names.add(e.name());
-    }
-    return names;
-  }
+   /**
+    * @return all Comment types
+    */
+   public static List<String> getNames() {
+      List<String> names = new ArrayList<String>();
+      for (CommentType e : CommentType.values()) {
+         names.add(e.name());
+      }
+      return names;
+   }
 
 };

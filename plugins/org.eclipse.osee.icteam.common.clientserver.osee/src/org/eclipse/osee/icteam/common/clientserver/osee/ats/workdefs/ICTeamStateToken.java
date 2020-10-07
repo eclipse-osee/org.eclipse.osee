@@ -14,13 +14,14 @@ package org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs;
 
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+
 /**
  * The class creates StateTokens or objects which hold the states for ICTeam processing
  * 
  * @author Ajay Chandrahasan
  */
 public class ICTeamStateToken extends NamedIdBase {
-	 
-	 public static StateToken New = StateToken.valueOf(593820494L, "New");
-	 public static StateToken InProgress = StateToken.valueOf(593820495L, "In Progress");
+
+   public static StateToken New = StateToken.valueOf(593820494L, "New");
+   public static StateToken InProgress = StateToken.valueOf(593820495L, "In Progress");
 }

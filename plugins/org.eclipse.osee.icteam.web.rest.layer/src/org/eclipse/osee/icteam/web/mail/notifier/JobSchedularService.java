@@ -13,7 +13,6 @@
 package org.eclipse.osee.icteam.web.mail.notifier;
 
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -32,30 +31,29 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class JobSchedularService {
 
-  /**
-   * This method returns global artifact
-   * 
-   * @return
-   */
-  public static String getGlobalArtifact() {
-    List<ArtifactReadable> lst = null;
-    String soleAttributeAsString = null;
-    try {
+   /**
+    * This method returns global artifact
+    * 
+    * @return
+    */
+   public static String getGlobalArtifact() {
+      List<ArtifactReadable> lst = null;
+      String soleAttributeAsString = null;
+      try {
 
-      OrcsApi orcsApi = OseeCoreData.getOrcsApi();
-      QueryFactory queryFactory = orcsApi.getQueryFactory();
-      ResultSet<ArtifactReadable> results =
-          queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.GlobalPreferences).getResults();
+         OrcsApi orcsApi = OseeCoreData.getOrcsApi();
+         QueryFactory queryFactory = orcsApi.getQueryFactory();
+         ResultSet<ArtifactReadable> results =
+            queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.GlobalPreferences).getResults();
 
-      for (ArtifactReadable artifactReadable : results) {
-        soleAttributeAsString = artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.DefaultMailServer);
+         for (ArtifactReadable artifactReadable : results) {
+            soleAttributeAsString = artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.DefaultMailServer);
+         }
+
+      } catch (OseeCoreException e) {
+         e.printStackTrace();
       }
-
-    }
-    catch (OseeCoreException e) {
-      e.printStackTrace();
-    }
-    return soleAttributeAsString;
-  }
+      return soleAttributeAsString;
+   }
 
 }

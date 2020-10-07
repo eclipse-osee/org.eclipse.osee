@@ -13,11 +13,9 @@
 package org.eclipse.osee.icteam.config;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -29,23 +27,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogoutSuccess implements LogoutSuccessHandler {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response,
-      final Authentication authentication)
-      throws IOException, ServletException {
-    if ((authentication != null) && (authentication.getDetails() != null)) {
-      try {
-        request.getSession().invalidate();
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException, ServletException {
+      if ((authentication != null) && (authentication.getDetails() != null)) {
+         try {
+            request.getSession().invalidate();
+         } catch (Exception e) {
+            e.printStackTrace();
+            e = null;
+         }
       }
-      catch (Exception e) {
-        e.printStackTrace();
-        e = null;
-      }
-    }
-    response.setStatus(HttpServletResponse.SC_OK);
-  }
+      response.setStatus(HttpServletResponse.SC_OK);
+   }
 
 }

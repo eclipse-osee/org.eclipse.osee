@@ -15,47 +15,50 @@ package org.eclipse.osee.icteam.server.access.core;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.orcs.OrcsApi;
 
-
 /**
  * The class provides service to register the values for OrcsApi and atsServer once the server is launched
  *
  * @author Ajay Chandrahasan
  */
 public class OseeCoreData {
-    private static OrcsApi orcsApi;
-    private static IAtsServer atsServer;
-//    private final Set<Object> singletons = new HashSet<>();
+   private static OrcsApi orcsApi;
+   private static IAtsServer atsServer;
+   //    private final Set<Object> singletons = new HashSet<>();
 
-    /**
-     * Sets the value of OrcsApi used in org.eclipse.osee.icteam.server.access.xml
-     * @param orcsApi
-     */
-    public void setOrcsApi(final OrcsApi orcsApi) {
-        OseeCoreData.orcsApi = orcsApi;
-    }
+   /**
+    * Sets the value of OrcsApi used in org.eclipse.osee.icteam.server.access.xml
+    * 
+    * @param orcsApi
+    */
+   public void setOrcsApi(final OrcsApi orcsApi) {
+      OseeCoreData.orcsApi = orcsApi;
+   }
 
-    /**
-     * To get OrcsApi value
-     * @return orcsApi value
-     */
-    public static OrcsApi getOrcsApi() {
-        return orcsApi;
-    }
+   /**
+    * To get OrcsApi value
+    * 
+    * @return orcsApi value
+    */
+   public static OrcsApi getOrcsApi() {
+      return orcsApi;
+   }
 
-    /**
-     * Sets the value of atsServer used in org.eclipse.osee.icteam.icteam.server.access.xml
-     * @param atsServer
-     */
-    public void setAtsServer(final IAtsServer atsServer) {
-        OseeCoreData.atsServer = atsServer;
-    }
+   /**
+    * Sets the value of atsServer used in org.eclipse.osee.icteam.icteam.server.access.xml
+    * 
+    * @param atsServer
+    */
+   public void setAtsServer(final IAtsServer atsServer) {
+      OseeCoreData.atsServer = atsServer;
+   }
 
-    /**
-     * To get atsServer value
-     * @return atsServer value
-     */
-    public static IAtsServer getAtsServer() {
-        return atsServer;
-    }
+   /**
+    * To get atsServer value
+    * 
+    * @return atsServer value
+    */
+   public static IAtsServer getAtsServer() {
+      return atsServer;
+   }
 
 }

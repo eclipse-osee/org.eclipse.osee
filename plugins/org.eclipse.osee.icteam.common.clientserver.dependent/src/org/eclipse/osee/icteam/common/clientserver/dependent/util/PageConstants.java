@@ -12,12 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.clientserver.dependent.util;
 
-
 /**
  * @author Ajay Chandrahasan Constants used to support pagination feature
  */
 public class PageConstants {
 
-  public final static String ZERO = "0";
-  public final static String WILDCARD = "X";
+   public final static String ZERO = "0";
+   public final static String WILDCARD = "X";
 }

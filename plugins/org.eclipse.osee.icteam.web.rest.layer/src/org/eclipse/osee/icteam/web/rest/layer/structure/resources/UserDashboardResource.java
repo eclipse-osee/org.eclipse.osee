@@ -12,16 +12,16 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.web.rest.layer.structure.resources;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -43,9 +43,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 /**
  * UserDashboard Resource to return Logged in User Specific Information
  * 
@@ -53,82 +50,80 @@ import com.google.gson.GsonBuilder;
  */
 
 @Path("UserDashboard")
-public class UserDashboardResource extends AbstractConfigResource{
+public class UserDashboardResource extends AbstractConfigResource {
 
-	public UserDashboardResource(AtsApi atsApi, OrcsApi orcsApi) {
-		super(AtsArtifactTypes.Project, atsApi, orcsApi);
-	}
-	/**
-	 * Function used to fetch the projects which are specific to logged in user
-	 * 
-	 * @param json {@link String} Uuid of the user
-	 * @return serialize serialize user specific projects
-	 */
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("getUserSpecificTasks")
-	public String getUserSpecificTasks(final String json) {
-		String serialize = null;
-		try {
-			OrcsApi orcsApi = OseeCoreData.getOrcsApi();
-			Gson gson = new GsonBuilder()
-					.registerTypeAdapter(ITransferableArtifact.class, new InterfaceAdapter<TransferableArtifact>())
-					.create();
-			TransferableArtifact artifact = gson.fromJson(json, TransferableArtifact.class);
-			String userGuid = artifact.getUuid();
-			String userId= artifact.getName();
-			
-			if (userGuid != null) {
-				List<ITransferableArtifact> listTras = new ArrayList<ITransferableArtifact>();
-				ResultSet<ArtifactReadable> projects = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON)
-						.andIsOfType(AtsArtifactTypes.Project).getResults();
-				for (ArtifactReadable project : projects) {
-					String shortname = project.getAttributes(AtsAttributeTypes.Shortname).getExactlyOne()
-							.toString();
-					QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON)
-							.andIsOfType(AtsArtifactTypes.TeamWorkflow)
-							.and(AtsAttributeTypes.CurrentStateType, "Working", QueryOption.EXACT_MATCH_OPTIONS)
-							.andRelatedTo(AtsRelationTypes.ProjectToTeamWorkFlow_Project, project);
-					ArtifactReadable userArtifact = CommonUtil.getUserFromGivenUserId(userId);;
-					query = query.and(AtsAttributeTypes.CurrentState,
-							userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId),
-							QueryOption.TOKEN_DELIMITER__ANY);
-					ResultSet<ArtifactReadable> results = query.getResults();
-					for (ArtifactReadable artifactReadable : results) {
-						TransferableArtifact ar = new TransferableArtifact();
-						ResultSet<ArtifactReadable> related = artifactReadable
-								.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-						String workPackage = null;
-						if (artifactReadable.getAttributes(AtsAttributeTypes.WorkPackage).size() > 0) {
-							workPackage = artifactReadable.getAttributes(AtsAttributeTypes.WorkPackage).getExactlyOne()
-									.toString();
-							TranferableArtifactLoader
-									.copyArtifactReadbleToTransferableArtifactWithoutRelations(artifactReadable, ar);
-							String taskId = shortname + "-" + workPackage;
-							if (related.size() == 0) {
-								ar.putAttributes("Backlog", Arrays.asList("true"));
-							} else {
-								ar.putAttributes("Backlog", Arrays.asList("false"));
-								ar.putAttributes("SprintName", Arrays.asList(related.getExactlyOne().getName()));
-							}
-							ar.putAttributes("TaskId", Arrays.asList(taskId));
-							ar.putAttributes("ProjectName",
-									Arrays.asList(
-											artifactReadable.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project)
-													.getExactlyOne().getName()));
-							listTras.add(ar);
-						}
-					}
-				}
-				TransferableArtifactsContainer container = new TransferableArtifactsContainer();
-				container.addAll(listTras);
-				serialize = gson.toJson(container);
-			}
-			return serialize;
-		} catch (OseeCoreException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+   public UserDashboardResource(AtsApi atsApi, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.Project, atsApi, orcsApi);
+   }
+
+   /**
+    * Function used to fetch the projects which are specific to logged in user
+    * 
+    * @param json {@link String} Uuid of the user
+    * @return serialize serialize user specific projects
+    */
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Path("getUserSpecificTasks")
+   public String getUserSpecificTasks(final String json) {
+      String serialize = null;
+      try {
+         OrcsApi orcsApi = OseeCoreData.getOrcsApi();
+         Gson gson = new GsonBuilder().registerTypeAdapter(ITransferableArtifact.class,
+            new InterfaceAdapter<TransferableArtifact>()).create();
+         TransferableArtifact artifact = gson.fromJson(json, TransferableArtifact.class);
+         String userGuid = artifact.getUuid();
+         String userId = artifact.getName();
+
+         if (userGuid != null) {
+            List<ITransferableArtifact> listTras = new ArrayList<ITransferableArtifact>();
+            ResultSet<ArtifactReadable> projects =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+                  AtsArtifactTypes.Project).getResults();
+            for (ArtifactReadable project : projects) {
+               String shortname = project.getAttributes(AtsAttributeTypes.Shortname).getExactlyOne().toString();
+               QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+                  AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.CurrentStateType, "Working",
+                     QueryOption.EXACT_MATCH_OPTIONS).andRelatedTo(AtsRelationTypes.ProjectToTeamWorkFlow_Project,
+                        project);
+               ArtifactReadable userArtifact = CommonUtil.getUserFromGivenUserId(userId);
+               ;
+               query = query.and(AtsAttributeTypes.CurrentState,
+                  userArtifact.getSoleAttributeAsString(CoreAttributeTypes.UserId), QueryOption.TOKEN_DELIMITER__ANY);
+               ResultSet<ArtifactReadable> results = query.getResults();
+               for (ArtifactReadable artifactReadable : results) {
+                  TransferableArtifact ar = new TransferableArtifact();
+                  ResultSet<ArtifactReadable> related =
+                     artifactReadable.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+                  String workPackage = null;
+                  if (artifactReadable.getAttributes(AtsAttributeTypes.WorkPackage).size() > 0) {
+                     workPackage =
+                        artifactReadable.getAttributes(AtsAttributeTypes.WorkPackage).getExactlyOne().toString();
+                     TranferableArtifactLoader.copyArtifactReadbleToTransferableArtifactWithoutRelations(
+                        artifactReadable, ar);
+                     String taskId = shortname + "-" + workPackage;
+                     if (related.size() == 0) {
+                        ar.putAttributes("Backlog", Arrays.asList("true"));
+                     } else {
+                        ar.putAttributes("Backlog", Arrays.asList("false"));
+                        ar.putAttributes("SprintName", Arrays.asList(related.getExactlyOne().getName()));
+                     }
+                     ar.putAttributes("TaskId", Arrays.asList(taskId));
+                     ar.putAttributes("ProjectName", Arrays.asList(artifactReadable.getRelated(
+                        AtsRelationTypes.ProjectToTeamWorkFlow_Project).getExactlyOne().getName()));
+                     listTras.add(ar);
+                  }
+               }
+            }
+            TransferableArtifactsContainer container = new TransferableArtifactsContainer();
+            container.addAll(listTras);
+            serialize = gson.toJson(container);
+         }
+         return serialize;
+      } catch (OseeCoreException e) {
+         e.printStackTrace();
+      }
+      return null;
+   }
 }

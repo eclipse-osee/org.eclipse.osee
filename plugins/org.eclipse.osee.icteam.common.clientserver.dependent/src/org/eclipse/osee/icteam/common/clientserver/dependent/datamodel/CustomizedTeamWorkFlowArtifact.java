@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.eclipse.osee.icteam.common.artifact.interfaces.ITransferableArtifact;
 import org.eclipse.osee.icteam.common.clientserver.dependent.util.CommonConstants;
 
@@ -31,504 +30,493 @@ import org.eclipse.osee.icteam.common.clientserver.dependent.util.CommonConstant
  */
 public class CustomizedTeamWorkFlowArtifact {
 
-
-  public String name;
-  public String guid;
-  public final Map<String, List<String>> attributeMap = new ConcurrentHashMap<String, List<String>>();
-  public final Map<String, List<ITransferableArtifact>> relationMap =
+   public String name;
+   public String guid;
+   public final Map<String, List<String>> attributeMap = new ConcurrentHashMap<String, List<String>>();
+   public final Map<String, List<ITransferableArtifact>> relationMap =
       new ConcurrentHashMap<String, List<ITransferableArtifact>>();
 
+   private List<CommentArtifact> commentArtifactList = new ArrayList<CommentArtifact>();
+   private List<ITransferableArtifact> listVersionsDropDown = new ArrayList<ITransferableArtifact>();
+   private List<ITransferableArtifact> listCompoentsDropDown = new ArrayList<ITransferableArtifact>();
+   private final List<ITransferableArtifact> listTeamMembersTeamLeads = new ArrayList<ITransferableArtifact>();
+   private TransferableArtifact actionableItem;
+   private TransferableArtifact version;
+   private List<ITransferableArtifact> assignee;
+   private String description;
+   private String estimatedHours;
+   private String priority;
+   private String changeType;
+   private String rank;
+   private String createdBy;
+   private Date createdDate;
+   private Date expectedDate;
+   private Date completionDate;
+   public String artifactType;
+   public String currentState;
+   public String remainingHours;
+   public String workPackage;
+   public String story;
 
-  private List<CommentArtifact> commentArtifactList = new ArrayList<CommentArtifact>();
-  private List<ITransferableArtifact> listVersionsDropDown = new ArrayList<ITransferableArtifact>();
-  private List<ITransferableArtifact> listCompoentsDropDown = new ArrayList<ITransferableArtifact>();
-  private final List<ITransferableArtifact> listTeamMembersTeamLeads = new ArrayList<ITransferableArtifact>();
-  private TransferableArtifact actionableItem;
-  private TransferableArtifact version;
-  private List<ITransferableArtifact> assignee;
-  private String description;
-  private String estimatedHours;
-  private String priority;
-  private String changeType;
-  private String rank;
-  private String createdBy;
-  private Date createdDate;
-  private Date expectedDate;
-  private Date completionDate;
-  public String artifactType;
-  public String currentState;
-  public String remainingHours;
-  public String workPackage;
-  public String story;
+   /**
+    * get remaining hours
+    *
+    * @return
+    */
+   public String getRemainingHours() {
+      return this.remainingHours;
+   }
 
+   /**
+    * set remaining hours
+    *
+    * @param remainingHours
+    */
+   public void setRemainingHours(final String remainingHours) {
+      this.remainingHours = remainingHours;
+   }
 
-  /**
-   * get remaining hours
-   *
-   * @return
-   */
-  public String getRemainingHours() {
-    return this.remainingHours;
-  }
+   /**
+    * get current state like new, completed
+    *
+    * @return
+    */
+   public String getCurrentState() {
+      return this.currentState;
+   }
 
-  /**
-   * set remaining hours
-   *
-   * @param remainingHours
-   */
-  public void setRemainingHours(final String remainingHours) {
-    this.remainingHours = remainingHours;
-  }
+   /**
+    * set current state
+    *
+    * @param currentState
+    */
+   public void setCurrentState(final String currentState) {
+      this.currentState = currentState;
+   }
 
-  /**
-   * get current state like new, completed
-   *
-   * @return
-   */
-  public String getCurrentState() {
-    return this.currentState;
-  }
+   /**
+    * get artifact type
+    *
+    * @return
+    */
+   public String getArtifactType() {
+      return this.artifactType;
+   }
 
-  /**
-   * set current state
-   *
-   * @param currentState
-   */
-  public void setCurrentState(final String currentState) {
-    this.currentState = currentState;
-  }
+   /**
+    * set artifact type
+    *
+    * @param artifactType
+    */
+   public void setArtifactType(final String artifactType) {
+      this.artifactType = artifactType;
+   }
 
-  /**
-   * get artifact type
-   *
-   * @return
-   */
-  public String getArtifactType() {
-    return this.artifactType;
-  }
+   /**
+    * get description
+    *
+    * @return
+    */
+   public String getDescription() {
+      return this.description;
+   }
 
-  /**
-   * set artifact type
-   *
-   * @param artifactType
-   */
-  public void setArtifactType(final String artifactType) {
-    this.artifactType = artifactType;
-  }
+   /**
+    * set desciption
+    *
+    * @param description
+    */
+   public void setDescription(final String description) {
+      this.description = description;
+   }
 
-  /**
-   * get description
-   *
-   * @return
-   */
-  public String getDescription() {
-    return this.description;
-  }
+   /**
+    * get estimated hours
+    *
+    * @return
+    */
+   public String getEstimatedHours() {
+      return this.estimatedHours;
+   }
 
-  /**
-   * set desciption
-   *
-   * @param description
-   */
-  public void setDescription(final String description) {
-    this.description = description;
-  }
+   /**
+    * set estimated hours
+    *
+    * @param estimatedHours
+    */
+   public void setEstimatedHours(final String estimatedHours) {
+      this.estimatedHours = estimatedHours;
+   }
 
-  /**
-   * get estimated hours
-   *
-   * @return
-   */
-  public String getEstimatedHours() {
-    return this.estimatedHours;
-  }
+   /**
+    * get priority
+    *
+    * @return
+    */
+   public String getPriority() {
+      return this.priority;
+   }
 
-  /**
-   * set estimated hours
-   *
-   * @param estimatedHours
-   */
-  public void setEstimatedHours(final String estimatedHours) {
-    this.estimatedHours = estimatedHours;
-  }
+   /**
+    * set priority
+    *
+    * @param priority
+    */
+   public void setPriority(final String priority) {
+      this.priority = priority;
+   }
 
-  /**
-   * get priority
-   *
-   * @return
-   */
-  public String getPriority() {
-    return this.priority;
-  }
+   /**
+    * get change type
+    *
+    * @return
+    */
+   public String getChangeType() {
+      return this.changeType;
+   }
 
-  /**
-   * set priority
-   *
-   * @param priority
-   */
-  public void setPriority(final String priority) {
-    this.priority = priority;
-  }
+   /**
+    * set change type
+    *
+    * @param changeType
+    */
+   public void setChangeType(final String changeType) {
+      this.changeType = changeType;
+   }
 
-  /**
-   * get change type
-   *
-   * @return
-   */
-  public String getChangeType() {
-    return this.changeType;
-  }
+   /**
+    * get rank
+    *
+    * @return
+    */
+   public String getRank() {
+      return this.rank;
+   }
 
-  /**
-   * set change type
-   *
-   * @param changeType
-   */
-  public void setChangeType(final String changeType) {
-    this.changeType = changeType;
-  }
+   /**
+    * set rank
+    *
+    * @param rank
+    */
+   public void setRank(final String rank) {
+      this.rank = rank;
+   }
 
-  /**
-   * get rank
-   *
-   * @return
-   */
-  public String getRank() {
-    return this.rank;
-  }
+   /**
+    * get created by
+    *
+    * @return
+    */
+   public String getCreatedBy() {
+      return this.createdBy;
+   }
 
-  /**
-   * set rank
-   *
-   * @param rank
-   */
-  public void setRank(final String rank) {
-    this.rank = rank;
-  }
+   /**
+    * set created by
+    *
+    * @param createdBy
+    */
+   public void setCreatedBy(final String createdBy) {
+      this.createdBy = createdBy;
+   }
 
-  /**
-   * get created by
-   *
-   * @return
-   */
-  public String getCreatedBy() {
-    return this.createdBy;
-  }
+   /**
+    * get created date
+    *
+    * @return
+    */
+   public Date getCreatedDate() {
+      return this.createdDate;
+   }
 
-  /**
-   * set created by
-   *
-   * @param createdBy
-   */
-  public void setCreatedBy(final String createdBy) {
-    this.createdBy = createdBy;
-  }
+   /**
+    * set created date
+    *
+    * @param createdDate
+    */
+   public void setCreatedDate(final Date createdDate) {
+      this.createdDate = createdDate;
+   }
 
-  /**
-   * get created date
-   *
-   * @return
-   */
-  public Date getCreatedDate() {
-    return this.createdDate;
-  }
+   /**
+    * get expected date
+    *
+    * @return
+    */
+   public Date getExpectedDate() {
+      return this.expectedDate;
+   }
 
-  /**
-   * set created date
-   *
-   * @param createdDate
-   */
-  public void setCreatedDate(final Date createdDate) {
-    this.createdDate = createdDate;
-  }
+   /**
+    * set expected date
+    *
+    * @param expectedDate
+    */
+   public void setExpectedDate(final Date expectedDate) {
+      this.expectedDate = expectedDate;
+   }
 
-  /**
-   * get expected date
-   *
-   * @return
-   */
-  public Date getExpectedDate() {
-    return this.expectedDate;
-  }
+   /**
+    * get completion date
+    *
+    * @return
+    */
+   public Date getCompletionDate() {
+      return this.completionDate;
+   }
 
-  /**
-   * set expected date
-   *
-   * @param expectedDate
-   */
-  public void setExpectedDate(final Date expectedDate) {
-    this.expectedDate = expectedDate;
-  }
+   /**
+    * set completion date
+    *
+    * @param completionDate
+    */
+   public void setCompletionDate(final Date completionDate) {
+      this.completionDate = completionDate;
+   }
 
-  /**
-   * get completion date
-   *
-   * @return
-   */
-  public Date getCompletionDate() {
-    return this.completionDate;
-  }
+   /**
+    * get list od assignee artifact
+    *
+    * @return
+    */
+   public List<ITransferableArtifact> getAssignee() {
+      return this.assignee;
+   }
 
-  /**
-   * set completion date
-   *
-   * @param completionDate
-   */
-  public void setCompletionDate(final Date completionDate) {
-    this.completionDate = completionDate;
-  }
+   /**
+    * Sets list of assignee artifact
+    *
+    * @param assignee
+    */
+   public void setAssignee(final List<ITransferableArtifact> assignee) {
+      this.assignee = assignee;
+   }
 
+   /**
+    * get actionable item
+    *
+    * @return
+    */
+   public TransferableArtifact getActionableItem() {
+      return this.actionableItem;
+   }
 
-  /**
-   * get list od assignee artifact
-   *
-   * @return
-   */
-  public List<ITransferableArtifact> getAssignee() {
-    return this.assignee;
-  }
+   /**
+    * sets actionable items
+    *
+    * @param actionableItem
+    */
+   public void setActionableItem(final TransferableArtifact actionableItem) {
+      this.actionableItem = actionableItem;
+   }
 
-  /**
-   * Sets list of assignee artifact
-   *
-   * @param assignee
-   */
-  public void setAssignee(final List<ITransferableArtifact> assignee) {
-    this.assignee = assignee;
-  }
+   /**
+    * get version artifact
+    *
+    * @return
+    */
+   public TransferableArtifact getVersion() {
+      return this.version;
+   }
 
-  /**
-   * get actionable item
-   *
-   * @return
-   */
-  public TransferableArtifact getActionableItem() {
-    return this.actionableItem;
-  }
+   /**
+    * sets version
+    *
+    * @param version
+    */
+   public void setVersion(final TransferableArtifact version) {
+      this.version = version;
+   }
 
-  /**
-   * sets actionable items
-   *
-   * @param actionableItem
-   */
-  public void setActionableItem(final TransferableArtifact actionableItem) {
-    this.actionableItem = actionableItem;
-  }
+   /**
+    * get name
+    *
+    * @return
+    */
+   public String getName() {
+      return this.name;
+   }
 
-  /**
-   * get version artifact
-   *
-   * @return
-   */
-  public TransferableArtifact getVersion() {
-    return this.version;
-  }
+   /**
+    * sets name
+    *
+    * @param name
+    */
+   public void setName(final String name) {
+      this.name = name;
+   }
 
-  /**
-   * sets version
-   *
-   * @param version
-   */
-  public void setVersion(final TransferableArtifact version) {
-    this.version = version;
-  }
+   /**
+    * get guid
+    *
+    * @return
+    */
+   public String getGuid() {
+      return this.guid;
+   }
 
-  /**
-   * get name
-   *
-   * @return
-   */
-  public String getName() {
-    return this.name;
-  }
+   /**
+    * sets guid
+    *
+    * @param guid
+    */
+   public void setGuid(final String guid) {
+      this.guid = guid;
+   }
 
-  /**
-   * sets name
-   *
-   * @param name
-   */
-  public void setName(final String name) {
-    this.name = name;
-  }
+   /**
+    * get attributeMap
+    *
+    * @return
+    */
+   public Map<String, List<String>> getAttributeMap() {
+      return this.attributeMap;
+   }
 
-  /**
-   * get guid
-   *
-   * @return
-   */
-  public String getGuid() {
-    return this.guid;
-  }
+   /**
+    * puts data to the attribute Map
+    *
+    * @param key
+    * @param value
+    */
+   public void putAttributes(final String key, final List<String> value) {
+      this.attributeMap.put(key, value);
+   }
 
-  /**
-   * sets guid
-   *
-   * @param guid
-   */
-  public void setGuid(final String guid) {
-    this.guid = guid;
-  }
+   /**
+    * adds a tuple to key value {@inheritDoc}
+    */
+   public void putRelations(final String key, final List<ITransferableArtifact> value) {
+      this.relationMap.put(key, value);
+   }
 
-  /**
-   * get attributeMap
-   *
-   * @return
-   */
-  public Map<String, List<String>> getAttributeMap() {
-    return this.attributeMap;
-  }
+   /**
+    * get relation map
+    *
+    * @return
+    */
+   public Map<String, List<ITransferableArtifact>> getRelationMap() {
+      Map<String, List<ITransferableArtifact>> relations = new HashMap<>();
+      Set<Entry<String, List<ITransferableArtifact>>> entrySet = this.relationMap.entrySet();
+      for (Entry<String, List<ITransferableArtifact>> entry : entrySet) {
+         String[] splitKey = splitKey(entry.getKey());
+         relations.put(splitKey[0], entry.getValue());
+      }
+      return relations;
+   }
 
-  /**
-   * puts data to the attribute Map
-   *
-   * @param key
-   * @param value
-   */
-  public void putAttributes(final String key, final List<String> value) {
-    this.attributeMap.put(key, value);
-  }
+   /**
+    * get related artifact
+    *
+    * @param key
+    * @return
+    */
+   public List<ITransferableArtifact> getRelatedArtifacts(final String key) {
+      Map<String, List<ITransferableArtifact>> relationMap2 = getRelationMap();
+      if (relationMap2.containsKey(key)) {
+         return relationMap2.get(key);
+      }
+      // do not change the return value here
+      return null;
+   }
 
-  /**
-   * adds a tuple to key value {@inheritDoc}
-   */
-  public void putRelations(final String key, final List<ITransferableArtifact> value) {
-    this.relationMap.put(key, value);
-  }
+   /**
+    * get split key
+    *
+    * @param key
+    * @return
+    */
+   public String[] splitKey(final String key) {
+      return key.split(CommonConstants.RELATION_MAP_KEY_SEPARATOR);
+   }
 
+   /**
+    * @param listVersionsDropDown
+    */
+   public void setListVersionsDropDown(final List<ITransferableArtifact> listVersionsDropDown) {
+      this.listVersionsDropDown = listVersionsDropDown;
+   }
 
-  /**
-   * get relation map
-   *
-   * @return
-   */
-  public Map<String, List<ITransferableArtifact>> getRelationMap() {
-    Map<String, List<ITransferableArtifact>> relations = new HashMap<>();
-    Set<Entry<String, List<ITransferableArtifact>>> entrySet = this.relationMap.entrySet();
-    for (Entry<String, List<ITransferableArtifact>> entry : entrySet) {
-      String[] splitKey = splitKey(entry.getKey());
-      relations.put(splitKey[0], entry.getValue());
-    }
-    return relations;
-  }
+   /**
+    * get components
+    *
+    * @return
+    */
+   public List<ITransferableArtifact> getListCompoenntsDropDown() {
+      return this.listCompoentsDropDown;
+   }
 
+   /**
+    * Set components
+    *
+    * @param listCompoenntsDropDown
+    */
+   public void setListCompoenntsDropDown(final List<ITransferableArtifact> listCompoenntsDropDown) {
+      this.listCompoentsDropDown = listCompoenntsDropDown;
+   }
 
-  /**
-   * get related artifact
-   *
-   * @param key
-   * @return
-   */
-  public List<ITransferableArtifact> getRelatedArtifacts(final String key) {
-    Map<String, List<ITransferableArtifact>> relationMap2 = getRelationMap();
-    if (relationMap2.containsKey(key)) {
-      return relationMap2.get(key);
-    }
-    // do not change the return value here
-    return null;
-  }
+   /**
+    * get list of comment artifact
+    *
+    * @return
+    */
+   public List<CommentArtifact> getCommentArtifactList() {
+      return this.commentArtifactList;
+   }
 
-  /**
-   * get split key
-   *
-   * @param key
-   * @return
-   */
-  public String[] splitKey(final String key) {
-    return key.split(CommonConstants.RELATION_MAP_KEY_SEPARATOR);
-  }
+   /**
+    * getlist of common artifact
+    *
+    * @param commentArtifactList
+    */
+   public void setCommentArtifactList(final List<CommentArtifact> commentArtifactList) {
+      this.commentArtifactList = commentArtifactList;
+   }
 
+   /**
+    * get list of versions
+    *
+    * @return
+    */
+   public List<ITransferableArtifact> getListVersionsDropDown() {
+      return this.listVersionsDropDown;
+   }
 
-  /**
-   * @param listVersionsDropDown
-   */
-  public void setListVersionsDropDown(final List<ITransferableArtifact> listVersionsDropDown) {
-    this.listVersionsDropDown = listVersionsDropDown;
-  }
+   /**
+    * get list of leads of team members
+    *
+    * @return
+    */
+   public List<ITransferableArtifact> getListTeamMembersTeamLeads() {
+      return this.listTeamMembersTeamLeads;
+   }
 
+   /**
+    * get work package
+    *
+    * @return
+    */
+   public String getWorkPackage() {
+      return this.workPackage;
+   }
 
-  /**
-   * get components
-   *
-   * @return
-   */
-  public List<ITransferableArtifact> getListCompoenntsDropDown() {
-    return this.listCompoentsDropDown;
-  }
+   /**
+    * set workpackage
+    *
+    * @param workPackage
+    */
+   public void setWorkPackage(final String workPackage) {
+      this.workPackage = workPackage;
+   }
 
+   /**
+    * set story
+    *
+    * @param story
+    */
+   public void setStory(final String story) {
+      this.story = story;
 
-  /**
-   * Set components
-   *
-   * @param listCompoenntsDropDown
-   */
-  public void setListCompoenntsDropDown(final List<ITransferableArtifact> listCompoenntsDropDown) {
-    this.listCompoentsDropDown = listCompoenntsDropDown;
-  }
-
-
-  /**
-   * get list of comment artifact
-   *
-   * @return
-   */
-  public List<CommentArtifact> getCommentArtifactList() {
-    return this.commentArtifactList;
-  }
-
-
-  /**
-   * getlist of common artifact
-   *
-   * @param commentArtifactList
-   */
-  public void setCommentArtifactList(final List<CommentArtifact> commentArtifactList) {
-    this.commentArtifactList = commentArtifactList;
-  }
-
-  /**
-   * get list of versions
-   *
-   * @return
-   */
-  public List<ITransferableArtifact> getListVersionsDropDown() {
-    return this.listVersionsDropDown;
-  }
-
-  /**
-   * get list of leads of team members
-   *
-   * @return
-   */
-  public List<ITransferableArtifact> getListTeamMembersTeamLeads() {
-    return this.listTeamMembersTeamLeads;
-  }
-
-  /**
-   * get work package
-   *
-   * @return
-   */
-  public String getWorkPackage() {
-    return this.workPackage;
-  }
-
-  /**
-   * set workpackage
-   *
-   * @param workPackage
-   */
-  public void setWorkPackage(final String workPackage) {
-    this.workPackage = workPackage;
-  }
-
-  /**
-   * set story
-   *
-   * @param story
-   */
-  public void setStory(final String story) {
-    this.story = story;
-
-  }
+   }
 
 }

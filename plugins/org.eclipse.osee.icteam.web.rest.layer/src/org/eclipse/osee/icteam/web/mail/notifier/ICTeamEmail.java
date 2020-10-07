@@ -14,7 +14,6 @@ package org.eclipse.osee.icteam.web.mail.notifier;
 
 import java.util.Collection;
 import java.util.Properties;
-
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
 import javax.mail.Message;
@@ -27,9 +26,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 
 /**
  * This class is used to trigger Email notifications on Task state transition
@@ -83,7 +80,7 @@ public class ICTeamEmail extends MimeMessage {
          }
 
       } catch (MessagingException ex) {
-//         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         //         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -259,10 +256,10 @@ public class ICTeamEmail extends MimeMessage {
          try {
             email.sendLocalThread();
          } catch (MessagingException ex) {
-        	 System.out.println(ex);
-//            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            System.out.println(ex);
+            //            OseeLog.log(Activator.class, Level.SEVERE, ex);
          } catch (OseeCoreException ex) {
-//            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            //            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -304,15 +301,13 @@ public class ICTeamEmail extends MimeMessage {
     */
    private static Session getSession() throws OseeCoreException {
       Properties props = System.getProperties();
-      
+
       String mailServer = JobSchedularService.getGlobalArtifact();
-      if(mailServer != null){
-    	  props.put(emailType,mailServer);
+      if (mailServer != null) {
+         props.put(emailType, mailServer);
       }
 
       return Session.getDefaultInstance(props, null);
    }
-
-
 
 }

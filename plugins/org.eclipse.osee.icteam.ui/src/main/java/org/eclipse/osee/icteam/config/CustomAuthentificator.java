@@ -25,39 +25,38 @@ import org.springframework.security.ldap.search.LdapUserSearch;
  */
 public class CustomAuthentificator extends AbstractLdapAuthenticator {
 
-  DefaultSpringSecurityContextSource contextSource1;
+   DefaultSpringSecurityContextSource contextSource1;
 
-  /**
-   * @param contextSource
-   */
-  public CustomAuthentificator(final DefaultSpringSecurityContextSource contextSource) {
-    super(contextSource);
-    this.contextSource1 = contextSource;
-  }
+   /**
+    * @param contextSource
+    */
+   public CustomAuthentificator(final DefaultSpringSecurityContextSource contextSource) {
+      super(contextSource);
+      this.contextSource1 = contextSource;
+   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public DirContextOperations authenticate(final Authentication authentication) {
-    DirContextOperations user;
+   /**
+    * {@inheritDoc}
+    */
+   public DirContextOperations authenticate(final Authentication authentication) {
+      DirContextOperations user;
 
+      String username = authentication.getName();
+      String password = (String) authentication.getCredentials();
+      BindAuthenticator bindAuthenticatorser = new BindAuthenticator(this.contextSource1);
+      String dnArray[] = new String[] {"ou=sss"};
+      bindAuthenticatorser.setUserDnPatterns(dnArray);
+      bindAuthenticatorser.setUserSearch(getLdapSerarch());
+      user = bindAuthenticatorser.authenticate(authentication);
+      return user;
+   }
 
-    String username = authentication.getName();
-    String password = (String) authentication.getCredentials();
-    BindAuthenticator bindAuthenticatorser = new BindAuthenticator(this.contextSource1);
-    String dnArray[] = new String[] { "ou=sss" };
-    bindAuthenticatorser.setUserDnPatterns(dnArray);
-    bindAuthenticatorser.setUserSearch(getLdapSerarch());
-    user = bindAuthenticatorser.authenticate(authentication);
-    return user;
-  }
-
-  public LdapUserSearch getLdapSerarch() {
-    LdapUserSearch ldapUserSearch =
-        new FilterBasedLdapUserSearch("", "(&(objectCategory=Person)(sAMAccountName={0}))", this.contextSource1);
-    ((FilterBasedLdapUserSearch) ldapUserSearch).setSearchSubtree(true);
-    ((FilterBasedLdapUserSearch) ldapUserSearch).setSearchTimeLimit(0);
-    ((FilterBasedLdapUserSearch) ldapUserSearch).setDerefLinkFlag(false);
-    return ldapUserSearch;
-  }
+   public LdapUserSearch getLdapSerarch() {
+      LdapUserSearch ldapUserSearch =
+         new FilterBasedLdapUserSearch("", "(&(objectCategory=Person)(sAMAccountName={0}))", this.contextSource1);
+      ((FilterBasedLdapUserSearch) ldapUserSearch).setSearchSubtree(true);
+      ((FilterBasedLdapUserSearch) ldapUserSearch).setSearchTimeLimit(0);
+      ((FilterBasedLdapUserSearch) ldapUserSearch).setDerefLinkFlag(false);
+      return ldapUserSearch;
+   }
 }

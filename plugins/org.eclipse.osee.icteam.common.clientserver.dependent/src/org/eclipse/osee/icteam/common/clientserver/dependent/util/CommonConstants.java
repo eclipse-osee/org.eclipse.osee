@@ -19,15 +19,15 @@ package org.eclipse.osee.icteam.common.clientserver.dependent.util;
  */
 public class CommonConstants {
 
-  public static final String RELATION_MAP_KEY_SEPARATOR = "##";
-  public static final String SUCCESS = "Success";
-  public static final String FAILURE = "Failure";
-  public static final String STATUS = "Status";
+   public static final String RELATION_MAP_KEY_SEPARATOR = "##";
+   public static final String SUCCESS = "Success";
+   public static final String FAILURE = "Failure";
+   public static final String STATUS = "Status";
 
-  public static final String MANGLED_NAME = "#__$DORMANT$__#"; // Projects having this at the end of its name is
-                                                               // considered dormant
-  public static final String PRODUCT_BACKLOG_NAME = "Product_Backlog"; // Release with this name is used as product
-                                                                       // backlog for a project
-  public static final String PROJECT_SHORTNAME = "pj_sn";
+   public static final String MANGLED_NAME = "#__$DORMANT$__#"; // Projects having this at the end of its name is
+                                                                // considered dormant
+   public static final String PRODUCT_BACKLOG_NAME = "Product_Backlog"; // Release with this name is used as product
+                                                                        // backlog for a project
+   public static final String PROJECT_SHORTNAME = "pj_sn";
 
 }

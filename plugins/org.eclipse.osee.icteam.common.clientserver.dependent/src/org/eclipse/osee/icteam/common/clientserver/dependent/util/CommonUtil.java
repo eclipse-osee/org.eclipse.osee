@@ -12,12 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.clientserver.dependent.util;
 
+import com.google.common.base.Function;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.icteam.common.artifact.interfaces.ITransferableArtifact;
-
-import com.google.common.base.Function;
 
 /*
  * This class is for userid reteival from transferable artifact
@@ -25,21 +23,20 @@ import com.google.common.base.Function;
  */
 public class CommonUtil {
 
-  /**
-   * This is for userid reteival from transferable artifact
-   */
-  public static final Function<ITransferableArtifact, String> USER_ID_RETREIVER_FROM_TRANSFERABLE_ARTIFCT =
+   /**
+    * This is for userid reteival from transferable artifact
+    */
+   public static final Function<ITransferableArtifact, String> USER_ID_RETREIVER_FROM_TRANSFERABLE_ARTIFCT =
       new Function<ITransferableArtifact, String>() {
 
-        @Override
-        public String apply(final ITransferableArtifact ar) {
-          List<String> userIdL = ar.getAttributes(CoreAttributeTypes.UserId.getName());
-          if ((userIdL != null) && !userIdL.isEmpty()) {
-            return userIdL.get(0);
-          }
-          return "";
-        }
+         @Override
+         public String apply(final ITransferableArtifact ar) {
+            List<String> userIdL = ar.getAttributes(CoreAttributeTypes.UserId.getName());
+            if ((userIdL != null) && !userIdL.isEmpty()) {
+               return userIdL.get(0);
+            }
+            return "";
+         }
       };
-
 
 }

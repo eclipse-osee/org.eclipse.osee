@@ -13,6 +13,7 @@
 package org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs;
 
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
+
 /**
  * The class creates instance of AtsWorkDefinitionToken for ICTeam
  * 
@@ -20,5 +21,5 @@ import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
  */
 public class AtsWorkDefinitionICTeamTokens {
 
-	public static AtsWorkDefinitionToken WorkDef_ICTeam = new AtsWorkDefinitionToken(72307L, "WorkDef_ICTeam");
+   public static AtsWorkDefinitionToken WorkDef_ICTeam = new AtsWorkDefinitionToken(72307L, "WorkDef_ICTeam");
 }

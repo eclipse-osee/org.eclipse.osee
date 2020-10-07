@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.clientserver.util;
 
-
 /**
  * Restutil class
  * 
@@ -20,30 +19,28 @@ package org.eclipse.osee.icteam.common.clientserver.util;
  */
 public class RestUtil {
 
+   /**
+    * @param xml
+    * @return currentState by replacing a regex with empty string
+    */
+   public static String getCurrentState(final String xml) {
+      String currentState = xml.replaceFirst(";.*$", "");
+      return currentState;
+   }
 
-  /**
- * @param xml
- * @return currentState by replacing a regex with empty string
- */
-public static String getCurrentState(final String xml) {
-    String currentState = xml.replaceFirst(";.*$", "");
-    return currentState;
-  }
-
-  /**
- * @param xml
- * @return total hours in String format
- */
-public static String getTotalHoursString(final String xml) {
-    String ret = "";
-    if (xml.length() > 0) {
-      String[] split = xml.split(";");
-      if (split.length >= 3) {
-        ret = split[2];
+   /**
+    * @param xml
+    * @return total hours in String format
+    */
+   public static String getTotalHoursString(final String xml) {
+      String ret = "";
+      if (xml.length() > 0) {
+         String[] split = xml.split(";");
+         if (split.length >= 3) {
+            ret = split[2];
+         }
       }
-    }
-    return ret;
-  }
-
+      return ret;
+   }
 
 }

@@ -12,11 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.artifact.interfaces;
 
+import com.google.common.base.Function;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.base.Function;
-
 
 /**
  * This interface has method signatures related to user assigned for a task
@@ -25,238 +23,229 @@ import com.google.common.base.Function;
  */
 public interface ITransferableArtifact {
 
-  /**
-   * @return the modified Date
-   */
-  public String getModifiedDate();
+   /**
+    * @return the modified Date
+    */
+   public String getModifiedDate();
 
-  /**
-   * @param modifiedDate the modifiedDate to set
-   */
-  public void setModifiedDate(final String modifiedDate);
+   /**
+    * @param modifiedDate the modifiedDate to set
+    */
+   public void setModifiedDate(final String modifiedDate);
 
-  /**
-   * @return the modifiedBy
-   */
-  public String getModifiedBy();
+   /**
+    * @return the modifiedBy
+    */
+   public String getModifiedBy();
 
-  /**
-   * @param modifiedBy the modifiedBy to set
-   */
-  public void setModifiedBy(final String modifiedBy);
+   /**
+    * @param modifiedBy the modifiedBy to set
+    */
+   public void setModifiedBy(final String modifiedBy);
 
-  /**
-   * @return the version
-   */
-  public String getRevision();
+   /**
+    * @return the version
+    */
+   public String getRevision();
 
-  /**
-   * @param version the version to set
-   */
-  public void setRevision(final String version);
+   /**
+    * @param version the version to set
+    */
+   public void setRevision(final String version);
 
-  /**
-   * @return the userId
-   */
-  public String getUserId();
+   /**
+    * @return the userId
+    */
+   public String getUserId();
 
+   /**
+    * @param userId the userId to set
+    */
+   public void setUserId(final String userId);
 
-  /**
-   * @param userId the userId to set
-   */
-  public void setUserId(final String userId);
+   /**
+    * @return the canEdit
+    */
+   public boolean isCanEdit();
 
-  /**
-   * @return the canEdit
-   */
-  public boolean isCanEdit();
+   /**
+    * @param canEdit the canEdit to set
+    */
+   public void setCanEdit(final boolean canEdit);
 
-  /**
-   * @param canEdit the canEdit to set
-   */
-  public void setCanEdit(final boolean canEdit);
+   /**
+    * @return the branch GUID
+    */
+   public String getBranchGuid();
 
-  /**
-   * @return the branch GUID
-   */
-  public String getBranchGuid();
+   /**
+    * @param branchGuid to set
+    */
+   public void setBranchGuid(final Long branchGuid);
 
-  /**
-   * @param branchGuid to set
-   */
-  public void setBranchGuid(final Long branchGuid);
+   /**
+    * @return the guid
+    */
+   public String getUuid();
 
-  /**
-   * @return the guid
-   */
-  public String getUuid();
+   /**
+    * @return the artifact type
+    */
+   public String getArtifactType();
 
-  /**
-   * @return the artifact type
-   */
-  public String getArtifactType();
+   /**
+    * @param artifactType to set
+    */
+   public void setArtifactType(final String artifactType);
 
+   /**
+    * @param key to get value
+    * @return the values
+    */
+   public List<String> getAttributes(final String key);
 
-  /**
-   * @param artifactType to set
-   */
-  public void setArtifactType(final String artifactType);
+   /**
+    * @param key to get value
+    * @param defaultValue if value is not there
+    * @return the value
+    */
+   public List<String> getAttributesOrElse(final String key, final List<String> defaultValue);
 
-  /**
-   * @param key to get value
-   * @return the values
-   */
-  public List<String> getAttributes(final String key);
+   /**
+    * @param key to get value
+    * @return the values
+    */
+   public List<String> getAttributesOrElse(final String key);
 
-  /**
-   * @param key to get value
-   * @param defaultValue if value is not there
-   * @return the value
-   */
-  public List<String> getAttributesOrElse(final String key, final List<String> defaultValue);
+   /**
+    * @param key to store
+    * @param value to store
+    */
+   public void putAttributes(final String key, final List<String> value);
 
-  /**
-   * @param key to get value
-   * @return the values
-   */
-  public List<String> getAttributesOrElse(final String key);
+   /**
+    * @param key relation type
+    * @param value artifact to relate
+    */
+   public void putRelations(final String key, final List<ITransferableArtifact> value);
 
-  /**
-   * @param key to store
-   * @param value to store
-   */
-  public void putAttributes(final String key, final List<String> value);
+   /**
+    * @param key t split
+    * @return the split
+    */
+   public String[] splitKey(final String key);
 
-  /**
-   * @param key relation type
-   * @param value artifact to relate
-   */
-  public void putRelations(final String key, final List<ITransferableArtifact> value);
+   /**
+    * @return the relation map
+    */
+   public Map<String, List<ITransferableArtifact>> getRelationMap();
 
-  /**
-   * @param key t split
-   * @return the split
-   */
-  public String[] splitKey(final String key);
+   /**
+    * @param id to set
+    */
+   public void setId(final Long id);
 
-  /**
-   * @return the relation map
-   */
-  public Map<String, List<ITransferableArtifact>> getRelationMap();
+   /**
+    * @return the relation map sides
+    */
+   public Map<String, List<ITransferableArtifact>> getRelationMapWithSides();
 
-  /**
-   * @param id to set
-   */
-  public void setId(final Long id);
+   /**
+    * @param key String for which the results are given
+    * @return {@link List} obtained as result Or null
+    */
+   public List<ITransferableArtifact> getRelatedArtifacts(final String key);
 
-  /**
-   * @return the relation map sides
-   */
-  public Map<String, List<ITransferableArtifact>> getRelationMapWithSides();
+   /**
+    * @return the name
+    */
+   public String getName();
 
-  /**
-   * @param key String for which the results are given
-   * @return {@link List} obtained as result Or null
-   */
-  public List<ITransferableArtifact> getRelatedArtifacts(final String key);
+   /**
+    * @param name to set
+    */
+   public void setName(final String name);
 
-  /**
-   * @return the name
-   */
-  public String getName();
+   /**
+    * @return the parent guid
+    */
+   public String getParentGuid();
 
-  /**
-   * @param name to set
-   */
-  public void setName(final String name);
+   /**
+    * @param parentGuid to set
+    */
+   public void setParentGuid(final String parentGuid);
 
-  /**
-   * @return the parent guid
-   */
-  public String getParentGuid();
+   /**
+    * @return the attribute map
+    */
+   public Map<String, List<String>> getAttributes();
 
-  /**
-   * @param parentGuid to set
-   */
-  public void setParentGuid(final String parentGuid);
+   /**
+    * @return the artifact type name
+    */
+   public String getArtifactTypeName();
 
-  /**
-   * @return the attribute map
-   */
-  public Map<String, List<String>> getAttributes();
+   /**
+    * @param artifactTypeName to set
+    */
+   public void setArtifactTypeName(final String artifactTypeName);
 
+   /**
+    * @param colsToHide to set
+    */
+   public void setcolumnsToHide(final Integer[] colsToHide);
 
-  /**
-   * @return the artifact type name
-   */
-  public String getArtifactTypeName();
+   /**
+    * @return the coloumnsToHide
+    */
+   public Integer[] getColoumnsToHide();
 
-  /**
-   * @param artifactTypeName to set
-   */
-  public void setArtifactTypeName(final String artifactTypeName);
+   /**
+    * @return the metaInfo. This map value cannot be mutated
+    */
+   public Map<String, ? extends Object> getMetaInfo();
 
-  /**
-   * @param colsToHide to set
-   */
-  public void setcolumnsToHide(final Integer[] colsToHide);
+   /**
+    * @param metaData the metaData to set
+    */
+   public void setMetaInfo(final Map<String, ? extends Object> metaData);
 
-  /**
-   * @return the coloumnsToHide
-   */
-  public Integer[] getColoumnsToHide();
+   /**
+    * @param localId to set
+    */
+   public void setLocalId(final int localId);
 
+   /**
+    * @return the localId
+    */
+   public int getLocalId();
 
-  /**
-   * @return the metaInfo. This map value cannot be mutated
-   */
-  public Map<String, ? extends Object> getMetaInfo();
+   /**
+    * @param key to set
+    * @param element artifact to remove
+    */
+   public void removeFromRelated(final String key, final ITransferableArtifact element);
 
+   /**
+    * @return the isInvalidated
+    */
+   public boolean isInvalidated();
 
-  /**
-   * @param metaData the metaData to set
-   */
-  public void setMetaInfo(final Map<String, ? extends Object> metaData);
+   /**
+    * @param isInvalidated the isInvalidated to set
+    */
+   public void setInvalidated(final boolean isInvalidated);
 
+   /**
+    * @return : current logged in user
+    */
+   public String getCurrentLoggedInUser();
 
-  /**
-   * @param localId to set
-   */
-  public void setLocalId(final int localId);
-
-
-  /**
-   * @return the localId
-   */
-  public int getLocalId();
-
-  /**
-   * @param key to set
-   * @param element artifact to remove
-   */
-  public void removeFromRelated(final String key, final ITransferableArtifact element);
-
-
-  /**
-   * @return the isInvalidated
-   */
-  public boolean isInvalidated();
-
-
-  /**
-   * @param isInvalidated the isInvalidated to set
-   */
-  public void setInvalidated(final boolean isInvalidated);
-
-  /**
-   * @return : current logged in user
-   */
-  public String getCurrentLoggedInUser();
-
-  /**
-   * @param userIdRetreiverFromTransferableArtifct : userId Retreived from TransferableArtifct
-   * @return :User ID
-   */
-  public String getUserId(Function<ITransferableArtifact, String> userIdRetreiverFromTransferableArtifct);
+   /**
+    * @param userIdRetreiverFromTransferableArtifct : userId Retreived from TransferableArtifct
+    * @return :User ID
+    */
+   public String getUserId(Function<ITransferableArtifact, String> userIdRetreiverFromTransferableArtifct);
 
 }

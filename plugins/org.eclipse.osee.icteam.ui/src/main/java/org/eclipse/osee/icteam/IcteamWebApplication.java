@@ -23,15 +23,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class IcteamWebApplication extends SpringBootServletInitializer {
 
-  /**
-   * @param args
-   */
-  public static void main(final String[] args) {
-    SpringApplication.run(IcteamWebApplication.class, args);
-  }
+   /**
+    * @param args
+    */
+   public static void main(final String[] args) {
+      SpringApplication.run(IcteamWebApplication.class, args);
+   }
 
-  @Override
-  protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-    return application.sources(IcteamWebApplication.class);
-  }
+   @Override
+   protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
+      return application.sources(IcteamWebApplication.class);
+   }
 }

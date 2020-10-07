@@ -23,53 +23,48 @@ import java.util.Map;
  */
 public interface ITransferableArtifactsContainer {
 
-  /**
-   * returns status
-   *
-   * @return the status
-   */
-  public String getStatus();
+   /**
+    * returns status
+    *
+    * @return the status
+    */
+   public String getStatus();
 
+   /**
+    * sets status
+    *
+    * @param status the status to set
+    */
+   public void setStatus(final String status);
 
-  /**
-   * sets status
-   *
-   * @param status the status to set
-   */
-  public void setStatus(final String status);
+   /**
+    * @return the metaInfo. This map value cannot be mutated
+    */
+   public Map<String, ? extends Object> getMetaInfo();
 
+   /**
+    * @param metaInfo the metaInfo to set
+    */
+   public void setMetaInfo(final Map<String, ? extends Object> metaInfo);
 
-  /**
-   * @return the metaInfo. This map value cannot be mutated
-   */
-  public Map<String, ? extends Object> getMetaInfo();
+   public String getProjectGUID();
 
+   public void setProjectGUID(final String projectGUID);
 
-  /**
-   * @param metaInfo the metaInfo to set
-   */
-  public void setMetaInfo(final Map<String, ? extends Object> metaInfo);
+   public HashMap<String, String> getAttributes();
 
+   public void setAttributes(final HashMap<String, String> checkedAttributes);
 
-  public String getProjectGUID();
+   public boolean isInclude();
 
-  public void setProjectGUID(final String projectGUID);
+   public void setInclude(final boolean include);
 
-  public HashMap<String, String> getAttributes();
+   public ITransferableArtifact getParentArtifact();
 
-  public void setAttributes(final HashMap<String, String> checkedAttributes);
+   public void setParentArtifact(final ITransferableArtifact parentArtifact);
 
-  public boolean isInclude();
+   public List<ITransferableArtifact> getArtifactList();
 
-  public void setInclude(final boolean include);
-
-  public ITransferableArtifact getParentArtifact();
-
-  public void setParentArtifact(final ITransferableArtifact parentArtifact);
-
-
-  public List<ITransferableArtifact> getArtifactList();
-
-  public void addAll(final List<ITransferableArtifact> listTras);
+   public void addAll(final List<ITransferableArtifact> listTras);
 
 }

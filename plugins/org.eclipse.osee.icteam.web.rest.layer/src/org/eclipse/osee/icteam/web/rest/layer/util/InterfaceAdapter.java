@@ -12,35 +12,27 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.web.rest.layer.util;
 
-import java.lang.reflect.Type;
-
-import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.TransferableArtifact;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
+import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.TransferableArtifact;
 
 /**
- * 
- * @author Ajay Chandrahasan 
- *
- * Interface to Serialize and Deserialize Transferable Artifacts
+ * @author Ajay Chandrahasan Interface to Serialize and Deserialize Transferable Artifacts
  */
 
 public class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
-	
 
-	
-    public JsonElement serialize(T object, Type interfaceType, JsonSerializationContext context) {
-    	return context.serialize(object);
-    }
+   public JsonElement serialize(T object, Type interfaceType, JsonSerializationContext context) {
+      return context.serialize(object);
+   }
 
-    public T deserialize(JsonElement elem, Type interfaceType, JsonDeserializationContext context) throws JsonParseException {
-        return context.deserialize(elem, TransferableArtifact.class);
-    }
+   public T deserialize(JsonElement elem, Type interfaceType, JsonDeserializationContext context) throws JsonParseException {
+      return context.deserialize(elem, TransferableArtifact.class);
+   }
 
-	
 }

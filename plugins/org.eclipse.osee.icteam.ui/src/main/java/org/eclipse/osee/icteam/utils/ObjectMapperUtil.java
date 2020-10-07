@@ -13,10 +13,8 @@
 package org.eclipse.osee.icteam.utils;
 
 import java.io.IOException;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,37 +26,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component("objectMapperUtil")
 public class ObjectMapperUtil<T> {
 
-  private static final Logger LOG = Logger.getLogger(ObjectMapperUtil.class);
+   private static final Logger LOG = Logger.getLogger(ObjectMapperUtil.class);
 
-  public T parseToObject(final String jsonString, final Class<T> objectType) {
-    T object = null;
+   public T parseToObject(final String jsonString, final Class<T> objectType) {
+      T object = null;
 
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    try {
-      object = mapper.readValue(jsonString, objectType);
-    }
-    catch (IOException e) {
-      LOG.error("Error while parsing string to object of type " + objectType, e);
-    }
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      try {
+         object = mapper.readValue(jsonString, objectType);
+      } catch (IOException e) {
+         LOG.error("Error while parsing string to object of type " + objectType, e);
+      }
 
-    return object;
+      return object;
 
-  }
+   }
 
-  public String parseToString(final T object) {
-    String jsonString = null;
+   public String parseToString(final T object) {
+      String jsonString = null;
 
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+         jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
 
-    }
-    catch (JsonProcessingException e) {
-      LOG.error("Error while parsing object to string", e);
-    }
-    return jsonString;
+      } catch (JsonProcessingException e) {
+         LOG.error("Error while parsing object to string", e);
+      }
+      return jsonString;
 
-  }
+   }
 
 }

@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.common.clientserver.dependent.util;
 
-
 /**
  * then class is to get get and set current userID
  * 
@@ -20,24 +19,23 @@ package org.eclipse.osee.icteam.common.clientserver.dependent.util;
  */
 public class CurrentUserID {
 
-  private String currentUserId;
+   private String currentUserId;
 
+   /**
+    * @return the currentUserId
+    */
+   public String getCurrentUserId() {
+      return this.currentUserId != null ? this.currentUserId.toLowerCase() : this.currentUserId;
+   }
 
-  /**
-   * @return the currentUserId
-   */
-  public String getCurrentUserId() {
-    return this.currentUserId != null ? this.currentUserId.toLowerCase() : this.currentUserId;
-  }
+   public void setCurrentUserId(final String currentUserId) {
+      this.currentUserId = currentUserId;
+   }
 
-  public void setCurrentUserId(final String currentUserId) {
-    this.currentUserId = currentUserId;
-  }
-
-  /**
-   * @return the currentLoggedInUser
-   */
-  public String getCurrentLoggedInUser() {
-    return getCurrentUserId();
-  }
+   /**
+    * @return the currentLoggedInUser
+    */
+   public String getCurrentLoggedInUser() {
+      return getCurrentUserId();
+   }
 }

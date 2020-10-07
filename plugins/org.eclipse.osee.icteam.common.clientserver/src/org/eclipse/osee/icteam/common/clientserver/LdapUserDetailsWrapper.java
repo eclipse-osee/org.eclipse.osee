@@ -14,54 +14,55 @@ package org.eclipse.osee.icteam.common.clientserver;
 
 import javax.xml.bind.annotation.XmlElement;
 
-
 public class LdapUserDetailsWrapper {
 
+   String diaplayName;
+   String userId;
+   String mail;
 
-  String diaplayName;
-  String userId;
-  String mail;
+   /**
+    * @return userId, if current user id is present
+    */
+   @XmlElement
+   public String getUserId() {
+      return this.userId;
+   }
 
-  /**
-   * @return userId, if current user id is present  
-   */
-  @XmlElement
-  public String getUserId() {
-    return this.userId;
-  }
-  /**
-	* Method to set userId  
-	*/
-  public void setUserId(final String userId) {
-    this.userId = userId;
-  }
-  /**
-	* @return mail  
-	*/
-  @XmlElement
-  public String getMail() {
-    return this.mail;
-  }
-  
-  /**
- 	* Method to set Mail  
- 	*/
-  public void setMail(final String mail) {
-    this.mail = mail;
-  }
+   /**
+    * Method to set userId
+    */
+   public void setUserId(final String userId) {
+      this.userId = userId;
+   }
 
-  /**
-	* @return display name  
-	*/
-  @XmlElement
-  public String getDisplayName() {
-    return this.diaplayName;
-  }
-  /**
-	* Method to set display name  
-	*/
-  public void setDisplayName(final String diaplayName) {
-    this.diaplayName = diaplayName;
-  }
+   /**
+    * @return mail
+    */
+   @XmlElement
+   public String getMail() {
+      return this.mail;
+   }
+
+   /**
+    * Method to set Mail
+    */
+   public void setMail(final String mail) {
+      this.mail = mail;
+   }
+
+   /**
+    * @return display name
+    */
+   @XmlElement
+   public String getDisplayName() {
+      return this.diaplayName;
+   }
+
+   /**
+    * Method to set display name
+    */
+   public void setDisplayName(final String diaplayName) {
+      this.diaplayName = diaplayName;
+   }
 
 }

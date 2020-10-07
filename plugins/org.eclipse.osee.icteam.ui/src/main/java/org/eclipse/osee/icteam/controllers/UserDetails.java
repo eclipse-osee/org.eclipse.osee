@@ -13,7 +13,6 @@
 package org.eclipse.osee.icteam.controllers;
 
 import java.security.Principal;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserDetails {
 
-  @RequestMapping("/user")
-  public Object user(final Principal user) {
-    UsernamePasswordAuthenticationToken userDetails = (UsernamePasswordAuthenticationToken) user;
-    return userDetails.getPrincipal();
-  }
+   @RequestMapping("/user")
+   public Object user(final Principal user) {
+      UsernamePasswordAuthenticationToken userDetails = (UsernamePasswordAuthenticationToken) user;
+      return userDetails.getPrincipal();
+   }
 
 }

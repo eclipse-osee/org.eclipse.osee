@@ -19,14 +19,12 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * 
- * 
  * @author Ajay Chandrahasan
  */
 public class ICTeamExportClassLoader extends ClassLoader {
 
    private static ICTeamExportClassLoader exportClassloaderInstance;
-private static ServiceTracker packageAdminTracker;
+   private static ServiceTracker packageAdminTracker;
    private final PackageAdmin packageAdmin;
 
    public static ICTeamExportClassLoader getInstance() {
@@ -45,14 +43,15 @@ private static ServiceTracker packageAdminTracker;
       this(getPackageAdmin());
    }
 
-	public static PackageAdmin getPackageAdmin() {
-		packageAdminTracker = new ServiceTracker(Platform.getBundle("org.eclipse.osee.icteam.job.scheduler").getBundleContext(),
-				PackageAdmin.class.getName(), null);
-		packageAdminTracker.open();
-		return (PackageAdmin) packageAdminTracker.getService();
-	}
+   public static PackageAdmin getPackageAdmin() {
+      packageAdminTracker =
+         new ServiceTracker(Platform.getBundle("org.eclipse.osee.icteam.job.scheduler").getBundleContext(),
+            PackageAdmin.class.getName(), null);
+      packageAdminTracker.open();
+      return (PackageAdmin) packageAdminTracker.getService();
+   }
 
-@Override
+   @Override
    protected Class<?> findClass(String name) throws ClassNotFoundException {
       try {
          Bundle bundle = getExportingBundle(name);

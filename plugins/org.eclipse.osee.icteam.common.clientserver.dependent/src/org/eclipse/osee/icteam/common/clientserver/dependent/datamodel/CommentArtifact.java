@@ -21,62 +21,62 @@ import java.util.Date;
  */
 public class CommentArtifact {
 
-  private String msg;
+   private String msg;
 
-  /**
-   * gets message
-   *
-   * @return
-   */
-  public String getMsg() {
-    return this.msg;
-  }
+   /**
+    * gets message
+    *
+    * @return
+    */
+   public String getMsg() {
+      return this.msg;
+   }
 
-  /**
-   * sets message
-   *
-   * @param msg
-   */
-  public void setMsg(final String msg) {
-    this.msg = msg;
-  }
+   /**
+    * sets message
+    *
+    * @param msg
+    */
+   public void setMsg(final String msg) {
+      this.msg = msg;
+   }
 
-  /**
-   * gets User
-   * 
-   * @return
-   */
-  public String getUser() {
-    return this.user;
-  }
+   /**
+    * gets User
+    * 
+    * @return
+    */
+   public String getUser() {
+      return this.user;
+   }
 
-  /**
-   * set user
-   *
-   * @param user
-   */
-  public void setUser(final String user) {
-    this.user = user;
-  }
+   /**
+    * set user
+    *
+    * @param user
+    */
+   public void setUser(final String user) {
+      this.user = user;
+   }
 
-  /**
-   * gets date
-   *
-   * @return
-   */
-  public Date getDate() {
-    return this.date;
-  }
+   /**
+    * gets date
+    *
+    * @return
+    */
+   public Date getDate() {
+      return this.date;
+   }
 
-  /**
-   * sets date
-   *
-   * @param date
-   */
-  public void setDate(final Date date) {
-    this.date = date;
-  }
+   /**
+    * sets date
+    *
+    * @param date
+    */
+   public void setDate(final Date date) {
+      this.date = date;
+   }
 
-  private String user;
-  private Date date;
+   private String user;
+   private Date date;
 }
