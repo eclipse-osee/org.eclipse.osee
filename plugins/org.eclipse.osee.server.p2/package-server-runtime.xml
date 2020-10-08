@@ -153,7 +153,19 @@
 							<then>
 								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>
-						</elseif>
+						</elseif>						
+						<elseif>
+						   <equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.apt" />
+						   <then>
+							   <echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+						   </then>
+					   </elseif>
+						<elseif>
+							<equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.tool" />
+							<then>
+								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
+							</then>
+						</elseif>						
 						<elseif>
 							<equals arg1="${projectName}" arg2="com.google.guava" />
 							<then>
