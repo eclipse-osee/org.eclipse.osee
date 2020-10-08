@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,10 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public List<String> getPossibleApplicabilities(BranchId branch) {
       List<String> apps = new ArrayList<String>();
+      HashMap<Long, ApplicabilityToken> appTokens = getApplicabilityTokens(branch);
+      for (ApplicabilityToken app : appTokens.values()) {
+         apps.add(app.getName());
+      }
       for (ArtifactToken view : getViewsForBranch(branch)) {
          apps.add("Config = " + view.getName());
       }
@@ -93,7 +98,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       for (ArtifactToken group : getConfigurationGroupsForBranch(branch)) {
          apps.add("ConfigurationGroup = " + group.getName());
       }
-      return apps;
+      List<String> appsNoDups = new ArrayList<>(new HashSet<>(apps));
+      Collections.sort(appsNoDups);
+      return appsNoDups;
    }
 
    @Override
