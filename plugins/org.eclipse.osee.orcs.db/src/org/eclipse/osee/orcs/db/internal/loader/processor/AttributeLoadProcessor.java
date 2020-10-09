@@ -67,7 +67,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         AttributeTypeGeneric<?> attributeType = tokenService.getAttributeType(chStmt.getLong("attr_type_id"));
+         AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
          Object value = chStmt.loadAttributeValue(attributeType);
          String uri = chStmt.getString("uri");
