@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -58,8 +59,8 @@ public class ArtifactDeltaToFileConverter {
       return new Pair<>(baseFile, newerFile);
    }
 
-   public void convertToFileForMerge(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) {
-      ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
+   public void convertToFileForMerge(final Collection<IFile> outputFiles, TransactionDelta txDelta, Artifact baseVersion, Artifact newerVersion) {
+      ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, baseVersion, newerVersion);
 
       CompareDataCollector colletor = new CompareDataCollector() {
          @Override

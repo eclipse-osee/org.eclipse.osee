@@ -193,9 +193,10 @@ public abstract class AbstractWordCompare implements IComparator {
       } else {
          // The artifactDelta is a 3 Way Merge
          List<IFile> outputFiles = new ArrayList<>();
-         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(),
+         converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
             artifactDelta.getStartArtifact());
-         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
+         converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
+            artifactDelta.getEndArtifact());
          // this is where we are getting the exception that the length of outputFiles is 1
          // This happens because the artifact did not exist on the previous
          // branch or was removed on the current branch

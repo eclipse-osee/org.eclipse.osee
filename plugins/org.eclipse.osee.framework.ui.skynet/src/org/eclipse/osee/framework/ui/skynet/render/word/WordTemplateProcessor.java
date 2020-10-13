@@ -239,14 +239,6 @@ public class WordTemplateProcessor {
 
       getExcludeArtifactTypes();
 
-      if (includeEmptyHeaders) {
-         renderer.updateOption(RendererOption.PUBLISH_EMPTY_HEADERS, true);
-      }
-
-      if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
-         isEmptyHeaders(artifacts);
-      }
-
       IFile file = RendererUtil.getRenderFile(COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
       renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
 
@@ -272,9 +264,11 @@ public class WordTemplateProcessor {
    public boolean isEmptyHeaders(List<Artifact> artifacts) {
       boolean hasIncludedChildren = false;
       boolean includeParent = false;
-      List<Artifact> children = null;
+      List<Artifact> children = new LinkedList<>();
       for (Artifact artifact : artifacts) {
-         children = artifact.getChildren();
+         if (!artifact.isHistorical()) {
+            children = artifact.getChildren();
+         }
          if (!children.isEmpty()) {
             hasIncludedChildren = isEmptyHeaders(children);
             if (!hasIncludedChildren) {
@@ -552,6 +546,9 @@ public class WordTemplateProcessor {
          JsonNode includeEmptyHeaders = attributeOptions.findValue("IncludeEmptyHeaders");
          if (includeEmptyHeaders != null) {
             this.includeEmptyHeaders = includeEmptyHeaders.asBoolean();
+            if (this.includeEmptyHeaders) {
+               renderer.updateOption(RendererOption.PUBLISH_EMPTY_HEADERS, true);
+            }
          }
          outlineNumber = attributeOptions.findValue("OutlineNumber").asText();
          JsonNode templateFooter = attributeOptions.findValue("TemplateFooter");
@@ -637,6 +634,10 @@ public class WordTemplateProcessor {
 
       if (metadataElements.isEmpty()) {
          parseMetadataOptions(templateOptions);
+      }
+
+      if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
+         isEmptyHeaders(artifacts);
       }
 
       if ((boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF)) {
