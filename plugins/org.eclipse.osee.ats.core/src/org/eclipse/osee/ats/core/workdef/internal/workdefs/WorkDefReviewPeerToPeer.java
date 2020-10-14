@@ -52,8 +52,6 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
          .andToStates(StateToken.Cancelled, StateToken.Review, StateToken.Meeting) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
-            new WidgetDefinition("Select Peer Review Checklist to Attach", "XPeerChecklistAttachmentExampleCombo",
-               HORIZONTAL_LABEL), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Location, "XTextDam", FILL_VERTICALLY, REQUIRED_FOR_TRANSITION), //
