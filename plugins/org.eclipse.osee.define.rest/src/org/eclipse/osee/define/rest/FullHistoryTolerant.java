@@ -18,6 +18,7 @@ import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +45,8 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Ryan D. Brooks
  */
 public class FullHistoryTolerant implements HistoryImportStrategy {
-   protected final Map<String, ArtifactId> pathToCodeunitMap;
+   protected final Map<String, ArtifactId> pathToCodeunitMap = new HashMap<>(10000);
+   protected final Map<String, ArtifactId> pathToCodeunitReferenceMap;
    private final TupleQuery tupleQuery;
    protected final ArtifactReadable repoArtifact;
    protected final BranchId branch;
@@ -52,12 +54,12 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
 
    private final Map<String, ArtifactId> existingCodeUnitPath = new ConcurrentHashMap<>();
 
-   public FullHistoryTolerant(ArtifactReadable repoArtifact, OrcsApi orcsApi, Map<String, ArtifactId> pathToCodeunitMap) {
+   public FullHistoryTolerant(ArtifactReadable repoArtifact, OrcsApi orcsApi, Map<String, ArtifactId> pathToCodeunitReferenceMap) {
       this.repoArtifact = repoArtifact;
       this.branch = repoArtifact.getBranch();
       queryFactory = orcsApi.getQueryFactory();
       this.tupleQuery = queryFactory.tupleQuery();
-      this.pathToCodeunitMap = pathToCodeunitMap;
+      this.pathToCodeunitReferenceMap = pathToCodeunitReferenceMap;
       initExistingCodeUnitPath();
    }
 
@@ -82,6 +84,7 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
          codeUnit = findCodeUnit(repoArtifact, path);
          if (codeUnit.isValid()) {
             tx.deleteArtifact(codeUnit);
+            pathToCodeunitReferenceMap.remove(path);
             pathToCodeunitMap.remove(path);
          } else {
             System.out.printf("didn't find %s for deletion in commit %s\n", path, commitSHA);
@@ -92,6 +95,12 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             if (Strings.isValid(newPath)) {
                tx.setName(codeUnit, getCodeUnitName(newPath));
                tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
+               if (isPathRenamed(path, newPath)) {
+                  ArtifactId location = editCodeUnitPath(tx, newPath, false);
+                  tx.unrelateFromAll(CoreRelationTypes.DefaultHierarchical_Parent, codeUnit);
+                  tx.relate(location, CoreRelationTypes.DefaultHierarchical, codeUnit);
+               }
+               pathToCodeunitReferenceMap.remove(path);
                pathToCodeunitMap.remove(path);
                pathToCodeunitMap.put(newPath, codeUnit);
             }
@@ -109,12 +118,16 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private ArtifactId findCodeUnit(ArtifactId repository, String path) {
-
-      ArtifactId codeUnit = pathToCodeunitMap.get(path);
-      if (codeUnit != null) {
-         return codeUnit;
+      ArtifactId codeUnit = ArtifactId.SENTINEL;
+      if (pathToCodeunitMap.containsKey(path)) {
+         codeUnit = pathToCodeunitMap.get(path);
+      } else if (pathToCodeunitReferenceMap.containsKey(path)) {
+         codeUnit = pathToCodeunitReferenceMap.get(path);
       }
-      return ArtifactId.SENTINEL;
+      if (codeUnit == null) {
+         return ArtifactId.SENTINEL;
+      }
+      return codeUnit;
    }
 
    private void initExistingCodeUnitPath() {
@@ -134,6 +147,10 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private ArtifactId createCodeUnit(TransactionBuilder tx, String newPath) {
+      return editCodeUnitPath(tx, newPath, true);
+   }
+
+   private ArtifactId editCodeUnitPath(TransactionBuilder tx, String newPath, boolean newCodeUnit) {
       ArtifactId folder = repoArtifact;
       String codeUnitName = "";
       String wholePath = "";
@@ -153,10 +170,19 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             folder = existingCodeUnitPath.get(wholePath);
          }
       }
-      ArtifactId codeUnit = tx.createArtifact(folder, CoreArtifactTypes.CodeUnit, codeUnitName);
-      tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
+      if (newCodeUnit) {
+         ArtifactId codeUnit = tx.createArtifact(folder, CoreArtifactTypes.CodeUnit, codeUnitName);
+         tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
+         return codeUnit;
+      }
+      return folder;
+   }
 
-      return codeUnit;
+   private boolean isPathRenamed(String path, String newPath) {
+      if (path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
+         return true;
+      }
+      return false;
    }
 
    private String getCodeUnitName(String newPath) {

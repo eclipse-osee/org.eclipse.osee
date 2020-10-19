@@ -99,7 +99,7 @@ public final class GitOperationsImpl implements GitOperations {
    private final OrcsApi orcsApi;
    private final QueryFactory queryFactory;
    private final SystemProperties systemPrefs;
-   private final Map<String, ArtifactId> pathToCodeunitMap = new HashMap<>(10000);
+   private final Map<String, ArtifactId> pathToCodeunitReferenceMap = new HashMap<>();
 
    private static final Pattern changeIdPattern = Pattern.compile("\\s+Change-Id: (I\\w{40})");
    private final Matcher changeIdMatcher = changeIdPattern.matcher("");
@@ -256,10 +256,10 @@ public final class GitOperationsImpl implements GitOperations {
                   "Attribute FileSystemPath on code unit %s - art id [%d] is missing and cannot be determined",
                   singleCommit.getName(), singleCommit.getId());
             }
-            pathToCodeunitMap.put(fullPathName, singleCommit);
+            pathToCodeunitReferenceMap.put(fullPathName, singleCommit);
          }
          HistoryImportStrategy importStrategy =
-            new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport, pathToCodeunitMap);
+            new FastHistoryStrategy(repoArtifact, orcsApi, tx, initialImport, pathToCodeunitReferenceMap);
          walkTree(repoArtifact, jgitRepo, to, from, repoArtifact.getBranch(), account, importStrategy);
       } catch (RevisionSyntaxException | IOException ex) {
          throw OseeCoreException.wrap(ex);
@@ -432,8 +432,9 @@ public final class GitOperationsImpl implements GitOperations {
    private String setFullPathName(BranchId branch, ArtifactReadable singleCommit, ArtifactReadable repoArtifact) {
       ArtifactReadable art = singleCommit;
       String wholePath = art.getName();
-      while (!art.getParent().equals(repoArtifact) && art.isValid()) {
-         art = art.getParent();
+      while (!art.getParent().equals(repoArtifact)) {
+         art =
+            queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.Folder).andId(art.getParent()).asArtifact();
          wholePath = art.getName() + "/" + wholePath;
       }
       return wholePath;
