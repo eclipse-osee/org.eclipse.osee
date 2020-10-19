@@ -34,8 +34,16 @@
 								<plugin id="org.eclipse.m2e.maven.indexer" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
 								<plugin id="javax.xml" />
+								<plugin id="javax.mail" />
+								<plugin id="javax.xml.rpc" />
+								<plugin id="org.apache.commons.discovery" />
+								<feature id="org.eclipse.mylyn_feature" />
+								<feature id="edu.umd.cs.findbugs.plugin.eclipse" />
+								<feature id="org.eclipse.mylyn.context_feature" />
+								<feature id="org.eclipse.mylyn.team_feature" />
 								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />								
+								<plugin id="org.apache.xml.serializer" />	
+								<plugin id="org.apache.axis" />								
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
 								<plugin id="org.eclipse.wst.xml.ui" />
@@ -47,8 +55,7 @@
 								<plugin id="javax.wsdl" />
 								<plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple" />
 								<plugin id="org.eclipse.xtext" />
-								<plugin id="org.antlr.runtime" />
-								
+								<plugin id="org.antlr.runtime" />							
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
 								<plugin id="org.apache.commons.cli" />
