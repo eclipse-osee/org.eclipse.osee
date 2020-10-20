@@ -1252,4 +1252,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    public String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic) {
       return new BlockApplicabilityOps(orcsApi, logger, branch, view).evaluateApplicabilityExpression(applic);
    }
+
+   @Override
+   public String applyApplicabilityToFiles(BranchId branch, ArtifactId view, String sourcePath, Map<String, String> fileExtensionToCommentPrefix) {
+      ArtifactToken viewToken = orcsApi.getQueryFactory().fromBranch(branch).andId(view).asArtifactToken();
+      return new BlockApplicabilityOps(orcsApi, logger, branch, viewToken).applyApplicabilityToFiles(sourcePath,
+         fileExtensionToCommentPrefix);
+   }
 }

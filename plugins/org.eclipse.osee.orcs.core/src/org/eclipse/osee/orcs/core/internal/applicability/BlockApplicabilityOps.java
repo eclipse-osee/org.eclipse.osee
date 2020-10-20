@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +39,9 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityT
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.jdk.core.text.Rule;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -73,6 +78,23 @@ public class BlockApplicabilityOps {
       beginExpression = beginExpression.replace(" [", "[");
       beginApplic.setApplicabilityExpression(beginExpression);
       return beginApplic;
+   }
+
+   public String applyApplicabilityToFiles(String sourcePath, Map<String, String> fileExtensionToCommentPrefix) {
+      Rule rule = new BlockApplicabilityRule(this, branch, view, fileExtensionToCommentPrefix);
+
+      StringBuilder filePattern = new StringBuilder(".*\\.(");
+      filePattern.append(Collections.toString("|", fileExtensionToCommentPrefix.keySet()));
+      filePattern.append(")");
+      rule.setFileNamePattern(filePattern.toString());
+
+      rule.setSubdirectoryNameToPlaceResultFilesIn(view.getName());
+      try {
+         rule.process(new File(sourcePath));
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+      return "ruleWasApplicable: " + rule.ruleWasApplicable();
    }
 
    public String evaluateApplicabilityExpression(ApplicabilityBlock applic) {

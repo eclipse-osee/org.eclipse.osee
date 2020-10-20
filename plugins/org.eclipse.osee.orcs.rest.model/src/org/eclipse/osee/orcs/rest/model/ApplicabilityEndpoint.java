@@ -281,4 +281,8 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData removeApplicabilityFromView(@PathParam("id") ArtifactId viewId, String applicability);
 
+   @POST
+   @Path("blockVisibility/{view}")
+   @Produces(MediaType.APPLICATION_JSON)
+   String applyBlockVisibility(@PathParam("view") ArtifactId view, String sourcePath);
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -368,5 +369,17 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "FeatureMatrix.xml");
       return builder.build();
+   }
+
+   @Override
+   public String applyBlockVisibility(ArtifactId view, String sourcePath) {
+      String javaCppPrefix = "\\s*// ";
+
+      Map<String, String> fileExtensionToCommentPrefix = new HashMap<>();
+      fileExtensionToCommentPrefix.put("c", javaCppPrefix);
+      fileExtensionToCommentPrefix.put("cpp", javaCppPrefix);
+      fileExtensionToCommentPrefix.put("java", javaCppPrefix);
+
+      return ops.applyApplicabilityToFiles(branch, view, sourcePath, fileExtensionToCommentPrefix);
    }
 }
