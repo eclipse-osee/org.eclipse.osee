@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,7 +35,9 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class WordTemplateCompare extends AbstractWordCompare {
 
@@ -94,9 +97,9 @@ public class WordTemplateCompare extends AbstractWordCompare {
          try {
             addToCompare(monitor, data, presentationType, artifactDelta);
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            notifyArtifactDeltaError(ex, artifactDelta);
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            notifyArtifactDeltaError(ex, artifactDelta);
          } finally {
             monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, workAmount));
          }
@@ -105,5 +108,31 @@ public class WordTemplateCompare extends AbstractWordCompare {
       if (monitor.isCanceled()) {
          throw new OperationCanceledException();
       }
+   }
+
+   private void notifyArtifactDeltaError(Exception ex, ArtifactDelta artifactDelta) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            Artifact artifact = artifactDelta.getEndArtifact();
+            if (artifact == null) {
+               artifact = artifactDelta.getStartArtifact();
+            }
+            String artString = String.format("%s -- %s", artifact.getIdString(), artifact.getName());
+            if (RenderingUtil.arePopupsAllowed()) {
+               XResultData rd = new XResultData(false);
+               rd.error(String.format("There was a problem when procesing the following artifact for comparison: %s",
+                  artString));
+               rd.addRaw("Stack Trace");
+               for (StackTraceElement element : ex.getStackTrace()) {
+                  rd.addRaw("\n");
+                  rd.addRaw(element.toString());
+               }
+               XResultDataUI.report(rd, "Add to Compare Error");
+            } else {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
    }
 }

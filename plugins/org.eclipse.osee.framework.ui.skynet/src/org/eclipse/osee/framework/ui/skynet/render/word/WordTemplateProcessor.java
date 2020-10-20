@@ -129,7 +129,7 @@ public class WordTemplateProcessor {
    private boolean recurseChildren;
    private String outlineNumber = null;
    private boolean templateFooter = false;
-   private boolean includeEmptyHeaders = false;
+   private Boolean includeEmptyHeaders;
 
    //Attribute Options
    private String attributeLabel;
@@ -546,9 +546,6 @@ public class WordTemplateProcessor {
          JsonNode includeEmptyHeaders = attributeOptions.findValue("IncludeEmptyHeaders");
          if (includeEmptyHeaders != null) {
             this.includeEmptyHeaders = includeEmptyHeaders.asBoolean();
-            if (this.includeEmptyHeaders) {
-               renderer.updateOption(RendererOption.PUBLISH_EMPTY_HEADERS, true);
-            }
          }
          outlineNumber = attributeOptions.findValue("OutlineNumber").asText();
          JsonNode templateFooter = attributeOptions.findValue("TemplateFooter");
@@ -636,8 +633,21 @@ public class WordTemplateProcessor {
          parseMetadataOptions(templateOptions);
       }
 
-      if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
-         isEmptyHeaders(artifacts);
+      /**
+       * EmptyHeaders can be set in the template RendererOptions, or via the rendererOptions (such as the Publish with
+       * Specified Template Blam). Via Template's RendererOptions takes priority, if set, this will check to see if the
+       * option to exclude empty headers was set to false. If true, won't run at all regardless of rendererOptions. If
+       * template does not set the option, will check to see if set via rendererOptions, again, if set to false it will
+       * run, if true it will not run.
+       */
+      if (includeEmptyHeaders != null) {
+         if (!includeEmptyHeaders) {
+            isEmptyHeaders(artifacts);
+         }
+      } else if (renderer.getRendererOptions().containsKey(RendererOption.PUBLISH_EMPTY_HEADERS)) {
+         if (!(boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_EMPTY_HEADERS)) {
+            isEmptyHeaders(artifacts);
+         }
       }
 
       if ((boolean) renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF)) {
