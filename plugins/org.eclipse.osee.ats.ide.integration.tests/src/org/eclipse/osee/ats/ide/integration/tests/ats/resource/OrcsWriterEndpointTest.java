@@ -96,9 +96,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
                   "Software Requirement 1") || child.getName().equals("Software Requirement 2"));
                if (child.getName().equals("MSWordRequirement3")) {
                   assertTrue(child.getAttributes().get(4).getValue().toString().contains("<w:p><w:r><w:t>"));
-
                }
-
             }
          }
       }

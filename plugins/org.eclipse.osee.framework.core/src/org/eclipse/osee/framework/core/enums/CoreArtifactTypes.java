@@ -191,7 +191,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(Subsystem, Subsystem.Unspecified)
       .exactlyOne(TechnicalPerformanceParameter));
    ArtifactTypeToken AbstractSoftwareRequirement = osee.add(osee.artifactType(23L, "Abstract Software Requirement", true, AbstractSpecRequirement)
-      .atLeastOne(CSCI, CSCI.Unspecified)
+      .any(CSCI, CSCI.Unspecified)
       .zeroOrOne(Category)
       .atLeastOne(Partition, Partition.Unspecified));
    ArtifactTypeToken AbstractSubsystemRequirement = osee.add(osee.artifactType(797L, "Abstract Subsystem Requirement", true, AbstractSpecRequirement)
