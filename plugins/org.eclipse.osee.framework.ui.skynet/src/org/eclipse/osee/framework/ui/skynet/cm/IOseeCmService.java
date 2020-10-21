@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -61,7 +62,7 @@ public interface IOseeCmService {
       return false;
    }
 
-   default void commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource) {
-      //
+   default XResultData commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource, XResultData rd) {
+      return rd;
    }
 }

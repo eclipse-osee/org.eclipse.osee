@@ -44,9 +44,9 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -399,9 +399,10 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
-      IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamWf, false, true,
-         BranchManager.getParentBranch(AtsApiService.get().getBranchService().getWorkingBranch(teamWf)), true);
-      Operations.executeWorkAndCheckStatus(op);
+      XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamWf, false, true,
+         BranchManager.getParentBranch(AtsApiService.get().getBranchService().getWorkingBranch(teamWf)), true,
+         new XResultData());
+      Assert.assertTrue(rd.isSuccess());
    }
 
    public static BranchId createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {

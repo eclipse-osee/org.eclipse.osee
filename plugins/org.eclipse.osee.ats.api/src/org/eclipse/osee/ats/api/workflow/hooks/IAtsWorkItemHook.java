@@ -18,15 +18,19 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsWorkItemHook {
 
-   default public Result committing(IAtsTeamWorkflow workItem) {
-      return Result.TrueResult;
+   /**
+    * Called before commit for other applications/extensions to do checks and provide status. Result.False will stop the
+    * commit.
+    */
+   default public XResultData committing(IAtsTeamWorkflow workItem, XResultData rd) {
+      return rd;
    }
 
    default public String getBranchShortName(IAtsWorkItem workItem, AtsApi atsApi) {
@@ -47,8 +51,8 @@ public interface IAtsWorkItemHook {
 
    String getDescription();
 
-   default public Result workingBranchCreated(IAtsTeamWorkflow teamWf) {
-      return Result.TrueResult;
+   default public XResultData workingBranchCreated(IAtsTeamWorkflow teamWf, XResultData rd) {
+      return rd;
    }
 
 }

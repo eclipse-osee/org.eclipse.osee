@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -563,7 +564,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                if (cm.isWorkFlowBranch(sourceBranch)) {
                   Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
-                  cm.commitBranch(art, destBranch, isArchiveSourceBranch);
+                  XResultData rd = cm.commitBranch(art, destBranch, isArchiveSourceBranch, new XResultData());
                } else {
                   handleNonAtsCommit(sourceBranch, destBranch);
                }

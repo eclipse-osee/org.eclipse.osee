@@ -56,10 +56,11 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.CatchAndReleaseJob;
@@ -74,6 +75,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.change.WordChangeUtil;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.util.NameLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
@@ -314,12 +316,20 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
     * used for developmental testing or automation
     */
    @Override
-   public IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch) {
-      if (AtsApiService.get().getBranchService().isBranchInCommit(teamArt)) {
-         throw new OseeCoreException("Branch is currently being committed.");
+   public XResultData commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
+      if (rd == null) {
+         rd = new XResultData();
       }
-      return new AtsBranchCommitOperation(teamArt, commitPopup, overrideStateValidation, destinationBranch,
-         archiveWorkingBranch);
+      if (AtsApiService.get().getBranchService().isBranchInCommit(teamArt)) {
+         rd.error("Branch is currently being committed.");
+      }
+      try {
+         new AtsBranchCommitOperation(teamArt, commitPopup, overrideStateValidation, destinationBranch,
+            archiveWorkingBranch, rd).run();
+      } catch (Exception ex) {
+         rd.errorf("Exception Committing Branch", Lib.exceptionToString(ex));
+      }
+      return rd;
    }
 
    @Override
@@ -543,8 +553,12 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       }
 
       // Notify extensions of branch creation
+      XResultData rd = new XResultData();
       for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
-         item.workingBranchCreated(teamWf);
+         item.workingBranchCreated(teamWf, rd);
+      }
+      if (rd.isErrors()) {
+         ResultsEditor.open("Branch Creation Tasks - Error", rd);
       }
    }
 

@@ -31,14 +31,14 @@ import org.eclipse.osee.ats.ide.util.widgets.commit.menu.RemoveCommitOverrideAct
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -149,11 +149,14 @@ public class CommitXManager extends XViewer {
             AWorkbench.popup(commitStatus.getDisplayName(),
                "Talk to project lead as to why commit disabled for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
-            IOperation operation =
-               AtsApiService.get().getBranchServiceIde().commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
-                  AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
-                     branch));
-            Operations.executeAsJob(operation, true);
+            XResultData rd = new XResultData();
+            AtsApiService.get().getBranchServiceIde().commitWorkingBranch(xCommitManager.getTeamArt(), true, false,
+               branch,
+               AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch),
+               rd);
+            if (rd.isErrors()) {
+               ResultsEditor.open("Commit Failure", rd);
+            }
          } else if (commitStatus == CommitStatus.Committed) {
             AtsApiService.get().getBranchServiceIde().showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {

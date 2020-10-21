@@ -26,9 +26,8 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -138,7 +138,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
             createTaskActionBar(tableComp);
 
-            labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
+            labelWidget.setText(getLabel() + ": "); // If ATS Admin, allow right-click to auto-complete reviews
             if (AtsApiService.get().getUserService().isAtsAdmin() && !AtsApiService.get().getStoreService().isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   @Override
@@ -153,9 +153,11 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                               AtsApiService.get().getBranchService().getBranchesLeftToCommit(teamArt);
                            for (Iterator<BranchId> it = branches.iterator(); it.hasNext();) {
                               BranchId destinationBranch = it.next();
-                              IOperation operation = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamArt, false, true,
-                                 destinationBranch, !it.hasNext());
-                              Operations.executeWorkAndCheckStatus(operation);
+                              XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(teamArt,
+                                 false, true, destinationBranch, !it.hasNext(), new XResultData());
+                              if (rd.isErrors()) {
+                                 ResultsEditor.open("Commit Failed", rd);
+                              }
                            }
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

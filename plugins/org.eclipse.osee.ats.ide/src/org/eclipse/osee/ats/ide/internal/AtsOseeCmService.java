@@ -24,8 +24,7 @@ import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,8 +59,8 @@ public class AtsOseeCmService implements IOseeCmService {
       boolean toReturn = false;
       if (art instanceof TeamWorkFlowArtifact) {
          try {
-            toReturn = AtsApiService.get().getBranchService().isBranchesAllCommittedExcept(
-               (TeamWorkFlowArtifact) art, branch);
+            toReturn =
+               AtsApiService.get().getBranchService().isBranchesAllCommittedExcept((TeamWorkFlowArtifact) art, branch);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
             toReturn = false;
@@ -98,17 +97,11 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public void commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource) {
+   public XResultData commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource, XResultData rd) {
       if (art instanceof TeamWorkFlowArtifact) {
-         IOperation operation;
-         try {
-            operation =
-               AtsApiService.get().getBranchServiceIde().commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch, isArchiveSource);
-            Operations.executeAsJob(operation, true);
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
-         }
+         AtsApiService.get().getBranchServiceIde().commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch,
+            isArchiveSource, rd);
       }
+      return rd;
    }
 }

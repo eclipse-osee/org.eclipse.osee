@@ -39,9 +39,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoSubsystems;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -166,11 +165,13 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
       Artifact parentArtifact = testCommitBranchHttpRequestOperationSetup(reqTeamArt, testArtifact, testRelArtifact);
 
-      IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamArt, false, true,
+      XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeamArt, false, true,
          AtsApiService.get().getBranchService().getBranch(
             AtsApiService.get().getVersionService().getTargetedVersion(reqTeamArt)),
-         true);
-      Operations.executeWorkAndCheckStatus(op);
+         true, new XResultData());
+      if (rd.isErrors()) {
+         throw new OseeCoreException(rd.toString());
+      }
 
       testCommitBranchHttpRequestOperation(testRelArtifact, parentArtifact);
    }

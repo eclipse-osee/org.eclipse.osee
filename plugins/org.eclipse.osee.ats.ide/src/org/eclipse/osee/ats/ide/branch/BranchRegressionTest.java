@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -534,19 +533,16 @@ public abstract class BranchRegressionTest {
          configItems.size() == getExpectedBranchConfigItems());
 
       // Commit parent workingBranch first
-      boolean committed = false;
       for (CommitConfigItem configItem : configItems) {
          if (branchService.isBranchValid(configItem) && BranchManager.getParentBranch(workingBranch).equals(
             configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
 
-            IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
-               branchService.isBranchesAllCommittedExcept(reqTeam, branch));
-            Operations.executeWorkAndCheckStatus(op);
-            committed = true;
+            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
+               branchService.isBranchesAllCommittedExcept(reqTeam, branch), new XResultData());
+            Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());
          }
       }
-      Assert.assertTrue("Did not find parent workingBranch to commit.", committed);
 
       // Then commit rest
       int commitCount = 0;
@@ -554,9 +550,9 @@ public abstract class BranchRegressionTest {
          if (branchService.isBranchValid(
             configItem) && !BranchManager.getParentBranch(workingBranch).equals(configItem.getBaselineBranchId())) {
             BranchId branch = branchService.getBranch(configItem);
-            IOperation op = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
-               branchService.isBranchesAllCommittedExcept(reqTeam, branch));
-            Operations.executeWorkAndCheckStatus(op);
+            XResultData rd = AtsApiService.get().getBranchServiceIde().commitWorkingBranch(reqTeam, false, true, branch,
+               branchService.isBranchesAllCommittedExcept(reqTeam, branch), new XResultData());
+            Assert.assertTrue("Commit Failed " + rd.toString(), rd.isSuccess());
             commitCount++;
          }
       }

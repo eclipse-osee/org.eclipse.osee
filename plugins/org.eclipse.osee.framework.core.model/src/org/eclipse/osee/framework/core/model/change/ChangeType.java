@@ -16,8 +16,6 @@ package org.eclipse.osee.framework.core.model.change;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.enums.OseeEnum;
 
-import org.eclipse.osee.framework.core.enums.OseeEnum;
-
 /**
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
