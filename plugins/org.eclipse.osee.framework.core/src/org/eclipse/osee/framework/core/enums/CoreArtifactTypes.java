@@ -245,13 +245,13 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestResultNative = osee.add(osee.artifactType(39L, "Test Result Native", false, NativeArtifact, AbstractTestResult));
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Artifact));
-   ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
+   ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
       .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
       .any(DoorsId, DoorsId.Unspecified));
    ArtifactTypeToken SoftwareTestProcedurePlainText = osee.add(osee.artifactType(564397212436322878L, "Software Test Procedure Plain Text", false, PlainText, TestUnit)
       .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
       .any(DoorsId, DoorsId.Unspecified));
-   ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
+   ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
       .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
       .any(DoorsId, DoorsId.Unspecified));
    ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, TestUnit));
