@@ -9,6 +9,12 @@ if [ -z "$OSEE_APP_SERVER_PORT" ]; then
   OSEE_APP_SERVER_PORT=8089 
 fi
 
+NMAP=$(nmap -p ${OSEE_APP_SERVER_PORT} localhost)
+if [[ $NMAP != *"closed"* ]]; then
+  echo "OSEE port ${OSEE_APP_SERVER_PORT} already in use";
+  exit 1
+fi
+
 if [ -z "$OSGI_TELNET_PORT" ]; then
   OSGI_TELNET_PORT=$(($OSEE_APP_SERVER_PORT+1))
 fi
