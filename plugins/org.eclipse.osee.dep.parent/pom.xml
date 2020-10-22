@@ -48,7 +48,7 @@
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
 		<papyrus-site>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/${platform-version-name}</papyrus-site>
-	  	<nebula-site>http://download.eclipse.org/nebula/releases/2.0.0</nebula-site> 
+	  	<nebula-site>http://download.eclipse.org/nebula/releases/2.4.2</nebula-site> 
 	<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 	</properties>
 
