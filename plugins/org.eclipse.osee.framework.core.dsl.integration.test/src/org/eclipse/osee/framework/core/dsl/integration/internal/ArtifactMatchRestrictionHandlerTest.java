@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.Scope;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.junit.Assert;
 import org.junit.Test;
 

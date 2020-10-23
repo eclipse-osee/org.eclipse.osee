@@ -14,12 +14,12 @@
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**

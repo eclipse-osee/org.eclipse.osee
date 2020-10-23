@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.access.AccessData;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 
 /**

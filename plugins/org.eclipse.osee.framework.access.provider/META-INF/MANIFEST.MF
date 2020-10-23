@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.oseeDsl,

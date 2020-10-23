@@ -16,17 +16,17 @@ package org.eclipse.osee.framework.core.dsl.integration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.access.AccessData;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessData;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
-import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
@@ -87,10 +87,8 @@ public class OseeDslAccessModelTest {
 
       Scope detail1Scope = new Scope().add("fail");
       Scope detail2Scope = new Scope().add("fail");
-      final AccessDetail<?> detail1 =
-         new AccessDetail<>(checkedObject, PermissionEnum.READ, detail1Scope, "detail 1");
-      final AccessDetail<?> detail2 =
-         new AccessDetail<>(checkedObject, PermissionEnum.WRITE, detail2Scope, "detail 2");
+      final AccessDetail<?> detail1 = new AccessDetail<>(checkedObject, PermissionEnum.READ, detail1Scope, "detail 1");
+      final AccessDetail<?> detail2 = new AccessDetail<>(checkedObject, PermissionEnum.WRITE, detail2Scope, "detail 2");
 
       final AccessData accessData = new AccessData();
 

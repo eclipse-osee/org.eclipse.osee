@@ -18,6 +18,9 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRe
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DevelopmentalVerification;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -36,9 +39,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.model.access.Scope;
 import org.junit.Assert;
 import org.junit.Test;
 

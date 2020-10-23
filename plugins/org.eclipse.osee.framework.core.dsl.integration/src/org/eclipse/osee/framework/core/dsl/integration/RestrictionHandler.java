@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.core.dsl.integration;
 
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.model.access.Scope;
 
 /**
  * @author Roberto E. Escobar

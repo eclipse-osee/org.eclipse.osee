@@ -15,13 +15,13 @@ package org.eclipse.osee.orcs.core.internal.access;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.osee.framework.core.access.AccessDataQuery;
+import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.access.IArtifactCheck;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
-import org.eclipse.osee.framework.core.model.access.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**

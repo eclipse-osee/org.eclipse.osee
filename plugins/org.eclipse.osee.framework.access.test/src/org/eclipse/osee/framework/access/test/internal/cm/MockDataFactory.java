@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.Scope;
 import org.junit.Assert;
 
 /**

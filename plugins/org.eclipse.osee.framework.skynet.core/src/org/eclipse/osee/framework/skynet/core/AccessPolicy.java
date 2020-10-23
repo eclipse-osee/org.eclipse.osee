@@ -16,13 +16,13 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.access.IArtifactCheck;
+import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

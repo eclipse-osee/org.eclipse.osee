@@ -14,13 +14,13 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.Scope;
 
 /**
  * @author Roberto E. Escobar

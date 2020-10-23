@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
 import org.junit.Assert;
 
 /**

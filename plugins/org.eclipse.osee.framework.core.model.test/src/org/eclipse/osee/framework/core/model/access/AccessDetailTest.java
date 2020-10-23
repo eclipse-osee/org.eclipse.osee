@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.core.model.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;

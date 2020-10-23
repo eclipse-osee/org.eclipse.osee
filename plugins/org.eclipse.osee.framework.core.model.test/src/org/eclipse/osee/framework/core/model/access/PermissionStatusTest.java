@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.model.access;
 
+import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.junit.Assert;
 import org.junit.Test;
 

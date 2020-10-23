@@ -14,6 +14,11 @@
 package org.eclipse.osee.framework.core.model.access;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
+import org.eclipse.osee.framework.core.access.AccessData;
+import org.eclipse.osee.framework.core.access.AccessDataQuery;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.PermissionStatus;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;

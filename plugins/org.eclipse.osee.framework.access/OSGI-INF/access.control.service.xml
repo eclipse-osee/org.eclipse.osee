@@ -2,7 +2,7 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
    <implementation class="org.eclipse.osee.framework.access.internal.AccessControlServiceProxy"/>
    <service>
-      <provide interface="org.eclipse.osee.framework.core.model.access.IAccessControlService"/>
+      <provide interface="org.eclipse.osee.framework.core.access.IAccessControlService"/>
    </service>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
    <reference bind="setOrcsTokenService" cardinality="1..1" interface="org.eclipse.osee.framework.core.OrcsTokenService" name="OrcsTokenService" policy="static"/>

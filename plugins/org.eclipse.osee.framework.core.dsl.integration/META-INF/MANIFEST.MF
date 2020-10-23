@@ -7,6 +7,7 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.core,
+ org.eclipse.osee.framework.core.access,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.oseeDsl,

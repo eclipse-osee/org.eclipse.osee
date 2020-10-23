@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.access.AccessDetail;
+import org.eclipse.osee.framework.core.access.AccessDetailCollector;
+import org.eclipse.osee.framework.core.access.Scope;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
-import org.eclipse.osee.framework.core.model.access.Scope;
 
 /**
  * @author Ryan D. Brooks

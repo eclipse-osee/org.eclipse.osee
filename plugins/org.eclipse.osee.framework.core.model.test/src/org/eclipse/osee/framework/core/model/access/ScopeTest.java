@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.model.access;
 
+import org.eclipse.osee.framework.core.access.Scope;
 import org.junit.Assert;
 import org.junit.Test;
 
