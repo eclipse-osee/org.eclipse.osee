@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -232,21 +233,21 @@ public final class BranchManager {
    }
 
    /**
-    * returns the merge branch for this source destination pair from the cache or null if not found
+    * Returns the merge branch for this source destination pair from the cache or null if not found
     */
    public static IOseeBranch getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) {
       return getCache().findMergeBranch(sourceBranch, destinationBranch);
    }
 
    /**
-    * returns the first merge branch for this source destination pair from the cache or exception if not found
+    * Returns the first merge branch for this source destination pair from the cache or exception if not found
     */
    public static MergeBranch getFirstMergeBranch(BranchId sourceBranch) {
       return getCache().findFirstMergeBranch(sourceBranch);
    }
 
    /**
-    * returns a list tof all the merge branches for this source branch from the cache or null if not found
+    * Returns a list tof all the merge branches for this source branch from the cache or null if not found
     */
    public static List<MergeBranch> getMergeBranches(BranchId sourceBranch) {
       List<MergeBranch> mergeBranches = getCache().findAllMergeBranches(sourceBranch);
@@ -254,14 +255,14 @@ public final class BranchManager {
    }
 
    /**
-    * returns whether a source branch has existing merge branches
+    * Returns whether a source branch has existing merge branches
     */
    public static boolean hasMergeBranches(BranchId sourceBranch) {
       return !getMergeBranches(sourceBranch).isEmpty();
    }
 
    /**
-    * returns whether a merge branch exists for a source and dest branch pair
+    * Returns whether a merge branch exists for a source and dest branch pair
     */
    public static boolean doesMergeBranchExist(BranchId sourceBranch, BranchId destBranch) {
       return getMergeBranch(sourceBranch, destBranch) != null;
@@ -293,7 +294,7 @@ public final class BranchManager {
    }
 
    /**
-    * returns a list tof all the merge branches for this source branch from the cache or null if not found
+    * Returns a list to all the merge branches for this source branch from the cache or null if not found
     */
    public static boolean isUpdatable(BranchId branchToUpdate) {
       if (!hasMergeBranches(branchToUpdate) || getState(branchToUpdate).isRebaselineInProgress()) {
@@ -302,17 +303,12 @@ public final class BranchManager {
       return false;
    }
 
-   /**
-    * Update branch
-    */
-   public static Job updateBranch(IOseeBranch branch, final ConflictResolverOperation resolver) {
-      IOperation operation = new UpdateBranchOperation(branch, resolver);
-      return Operations.executeAsJob(operation, true);
+   public static UpdateBranchData updateBranch(IOseeBranch branch, final ConflictResolverOperation resolver) {
+      return new UpdateBranchOperation(branch, resolver).run();
    }
 
-   public static Job updateBranch(IOseeBranch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
-      IOperation operation = new UpdateBranchOperation(branch, fromBranch, resolver);
-      return Operations.executeAsJob(operation, true);
+   public static UpdateBranchData updateBranch(IOseeBranch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
+      return new UpdateBranchOperation(branch, fromBranch, resolver).run();
    }
 
    public static void purgeBranch(BranchId branch) {

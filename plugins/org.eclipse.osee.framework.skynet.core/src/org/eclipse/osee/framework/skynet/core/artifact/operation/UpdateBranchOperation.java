@@ -16,9 +16,11 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -37,6 +39,7 @@ public class UpdateBranchOperation extends AbstractOperation {
    private final BranchId fromBranch;
    private final ConflictResolverOperation resolver;
    private IOseeBranch newBranch;
+   private UpdateBranchData branchData;
 
    public UpdateBranchOperation(final IOseeBranch branch, final ConflictResolverOperation resolver) {
       this(branch, BranchManager.getParentBranch(branch), resolver);
@@ -47,6 +50,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       this.originalBranch = branch;
       this.fromBranch = fromBranch;
       this.resolver = resolver;
+      this.branchData = new UpdateBranchData();
    }
 
    private static String getUpdatedName(String branchName) {
@@ -54,34 +58,39 @@ public class UpdateBranchOperation extends AbstractOperation {
       return String.format("%s - for update - %s", storeName, Lib.getDateTimeString());
    }
 
+   public UpdateBranchData run() {
+      Operations.executeWorkAndCheckStatus(this);
+      return this.branchData;
+   }
+
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       // Only update if there are no other Merge Branches and we haven't committed this branch already
       if (originalBranch != null && !BranchManager.hasMergeBranches(originalBranch) && !BranchManager.getState(
-         originalBranch).isCommitted()) {
+         originalBranch).isCommitted() && !BranchManager.getState(originalBranch).equals(
+            BranchState.REBASELINE_IN_PROGRESS)) {
          performUpdate(monitor, originalBranch);
-
-         OseeClient client = ServiceUtil.getOseeClient();
-         BranchEndpoint proxy = client.getBranchEndpoint();
-
-         proxy.logBranchActivity(
-            String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s fromBranch: %s",
-               originalBranch.getIdString(), originalBranch.getName(), fromBranch));
       }
    }
 
    private void performUpdate(IProgressMonitor monitor, IOseeBranch originalBranch) throws Exception {
       boolean wasSuccessful = false;
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint branchEp = client.getBranchEndpoint();
+      BranchState originalState = BranchManager.getState(originalBranch);
       try {
-         monitor.setTaskName("Creating temporary branch");
-
-         newBranch = BranchManager.createWorkingBranch(fromBranch, getUpdatedName(originalBranch.getName()));
-
          BranchManager.setState(originalBranch, BranchState.REBASELINE_IN_PROGRESS);
+         monitor.setTaskName("Creating temporary branch");
+         String originalBranchName = originalBranch.getName();
+         branchData.setToName(getUpdatedName(originalBranchName));
+         branchData.setToBranch(originalBranch);
+         branchData.setFromBranch(fromBranch);
+         branchData = branchEp.updateBranch(fromBranch, branchData); // Creates a branch server-side
+         branchData.setNeedsMerge(BranchManager.hasChanges(originalBranch));
+         newBranch = BranchManager.getBranch(branchData.getNewBranchId());
          monitor.worked(calculateWork(0.40));
 
-         boolean hasChanges = BranchManager.hasChanges(originalBranch);
-         if (hasChanges) {
+         if (branchData.isNeedsMerge()) {
             commitOldWorkingIntoNewWorkingBranch(monitor, originalBranch, newBranch, 0.40);
          } else {
             deleteOldAndSetNewAsWorking(monitor, originalBranch, newBranch, 0.40);
@@ -90,8 +99,12 @@ public class UpdateBranchOperation extends AbstractOperation {
       } finally {
          if (newBranch != null && !wasSuccessful) {
             BranchManager.purgeBranch(newBranch);
+            BranchManager.setState(originalBranch, originalState);
          }
          monitor.worked(calculateWork(0.20));
+         branchEp.logBranchActivity(
+            String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s fromBranch: %s",
+               originalBranch.getIdString(), originalBranch.getName(), fromBranch));
       }
    }
 

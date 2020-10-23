@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -139,9 +140,12 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    XResultData createBranchValidation(NewBranch data);
 
-   /**
-    * If -1 is supplied for the branch path parameter, then a random valid id will be used
-    */
+   @POST
+   @Path("{branch}/update")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData);
+
    @POST
    @Path("{branch}/program")
    @Consumes({MediaType.TEXT_PLAIN})

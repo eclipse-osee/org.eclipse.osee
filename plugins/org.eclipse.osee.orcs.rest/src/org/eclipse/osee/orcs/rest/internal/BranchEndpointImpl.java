@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -53,6 +55,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -83,6 +86,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.rest.internal.branch.UpdateBranchOperation;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchExportOptions;
@@ -326,6 +330,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
       CreateBranchData branchData = new CreateBranchData();
       createBranchData(branchData, data);
       return branchOps.createBranchValidation(branchData);
+   }
+
+   @Override
+   @POST
+   @Path("{branch}/update")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData) {
+      UpdateBranchOperation op = new UpdateBranchOperation(branchData, orcsApi);
+      return op.run();
    }
 
    private BranchId createBranch(CreateBranchData createData, NewBranch data) {

@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.ui.IViewPart;
@@ -84,7 +86,16 @@ public class UpdateBranchHandler extends CommandHandler {
                   PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
                   String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
                if (isUserSure) {
-                  BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                  UpdateBranchData branchData = BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                  XResultDataUI.report(branchData.getResults(), "Update Branch");
+                  if (branchData.getResults().isErrors()) {
+                     XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
+                  } else if (branchData.isNeedsMerge()) {
+                     // TODO: Open merge manager
+                     XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
+                  } else {
+                     // TODO: Refresh UI for updated branch
+                  }
                }
             }
          } else {
@@ -132,6 +143,5 @@ public class UpdateBranchHandler extends CommandHandler {
          };
          return job;
       }
-
    }
 }

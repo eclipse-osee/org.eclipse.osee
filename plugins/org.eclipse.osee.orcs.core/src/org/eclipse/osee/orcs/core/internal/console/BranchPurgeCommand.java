@@ -239,6 +239,5 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          }
          return null;
       }
-
    }
 }

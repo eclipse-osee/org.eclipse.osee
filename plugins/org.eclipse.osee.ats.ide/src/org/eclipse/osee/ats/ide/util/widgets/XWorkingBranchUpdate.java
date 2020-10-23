@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOp
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -83,7 +85,17 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                               "Are you sure you want to update [%s]\n branch from Targeted Version or Team Configured branch [%s]?",
                               branchToUpdate.getName(), BranchManager.getBranch(targetedBranch).getName()));
                         if (isUserSure) {
-                           BranchManager.updateBranch(branchToUpdate, targetedBranch, new UserConflictResolver());
+                           UpdateBranchData branchData =
+                              BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                           if (branchData.getResults().isErrors()) {
+                              XResultDataUI.report(branchData.getResults(), "Update Branch Failed");
+                              // TODO: Revert operation
+                           } else if (branchData.isNeedsMerge()) {
+                              // TODO: Future server-based merge
+                              XResultDataUI.report(branchData.getResults(), "Branch needs to be merged.");
+                           } else {
+                              // TODO: Future server-based operation
+                           }
                         }
                      }
                   } else {
@@ -142,7 +154,6 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
          };
          return job;
       }
-
    }
 
    @Override

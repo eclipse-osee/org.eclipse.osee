@@ -99,10 +99,8 @@ public class MergeManagerTest {
 
    @Test
    public void testRebaselineWithConflictsAbandon() throws Exception {
-
       ConflictResolverOperation resolverOperation =
          new ConflictResolverOperation("Test Resolver", MergeManagerTest.class.getCanonicalName()) {
-
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
                assertTrue("This code should have been executed since there should be conflicts.", wasExecuted());
