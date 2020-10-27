@@ -53,10 +53,10 @@
 <plugin id="javax.inject.source"/>
 <plugin id="javax.mail.glassfish"/>
 <plugin id="javax.mail.glassfish.source"/>
-<plugin id="javax.servlet" version="3.0.0.v201112011016"/>
+<plugin id="javax.servlet" version="3.1.0.v201410161800"/>
 <plugin id="javax.servlet.jsp"/>
 <plugin id="javax.servlet.jsp.source"/>
-<plugin id="javax.servlet.source" version="3.1.0.v201410161800"/>
+<plugin id="javax.servlet.source"/>
 <plugin id="javax.ws.rs"/>
 <plugin id="javax.wsdl"/>
 <plugin id="javax.xml"/>
@@ -67,8 +67,8 @@
 <plugin id="oracle.driver"/>
 <plugin id="org.antlr.runtime"/>
 <plugin id="org.aopalliance"/>
-<plugin id="org.apache.ant" version="1.10.8.v20200515-1239"/>
-<plugin id="org.apache.ant.source" version="1.10.8.v20200515-1239"/>
+<plugin id="org.apache.ant"/>
+<plugin id="org.apache.ant.source"/>
 <plugin id="org.apache.aries.blueprint"/>
 <plugin id="org.apache.aries.blueprint.annotation"/>
 <plugin id="org.apache.aries.blueprint.annotation.source"/>
@@ -79,11 +79,11 @@
 <plugin id="org.apache.aries.quiesce.source"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.aries.util.source"/>
-<plugin id="org.apache.batik.css.source" version="1.9.1.v20180313-1559"/>
-<plugin id="org.apache.batik.util.source" version="1.9.1.v20180227-1645"/>
+<plugin id="org.apache.batik.css.source"/>
+<plugin id="org.apache.batik.util.source"/>
 <plugin id="org.apache.commons.cli"/>
-<plugin id="org.apache.commons.codec" version="1.9.0.v20170208-1614"/>
-<plugin id="org.apache.commons.codec.source" version="1.9.0.v20170208-1614"/>
+<plugin id="org.apache.commons.codec"/>
+<plugin id="org.apache.commons.codec.source"/>
 <plugin id="org.apache.commons.compress"/>
 <plugin id="org.apache.commons.dbcp"/>
 <plugin id="org.apache.commons.dbcp.source"/>
@@ -348,8 +348,6 @@
 <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
 <plugin id="org.eclipse.equinox.frameworkadmin.equinox.source"/>
 <plugin id="org.eclipse.equinox.frameworkadmin.source"/>
-<plugin id="org.eclipse.equinox.http.jetty"/>
-<plugin id="org.eclipse.equinox.http.jetty.source"/>
 <plugin id="org.eclipse.equinox.http.registry"/>
 <plugin id="org.eclipse.equinox.http.registry.source"/>
 <plugin id="org.eclipse.equinox.http.servlet"/>
@@ -482,17 +480,16 @@
 <plugin id="org.eclipse.jem.util"/>
 <plugin id="org.eclipse.jetty.continuation"/>
 <plugin id="org.eclipse.jetty.continuation.source"/>
-<plugin id="org.eclipse.jetty.http" version="9.4.11.v20180605"/>
 <plugin id="org.eclipse.jetty.http.source"/>
-<plugin id="org.eclipse.jetty.io" version="9.4.11.v20180605"/>
+<plugin id="org.eclipse.jetty.io"/>
 <plugin id="org.eclipse.jetty.io.source"/>
-<plugin id="org.eclipse.jetty.security" version="9.4.11.v20180605"/>
+<plugin id="org.eclipse.jetty.security"/>
 <plugin id="org.eclipse.jetty.security.source"/>
-<plugin id="org.eclipse.jetty.server" version="9.4.11.v20180605"/>
+<plugin id="org.eclipse.jetty.server"/>
 <plugin id="org.eclipse.jetty.server.source"/>
-<plugin id="org.eclipse.jetty.servlet" version="9.4.11.v20180605"/>
+<plugin id="org.eclipse.jetty.servlet"/>
 <plugin id="org.eclipse.jetty.servlet.source"/>
-<plugin id="org.eclipse.jetty.util" version="9.4.11.v20180605"/>
+<plugin id="org.eclipse.jetty.util"/>
 <plugin id="org.eclipse.jetty.util.source"/>
 <plugin id="org.eclipse.jface"/>
 <plugin id="org.eclipse.jface.databinding"/>
@@ -735,16 +732,16 @@
 <plugin id="org.eclipse.zest.layouts"/>
 <plugin id="org.flywaydb.core"/>
 <plugin id="org.gradle.toolingapi"/>
-<plugin id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
-<plugin id="org.hamcrest.core.source" version="1.3.0.v20180420-1519"/>
+<plugin id="org.hamcrest.core"/>
+<plugin id="org.hamcrest.core.source"/>
 <plugin id="org.hsqldb"/>
 <plugin id="org.jacoco.agent"/>
 <plugin id="org.jsoup"/>
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
-<plugin id="org.mockito" version="2.13.0.v20200310-1642"/>
+<plugin id="org.mockito"/>
 <plugin id="org.mozilla.javascript"/>
-<plugin id="org.objectweb.asm.source" version="6.1.1.v20180414-0329"/>
+<plugin id="org.objectweb.asm.source"/>
 <plugin id="org.objenesis.source"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
@@ -752,8 +749,8 @@
 <plugin id="org.postgresql.driver"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
-<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
-<plugin id="org.slf4j.api.source" version="1.7.10.v20170428-1633"/>
+<plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
+<plugin id="org.slf4j.api.source"/>
 <plugin id="org.slf4j.jcl"/>
 <plugin id="org.slf4j.jcl.source"/>
 <plugin id="org.tukaani.xz"/>
@@ -775,14 +772,14 @@
 <plugin id="org.apache.felix.scr"/>
 <plugin id="org.apache.felix.scr.source"/>
 <plugin id="org.objenesis"/>
-<plugin id="org.apache.batik.css" version="1.9.1.v20180313-1559"/>
+<plugin id="org.apache.batik.css"/>
 <plugin id="org.apache.batik.i18n"/>
 <plugin id="org.apache.batik.i18n.source"/>
 <plugin id="org.apache.xmlgraphics"/>
 <plugin id="org.apache.xmlgraphics.source"/>
 <plugin id="org.apache.batik.constants"/>
 <plugin id="org.apache.batik.constants.source"/>
-<plugin id="org.apache.batik.util" version="1.9.1.v20180227-1645"/>
+<plugin id="org.apache.batik.util"/>
 <plugin id="org.eclipse.e4.ui.di"/>
 <plugin id="org.eclipse.e4.ui.di.source"/>
 <plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
@@ -791,9 +788,9 @@
 <plugin id="org.eclipse.xtext.xtext.ide"/>
 <plugin id="org.eclipse.xtext.ui.testing"/>
 <plugin id="org.eclipse.xtext.ui.codetemplates.ide"/>
-<plugin id="com.google.gson" version="2.8.2.v20180104-1110"/>
+<plugin id="com.google.gson"/>
 <plugin id="com.google.guava" version="15.0.0.v201403281430"/>
-<plugin id="javax.servlet" version="3.1.0.v201410161800"/>
+<plugin id="javax.servlet" version="3.0.0.v201112011016"/>
 <plugin id="org.eclipse.xtext.common.types"/>
 <plugin id="org.eclipse.mylyn.tasks.core"/>
 <plugin id="org.eclipse.mylyn.tasks.ui"/>
@@ -857,7 +854,9 @@
 	<plugin id="org.eclipse.ui.genericeditor"/>
 	<plugin id="javax.xml.stream"/>
 	<plugin id="org.eclipse.jgit.lfs"/>
-	<plugin id="org.slf4j.api" version="1.7.30.v20200204-2150"/>
+	<plugin id="org.slf4j.api" version="1.7.10.v20170428-1633"/>
+	<plugin id="org.eclipse.equinox.http.jetty"/>
+	<plugin id="org.eclipse.jetty.http"/>
 </includeBundles>
 <environment>
 <os>win32</os>
