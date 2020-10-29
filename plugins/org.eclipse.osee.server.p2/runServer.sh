@@ -195,7 +195,7 @@ stop() {
 	 echo pid: $pid
     # process still alive, try kill
     if [ -n "$pid" ]; then
- 		 kill $(lsof -t -i:OSEE_APP_SERVER_PORT)
+ 		 kill $(netstat -plten | grep $OSEE_APP_SERVER_PORT | awk -F'/' '{print $1}' | awk '{print $9}')
        RETVAL=$?
        if [ $RETVAL == 0 ]; then
          # kill successfully sent to process
