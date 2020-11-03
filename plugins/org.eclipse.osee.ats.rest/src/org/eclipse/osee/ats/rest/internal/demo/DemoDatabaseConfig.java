@@ -340,6 +340,10 @@ public class DemoDatabaseConfig {
          .andVersion(DemoArtifactToken.SAW_Bld_3, ReleasedOption.UnReleased, DemoBranches.SAW_Bld_3, NextRelease.None) //
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
+      /**
+       * Artifact types used can be declared through Team Definition or Workflow Definition. This will get its artifact
+       * type through the Workflow Definition.
+       */
       // SAW SW Team Defs
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_Code) //
          .andProgram(DemoArtifactToken.SAW_Program) //
@@ -348,9 +352,12 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "saw.code") //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
-         .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoCodeTeamWorkflow);
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code);
 
+      /**
+       * Artifact types used can be declared through Team Definition or Workflow Definition. This is an example of the
+       * config through Team Definition.
+       */
       sawSwTeam.createChildTeamDef(sawSwTeam.getTeamDef(), DemoArtifactToken.SAW_HW) //
          .andProgram(DemoArtifactToken.SAW_Program) //
          .andWorkType(WorkType.Hardware) //
@@ -462,8 +469,7 @@ public class DemoDatabaseConfig {
          .and(CoreAttributeTypes.StaticId, "cis.code") //
          .andLeads(DemoUsers.Jason_Michael) //
          .andMembers(DemoUsers.Jason_Michael) //
-         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
-         .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoCodeTeamWorkflow);
+         .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code);
 
       cisSwTeam.createChildTeamDef(cisSwTeam.getTeamDef(), DemoArtifactToken.CIS_Test) //
          .and(CoreAttributeTypes.StaticId, "cis.test") //

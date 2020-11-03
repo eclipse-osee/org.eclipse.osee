@@ -82,9 +82,10 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       IAtsWorkDefinition useWorkDefinition = workDefinition;
       if (useWorkDefinition == null) {
          useWorkDefinition =
-            AtsApiService.get().getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(goalArt, null, changes);
+            AtsApiService.get().getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
       }
       Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goalArt.toStringWithId());
+      AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(goalArt, workDefinition, changes);
 
       AtsApiService.get().getActionFactory().initializeNewStateMachine(goalArt,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), new Date(),

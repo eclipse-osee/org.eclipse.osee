@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -203,7 +204,7 @@ public final class ArtifactImageManager {
          }
 
          // Check if image provider provides override for this image
-         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifactType);
+         ArtifactImageProvider imageProvider = getProvider(artifactType);
          if (imageProvider != null) {
             String imageKey = imageProvider.setupImage(artifactType);
             if (imageKey != null) {
@@ -217,6 +218,16 @@ public final class ArtifactImageManager {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return ImageManager.getImage(ImageManager.MISSING);
+   }
+
+   public static ArtifactImageProvider getProvider(ArtifactTypeToken artifactType) {
+      for (Entry<ArtifactTypeToken, ArtifactImageProvider> entry : providersOverrideImageMap.entrySet()) {
+         if (artifactType.inheritsFrom(entry.getKey())) {
+            ArtifactImageProvider imageProvider = entry.getValue();
+            return imageProvider;
+         }
+      }
+      return null;
    }
 
    public static Image getImage(Artifact artifact, KeyedImage overlay, Location location) {
@@ -277,11 +288,11 @@ public final class ArtifactImageManager {
    private synchronized static String setupImage(Artifact artifact) {
       try {
          ArtifactTypeToken type = artifact.getArtifactType();
-         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(type);
+         ArtifactImageProvider imageProvider = getProvider(type);
          if (imageProvider != null) {
             return imageProvider.setupImage(artifact);
          } else {
-            KeyedImage imageKey = artifactTypeImageMap.get(type);
+            KeyedImage imageKey = getArtifactTypeImage(type);
             if (imageKey != null) {
                if (AccessControlManager.hasLock(artifact)) {
                   return getLockedImage(imageKey, artifact);
@@ -325,7 +336,12 @@ public final class ArtifactImageManager {
    }
 
    public static KeyedImage getArtifactTypeImage(ArtifactTypeToken artifactType) {
-      return artifactTypeImageMap.get(artifactType);
+      for (Entry<ArtifactTypeToken, KeyedImage> entry : artifactTypeImageMap.entrySet()) {
+         if (artifactType.inheritsFrom(entry.getKey())) {
+            return entry.getValue();
+         }
+      }
+      return null;
    }
 
    /**

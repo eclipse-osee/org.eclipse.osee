@@ -50,7 +50,7 @@ public interface ITeamWorkflowProvider {
       return null;
    }
 
-   public default AtsWorkDefinitionToken getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default AtsWorkDefinitionToken getOverrideWorkflowDefinitionId(IAtsTeamDefinition teamDef) {
       return null;
    }
 }

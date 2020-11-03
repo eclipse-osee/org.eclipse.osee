@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -201,7 +202,8 @@ public class AgileFactory {
          null, changes);
 
       IAtsWorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(sprint, null, changes);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Sprint);
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(sprint, workDefinition, changes);
 
       // Initialize state machine
       atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
@@ -235,7 +237,8 @@ public class AgileFactory {
          null, changes);
 
       IAtsWorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(backlog, null, changes);
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal);
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(backlog, workDefinition, changes);
 
       // Initialize state machine
       atsApi.getActionFactory().initializeNewStateMachine(backlog, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),

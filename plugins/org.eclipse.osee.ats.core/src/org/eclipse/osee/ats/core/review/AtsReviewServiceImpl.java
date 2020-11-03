@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -206,8 +207,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), null, changes);
 
       IAtsWorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(decRev, null, changes);
-      Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", decRev.toStringWithId());
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Review_Decision);
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(decRev, workDefinition, changes);
 
       // Initialize state machine
       atsApi.getActionFactory().initializeNewStateMachine(decRev, null, createdDate, createdBy, workDefinition,

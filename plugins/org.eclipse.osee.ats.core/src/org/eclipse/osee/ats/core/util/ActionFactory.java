@@ -324,9 +324,11 @@ public class ActionFactory implements IAtsActionFactory {
    public ActionResult createAction(AtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       Conditions.assertNotNullOrEmpty(title, "Title must be specified");
-      // if "tt" is title, this is an action created for development. To
-      // make it easier, all fields are automatically filled in for ATS developer
 
+      /**
+       * if "tt" is title, this is an action created for development. To make it easier, all fields are automatically
+       * filled in for ATS developer
+       */
       IAtsAction action = createAction(title, desc, changeType, priority, validationRequired, needByDate, changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
@@ -385,7 +387,20 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
-      ArtifactTypeToken teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
+      Conditions.assertNotNull(teamDef, "Team Definition can not be null");
+      IAtsWorkDefinition workDef =
+         atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
+      Conditions.assertNotNull(workDef, "Work Definition can not be null");
+
+      /**
+       * Get Team Workflow artifact type from Work Def, else from Team Def
+       */
+      ArtifactTypeToken teamWorkflowArtifactType = null;
+      teamWorkflowArtifactType = workDef != null ? workDef.getArtType() : null;
+      if (teamWorkflowArtifactType == null) {
+         teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
+      }
+      Conditions.assertNotNull(teamWorkflowArtifactType, "Team Workflow Artifact Type can not be null");
 
       // NOTE: The persist of the workflow will auto-email the assignees
       IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy,
@@ -424,6 +439,9 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
+      IAtsWorkDefinition workDef =
+         atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
+      Conditions.assertNotNull(workDef, "Work Definition can no be null");
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -451,12 +469,14 @@ public class ActionFactory implements IAtsActionFactory {
             artToken = listener.getArtifactToken(applicableAis);
          }
       }
+
       if (artToken == null) {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, ""));
       } else {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
       }
 
+      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, workDef, changes);
       setArtifactIdentifyData(action, teamWf, changes);
 
       /**
@@ -471,11 +491,8 @@ public class ActionFactory implements IAtsActionFactory {
 
       setAtsId(teamWf, teamWf.getTeamDefinition(), workItemListener, changes);
 
-      IAtsWorkDefinition workDefinition =
-         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(teamWf, newActionListeners, changes);
-
       // Initialize state machine
-      initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, workDefinition, changes);
+      initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, workDef, changes);
 
       // Notify listener of team creation
       if (newActionListeners != null) {

@@ -381,9 +381,14 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public WorkType getWorkType(IAtsTeamWorkflow teamWf) {
+      return getWorkType(teamWf.getTeamDefinition());
+
+   }
+
+   @Override
+   public WorkType getWorkType(IAtsTeamDefinition teamDef) {
       WorkType workType = WorkType.None;
       try {
-         IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          String typeStr =
             atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkType, "");
          if (Strings.isValid(typeStr)) {

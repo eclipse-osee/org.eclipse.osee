@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class AbstractWorkDefItem extends NamedIdBase {
 
    protected String description;
-   private ArtifactTypeToken artType;
+   private ArtifactTypeToken artType = ArtifactTypeToken.SENTINEL;
 
    public AbstractWorkDefItem(Long id, String name) {
       super(id, name);

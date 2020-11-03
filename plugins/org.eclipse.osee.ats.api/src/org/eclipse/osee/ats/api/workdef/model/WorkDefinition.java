@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -36,11 +37,12 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
-      this(id, name, null);
+      this(id, name, ArtifactTypeToken.SENTINEL);
    }
 
    public WorkDefinition(Long id, String name, ArtifactTypeToken artType) {
       super(id, name, artType);
+      Conditions.assertNotNull(artType, "Artifact Type can no be null");
       headerDef = new HeaderDefinition(this);
    }
 

@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.workdef.internal.workdefs;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.AtsDemoOseeTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
@@ -40,7 +41,11 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
 
    @Override
    public WorkDefinition build() {
-      WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
+      /**
+       * Artifact types used can be declared through Team Definition or Workflow Definition. This is an example of the
+       * config through Work Definition.
+       */
+      WorkDefBuilder bld = new WorkDefBuilder(workDefToken, AtsDemoOseeTypes.DemoCodeTeamWorkflow);
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //

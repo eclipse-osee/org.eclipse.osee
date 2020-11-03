@@ -86,11 +86,9 @@ public interface IAtsWorkDefinitionService {
 
    ArtifactToken getWorkDefArt(String workDefName);
 
-   IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamWorkflow teamWf, Collection<INewActionListener> newActionListeners);
+   IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners);
 
    void setWorkDefinitionAttrs(IAtsTeamDefinition topTeam, NamedIdBase id, IAtsChangeSet changes);
-
-   IAtsWorkDefinition computeAndSetWorkDefinitionAttrs(IAtsWorkItem workItem, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
 
    void setWorkDefinitionAttrs(IAtsWorkItem workItem, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
 

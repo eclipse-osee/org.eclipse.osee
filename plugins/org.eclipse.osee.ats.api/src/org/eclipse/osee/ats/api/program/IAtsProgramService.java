@@ -95,6 +95,8 @@ public interface IAtsProgramService {
 
    Collection<String> getCscis(IAtsProgram program);
 
+   WorkType getWorkType(IAtsTeamDefinition teamDef);
+
    WorkType getWorkType(IAtsTeamWorkflow teamWf);
 
    ProjectType getProjectType(IAtsProgram program);

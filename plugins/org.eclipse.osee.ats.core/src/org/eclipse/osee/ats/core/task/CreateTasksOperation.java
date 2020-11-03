@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -156,6 +157,9 @@ public class CreateTasksOperation {
                workDefinition = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
             }
             Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
+            task.addAttribute(AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
+            task.addAttribute(AtsAttributeTypes.WorkflowDefinitionReference,
+               ArtifactId.valueOf(workDefinition.getId()));
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = attribute.getAttrType();
@@ -254,10 +258,29 @@ public class CreateTasksOperation {
                id = Lib.generateArtifactIdAsInt();
                jaxTask.setId(id);
             }
-            ArtifactToken taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), id);
-            IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
 
+            IAtsWorkDefinition workDefinition = null;
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
+
+            // If task work def already specified, use it
+            if (Strings.isNumeric(jaxTask.getTaskWorkDef())) {
+               workDefinition =
+                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jaxTask.getTaskWorkDef()));
+            }
+            // Else compute and set
+            else {
+               workDefinition = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
+            }
+            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", newTaskData);
+            ArtifactTypeToken artType = AtsArtifactTypes.Task;
+            if (workDefinition.getArtType() != null && workDefinition.getArtType().isValid()) {
+               artType = workDefinition.getArtType();
+            }
+
+            ArtifactToken taskArt = changes.createArtifact(artType, jaxTask.getName(), id);
+            IAtsTask task = atsApi.getWorkItemService().getTask(taskArt);
+            atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
+
             atsApi.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), null, changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
@@ -267,20 +290,6 @@ public class CreateTasksOperation {
             }
             if (assignees.isEmpty()) {
                assignees.add(AtsCoreUsers.UNASSIGNED_USER);
-            }
-
-            IAtsWorkDefinition workDefinition = null;
-            // If task work def already specified, use it
-            if (Strings.isNumeric(jaxTask.getTaskWorkDef())) {
-               workDefinition =
-                  atsApi.getWorkDefinitionService().getWorkDefinition(Long.valueOf(jaxTask.getTaskWorkDef()));
-               Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
-               atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(task, workDefinition, changes);
-            }
-            // Else compute and set
-            else {
-               workDefinition = atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(task, null, changes);
-               Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
             }
 
             if (Strings.isValid(jaxTask.getDescription())) {

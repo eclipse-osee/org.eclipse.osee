@@ -517,12 +517,14 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamWorkflow teamWf, Collection<INewActionListener> newActionListeners) {
+   public IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners) {
+      Conditions.assertNotNull(teamDef, "Team Definition can not be null");
+
       // If work def id is specified by listener, set as attribute
       IAtsWorkDefinition workDefinition = null;
       if (newActionListeners != null) {
          for (INewActionListener listener : newActionListeners) {
-            AtsWorkDefinitionToken workDefTok = listener.getOverrideWorkDefinitionId(teamWf);
+            AtsWorkDefinitionToken workDefTok = listener.getOverrideWorkDefinitionId(teamDef);
             if (workDefTok != null) {
                workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
             }
@@ -531,18 +533,18 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       // else if work def is specified by provider, set as attribute
       if (workDefinition == null) {
          for (ITeamWorkflowProvider provider : atsApi.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
-            AtsWorkDefinitionToken workDefT = provider.getOverrideWorkflowDefinitionId(teamWf);
-            if (workDefT != null) {
-               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefT);
+            AtsWorkDefinitionToken workDefTok = provider.getOverrideWorkflowDefinitionId(teamDef);
+            if (workDefTok != null) {
+               workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
             }
          }
       }
       // else if work def is specified by teamDef
       if (workDefinition == null) {
-         workDefinition = getWorkDefinitionForTeamWfFromTeamDef(teamWf.getTeamDefinition());
+         workDefinition = getWorkDefinitionForTeamWfFromTeamDef(teamDef);
       }
       if (workDefinition == null) {
-         throw new OseeStateException("Work Definition not computed for %s", teamWf.toStringWithId());
+         throw new OseeStateException("Work Definition not computed for %s", teamDef.toStringWithId());
       }
       return workDefinition;
    }
@@ -569,23 +571,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          return atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Team_Default);
       }
       return getWorkDefinitionForTeamWfFromTeamDef(parentTeamDef);
-   }
-
-   @Override
-   public IAtsWorkDefinition computeAndSetWorkDefinitionAttrs(IAtsWorkItem workItem, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
-      IAtsWorkDefinition workDefinition = null;
-      if (workItem.isTeamWorkflow()) {
-         workDefinition = computeWorkDefinitionForTeamWfNotYetCreated((IAtsTeamWorkflow) workItem, newActionListeners);
-      } else if (workItem.isTask()) {
-         workDefinition = computedWorkDefinitionForTaskNotYetCreated(workItem.getParentTeamWorkflow());
-      } else {
-         workDefinition = computeWorkDefinition(workItem);
-      }
-      Conditions.checkNotNull(workDefinition, "workDefinition");
-
-      // set work definition attribute
-      atsApi.getWorkDefinitionService().setWorkDefinitionAttrs(workItem, workDefinition, changes);
-      return workDefinition;
    }
 
    @Override
