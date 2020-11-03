@@ -90,13 +90,11 @@
 	</organization>
 
  	<repositories> 		
-	<!-- 
-		<repository>
-			<id>mylyn</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/mylyn/drops/3.5.1/v20110422-0200/</url>
-		</repository>
-			-->
+	<repository>
+ 			<id>mylyn</id>
+ 			<layout>p2</layout>
+ 			<url>http://download.eclipse.org/mylyn/drops/3.5.1/v20110422-0200/</url>
+ 		</repository>
 	<!--  		
 		<repository>
 			<id>findbugs</id>

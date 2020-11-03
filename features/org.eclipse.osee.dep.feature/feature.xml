@@ -30,13 +30,6 @@
          id="org.eclipse.wst.xml_userdoc.feature"
          version="0.0.0"/>
          
-    <includes
-         id="org.eclipse.mylyn.context_feature"
-         version="0.0.0"/>        
-    
-   <includes     
-         id="org.eclipse.mylyn_feature"
-         version="0.0.0" />
         
     <includes
          id="org.eclipse.xsd.edit"
@@ -267,10 +260,6 @@
          version="0.0.0"/>
    
    <includes
-         id="org.eclipse.mylyn.team_feature"
-	 version="0.0.0"/>
-   
-   <includes
          id="org.eclipse.nebula.widgets.xviewer.feature"
          version="0.0.0"/>
 
@@ -408,7 +397,6 @@
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
-
 
    <plugin
          id="org.eclipse.jetty.io"
@@ -685,48 +673,8 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.mylyn.monitor.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-   
-   <plugin
-         id="org.eclipse.mylyn.tasks.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.eclipse.mylyn.tasks.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.resources.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.monitor.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- 
-   <plugin
-         id="org.eclipse.mylyn.commons.repositories"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
+          
    <plugin
          id="org.eclipse.mylyn.commons.net"
          download-size="0"
@@ -734,26 +682,8 @@
          version="0.0.0"
          unpack="false"/>
          
-   <plugin
-         id="org.eclipse.mylyn.commons.team"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>    
-     
-   <plugin
-         id="org.eclipse.mylyn.context.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
-   <plugin
-         id="org.eclipse.mylyn.context.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+
   
    <plugin
          id="org.eclipse.mylyn.commons.core"
@@ -762,12 +692,8 @@
          version="0.0.0"
          unpack="false"/>
                   
-   <plugin
-         id="org.eclipse.mylyn.commons.ui"
-         download-size="0"
-         install-size="0"
-         version="3.5.0"
-         unpack="false"/>
+
+
 
    <plugin
          id="org.eclipse.mylyn.commons.screenshots"
