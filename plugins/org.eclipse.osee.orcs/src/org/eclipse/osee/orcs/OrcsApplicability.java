@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.ViewDefinition;
+import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -83,4 +84,5 @@ public interface OrcsApplicability {
 
    XResultData removeApplicabilityFromView(BranchId branch, ArtifactId viewId, String applicability, UserId account);
 
+   String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic);
 }

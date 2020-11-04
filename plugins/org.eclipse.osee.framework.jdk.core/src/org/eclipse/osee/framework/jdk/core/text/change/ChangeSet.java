@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 /**
  * @author Ryan D. Brooks
  */
-public class ChangeSet {
+public class ChangeSet implements CharSequence {
    private CharacterChanger firstChange;
    private CharacterChanger lastChange;
    private char[] sourceChars;
@@ -36,17 +36,15 @@ public class ChangeSet {
    }
 
    public ChangeSet(CharSequence source) {
-      if (source instanceof CharBuffer) {
+      this.source = source;
+      if (source instanceof String) {
+         sourceChars = ((String) source).toCharArray();
+      } else if (source instanceof CharBuffer) {
          CharBuffer charBuf = (CharBuffer) source;
          if (charBuf.hasArray()) {
             sourceChars = charBuf.array();
-            return;
          }
       }
-      if (source instanceof String) {
-         sourceChars = ((String) source).toCharArray();
-      }
-      this.source = source;
    }
 
    private int copyFromSource(int srcStrartIndex, int srcEndIndex, char[] dest, int destPos) {
@@ -150,8 +148,8 @@ public class ChangeSet {
     * @param srcStartIndex inclusive start index
     * @param srcEndIndex inclusive end index
     */
-   public void replace(int srcStartIndex, int srcEndIndex, String newChar) {
-      replace(srcStartIndex, srcEndIndex, newChar.toCharArray());
+   public void replace(int srcStartIndex, int srcEndIndex, String newChars) {
+      replace(srcStartIndex, srcEndIndex, newChars.toCharArray());
    }
 
    public void delete(int srcStartIndex, int srcEndIndex) {
@@ -255,5 +253,30 @@ public class ChangeSet {
       while (matcher.find()) {
          replace(matcher.start(), matcher.end(), replacement);
       }
+   }
+
+   /**
+    * @return source.length()
+    */
+   @Override
+   public int length() {
+      return source.length();
+   }
+
+   /**
+    * @return source.charAt()
+    */
+   @Override
+   public char charAt(int index) {
+      return source.charAt(index);
+   }
+
+   @Override
+
+   /**
+    * @return source.subSequence()
+    */
+   public CharSequence subSequence(int start, int end) {
+      return source.subSequence(start, end);
    }
 }

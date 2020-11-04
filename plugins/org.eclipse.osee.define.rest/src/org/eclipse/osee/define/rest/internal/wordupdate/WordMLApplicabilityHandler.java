@@ -13,39 +13,27 @@
 
 package org.eclipse.osee.define.rest.internal.wordupdate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
-import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
-import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -53,37 +41,28 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class WordMLApplicabilityHandler {
 
-   private static String SCRIPT_ENGINE_NAME = "JavaScript";
-
    private final Set<String> validConfigurations;
    private final Set<String> validConfigurationGroups;
-   private Map<String, List<String>> viewApplicabilitiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-   private final String configurationToView;
+   private final Map<String, List<String>> viewApplicabilitiesMap;
    private final Stack<ApplicabilityBlock> applicBlocks;
-   private final List<FeatureDefinition> featureDefinition;
-   private final ScriptEngine se;
    private final Log logger;
-   private final OrcsApi orcsApi;
+   private final OrcsApplicability applicabilityOps;
    private final BranchId branch;
-   private final ArtifactId viewId;
+   private final ArtifactToken view;
 
    public WordMLApplicabilityHandler(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactId view) {
       this.applicBlocks = new Stack<>();
       this.logger = logger;
-      this.orcsApi = orcsApi;
-      ScriptEngineManager sem = new ScriptEngineManager();
-      se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
+      applicabilityOps = orcsApi.getApplicabilityOps();
 
       QueryFactory query = orcsApi.getQueryFactory();
 
       this.branch = getProductLineBranch(query, branch);
       validConfigurations = getValidConfigurations(query, this.branch);
       validConfigurationGroups = getValidConfigurationGroups(query, this.branch);
-      viewApplicabilitiesMap = query.applicabilityQuery().getNamedViewApplicabilityMap(this.branch, view);
-      ArtifactToken viewArtifact = query.fromBranch(this.branch).andId(view).asArtifactToken();
-      configurationToView = viewArtifact.getName();
-      viewId = view;
-      featureDefinition = query.applicabilityQuery().getFeatureDefinitionData(this.branch);
+      this.view = query.fromBranch(this.branch).andId(view).asArtifactToken();
+      viewApplicabilitiesMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(this.branch, view);
 
    }
 
@@ -187,7 +166,7 @@ public class WordMLApplicabilityHandler {
       String[] configs = applicExpText.split("&|\\|");
       for (int i = 0; i < configs.length; i++) {
          configs[i] = configs[i].split("=")[0].trim();
-         if (!containsIgnoreCase(validConfigurations, configs[i])) {
+         if (!Strings.containsIgnoreCase(validConfigurations, configs[i])) {
             return false;
          }
       }
@@ -204,7 +183,7 @@ public class WordMLApplicabilityHandler {
       String[] configGroups = applicExpText.split("&|\\|");
       for (int i = 0; i < configGroups.length; i++) {
          configGroups[i] = configGroups[i].split("=")[0].trim();
-         if (!containsIgnoreCase(validConfigurationGroups, configGroups[i])) {
+         if (!Strings.containsIgnoreCase(validConfigurationGroups, configGroups[i])) {
             return false;
          }
       }
@@ -227,7 +206,7 @@ public class WordMLApplicabilityHandler {
 
          if (viewApplicabilitiesMap.containsKey(featName)) {
             List<String> values = viewApplicabilitiesMap.get(featName);
-            if (featVal != null && !containsIgnoreCase(values, featVal)) {
+            if (featVal != null && !Strings.containsIgnoreCase(values, featVal)) {
                return false;
             }
          } else {
@@ -240,9 +219,9 @@ public class WordMLApplicabilityHandler {
 
    private String evaluateApplicabilityBlock(ApplicabilityBlock applicabilityBlock, String fullWordML) {
       Map<String, String> binDataMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-      saveBinData(applicabilityBlock.getFullText(), binDataMap);
+      saveBinData(applicabilityBlock.getInsideText(), binDataMap);
 
-      String toInsert = evaluateApplicabilityExpression(applicabilityBlock);
+      String toInsert = applicabilityOps.evaluateApplicabilityExpression(branch, view, applicabilityBlock);
       return insertMissingbinData(toInsert, binDataMap);
    }
 
@@ -274,8 +253,7 @@ public class WordMLApplicabilityHandler {
    }
 
    private int addApplicabilityBlock(ApplicabilityType type, Matcher matcher, String applicabilityExpression, int searchIndex, String fullWordMl) {
-      ApplicabilityBlock beginApplic = new ApplicabilityBlock();
-      beginApplic.setType(type);
+      ApplicabilityBlock beginApplic = new ApplicabilityBlock(type);
       //Remove extra space
       String applicExpText = WordCoreUtil.textOnly(applicabilityExpression).toLowerCase().replace(" [", "[");
       beginApplic.setApplicabilityExpression(applicExpText);
@@ -321,10 +299,10 @@ public class WordMLApplicabilityHandler {
       applic.setEndTextIndex(matcher.start());
 
       String insideText = toReturn.substring(applic.getStartTextIndex(), applic.getEndTextIndex());
-      applic.setFullText(insideText);
+      applic.setInsideText(insideText);
 
       // Adjust start and end insert indicies if tags are inside a table
-      if (!applic.getFullText().contains(WordCoreUtil.TABLE) && applic.getFullText().contains(
+      if (!applic.getInsideText().contains(WordCoreUtil.TABLE) && applic.getInsideText().contains(
          WordCoreUtil.TABLE_CELL)) {
          String findStartOfRow = toReturn.substring(0, applic.getStartInsertIndex());
          int startRowIndex = findStartOfRow.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
@@ -346,269 +324,12 @@ public class WordMLApplicabilityHandler {
                fullText = fullText.replaceFirst(
                   "(?i)(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIGGRP + "|" + WordCoreUtil.BEGINCONFIG + ")",
                   "");
-               applic.setFullText(fullText);
+               applic.setInsideText(fullText);
             }
          }
       }
 
       return applic;
-   }
-
-   private String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
-      String applicabilityExpression = applic.getApplicabilityExpression();
-      String toInsert = "";
-      try {
-
-         String fullText = applic.getFullText();
-
-         ApplicabilityGrammarLexer lex =
-            new ApplicabilityGrammarLexer(new ANTLRStringStream(applicabilityExpression.toUpperCase()));
-         ApplicabilityGrammarParser parser = new ApplicabilityGrammarParser(new CommonTokenStream(lex));
-
-         parser.start();
-
-         ApplicabilityType type = applic.getType();
-
-         if (type.equals(ApplicabilityType.Feature)) {
-            toInsert =
-               getValidFeatureContent(fullText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
-         } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
-            toInsert = getValidConfigurationContent(type, fullText, parser.getIdValuesMap());
-         } else if (type.equals(ApplicabilityType.ConfigurationGroup) || type.equals(
-            ApplicabilityType.NotConfigurationGroup)) {
-            toInsert = getValidConfigurationGroupContent(type, fullText, applic.getBeginTag());
-         }
-
-      } catch (RecognitionException ex) {
-         logger.error(
-            "Failed to parse expression: " + applicabilityExpression + " at start Index: " + applic.getStartInsertIndex());
-      }
-
-      return toInsert;
-   }
-
-   public String getValidConfigurationContent(ApplicabilityType type, String fullText, HashMap<String, List<String>> id_value_map) {
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
-      String beginningText = fullText;
-      String elseText = "";
-
-      if (match.find()) {
-         beginningText = fullText.substring(0, match.start());
-
-         elseText = fullText.substring(match.end());
-         elseText = elseText.replaceAll(WordCoreUtil.ENDCONFIG, "");
-         elseText = elseText.replaceAll(WordCoreUtil.BEGINCONFIG, "");
-      }
-
-      String toReturn = "";
-      // Note: this assumes only OR's are put in between configurations
-      List<String> values = id_value_map.get(configurationToView.toUpperCase());
-
-      if (type.equals(ApplicabilityType.NotConfiguration)) {
-         //Note when publishing with view=configurationgroup, do not publish Configuration Not[configA] text
-         if (orcsApi.getQueryFactory().fromBranch(branch).andId(viewId).andIsOfType(
-            CoreArtifactTypes.BranchView).exists()) {
-            if (values != null) {
-               toReturn = elseText;
-            } else {
-               toReturn = beginningText;
-            }
-         }
-      } else if (values == null) {
-         toReturn = elseText;
-      } else {
-         toReturn = beginningText;
-      }
-
-      return toReturn;
-   }
-
-   public String getValidConfigurationGroupContent(ApplicabilityType type, String fullText, String beginTag) {
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
-      String beginningText = fullText;
-      String elseText = "";
-
-      if (match.find()) {
-         beginningText = fullText.substring(0, match.start());
-
-         elseText = fullText.substring(match.end());
-         elseText = elseText.replaceAll(WordCoreUtil.ENDCONFIGGRP, "");
-         elseText = elseText.replaceAll(WordCoreUtil.BEGINCONFIGGRP, "");
-      }
-
-      String toReturn = "";
-      Boolean viewInCfgGroup = false;
-      // Note: this assumes only OR's are put in between configuration groups
-      viewInCfgGroup = viewInCfgGroup(beginTag);
-      if (type.equals(ApplicabilityType.NotConfigurationGroup)) {
-         if (viewInCfgGroup) {
-            toReturn = elseText;
-         } else {
-            toReturn = beginningText;
-         }
-      } else if (!viewInCfgGroup) {
-         toReturn = elseText;
-      } else {
-         toReturn = beginningText;
-      }
-
-      return toReturn;
-   }
-
-   private Boolean viewInCfgGroup(String beginTag) {
-      String beginConfigGroup = WordCoreUtil.textOnly(beginTag);
-      Boolean viewInCfgGroup = false;
-      int start = beginConfigGroup.indexOf("[") + 1;
-      int end = beginConfigGroup.indexOf("]");
-      String applicExpText = beginConfigGroup.substring(start, end);
-      String[] configGroups = applicExpText.split("&|\\|");
-      for (int i = 0; i < configGroups.length; i++) {
-         configGroups[i] = configGroups[i].split("=")[0].trim();
-         if (orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andNameEquals(
-            configGroups[i]).andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent,
-               CoreArtifactTokens.PlCfgGroupsFolder).andRelatedTo(CoreRelationTypes.PlConfigurationGroup_BranchView,
-                  this.viewId).exists()) {
-            viewInCfgGroup = true;
-            break;
-         } else {
-            if (configurationToView.equalsIgnoreCase(configGroups[i])) {
-               viewInCfgGroup = true;
-            }
-         }
-      }
-      return viewInCfgGroup;
-   }
-
-   private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
-
-      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
-      String beginningText = fullText;
-      String elseText = "";
-
-      if (match.find()) {
-
-         if (isInTable) {
-            String temp = fullText.substring(0, match.end());
-            // Find last occurence of table row
-            int lastIndexOf = temp.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
-            if (lastIndexOf != -1) {
-               elseText = fullText.substring(lastIndexOf);
-               elseText = elseText.replaceAll(WordCoreUtil.ELSE_EXP, "");
-               beginningText = fullText.substring(0, lastIndexOf);
-            }
-         } else {
-            beginningText = fullText.substring(0, match.start());
-            elseText = fullText.substring(match.end());
-         }
-
-         elseText = elseText.replaceAll(WordCoreUtil.ENDFEATURE, "");
-         elseText = elseText.replaceAll(WordCoreUtil.BEGINFEATURE, "");
-      }
-
-      String toReturn = "";
-      String expression = createFeatureExpression(featureIdValuesMap, featureOperators);
-
-      boolean result = false;
-      try {
-         result = (boolean) se.eval(expression);
-      } catch (ScriptException ex) {
-         logger.error("Failed to parse expression: " + expression);
-      }
-
-      if (result) {
-         toReturn = beginningText;
-      } else {
-         toReturn = elseText;
-      }
-
-      return toReturn;
-   }
-
-   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
-
-      String myFeatureExpression = "";
-      Iterator<String> iterator = featureOperators.iterator();
-
-      for (String feature : featureIdValuesMap.keySet()) {
-         List<String> values = featureIdValuesMap.get(feature);
-
-         String valueExpression = createValueExpression(feature, values);
-
-         boolean result = false;
-
-         try {
-            result = (boolean) se.eval(valueExpression);
-         } catch (ScriptException ex) {
-            logger.error("Failed to parse expression: " + valueExpression);
-         }
-
-         myFeatureExpression += result + " ";
-
-         if (iterator.hasNext()) {
-            String next = iterator.next();
-            if (next.equals("|")) {
-               myFeatureExpression += "|| ";
-            } else if (next.equals("&")) {
-               myFeatureExpression += "&& ";
-            }
-         }
-      }
-
-      return myFeatureExpression;
-   }
-
-   private String createValueExpression(String feature, List<String> values) {
-      String myValueExpression = "";
-      for (String value : values) {
-         if (value.equals("(")) {
-            myValueExpression += "( ";
-         } else if (value.equals(")")) {
-            myValueExpression += ") ";
-         } else if (value.equals("|")) {
-            myValueExpression += "|| ";
-         } else if (value.equals("&")) {
-            myValueExpression += "&& ";
-         } else {
-            boolean eval = isFeatureValuePairValid(feature, value);
-            myValueExpression += eval + " ";
-         }
-      }
-
-      return myValueExpression;
-   }
-
-   private boolean isFeatureValuePairValid(String feature, String value) {
-      if (viewApplicabilitiesMap.containsKey(feature)) {
-         Collection<String> validValues = viewApplicabilitiesMap.get(feature);
-
-         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature) : value.trim();
-
-         if (containsIgnoreCase(validValues, value)) {
-            return true;
-         }
-      }
-
-      return false;
-   }
-
-   private boolean containsIgnoreCase(Collection<String> validValues, String val) {
-      for (String validValue : validValues) {
-         if (validValue.equalsIgnoreCase(val)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   private String getDefaultValue(String feature) {
-      String toReturn = null;
-      for (FeatureDefinition fDef : featureDefinition) {
-         if (fDef.getName().equals(feature)) {
-            toReturn = fDef.getDefaultValue();
-            break;
-         }
-      }
-      return toReturn;
    }
 
    public static HashSet<String> getValidConfigurations(QueryFactory query, BranchId branch) {

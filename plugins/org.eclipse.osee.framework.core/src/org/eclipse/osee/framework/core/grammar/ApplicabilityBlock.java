@@ -28,18 +28,26 @@ public class ApplicabilityBlock {
       NotConfigurationGroup
    };
 
-   private ApplicabilityType applicabilityType;
+   private final ApplicabilityType applicabilityType;
    private final ArrayList<ApplicabilityBlock> embeddedApplicabilityBlocks;
    private final ArrayList<String> outerExpressionOperators;
    private String applicabilityExpression;
    private String optionalEndExpression;
    private boolean isInTable;
 
-   private String beforeElseText, afterElseText, beforeEmbeddedBlockText, afterEmbeddedBlockText, fullText;
+   private String beforeElseText;
+   private String afterElseText;
+   private String beforeEmbeddedBlockText;
+   private String afterEmbeddedBlockText;
+   private String insideText;
    private String beginTag;
-   private int startInsertIndex, endInsertIndex, startTextIndex, endTextIndex;
+   private int startInsertIndex;
+   private int endInsertIndex;
+   private int startTextIndex;
+   private int endTextIndex;
 
-   public ApplicabilityBlock() {
+   public ApplicabilityBlock(ApplicabilityType applicabilityType) {
+      this.applicabilityType = applicabilityType;
       embeddedApplicabilityBlocks = new ArrayList<>();
       outerExpressionOperators = new ArrayList<>();
       isInTable = false;
@@ -114,20 +122,16 @@ public class ApplicabilityBlock {
       this.afterEmbeddedBlockText = afterEmbeddedBlockText;
    }
 
-   public String getFullText() {
-      return fullText;
+   public String getInsideText() {
+      return insideText;
    }
 
-   public void setFullText(String fullText) {
-      this.fullText = fullText;
+   public void setInsideText(String insideText) {
+      this.insideText = insideText;
    }
 
    public ApplicabilityType getType() {
       return applicabilityType;
-   }
-
-   public void setType(ApplicabilityType applicabilityType) {
-      this.applicabilityType = applicabilityType;
    }
 
    public ArrayList<String> getOuterExpressionOperators() {

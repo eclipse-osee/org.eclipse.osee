@@ -172,7 +172,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule = new IndexerModule(logger, properties, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), tokenService());
 
-      applicability = new OrcsApplicabilityOps(this);
+      applicability = new OrcsApplicabilityOps(this, logger);
       accessControlService = new AccessControlServiceImpl();
    }
 

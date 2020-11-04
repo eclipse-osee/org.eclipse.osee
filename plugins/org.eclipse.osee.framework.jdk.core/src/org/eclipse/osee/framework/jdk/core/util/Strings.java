@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -292,4 +293,12 @@ public class Strings {
       return !isNumeric(idStr);
    }
 
+   public static boolean containsIgnoreCase(Collection<String> validValues, String val) {
+      for (String validValue : validValues) {
+         if (validValue.equalsIgnoreCase(val)) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

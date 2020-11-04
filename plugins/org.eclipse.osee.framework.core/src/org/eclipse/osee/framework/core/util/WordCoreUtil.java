@@ -270,8 +270,7 @@ public class WordCoreUtil {
    }
 
    private static ApplicabilityBlock createApplicabilityBlock(ApplicabilityType applicType, String beginExpression) {
-      ApplicabilityBlock beginApplic = new ApplicabilityBlock();
-      beginApplic.setType(applicType);
+      ApplicabilityBlock beginApplic = new ApplicabilityBlock(applicType);
       beginExpression = beginExpression.replace(" [", "[");
       beginApplic.setApplicabilityExpression(beginExpression);
       return beginApplic;

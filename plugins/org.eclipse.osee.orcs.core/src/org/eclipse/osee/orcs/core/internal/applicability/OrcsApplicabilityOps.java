@@ -40,12 +40,14 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -57,13 +59,15 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class OrcsApplicabilityOps implements OrcsApplicability {
 
    private final OrcsApi orcsApi;
+   private final Log logger;
    private ArtifactToken plFolder = ArtifactToken.SENTINEL;
    private ArtifactToken featureFolder = ArtifactToken.SENTINEL;
    private ArtifactToken productsFolder = ArtifactToken.SENTINEL;
    private ArtifactToken plConfigurationGroupsFolder = ArtifactToken.SENTINEL;
 
-   public OrcsApplicabilityOps(OrcsApi orcsApi) {
+   public OrcsApplicabilityOps(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
+      this.logger = logger;
    }
 
    /**
@@ -1243,4 +1247,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return results;
    }
 
+   @Override
+   public String evaluateApplicabilityExpression(BranchId branch, ArtifactToken view, ApplicabilityBlock applic) {
+      return new BlockApplicabilityOps(orcsApi, logger, branch, view).evaluateApplicabilityExpression(applic);
+   }
 }

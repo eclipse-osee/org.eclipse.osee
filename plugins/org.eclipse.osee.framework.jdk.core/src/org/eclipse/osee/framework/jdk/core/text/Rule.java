@@ -76,7 +76,7 @@ public abstract class Rule {
             try {
                process(aFile);
             } catch (Exception ex) {
-               System.out.println(currentOutfileName + ": " + ex.getMessage());
+               System.out.println(currentOutfileName + ": " + ex);
             }
          }
       } else {
@@ -92,7 +92,7 @@ public abstract class Rule {
       if (subdirectoryName != null) {
          File parent = outFile.getParentFile();
          subdirectory = new File(parent, subdirectoryName);
-         if (!subdirectory.mkdir()) {
+         if (!subdirectory.exists() && !subdirectory.mkdir()) {
             throw new IOException("Could not create directory");
          }
          outFile = new File(subdirectory, outFile.getName());
@@ -141,8 +141,7 @@ public abstract class Rule {
 
       String ruleName = args[1];
       String classPath = args[0];
-      try {
-         URLClassLoader classLoader = new URLClassLoader(new URL[] {Lib.getUrlFromString(classPath)});
+      try (URLClassLoader classLoader = new URLClassLoader(new URL[] {Lib.getUrlFromString(classPath)})) {
          System.out.println("class path: " + classLoader.getURLs()[0]);
          Object obj = classLoader.loadClass(ruleName).newInstance();
 
@@ -162,16 +161,8 @@ public abstract class Rule {
                }
             }
          } else {
-            classLoader.close();
             throw new IllegalArgumentException(ruleName + " is not of type text.Rule.");
          }
-         classLoader.close();
-      } catch (InstantiationException ex) {
-         System.out.println(ex);
-      } catch (IllegalAccessException ex) {
-         System.out.println(ex);
-      } catch (ClassNotFoundException ex) {
-         System.out.println(ex);
       }
    }
 
