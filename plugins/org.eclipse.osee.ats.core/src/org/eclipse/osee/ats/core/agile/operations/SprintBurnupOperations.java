@@ -25,12 +25,10 @@ import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -52,7 +50,7 @@ public class SprintBurnupOperations implements IAgileSprintHtmlOperation {
          }
          return chart.getChart();
       } catch (Exception ex) {
-         throw new OseeWrappedException(Lib.exceptionToString(ex).replaceAll("\n", "<br/>"));
+         throw OseeCoreException.wrap(ex);
       }
    }
 

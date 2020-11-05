@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -161,7 +162,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       try {
          orcsApi.getBranchOps().changeBranchName(branch, name).call();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex, "Error setting branch name");
+         throw OseeCoreException.wrap(ex);
       }
    }
 

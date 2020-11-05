@@ -192,7 +192,7 @@ public class ActionPage {
          html = html.replaceAll("PUT_DEFAULT_TO_STATE_VALUE_HERE", defaultToStateValue);
          page.param("transition", html);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

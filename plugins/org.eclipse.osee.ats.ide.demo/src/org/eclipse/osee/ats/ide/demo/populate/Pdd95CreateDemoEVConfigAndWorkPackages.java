@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -116,8 +116,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    }
 
    private void relateInsertionActivity(Artifact workPackageArt, DemoInsertionActivity insertionActivity) {
-      Artifact insertionActivityArt =
-         AtsApiService.get().getQueryServiceIde().getArtifact(insertionActivity.getId());
+      Artifact insertionActivityArt = AtsApiService.get().getQueryServiceIde().getArtifact(insertionActivity.getId());
       insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 
@@ -153,8 +152,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
 
-         program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getId(), AtsApiService.get().getAtsBranch());
+         program = ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getId(), AtsApiService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
          country.persist(transaction);
@@ -168,7 +166,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          }
 
       } catch (Exception ex) {
-         throw new OseeWrappedException("Error creating ATS USG Country Config", ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -192,7 +190,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
             createInsertions(insertionEp, insertionActivityEp, program);
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException("Error creating ATS Cntry Country Config", ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

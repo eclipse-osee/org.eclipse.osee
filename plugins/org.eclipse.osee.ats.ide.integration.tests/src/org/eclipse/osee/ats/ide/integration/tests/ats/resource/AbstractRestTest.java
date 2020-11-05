@@ -21,8 +21,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
 
@@ -37,7 +37,7 @@ public abstract class AbstractRestTest {
          List<Long> ids = WorkItemsJsonReader.getWorkItemIdsFromJson(json);
          Assert.assertEquals(expected, ids.size());
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

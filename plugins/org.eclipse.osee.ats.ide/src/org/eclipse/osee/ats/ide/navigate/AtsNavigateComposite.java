@@ -21,8 +21,8 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -73,7 +73,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       try {
          item.run(tableLoadOptions);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
       try {
          if (activityId != null) {

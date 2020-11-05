@@ -430,7 +430,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       try {
          return Response.temporaryRedirect(new URI(htmlUrl)).build();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

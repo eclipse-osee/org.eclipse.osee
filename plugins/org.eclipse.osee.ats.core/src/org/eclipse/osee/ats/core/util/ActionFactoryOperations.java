@@ -20,7 +20,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -57,8 +57,7 @@ public class ActionFactoryOperations {
          writer.close();
          return stringWriter.toString();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
-
 }

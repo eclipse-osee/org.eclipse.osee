@@ -613,7 +613,7 @@ public class AtsTestUtil {
             changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
       } catch (OseeCoreException ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
       return peerRev;
    }

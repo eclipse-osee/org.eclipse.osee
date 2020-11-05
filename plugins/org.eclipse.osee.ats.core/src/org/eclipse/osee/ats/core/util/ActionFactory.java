@@ -697,7 +697,7 @@ public class ActionFactory implements IAtsActionFactory {
          ActionFactoryOperations ops = new ActionFactoryOperations(atsApi);
          return ops.getActionStateJson(workItems, getJsonFactory());
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

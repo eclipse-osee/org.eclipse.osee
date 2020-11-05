@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -58,6 +57,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -537,7 +537,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          try {
             job.join();
          } catch (InterruptedException ex) {
-            throw new OseeWrappedException(ex);
+            throw OseeCoreException.wrap(ex);
          }
       }
       return job;
@@ -575,7 +575,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
             try {
                job.join();
             } catch (InterruptedException ex) {
-               throw new OseeWrappedException(ex);
+               throw OseeCoreException.wrap(ex);
             }
             status = job.getResult();
          }
@@ -586,5 +586,4 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       }
       return Result.TrueResult;
    }
-
 }
