@@ -23,12 +23,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
 public class CriteriaBranchName extends Criteria implements BranchCriteria {
 
    private final boolean isPattern;
+   private final boolean isPatternIgnoreCase;
    private final String value;
 
-   public CriteriaBranchName(String value, boolean isPattern) {
+   public CriteriaBranchName(String value, boolean isPattern, boolean isPatternIgnoreCase) {
       super();
       this.value = value;
       this.isPattern = isPattern;
+      this.isPatternIgnoreCase = isPatternIgnoreCase;
    }
 
    public boolean isPattern() {
@@ -47,6 +49,10 @@ public class CriteriaBranchName extends Criteria implements BranchCriteria {
    @Override
    public String toString() {
       return "CriteriaBranchName [isPattern=" + isPattern + ", value=" + value + "]";
+   }
+
+   public boolean isPatternIgnoreCase() {
+      return isPatternIgnoreCase;
    }
 
 }

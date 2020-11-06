@@ -161,6 +161,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public List<Branch> getFromQuery(BranchQueryData options) {
+      ResultSet<Branch> results = searchBranches(options);
+      Set<Branch> branches = new HashSet<>();
+      branches.addAll(results.getList());
+      List<Branch> branchList = new ArrayList<>();
+      branchList.addAll(branches);
+      return branchList;
+   }
+
+   @Override
    public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf) {
       BranchQueryData options = new BranchQueryData();
       options.setBranchIds(Collections.fromString(branchUuids, ",", BranchId::valueOf));
@@ -805,6 +815,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
       String namePattern = options.getNamePattern();
       if (Strings.isValid(namePattern)) {
          query.andNamePattern(namePattern);
+      }
+
+      String namePatternIgnoreCase = options.getNamePatternIgnoreCase();
+      if (Strings.isValid(namePatternIgnoreCase)) {
+         query.andNamePatternIgnoreCase(namePatternIgnoreCase);
       }
 
       Long ancestorOf = options.getIsAncestorOf();

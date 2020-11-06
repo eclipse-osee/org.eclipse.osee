@@ -53,6 +53,8 @@ public interface BranchQueryBuilder<T> {
 
    T andNamePattern(String pattern);
 
+   T andNamePatternIgnoreCase(String pattern);
+
    T andIsChildOf(BranchId branch);
 
    T andIsAncestorOf(BranchId branch);

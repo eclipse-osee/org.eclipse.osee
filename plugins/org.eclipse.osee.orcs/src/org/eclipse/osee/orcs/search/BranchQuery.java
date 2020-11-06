@@ -150,6 +150,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
             return 0;
          }
 
+         @Override
+         public BranchQuery andNamePatternIgnoreCase(String pattern) {
+            return null;
+         }
+
       }
       return new BranchQuerySentinel();
    }

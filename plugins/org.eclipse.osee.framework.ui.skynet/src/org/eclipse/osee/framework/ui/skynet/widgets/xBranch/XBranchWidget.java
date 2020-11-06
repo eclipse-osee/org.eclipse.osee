@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -43,6 +45,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -76,6 +79,13 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    private final List<BranchSelectedListener> branchSelectedListeners;
    private BranchXViewerFactory branchXViewerFactory;
    private final IBranchWidgetMenuListener menuListener;
+   private BranchQueryData branchData;
+   private boolean isBranchSearchView = false;
+   private ToolItem baselineButton;
+   private ToolItem workingButton;
+   private ToolItem allButton;
+   private ToolItem flatLayout;
+   private ToolItem treeLayout;
 
    public XBranchWidget(IBranchWidgetMenuListener menuListener) {
       this(false, false, null, menuListener);
@@ -104,7 +114,11 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                   sorter.setFavoritesFirst(state);
                   break;
                case FLAT:
-                  branchContentProvider.setPresentation(state);
+                  if (state) {
+                     branchContentProvider.setPresentationType(BranchPresentationType.Flat);
+                  } else {
+                     branchContentProvider.setPresentationType(BranchPresentationType.Tree);
+                  }
                   break;
                case SHOW_MERGE_BRANCHES:
                   branchContentProvider.setShowMergeBranches(state);
@@ -200,23 +214,120 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       extraInfoLabel.setFont(FontManager.getCourierNew12Bold());
 
       if (branchXViewerFactory.isBranchManager()) {
-         toolBar = new ToolBar(composite, SWT.FLAT);
-         ToolItem item = null;
+         if (isBranchSearchView) {
+            toolBar = new ToolBar(composite, SWT.FLAT);
 
-         item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
-         item.setToolTipText("Refresh");
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               try {
-                  BranchManager.refreshBranches();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            new ToolItem(toolBar, SWT.SEPARATOR);
+
+            baselineButton = new ToolItem(toolBar, SWT.CHECK);
+            baselineButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_BASELINE));
+            baselineButton.setToolTipText("Show Baseline Branches");
+            baselineButton.setSelection(true);
+            branchData.getBranchTypes().add(BranchType.BASELINE);
+            baselineButton.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  branchData.setAsIds(false);
+                  if (baselineButton.getSelection()) {
+                     branchData.getBranchTypes().add(BranchType.BASELINE);
+                  } else {
+                     branchData.getBranchTypes().remove(BranchType.BASELINE);
+                  }
                }
-               loadData();
-            }
-         });
+            });
+
+            workingButton = new ToolItem(toolBar, SWT.CHECK);
+            workingButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH_WORKING));
+            workingButton.setToolTipText("Show Working Branches");
+            workingButton.setSelection(true);
+            branchData.getBranchTypes().add(BranchType.WORKING);
+            workingButton.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  branchData.setAsIds(false);
+                  if (workingButton.getSelection()) {
+                     branchData.getBranchTypes().add(BranchType.WORKING);
+                  } else {
+                     branchData.getBranchTypes().remove(BranchType.WORKING);
+                  }
+               }
+            });
+
+            allButton = new ToolItem(toolBar, SWT.CHECK);
+            allButton.setImage(ImageManager.getImage(FrameworkImage.ADD_GREEN));
+            allButton.setToolTipText("Show All Branches");
+            allButton.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  if (allButton.getSelection()) {
+                     branchData.getBranchTypes().clear();
+                     baselineButton.setSelection(false);
+                     workingButton.setSelection(false);
+                  } else {
+                     branchData.getBranchTypes().clear();
+                     branchData.getBranchTypes().add(BranchType.BASELINE);
+                     branchData.getBranchTypes().add(BranchType.WORKING);
+                     baselineButton.setSelection(true);
+                     workingButton.setSelection(true);
+                  }
+               }
+            });
+
+            new ToolItem(toolBar, SWT.SEPARATOR);
+
+            flatLayout = new ToolItem(toolBar, SWT.CHECK);
+            treeLayout = new ToolItem(toolBar, SWT.CHECK);
+
+            flatLayout.setImage(ImageManager.getImage(FrameworkImage.FLAT_LAYOUT));
+            flatLayout.setSelection(true);
+            flatLayout.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  if (flatLayout.getSelection()) {
+                     setBranchPresentationType(BranchPresentationType.Flat);
+                     treeLayout.setSelection(false);
+                  } else {
+                     setBranchPresentationType(BranchPresentationType.Tree);
+                     treeLayout.setSelection(true);
+                  }
+               }
+            });
+
+            treeLayout.setImage(ImageManager.getImage(FrameworkImage.TREE_LAYOUT));
+            treeLayout.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  if (treeLayout.getSelection()) {
+                     setBranchPresentationType(BranchPresentationType.Tree);
+                     flatLayout.setSelection(false);
+                  } else {
+                     setBranchPresentationType(BranchPresentationType.Flat);
+                     flatLayout.setSelection(true);
+                  }
+               }
+            });
+
+            new ToolItem(toolBar, SWT.SEPARATOR);
+         } else {
+            toolBar = new ToolBar(composite, SWT.FLAT);
+            ToolItem item = null;
+
+            item = new ToolItem(toolBar, SWT.PUSH);
+            item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
+            item.setToolTipText("Refresh");
+            item.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  try {
+                     BranchManager.refreshBranches();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+                  loadData();
+               }
+            });
+
+         }
       }
    }
 
@@ -268,7 +379,9 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
 
    @Override
    public void refresh() {
-      loadData();
+      if (!isBranchSearchView) {
+         loadData();
+      }
       branchXViewer.refresh();
       validate();
    }
@@ -377,6 +490,33 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    @Override
    public String getReportTitle() {
       return getEditorTitle();
+   }
+
+   public void setBranchPresentationType(BranchPresentationType branchPresentationType) {
+      branchContentProvider.setPresentationType(branchPresentationType);
+   }
+
+   public BranchQueryData getBranchData() {
+      return branchData;
+   }
+
+   public void setBranchData(BranchQueryData branchData) {
+      this.branchData = branchData;
+   }
+
+   public boolean isBranchSearchView() {
+      return isBranchSearchView;
+   }
+
+   public void setBranchSearchView(boolean isBranchSearchView) {
+      this.isBranchSearchView = isBranchSearchView;
+   }
+
+   public void resetButtons() {
+      baselineButton.setSelection(true);
+      workingButton.setSelection(true);
+      allButton.setSelection(false);
+      flatLayout.setSelection(true);
    }
 
 }

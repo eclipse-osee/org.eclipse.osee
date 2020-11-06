@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchPresentationType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.BranchSelectedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
@@ -82,7 +83,8 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       branchWidget = new XBranchWidget(true, true, defaultSelected, this);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
-      branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_FIRST, BranchOptionsEnum.FLAT);
+      branchWidget.setBranchPresentationType(BranchPresentationType.Flat);
+      branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_FIRST);
       branchWidget.setBranchOptions(allowOnlyWorkingBranches, BranchOptionsEnum.SHOW_WORKING_BRANCHES_ONLY);
       branchWidget.addBranchSelectedListener(new BranchSelectedListener() {
 

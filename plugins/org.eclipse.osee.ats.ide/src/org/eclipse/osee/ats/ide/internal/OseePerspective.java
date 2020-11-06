@@ -61,17 +61,17 @@ public class OseePerspective implements IPerspectiveFactory {
       final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .75f, editorArea);
       final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
       final IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.7f, "left");
+      final IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.7f, "right");
 
       left.addView(NavigateView.VIEW_ID);
       bottomLeft.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
 
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         bottom.addView("org.eclipse.pde.runtime.LogView");
+         bottomRight.addView("org.eclipse.pde.runtime.LogView");
       }
       bottom.addView(BranchView.VIEW_ID);
       bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottom.addPlaceholder(MergeView.VIEW_ID);
-      bottom.addView(ActionWalkerView.VIEW_ID);
    }
 }

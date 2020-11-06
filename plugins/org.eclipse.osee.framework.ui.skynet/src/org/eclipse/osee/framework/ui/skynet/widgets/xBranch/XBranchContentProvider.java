@@ -61,8 +61,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof BranchId) {
-         if (!ChangeUiUtil.permissionsDeniedWithDialog((BranchId) parentElement)) {
-            return getBranchChildren((BranchId) parentElement);
+         if (showChildBranchesUnderParents) {
+            if (!ChangeUiUtil.permissionsDeniedWithDialog((BranchId) parentElement)) {
+               return getBranchChildren((BranchId) parentElement);
+            }
          }
       } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
@@ -210,7 +212,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return changeXViewer;
    }
 
-   public void setPresentation(boolean flat) {
+   public void setPresentationType(BranchPresentationType branchPresentationType) {
+      boolean flat = branchPresentationType == BranchPresentationType.Flat;
       showChildBranchesAtMainLevel = flat;
       showChildBranchesUnderParents = !flat;
    }

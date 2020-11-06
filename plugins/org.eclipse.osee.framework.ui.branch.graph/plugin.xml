@@ -41,6 +41,24 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.branch.graph.command.open.branch.graph"
+               icon="OSEE-INF/images/graph.gif"
+               label="Open Branch Graph"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView">
+         <command
+               commandId="org.eclipse.osee.framework.ui.branch.graph.command.open.branch.graph"
+               icon="OSEE-INF/images/graph.gif"
+               label="Open Branch Graph"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
       <extension
          point="org.eclipse.help.toc">

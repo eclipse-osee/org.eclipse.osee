@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -26,18 +26,20 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 @XmlRootElement
 public class BranchQueryData {
 
-   private List<BranchId> branchIds;
-   private List<BranchType> branchTypes;
-   private List<BranchState> branchStates;
+   private List<BranchId> branchIds = new ArrayList<>();
+   private List<BranchType> branchTypes = new ArrayList<>();
+   private List<BranchState> branchStates = new ArrayList<>();
    private boolean includeDeleted;
    private boolean includeArchived;
+   private boolean asIds;
    private String nameEquals;
    private String namePattern;
+   private String namePatternIgnoreCase;
    private Long isChildOf = -1L;
    private Long isAncestorOf = -1L;
 
    public List<BranchId> getBranchIds() {
-      return branchIds != null ? branchIds : Collections.emptyList();
+      return branchIds;
    }
 
    public void setBranchIds(List<BranchId> branchUuids) {
@@ -45,7 +47,7 @@ public class BranchQueryData {
    }
 
    public List<BranchType> getBranchTypes() {
-      return branchTypes != null ? branchTypes : Collections.<BranchType> emptyList();
+      return branchTypes;
    }
 
    public void setBranchTypes(List<BranchType> branchTypes) {
@@ -53,7 +55,7 @@ public class BranchQueryData {
    }
 
    public List<BranchState> getBranchStates() {
-      return branchStates != null ? branchStates : Collections.<BranchState> emptyList();
+      return branchStates;
    }
 
    public void setBranchStates(List<BranchState> branchStates) {
@@ -106,6 +108,22 @@ public class BranchQueryData {
 
    public Long getIsAncestorOf() {
       return isAncestorOf != null ? isAncestorOf : -1L;
+   }
+
+   public String getNamePatternIgnoreCase() {
+      return namePatternIgnoreCase;
+   }
+
+   public void setNamePatternIgnoreCase(String namePatternIgnoreCase) {
+      this.namePatternIgnoreCase = namePatternIgnoreCase;
+   }
+
+   public boolean isAsIds() {
+      return asIds;
+   }
+
+   public void setAsIds(boolean asIds) {
+      this.asIds = asIds;
    }
 
 }

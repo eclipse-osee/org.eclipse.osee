@@ -54,6 +54,12 @@ public interface BranchEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getBranches(BranchQueryData query);
 
+   @POST
+   @Path("query")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getFromQuery(BranchQueryData query);
+
    /**
     * Perform a branch query based on query parameter input
     *
@@ -135,11 +141,6 @@ public interface BranchEndpoint {
 
    /**
     * If -1 is supplied for the branch path parameter, then a random valid id will be used
-    *
-    * @param account
-    * @param branchId
-    * @param branchName
-    * @return
     */
    @POST
    @Path("{branch}/program")

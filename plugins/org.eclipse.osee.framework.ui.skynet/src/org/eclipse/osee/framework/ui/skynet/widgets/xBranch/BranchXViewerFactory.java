@@ -32,21 +32,21 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       new XViewerColumn("framework.branch.type", "Type", 100, XViewerAlign.Left, true, SortDataType.String, true, null);
    public final static XViewerColumn branchState = new XViewerColumn("framework.branch.state", "State", 100,
       XViewerAlign.Left, true, SortDataType.String, true, null);
-   public final static XViewerColumn createdDate = new XViewerColumn("framework.branch.itemType", "Created Date", 150,
-      XViewerAlign.Left, true, SortDataType.Date, false, null);
+   public final static XViewerColumn createdDate = new XViewerColumn("framework.branch.createdDate", "Created Date",
+      150, XViewerAlign.Left, true, SortDataType.Date, false, null);
    public final static XViewerColumn author = new XViewerColumn("framework.branch.author", "Author", 100,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn comment = new XViewerColumn("framework.branch.comment", "Comment", 250,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn associatedArtifact = new XViewerColumn("framework.branch.assocArt",
       "Associated Artifact", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchId = new XViewerColumn("framework.branch.uuid", "Branch Id", 200,
+   public final static XViewerColumn branchId = new XViewerColumn("framework.branchId", "Branch Id", 200,
       XViewerAlign.Left, false, SortDataType.Long, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
       100, XViewerAlign.Left, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
       100, XViewerAlign.Left, false, SortDataType.String, true, null);
-   public final static XViewerColumn inheritAccessControl = new XViewerColumn("framework.branch.inherit.access.control",
+   public final static XViewerColumn inheritAccessControl = new XViewerColumn("framework.branch.inherit.accessControl",
       "Inherit Access Control", 100, XViewerAlign.Left, false, SortDataType.Boolean, false, null);
    public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction", 100,
       XViewerAlign.Left, true, SortDataType.Integer, false, null);

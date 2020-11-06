@@ -125,13 +125,19 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
 
    @Override
    public T andNameEquals(String value) {
-      Criteria criteria = criteriaFactory.createBranchNameCriteria(value, false);
+      Criteria criteria = criteriaFactory.createBranchNameCriteria(value, false, false);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public T andNamePattern(String pattern) {
-      Criteria criteria = criteriaFactory.createBranchNameCriteria(pattern, true);
+      Criteria criteria = criteriaFactory.createBranchNameCriteria(pattern, true, false);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public T andNamePatternIgnoreCase(String pattern) {
+      Criteria criteria = criteriaFactory.createBranchNameCriteria(pattern, true, true);
       return addAndCheck(getQueryData(), criteria);
    }
 

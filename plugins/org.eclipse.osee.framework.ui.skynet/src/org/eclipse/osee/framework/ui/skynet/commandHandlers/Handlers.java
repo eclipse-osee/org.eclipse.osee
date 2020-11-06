@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -64,6 +65,10 @@ public class Handlers {
       return processSelectionObjects(IOseeBranch.class, structuredSelection);
    }
 
+   public static List<Branch> getBranchesFromStructuredSelection2(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(Branch.class, structuredSelection);
+   }
+
    /**
     * Populates a list of artifacts from a IStructuredSelection. Returns an empty list if no artifacts were found.
     */
@@ -87,16 +92,20 @@ public class Handlers {
 
       while (iterator.hasNext()) {
          Object object = iterator.next();
-         Object targetObject = null;
+         if (clazz.isAssignableFrom(object.getClass())) {
+            objects.add(clazz.cast(object));
+         } else {
+            Object targetObject = null;
 
-         if (object instanceof IAdaptable) {
-            targetObject = ((IAdaptable) object).getAdapter(clazz);
-         } else if (object instanceof Match) {
-            targetObject = ((Match) object).getElement();
-         }
+            if (object instanceof IAdaptable) {
+               targetObject = ((IAdaptable) object).getAdapter(clazz);
+            } else if (object instanceof Match) {
+               targetObject = ((Match) object).getElement();
+            }
 
-         if (clazz.isInstance(targetObject)) {
-            objects.add(clazz.cast(targetObject));
+            if (clazz.isInstance(targetObject)) {
+               objects.add(clazz.cast(targetObject));
+            }
          }
       }
       return objects;

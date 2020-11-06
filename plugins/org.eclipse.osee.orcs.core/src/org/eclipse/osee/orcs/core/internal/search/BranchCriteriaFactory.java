@@ -47,8 +47,8 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchState(states);
    }
 
-   public Criteria createBranchNameCriteria(String value, boolean isPattern) {
-      return new CriteriaBranchName(value, isPattern);
+   public Criteria createBranchNameCriteria(String value, boolean isPattern, boolean isPatternIgnoreCase) {
+      return new CriteriaBranchName(value, isPattern, isPatternIgnoreCase);
    }
 
    public Criteria createBranchChildOfCriteria(BranchId parent) {

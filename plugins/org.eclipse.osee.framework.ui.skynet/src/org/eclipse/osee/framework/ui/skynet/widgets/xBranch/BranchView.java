@@ -22,6 +22,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -47,6 +48,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.orcs.rest.model.BranchQueryData;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -58,8 +61,6 @@ import org.eclipse.ui.PartInitException;
 import org.osgi.service.prefs.Preferences;
 
 /**
- * Displays persisted changes made to an artifact.
- *
  * @author Jeff C. Phillips
  */
 public class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
@@ -69,13 +70,26 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    private final Clipboard clipboard = new Clipboard(null);
 
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
-   private XBranchWidget xBranchWidget;
+   protected XBranchWidget xBranchWidget;
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
    private XViewerCustomMenu customMenu;
+   private final String viewId;
+   private final String name;
+   protected final BranchQueryData branchData = new BranchQueryData();
 
    public BranchView() {
+      this(VIEW_ID, "Branch Manager");
+   }
+
+   public BranchView(String viewId, String name) {
       super();
+      this.viewId = viewId;
+      this.name = name;
+   }
+
+   protected boolean isBranchSearchView() {
+      return false;
    }
 
    @Override
@@ -95,7 +109,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
 
    @Override
    public void createPartControl(Composite parent) {
-      setPartName("Branch Manager");
+      setPartName(name);
 
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
@@ -109,12 +123,25 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
+         if (isBranchSearchView()) {
+            new BranchLoadComposite(this, parent, SWT.NONE);
+         }
+
          xBranchWidget = new XBranchWidget(this);
          xBranchWidget.setDisplayLabel(false);
+         if (isBranchSearchView()) {
+            xBranchWidget.setBranchData(branchData);
+         }
+         xBranchWidget.setBranchSearchView(isBranchSearchView());
          xBranchWidget.createWidgets(parent, 1);
 
-         branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-         xBranchWidget.loadData();
+         if (isBranchSearchView()) {
+            branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
+         } else {
+            xBranchWidget.setBranchPresentationType(BranchPresentationType.Flat);
+            xBranchWidget.loadData();
+         }
+
          final BranchView fBranchView = this;
 
          final XViewer branchWidget = xBranchWidget.getXViewer();
@@ -141,7 +168,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
 
          menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          branchWidget.getTree().setMenu(menuManager.createContextMenu(branchWidget.getTree()));
-         getSite().registerContextMenu(VIEW_ID, menuManager, branchWidget);
+         getSite().registerContextMenu(viewId, menuManager, branchWidget);
          getSite().setSelectionProvider(branchWidget);
          HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
          OseeStatusContributionItemFactory.addTo(this, true);
@@ -264,6 +291,22 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    @Override
    public void partOpened(IWorkbenchPart part) {
       // do nothing
+   }
+
+   public BranchQueryData getBranchData() {
+      return branchData;
+   }
+
+   public void handleQuerySearch() {
+      // not needed for normal BranchView, only BranchSearchView
+   }
+
+   public void loadData() {
+      // not needed for normal BranchView, only BranchSearchView
+   }
+
+   public void loadData(List<Branch> branches) {
+      // not needed for normal BranchView, only BranchSearchView
    }
 
 }
