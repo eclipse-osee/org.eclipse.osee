@@ -104,7 +104,6 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
                   sorter.setFavoritesFirst(state);
                   break;
                case FLAT:
-               case HIERARCHY:
                   branchContentProvider.setPresentation(state);
                   break;
                case SHOW_MERGE_BRANCHES:

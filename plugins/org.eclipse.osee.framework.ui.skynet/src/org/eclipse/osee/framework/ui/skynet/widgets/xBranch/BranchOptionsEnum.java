@@ -19,7 +19,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
  */
 public enum BranchOptionsEnum {
    FLAT,
-   HIERARCHY,
    FAVORITE_FIRST,
    SHOW_MERGE_BRANCHES,
    SHOW_ARCHIVED_BRANCHES,

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -105,7 +106,7 @@ public class BranchViewPresentationPreferences {
                      branchView.getXBranchWidget().setBranchOptions(getViewPreference().getBoolean(presEnum.name(),
                         presEnum == BranchOptionsEnum.FAVORITE_FIRST ? false : true), presEnum);
                   } catch (Exception ex) {
-                     // do nothing
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             }
@@ -128,8 +129,14 @@ public class BranchViewPresentationPreferences {
       for (BranchOptionsEnum keyEnum : BranchOptionsEnum.values()) {
          XBranchWidget branchWidget = branchView.getXBranchWidget();
          switch (keyEnum) {
-            default:
+            case FLAT:
                branchWidget.setBranchOptions(pref.getBoolean(keyEnum.name(), true), keyEnum);
+               break;
+            case FAVORITE_FIRST:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.name(), true), keyEnum);
+               break;
+            default:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.name(), false), keyEnum);
                break;
          }
       }
