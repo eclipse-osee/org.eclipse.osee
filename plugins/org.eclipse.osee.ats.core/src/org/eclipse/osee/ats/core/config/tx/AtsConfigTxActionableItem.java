@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -61,12 +62,6 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
    @Override
    public IAtsConfigTxActionableItem andActive(boolean active) {
       changes.setSoleAttributeValue(ai, AtsAttributeTypes.Active, active);
-      return this;
-   }
-
-   @Override
-   public IAtsConfigTxActionableItem andAccessContextId(String contextId) {
-      changes.setSoleAttributeValue(ai, CoreAttributeTypes.AccessContextId, contextId);
       return this;
    }
 
@@ -137,6 +132,14 @@ public class AtsConfigTxActionableItem extends AbstractAtsConfigTxObject<IAtsCon
    public IAtsConfigTxActionableItem andCsci(Csci... cscis) {
       for (Csci csci : cscis) {
          changes.addAttribute(ai, AtsAttributeTypes.CSCI, csci.name());
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxActionableItem andAccessContexts(IAccessContextId... contextIds) {
+      for (IAccessContextId id : contextIds) {
+         and(CoreAttributeTypes.AccessContextId, String.format("%s, %s", id.getIdString(), id.getName()));
       }
       return this;
    }

@@ -228,7 +228,7 @@ public class AtsDbConfigDemoOp {
    private void createSawPlTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
 
       // SAW PL
-      IAtsConfigTxTeamDef sawPlTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.SAW_PL) //
+      IAtsConfigTxTeamDef sawPlTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.SAW_PL_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andLeads(DemoUsers.Kay_Jason) //
          .andMembers(DemoUsers.Kay_Jason, DemoUsers.Michael_John, DemoUsers.Steven_Kohn) //
@@ -240,7 +240,7 @@ public class AtsDbConfigDemoOp {
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
       // SAW PL Team Defs
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Code) //
          .andLeads(DemoUsers.Joe_Smith) //
@@ -248,7 +248,7 @@ public class AtsDbConfigDemoOp {
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Code) //
          .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoCodeTeamWorkflow);
 
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_HW) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_HW_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Hardware) //
          .andLeads(DemoUsers.Jason_Michael) //
@@ -256,7 +256,7 @@ public class AtsDbConfigDemoOp {
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoReqTeamWorkflow);
 
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Requirements) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Requirements_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Requirements) //
          .andLeads(DemoUsers.Joe_Smith) //
@@ -264,14 +264,14 @@ public class AtsDbConfigDemoOp {
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
          .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoReqTeamWorkflow);
 
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.SW_Design) //
          .andLeads(DemoUsers.Kay_Jones) //
          .andMembers(DemoUsers.Kay_Jones) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_SwDesign);
 
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Test) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Test_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Test) //
          .andLeads(DemoUsers.Kay_Jones) //
@@ -279,7 +279,7 @@ public class AtsDbConfigDemoOp {
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Test) //
          .andTeamWorkflowArtifactType(AtsDemoOseeTypes.DemoTestTeamWorkflow);
 
-      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_ARB) //
+      sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_ARB_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.ARB) //
          .andLeads(DemoUsers.Joe_Smith) //
@@ -296,21 +296,21 @@ public class AtsDbConfigDemoOp {
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Code_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Code) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_Code) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_Code_TeamDef) //
          .andActionable(true) //
          .andChildAis("COMM", "MSM", "NAV", "Test Page");
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Requirements_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Requirements) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_Requirements) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_Requirements_TeamDef) //
          .andActionable(true) //
          .andChildAis("COMM", "MSM", "NAV");
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_Test_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Test) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_Test) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_Test_TeamDef) //
          .andActionable(true) //
          .andChildAis("ADT", "COMM", "MSM", "NAV", "RulLists");
 
@@ -318,24 +318,24 @@ public class AtsDbConfigDemoOp {
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.SW_Design) //
          .andActionable(true) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_SW_Design);
+         .andTeamDef(DemoArtifactToken.SAW_PL_SW_Design_TeamDef);
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_HW_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.Hardware) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_HW) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_HW_TeamDef) //
          .andActionable(true) //
          .andChildAis("Adapter", "Case", "Manual", "Screen");
 
       sawPlSwAI.createChildActionableItem(DemoArtifactToken.SAW_PL_ARB_AI) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
          .andWorkType(WorkType.ARB) //
-         .andTeamDef(DemoArtifactToken.SAW_PL_ARB) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_ARB_TeamDef) //
          .andActionable(true);
 
       // SAW PL Program
       cfgTx.createProgram(DemoArtifactToken.SAW_PL_Program) //
-         .andTeamDef(DemoArtifactToken.SAW_PL) //
+         .andTeamDef(DemoArtifactToken.SAW_PL_TeamDef) //
          .and(AtsAttributeTypes.Description, "Program object for SAW PL Program") //
          .and(AtsAttributeTypes.Namespace, "org.demo.saw.pl");
 

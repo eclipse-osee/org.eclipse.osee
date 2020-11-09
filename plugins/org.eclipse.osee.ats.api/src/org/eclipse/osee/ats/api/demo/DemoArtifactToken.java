@@ -68,13 +68,13 @@ public final class DemoArtifactToken {
    public static final IAtsProgramArtifactToken SAW_PL_Program = AtsProgramArtifactToken.valueOf(1917773L, "SAW PL Program");
 
    // SAW PL Team Definitions
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Code = AtsTeamDefinitionArtifactToken.valueOf(123413478L, "SAW PL Code");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_SW_Design = AtsTeamDefinitionArtifactToken.valueOf(29292929L, "SAW PL SW Design");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements = AtsTeamDefinitionArtifactToken.valueOf(86758678L, "SAW PL Requirements");
-   public static final IAtsTeamDefinitionArtifactToken SAW_PL_ARB = AtsTeamDefinitionArtifactToken.valueOf(150338509L, "SAW PL ARB");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(283478888L, "SAW PL");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_HW_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123913578L, "SAW PL HW");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Code_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(123413478L, "SAW PL Code");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Test_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(228828L, "SAW PL Test");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_SW_Design_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(29292929L, "SAW PL SW Design");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_Requirements_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(86758678L, "SAW PL Requirements");
+   public static final IAtsTeamDefinitionArtifactToken SAW_PL_ARB_TeamDef = AtsTeamDefinitionArtifactToken.valueOf(150338509L, "SAW PL ARB");
 
    // SAW PL Actionable Items
    public static final IAtsActionableItemArtifactToken SAW_PL_CSCI_AI = AtsActionableItemArtifactToken.valueOf(3234255L, "SAW PL CSCI");

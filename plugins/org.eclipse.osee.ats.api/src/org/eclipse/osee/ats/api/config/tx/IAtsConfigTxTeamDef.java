@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -48,8 +49,6 @@ public interface IAtsConfigTxTeamDef {
     * user will be given a choice when creating tasks.
     */
    IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs);
-
-   IAtsConfigTxTeamDef andAccessContextId(String contextId);
 
    IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, IOseeBranch branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
@@ -80,5 +79,7 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andProgram(IAtsProgramArtifactToken program);
 
    IAtsConfigTxTeamDef andCsci(Csci... cscis);
+
+   IAtsConfigTxTeamDef andAccessContexts(IAccessContextId... contextIds);
 
 }

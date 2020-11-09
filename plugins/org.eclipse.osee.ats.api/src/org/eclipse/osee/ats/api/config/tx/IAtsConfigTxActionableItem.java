@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.Csci;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 
 /**
  * @author Donald G. Dunne
@@ -37,8 +38,6 @@ public interface IAtsConfigTxActionableItem {
 
    IAtsConfigTxActionableItem andActive(boolean active);
 
-   IAtsConfigTxActionableItem andAccessContextId(String contextId);
-
    IAtsActionableItem getAi();
 
    IAtsConfigTxActionableItem andChildAis(String... aiNames);
@@ -50,5 +49,7 @@ public interface IAtsConfigTxActionableItem {
    IAtsConfigTxActionableItem andProgram(IAtsProgramArtifactToken program);
 
    IAtsConfigTxActionableItem andCsci(Csci... cscis);
+
+   IAtsConfigTxActionableItem andAccessContexts(IAccessContextId... accessContexts);
 
 }

@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -146,12 +147,6 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andAccessContextId(String contextId) {
-      changes.setSoleAttributeValue(teamDef, CoreAttributeTypes.AccessContextId, contextId);
-      return this;
-   }
-
-   @Override
    public IAtsTeamDefinition getTeamDef() {
       return teamDef;
    }
@@ -187,6 +182,14 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    public IAtsConfigTxTeamDef andCsci(Csci... cscis) {
       for (Csci csci : cscis) {
          changes.addAttribute(teamDef, AtsAttributeTypes.CSCI, csci.name());
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andAccessContexts(IAccessContextId... contextIds) {
+      for (IAccessContextId id : contextIds) {
+         and(CoreAttributeTypes.AccessContextId, String.format("%s, %s", id.getIdString(), id.getName()));
       }
       return this;
    }
