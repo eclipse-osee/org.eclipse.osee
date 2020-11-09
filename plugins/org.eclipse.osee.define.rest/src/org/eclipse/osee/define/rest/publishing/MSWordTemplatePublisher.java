@@ -142,7 +142,7 @@ public class MSWordTemplatePublisher {
       this.logger = atsApi.getLogger();
       this.activityLog = orcsApi.getActivityLog();
       this.tokenService = orcsApi.tokenService();
-      this.comparator = new OseeHierarchyComparator(activityLog);
+      this.comparator = new OseeHierarchyComparator(orcsApi, activityLog);
    }
 
    /**
@@ -563,7 +563,6 @@ public class MSWordTemplatePublisher {
     * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
     */
    protected void sortQueryListByHierarchy(List<ArtifactReadable> artifacts) {
-      OseeHierarchyComparator comparator = new OseeHierarchyComparator(null);
       artifacts.sort(comparator);
 
       for (Map.Entry<ArtifactReadable, String> entry : comparator.errors.entrySet()) {

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -33,13 +34,17 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public final class OseeHierarchyComparator implements Comparator<ArtifactReadable> {
 
    private final Map<Long, List<ArtifactReadable>> parentToChildrenCache;
+   private final Map<Long, String> artPositionCache;
+   private final OrcsApi orcsApi;
    private final ActivityLog activityLog;
 
    public Map<ArtifactReadable, String> errors;
 
-   public OseeHierarchyComparator(ActivityLog activityLog) {
+   public OseeHierarchyComparator(OrcsApi orcsApi, ActivityLog activityLog) {
+      this.orcsApi = orcsApi;
       this.activityLog = activityLog;
       this.parentToChildrenCache = new HashMap<>();
+      this.artPositionCache = new HashMap<>();
       this.errors = new HashMap<>();
    }
 
@@ -75,7 +80,10 @@ public final class OseeHierarchyComparator implements Comparator<ArtifactReadabl
       return 1;
    }
 
-   private String getHierarchyPosition(ArtifactReadable art1) {
+   public String getHierarchyPosition(ArtifactReadable art1) {
+      if (artPositionCache.containsKey(art1.getId())) {
+         return artPositionCache.get(art1.getId());
+      }
       ArtifactReadable artifactCursor = art1;
       StringBuilder builder = new StringBuilder(20);
 
@@ -85,17 +93,22 @@ public final class OseeHierarchyComparator implements Comparator<ArtifactReadabl
             parent = artifactCursor.getParent();
          } catch (OseeCoreException ex) {
             errors.put(art1, "Hierarchy Index Unavailable");
+            builder.insert(0, 0 + ".");
             break;
          }
          if (parent == null) {
             errors.put(art1, "Not Connected to Root");
+            builder.insert(0, 0 + ".");
             break;
          }
          builder.insert(0, getPosition(artifactCursor) + ".");
          artifactCursor = parent;
       }
 
-      return builder.substring(0, builder.length() - 1);
+      String position = builder.substring(0, builder.length() - 1);
+      artPositionCache.put(art1.getId(), position);
+
+      return position;
    }
 
    private int getPosition(ArtifactReadable artifact) {
