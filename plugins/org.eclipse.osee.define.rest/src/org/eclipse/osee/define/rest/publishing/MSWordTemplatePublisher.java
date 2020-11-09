@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -120,6 +121,7 @@ public class MSWordTemplatePublisher {
    protected final Map<ArtifactReadable, CharSequence> artParagraphNumbers = new HashMap<>();
    protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
    protected final Map<ApplicabilityId, Boolean> applicabilityMap = new HashMap<>();
+   protected final List<ArtifactReadable> headerArtifacts = new LinkedList<>();
 
    //Error Variables
    protected final List<PublishingArtifactError> errorLog = new LinkedList<>();
@@ -570,6 +572,82 @@ public class MSWordTemplatePublisher {
          String description = entry.getValue();
          errorLog.add(new PublishingArtifactError(art.getId(), art.getName(), art.getArtifactType(), description));
       }
+   }
+
+   /**
+    * It is optional to set header artifacts to print under. If set, this method is able to take a list of
+    * ArtifactReadables and filter out any artifacts that are not descendents/recursvively related to the set headers
+    */
+   protected List<ArtifactReadable> filterArtifactsNotRecursivelyRelated(List<ArtifactReadable> artifacts) {
+      List<ArtifactReadable> artifactUnderHeaders = new LinkedList<>();
+
+      for (ArtifactReadable artifact : artifacts) {
+         List<ArtifactReadable> ancestors = artifact.getAncestors();
+         for (ArtifactReadable headFolder : headerArtifacts) {
+            if (ancestors.contains(headFolder)) {
+               artifactUnderHeaders.add(artifact);
+            }
+         }
+      }
+      return artifactUnderHeaders;
+   }
+
+   /**
+    * Given a list of artifacts, this method will loop through and add ancestors and sibling artifacts to the list
+    */
+   protected List<ArtifactReadable> addContextToArtifactList(List<ArtifactReadable> changedArtifacts) {
+      List<ArtifactReadable> artifactsWithContext = new LinkedList<>();
+      for (ArtifactReadable artifact : changedArtifacts) {
+         if (!artifactsWithContext.contains(artifact)) {
+            artifactsWithContext.add(artifact);
+         }
+
+         List<ArtifactReadable> ancestors = artifact.getAncestors();
+         for (ArtifactReadable ancestor : ancestors) {
+            if (!artifactsWithContext.contains(ancestor) && ancestor.notEqual(
+               CoreArtifactTokens.DefaultHierarchyRoot)) {
+               artifactsWithContext.add(ancestor);
+            } else {
+               break;
+            }
+         }
+
+         List<ArtifactReadable> siblings = artifact.getParent().getChildren();
+         for (ArtifactReadable sibling : siblings) {
+            if (!artifactsWithContext.contains(sibling)) {
+               artifactsWithContext.add(sibling);
+            }
+         }
+      }
+
+      return artifactsWithContext;
+   }
+
+   /**
+    * Takes a list of artifacts, assumed to be sorted with headers included, and creates a hashmap of each header to a
+    * list of the artifacts that are a descendent of that header. Any artifacts before the first header are dropped out
+    */
+   protected Map<ArtifactReadable, List<ArtifactReadable>> getSortedArtifactsInHeaderMap(List<ArtifactReadable> artifacts) {
+      Map<ArtifactReadable, List<ArtifactReadable>> headerMap = new HashMap<>();
+      ArtifactReadable lastHeader = null;
+      List<ArtifactReadable> artList = new LinkedList<>();
+
+      for (ArtifactReadable art : artifacts) {
+         if (headerArtifacts.contains(art)) {
+            if (lastHeader == null) {
+               lastHeader = art;
+               artList = new LinkedList<>();
+            } else {
+               headerMap.put(lastHeader, artList);
+               lastHeader = art;
+               artList = new LinkedList<>();
+            }
+         } else {
+            artList.add(art);
+         }
+      }
+      headerMap.put(lastHeader, artList);
+      return headerMap;
    }
 
    //--- ProcessArtifact Helper Methods ---//
