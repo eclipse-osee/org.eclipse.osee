@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.Version;
-import org.eclipse.osee.ats.rest.internal.demo.DemoDatabaseConfig;
+import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -213,7 +213,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public XResultData demoDbInit() {
       XResultData rd = new XResultData();
       try {
-         DemoDatabaseConfig config = new DemoDatabaseConfig(atsApi);
+         AtsDbConfigDemoOp config = new AtsDbConfigDemoOp(atsApi);
          config.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));

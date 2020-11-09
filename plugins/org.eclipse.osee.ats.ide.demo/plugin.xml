@@ -2,25 +2,18 @@
 <?eclipse version="3.2"?>
 <plugin>
     <extension
-       point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">
+          id="AtsDbConfigDemoChoice"
+          point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">
     <DatabaseInitializationConfiguration
-          classname="org.eclipse.osee.ats.ide.demo.config.AddDbInitDemoChoice">
+          classname="org.eclipse.osee.ats.ide.demo.config.AtsDbConfigDemoChoice">
     </DatabaseInitializationConfiguration>
  </extension>
       <extension
-      	id="DemoDatabaseConfigClient"
+      	id="AtsDbConfigDemoIde"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
    			rule="org.eclipse.osee.framework.database.init.NotOnProductionDbInitializationRule"
-      	   classname="org.eclipse.osee.ats.ide.demo.config.DemoDatabaseConfigClient">
-   	</DatabaseInitializationTask>
-	</extension>
-      <extension
-      	id="DemoWebDatabaseConfig"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-   			rule="org.eclipse.osee.framework.database.init.NotOnProductionDbInitializationRule"
-      	   classname="org.eclipse.osee.ats.ide.demo.config.DemoWebDatabaseConfig">
+      	   classname="org.eclipse.osee.ats.ide.demo.config.AtsDbConfigDemoIde">
    	</DatabaseInitializationTask>
 	</extension>
    <extension

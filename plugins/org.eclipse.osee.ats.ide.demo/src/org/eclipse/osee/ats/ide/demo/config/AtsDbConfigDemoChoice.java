@@ -26,15 +26,14 @@ import org.eclipse.osee.framework.database.init.IGroupSelector;
  *
  * @author Donald G. Dunne
  */
-public class AddDbInitDemoChoice implements IAddDbInitChoice {
+public class AtsDbConfigDemoChoice implements IAddDbInitChoice {
 
    @Override
    public void addDbInitChoice(IGroupSelector groupSelection) {
       DatabaseInitConfiguration config = new DatabaseInitConfiguration();
       System.setProperty("user.name", DemoUsers.Joe_Smith.getLoginIds().iterator().next());
-      config.addTask("org.eclipse.osee.ats.ide.AtsDatabaseConfigClient");
-      config.addTask("org.eclipse.osee.ats.ide.demo.DemoDatabaseConfigClient");
-      config.addTask("org.eclipse.osee.ats.ide.demo.DemoWebDatabaseConfig");
+      config.addTask("org.eclipse.osee.ats.ide.AtsDbConfigBaseIde");
+      config.addTask("org.eclipse.osee.ats.ide.demo.AtsDbConfigDemoIde");
 
       config.addOseeType(DefaultOseeTypeDefinitions.DEFINE_TYPES);
       config.addOseeType(DefaultOseeTypeDefinitions.ATS_TYPES);

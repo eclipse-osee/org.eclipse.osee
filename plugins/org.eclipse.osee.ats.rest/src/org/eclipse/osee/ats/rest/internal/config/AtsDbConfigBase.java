@@ -52,14 +52,16 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
+ * Base configuration for ATS
+ *
  * @author Donald G. Dunne
  */
-public class AtsDatabaseConfig {
+public class AtsDbConfigBase {
 
    private final AtsApi atsApi;
    private final OrcsApi orcsApi;
 
-   public AtsDatabaseConfig(AtsApi atsApi, OrcsApi orcsApi) {
+   public AtsDbConfigBase(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
    }
@@ -110,7 +112,7 @@ public class AtsDatabaseConfig {
       changes.createArtifact(atsHeader, AtsArtifactToken.AttachmentFolder);
       changes.execute();
 
-      File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDatabaseConfig.class);
+      File file = OseeInf.getResourceAsFile("demoPeerChecklists/Document_Checklist.xlsx", AtsDbConfigBase.class);
       TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
          SystemUser.OseeSystem, "Import Peer Checklist");
       importChecklist(file, transaction);
@@ -118,7 +120,7 @@ public class AtsDatabaseConfig {
 
       transaction = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, SystemUser.OseeSystem,
          "Import Peer Checklist");
-      File file2 = OseeInf.getResourceAsFile("demoPeerChecklists/Process_Checklist.xlsx", AtsDatabaseConfig.class);
+      File file2 = OseeInf.getResourceAsFile("demoPeerChecklists/Process_Checklist.xlsx", AtsDbConfigBase.class);
       importChecklist(file2, transaction);
       transaction.commit();
 

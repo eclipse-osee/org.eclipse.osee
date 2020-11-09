@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.core.config.OrganizePrograms;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -48,12 +49,12 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
  *
  * @author Donald G. Dunne
  */
-public class DemoDatabaseConfig {
+public class AtsDbConfigDemoOp {
 
    private final AtsApi atsApi;
    private IAtsConfigTx cfgTx;
 
-   public DemoDatabaseConfig(AtsApi atsApi) {
+   public AtsDbConfigDemoOp(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
@@ -68,8 +69,22 @@ public class DemoDatabaseConfig {
 
       (new OrganizePrograms(atsApi)).run();
 
+      createDemoWebConfig();
+
       atsApi.setConfigValue(AtsUtil.SINGLE_SERVER_DEPLOYMENT, "true");
       return new XResultData();
+   }
+
+   private void createDemoWebConfig() {
+      ArtifactToken headingArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+
+      IAtsChangeSet changes = atsApi.createChangeSet("Create Web Programs");
+      ArtifactToken oseeWebArt = changes.createArtifact(headingArt, AtsArtifactToken.WebPrograms);
+
+      ArtifactToken sawProgram = atsApi.getQueryService().getArtifact(DemoArtifactToken.SAW_PL_Program);
+      changes.relate(oseeWebArt, CoreRelationTypes.UniversalGrouping_Members, sawProgram);
+
+      changes.execute();
    }
 
    private void configTxDemoAisAndTeams() {

@@ -133,10 +133,10 @@
    </view>
    </extension>
    <extension
-         id="AtsDatabaseConfigClient"
+         id="AtsDbConfigBaseIde"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-            classname="org.eclipse.osee.ats.ide.config.AtsDatabaseConfigClient">
+            classname="org.eclipse.osee.ats.ide.config.AtsDbConfigBaseIde">
    	</DatabaseInitializationTask>
    </extension>
    <extension

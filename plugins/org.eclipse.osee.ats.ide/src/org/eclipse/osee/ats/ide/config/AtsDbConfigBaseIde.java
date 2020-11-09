@@ -11,33 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.demo.config;
+package org.eclipse.osee.ats.ide.config;
 
-import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
- * Initialization class that will load configuration information for a sample DB.
- *
  * @author Donald G. Dunne
  */
-public class DemoDatabaseConfigClient implements IDbInitializationTask {
+public class AtsDbConfigBaseIde implements IDbInitializationTask {
 
    @Override
    public void run() {
 
-      XResultData results = AtsApiService.get().getServerEndpoints().getConfigEndpoint().demoDbInit();
+      XResultData results = AtsApiService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }
 
-      TestUtil.setDemoDb(true);
-
-      // Reload caches cause Demo sheet import added new users
-      AtsApiService.get().reloadServerAndClientCaches();
    }
 
 }

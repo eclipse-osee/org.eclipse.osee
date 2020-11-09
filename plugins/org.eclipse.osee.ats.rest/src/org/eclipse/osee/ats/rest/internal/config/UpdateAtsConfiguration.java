@@ -60,7 +60,7 @@ public class UpdateAtsConfiguration {
 
    public XResultData createUpdateConfig(XResultData rd) {
       UserId user = SystemUser.OseeSystem;
-      ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDatabaseConfig.getOrCreateAtsConfig(atsApi);
+      ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDbConfigBase.getOrCreateAtsConfig(atsApi);
       createUpdateColorColumnAttributes();
       createUpdateConfigAttributes(atsConfigArt, user, rd);
       try {
