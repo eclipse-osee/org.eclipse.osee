@@ -17,10 +17,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -32,22 +32,21 @@ public class SpecifiedTemplatePublisherStreamingOutput implements StreamingOutpu
    private final ArtifactId templateArtId;
    private final ArtifactId headArtifact;
    private final OrcsApi orcsApi;
-   private final Log logger;
-   private Writer writer;
+   private final AtsApi atsApi;
 
-   public SpecifiedTemplatePublisherStreamingOutput(PublishingOptions publishingOptions, ArtifactId templateArtId, ArtifactId headArtifact, OrcsApi orcsApi, Log logger) {
+   public SpecifiedTemplatePublisherStreamingOutput(PublishingOptions publishingOptions, ArtifactId templateArtId, ArtifactId headArtifact, OrcsApi orcsApi, AtsApi atsApi) {
       this.publishingOptions = publishingOptions;
       this.templateArtId = templateArtId;
       this.headArtifact = headArtifact;
       this.orcsApi = orcsApi;
-      this.logger = logger;
+      this.atsApi = atsApi;
    }
 
    @Override
    public void write(OutputStream opStream) {
       try (Writer writer = new OutputStreamWriter(opStream)) {
          MSWordSpecifiedTemplatePublisher publisher =
-            new MSWordSpecifiedTemplatePublisher(publishingOptions, logger, orcsApi, writer);
+            new MSWordSpecifiedTemplatePublisher(publishingOptions, writer, orcsApi, atsApi);
          publisher.publish(templateArtId, headArtifact);
          writer.close();
       } catch (Exception ex) {

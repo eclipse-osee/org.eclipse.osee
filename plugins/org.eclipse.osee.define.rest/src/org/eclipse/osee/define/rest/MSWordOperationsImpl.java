@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.MSWordOperations;
 import org.eclipse.osee.define.api.PublishingOptions;
 import org.eclipse.osee.define.api.WordTemplateContentData;
@@ -47,11 +48,13 @@ import org.osgi.service.event.EventAdmin;
 public class MSWordOperationsImpl implements MSWordOperations {
 
    private final OrcsApi orcsApi;
+   private final AtsApi atsApi;
    private final Log logger;
    private final EventAdmin eventAdmin;
 
-   public MSWordOperationsImpl(OrcsApi orcsApi, Log logger, EventAdmin eventAdmin) {
+   public MSWordOperationsImpl(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
+      this.atsApi = atsApi;
       this.logger = logger;
       this.eventAdmin = eventAdmin;
    }
@@ -138,7 +141,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
       publishingOptions.view = view;
 
       StreamingOutput streamingOutput =
-         new SpecifiedTemplatePublisherStreamingOutput(publishingOptions, template, headArtifact, orcsApi, logger);
+         new SpecifiedTemplatePublisherStreamingOutput(publishingOptions, template, headArtifact, orcsApi, atsApi);
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + fileName);

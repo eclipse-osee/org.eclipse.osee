@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.ArtifactUrlServer;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
@@ -124,17 +126,23 @@ public class MSWordTemplatePublisher {
    protected Set<String> bookmarkedIds = new HashSet<>();
    protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
-   protected final OrcsApi orcsApi;
-   protected final Log logger;
    protected final Writer writer;
-   private final OrcsTokenService tokenService;
+   protected final OrcsApi orcsApi;
+   protected final AtsApi atsApi;
+   protected final Log logger;
+   protected final ActivityLog activityLog;
+   protected final OrcsTokenService tokenService;
+   protected final OseeHierarchyComparator comparator;
 
-   protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Log logger, OrcsApi orcsApi, Writer writer) {
+   protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
       this.publishingOptions = publishingOptions;
-      this.logger = logger;
-      this.orcsApi = orcsApi;
-      tokenService = orcsApi.tokenService();
       this.writer = writer;
+      this.orcsApi = orcsApi;
+      this.atsApi = atsApi;
+      this.logger = atsApi.getLogger();
+      this.activityLog = orcsApi.getActivityLog();
+      this.tokenService = orcsApi.tokenService();
+      this.comparator = new OseeHierarchyComparator(activityLog);
    }
 
    /**

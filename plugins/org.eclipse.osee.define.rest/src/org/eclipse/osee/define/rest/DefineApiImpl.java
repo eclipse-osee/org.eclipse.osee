@@ -14,6 +14,7 @@
 package org.eclipse.osee.define.rest;
 
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.DataRightsOperations;
 import org.eclipse.osee.define.api.DefineApi;
 import org.eclipse.osee.define.api.GitOperations;
@@ -33,6 +34,7 @@ import org.osgi.service.event.EventAdmin;
 public class DefineApiImpl implements DefineApi {
 
    private OrcsApi orcsApi;
+   private AtsApi atsApi;
    private Log logger;
    private ActivityLog activityLog;
    private EventAdmin eventAdmin;
@@ -46,6 +48,10 @@ public class DefineApiImpl implements DefineApi {
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    public void setLogger(Log logger) {
@@ -62,7 +68,7 @@ public class DefineApiImpl implements DefineApi {
 
    public void start() {
       renderOperations = new RenderOperationsImpl(orcsApi, logger, eventAdmin);
-      wordOperations = new MSWordOperationsImpl(orcsApi, logger, eventAdmin);
+      wordOperations = new MSWordOperationsImpl(orcsApi, atsApi, logger, eventAdmin);
       dataRightsOperations = new DataRightsOperationsImpl(orcsApi);
       gitOperations = new GitOperationsImpl(orcsApi, orcsApi.getSystemProperties());
       traceabilityOperations = new TraceabilityOperationsImpl(orcsApi, gitOperations);
