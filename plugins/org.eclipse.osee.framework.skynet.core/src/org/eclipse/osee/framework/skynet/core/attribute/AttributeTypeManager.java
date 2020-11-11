@@ -112,10 +112,6 @@ public class AttributeTypeManager {
          return EnumeratedAttribute.class;
       } else if (attributeTypeToken.equals(CoreAttributeTypes.ParagraphNumber)) {
          return OutlineNumberAttribute.class;
-      } else if (attributeTypeToken.equals(CoreAttributeTypes.WordTemplateContent)) {
-         return WordTemplateAttribute.class;
-      } else if (attributeTypeToken.equals(CoreAttributeTypes.WholeWordContent)) {
-         return WordWholeDocumentAttribute.class;
       } else {
          throw new OseeCoreException("Unexpected Attribute Base Type for: " + attributeType);
       }

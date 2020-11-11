@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.lang.reflect.ParameterizedType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
@@ -49,7 +50,14 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
          throw new ClassCastException(
             parameterclazz + " attribute subClassSetValue called with type " + value.getClass());
       }
+      if (this.isOfType(CoreAttributeTypes.WordTemplateContent) && value instanceof String) {
+         return getAttributeDataProvider().setValue(modifyWordValue(value));
+      }
 
       return getAttributeDataProvider().setValue(value);
+   }
+
+   protected String modifyWordValue(T value) {
+      return (String) value;
    }
 }

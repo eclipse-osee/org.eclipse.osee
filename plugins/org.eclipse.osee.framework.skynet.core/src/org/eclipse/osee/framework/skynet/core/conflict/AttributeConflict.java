@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -449,15 +449,15 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public void setStatus(ConflictStatus status) {
-      if (status.equals(
-         ConflictStatus.RESOLVED) && isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
+      if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute() && WordCoreUtil.containsWordAnnotations(
+         ((StringAttribute) getAttribute()).getValue())) {
          throw new OseeStateException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
    }
 
    public boolean wordMarkupPresent() {
-      if (isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
+      if (isWordAttribute() && WordCoreUtil.containsWordAnnotations(((StringAttribute) getAttribute()).getValue())) {
          return true;
       }
       return false;

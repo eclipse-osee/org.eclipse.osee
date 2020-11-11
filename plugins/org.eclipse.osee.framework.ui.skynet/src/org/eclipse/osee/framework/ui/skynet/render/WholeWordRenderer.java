@@ -50,8 +50,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -111,7 +111,7 @@ public class WholeWordRenderer extends WordRenderer {
       InputStream stream = null;
       try {
          if (artifacts.isEmpty()) {
-            stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
+            stream = Streams.convertStringToInputStream(WordUtil.getEmptyDocumentContent(), "UTF-8");
          } else {
             Artifact artifact = artifacts.iterator().next();
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WholeWordContent);

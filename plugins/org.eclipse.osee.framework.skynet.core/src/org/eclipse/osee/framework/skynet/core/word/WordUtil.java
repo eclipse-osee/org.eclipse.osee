@@ -28,16 +28,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -62,6 +73,15 @@ public class WordUtil {
    private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
    private static int bookMarkId = 1000;
    private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
+
+   private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
+   private static final String wordLeader1 =
+      "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
+   private static final String wordLeader2 =
+      "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
+   private static final String wordBody = WordUtil.BODY_START + WordUtil.BODY_END;
+   private static final String wordTrailer = "</w:wordDocument> ";
+   private static final String emptyDocumentContent = wordLeader1 + wordLeader2 + wordBody + wordTrailer;
 
    public WordUtil() {
       super();
@@ -284,5 +304,41 @@ public class WordUtil {
          newTemplate = template;
       }
       return newTemplate;
+   }
+
+   //For Word Documents
+   public static String checkForTrackedChanges(String value, Artifact art) {
+      String returnValue = value;
+
+      BranchId branch = art.getBranch();
+
+      if (WordCoreUtil.containsWordAnnotations(value) && !BranchManager.getType(branch).isMergeBranch()) {
+         try {
+            String message =
+               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
+            IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(promptStatus);
+            @SuppressWarnings("unchecked")
+            Pair<MutableBoolean, Integer> answer =
+               (Pair<MutableBoolean, Integer>) handler.handleStatus(promptStatus, message);
+            MutableBoolean first = answer.getFirst();
+            boolean isOkToRemove = first.getValue();
+            if (isOkToRemove) {
+               returnValue = WordCoreUtil.removeAnnotations(value);
+            } else {
+               throw new OseeCoreException(
+                  "Artifact [%s], Branch[%s] contains track changes. Please remove them and save again.", art, branch);
+            }
+         } catch (CoreException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         } catch (ClassCastException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+      return returnValue;
+   }
+
+   //For Whole Word Documents
+   public static String getEmptyDocumentContent() {
+      return emptyDocumentContent;
    }
 }

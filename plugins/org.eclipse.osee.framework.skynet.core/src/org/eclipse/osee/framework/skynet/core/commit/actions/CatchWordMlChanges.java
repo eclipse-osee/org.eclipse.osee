@@ -20,12 +20,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -57,18 +59,18 @@ public class CatchWordMlChanges implements CommitAction {
             if (change.getChangeType().isAttributeChange()) {
                Attribute<?> attribute = ((AttributeChange) change).getAttribute();
 
-               if (attribute instanceof WordAttribute) {
-                  if (((WordAttribute) attribute).containsWordAnnotations()) {
+               if (attribute.isOfType(CoreAttributeTypes.WordTemplateContent)) {
+                  if (WordCoreUtil.containsWordAnnotations(((StringAttribute) attribute).getValue())) {
                      trackedChanges.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }
 
                   Boolean useInvalidTagsCheck =
                      Boolean.valueOf(OseeInfo.getCachedValue("osee.are.applicability.tags.invalid"));
-                  Boolean isInvalidTags =
-                     useInvalidTagsCheck ? ((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
-                        ApplicabilityUtility.getValidFeatureValuesForBranch(destinationBranch),
-                        ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch),
-                        ApplicabilityUtility.getConfigurationGroupsUpperCase(destinationBranch)) : useInvalidTagsCheck;
+                  Boolean isInvalidTags = useInvalidTagsCheck ? WordCoreUtil.areApplicabilityTagsInvalid(
+                     ((StringAttribute) attribute).getValue(), destinationBranch,
+                     ApplicabilityUtility.getValidFeatureValuesForBranch(destinationBranch),
+                     ApplicabilityUtility.getBranchViewNamesUpperCase(destinationBranch),
+                     ApplicabilityUtility.getConfigurationGroupsUpperCase(destinationBranch)) : useInvalidTagsCheck;
                   if (isInvalidTags) {
                      applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }

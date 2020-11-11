@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -135,7 +135,7 @@ public class MergeUtility {
 
    public static void launchMerge(final AttributeConflict attributeConflict, Shell shell) {
       try {
-         if (attributeConflict.getAttribute() instanceof WordAttribute) {
+         if (attributeConflict.getAttribute().isOfType(CoreAttributeTypes.WordTemplateContent)) {
             if (!attributeConflict.getStatus().isEditable()) {
                MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
                return;
