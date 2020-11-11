@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HierarchyIndexColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
@@ -35,6 +34,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewAp
  */
 public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
+   public final static XViewerColumn Id = new XViewerColumn("framework.change.artifactIs", "Id(s)", 35,
+      XViewerAlign.Left, true, SortDataType.Integer, false, null);
    public final static XViewerColumn Name = new XViewerColumn("framework.change.artifactNames", "Artifact name(s)", 250,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn Item_Type = new XViewerColumn("framework.change.itemType", "Item Type", 100,
@@ -55,10 +56,8 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public ChangeXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
+      registerColumns(Id, Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
       registerColumns(HierarchyIndexColumn.getInstance());
-      registerColumns(new IdColumn(false));
-      registerColumns(new IdColumn(false));
       registerColumns(new ArtifactTypeColumn("framework.change.artifactType"));
       registerColumns(new ViewApplicabilityColumn(false));
       registerColumns(new LastModifiedDateColumn(false));

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -56,7 +57,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       try {
-         if (element instanceof String && columnIndex == 0) {
+         if (element instanceof String && columnIndex == 1) {
             return String.valueOf(element);
          }
 
@@ -70,7 +71,13 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          if (cCol.equals(ChangeXViewerFactory.Name)) {
             return change.getNameOrToken();
          }
-
+         if (cCol.equals(ChangeXViewerFactory.Id)) {
+            if (change instanceof RelationChange) {
+               RelationChange relChg = (RelationChange) change;
+               return String.format("%s - %s", relChg.getArtId().getIdString(), relChg.getBArtId().getIdString());
+            }
+            return change.getArtId().getIdString();
+         }
          if (change instanceof ErrorChange) {
             return "";
          } else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
