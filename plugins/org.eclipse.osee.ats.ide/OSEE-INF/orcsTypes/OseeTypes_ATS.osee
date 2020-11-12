@@ -800,11 +800,8 @@ oseeEnumType "enum.ats.ipt" {
 	entry "Crew Systems"
 	entry "Integration"
 	entry "Software"
-	entry "CEE"
 	entry "Weapons/Sights"
 	entry "Processors/Displays"
-	entry "AH-6"
-	entry "NCO"
 }
 
 attributeType "ats.IPT" extends EnumeratedAttribute {

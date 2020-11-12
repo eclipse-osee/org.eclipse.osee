@@ -30,11 +30,8 @@ public class IptAttributeType extends AttributeTypeEnum<IptEnum> {
    public final IptEnum CrewSystems = new IptEnum(1, "Crew Systems");
    public final IptEnum Integration = new IptEnum(2, "Integration");
    public final IptEnum Software = new IptEnum(3, "Software");
-   public final IptEnum CEE = new IptEnum(4, "CEE");
-   public final IptEnum WeaponsSights = new IptEnum(5, "Weapons/Sights");
-   public final IptEnum ProcessorsDisplays = new IptEnum(6, "Processors/Displays");
-   public final IptEnum Ah6 = new IptEnum(7, "AH-6");
-   public final IptEnum NCO = new IptEnum(8, "NCO");
+   public final IptEnum WeaponsSights = new IptEnum(4, "Weapons/Sights");
+   public final IptEnum ProcessorsDisplays = new IptEnum(5, "Processors/Displays");
 
    public IptAttributeType(NamespaceToken namespace, int enumCount) {
       super(6025996821081174931L, namespace, "ats.IPT", MediaType.TEXT_PLAIN, "", TaggerTypeToken.PlainTextTagger,
