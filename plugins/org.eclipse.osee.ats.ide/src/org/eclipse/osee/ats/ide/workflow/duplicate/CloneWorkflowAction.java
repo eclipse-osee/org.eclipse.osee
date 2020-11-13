@@ -52,7 +52,7 @@ public class CloneWorkflowAction extends Action {
    public void run() {
       String title = teamWf.getName() + " (cloned)";
 
-      dialog = new CloneDialog(getText(), "Enter details for new cloned Team Workflow");
+      dialog = new CloneDialog(getText(), "Enter details for new cloned Team Workflow", teamWf);
       dialog.setXTextString("title", title);
       dialog.setXTextString("desc", teamWf.getDescription());
 
