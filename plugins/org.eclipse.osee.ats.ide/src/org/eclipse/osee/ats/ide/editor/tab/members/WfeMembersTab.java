@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -40,6 +41,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.FilterData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortingData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
@@ -50,13 +54,16 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.CloneActionToGoalAction;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
+import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.goal.NewActionToGoalAction;
 import org.eclipse.osee.ats.ide.workflow.goal.OpenAgileTasksAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
 import org.eclipse.osee.ats.ide.workflow.goal.SetCollectorOrderAction;
+import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.BacklogContentProvider;
 import org.eclipse.osee.ats.ide.world.IMenuActionProvider;
 import org.eclipse.osee.ats.ide.world.IWorldEditor;
@@ -64,6 +71,8 @@ import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.ide.world.WorkflowMetricsUI;
 import org.eclipse.osee.ats.ide.world.WorldComposite;
+import org.eclipse.osee.ats.ide.world.WorldEditor;
+import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.ide.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
@@ -75,6 +84,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -109,6 +119,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -130,6 +141,12 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private final ReloadJobChangeAdapter reloadAdapter;
    private final IMemberProvider provider;
    private WorkflowMetricsUI workflowMetricsUi;
+   private static Action toTask, toAction, toWorkFlow, toReview, toGoal;
+   private final String ACTIONS = "Open as Actions in World Editor";
+   private final String GOALS = "Open as Goals in World Editor";
+   private final String WORKFLOWS = "Open as WorkFlows in World Editor";
+   private final String TASKS = "Open as Tasks in World Editor";
+   private final String REVIEWS = "Open as Reviews in World Editor";
 
    public WfeMembersTab(WorkflowEditor editor, IMemberProvider provider) {
       super(editor, ID, provider.getMembersName());
@@ -757,6 +774,12 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
          fMenu = new Menu(parent);
          addActionToMenu(fMenu, workflowMetricsUi.getOrCreateAction());
+         new MenuItem(fMenu, SWT.SEPARATOR);
+         addActionToMenu(fMenu, toAction);
+         addActionToMenu(fMenu, toGoal);
+         addActionToMenu(fMenu, toWorkFlow);
+         addActionToMenu(fMenu, toTask);
+         addActionToMenu(fMenu, toReview);
          return fMenu;
       }
 
@@ -823,8 +846,202 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       }
    }
 
-   protected void createDropDownMenuActions() {
-      workflowMetricsUi.getOrCreateAction();
+   public void openAsActions() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(ACTIONS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<>();
+               for (Artifact art : artifacts) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     arts.add(art);
+                  } else if (art instanceof AbstractWorkflowArtifact) {
+                     Artifact parentArt =
+                        (Artifact) ((AbstractWorkflowArtifact) art).getParentAction().getStoreObject();
+                     if (parentArt != null) {
+                        arts.add(parentArt);
+                     }
+                  }
+               }
+               WorldEditor.open(new WorldEditorSimpleProvider("Actions", arts));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
    }
 
+   public void openAsGoals() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(GOALS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> goals = new HashSet<>();
+               new GoalManager().getCollectors(artifacts, goals, true);
+               WorldEditor.open(new WorldEditorSimpleProvider("Goals", goals));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   public void openAsWorkFlows() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(WORKFLOWS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<>();
+               for (Artifact art : artifacts) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                        AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(art))));
+                  } else if (art instanceof AbstractWorkflowArtifact) {
+                     Artifact parentArt = (Artifact) ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
+                     if (parentArt != null) {
+                        arts.add(parentArt);
+                     }
+                  }
+               }
+               WorldEditor.open(new WorldEditorSimpleProvider("WorkFlows", arts));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   public void openAsTask() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(TASKS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<>();
+               for (Artifact art : artifacts) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(art)) {
+                        arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                           AtsObjects.getArtifacts(AtsApiService.get().getTaskService().getTasks(team))));
+                     }
+                  } else if (art instanceof TeamWorkFlowArtifact) {
+                     arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(AtsObjects.getArtifacts(
+                        AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) art))));
+                  }
+               }
+               WorldEditor.open(new WorldEditorSimpleProvider("Tasks", arts));
+
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   public void openAsReview() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(REVIEWS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<>();
+               for (Artifact art : artifacts) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(art)) {
+                        arts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                           AtsObjects.getArtifacts(AtsApiService.get().getReviewService().getReviews(team))));
+                     }
+                  } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                     arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));
+                  }
+               }
+               WorldEditor.open(new WorldEditorSimpleProvider("Reviews", arts));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   private Action getActionsMenuItem() {
+      toAction = new Action(ACTIONS, IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            openAsActions();
+         }
+      };
+      toAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
+      return toAction;
+   }
+
+   private Action getGoalsMenuItem() {
+      toGoal = new Action(GOALS, IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            openAsGoals();
+         }
+      };
+      toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GOAL));
+      return toGoal;
+   }
+
+   private Action getWorkFlowsMenuItem() {
+      toWorkFlow = new Action(WORKFLOWS, IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            openAsWorkFlows();
+         }
+      };
+      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
+      return toWorkFlow;
+   }
+
+   private Action getTasksMenuItem() {
+      toTask = new Action(TASKS, IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            openAsTask();
+         }
+      };
+      toTask.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
+      return toTask;
+   }
+
+   private Action getReviewsMenuItem() {
+      toReview = new Action(REVIEWS, IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            openAsReview();
+         }
+      };
+      toReview.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REVIEW));
+
+      return toReview;
+   }
+
+   protected void createDropDownMenuActions() {
+      workflowMetricsUi.getOrCreateAction();
+      getActionsMenuItem();
+      getGoalsMenuItem();
+      getWorkFlowsMenuItem();
+      getTasksMenuItem();
+      getReviewsMenuItem();
+   }
 }

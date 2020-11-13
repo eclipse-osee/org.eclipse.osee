@@ -32,7 +32,6 @@ public class AtsSearchUtil {
          ATS_QUERY_TASK_NAMESPACE, ATS_QUERY_REVIEW_NAMESPACE, ATS_QUERY_EV_NAMESPACE);
 
    private AtsSearchUtil() {
-      // Utilility Class
+      // Utility Class
    }
-
 }

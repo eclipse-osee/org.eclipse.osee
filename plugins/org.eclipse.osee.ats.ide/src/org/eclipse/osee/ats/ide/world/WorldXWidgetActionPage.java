@@ -113,10 +113,15 @@ public class WorldXWidgetActionPage extends FormPage {
    public static final String MENU_GROUP_PRE = "world.menu.group.pre";
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
-   private Action filterCompletedAction, filterMyAssigneeAction, toAction, toGoal, toReview, toWorkFlow, toTask;
+   private static Action filterCompletedAction, filterMyAssigneeAction, toAction, toGoal, toReview, toWorkFlow, toTask;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private WorkflowMetricsUI workflowMetricsUi;
+   private final String ACTIONS = "Re-display as Actions";
+   private final String GOALS = "Re-display as Goals";
+   private final String WORKFLOWS = "Re-display as WorkFlows";
+   private final String TASKS = "Re-display as Tasks";
+   private final String REVIEWS = "Re-display as Reviews";
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
       super(worldEditor, ID, worldEditor.isTaskEditor() ? "Tasks" : "Actions");
@@ -573,7 +578,6 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
       filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
@@ -589,64 +593,58 @@ public class WorldXWidgetActionPage extends FormPage {
             worldComposite.getXViewer().refresh();
          }
       };
-      filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
 
-      toAction = new Action("Re-display as Actions", IAction.AS_PUSH_BUTTON) {
+      toAction = new Action(ACTIONS, IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsAction();
          }
       };
-      toAction.setToolTipText("Re-display as Actions");
       toAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
 
-      toGoal = new Action("Re-display as Goals", IAction.AS_PUSH_BUTTON) {
+      toGoal = new Action(GOALS, IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsGoals();
          }
       };
-      toGoal.setToolTipText("Re-display as Goals");
       toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GOAL));
 
-      toWorkFlow = new Action("Re-display as WorkFlows", IAction.AS_PUSH_BUTTON) {
+      toWorkFlow = new Action(WORKFLOWS, IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsWorkFlow();
          }
       };
-      toWorkFlow.setToolTipText("Re-display as WorkFlows");
       toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
 
-      toTask = new Action("Re-display as Tasks", IAction.AS_PUSH_BUTTON) {
+      toTask = new Action(TASKS, IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsTask();
          }
       };
-      toTask.setToolTipText("Re-display as Tasks");
       toTask.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
 
-      toReview = new Action("Re-display as Reviews", IAction.AS_PUSH_BUTTON) {
+      toReview = new Action(REVIEWS, IAction.AS_PUSH_BUTTON) {
 
          @Override
          public void run() {
             redisplayAsReviews();
          }
       };
-      toReview.setToolTipText("Re-display as Reviews");
       toReview.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REVIEW));
 
    }
 
    public void redisplayAsAction() {
       final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
-      Job job = new Job("Re-display as Actions") {
+      Job job = new Job(ACTIONS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -674,7 +672,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public void redisplayAsGoals() {
       final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
-      Job job = new Job("Re-display as Goals") {
+      Job job = new Job(GOALS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -692,7 +690,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public void redisplayAsWorkFlow() {
       final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
-      Job job = new Job("Re-display as Workflows") {
+      Job job = new Job(WORKFLOWS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -720,7 +718,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public void redisplayAsTask() {
       final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
-      Job job = new Job("Re-display as Tasks") {
+      Job job = new Job(TASKS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -748,7 +746,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public void redisplayAsReviews() {
       final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
-      Job job = new Job("Re-display as Reviews") {
+      Job job = new Job(REVIEWS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
