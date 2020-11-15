@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Ryan D. Brooks
@@ -26,6 +27,10 @@ public interface NamedId extends Named, Id {
 
    default String toStringWithId() {
       return toStringWithId(this);
+   }
+
+   default String toStringWithId(int nameTrancateLength) {
+      return String.format("[%s]-[%s]", Strings.truncate(getName(), nameTrancateLength, true), getIdString());
    }
 
    /**

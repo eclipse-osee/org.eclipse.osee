@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeEditorAddSupportingFiles;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeRelationsHyperlinkComposite.OpenType;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -69,28 +71,31 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       fillCombo();
-      Artifact checklistArt = getSelectedChecklist();
+      Pair<Artifact, RelationLink> entry = getSelectedChecklist();
+      Artifact checklistArt = entry.getFirst();
       if (checklistArt != null) {
          WorkflowEditor editor = WorkflowEditor.getWorkflowEditor(workItem);
          WfeRelationsHyperlinkComposite.createReadHyperlink((AbstractWorkflowArtifact) workItem, checklistArt, parent,
-            editor);
+            editor, OpenType.Read.name());
          WfeRelationsHyperlinkComposite.createEditHyperlink(checklistArt, parent, editor);
-         WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem, checklistArt, parent,
-            editor);
+         WfeRelationsHyperlinkComposite.createDeleteHyperlink((AbstractWorkflowArtifact) workItem, checklistArt,
+            entry.getSecond(), parent, editor);
          // Show selected checklist in combo box
          set(checklistArt.toString());
       }
    }
 
-   private Artifact getSelectedChecklist() {
+   private Pair<Artifact, RelationLink> getSelectedChecklist() {
       Artifact workflowArt = (AbstractWorkflowArtifact) workItem;
       Artifact thatArt = null;
-      for (final RelationLink relation : workflowArt.getRelations(CoreRelationTypes.SupportingInfo_SupportingInfo)) {
-         if (relation.getArtifactB().getTags().contains(getAttachmentStaticId())) {
-            thatArt = relation.getArtifactB();
+      RelationLink relation = null;
+      for (final RelationLink rel : workflowArt.getRelations(CoreRelationTypes.SupportingInfo_SupportingInfo)) {
+         if (rel.getArtifactB().getTags().contains(getAttachmentStaticId())) {
+            thatArt = rel.getArtifactB();
+            relation = rel;
          }
       }
-      return thatArt;
+      return new Pair<Artifact, RelationLink>(thatArt, relation);
    }
 
    private boolean isChecklistAttached() {
@@ -149,7 +154,8 @@ public abstract class XAttachmentCombo extends XCombo implements IArtifactWidget
                   return;
                }
                IAtsChangeSet changes = AtsApiService.get().createChangeSet("Delete Related Artifact");
-               changes.deleteArtifact(getSelectedChecklist());
+               Pair<Artifact, RelationLink> entry = getSelectedChecklist();
+               changes.deleteArtifact(entry.getFirst());
                changes.execute();
             }
             String location = locationMap.get(getData());

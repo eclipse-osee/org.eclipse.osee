@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerDragAndDrop;
@@ -95,14 +96,19 @@ public class WfeEditorAddSupportingFiles extends Job {
          RoughToRealArtifactOperation roughToRealArtifactOperation =
             new RoughToRealArtifactOperation(transaction, workItemArt, collector, resolver, false, extractor);
          roughToRealArtifactOperation.setAddRelation(false);
-         roughToRealArtifactOperation.run(null);
-         Artifact supportingArt = roughToRealArtifactOperation.getCreatedArtifacts().iterator().next();
-         transaction.addArtifact(supportingArt);
-         workItemArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, supportingArt);
-         if (Strings.isValid(staticId)) {
-            supportingArt.addAttribute(CoreAttributeTypes.StaticId, staticId);
+         IStatus run = roughToRealArtifactOperation.run(null);
+         if (!run.isOK()) {
+            AWorkbench.popup(run.toString());
+            return run;
+         } else {
+            Artifact supportingArt = roughToRealArtifactOperation.getCreatedArtifacts().iterator().next();
+            transaction.addArtifact(supportingArt);
+            workItemArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, supportingArt);
+            if (Strings.isValid(staticId)) {
+               supportingArt.addAttribute(CoreAttributeTypes.StaticId, staticId);
+            }
+            transaction.addArtifact(workItemArt);
          }
-         transaction.addArtifact(workItemArt);
       }
       transaction.execute();
       return Status.OK_STATUS;

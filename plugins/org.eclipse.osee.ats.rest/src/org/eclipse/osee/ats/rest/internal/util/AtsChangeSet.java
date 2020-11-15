@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -472,6 +473,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       addChild(parent, artifact);
       add(artifact);
       return artifact;
+   }
+
+   @Override
+   public void deleteRelation(RelationId relation) {
+      throw new UnsupportedOperationException("Unsupported on Server");
    }
 
 }

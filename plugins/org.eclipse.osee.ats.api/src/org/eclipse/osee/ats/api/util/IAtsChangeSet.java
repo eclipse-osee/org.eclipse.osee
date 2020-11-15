@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
@@ -187,5 +188,7 @@ public interface IAtsChangeSet {
    ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name);
 
    Set<ArtifactId> getIds();
+
+   void deleteRelation(RelationId relation);
 
 }

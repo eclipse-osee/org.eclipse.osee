@@ -36,6 +36,7 @@ public class AtsTopicEvent extends AbstractTopicEvent {
    // semi-colon delimited long ids
    public static final String WORK_ITEM_IDS_KEY = "workItemIds";
    public static final String WORK_ITEM_ATTR_TYPE_IDS_KEY = "workItemAttrTypeIds";
+   public static final String WORK_ITEM_REL_TYPE_IDS_KEY = "workItemRelTypeIds";
 
    public static final String TARGETED_VERSION_MODIFIED = "ats/workitem/targetedversion/modified";
    public static final String NEW_ATS_VERSION_ID = "atsVersionId";

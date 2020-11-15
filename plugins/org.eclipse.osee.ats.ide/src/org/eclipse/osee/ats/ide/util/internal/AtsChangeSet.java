@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.util.internal;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -41,17 +43,23 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.event.TopicEvent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -517,6 +525,23 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       addChild(parent, artifact);
       add(artifact);
       return artifact;
+   }
+
+   @Override
+   public void deleteRelation(RelationId relId) {
+      if (relId instanceof RelationLink) {
+         RelationLink relation = (RelationLink) relId;
+         SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "Delete Relation");
+         relation.delete(false, transaction);
+         transaction.addArtifact(relation.getArtifactA());
+         transaction.execute();
+
+         TopicEvent event =
+            new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY, Collections.toString(";",
+               Arrays.asList(relation.getArtifactA().getIdString(), relation.getArtifactB().getIdString())));
+         event.put(AtsTopicEvent.WORK_ITEM_REL_TYPE_IDS_KEY, relation.getRelationId().getIdString());
+         OseeEventManager.kickTopicEvent(getClass(), event);
+      }
    }
 
 }

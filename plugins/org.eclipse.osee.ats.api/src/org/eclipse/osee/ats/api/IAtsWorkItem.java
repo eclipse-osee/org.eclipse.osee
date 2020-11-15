@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -134,6 +135,13 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    @Override
    default String toStringWithId() {
       return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getIdString());
+
+   }
+
+   @Override
+   default String toStringWithId(int nameTruncateLength) {
+      return String.format("[%s]-[%s]-[%s]", Strings.truncate(getName(), nameTruncateLength, true), getAtsId(),
+         getIdString());
 
    }
 
