@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
+import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -228,14 +230,6 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          if (!toReload.isEmpty()) {
             ArtifactQuery.reloadArtifacts(toReload);
          }
-
-         //         TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
-         //            AtsObjects.toIdsString(";", crtd.getIds()));
-         //         event.put(AtsTopicEvent.WORK_ITEM_ATTR_TYPE_IDS_KEY,Arrays.asList(AtsAttributeTypes.)
-         //            Collections.toString(";", Arrays.asList(AtsAttributeTypes.WorkPackage.getIdString(),
-         //               AtsAttributeTypes.WorkPackageReference.getIdString())));
-         //         OseeEventManager.kickTopicEvent(getClass(), event);
-
       }
    }
 
@@ -262,7 +256,15 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
 
    @Override
    public IAtsTask getTask(ArtifactToken artifact) {
-      return new org.eclipse.osee.ats.core.workflow.Task(atsApi.getLogger(), atsApi, artifact);
+      IAtsTask task = null;
+      if (artifact instanceof IAtsTask) {
+         task = (IAtsTask) artifact;
+      } else if (artifact.isOfType(AtsArtifactTypes.Task)) {
+         task = new Task(atsApi.getLogger(), atsApi, artifact);
+      } else {
+         throw new OseeArgumentException("Artifact %s must be of type Task", artifact.toStringWithId());
+      }
+      return task;
    }
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -89,5 +90,7 @@ public interface IAtsReviewService {
    boolean isStandAloneReview(Object object);
 
    ReviewDefectItem getDefectItem(String xml, IAtsPeerToPeerReview review);
+
+   IAtsAbstractReview getReview(ArtifactToken artifact);
 
 }

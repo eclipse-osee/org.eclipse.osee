@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
@@ -140,6 +142,9 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore {
 
    @Override
    public IAtsTask getTask(ArtifactToken artifact) {
+      if (!artifact.isOfType(AtsArtifactTypes.Task)) {
+         throw new OseeArgumentException("Artifact %s must be of type Task", artifact.toStringWithId());
+      }
       return new Task(atsApi.getLogger(), atsApi, artifact);
    }
 

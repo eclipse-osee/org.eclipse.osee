@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -562,6 +563,21 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public ReviewDefectItem getDefectItem(String xml, IAtsPeerToPeerReview review) {
       return new ReviewDefectItem(xml, false, review);
+   }
+
+   @Override
+   public IAtsAbstractReview getReview(ArtifactToken artifact) {
+      IAtsAbstractReview review = null;
+      if (artifact instanceof IAtsAbstractReview) {
+         review = (IAtsAbstractReview) artifact;
+      } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+         review = new PeerToPeerReview(atsApi.getLogger(), atsApi, artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.DecisionReview)) {
+         review = new DecisionReview(atsApi.getLogger(), atsApi, artifact);
+      } else {
+         throw new OseeArgumentException("Artifact %s must be of type Review", artifact.toStringWithId());
+      }
+      return review;
    }
 
 }

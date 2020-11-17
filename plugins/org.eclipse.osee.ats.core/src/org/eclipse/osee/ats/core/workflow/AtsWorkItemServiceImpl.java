@@ -52,10 +52,8 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
-import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
-import org.eclipse.osee.ats.core.review.PeerToPeerReview;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
@@ -306,6 +304,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
             workItem = getGoal(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
             workItem = getAgileSprint(artifact);
+         } else {
+            throw new OseeArgumentException("Artifact %s must be of type IAtsWorkItem", artifact.toStringWithId());
          }
       } catch (OseeCoreException ex) {
          atsApi.getLogger().error(ex, "Error getting work item for [%s]", artifact);
@@ -395,26 +395,12 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAtsTask getTask(ArtifactToken artifact) {
-      IAtsTask task = null;
-      if (artifact instanceof IAtsTask) {
-         task = (IAtsTask) artifact;
-      } else if (artifact.isOfType(AtsArtifactTypes.Task)) {
-         task = new Task(atsApi.getLogger(), atsApi, artifact);
-      }
-      return task;
+      return atsApi.getTaskService().getTask(artifact);
    }
 
    @Override
    public IAtsAbstractReview getReview(ArtifactToken artifact) {
-      IAtsAbstractReview review = null;
-      if (artifact instanceof IAtsAbstractReview) {
-         review = (IAtsAbstractReview) artifact;
-      } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-         review = new PeerToPeerReview(atsApi.getLogger(), atsApi, artifact);
-      } else {
-         review = new DecisionReview(atsApi.getLogger(), atsApi, artifact);
-      }
-      return review;
+      return atsApi.getReviewService().getReview(artifact);
    }
 
    @Override
