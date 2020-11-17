@@ -458,7 +458,7 @@ public class ExcelAtsActionArtifactExtractor {
       return "Excel Ats Actions";
    }
 
-   private final static class ActionData {
+   public final static class ActionData {
       protected String title = "";
       protected String desc = "";
       protected String priorityStr = "";
@@ -470,9 +470,9 @@ public class ExcelAtsActionArtifactExtractor {
       protected String version = "";
       protected Double estimatedHours = null;
       protected List<JaxAttribute> attributes = new LinkedList<>();
-      protected String agilePoints;
-      protected String agileTeamName;
-      protected String agileSprintName;
+      protected String agilePoints = "";
+      protected String agileTeamName = "";
+      protected String agileSprintName = "";
 
    }
 
@@ -656,5 +656,9 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
       }
+   }
+
+   public List<ActionData> getActionDatas() {
+      return actionDatas;
    }
 }

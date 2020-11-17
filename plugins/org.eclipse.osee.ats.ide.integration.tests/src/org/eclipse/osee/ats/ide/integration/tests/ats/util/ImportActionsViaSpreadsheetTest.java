@@ -81,7 +81,7 @@ public class ImportActionsViaSpreadsheetTest {
       File file = blam.getSampleSpreadsheetFile();
       Assert.assertNotNull(file);
 
-      XResultData rd = blam.importActions(file, null, ImportOption.NONE);
+      XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       List<Artifact> arts =
@@ -122,8 +122,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("3", code1Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
       Assert.assertTrue(code1Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 23.0);
       Assert.assertEquals("Improvement", code1Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      Assert.assertEquals("SAW_Bld_2",
-         AtsApiService.get().getVersionService().getTargetedVersion(code1Wf).getName());
+      Assert.assertEquals("SAW_Bld_2", AtsApiService.get().getVersionService().getTargetedVersion(code1Wf).getName());
       Assert.assertEquals(DemoUsers.Joe_Smith, code1Wf.getAssignees().iterator().next());
       Assert.assertEquals(DemoUsers.Kay_Jones.getUserId(),
          code1Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
@@ -136,8 +135,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("3", code2Wf.getSoleAttributeValue(AtsAttributeTypes.Points, ""));
       Assert.assertTrue(code2Wf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 3.0);
       Assert.assertEquals("Improvement", code2Wf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      Assert.assertEquals("SAW_Bld_2",
-         AtsApiService.get().getVersionService().getTargetedVersion(code2Wf).getName());
+      Assert.assertEquals("SAW_Bld_2", AtsApiService.get().getVersionService().getTargetedVersion(code2Wf).getName());
       Assert.assertEquals(DemoUsers.Joe_Smith, code2Wf.getAssignees().iterator().next());
       Assert.assertEquals(DemoUsers.Joe_Smith.getUserId(),
          code2Wf.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
@@ -154,7 +152,7 @@ public class ImportActionsViaSpreadsheetTest {
       File file = blam.getSampleSpreadsheetFile();
       Assert.assertNotNull(file);
 
-      XResultData rd = blam.importActions(file, goal, ImportOption.NONE);
+      XResultData rd = blam.importActions(file, goal, ImportOption.PERSIST);
       Assert.assertEquals("No errors should be reported", "", rd.toString());
       List<Artifact> members = goal.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Should be 5 members", 5, members.size());
@@ -183,7 +181,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertNotNull(backlog);
 
       // Import actions to backlog and sprint
-      XResultData rd = blam.importActions(file, null, ImportOption.NONE);
+      XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       // Validate backlog

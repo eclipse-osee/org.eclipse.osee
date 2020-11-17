@@ -733,6 +733,10 @@ public class ArtifactQuery {
       return getArtifactEndpoint(branch).getArtifactTokensByAttribute(attributeType, "false", false, artifactType);
    }
 
+   public static Collection<ArtifactToken> getArtifactTokenListFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch) {
+      return getArtifactEndpoint(branch).getArtifactTokensByAttribute(attributeType, value, false, artifactType);
+   }
+
    public static Collection<ArtifactToken> getArtifactTokenListFromType(ArtifactTypeToken artifactType, BranchId branch) {
       return getArtifactEndpoint(branch).getArtifactTokensByType(artifactType);
    }

@@ -18,15 +18,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.IAtsGoal;
-import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.config.GoalSorter;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -49,14 +52,17 @@ public class XGoalCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<Artifact> goalArtifacts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-            AtsApiService.get().getQueryService().createQuery(WorkItemType.Goal).andStateType(
-               StateType.Working).getResultArtifacts().getList());
-         List<IAtsGoal> sortedGoals = new ArrayList<>();
-         for (Artifact goalArt : goalArtifacts) {
-            sortedGoals.add((IAtsGoal) goalArt);
-         }
-         Collections.sort(sortedGoals, new GoalSorter());
+         List<ArtifactToken> sortedGoals = new ArrayList<>();
+         Collection<ArtifactToken> goalArtifacts =
+            ArtifactQuery.getArtifactTokenListFromTypeAndAttribute(AtsArtifactTypes.Goal,
+               AtsAttributeTypes.CurrentStateType, StateType.Working.name(), AtsApiService.get().getAtsBranch());
+         sortedGoals.addAll(goalArtifacts);
+         Collection<ArtifactToken> backlogArtifacts =
+            ArtifactQuery.getArtifactTokenListFromTypeAndAttribute(AtsArtifactTypes.AgileBacklog,
+               AtsAttributeTypes.CurrentStateType, StateType.Working.name(), AtsApiService.get().getAtsBranch());
+         sortedGoals.addAll(backlogArtifacts);
+
+         Collections.sort(sortedGoals, new NamedComparator(SortOrder.ASCENDING));
          getComboViewer().setInput(sortedGoals);
          ArrayList<Object> defaultSelection = new ArrayList<>();
          defaultSelection.add("--select--");
