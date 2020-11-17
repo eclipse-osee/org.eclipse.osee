@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -206,7 +206,7 @@ public class TransitionToMenu {
                         }
                      }
                      if (useEntryCancelWidgetDialog) {
-                        cancelDialog = new EntryCancelDialog("Cancellation Reason",
+                        cancelDialog = new CancelledReasonEnumDialog("Cancellation Reason",
                            "Select cancellation reason.  If other, please specify with details in the text entry.");
                      } else {
                         cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
@@ -215,9 +215,9 @@ public class TransitionToMenu {
                         transitionData.setDialogCancelled(true);
                      }
                      if (useEntryCancelWidgetDialog) {
-                        transitionData.setCancellationReason(((EntryCancelDialog) cancelDialog).getEntry());
+                        transitionData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
                         transitionData.setCancellationReasonDetails(
-                           ((EntryCancelDialog) cancelDialog).getCancelledDetails());
+                           ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
                      } else {
                         transitionData.setCancellationReason(cancelDialog.getEntry());
                      }

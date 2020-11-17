@@ -34,8 +34,6 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Project;
-import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.User;
@@ -214,7 +212,7 @@ public interface AtsRelationTypes {
    // Program uses supporting info to relate to team.  Use different name for readability and understandability
    RelationTypeSide TeamDefinitionToProgram_TeamDefinition = CoreRelationTypes.SupportingInfo_IsSupportedBy;
    RelationTypeSide TeamDefinitionToProgram_Program = TeamDefinitionToProgram_TeamDefinition.getOpposite();
-   
+
  //iCTeam Types
    RelationTypeToken ActionableItemWorkFlow = ats.add(2305843009213694467L, "ActionableItemWorkFlow", MANY_TO_MANY, UNORDERED, ActionableItem, "Actionable Item", TeamWorkflow, "Team Workflow");
    RelationTypeSide ActionableItemWorkFlow_ActionableItem = RelationTypeSide.create(ActionableItemWorkFlow, SIDE_A);

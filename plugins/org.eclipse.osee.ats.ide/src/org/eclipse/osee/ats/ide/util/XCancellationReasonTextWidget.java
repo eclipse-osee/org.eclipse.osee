@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
  */
 public class XCancellationReasonTextWidget extends XText implements IArtifactWidget, IWfeEventHandle {
 
-   private AbstractWorkflowArtifact sma;
+   private AbstractWorkflowArtifact awa;
 
    public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super("Cancallation Reason");
@@ -43,7 +44,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
       if (!Widgets.isAccessible(getControl())) {
          return Result.FalseResult;
       }
-      if (!getText().equals(sma.getCancelledReason())) {
+      if (!getText().equals(awa.getCancelledReason())) {
          return new Result(true, "Cancallation Reason dirty");
       }
       return Result.FalseResult;
@@ -57,26 +58,34 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
    @Override
    public void saveToArtifact() {
       if (Strings.isValid(getText())) {
-         sma.setCancellationReason(getText(), null);
+         setCancellationReason(getText(), null);
       }
    }
 
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact instanceof AbstractWorkflowArtifact) {
-         this.sma = (AbstractWorkflowArtifact) artifact;
-         setText(sma.getCancelledReason());
+         this.awa = (AbstractWorkflowArtifact) artifact;
+         setText(awa.getCancelledReason());
       }
    }
 
    @Override
    public AbstractWorkflowArtifact getArtifact() {
-      return sma;
+      return awa;
    }
 
    @Override
    public IAtsWorkItem getWorkItem() {
-      return sma;
+      return awa;
+   }
+
+   public void setCancellationReason(String reason, IAtsChangeSet changes) {
+      if (changes == null) {
+         awa.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
+      } else {
+         changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CancelledReason, reason);
+      }
    }
 
 }

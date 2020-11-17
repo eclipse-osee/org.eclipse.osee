@@ -83,8 +83,6 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new XStateSearchCombo();
       } else if (widgetName.equals(XFoundInVersionWidget.WIDGET_ID)) {
          toReturn = new XFoundInVersionWidget(name);
-      } else if (widgetName.equals(XCancelWidget.WIDGET_ID)) {
-         toReturn = new XCancelWidget(widgetRendererItem.getArtifact());
       } else if (widgetName.equals(XCommitManager.WIDGET_NAME)) {
          toReturn = new XCommitManager();
       } else if (widgetName.equals(XWorkingBranchLabel.WIDGET_NAME)) {
@@ -192,7 +190,7 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XAssigneesHyperlinkWidget(null);
       } else if (widgetName.equals(XPeerChecklistAttachmentExampleCombo.WIDGET_ID)) {
          return new XPeerChecklistAttachmentExampleCombo();
-      } 
+      }
 
       return toReturn;
    }

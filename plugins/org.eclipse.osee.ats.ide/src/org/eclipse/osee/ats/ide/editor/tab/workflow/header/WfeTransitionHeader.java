@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
@@ -42,7 +42,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.EntryCancelDialog;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
@@ -225,20 +225,15 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                public void run() {
                   IAtsStateDefinition toStateDef;
                   try {
-                     toStateDef = AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa,
-                        getToStateName());
+                     toStateDef =
+                        AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
                      if (toStateDef.getStateType().isCancelledState()) {
                         EntryDialog cancelDialog;
-                        boolean useEntryCancelWidgetDialog = false;
-                        for (IAtsLayoutItem layoutItem : toStateDef.getLayoutItems()) {
-                           if (layoutItem.getName().contains("Cancel")) {
-                              useEntryCancelWidgetDialog = true;
-                              break;
-                           }
-                        }
-                        if (useEntryCancelWidgetDialog) {
-                           cancelDialog = new EntryCancelDialog("Cancellation Reason",
-                              "Select cancellation reason.  If other, please specify with details in the text entry.");
+                        boolean useCancelledReasonEnumDialog =
+                           toStateDef.getStateOptions().contains(StateOption.USE_CANCELLED_REASON_ENUM_DIALOG);
+                        if (useCancelledReasonEnumDialog) {
+                           cancelDialog = new CancelledReasonEnumDialog("Cancellation Reason",
+                              "Select cancellation reason.  If other, please specify with details.");
                         } else {
                            cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
                         }
@@ -246,10 +241,10 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
                            transitionData.setDialogCancelled(true);
                            return;
                         }
-                        if (useEntryCancelWidgetDialog) {
-                           transitionData.setCancellationReason(((EntryCancelDialog) cancelDialog).getEntry());
+                        if (useCancelledReasonEnumDialog) {
+                           transitionData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
                            transitionData.setCancellationReasonDetails(
-                              ((EntryCancelDialog) cancelDialog).getCancelledDetails());
+                              ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
                         } else {
                            transitionData.setCancellationReason(cancelDialog.getEntry());
                         }

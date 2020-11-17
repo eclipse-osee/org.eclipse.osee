@@ -32,12 +32,12 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Jeremy A. Midvidy
  */
-public class EntryCancelDialog extends EntryDialog {
+public class CancelledReasonEnumDialog extends EntryDialog {
 
    private String selection = "";
    private XComboDam reasonCombo;
 
-   public EntryCancelDialog(String dialogTitle, String dialogMessage) {
+   public CancelledReasonEnumDialog(String dialogTitle, String dialogMessage) {
       super(dialogTitle, dialogMessage);
    }
 
@@ -65,7 +65,7 @@ public class EntryCancelDialog extends EntryDialog {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AtsAttributeTypes.CancelReason.getEnumStrValues();
+      Set<String> valuesSet = AtsAttributeTypes.CancelledReasonEnum.getEnumStrValues();
       String[] values = valuesSet.toArray(new String[valuesSet.size()]);
       Arrays.sort(values);
       return values;

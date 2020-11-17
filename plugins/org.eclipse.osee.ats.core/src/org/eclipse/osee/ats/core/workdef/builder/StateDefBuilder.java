@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
+import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
@@ -236,6 +237,13 @@ public class StateDefBuilder {
 
    public StateDefBuilder andTransitionListener(AtsTaskDefToken taskDefToken) {
       state.addTransitionListener(new CreateChangeReportTaskTransitionHook(taskDefToken));
+      return this;
+   }
+
+   public StateDefBuilder andStateOptions(StateOption... options) {
+      for (StateOption option : options) {
+         state.getStateOptions().add(option);
+      }
       return this;
    }
 

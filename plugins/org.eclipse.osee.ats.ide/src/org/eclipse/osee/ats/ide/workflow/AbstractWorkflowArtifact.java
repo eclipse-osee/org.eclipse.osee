@@ -232,8 +232,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsLog getLog() {
       if (atsLog == null || !getTransaction().equals(atsLogTx)) {
-         atsLog =
-            AtsApiService.get().getLogFactory().getLogLoaded(this, AtsApiService.get().getAttributeResolver());
+         atsLog = AtsApiService.get().getLogFactory().getLogLoaded(this, AtsApiService.get().getAttributeResolver());
          atsLogTx = getTransaction();
       }
       return atsLog;
@@ -328,17 +327,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public String getCancelledReason() {
       String reason = getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
       if (!Strings.isValid(reason)) {
+         reason = getSoleAttributeValue(AtsAttributeTypes.CancelledReasonEnum, null);
+      }
+      if (!Strings.isValid(reason)) {
          reason = getLog().internalGetCancelledReason();
       }
       return reason;
-   }
-
-   public void setCancellationReason(String reason, IAtsChangeSet changes) {
-      if (changes == null) {
-         setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
-      } else {
-         changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CancelledReason, reason);
-      }
    }
 
    @Override

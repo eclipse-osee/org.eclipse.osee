@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.XCancellationReasonTextWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XCancelWidget;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
@@ -55,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -197,18 +195,14 @@ public class WfeWorkflowSection extends SectionPart {
          }
       }
 
-      if (statePage.getStateType().isCompletedOrCancelledState()) {
+      // If no layout specified, use default
+      if (statePage.getStateType().isCompletedOrCancelledState() && statePage.getStateDefinition().getLayoutItems().isEmpty()) {
          Composite completeComp = new Composite(workComp, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          completeComp.setLayout(layout);
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         boolean useCancelledWidget = true;
          if (statePage.getStateType().isCancelledState()) {
-            XWidgetRendererItem layoutData = statePage.getLayoutData(XCancelWidget.DISPLAY_LABEL);
-            if (layoutData != null) {
-               useCancelledWidget = false;
-            }
-            createCancelledPageWidgets(completeComp, useCancelledWidget);
+            createCancelledPageWidgets(completeComp);
          } else if (statePage.getStateType().isCompletedState()) {
             createCompletedPageWidgets(completeComp);
          }
@@ -284,17 +278,15 @@ public class WfeWorkflowSection extends SectionPart {
       getManagedForm().reflow(true);
    }
 
-   private void createCancelledPageWidgets(Composite parent, boolean useBothWidgets) {
+   private void createCancelledPageWidgets(Composite parent) {
       XWidget xWidget = null;
       xWidget = new XLabelValue("Cancelled from State", sma.getCancelledFromState());
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
-      if (useBothWidgets) {
-         xWidget = new XCancellationReasonTextWidget(sma, editor);
-         xWidget.addXModifiedListener(xModListener);
-         xWidget.createWidgets(parent, 1);
-         allXWidgets.add(xWidget);
-      }
+      xWidget = new XCancellationReasonTextWidget(sma, editor);
+      xWidget.addXModifiedListener(xModListener);
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
    }
 
    private void createCompletedPageWidgets(Composite parent) {

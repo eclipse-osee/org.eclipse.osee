@@ -40,19 +40,6 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
       return null;
    }
 
-   protected IAtsLayoutItem[] getCancelledLayout() {
-      IAtsLayoutItem[] layout = getLayout();
-      if (layout == null) {
-         return null;
-      }
-      IAtsLayoutItem[] layoutWithCancel = new IAtsLayoutItem[layout.length + 1];
-      for (int i = 0; i < layout.length; i++) {
-         layoutWithCancel[i] = layout[i];
-      }
-      layoutWithCancel[layout.length] = (new WidgetDefinition("CancelBox", "XCancelWidget"));
-      return layoutWithCancel;
-   }
-
    @Override
    abstract public WorkDefinition build();
 

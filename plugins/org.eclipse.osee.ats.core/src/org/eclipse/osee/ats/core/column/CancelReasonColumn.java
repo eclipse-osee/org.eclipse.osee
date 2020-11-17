@@ -32,7 +32,7 @@ public class CancelReasonColumn extends AbstractServicesColumn {
       String ret = "";
       if (atsObject instanceof IAtsWorkItem) {
          ret =
-            atsApi.getAttributeResolver().getSoleAttributeValueAsString(atsObject, AtsAttributeTypes.CancelReason, "");
+            atsApi.getAttributeResolver().getSoleAttributeValueAsString(atsObject, AtsAttributeTypes.CancelledReasonEnum, "");
       }
       return ret;
    }

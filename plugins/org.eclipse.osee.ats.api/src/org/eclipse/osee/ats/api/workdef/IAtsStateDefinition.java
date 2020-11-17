@@ -78,4 +78,8 @@ public interface IAtsStateDefinition extends IStateToken {
 
    List<IAtsTransitionHook> getTransitionListeners();
 
+   List<StateOption> getStateOptions();
+
+   void setStateOptions(List<StateOption> stateOptions);
+
 }

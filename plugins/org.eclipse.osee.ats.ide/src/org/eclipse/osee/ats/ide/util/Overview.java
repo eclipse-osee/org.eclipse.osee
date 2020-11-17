@@ -134,7 +134,7 @@ public class Overview {
          addTable(getLabelValue("Cancellation Reason", awa.getCancelledReason()));
       }
       if (awa.isTypeEqual(AtsArtifactTypes.Task)) {
-         AbstractWorkflowArtifact parentArt = (AbstractWorkflowArtifact) ((TaskArtifact) awa).getParentAWA();
+         AbstractWorkflowArtifact parentArt = ((TaskArtifact) awa).getParentAWA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(
                new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
@@ -249,8 +249,9 @@ public class Overview {
    public void addLog(AbstractWorkflowArtifact artifact) {
       IAtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
-         AtsLogUtility.getTable(artifactLog, AtsApiService.get().getLogFactory().getLogProvider(artifact,
-            AtsApiService.get().getAttributeResolver()), AtsApiService.get().getUserService());
+         AtsLogUtility.getTable(artifactLog,
+            AtsApiService.get().getLogFactory().getLogProvider(artifact, AtsApiService.get().getAttributeResolver()),
+            AtsApiService.get().getUserService());
       }
    }
 

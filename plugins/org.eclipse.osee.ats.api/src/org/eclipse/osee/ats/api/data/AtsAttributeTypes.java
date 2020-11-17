@@ -16,10 +16,8 @@ package org.eclipse.osee.ats.api.data;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
-
-import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
-import org.eclipse.osee.ats.api.data.enums.token.CancelReasonAttributeType;
+import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ClosureStateAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ColorTeamAttributeType;
@@ -71,11 +69,11 @@ public interface AtsAttributeTypes {
    AttributeTypeString BranchMetrics = ats.createString(1152921504606847190L, "ats.Branch Metrics", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CAM = ats.createString(1152921596009727571L, "ats.CAM", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CSCI = ats.createString(72063457007112443L, "ats.CSCI", MediaType.TEXT_PLAIN, "CSCI this Team is reponsible for.");
-   CancelReasonAttributeType CancelReason = ats.createEnum(new CancelReasonAttributeType());
    AttributeTypeString CancelledBy = ats.createString(1152921504606847170L, "ats.Cancelled By", MediaType.TEXT_PLAIN, "UserId of the user who cancelled workflow.");
    AttributeTypeDate CancelledDate = ats.createDate(1152921504606847169L, "ats.Cancelled Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was cancelled.");
    AttributeTypeString CancelledFromState = ats.createString(1152921504606847172L, "ats.Cancelled From State", MediaType.TEXT_PLAIN, "State workflow was in when cancelled.");
    AttributeTypeString CancelledReason = ats.createString(1152921504606847171L, "ats.Cancelled Reason", MediaType.TEXT_PLAIN, "Explanation of why worklfow was cancelled.");
+   CancelledReasonEnumAttributeType CancelledReasonEnum = ats.createEnum(new CancelledReasonEnumAttributeType());
    AttributeTypeString CancelledReasonDetails = ats.createString(8279626026752029322L, "ats.Cancelled Reason Details", MediaType.TEXT_PLAIN, "Explanation of why worklfow was cancelled.");
    AttributeTypeString Category1 = ats.createString(1152921504606847212L, "ats.Category1", MediaType.TEXT_PLAIN, "Open field for user to be able to enter text to use for categorizing/sorting.");
    AttributeTypeString Category2 = ats.createString(1152921504606847217L, "ats.Category2", MediaType.TEXT_PLAIN, Category1.getDescription());
