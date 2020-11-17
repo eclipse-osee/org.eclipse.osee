@@ -46,8 +46,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
 
       if (roughArtifact.getGuid() == null) {
          OseeLog.logf(GuidBasedArtifactResolver.class, Level.INFO,
-            "Guid based resolver is comparing a null GUID. roughArtifactifact: [%s]. Attributes: [%s]", roughArtifact,
-            roughArtifact.getAttributes());
+            "Guid based resolver is comparing a null GUID. roughArtifactifact: [%s]", roughArtifact);
       }
 
       for (Artifact artifact : descendants) {

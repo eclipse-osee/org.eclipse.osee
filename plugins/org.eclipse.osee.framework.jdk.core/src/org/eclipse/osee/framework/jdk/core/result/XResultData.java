@@ -159,13 +159,33 @@ public class XResultData {
       bumpCount(type, 1);
       String resultStr = "";
       if (type == Type.Warning) {
-         resultStr = "Warning: " + String.format(format, data);
+         // If no data, do not send back into formatter or exceptions could occur
+         if (data.length == 0) {
+            resultStr = "Warning: " + format;
+         } else {
+            resultStr = "Warning: " + String.format(format, data);
+         }
       } else if (type == Type.Severe) {
-         resultStr = "Error: " + String.format(format, data);
+         // If no data, do not send back into formatter or exceptions could occur
+         if (data.length == 0) {
+            resultStr = "Error: " + format;
+         } else {
+            resultStr = "Error: " + String.format(format, data);
+         }
       } else if (type == Type.Success) {
-         resultStr = "Success: " + String.format(format, data);
+         // If no data, do not send back into formatter or exceptions could occur
+         if (data.length == 0) {
+            resultStr = "Success: " + format;
+         } else {
+            resultStr = "Success: " + String.format(format, data);
+         }
       } else {
-         resultStr = String.format(format, data);
+         // If no objs, do not send back into formatter or exceptions could occur
+         if (data.length == 0) {
+            resultStr = format;
+         } else {
+            resultStr = String.format(format, data);
+         }
       }
       addRaw(resultStr);
       if (listeners != null) {

@@ -31,7 +31,12 @@ public class XConsoleLogger extends XResultData {
    }
 
    public static void out(String formatStr, Object... objs) {
-      instance.logf(formatStr, objs);
+      // If no objs, do not send back into formatter or exceptions could occur
+      if (objs.length == 0) {
+         instance.log(formatStr);
+      } else {
+         instance.logf(formatStr, objs);
+      }
    }
 
    public static void err(String formatStr, Object... objs) {
