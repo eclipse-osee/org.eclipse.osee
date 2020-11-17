@@ -105,12 +105,14 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          private final List<ArtifactTypeToken> superTypes;
          private final List<ArtifactTypeToken> directDescendants = new ArrayList<>(4);
          private final AttributeMultiplicity attributeTypes;
+         private final NamespaceToken namespace;
 
-         public ArtifactTypeTokenImpl(Long id, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
+         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
             super(id, name);
             this.isAbstract = isAbstract;
             this.superTypes = superTypes;
             this.attributeTypes = attributeTypes;
+            this.namespace = namespace;
             if (superTypes.size() > 1 && this.superTypes.contains(Artifact)) {
                throw new OseeArgumentException("Multiple super types for artifact type [%s] and and supertype Artifact",
                   name);
@@ -189,7 +191,27 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          public void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
             attributeTypes.getSingletonAttributeTypes(attributeTypeTokens);
          }
+
+         @Override
+         public String getName() {
+            String name = super.getName();
+            if (namespace.notEqual(NamespaceToken.OSEE) && !superTypes.isEmpty()) {
+               for (ArtifactTypeToken superType : superTypes) {
+                  if (name.equals(superType.getName())) {
+                     name = String.format("%s %s", namespace.toString().toUpperCase(), name);
+                     break;
+                  }
+               }
+            }
+            return name;
+         }
+
+         @Override
+         public String toString() {
+            String name = getName();
+            return name == null ? super.toString() : name;
+         }
       }
-      return new ArtifactTypeTokenImpl(id, name, isAbstract, attributeTypes, superTypes);
+      return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, superTypes);
    }
 }
