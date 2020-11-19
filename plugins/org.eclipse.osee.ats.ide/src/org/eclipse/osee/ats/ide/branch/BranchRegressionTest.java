@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.KindType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -100,6 +100,7 @@ public abstract class BranchRegressionTest {
    protected static TeamWorkFlowArtifact codeTeam;
    protected static TeamWorkFlowArtifact testTeam;
 
+   public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
    public static String FIRST_ARTIFACT = "First Artifact";
    public static String SECOND_ARTIFACT = "Second Artifact";
    public static String THIRD_ARTIFACT = "Third Artifact";
@@ -126,9 +127,8 @@ public abstract class BranchRegressionTest {
     * must be wiped.
     */
    public BranchRegressionTest() {
-      ArtifactModifiedNames.addAll(
-         Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT, FIFTH_ARTIFACT,
-            SUBSYSTEM_ARTIFACT, DemoArtifactToken.SystemReqArtifact.getName(), Requirements.SOFTWARE_REQUIREMENTS));
+      ArtifactModifiedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
+         FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, DemoArtifactToken.SystemReqArtifact.getName(), SOFTWARE_REQUIREMENTS));
       NonRelArtifactModifedNames.addAll(Arrays.asList(FIRST_ARTIFACT, SECOND_ARTIFACT, THIRD_ARTIFACT, FOURTH_ARTIFACT,
          FIFTH_ARTIFACT, SUBSYSTEM_ARTIFACT, DemoArtifactToken.SystemReqArtifact.getName()));
    }
@@ -290,8 +290,8 @@ public abstract class BranchRegressionTest {
    public void testMakePreBranchChanges() {
       Assert.assertNotNull("Can't get program workingBranch", getProgramBranch());
 
-      Artifact softReqArt = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name,
-         Requirements.SOFTWARE_REQUIREMENTS, getProgramBranch());
+      Artifact softReqArt =
+         ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, SOFTWARE_REQUIREMENTS, getProgramBranch());
       Assert.assertNotNull("Can't get softReqArt", softReqArt);
 
       AccessControlManager.setPermission(UserManager.getUser(), getProgramBranch(), PermissionEnum.FULLACCESS);
@@ -502,8 +502,7 @@ public abstract class BranchRegressionTest {
    }
 
    protected Artifact getSoftwareReqFolder(BranchId branch) {
-      return ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, Requirements.SOFTWARE_REQUIREMENTS,
-         branch);
+      return ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SoftwareRequirementsFolder, branch);
    }
 
    public void createParentArtsOnWorkingBranch() {

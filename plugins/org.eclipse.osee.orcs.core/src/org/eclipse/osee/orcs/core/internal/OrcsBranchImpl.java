@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -253,11 +252,12 @@ public class OrcsBranchImpl implements OrcsBranch {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Program Hierarchy");
 
+      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolder);
+      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolder);
+      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolder);
+      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.HardwareRequirementsFolder);
+
       for (String name : new String[] {
-         Requirements.SYSTEM_REQUIREMENTS,
-         Requirements.SUBSYSTEM_REQUIREMENTS,
-         Requirements.SOFTWARE_REQUIREMENTS,
-         Requirements.HARDWARE_REQUIREMENTS,
          "Verification Tests",
          "Validation Tests",
          "Integration Tests",

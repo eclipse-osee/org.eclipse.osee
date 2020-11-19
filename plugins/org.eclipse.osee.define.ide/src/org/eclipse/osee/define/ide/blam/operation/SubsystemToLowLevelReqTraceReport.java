@@ -31,17 +31,16 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -120,8 +119,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
       monitor.worked(30);
 
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      orderSubsystemReqs(root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS));
+      orderSubsystemReqs(ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SubSystemRequirementsFolder, branch));
 
       generateLowLevelToSubsystemTrace();
       generateSubsystemToLowLevelReqTrace();

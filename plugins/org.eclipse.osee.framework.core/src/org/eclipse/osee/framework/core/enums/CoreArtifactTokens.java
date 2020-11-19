@@ -48,6 +48,13 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken UserGroups           = ArtifactToken.valueOf(80920, "User Groups", COMMON, Folder);
    public static final ArtifactToken ProductsFolder       = ArtifactToken.valueOf(10039752, "Products", Folder);
    public static final ArtifactToken PlCfgGroupsFolder    = ArtifactToken.valueOf(10862035, "PL Configuration Groups", Folder);
+
+   public static final ArtifactToken HardwareRequirementsFolder    = ArtifactToken.valueOf(90872, "Hardware Requirements", Folder);
+   public static final ArtifactToken SystemRequirementsFolder    = ArtifactToken.valueOf(121523, "System Requirements", Folder);
+   public static final ArtifactToken SubSystemRequirementsFolder    = ArtifactToken.valueOf(119106, "SubSystem Requirements", Folder);
+   public static final ArtifactToken SoftwareRequirementsFolder    = ArtifactToken.valueOf(37334, "Software Requirements", Folder);
+   public static final ArtifactToken TestSupportUnitsFolder    = ArtifactToken.valueOf(34522345, "Test Support Units", Folder);
+
    // @formatter:on
 
    private CoreArtifactTokens() {

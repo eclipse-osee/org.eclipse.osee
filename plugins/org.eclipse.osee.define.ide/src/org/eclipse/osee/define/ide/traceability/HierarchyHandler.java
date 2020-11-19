@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -67,7 +67,7 @@ public final class HierarchyHandler {
    }
 
    private Artifact getOrCreateTestSupportFolder() {
-      return getOrCreateTestUnitsFolder(Requirements.TEST_SUPPORT_UNITS, true);
+      return getOrCreateTestUnitsFolder(CoreArtifactTokens.TestSupportUnitsFolder.getName(), true);
    }
 
    private Artifact getOrCreateTestCaseFolder() {

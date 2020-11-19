@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -138,9 +138,9 @@ public class SystemSubsystemReport extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMsWord, branch);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
+      Artifact subsysTopFolder = root.getChild(CoreArtifactTokens.SubSystemRequirementsFolder.getName());
 
-      sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
+      sysReqs = root.getChild(CoreArtifactTokens.SystemRequirementsFolder.getName()).getDescendants();
 
       if (sysReqs != null && !sysReqs.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(sysReqs.iterator(), findExcludedArtifactsByView);
@@ -278,7 +278,8 @@ public class SystemSubsystemReport extends AbstractBlam {
             row[SubsystemCompletness.qualMethod.ordinal()] = "N/A: " + artifact.getArtifactTypeName();
          }
 
-         int higherTraceCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
+         int higherTraceCount =
+            artifact.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
          row[SubsystemCompletness.highLevelTrace.ordinal()] = String.valueOf(higherTraceCount);
 
          int allocationCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Allocation_Component);
@@ -389,7 +390,8 @@ public class SystemSubsystemReport extends AbstractBlam {
                   subsysMarkedAndQualifiedCount++;
                }
 
-               int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
+               int higherTraceCount =
+                  child.getRelatedArtifactsCount(CoreRelationTypes.RequirementTrace_HigherLevelRequirement);
                if (higherTraceCount > 0) {
                   subsysMarkedAndTracedCount++;
                }
@@ -424,7 +426,8 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[1] = sysReq.getName();
 
          boolean isRelated = false;
-         List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_LowerLevelRequirement);
+         List<Artifact> relatedArtifacts =
+            sysReq.getRelatedArtifacts(CoreRelationTypes.RequirementTrace_LowerLevelRequirement);
          if (!relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
             isRelated = true;

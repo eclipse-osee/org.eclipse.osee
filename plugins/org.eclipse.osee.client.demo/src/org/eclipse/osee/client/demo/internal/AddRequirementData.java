@@ -21,10 +21,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -66,9 +68,9 @@ public class AddRequirementData implements IDbInitializationTask {
          BranchId branch = SAW_Bld_1;
 
          //@formatter:off
-         importRequirements(branch, CoreArtifactTypes.SoftwareRequirementMsWord, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
-         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTokens.SoftwareRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SystemRequirementMsWord, CoreArtifactTokens.SystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(branch, CoreArtifactTypes.SubsystemRequirementMsWord, CoreArtifactTokens.SubSystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
 
          SkynetTransaction demoDbTraceability =
@@ -89,12 +91,12 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, String folderName, File file) throws Exception {
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderArt, File file) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
-            folderName, branch);
+            folderArt.toStringWithId(), branch);
       }
-      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
+      Artifact systemReq = ArtifactQuery.getArtifactFromId(folderArt, branch);
 
       IArtifactImportResolver artifactResolver = ArtifactResolverFactory.createAlwaysNewArtifacts(requirementType);
       IArtifactExtractor extractor = new WordOutlineExtractor();

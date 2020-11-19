@@ -25,11 +25,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
-import org.eclipse.osee.framework.core.enums.Requirements;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -108,7 +108,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirementMsWord, branch);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
+      sysReqs = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.SystemRequirementsFolder, branch).getDescendants();
 
       excludeArtifacts(sysReqs.iterator());
       getSubsystemList();
