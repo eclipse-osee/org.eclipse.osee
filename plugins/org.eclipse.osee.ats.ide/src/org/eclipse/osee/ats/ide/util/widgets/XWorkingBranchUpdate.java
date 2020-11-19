@@ -89,9 +89,8 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                   } else {
                      MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Can't Update Branch",
-                        String.format(
-                           "Couldn't update [%s] because it currently has merge branches from commits.  " //
-                              + "To perform an update please delete all the merge branches for this branch.",
+                        String.format("Couldn't update [%s] because it currently has merge branches from commits.  " //
+                           + "To perform an update please delete all the merge branches for this branch.",
                            branchToUpdate.getName()));
                   }
                }
@@ -105,7 +104,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
    @Override
    protected void refreshEnablement(Button button) {
       button.setEnabled(
-         !disableAll && isWorkingBranchInWork() && !isCommittedBranchExists() && !isWorkingBranchCommitWithMergeInProgress());
+         !disableAll && isWorkingBranchInWork() && !isCommittedBranchExists() && !isWorkingBranchCommitWithMergeInProgress() && isWidgetAllowedInCurrentState());
    }
 
    private static final class UserConflictResolver extends ConflictResolverOperation {
@@ -144,5 +143,10 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
          return job;
       }
 
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return isWidgetInState(WIDGET_NAME);
    }
 }

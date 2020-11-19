@@ -50,7 +50,13 @@ public class XWorkingBranchButtonArtifactExplorer extends XWorkingBranchButtonAb
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && getWorkingBranch().isValid() && getStatus().isChangesPermitted());
+      button.setEnabled(
+         !disableAll && getWorkingBranch().isValid() && getStatus().isChangesPermitted() && isWidgetAllowedInCurrentState());
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return isWidgetInState(WIDGET_NAME);
    }
 
 }

@@ -119,10 +119,15 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
       enabled = !disableAll && (!isWorkingBranchCreationInProgress() && //
          !isWorkingBranchCommitInProgress() && //
          !isWorkingBranchInWork() && //
-         !isCommittedBranchExists());
+         !isCommittedBranchExists()) && //
+         isWidgetAllowedInCurrentState();
       button.setText("");
       button.getParent().layout();
       button.setEnabled(enabled);
    }
 
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return isWidgetInState(WIDGET_NAME);
+   }
 }

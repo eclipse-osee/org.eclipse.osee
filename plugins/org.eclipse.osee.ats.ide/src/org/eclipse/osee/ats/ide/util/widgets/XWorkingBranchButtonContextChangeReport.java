@@ -41,6 +41,12 @@ public class XWorkingBranchButtonContextChangeReport extends XWorkingBranchButto
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && (isWorkingBranchInWork() || isCommittedBranchExists()));
+      button.setEnabled(
+         !disableAll && (isWorkingBranchInWork() || isCommittedBranchExists()) && isWidgetAllowedInCurrentState());
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return true;
    }
 }

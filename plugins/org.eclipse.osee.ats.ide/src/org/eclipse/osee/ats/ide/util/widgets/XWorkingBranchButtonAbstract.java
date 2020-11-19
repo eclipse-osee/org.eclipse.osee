@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -61,10 +62,20 @@ public abstract class XWorkingBranchButtonAbstract extends XWorkingBranchWidgetA
 
    protected abstract void refreshEnablement(Button button);
 
+   protected abstract boolean isWidgetAllowedInCurrentState();
+
    private Button createNewButton(Composite comp) {
       if (toolkit != null) {
          return toolkit.createButton(comp, null, SWT.PUSH);
       }
       return new Button(comp, SWT.PUSH);
+   }
+
+   protected boolean isWidgetInState(String widgetName) {
+      IAtsStateDefinition stateDefinition = getTeamArt().getStateDefinition();
+      boolean hasWidgetNamed =
+         getTeamArt().getAtsApi().getWorkDefinitionService().hasWidgetNamed(stateDefinition, widgetName);
+
+      return hasWidgetNamed;
    }
 }

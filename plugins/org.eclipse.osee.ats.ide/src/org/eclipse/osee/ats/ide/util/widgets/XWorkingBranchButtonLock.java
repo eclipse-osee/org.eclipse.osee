@@ -68,7 +68,8 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && isWorkingBranchInWork() && !isCommittedBranchExists());
+      button.setEnabled(
+         !disableAll && isWorkingBranchInWork() && !isCommittedBranchExists() && isWidgetAllowedInCurrentState());
       refreshLockImage(button);
    }
 
@@ -156,6 +157,11 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       context.registerService(EventHandler.class.getName(), this,
          AtsUtil.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return isWidgetInState(WIDGET_NAME);
    }
 
 }

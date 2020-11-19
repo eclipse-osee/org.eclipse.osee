@@ -55,7 +55,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && isWorkingBranchInWork());
+      button.setEnabled(!disableAll && isWorkingBranchInWork() && isWidgetAllowedInCurrentState());
    }
 
    private void markWorkingBranchAsFavorite() {
@@ -82,6 +82,11 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return true;
    }
 
 }

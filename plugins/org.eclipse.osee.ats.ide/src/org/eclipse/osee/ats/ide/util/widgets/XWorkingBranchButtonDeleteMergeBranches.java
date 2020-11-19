@@ -93,7 +93,7 @@ public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButto
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(destinationBranchNotCommitted());
+      button.setEnabled(destinationBranchNotCommitted() && isWidgetAllowedInCurrentState());
    }
 
    private boolean destinationBranchNotCommitted() {
@@ -120,5 +120,10 @@ public class XWorkingBranchButtonDeleteMergeBranches extends XWorkingBranchButto
 
       return toReturn;
 
+   }
+
+   @Override
+   protected boolean isWidgetAllowedInCurrentState() {
+      return isWidgetInState(WIDGET_NAME);
    }
 }
