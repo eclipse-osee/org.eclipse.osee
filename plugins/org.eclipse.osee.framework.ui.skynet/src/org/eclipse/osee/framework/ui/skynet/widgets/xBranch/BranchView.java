@@ -135,9 +135,9 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
          xBranchWidget.setBranchSearchView(isBranchSearchView());
          xBranchWidget.createWidgets(parent, 1);
 
-         if (isBranchSearchView()) {
-            branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-         } else {
+         branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
+
+         if (!isBranchSearchView()) {
             xBranchWidget.setBranchPresentationType(BranchPresentationType.Flat);
             xBranchWidget.loadData();
          }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -164,7 +165,13 @@ public class BranchLoadComposite extends Composite {
       } else {
          OseeClient oseeClient = ServiceUtil.getOseeClient();
          BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
-         List<Branch> branches = endpoint.getBranches(branchData);
+         List<Branch> branches = new LinkedList<>();
+         for (BranchId branchId : branchData.getBranchIds()) {
+            Branch branch = endpoint.getBranchById(branchId);
+            if (branch.isValid()) {
+               branches.add(branch);
+            }
+         }
          branchView.loadData(branches);
       }
    }
