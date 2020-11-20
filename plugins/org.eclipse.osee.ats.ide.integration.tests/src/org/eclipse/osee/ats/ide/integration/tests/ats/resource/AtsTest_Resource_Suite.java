@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
    AtsActionEndpointImplTest.class,
    AtsActionEndpointImplOptionsTest.class,
    AtsAttributeEndpointImplTest.class,
-   ActionUiResourceTest.class,
+   AtsActionUiEndpointTest.class,
    ConvertResourceTest.class,
    UserResourceTest.class,
    StateResourceTest.class

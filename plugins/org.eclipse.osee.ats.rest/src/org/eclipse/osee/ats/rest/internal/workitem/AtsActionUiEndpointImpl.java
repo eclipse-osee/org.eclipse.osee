@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
@@ -26,10 +25,12 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -37,29 +38,28 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Donald G. Dunne
  */
 @Path("/ui/action")
-public final class ActionUiResource {
+public final class AtsActionUiEndpointImpl implements AtsActionUiEndpointApi {
 
    private final AtsApi atsApi;
    private final Log logger;
 
-   public ActionUiResource(AtsApi atsApi, Log logger) {
+   public AtsActionUiEndpointImpl(AtsApi atsApi, Log logger) {
       this.atsApi = atsApi;
       this.logger = logger;
    }
 
-   /**
-    * @return resource name
-    */
+   @Override
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String get() throws Exception {
-      return RestUtil.simplePageHtml("ATS UI Resource");
+   public String get() {
+      return AHTML.simplePage("ATS UI Endpoint");
    }
 
    /**
     * @param id (artId, atsId) of action to display
     * @return html representation of the action
     */
+   @Override
    @Path("{ids}")
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -90,6 +90,7 @@ public final class ActionUiResource {
     * @param id (id, atsId) of action to display
     * @return html representation of the action
     */
+   @Override
    @Path("{id}/details")
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -105,6 +106,7 @@ public final class ActionUiResource {
    /**
     * @return html5 action entry page
     */
+   @Override
    @Path("NewAction")
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -144,6 +146,7 @@ public final class ActionUiResource {
    /**
     * @return html5 action entry page
     */
+   @Override
    @Path("Search")
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -155,6 +158,7 @@ public final class ActionUiResource {
     * @param id (id, atsId) of action to display
     * @return html representation w/ transition ui
     */
+   @Override
    @Path("{id}/Transition")
    @GET
    @Produces(MediaType.TEXT_HTML)

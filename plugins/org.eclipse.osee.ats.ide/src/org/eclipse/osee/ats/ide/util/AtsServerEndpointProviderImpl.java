@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsServerEndpointProvider;
 import org.eclipse.osee.ats.api.util.health.AtsHealthEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
@@ -58,6 +59,7 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private InsertionActivityEndpointApi insertionActivityEp;
    private AtsHealthEndpointApi healthEp;
    private ResourcesEndpoint resourcesEp;
+   private AtsActionUiEndpointApi actionUiEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -151,6 +153,14 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
          actionEp = jaxRsApi.newProxy(getAtsTarget(), AtsActionEndpointApi.class);
       }
       return actionEp;
+   }
+
+   @Override
+   public AtsActionUiEndpointApi getActionUiEndpoint() {
+      if (actionUiEp == null) {
+         actionUiEp = jaxRsApi.newProxy(getAtsTarget(), AtsActionUiEndpointApi.class);
+      }
+      return actionUiEp;
    }
 
    @Override

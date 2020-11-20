@@ -10,31 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test unit for {@link ActionUiResource}
+ * Test unit for {@link AtsActionUiEndpoint}
  *
  * @author Donald G. Dunne
  */
-public class ActionUiResourceTest extends AbstractRestTest {
+public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
    public void testGet() throws Exception {
       String results = getHtml("/ats/ui/action");
-      Assert.assertTrue(results.contains("ATS UI Resource"));
+      Assert.assertTrue(results.contains("ATS UI Endpoint"));
+   }
+
+   @Test
+   public void testGetViaEndpoint() throws Exception {
+      AtsActionUiEndpointApi actionUiEndpoint = AtsApiService.get().getServerEndpoints().getActionUiEndpoint();
+      String html = actionUiEndpoint.get();
+      Assert.assertTrue(html.contains("ATS UI Endpoint"));
    }
 
    @Test

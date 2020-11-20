@@ -42,7 +42,7 @@ import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsActionUiEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsAttributeEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
@@ -150,7 +150,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
 
       // UIs
-      singletons.add(new ActionUiResource(atsApiServer, logger));
+      singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));
       singletons.add(new ReportResource(orcsApi, atsApiServer));
 
       Thread loadConfig = new Thread("Load ATS Config") {
