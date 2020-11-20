@@ -335,7 +335,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             if (memento != null && memento.getString(ROOT_UUID) != null && memento.getString(ROOT_BRANCH) != null) {
                BranchId branch = BranchId.valueOf(memento.getString(ROOT_BRANCH));
 
-               if (!BranchManager.isArchived(branch) || AccessControlManager.isOseeAdmin()) {
+               if (BranchManager.branchExists(
+                  branch) && !BranchManager.isArchived(branch) || AccessControlManager.isOseeAdmin()) {
                   Artifact previousArtifact =
                      ArtifactQuery.checkArtifactFromId(ArtifactId.valueOf(memento.getString(ROOT_UUID)), branch);
                   if (previousArtifact != null) {
