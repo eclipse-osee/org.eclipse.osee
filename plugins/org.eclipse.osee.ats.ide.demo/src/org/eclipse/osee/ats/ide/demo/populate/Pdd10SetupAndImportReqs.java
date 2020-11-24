@@ -27,11 +27,13 @@ import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -356,17 +358,17 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    private void demoDbImportReqsTx() {
       try {
          //@formatter:off
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord, "Software Requirements", OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord, "System Requirements", OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
-         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMsWord, "Subsystem Requirements", OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTokens.SoftwareRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord, CoreArtifactTokens.SystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMsWord, CoreArtifactTokens.SubSystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
          //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
       }
    }
 
-   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, String folderName, File file) throws Exception {
-      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderTok, File file) throws Exception {
+      Artifact systemReq = ArtifactQuery.getArtifactFromId(folderTok, branch);
 
       IArtifactImportResolver artifactResolver = ArtifactResolverFactory.createAlwaysNewArtifacts(requirementType);
       IArtifactExtractor extractor = new WordOutlineExtractor();
