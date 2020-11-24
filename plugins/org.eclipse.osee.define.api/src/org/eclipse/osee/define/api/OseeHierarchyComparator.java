@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -35,13 +34,11 @@ public final class OseeHierarchyComparator implements Comparator<ArtifactReadabl
 
    private final Map<Long, List<ArtifactReadable>> parentToChildrenCache;
    private final Map<Long, String> artPositionCache;
-   private final OrcsApi orcsApi;
    private final ActivityLog activityLog;
 
    public Map<ArtifactReadable, String> errors;
 
-   public OseeHierarchyComparator(OrcsApi orcsApi, ActivityLog activityLog) {
-      this.orcsApi = orcsApi;
+   public OseeHierarchyComparator(ActivityLog activityLog) {
       this.activityLog = activityLog;
       this.parentToChildrenCache = new HashMap<>();
       this.artPositionCache = new HashMap<>();

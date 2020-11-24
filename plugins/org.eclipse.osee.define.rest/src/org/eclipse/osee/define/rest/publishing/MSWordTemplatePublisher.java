@@ -48,6 +48,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.ArtifactUrlServer;
+import org.eclipse.osee.define.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.api.AttributeElement;
 import org.eclipse.osee.define.api.MetadataElement;
 import org.eclipse.osee.define.api.OseeHierarchyComparator;
@@ -134,7 +135,7 @@ public class MSWordTemplatePublisher {
    protected final Log logger;
    protected final ActivityLog activityLog;
    protected final OrcsTokenService tokenService;
-   protected final OseeHierarchyComparator comparator;
+   protected final OseeHierarchyComparator hierarchyComparator;
 
    protected MSWordTemplatePublisher(PublishingOptions publishingOptions, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
       this.publishingOptions = publishingOptions;
@@ -144,7 +145,7 @@ public class MSWordTemplatePublisher {
       this.logger = atsApi.getLogger();
       this.activityLog = orcsApi.getActivityLog();
       this.tokenService = orcsApi.tokenService();
-      this.comparator = new OseeHierarchyComparator(orcsApi, activityLog);
+      this.hierarchyComparator = new OseeHierarchyComparator(activityLog);
    }
 
    /**
@@ -565,12 +566,22 @@ public class MSWordTemplatePublisher {
     * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
     */
    protected void sortQueryListByHierarchy(List<ArtifactReadable> artifacts) {
-      artifacts.sort(comparator);
+      artifacts.sort(hierarchyComparator);
 
-      for (Map.Entry<ArtifactReadable, String> entry : comparator.errors.entrySet()) {
+      for (Map.Entry<ArtifactReadable, String> entry : hierarchyComparator.errors.entrySet()) {
          ArtifactReadable art = entry.getKey();
          String description = entry.getValue();
          errorLog.add(new PublishingArtifactError(art.getId(), art.getName(), art.getArtifactType(), description));
+      }
+   }
+
+   protected void sortQueryListByAttributeAlphabetical(List<ArtifactReadable> artifacts, AttributeTypeToken attributeToken) {
+      try {
+         artifacts.sort(new AttributeAlphabeticalComparator(activityLog, attributeToken));
+      } catch (Exception ex) {
+         String errorMessage = String.format("There was an error when sorting the list on %s by alphabetical order",
+            attributeToken.getName());
+         errorLog.add(new PublishingArtifactError(-1L, "N/A", ArtifactTypeToken.SENTINEL, errorMessage));
       }
    }
 
