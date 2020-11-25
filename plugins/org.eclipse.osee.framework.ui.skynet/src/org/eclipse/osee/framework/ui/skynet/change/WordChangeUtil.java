@@ -130,7 +130,7 @@ public final class WordChangeUtil {
          Artifact parent = art.getParent();
          if (parent != null) {
             for (Artifact sibling : parent.getChildren()) {
-               if (!artList.contains(sibling) && !sibling.getArtifactType().equals(CoreArtifactTypes.HeadingMsWord)) {
+               if (!artList.contains(sibling) && !sibling.isOfType(CoreArtifactTypes.HeadingMsWord)) {
                   artList.add(sibling);
                }
             }
