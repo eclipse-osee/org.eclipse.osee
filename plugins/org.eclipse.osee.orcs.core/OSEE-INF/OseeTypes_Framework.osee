@@ -48,26 +48,6 @@ attributeType "Id Value" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
-	id 1153126013769613560
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	description "Light-weight artifact reference"
-	mediaType "application/http"
-}
-
-attributeType "Branch Reference" extends BranchReferenceAttribute {
-	id 1153126013769613563
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	description "Light-weight branch reference"
-	mediaType "application/http"
-}
-
 attributeType "osee.Default Mail Server" extends StringAttribute {
 	id 1152921504606847063
 	dataProvider DefaultAttributeDataProvider
@@ -786,16 +766,6 @@ artifactType "Abstract Spec Requirement" extends "Requirement" {
 	attribute "Doors Hierarchy"
 }
 
-attributeType "Test Frequency" extends EnumeratedAttribute {
-	id 1152921504606847103
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.req.test.frequency"
-	mediaType "text/plain"
-}
-
 oseeEnumType "enum.req.test.frequency" {
 	id 3458764513820541306
 	entry "One Time"
@@ -1147,26 +1117,6 @@ artifactType "Supporting Content" extends "Url" {
 	id 49
 }
 
-attributeType "Common NAL Requirement" extends BooleanAttribute {
-	id 1152921504606847105
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	description
-	"Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
-	defaultValue "false"
-	mediaType "text/plain"
-}
-
-attributeType "Crew Interface Requirement" extends BooleanAttribute {
-	id 1152921504606847106
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	defaultValue "false"
-	mediaType "text/plain"
-}
-
 attributeType "Legacy Id" extends StringAttribute {
 	id 1152921504606847107
 	dataProvider DefaultAttributeDataProvider
@@ -1201,15 +1151,6 @@ attributeType "IA Plan" extends BooleanAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
-	defaultValue "false"
-	mediaType "text/plain"
-}
-
-attributeType "Training Effectivity" extends BooleanAttribute {
-	id 1152921504606847110
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
 	defaultValue "false"
 	mediaType "text/plain"
 }
@@ -1342,15 +1283,6 @@ attributeType "Software Control Category Rationale" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	mediaType "text/plain"
-}
-
-attributeType "Safety Hazard Description" extends StringAttribute {
-	id 1785731605616857001
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	description "Safety Hazard Description"
 	mediaType "text/plain"
 }
 
@@ -1691,22 +1623,14 @@ abstract artifactType "Work Item Definition" extends "Artifact" {
 	attribute "osee.wi.Work Parent Id"
 	attribute "osee.wi.Work Data"
 	attribute "osee.wi.Work Description"
-}
-
-artifactType "Work Page Definition" extends "Work Item Definition" {
-	id 51
-	attribute "osee.wi.Work Page Name"
-	attribute "osee.wi.Work Page Orientation"
-	attribute "osee.wi.Work Page Ordinal"
-}
+	}
 
 artifactType "Work Flow Definition" extends "Work Item Definition" {
 	id 52
 	attribute "osee.wi.Start Page"
 	attribute "osee.wi.Work Transition"
 }
-
-artifactType "Work Rule Definition" extends "Work Item Definition" {
+	artifactType "Work Rule Definition" extends "Work Item Definition" {
 	id 53
 }
 
@@ -1760,35 +1684,11 @@ attributeType "osee.wi.Work Parent Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "osee.wi.Work Page Name" extends StringAttribute {
-	id 1152921504606847131
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
-	mediaType "text/plain"
-}
-
-attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
-	id 1152921504606847132
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	mediaType "text/plain"
-}
-
 attributeType "osee.wi.Work Transition" extends StringAttribute {
 	id 1152921504606847133
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
-	mediaType "text/plain"
-}
-
-attributeType "osee.wi.Work Page Orientation" extends StringAttribute {
-	id 1152921504606847134
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
 	mediaType "text/plain"
 }
 
@@ -1965,49 +1865,8 @@ attributeType "Hazard" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "AFHA" extends StringAttribute {
-	id 1152921504606847139
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
 attributeType "SFHA" extends StringAttribute {
 	id 1152921504606847140
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
-oseeEnumType "enum.req.hazard.severity" {
-	id 3458764513820541320
-	entry "Catastrophic, I"
-	entry "Severe-Major, II"
-	entry "Critical, II"
-	entry "Major, III"
-	entry "Marginal, III"
-	entry "Minor, IV"
-	entry "Negligible, IV"
-	entry "No Effect, V"
-	entry "Unspecified"
-}
-
-attributeType "Hazard Severity" extends EnumeratedAttribute {
-	id 1152921504606847141
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.req.hazard.severity"
-	mediaType "text/plain"
-}
-
-attributeType "Safety Objective" extends FloatingPointAttribute {
-	id 1152921504606847142
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -2058,15 +1917,6 @@ attributeType "Doors Mod ID" extends EnumeratedAttribute {
 
 attributeType "Doors Hierarchy" extends EnumeratedAttribute {
    id 1873562488122323009
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
-attributeType "FTA Results" extends FloatingPointAttribute {
-	id 1152921504606847143
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

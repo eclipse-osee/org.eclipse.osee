@@ -134,7 +134,6 @@ public class ChangeDataTest {
    @Test
    public void testGetSubset() throws Exception {
       ArrayList<AttributeTypeId> typesToIgnore = new ArrayList<>();
-      typesToIgnore.add(CoreAttributeTypes.CrewInterfaceRequirement);
 
       Collection<Artifact> theChanges =
          theData.getArtifacts(KindType.Artifact, typesToIgnore, ModificationType.MODIFIED);

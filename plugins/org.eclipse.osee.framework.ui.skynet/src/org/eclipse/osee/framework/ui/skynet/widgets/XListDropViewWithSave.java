@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -72,7 +71,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
       } else {
          saveItems = java.util.Collections.emptyList();
       }
-      artifact.setAttributeFromValues(CoreAttributeTypes.ArtifactReference, saveItems);
+      artifact.setAttributeFromValues(attributeType, saveItems);
    }
 
    @Override

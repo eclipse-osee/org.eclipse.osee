@@ -1193,15 +1193,6 @@ attributeType "ats.Created By" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Created By Reference" extends ArtifactReferenceAttribute {
-	id 32875234523958
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	taggerId DefaultAttributeTaggerProvider
-	mediaType "text/plain"
-}
-
 attributeType "ats.Release Date" extends DateAttribute {
 	id 1152921504606847175
 	dataProvider DefaultAttributeDataProvider
@@ -1225,8 +1216,6 @@ attributeType "ats.End Date" extends DateAttribute {
 	max 1
 	mediaType "text/calendar"
 }
-
-
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 	id 1152921504606847176

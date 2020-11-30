@@ -89,7 +89,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString CompletedFromState = ats.createString(1152921504606847168L, "ats.Completed From State", MediaType.TEXT_PLAIN, "State workflow was in when completed.");
    AttributeTypeString ControlAccount = ats.createString(3475568422796552185L, "ats.Control Account", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", MediaType.TEXT_PLAIN, "UserId of the user who created the workflow.");
-   AttributeTypeArtifactId CreatedByReference = ats.createArtifactId(32875234523958L, "ats.Created By Reference", MediaType.TEXT_PLAIN, "Id of the user artifact who created the workflow.");
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", AttributeTypeToken.TEXT_CALENDAR, "Date the workflow was created.");
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", MediaType.TEXT_PLAIN, "Current state of workflow state machine.");
    AttributeTypeString CurrentStateType = ats.createString(1152921504606847147L, "ats.Current State Type", MediaType.TEXT_PLAIN, "Type of Current State: InWork, Completed or Cancelled.");
