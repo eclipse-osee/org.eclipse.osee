@@ -142,6 +142,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
          new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
          new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
          new GenerateIdsAndArtId(utilItems);
+         new ValidateOseeTypes(utilItems);
          new CommaDelimitLines(utilItems);
          new ClearAtsConfigCache(utilItems);
          new XNavigateItemBlam(utilItems, new MoveTeamWorkflowsBlam(), AtsImage.TEAM_WORKFLOW);
