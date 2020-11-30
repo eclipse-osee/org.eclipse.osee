@@ -155,7 +155,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken PlainText = osee.add(osee.artifactType(784L, "Plain Text", false, Artifact)
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(PlainTextContent));
-   ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText));
+   ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText)
+      .zeroOrOne(Acronym)
+      .any(DoorsId, DoorsId.Unspecified));
    ArtifactTypeToken ImplementationDetailsPlainText = osee.add(osee.artifactType(638269899L, "Implementation Details Plain Text", false, PlainText, AbstractImplementationDetails));
    ArtifactTypeToken PlainTextDataRights = osee.add(osee.artifactType(4527862492986312222L, "Plain Text With Data Rights", false, PlainText)
       .zeroOrOne(DataRightsBasis)

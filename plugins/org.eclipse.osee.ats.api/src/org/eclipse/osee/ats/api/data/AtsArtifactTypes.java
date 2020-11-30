@@ -160,6 +160,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Released));
    ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, AbstractWorkflowArtifact)
       .zeroOrOne(RelatedToState)
+      .zeroOrOne(SignalImpact)
       .zeroOrOne(TaskToChangedArtifactReference)
       .zeroOrOne(TaskToChangedArtifactName)
       .zeroOrOne(TaskToChangedArtifactDeleted)
@@ -221,6 +222,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(PointsAttributeType)
       .zeroOrOne(Priority, Priority.Priority5)
       .zeroOrOne(Problem)
+      .zeroOrOne(ProductLineApprovedBy)
+      .zeroOrOne(ProductLineApprovedDate)
       .zeroOrOne(ProgramId)
       .zeroOrOne(ProposedResolution)
       .zeroOrOne(Rank)
