@@ -11,25 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.internal.reflection;
+package org.eclipse.osee.orcs.rest.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author David W. Miller
  */
-public class TemplateVisitor extends ASTVisitor {
-   List<MethodInvocation> methods = new ArrayList<>();
+public class ArtifactIdReportColumn extends ReportColumn {
 
-   public List<MethodInvocation> getInvocations() {
-      return methods;
+   public ArtifactIdReportColumn(String name) {
+      super(name);
    }
 
    @Override
-   public boolean visit(MethodInvocation node) {
-      return methods.add(node);
+   public String getReportData(ArtifactReadable artifact) {
+      if (artifact == null) {
+         return "";
+      }
+      return artifact.getIdString();
    }
 }

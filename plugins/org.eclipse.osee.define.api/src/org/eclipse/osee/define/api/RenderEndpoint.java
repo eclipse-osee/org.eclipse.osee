@@ -73,4 +73,10 @@ public interface RenderEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    String getDesignBookNames(@PathParam("branchId") BranchId branchId);
 
+   @GET
+   @Path("getTemplateNames/{branchId}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   String getTemplateNames(@PathParam("branchId") BranchId branchId);
+
 }

@@ -11,39 +11,37 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest;
+package org.eclipse.osee.orcs.rest.internal;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.define.api.ReportOperations;
-import org.eclipse.osee.define.rest.internal.PublishTemplateReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.internal.writers.PublishTemplateReport;
+import org.eclipse.osee.orcs.rest.model.ReportEndpoint;
 
 /**
  * @author David W. Miller
  */
-public class ReportOperationsImpl implements ReportOperations {
+public final class ReportEndpointImpl implements ReportEndpoint {
 
    private final OrcsApi orcsApi;
-   private final ActivityLog log;
 
-   public ReportOperationsImpl(OrcsApi orcsApi, ActivityLog log) {
+   public ReportEndpointImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      this.log = log;
    }
 
    @Override
    public Response getReportFromTemplate(BranchId branch, ArtifactId view, ArtifactId templateArt) {
-      StreamingOutput streamingOutput = new PublishTemplateReport(log, orcsApi, branch, view, templateArt);
-      String fileName = String.format("Master_Template_Trace_Report_%s.xml", Lib.getDateTimeString());
+      StreamingOutput streamingOutput = new PublishTemplateReport(orcsApi, branch, view, templateArt);
+      String fileName = String.format("Generic_Trace_Report_%s.xml", Lib.getDateTimeString());
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + fileName);
       return builder.build();
    }
+
 }

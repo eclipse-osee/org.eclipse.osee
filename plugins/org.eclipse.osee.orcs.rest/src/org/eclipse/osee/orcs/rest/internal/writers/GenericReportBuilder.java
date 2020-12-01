@@ -10,14 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.rest;
+package org.eclipse.osee.orcs.rest.internal.writers;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.define.api.GenericReport;
-import org.eclipse.osee.define.api.report.ReportColumn;
-import org.eclipse.osee.define.api.report.ReportFilter;
-import org.eclipse.osee.define.api.report.ReportLevel;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -26,6 +22,10 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.rest.model.GenericReport;
+import org.eclipse.osee.orcs.rest.model.ReportColumn;
+import org.eclipse.osee.orcs.rest.model.ReportFilter;
+import org.eclipse.osee.orcs.rest.model.ReportLevel;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -155,9 +155,13 @@ public class GenericReportBuilder implements GenericReport {
       for (ReportColumn column : level.getColumns()) {
          String columnData = column.getReportData(art);
          for (ReportFilter filter : column.getFilters()) {
-            if (filter.filterMatches(columnData)) {
-               // skip this row (and possibly all of the next levels)
-               return;
+            try {
+               if (filter.filterMatches(columnData)) {
+                  // skip this row (and possibly all of the next levels)
+                  return;
+               }
+            } catch (Exception ex) {
+               // skip matcher exceptions
             }
          }
          row[pos++] = columnData;

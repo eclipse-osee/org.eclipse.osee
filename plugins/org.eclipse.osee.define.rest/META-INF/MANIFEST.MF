@@ -73,9 +73,9 @@ Import-Package: com.fasterxml.jackson.core,
  org.jsoup.select,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.define.rest.importing.operations,
+Export-Package: org.eclipse.osee.define.rest,
+ org.eclipse.osee.define.rest.importing.operations,
  org.eclipse.osee.define.rest.importing.parsers,
  org.eclipse.osee.define.rest.importing.resolvers,
- org.eclipse.osee.define.rest.internal.reflection,
  org.eclipse.osee.define.rest.operations,
  org.eclipse.osee.define.rest.publishing

@@ -36,9 +36,6 @@ public interface DefineApi {
    //Import
    ImportOperations getImportOperations();
 
-   //Report
-   ReportOperations getReportOperations();
-
    ActivityLog getActivityLog();
 
    GitOperations gitOperations();

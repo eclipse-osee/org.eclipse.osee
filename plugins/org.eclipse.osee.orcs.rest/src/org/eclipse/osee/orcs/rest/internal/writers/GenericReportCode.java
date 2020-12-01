@@ -10,20 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.rest.internal;
+package org.eclipse.osee.orcs.rest.internal.writers;
 
-import org.eclipse.osee.define.rest.GenericReportBuilder;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.orcs.rest.model.GenericReport;
 
 /**
  * @author David W. Miller
  */
 public class GenericReportCode {
-   public void reportCode(GenericReportBuilder report) {
+   public void reportCode(GenericReport report) {
       report.level("System Functions",
          report.query().andIsOfType(new ArtifactTypeToken[] {CoreArtifactTypes.SystemFunctionMsWord})). //
          column("Artifact Id"). //
@@ -52,7 +52,7 @@ public class GenericReportCode {
 
    }
 
-   public void traceCode(GenericReportBuilder report) {
+   public void traceCode(GenericReport report) {
 
       report.level("Subsystem Requirement", report.query().andIsOfType(CoreArtifactTypes.SubsystemRequirementMsWord)). //
          column("Artifact Id"). //
@@ -65,7 +65,7 @@ public class GenericReportCode {
 
    }
 
-   public void backTraceCode(GenericReportBuilder report) {
+   public void backTraceCode(GenericReport report) {
 
       report.level("Code Unit", report.query().andIsOfType(CoreArtifactTypes.CodeUnit)). //
          column("Artifact Id"). //
@@ -82,7 +82,7 @@ public class GenericReportCode {
    /*
     * level types - id with relation type collector
     */
-   public void allocationTraceCode(GenericReportBuilder report) {
+   public void allocationTraceCode(GenericReport report) {
 
       report.level("Allocation Report", report.query().andId(ArtifactId.valueOf(579055L))). //
          column("Artifact Id"). //

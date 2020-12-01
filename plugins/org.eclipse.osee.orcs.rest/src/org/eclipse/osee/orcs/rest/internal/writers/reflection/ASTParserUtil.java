@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.rest.internal.reflection;
+package org.eclipse.osee.orcs.rest.internal.writers.reflection;
 
 import java.io.File;
 import java.io.IOException;

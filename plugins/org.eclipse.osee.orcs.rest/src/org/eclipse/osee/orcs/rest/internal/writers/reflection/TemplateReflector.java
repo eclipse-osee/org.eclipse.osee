@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.rest.internal.reflection;
+package org.eclipse.osee.orcs.rest.internal.writers.reflection;
 
 import static org.eclipse.jdt.core.dom.ASTNode.BOOLEAN_LITERAL;
 import static org.eclipse.jdt.core.dom.ASTNode.METHOD_INVOCATION;
@@ -28,12 +28,12 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.NumberLiteral;
 import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.StringLiteral;
-import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.define.api.GenericReport;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.orcs.rest.model.GenericReport;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -42,11 +42,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class TemplateReflector {
    Stack<GenericMethodInvoker<GenericReport>> realMethods = new Stack<>();
    private final GenericReport report;
-   private final ActivityLog activityLog;
+   private final XResultData results;
 
-   public TemplateReflector(GenericReport report, ActivityLog activityLog) {
+   public TemplateReflector(GenericReport report, XResultData results) {
       this.report = report;
-      this.activityLog = activityLog;
+      this.results = results;
    }
 
    public void pushMethod(GenericMethodInvoker<GenericReport> method) {
@@ -90,19 +90,19 @@ public class TemplateReflector {
                // first figure out how to handle one
                MethodInvocation subQuery = iterator.next();
                String subMethodName = subQuery.getName().getFullyQualifiedName();
-               activityLog.getDebugLogger().info("QueryMethodName: %s", subMethodName);
+               results.logf("QueryMethodName: %s", subMethodName);
                GenericMethodInvoker<QueryBuilder> invoker = new GenericMethodInvoker<>(report.query());
                List<Expression> args = subQuery.arguments();
                List<Object> arguments = new ArrayList<>();
                for (Expression arg : args) {
                   Object result = getArgumentFromASTExpression(arg, iterator);
-                  activityLog.getDebugLogger().info("    Arg: %s: type %d", arg.toString(), arg.getNodeType());
+                  results.logf("    Arg: %s: type %d", arg.toString(), arg.getNodeType());
                   arguments.add(result);
                }
                if (invoker.set(subMethodName, arguments)) {
                   toReturn = invoker.invoke(report.query());
                } else {
-                  activityLog.getDebugLogger().info("failed to set method for %s", methodName);
+                  results.logf("failed to set method for %s", methodName);
                }
             }
             break;
@@ -123,7 +123,7 @@ public class TemplateReflector {
          Field field = clazz.getDeclaredField(name);
          return field.get(null);
       } catch (Exception ex) {
-         activityLog.getDebugLogger().error(ex, "Failed to get argument", qname);
+         results.errorf("Failed to get argument for %s, full error: %s", qname, ex.toString());
       }
       return o;
    }

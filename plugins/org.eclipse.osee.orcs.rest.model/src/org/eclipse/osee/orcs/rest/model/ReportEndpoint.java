@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api;
+package org.eclipse.osee.orcs.rest.model;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;

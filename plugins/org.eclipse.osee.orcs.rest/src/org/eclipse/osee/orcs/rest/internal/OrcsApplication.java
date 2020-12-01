@@ -74,6 +74,7 @@ public class OrcsApplication extends Application {
       resources.add(new KeyValueResource(orcsApi));
 
       resources.add(new LinkUpdateResource(orcsApi));
+      resources.add(new ReportEndpointImpl(orcsApi));
    }
 
    public void stop() {

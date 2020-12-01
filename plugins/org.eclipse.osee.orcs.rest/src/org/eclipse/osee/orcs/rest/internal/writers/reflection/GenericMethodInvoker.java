@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.rest.internal.reflection;
+package org.eclipse.osee.orcs.rest.internal.writers.reflection;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -29,7 +29,7 @@ public class GenericMethodInvoker<T> {
    List<Object> arguments = new ArrayList<>();
    private final T realInstance;
 
-   GenericMethodInvoker(T obj) {
+   public GenericMethodInvoker(T obj) {
       this.realInstance = obj;
    }
 

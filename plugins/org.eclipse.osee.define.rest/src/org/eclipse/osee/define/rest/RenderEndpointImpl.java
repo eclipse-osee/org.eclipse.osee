@@ -69,4 +69,9 @@ public final class RenderEndpointImpl implements RenderEndpoint {
    public String getDesignBookNames(BranchId branchId) {
       return null;
    }
+
+   @Override
+   public String getTemplateNames(BranchId branchId) {
+      return null;
+   }
 }
