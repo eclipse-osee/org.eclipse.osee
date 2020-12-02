@@ -29,12 +29,14 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -162,8 +164,8 @@ public class BranchStateTest {
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
-         change =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch, "A commit change");
+         change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
+            "A commit change");
          change.persist(getClass().getSimpleName());
 
          Artifact workingBranchRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
@@ -174,7 +176,10 @@ public class BranchStateTest {
          assertTrue(BranchManager.isEditable(workingBranch));
 
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(SAW_Bld_1, workingBranch);
-         BranchManager.commitBranch(null, conflictManager, true, false);
+         TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, true, false);
+         if (transactionResult.isFailed()) {
+            throw new OseeCoreException(transactionResult.toString());
+         }
 
          assertEquals(BranchState.COMMITTED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isArchived(workingBranch));

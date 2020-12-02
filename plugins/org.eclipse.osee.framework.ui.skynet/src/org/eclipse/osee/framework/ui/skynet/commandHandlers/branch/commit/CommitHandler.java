@@ -28,6 +28,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,17 +55,23 @@ public abstract class CommitHandler extends CommandHandler {
       this.useParentBranch = useParentBranch;
    }
 
-   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch) {
+   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch) {
       return commitBranch(conflictManager, showArchiveCheck, archiveSourceBranch, false);
    }
 
-   public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
-      boolean toReturn = false;
+   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
+      TransactionResult result = new TransactionResult();
       AtomicBoolean checkBox = new AtomicBoolean(archiveSourceBranch);
       BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
       if (!state.isRebaselineInProgress() && !state.isRebaselined()) {
          if (conflictManager.getOriginalConflicts().size() > 0) {
-            toReturn = MergeInProgressHandler.handleMergeInProgress(conflictManager, archiveSourceBranch, skipPrompts);
+            boolean toReturn =
+               MergeInProgressHandler.handleMergeInProgress(conflictManager, archiveSourceBranch, skipPrompts);
+            if (toReturn) {
+               result.getResults().logf("Merge was successful");
+            } else {
+               result.getResults().errorf("Error with Merge");
+            }
          } else {
             final MutableBoolean dialogResult = new MutableBoolean(false);
             if (!skipPrompts) {
@@ -97,13 +104,11 @@ public abstract class CommitHandler extends CommandHandler {
             }
 
             if (dialogResult.booleanValue()) {
-               BranchManager.commitBranch(null, conflictManager, checkBox.get(), false);
-               toReturn = true;
+               result = BranchManager.commitBranch(null, conflictManager, checkBox.get(), false);
             }
          }
       }
-
-      return toReturn;
+      return result;
    }
 
    @Override

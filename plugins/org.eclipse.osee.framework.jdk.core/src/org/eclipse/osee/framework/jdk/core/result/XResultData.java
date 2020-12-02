@@ -373,4 +373,12 @@ public class XResultData {
    private String getResultsString() {
       return String.format("Error: %s, Warning: %s", getErrorCount(), getWarningCount());
    }
+
+   public void merge(XResultData rd) {
+      this.errorCount += rd.getErrorCount();
+      this.warningCount += rd.getWarningCount();
+      this.infoCount += rd.getInfoCount();
+      addRaw(rd.toString());
+   }
+
 }

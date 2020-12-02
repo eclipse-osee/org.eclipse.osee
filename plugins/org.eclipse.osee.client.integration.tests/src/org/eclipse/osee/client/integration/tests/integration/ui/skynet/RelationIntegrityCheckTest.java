@@ -22,11 +22,13 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -92,7 +94,10 @@ public class RelationIntegrityCheckTest {
 
       //commit branch 2 into 1
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(parentBranch, workingBranch);
-      BranchManager.commitBranch(null, conflictManager, false, true);
+      TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, false, true);
+      if (transactionResult.isFailed()) {
+         throw new OseeCoreException(transactionResult.toString());
+      }
    }
 
    @After

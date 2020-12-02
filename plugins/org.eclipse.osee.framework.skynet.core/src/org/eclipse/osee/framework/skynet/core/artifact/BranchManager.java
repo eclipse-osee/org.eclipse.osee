@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -392,8 +393,10 @@ public final class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
+    * 
+    * @return
     */
-   public static void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
+   public static TransactionResult commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -409,10 +412,12 @@ public final class BranchManager {
          runCommitExtPointActions(conflictManager);
       }
 
-      IOperation operation =
+      CommitBranchHttpRequestOperation operation =
          new CommitBranchHttpRequestOperation(UserManager.getUser(), conflictManager.getSourceBranch(),
             conflictManager.getDestinationBranch(), archiveSourceBranch, skipCommitChecksAndEvents);
-      Operations.executeWorkAndCheckStatus(operation, monitor);
+      Operations.executeWork(operation, monitor);
+      TransactionResult transactionResult = operation.getTransactionResult();
+      return transactionResult;
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) {

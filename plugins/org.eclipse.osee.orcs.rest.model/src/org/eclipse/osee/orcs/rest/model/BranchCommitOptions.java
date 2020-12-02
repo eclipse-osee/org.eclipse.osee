@@ -39,4 +39,9 @@ public class BranchCommitOptions {
    public void setArchive(boolean archive) {
       this.archive = archive;
    }
+
+   @Override
+   public String toString() {
+      return String.format("BrchCommitOps: Committer [%s] Archive [%s]", committer, archive);
+   }
 }

@@ -20,17 +20,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,6 +65,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final BranchId destinationBranch;
    private final boolean isArchiveAllowed;
    private final boolean skipChecksAndEvents;
+   private TransactionResult transactionResult;
 
    public CommitBranchHttpRequestOperation(ArtifactId committer, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
@@ -74,40 +74,49 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       this.destinationBranch = destinationBranch;
       this.isArchiveAllowed = isArchiveAllowed;
       this.skipChecksAndEvents = skipChecksAndEvents;
+
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) {
+      // Store current state so we can return to that state if commit fails
       BranchState currentState = BranchManager.getState(sourceBranch);
-      BranchManager.getBranch(sourceBranch).setBranchState(BranchState.COMMIT_IN_PROGRESS); // the server changes the state in the database to COMMIT_IN_PROGRESS
-
-      BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);
-      OseeEventManager.kickBranchEvent(getClass(), branchEvent);
-
-      OseeClient client = ServiceUtil.getOseeClient();
-      BranchEndpoint proxy = client.getBranchEndpoint();
-
-      BranchCommitOptions options = new BranchCommitOptions();
-      options.setArchive(isArchiveAllowed);
-      options.setCommitter(committer);
+      // Set to new result in case exception happens before commitBranch completes
+      transactionResult = new TransactionResult();
       try {
-         TransactionToken tx = proxy.commitBranch(sourceBranch, destinationBranch, options);
-         if (tx == null) {
+
+         /**
+          * Set the local branch to commit in progress; Call to commit will cause server to check for
+          * commit_in_progress. It will error if true or set if false so other clients/servers do not try to commit.
+          */
+         BranchManager.getBranch(sourceBranch).setBranchState(BranchState.COMMIT_IN_PROGRESS);
+         // TBD Uncomment for branch error BranchManager.setState(sourceBranch, BranchState.COMMIT_IN_PROGRESS);
+
+         BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);
+         OseeEventManager.kickBranchEvent(getClass(), branchEvent);
+
+         OseeClient client = ServiceUtil.getOseeClient();
+         BranchEndpoint branchEp = client.getBranchEndpoint();
+
+         BranchCommitOptions options = new BranchCommitOptions();
+         options.setArchive(isArchiveAllowed);
+         options.setCommitter(committer);
+         transactionResult = branchEp.commitBranch(sourceBranch, destinationBranch, options);
+
+         if (transactionResult.getResults().isErrors() || transactionResult.getTx().isInvalid()) {
+            // Set back to what it was in local Branch object
             BranchManager.setState(sourceBranch, currentState);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
-            String err = "A branch cannot be committed without any changes made.";
-            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, err);
          } else {
             BranchManager.setState(sourceBranch, BranchState.COMMITTED);
-            handleResponse(tx, monitor, sourceBranch, destinationBranch);
+            handleResponse(transactionResult.getTx(), monitor, sourceBranch, destinationBranch);
          }
       } catch (Exception ex) {
+         // Set back to what it was in local Branch object
          BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
-         if (!(ex instanceof NullPointerException)) {
-            throw ex;
-         }
-         return;
+         transactionResult.getResults().errorf("Exception CommitBranchHttpRequestOperation [%s]",
+            Lib.exceptionToString(ex));
       }
    }
 
@@ -216,6 +225,14 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
       // Kicks event to this client to update Artifact model with commit changes since commit was on server
       OseeEventManager.kickCommitEvent(getClass(), artifactEvent2);
+   }
+
+   public TransactionResult getTransactionResult() {
+      return transactionResult;
+   }
+
+   public void setTransactionResult(TransactionResult transactionResult) {
+      this.transactionResult = transactionResult;
    }
 
 }

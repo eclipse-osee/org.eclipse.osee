@@ -22,12 +22,14 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -158,7 +160,10 @@ public class BranchEventTest {
       newArt.persist(getClass().getSimpleName());
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(mainBranch, workingBranch);
       branchEventListener.reset();
-      BranchManager.commitBranch(null, conflictManager, true, true);
+      TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, true, true);
+      if (transactionResult.isFailed()) {
+         throw new OseeCoreException(transactionResult.toString());
+      }
 
       verifyReceivedBranchStatesEvent(branchEventListener.getResults(0), BranchEventType.Committing, workingBranch);
       verifyReceivedBranchStatesEvent(branchEventListener.getResults(1), BranchEventType.Committed, workingBranch);

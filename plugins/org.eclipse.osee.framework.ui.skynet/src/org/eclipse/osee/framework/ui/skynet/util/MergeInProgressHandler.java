@@ -24,6 +24,7 @@ import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,14 +64,20 @@ public class MergeInProgressHandler {
       BranchId destinationBranch = conflictManager.getDestinationBranch();
 
       if (userOption == COMMIT) { // Commit
-         BranchManager.commitBranch(null, conflictManager, archiveBranch, false);
+         TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, archiveBranch, false);
+         if (transactionResult.isFailed()) {
+            throw new OseeCoreException(transactionResult.toString());
+         }
          toReturn = true;
       } else if (userOption == LAUNCH_MERGE_VIEW) { // Launch Merge
          MergeView.openView(sourceBranch, destinationBranch, BranchManager.getBaseTransaction(sourceBranch));
       } else if (userOption == DELETE_MERGE) { // Delete Merge
          deleteSingleMergeBranches(sourceBranch, destinationBranch, skipPrompts);
       } else if (userOption == FORCE_COMMIT) { // Force Commit, admin only
-         BranchManager.commitBranch(null, conflictManager, archiveBranch, true);
+         TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, archiveBranch, true);
+         if (transactionResult.isFailed()) {
+            throw new OseeCoreException(transactionResult.toString());
+         }
          toReturn = true;
       } else if (userOption == CANCEL) {
          // do nothing

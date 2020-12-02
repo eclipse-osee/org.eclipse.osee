@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -115,17 +116,18 @@ public class MergeManagerTest {
          BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Shouldn't be allowed to commit
-      boolean committed =
+      TransactionResult transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
-      assertFalse("Branch Committed while in Rebaseline In Progress", committed);
+      assertFalse("Branch Committed while in Rebaseline In Progress", transactionResult.isSuccess());
       assertTrue("An additional Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
 
       // Abandon
       RebaselineInProgressHandler.cancelCurrentUpdate(workingBranch, true);
 
       // Now we can commit
-      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
-      assertTrue("Branch should have been comitted", committed);
+      transactionResult =
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
+      assertTrue("Branch should have been comitted", transactionResult.isSuccess());
 
       // make sure we can't rebase now since we've done a commit
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
@@ -192,9 +194,9 @@ public class MergeManagerTest {
       IOseeBranch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
 
       // Shouldn't be allowed to commit working branch
-      boolean committed =
+      TransactionResult transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
-      assertTrue("Branch Committed while in Rebaseline In Progress", !committed);
+      assertTrue("Branch Committed while in Rebaseline In Progress", transactionResult.isFailed());
 
       // Finish Rebaseline
       FinishUpdateBranchOperation finishUpdateOperation =
@@ -205,13 +207,14 @@ public class MergeManagerTest {
       assertTrue("Branch is not in Rebaselined", BranchManager.getState(workingBranch).isRebaselined());
 
       // Shouldn't be allowed to commit original working branch
-      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
-      assertTrue("Branch Committed after in Rebaseline was finished", !committed);
+      transactionResult =
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
+      assertTrue("Branch Committed after in Rebaseline was finished", transactionResult.isFailed());
 
       // Should be allowed to commit to new working branch
-      committed =
+      transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, branchForUpdate), false, false, true);
-      assertTrue("Branch was not committed into new, rebaselined working branch", committed);
+      assertTrue("Branch was not committed into new, rebaselined working branch", transactionResult.isSuccess());
 
       // Clean up this test
       BranchManager.purgeBranch(branchForUpdate);
@@ -229,9 +232,9 @@ public class MergeManagerTest {
          };
 
       // Can't commit since there are conflicts
-      boolean committed =
+      TransactionResult transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, false, true);
-      assertTrue("Branch Committed with unresolved conflicts", !committed);
+      assertTrue("Branch Committed with unresolved conflicts", transactionResult.isFailed());
 
       List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
       assertTrue("Exactly one Merge Branch was not found", mergeBranches.size() == 1);
@@ -241,9 +244,9 @@ public class MergeManagerTest {
          mergeBranchFromFirstCommit.getSourceBranch().equals(workingBranch));
 
       // Try Doing commit again, no new Merge Branches should be created
-      boolean committed2 =
+      transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, false, true);
-      assertTrue("Branch Committed with unresolved conflicts", !committed2);
+      assertTrue("Branch Committed with unresolved conflicts", transactionResult.isFailed());
 
       List<MergeBranch> mergeBranches2 = BranchManager.getMergeBranches(workingBranch);
       assertTrue("Exactly one Merge Branch was not found", mergeBranches2.size() == 1);
@@ -294,9 +297,9 @@ public class MergeManagerTest {
          };
 
       // Try committing into SAW BLD 1
-      boolean committed =
+      TransactionResult transactionResult =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, false, true);
-      assertTrue("Branch Committed with unresolved conflicts", !committed);
+      assertTrue("Branch Committed with unresolved conflicts", transactionResult.isFailed());
 
       // Shouldn't be able to rebase
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
@@ -306,8 +309,9 @@ public class MergeManagerTest {
          workingBranch).isRebaselineInProgress() && !BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Commit into another branch other than SAW_BLD_1 so there are no conflicts
-      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
-      assertTrue("Branch was not committed", committed);
+      transactionResult =
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, false, true);
+      assertTrue("Branch was not committed", transactionResult.isSuccess());
 
       // Even if I abandon first Merge, still shouldn't be able to rebase since I already completed on Commit
       MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(SAW_Bld_1, workingBranch),

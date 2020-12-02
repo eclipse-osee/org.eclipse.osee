@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -158,7 +158,7 @@ public interface BranchEndpoint {
    @Path("{branch}/commit/{destination-branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionToken commitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
+   TransactionResult commitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
    @POST
    @Path("{branch}/archive")

@@ -31,6 +31,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.ResultRow;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -286,7 +287,10 @@ public class ResultsEditor extends AbstractArtifactEditor {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsEditorTab> tabs = new ArrayList<>();
-            tabs.add(new ResultsEditorHtmlTab(XResultDataUI.getReport(data, name)));
+            XResultPage report =
+               XResultDataUI.getReport(data, name, Manipulations.HTML_MANIPULATIONS, Manipulations.CONVERT_NEWLINES);
+            String html = report.getManipulatedHtml();
+            tabs.add(new ResultsEditorHtmlTab(name, "Results", html));
             return tabs;
          }
       });

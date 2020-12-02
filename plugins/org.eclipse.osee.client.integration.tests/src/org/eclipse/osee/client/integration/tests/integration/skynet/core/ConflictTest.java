@@ -30,12 +30,14 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -179,7 +181,10 @@ public class ConflictTest {
       try {
          ConflictManagerExternal conflictManager =
             new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
-         BranchManager.commitBranch(null, conflictManager, false, false);
+         TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, false, false);
+         if (transactionResult.isFailed()) {
+            throw new OseeCoreException(transactionResult.toString());
+         }
          XResultData results = ConflictTestManager.validateCommit();
          assertTrue("Commit did not complete as expected: " + results.toString(), results.isSuccess());
 
@@ -191,7 +196,6 @@ public class ConflictTest {
       }
    }
 
-   @SuppressWarnings("deprecation")
    @Test
    public void testMultiplicityCommit() {
       BranchId parent = SAW_Bld_1;
@@ -214,7 +218,10 @@ public class ConflictTest {
       AttributeId child1AttrId = attributes.iterator().next();
 
       ConflictManagerExternal mgr = new ConflictManagerExternal(parent, child1);
-      BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
+      TransactionResult transactionResult = BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
+      if (transactionResult.isFailed()) {
+         throw new OseeCoreException(transactionResult.toString());
+      }
       Assert.assertFalse(mgr.originalConflictsExist());
 
       Artifact onChild2 = ArtifactQuery.getArtifactFromId(testArt, child2);

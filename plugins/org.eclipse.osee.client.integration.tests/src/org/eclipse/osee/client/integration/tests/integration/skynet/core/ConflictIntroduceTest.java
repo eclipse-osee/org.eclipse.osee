@@ -24,9 +24,11 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -73,8 +75,8 @@ public class ConflictIntroduceTest {
 
       // set up destination branch
       BranchManager.createWorkingBranch(SAW_Bld_1, destinationBranch);
-      artifactToDelete =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Read-only Robots", SAW_Bld_1);
+      artifactToDelete = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Read-only Robots", SAW_Bld_1);
 
       // Delete artifact and commit to destination branch
       BranchManager.createWorkingBranch(destinationBranch, updateBranch);
@@ -82,7 +84,10 @@ public class ConflictIntroduceTest {
       art.deleteAndPersist();
 
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, updateBranch);
-      BranchManager.commitBranch(null, conflictManager, false, false);
+      TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, false, false);
+      if (transactionResult.isFailed()) {
+         throw new OseeCoreException(transactionResult.toString());
+      }
 
       // create source branch
       BranchManager.createWorkingBranch(destinationBranch, sourceBranch);

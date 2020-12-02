@@ -26,9 +26,11 @@ import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -120,10 +122,23 @@ public class AtsBranchCommitOperation {
 
          if (commitPopup) {
             boolean atsAdmin = AtsApiService.get().getUserService().isAtsAdmin();
-            branchCommitted = CommitHandler.commitBranch(conflictManager, atsAdmin, archiveWorkingBranch);
+            TransactionResult transactionResult =
+               CommitHandler.commitBranch(conflictManager, atsAdmin, archiveWorkingBranch);
+            if (transactionResult.isFailed()) {
+               rd.merge(transactionResult.getResults());
+               branchCommitted = false;
+            } else {
+               branchCommitted = true;
+            }
          } else {
-            BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, false);
-            branchCommitted = true;
+            TransactionResult transactionResult =
+               BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, false);
+            if (transactionResult.isFailed()) {
+               rd.merge(transactionResult.getResults());
+               branchCommitted = false;
+            } else {
+               branchCommitted = true;
+            }
          }
          if (branchCommitted) {
             // Create reviews as necessary
@@ -134,6 +149,8 @@ public class AtsBranchCommitOperation {
                changes.execute();
             }
          }
+      } catch (Exception ex) {
+         rd.errorf("Exception committing branch %s", Lib.exceptionToString(ex));
       } finally {
          if (workflowWorkingBranch != null) {
             AtsApiService.get().getBranchService().getBranchesInCommit().remove(workflowWorkingBranch);

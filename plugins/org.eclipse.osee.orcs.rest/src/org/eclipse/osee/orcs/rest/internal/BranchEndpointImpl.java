@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.data.JsonRelation;
 import org.eclipse.osee.framework.core.data.JsonRelations;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -65,6 +66,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -360,17 +362,24 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public TransactionToken commitBranch(BranchId branch, BranchId destinationBranch, BranchCommitOptions options) {
+   public TransactionResult commitBranch(BranchId branch, BranchId destinationBranch, BranchCommitOptions options) {
       Branch srcBranch = getBranchById(branch);
       Branch destBranch = getBranchById(destinationBranch);
+      TransactionResult tr = new TransactionResult();
+      tr.getResults().logf("Commiting Branch\n");
+      tr.getResults().logf("Source Branch [%s]\n", branch);
+      tr.getResults().logf("Destination Branch [%s]\n", destBranch);
+      tr.getResults().logf("Options [%s]\n\n", options);
 
       Callable<TransactionToken> op = branchOps.commitBranch(options.getCommitter(), srcBranch, destBranch);
-      TransactionToken tx = null;
       try {
-         tx = executeCallable(op);
+         TransactionToken tx = executeCallable(op);
+         tr.setTx(tx);
       } catch (Exception ex) {
-         return null;
+         tr.getResults().errorf("Exception commiting branch [%s]", Lib.exceptionToString(ex));
+         return tr;
       }
+
       if (options.isArchive()) {
          Callable<?> op2 = branchOps.archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
          executeCallable(op2);
@@ -381,9 +390,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
             String.format("Branch Operation Commit Branch {branchId: %s srcBranch: %s destBranch: %s}", branch,
                srcBranch, destBranch));
       } catch (OseeCoreException ex) {
-         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         tr.getResults().errorf("Exception logging activity [%s]", Lib.exceptionToString(ex));
+         return tr;
       }
-      return tx;
+      return tr;
    }
 
    @Override

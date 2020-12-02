@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -129,7 +130,11 @@ public final class PortPairsOperation extends AbstractOperation {
             logf("Skipping completed workflow [%s].", destinationWorkflow);
          } else {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, portBranch);
-            BranchManager.commitBranch(null, conflictManager, false, false);
+            TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, false, false);
+            if (transactionResult.isFailed()) {
+               throw new OseeCoreException(transactionResult.toString());
+            }
+
             logf("Commit complete for workflow [%s].", destinationWorkflow);
          }
       } catch (OseeCoreException ex) {
@@ -147,8 +152,7 @@ public final class PortPairsOperation extends AbstractOperation {
          BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {
-         TransactionToken transRecord =
-            AtsApiService.get().getBranchService().getEarliestTransactionId(sourceWorkflow);
+         TransactionToken transRecord = AtsApiService.get().getBranchService().getEarliestTransactionId(sourceWorkflow);
          if (transRecord == null) {
             return null;
          } else {
