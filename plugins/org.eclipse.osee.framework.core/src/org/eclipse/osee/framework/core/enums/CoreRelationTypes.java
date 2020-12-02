@@ -25,6 +25,14 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceConnection;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceDataElement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceEnum;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceEnumSet;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceMessage;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceMessageHeader;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceStructure;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceSubMessage;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
@@ -106,6 +114,43 @@ public interface CoreRelationTypes {
    RelationTypeSide ImplementationInfo_SoftwareRequirement = RelationTypeSide.create(ImplementationInfo, SIDE_A);
    RelationTypeSide ImplementationInfo_ImplementationDetails = RelationTypeSide.create(ImplementationInfo, SIDE_B);
 
+   RelationTypeToken InterfaceConnectionContent = osee.add(126164394421696911L, "Interface Connection", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Connection", InterfaceMessage, "Message");
+   RelationTypeSide InterfaceConnectionContent_Connection = RelationTypeSide.create(InterfaceConnectionContent, SIDE_A);
+   RelationTypeSide InterfaceConnectionContent_Message = RelationTypeSide.create(InterfaceConnectionContent, SIDE_B);
+
+   RelationTypeToken InterfaceMessageHeaderContent = osee.add(126164394421696912L, "Interface Message Header", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Message", InterfaceMessageHeader, "Header");
+   RelationTypeSide InterfaceMessageHeaderContent_Message = RelationTypeSide.create(InterfaceMessageHeaderContent, SIDE_A);
+   RelationTypeSide InterfaceMessageHeaderContent_Header = RelationTypeSide.create(InterfaceMessageHeaderContent, SIDE_B);
+
+   RelationTypeToken InterfaceMessageContent = osee.add(2455059983007225780L, "Interface Message", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Message", InterfaceSubMessage, "SubMessage");
+   RelationTypeSide InterfaceMessageContent_Message = RelationTypeSide.create(InterfaceMessageContent, SIDE_A);
+   RelationTypeSide InterfaceMessageContent_SubMessage = RelationTypeSide.create(InterfaceMessageContent, SIDE_B);
+
+   RelationTypeToken InterfaceHeaderContent = osee.add(126164394421696913L, "Interface Header Structure", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessageHeader, "Header", InterfaceStructure, "Structure");
+   RelationTypeSide InterfaceHeaderContent_Header = RelationTypeSide.create(InterfaceHeaderContent, SIDE_A);
+   RelationTypeSide InterfaceHeaderContent_Structure = RelationTypeSide.create(InterfaceHeaderContent, SIDE_B);
+
+   RelationTypeToken InterfaceSubMessageContent = osee.add(126164394421696914L, "Interface SubMessage Structure", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceSubMessage, "SubMessage", InterfaceStructure, "Structure");
+   RelationTypeSide InterfaceSubMessageContent_SubMessage = RelationTypeSide.create(InterfaceSubMessageContent, SIDE_A);
+   RelationTypeSide InterfaceSubMessageContent_Structure = RelationTypeSide.create(InterfaceSubMessageContent, SIDE_B);
+
+   RelationTypeToken InterfaceStructureContent = osee.add(2455059983007225781L, "Interface Structure", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceStructure, "Structure", InterfaceDataElement, "Data Element");
+   RelationTypeSide InterfaceStructureContent_Structure = RelationTypeSide.create(InterfaceStructureContent, SIDE_A);
+   RelationTypeSide InterfaceStructureContent_DataElement = RelationTypeSide.create(InterfaceStructureContent, SIDE_B);
+
+   RelationTypeToken InterfaceElementEnumeration = osee.add(2455059983007225794L, "Interface Element Enumeration", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Data Element", InterfaceEnumSet, "Enumeration Definition");
+   RelationTypeSide InterfaceElementEnumeration_Element = RelationTypeSide.create(InterfaceElementEnumeration, SIDE_A);
+   RelationTypeSide InterfaceElementEnumeration_EnumerationDef = RelationTypeSide.create(InterfaceElementEnumeration, SIDE_B);
+
+   RelationTypeToken InterfaceEnumeration = osee.add(2455059983007225795L, "Interface Enumeration Definition", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceEnumSet, "Enumeration Definition", InterfaceEnum, "Enumeration State");
+   RelationTypeSide InterfaceEnumeration_EnumerationDef = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
+   RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
+
+
+   RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
+   RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);
+   RelationTypeSide PlConfigurationGroup_BranchView = RelationTypeSide.create(PlConfigurationGroup, SIDE_B);
+
    RelationTypeToken RelatedFeature = osee.add(88L, "Related Feature", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, Feature, "feature", Artifact, "artifact");
    RelationTypeSide RelatedFeature_Feature = RelationTypeSide.create(RelatedFeature, SIDE_A);
    RelationTypeSide RelatedFeature_Artifact = RelationTypeSide.create(RelatedFeature, SIDE_B);
@@ -170,9 +215,6 @@ public interface CoreRelationTypes {
    RelationTypeSide WorkItem_Parent = RelationTypeSide.create(WorkItem, SIDE_A);
    RelationTypeSide WorkItem_Child = RelationTypeSide.create(WorkItem, SIDE_B);
 
-   RelationTypeToken PlConfigurationGroup = osee.add(674505523757332017L, "Product Line Configuration Group", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, GroupArtifact, "Group", BranchView, "BranchView");
-   RelationTypeSide PlConfigurationGroup_Group = RelationTypeSide.create(PlConfigurationGroup, SIDE_A);
-   RelationTypeSide PlConfigurationGroup_BranchView = RelationTypeSide.create(PlConfigurationGroup, SIDE_B);
 
    //@formatter:on
 }
