@@ -95,11 +95,6 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
             if (Strings.isValid(newPath)) {
                tx.setName(codeUnit, getCodeUnitName(newPath));
                tx.setSoleAttributeFromString(codeUnit, CoreAttributeTypes.FileSystemPath, newPath);
-               if (isPathRenamed(path, newPath)) {
-                  ArtifactId location = editCodeUnitPath(tx, newPath, false);
-                  tx.unrelateFromAll(CoreRelationTypes.DefaultHierarchical_Parent, codeUnit);
-                  tx.relate(location, CoreRelationTypes.DefaultHierarchical, codeUnit);
-               }
                pathToCodeunitReferenceMap.remove(path);
                pathToCodeunitMap.remove(path);
                pathToCodeunitMap.put(newPath, codeUnit);
