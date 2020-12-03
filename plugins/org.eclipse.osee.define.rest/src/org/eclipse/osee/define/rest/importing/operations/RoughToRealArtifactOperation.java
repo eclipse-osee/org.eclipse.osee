@@ -157,6 +157,7 @@ public class RoughToRealArtifactOperation {
          }
          extractor.artifactCreated(transaction, childArtifact, childRoughArtifact);
       }
+      results.logf("Added Art: %s\n", realArtifactId.getIdString());
       return realArtifactId;
    }
 

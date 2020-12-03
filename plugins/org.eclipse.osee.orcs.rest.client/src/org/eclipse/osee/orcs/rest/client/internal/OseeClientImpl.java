@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DataRightsEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.api.ImportEndpoint;
 import org.eclipse.osee.define.api.RenderEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -150,6 +151,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public DataRightsEndpoint getDataRightsEndpoint() {
       return getDefineEndpoint(DataRightsEndpoint.class);
+   }
+
+   @Override
+   public ImportEndpoint getImportEndpoint() {
+      return getDefineEndpoint(ImportEndpoint.class);
    }
 
    @Override

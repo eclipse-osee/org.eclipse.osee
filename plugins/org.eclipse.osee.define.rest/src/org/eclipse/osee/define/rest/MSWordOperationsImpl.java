@@ -128,7 +128,7 @@ public class MSWordOperationsImpl implements MSWordOperations {
    @Override
    public Response msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
       //Generate filename with the headArtifact name and current time
-      String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifact().getName();
+      String name = orcsApi.getQueryFactory().fromBranch(branch).andId(headArtifact).asArtifactToken().getName();
       SimpleDateFormat format = new SimpleDateFormat("MM-dd_HH-mm-ss");
       Date date = new Date(System.currentTimeMillis());
       String time = format.format(date);
