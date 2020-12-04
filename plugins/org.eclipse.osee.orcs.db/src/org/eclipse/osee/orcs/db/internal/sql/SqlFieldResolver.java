@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -200,7 +200,7 @@ public final class SqlFieldResolver {
          data.setPrimaryKey(field.isPrimaryKey());
          data.setHidden(hidden);
 
-         TableEnum table = field.getTable();
+         SqlTable table = field.getTable();
          ObjectType type = field.getType();
          String alias = aliasManager.getFirstAlias(level, table, type);
 

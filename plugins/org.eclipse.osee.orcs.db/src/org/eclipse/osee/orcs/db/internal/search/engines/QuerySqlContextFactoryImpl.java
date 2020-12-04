@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -35,11 +35,11 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    private final SqlHandlerFactory handlerFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
-   private final TableEnum table;
+   private final SqlTable table;
    private final String idColumn;
    private final ObjectQueryType type;
 
-   public QuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory, TableEnum table, String idColumn, ObjectQueryType type) {
+   public QuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory, SqlTable table, String idColumn, ObjectQueryType type) {
       this.logger = logger;
       this.joinFactory = joinFactory;
       this.jdbcClient = jdbcClient;

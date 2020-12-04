@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -52,8 +52,8 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       if (sourceArtTable != null) {
          writer.addTable(sourceArtTable);
       }
-      relAlias = writer.addTable(TableEnum.RELATION_TABLE);
-      relTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
+      relAlias = writer.addTable(SqlTable.RELATION_TABLE);
+      relTxsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
    }
 
    @Override
@@ -84,7 +84,7 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
       if (criteria.isTerminalFollow()) {
          writer.write(" AND ");
-         writer.writeEquals(relAlias, toArtField, writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE), "art_id");
+         writer.writeEquals(relAlias, toArtField, writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE), "art_id");
       }
    }
 

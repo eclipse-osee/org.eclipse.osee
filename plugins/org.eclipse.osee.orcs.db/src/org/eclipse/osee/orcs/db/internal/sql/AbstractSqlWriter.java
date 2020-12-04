@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -292,8 +292,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
          handler.addTables(this);
       }
       if (queryDataCursor.getView().isValid()) {
-         tupleAlias = addTable(TableEnum.TUPLE2);
-         tupleTxsAlias = addTable(TableEnum.TXS_TABLE);
+         tupleAlias = addTable(SqlTable.TUPLE2);
+         tupleTxsAlias = addTable(SqlTable.TXS_TABLE);
       }
    }
 
@@ -317,12 +317,12 @@ public abstract class AbstractSqlWriter implements HasOptions {
          }
       }
 
-      if (mainTableAliasExists(TableEnum.ARTIFACT_TABLE)) {
+      if (mainTableAliasExists(SqlTable.ARTIFACT_TABLE)) {
          if (!first) {
             write(" AND ");
          }
-         String mainTableAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-         String mainTxsAlias = getMainTableAlias(TableEnum.TXS_TABLE);
+         String mainTableAlias = getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+         String mainTxsAlias = getMainTableAlias(SqlTable.TXS_TABLE);
          writeEqualsAnd(mainTableAlias, mainTxsAlias, "gamma_id");
          writeTxBranchFilter(mainTxsAlias);
 
@@ -331,13 +331,13 @@ public abstract class AbstractSqlWriter implements HasOptions {
             writeEqualsParameterAnd(tupleAlias, "tuple_type", CoreTupleTypes.ViewApplicability);
             writeEqualsParameterAnd(tupleAlias, "e1", queryDataCursor.getView());
             writeEqualsAnd(tupleAlias, tupleTxsAlias, "gamma_id");
-            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(TableEnum.TXS_TABLE), "app_id");
+            writeEqualsAnd(tupleAlias, "e2", getMainTableAlias(SqlTable.TXS_TABLE), "app_id");
             writeTxBranchFilter(tupleTxsAlias);
          }
       }
    }
 
-   protected boolean mainTableAliasExists(TableEnum table) {
+   protected boolean mainTableAliasExists(SqlTable table) {
       return queryDataCursor.mainTableAliasExists(table);
    }
 
@@ -357,28 +357,28 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected boolean hasAlias(TableEnum table) {
+   protected boolean hasAlias(SqlTable table) {
       return getAliasManager().hasAlias(level, table, table.getObjectType());
    }
 
-   public List<String> getAliases(TableEnum table) {
+   public List<String> getAliases(SqlTable table) {
       return getAliasManager().getAliases(level, table, table.getObjectType());
    }
 
-   public String getFirstAlias(TableEnum table) {
+   public String getFirstAlias(SqlTable table) {
       return getFirstAlias(level, table, table.getObjectType());
    }
 
-   public String getFirstAlias(int level, TableEnum table, ObjectType type) {
+   public String getFirstAlias(int level, SqlTable table, ObjectType type) {
       return getAliasManager().getFirstAlias(level, table, type);
    }
 
-   public String getLastAlias(TableEnum table) {
+   public String getLastAlias(SqlTable table) {
       ObjectType type = table.getObjectType();
       return getAliasManager().getLastAlias(table, type);
    }
 
-   public String getNextAlias(TableEnum table) {
+   public String getNextAlias(SqlTable table) {
       return getNextAlias(table.getPrefix(), table.getObjectType());
    }
 
@@ -394,7 +394,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return aliasManager;
    }
 
-   public String addTable(TableEnum table) {
+   public String addTable(SqlTable table) {
       return addTable(table, table.getObjectType());
    }
 
@@ -402,21 +402,21 @@ public abstract class AbstractSqlWriter implements HasOptions {
       tableEntries.add(tableName);
    }
 
-   public String addTable(TableEnum table, ObjectType objectType) {
+   public String addTable(SqlTable table, ObjectType objectType) {
       String alias = getNextAlias(table.getPrefix(), objectType);
       tableEntries.add(String.format("%s %s", table.getName(), alias));
       return alias;
    }
 
-   public String getMainTableAlias(TableEnum table) {
+   public String getMainTableAlias(SqlTable table) {
       return queryDataCursor.getMainTableAlias(table, this::addTable);
    }
 
-   public void writeTableNoAlias(TableEnum table) {
+   public void writeTableNoAlias(SqlTable table) {
       write(table.getName());
    }
 
-   public String writeTable(TableEnum table) {
+   public String writeTable(SqlTable table) {
       String alias = getNextAlias(table);
       write("%s %s", table.getName(), alias);
       return alias;

@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 
 /**
  * @author Roberto E. Escobar
@@ -43,7 +43,7 @@ public class OrcsVisitorAdapter implements OrcsVisitor {
    }
 
    @Override
-   public void deleteTuple(BranchId branch, TableEnum tupleTable, GammaId gammaId) {
+   public void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId) {
       //
    }
 }

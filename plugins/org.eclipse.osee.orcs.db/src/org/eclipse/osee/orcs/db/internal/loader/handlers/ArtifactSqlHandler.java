@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -47,9 +47,9 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
-      artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+      jArtAlias = writer.addTable(SqlTable.OSEE_JOIN_ID4_TABLE);
+      artAlias = writer.addTable(SqlTable.ARTIFACT_TABLE);
+      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ARTIFACT);
    }
 
    @Override

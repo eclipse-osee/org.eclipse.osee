@@ -30,7 +30,7 @@ public class ConflictStatusManager {
    private static final String MERGE_UPDATE_STATUS =
       "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
    private static final String MERGE_INSERT_STATUS =
-      "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
+      "insert into osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
    private static final String MERGE_ATTRIBUTE_STATUS =
       "SELECT source_gamma_id, dest_gamma_id, status FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";

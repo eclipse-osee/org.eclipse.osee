@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -35,7 +35,7 @@ public class TxIdWithTwoOperatorsSqlHandler extends SqlHandler<CriteriaTxIdWithT
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.getMainTableAlias(TableEnum.TX_DETAILS_TABLE);
+      txdAlias = writer.getMainTableAlias(SqlTable.TX_DETAILS_TABLE);
    }
 
    @Override

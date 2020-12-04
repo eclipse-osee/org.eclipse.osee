@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -51,7 +51,7 @@ public class RelatedRecursiveHandler extends SqlHandler<CriteriaRelatedRecursive
    @Override
    public void addTables(AbstractSqlWriter writer) {
       writer.addTable(cteAlias);
-      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
    }
 
    @Override

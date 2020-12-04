@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InternalTestSuite.class, JdbcReadWriteTest.class, JdbcRunFunctionTest.class})
+@Suite.SuiteClasses({InternalTestSuite.class, JdbcRunFunctionTest.class})
 public class AllJdbcTestSuite {
    // Test Suite
 }

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -33,7 +33,7 @@ public class AssociatedArtIdSqlHandler extends SqlHandler<CriteriaAssociatedArtI
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
+      brAlias = writer.getMainTableAlias(SqlTable.BRANCH_TABLE);
    }
 
    @Override

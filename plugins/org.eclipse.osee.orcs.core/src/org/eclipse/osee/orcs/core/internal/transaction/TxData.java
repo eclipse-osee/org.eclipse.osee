@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TupleData;
@@ -49,7 +49,7 @@ public class TxData implements HasSession, HasBranch {
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
-   private final HashCollection<TableEnum, GammaId> tuplesToDelete = new HashCollection<>();
+   private final HashCollection<SqlTable, GammaId> tuplesToDelete = new HashCollection<>();
    private final HashMap<Long, Artifact> writeables = new HashMap<>();
    private final HashMap<Long, ArtifactReadable> readables = new HashMap<>();
    private final Set<Relation> relations = new HashSet<>();
@@ -134,11 +134,11 @@ public class TxData implements HasSession, HasBranch {
       return tuples;
    }
 
-   public void deleteTuple(TableEnum tupleTable, GammaId gammaId) {
+   public void deleteTuple(SqlTable tupleTable, GammaId gammaId) {
       tuplesToDelete.put(tupleTable, gammaId);
    }
 
-   public HashCollection<TableEnum, GammaId> getTuplesToDelete() {
+   public HashCollection<SqlTable, GammaId> getTuplesToDelete() {
       return tuplesToDelete;
    }
 

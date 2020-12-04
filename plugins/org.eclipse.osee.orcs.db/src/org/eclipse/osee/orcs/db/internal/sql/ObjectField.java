@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**
@@ -31,71 +31,71 @@ import org.eclipse.osee.jdbc.SQL3DataType;
  */
 public enum ObjectField {
 
-   branch_type(SQL3DataType.SMALLINT, TableEnum.BRANCH_TABLE, "branch_type"),
-   branch_id(true, SQL3DataType.BIGINT, TableEnum.BRANCH_TABLE, "branch_id"),
-   branch_name(SQL3DataType.VARCHAR, TableEnum.BRANCH_TABLE, "branch_name"),
-   branch_state(SQL3DataType.SMALLINT, TableEnum.BRANCH_TABLE, "branch_state"),
-   branch_archive_state(SQL3DataType.SMALLINT, TableEnum.BRANCH_TABLE, "archived"),
-   branch_parent_id(SQL3DataType.BIGINT, TableEnum.BRANCH_TABLE, "parent_branch_id"),
-   branch_parent_tx_id(SQL3DataType.INTEGER, TableEnum.BRANCH_TABLE, "parent_transaction_id"),
-   branch_baseline_tx_id(SQL3DataType.INTEGER, TableEnum.BRANCH_TABLE, "baseline_transaction_id"),
-   branch_inherit_access_cntrl(SQL3DataType.SMALLINT, TableEnum.BRANCH_TABLE, "inherit_access_control"),
-   branch_associated_art_id(SQL3DataType.INTEGER, TableEnum.BRANCH_TABLE, "associated_art_id"),
+   branch_type(SQL3DataType.SMALLINT, SqlTable.BRANCH_TABLE, "branch_type"),
+   branch_id(true, SQL3DataType.BIGINT, SqlTable.BRANCH_TABLE, "branch_id"),
+   branch_name(SQL3DataType.VARCHAR, SqlTable.BRANCH_TABLE, "branch_name"),
+   branch_state(SQL3DataType.SMALLINT, SqlTable.BRANCH_TABLE, "branch_state"),
+   branch_archive_state(SQL3DataType.SMALLINT, SqlTable.BRANCH_TABLE, "archived"),
+   branch_parent_id(SQL3DataType.BIGINT, SqlTable.BRANCH_TABLE, "parent_branch_id"),
+   branch_parent_tx_id(SQL3DataType.INTEGER, SqlTable.BRANCH_TABLE, "parent_transaction_id"),
+   branch_baseline_tx_id(SQL3DataType.INTEGER, SqlTable.BRANCH_TABLE, "baseline_transaction_id"),
+   branch_inherit_access_cntrl(SQL3DataType.SMALLINT, SqlTable.BRANCH_TABLE, "inherit_access_control"),
+   branch_associated_art_id(SQL3DataType.INTEGER, SqlTable.BRANCH_TABLE, "associated_art_id"),
 
-   tx_type(SQL3DataType.SMALLINT, TableEnum.TX_DETAILS_TABLE, "tx_type"),
-   tx_id(true, SQL3DataType.INTEGER, TableEnum.TXS_TABLE, "transaction_id"),
-   tx_current(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "tx_current"),
-   tx_comment(SQL3DataType.VARCHAR, TableEnum.TX_DETAILS_TABLE, "osee_comment"),
-   tx_date(SQL3DataType.TIMESTAMP, TableEnum.TX_DETAILS_TABLE, "time"),
-   tx_branch_id(SQL3DataType.BIGINT, TableEnum.TX_DETAILS_TABLE, "branch_id"),
-   tx_author_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "author"),
-   tx_commit_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "commit_art_id"),
+   tx_type(SQL3DataType.SMALLINT, SqlTable.TX_DETAILS_TABLE, "tx_type"),
+   tx_id(true, SQL3DataType.INTEGER, SqlTable.TXS_TABLE, "transaction_id"),
+   tx_current(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "tx_current"),
+   tx_comment(SQL3DataType.VARCHAR, SqlTable.TX_DETAILS_TABLE, "osee_comment"),
+   tx_date(SQL3DataType.TIMESTAMP, SqlTable.TX_DETAILS_TABLE, "time"),
+   tx_branch_id(SQL3DataType.BIGINT, SqlTable.TX_DETAILS_TABLE, "branch_id"),
+   tx_author_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "author"),
+   tx_commit_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "commit_art_id"),
 
-   art_type(SQL3DataType.BIGINT, TableEnum.ARTIFACT_TABLE, "art_type_id"),
-   art_id(true, SQL3DataType.INTEGER, TableEnum.ARTIFACT_TABLE, "art_id"),
-   art_gamma_id(true, SQL3DataType.BIGINT, TableEnum.ARTIFACT_TABLE, "gamma_id"),
-   art_guid(SQL3DataType.VARCHAR, TableEnum.ARTIFACT_TABLE, "guid"),
-   art_mod_type(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "mod_type"),
-   art_tx_id(true, SQL3DataType.INTEGER, TableEnum.TXS_TABLE, "transaction_id"),
-   art_tx_current(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "tx_current"),
-   art_tx_branch_id(SQL3DataType.BIGINT, TableEnum.TXS_TABLE, "branch_id"),
-   art_tx_type(SQL3DataType.SMALLINT, TableEnum.TX_DETAILS_TABLE, "tx_type"),
-   art_tx_comment(SQL3DataType.VARCHAR, TableEnum.TX_DETAILS_TABLE, "osee_comment"),
-   art_tx_date(SQL3DataType.TIMESTAMP, TableEnum.TX_DETAILS_TABLE, "time"),
-   art_tx_author_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "author"),
-   art_tx_commit_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "commit_art_id"),
+   art_type(SQL3DataType.BIGINT, SqlTable.ARTIFACT_TABLE, "art_type_id"),
+   art_id(true, SQL3DataType.INTEGER, SqlTable.ARTIFACT_TABLE, "art_id"),
+   art_gamma_id(true, SQL3DataType.BIGINT, SqlTable.ARTIFACT_TABLE, "gamma_id"),
+   art_guid(SQL3DataType.VARCHAR, SqlTable.ARTIFACT_TABLE, "guid"),
+   art_mod_type(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "mod_type"),
+   art_tx_id(true, SQL3DataType.INTEGER, SqlTable.TXS_TABLE, "transaction_id"),
+   art_tx_current(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "tx_current"),
+   art_tx_branch_id(SQL3DataType.BIGINT, SqlTable.TXS_TABLE, "branch_id"),
+   art_tx_type(SQL3DataType.SMALLINT, SqlTable.TX_DETAILS_TABLE, "tx_type"),
+   art_tx_comment(SQL3DataType.VARCHAR, SqlTable.TX_DETAILS_TABLE, "osee_comment"),
+   art_tx_date(SQL3DataType.TIMESTAMP, SqlTable.TX_DETAILS_TABLE, "time"),
+   art_tx_author_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "author"),
+   art_tx_commit_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "commit_art_id"),
 
-   attr_type(SQL3DataType.BIGINT, TableEnum.ATTRIBUTE_TABLE, "attr_type_id"),
-   attr_id(true, SQL3DataType.INTEGER, TableEnum.ATTRIBUTE_TABLE, "attr_id"),
-   attr_gamma_id(true, SQL3DataType.BIGINT, TableEnum.ATTRIBUTE_TABLE, "gamma_id"),
-   attr_ds_value(SQL3DataType.VARCHAR, TableEnum.ATTRIBUTE_TABLE, "value"),
-   attr_ds_uri(SQL3DataType.VARCHAR, TableEnum.ATTRIBUTE_TABLE, "uri"),
-   attr_value(SQL3DataType.VARCHAR, TableEnum.ATTRIBUTE_TABLE, "attr_type_id", "uri", "value"),
-   attr_mod_type(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "mod_type"),
-   attr_tx_id(true, SQL3DataType.INTEGER, TableEnum.TXS_TABLE, "transaction_id"),
-   attr_tx_current(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "tx_current"),
-   attr_tx_branch_id(SQL3DataType.BIGINT, TableEnum.TXS_TABLE, "branch_id"),
-   attr_tx_type(SQL3DataType.SMALLINT, TableEnum.TX_DETAILS_TABLE, "tx_type"),
-   attr_tx_comment(SQL3DataType.VARCHAR, TableEnum.TX_DETAILS_TABLE, "osee_comment"),
-   attr_tx_date(SQL3DataType.TIMESTAMP, TableEnum.TX_DETAILS_TABLE, "time"),
-   attr_tx_author_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "author"),
-   attr_tx_commit_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "commit_art_id"),
+   attr_type(SQL3DataType.BIGINT, SqlTable.ATTRIBUTE_TABLE, "attr_type_id"),
+   attr_id(true, SQL3DataType.INTEGER, SqlTable.ATTRIBUTE_TABLE, "attr_id"),
+   attr_gamma_id(true, SQL3DataType.BIGINT, SqlTable.ATTRIBUTE_TABLE, "gamma_id"),
+   attr_ds_value(SQL3DataType.VARCHAR, SqlTable.ATTRIBUTE_TABLE, "value"),
+   attr_ds_uri(SQL3DataType.VARCHAR, SqlTable.ATTRIBUTE_TABLE, "uri"),
+   attr_value(SQL3DataType.VARCHAR, SqlTable.ATTRIBUTE_TABLE, "attr_type_id", "uri", "value"),
+   attr_mod_type(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "mod_type"),
+   attr_tx_id(true, SQL3DataType.INTEGER, SqlTable.TXS_TABLE, "transaction_id"),
+   attr_tx_current(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "tx_current"),
+   attr_tx_branch_id(SQL3DataType.BIGINT, SqlTable.TXS_TABLE, "branch_id"),
+   attr_tx_type(SQL3DataType.SMALLINT, SqlTable.TX_DETAILS_TABLE, "tx_type"),
+   attr_tx_comment(SQL3DataType.VARCHAR, SqlTable.TX_DETAILS_TABLE, "osee_comment"),
+   attr_tx_date(SQL3DataType.TIMESTAMP, SqlTable.TX_DETAILS_TABLE, "time"),
+   attr_tx_author_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "author"),
+   attr_tx_commit_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "commit_art_id"),
 
-   rel_type(SQL3DataType.BIGINT, TableEnum.RELATION_TABLE, "rel_link_type_id"),
-   rel_id(true, SQL3DataType.INTEGER, TableEnum.RELATION_TABLE, "rel_link_id"),
-   rel_gamma_id(true, SQL3DataType.BIGINT, TableEnum.RELATION_TABLE, "gamma_id"),
-   rel_rationale(SQL3DataType.VARCHAR, TableEnum.RELATION_TABLE, "rationale"),
-   rel_a_art_id(SQL3DataType.INTEGER, TableEnum.RELATION_TABLE, "a_art_id"),
-   rel_b_art_id(SQL3DataType.INTEGER, TableEnum.RELATION_TABLE, "b_art_id"),
-   rel_mod_type(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "mod_type"),
-   rel_tx_id(true, SQL3DataType.INTEGER, TableEnum.TXS_TABLE, "transaction_id"),
-   rel_tx_current(SQL3DataType.SMALLINT, TableEnum.TXS_TABLE, "tx_current"),
-   rel_tx_branch_id(SQL3DataType.BIGINT, TableEnum.TXS_TABLE, "branch_id"),
-   rel_tx_type(SQL3DataType.SMALLINT, TableEnum.TX_DETAILS_TABLE, "tx_type"),
-   rel_tx_comment(SQL3DataType.VARCHAR, TableEnum.TX_DETAILS_TABLE, "osee_comment"),
-   rel_tx_date(SQL3DataType.TIMESTAMP, TableEnum.TX_DETAILS_TABLE, "time"),
-   rel_tx_author_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "author"),
-   rel_tx_commit_id(SQL3DataType.INTEGER, TableEnum.TX_DETAILS_TABLE, "commit_art_id");
+   rel_type(SQL3DataType.BIGINT, SqlTable.RELATION_TABLE, "rel_link_type_id"),
+   rel_id(true, SQL3DataType.INTEGER, SqlTable.RELATION_TABLE, "rel_link_id"),
+   rel_gamma_id(true, SQL3DataType.BIGINT, SqlTable.RELATION_TABLE, "gamma_id"),
+   rel_rationale(SQL3DataType.VARCHAR, SqlTable.RELATION_TABLE, "rationale"),
+   rel_a_art_id(SQL3DataType.INTEGER, SqlTable.RELATION_TABLE, "a_art_id"),
+   rel_b_art_id(SQL3DataType.INTEGER, SqlTable.RELATION_TABLE, "b_art_id"),
+   rel_mod_type(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "mod_type"),
+   rel_tx_id(true, SQL3DataType.INTEGER, SqlTable.TXS_TABLE, "transaction_id"),
+   rel_tx_current(SQL3DataType.SMALLINT, SqlTable.TXS_TABLE, "tx_current"),
+   rel_tx_branch_id(SQL3DataType.BIGINT, SqlTable.TXS_TABLE, "branch_id"),
+   rel_tx_type(SQL3DataType.SMALLINT, SqlTable.TX_DETAILS_TABLE, "tx_type"),
+   rel_tx_comment(SQL3DataType.VARCHAR, SqlTable.TX_DETAILS_TABLE, "osee_comment"),
+   rel_tx_date(SQL3DataType.TIMESTAMP, SqlTable.TX_DETAILS_TABLE, "time"),
+   rel_tx_author_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "author"),
+   rel_tx_commit_id(SQL3DataType.INTEGER, SqlTable.TX_DETAILS_TABLE, "commit_art_id");
 
    public static enum Family {
       UNDEFINED,
@@ -115,16 +115,16 @@ public enum ObjectField {
 
    private final ObjectType objectType;
    private final Family family;
-   private final TableEnum table;
+   private final SqlTable table;
    private final String[] columnName;
    private final boolean primaryKey;
    private final SQL3DataType dataType;
 
-   private ObjectField(SQL3DataType dataType, TableEnum table, String... columnName) {
+   private ObjectField(SQL3DataType dataType, SqlTable table, String... columnName) {
       this(false, dataType, table, columnName);
    }
 
-   private ObjectField(boolean primaryKey, SQL3DataType dataType, TableEnum table, String... columnName) {
+   private ObjectField(boolean primaryKey, SQL3DataType dataType, SqlTable table, String... columnName) {
       this.family = family(this);
       this.objectType = objectType(this);
       this.dataType = dataType;
@@ -145,7 +145,7 @@ public enum ObjectField {
       return dataType;
    }
 
-   public TableEnum getTable() {
+   public SqlTable getTable() {
       return table;
    }
 

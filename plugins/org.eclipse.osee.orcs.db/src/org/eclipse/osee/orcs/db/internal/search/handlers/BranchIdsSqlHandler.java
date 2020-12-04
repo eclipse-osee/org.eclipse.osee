@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchIdsSqlHandler extends MainTableFieldSqlHandler {
    public BranchIdsSqlHandler() {
-      super(TableEnum.BRANCH_TABLE, "branch_id", SqlHandlerPriority.BRANCH_ID);
+      super(SqlTable.BRANCH_TABLE, "branch_id", SqlHandlerPriority.BRANCH_ID);
    }
 }

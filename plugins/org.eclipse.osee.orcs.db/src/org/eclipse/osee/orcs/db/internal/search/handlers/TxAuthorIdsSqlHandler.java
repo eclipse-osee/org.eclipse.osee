@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class TxAuthorIdsSqlHandler extends MainTableFieldSqlHandler {
    public TxAuthorIdsSqlHandler() {
-      super(TableEnum.TX_DETAILS_TABLE, "author", SqlHandlerPriority.TX_AUTHOR);
+      super(SqlTable.TX_DETAILS_TABLE, "author", SqlHandlerPriority.TX_AUTHOR);
    }
 }

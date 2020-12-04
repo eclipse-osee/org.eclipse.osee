@@ -17,7 +17,7 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createObjectSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -82,19 +82,19 @@ public final class Engines {
       return new TaggingEngine(tagProcessor);
    }
 
-   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TableEnum table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
+   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlTable table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
       return new QuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory, table, idColumn, type);
    }
 
    public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger);
-      return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory,
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, SqlTable.BRANCH_TABLE, "branch_id", handlerFactory,
          ObjectQueryType.BRANCH);
    }
 
    public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger);
-      return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.TX_DETAILS_TABLE, "transaction_id",
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, SqlTable.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory, ObjectQueryType.TX);
    }
 

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.executor.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -133,7 +133,7 @@ public class ComodificationCheck implements TransactionProcessor {
       }
 
       @Override
-      public void deleteTuple(BranchId branch, TableEnum tupleTable, GammaId gammaId) {
+      public void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId) {
          // tuples do not support modification (only create and delete)
       }
    }

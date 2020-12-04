@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 
 /**
@@ -36,8 +36,8 @@ public class XtraTxDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      txdAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE, objectType);
-      txsAlias = writer.getFirstAlias(getLevel(), TableEnum.TXS_TABLE, objectType);
+      txdAlias = writer.addTable(SqlTable.TX_DETAILS_TABLE, objectType);
+      txsAlias = writer.getFirstAlias(getLevel(), SqlTable.TXS_TABLE, objectType);
    }
 
    @Override

@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 
 /**
@@ -31,13 +31,13 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      itemAlias = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
+      itemAlias = writer.addTable(SqlTable.RELATION_TABLE);
+      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      String artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+      String artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
       writer.write("(");
       writer.write(artAlias);
       writer.write(".art_id = ");

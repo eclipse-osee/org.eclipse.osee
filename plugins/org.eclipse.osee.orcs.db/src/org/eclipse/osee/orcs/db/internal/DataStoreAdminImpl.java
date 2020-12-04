@@ -60,7 +60,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       Conditions.checkExpressionFailOnTrue(jdbcClient.getConfig().isProduction(),
          "Error - attempting to initialize a production datastore.");
 
-      jdbcClient.migrate(options, schemaProvider.get());
+      jdbcClient.createDataStore(options, schemaProvider.get());
 
       String attributeDataPath = ResourceConstants.getAttributeDataPath(properties);
       logger.info("Deleting application server binary data [%s]...", attributeDataPath);

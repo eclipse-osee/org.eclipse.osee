@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
@@ -53,7 +53,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public class OrcsScriptSqlWriter extends AbstractSqlWriter {
-   private final HashMap<TableEnum, String> mainAliases = new HashMap<>();
+   private final HashMap<SqlTable, String> mainAliases = new HashMap<>();
 
    private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
    private final SqlFieldResolver fieldResolver;
@@ -156,15 +156,15 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    @Override
    public void writeTxBranchFilter(String txsAlias, boolean allowDeleted) {
       writeTxFilter(txsAlias, allowDeleted);
-      if (hasAlias(TableEnum.BRANCH_TABLE)) {
-         String alias = getFirstAlias(TableEnum.BRANCH_TABLE);
+      if (hasAlias(SqlTable.BRANCH_TABLE)) {
+         String alias = getFirstAlias(SqlTable.BRANCH_TABLE);
          write(" AND ");
          write(txsAlias);
          write(".branch_id = ");
          write(alias);
          write(".branch_id");
-      } else if (hasAlias(TableEnum.TX_DETAILS_TABLE)) {
-         String alias = getFirstAlias(TableEnum.TX_DETAILS_TABLE);
+      } else if (hasAlias(SqlTable.TX_DETAILS_TABLE)) {
+         String alias = getFirstAlias(SqlTable.TX_DETAILS_TABLE);
          write(" AND ");
          write(txsAlias);
          write(".transaction_id = ");
@@ -194,14 +194,14 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
       }
 
       if (!artHandlers.isEmpty()) {
-         TableEnum table = null;
+         SqlTable table = null;
          List<SqlHandler<?>> withQueryHandlers = null;
          if (!branchHandlers.isEmpty()) {
             withQueryHandlers = branchHandlers;
-            table = TableEnum.BRANCH_TABLE;
+            table = SqlTable.BRANCH_TABLE;
          } else if (!txHandlers.isEmpty()) {
             withQueryHandlers = txHandlers;
-            table = TableEnum.TX_DETAILS_TABLE;
+            table = SqlTable.TX_DETAILS_TABLE;
          }
 
          if (withQueryHandlers != null && table != null) {
@@ -237,7 +237,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
          int level = data.getLevel();
          ObjectField objectField = getObjectField(data);
 
-         TableEnum table = objectField.getTable();
+         SqlTable table = objectField.getTable();
          ObjectType type = objectField.getType();
 
          String key = asKey(level, table, type);
@@ -253,24 +253,24 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
       return toReturn;
    }
 
-   private String asKey(int level, TableEnum table, ObjectType type) {
+   private String asKey(int level, SqlTable table, ObjectType type) {
       return String.format("%s.%s.%s", level, table, type);
    }
 
-   private SqlHandler<?> newSqlHandler(int level, TableEnum table, ObjectType type) {
+   private SqlHandler<?> newSqlHandler(int level, SqlTable table, ObjectType type) {
       SqlHandler<?> handler = null;
       SqlHandlerPriority priority = getXtraSqlHandlerPriority(table, type);
-      switch (table) {
-         case TX_DETAILS_TABLE:
+      switch (table.getName()) {
+         case "osee_tx_details":
             handler = new XtraTxDataSqlHandler(priority, type);
             break;
-         case BRANCH_TABLE:
+         case "osee_branch":
             handler = new XtraBranchDataSqlHandler(priority, type);
             break;
-         case ATTRIBUTE_TABLE:
+         case "osee_attribute":
             handler = new XtraAttributeDataSqlHandler();
             break;
-         case RELATION_TABLE:
+         case "osee_relation_link":
             handler = new XtraRelationDataSqlHandler();
             break;
          default:
@@ -282,7 +282,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
       return handler;
    }
 
-   private SqlHandlerPriority getXtraSqlHandlerPriority(TableEnum table, ObjectType type) {
+   private SqlHandlerPriority getXtraSqlHandlerPriority(SqlTable table, ObjectType type) {
       SqlHandlerPriority priority = SqlHandlerPriority.LAST;
       if (type != null) {
          switch (type) {
@@ -306,7 +306,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getMainTableAlias(TableEnum table) {
+   public String getMainTableAlias(SqlTable table) {
       String alias = mainAliases.get(table);
       if (alias == null) {
          alias = addTable(table);
@@ -316,7 +316,7 @@ public class OrcsScriptSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected boolean mainTableAliasExists(TableEnum table) {
+   protected boolean mainTableAliasExists(SqlTable table) {
       return mainAliases.containsKey(table);
    }
 }

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -32,8 +32,8 @@ public class MergeBranchForSqlHandler extends SqlHandler<CriteriaMergeBranchFor>
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      mergeAlias = writer.addTable(TableEnum.MERGE_TABLE);
-      brAlias = writer.getMainTableAlias(TableEnum.BRANCH_TABLE);
+      mergeAlias = writer.addTable(SqlTable.OSEE_MERGE_TABLE);
+      brAlias = writer.getMainTableAlias(SqlTable.BRANCH_TABLE);
    }
 
    @Override

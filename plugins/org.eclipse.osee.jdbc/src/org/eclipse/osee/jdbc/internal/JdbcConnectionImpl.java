@@ -65,6 +65,7 @@ public class JdbcConnectionImpl implements JdbcConnection {
    }
 
    protected PreparedStatement prepareStatement(String sql) throws SQLException {
+
       return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 

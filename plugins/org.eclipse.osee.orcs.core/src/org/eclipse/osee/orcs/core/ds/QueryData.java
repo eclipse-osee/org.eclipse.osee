@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -88,7 +88,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final QueryFactory queryFactory;
    private final QueryEngine queryEngine;
    private final OrcsTokenService tokenService;
-   private final HashMap<TableEnum, String> mainAliases = new HashMap<>(4);
+   private final HashMap<SqlTable, String> mainAliases = new HashMap<>(4);
    private QueryType queryType;
    private boolean followCausesChild = true;
 
@@ -725,7 +725,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       }
    }
 
-   public String getMainTableAlias(TableEnum table, Function<TableEnum, String> addTable) {
+   public String getMainTableAlias(SqlTable table, Function<SqlTable, String> addTable) {
       String alias = mainAliases.get(table);
       if (alias == null) {
          alias = addTable.apply(table);
@@ -734,7 +734,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return alias;
    }
 
-   public boolean mainTableAliasExists(TableEnum table) {
+   public boolean mainTableAliasExists(SqlTable table) {
       return mainAliases.containsKey(table);
    }
 

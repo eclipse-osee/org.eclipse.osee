@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -57,19 +57,19 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
+      jArtAlias = writer.addTable(SqlTable.OSEE_JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
       }
 
       typeIds = getLocalTypeIds();
       if (typeIds.size() > 1) {
-         jTypeIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         jTypeIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
       }
 
-      relationAlias = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
+      relationAlias = writer.addTable(SqlTable.RELATION_TABLE);
+      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
    }
 
    private Collection<Long> getLocalTypeIds() {

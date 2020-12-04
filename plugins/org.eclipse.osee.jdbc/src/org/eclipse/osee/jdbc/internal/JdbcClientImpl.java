@@ -52,17 +52,14 @@ public final class JdbcClientImpl implements JdbcClient {
    private final JdbcConnectionProvider connectionProvider;
    private final JdbcSequenceProvider sequenceProvider;
    private final JdbcConnectionInfo dbInfo;
-   private final JdbcMigration migration;
 
    private volatile JdbcDbType dbType;
 
    public JdbcClientImpl(JdbcClientConfig config, JdbcConnectionProvider connectionProvider, JdbcSequenceProvider sequenceProvider, JdbcConnectionInfo dbInfo) {
-      super();
       this.config = config;
       this.connectionProvider = connectionProvider;
       this.sequenceProvider = sequenceProvider;
       this.dbInfo = dbInfo;
-      this.migration = new JdbcMigration(this);
    }
 
    @Override
@@ -493,9 +490,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources) {
-
-      migration.migrate(options, schemaResources);
+   public void createDataStore(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources) {
+      new DatabaseCreation(this).createDataStore();
    }
 
    @Override

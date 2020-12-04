@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class TxIdsSqlHandler extends MainTableFieldSqlHandler {
    public TxIdsSqlHandler() {
-      super(TableEnum.TX_DETAILS_TABLE, "transaction_id", SqlHandlerPriority.TX_ID);
+      super(SqlTable.TX_DETAILS_TABLE, "transaction_id", SqlHandlerPriority.TX_ID);
    }
 }

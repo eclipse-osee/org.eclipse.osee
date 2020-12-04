@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -41,20 +41,20 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
    @Override
    public void addTables(AbstractSqlWriter writer) {
       if (criteria.getTypes().size() > 1) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
       }
 
-      artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.getMainTableAlias(TableEnum.TXS_TABLE);
+      artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+      txsAlias = writer.getMainTableAlias(SqlTable.TXS_TABLE);
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
       Collection<AttributeTypeId> types = criteria.getTypes();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
-      String attAlias = writer.writeTable(TableEnum.ATTRIBUTE_TABLE);
+      String attAlias = writer.writeTable(SqlTable.ATTRIBUTE_TABLE);
       writer.write(", ");
-      String txsNotAlias = writer.writeTable(TableEnum.TXS_TABLE);
+      String txsNotAlias = writer.writeTable(SqlTable.TXS_TABLE);
       writer.write(" WHERE ");
       writer.writeEqualsAnd(attAlias, artAlias, "art_id");
 

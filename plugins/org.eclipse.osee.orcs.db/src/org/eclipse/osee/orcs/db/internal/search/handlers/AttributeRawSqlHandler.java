@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ObjectType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -56,17 +56,17 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
       values = getValuesForSearch();
       if (values.size() > 1) {
          valueJoinQuery = writer.writeCharJoin(values);
-         valueJoinAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
+         valueJoinAlias = writer.addTable(SqlTable.OSEE_JOIN_CHAR_ID_TABLE);
       }
 
       types = criteria.getAttributeTypes();
       if (types.size() > 1) {
          typeJoinQuery = writer.writeJoin(types);
-         typeJoinAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         typeJoinAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
       }
 
-      attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
+      attrAlias = writer.addTable(SqlTable.ATTRIBUTE_TABLE);
+      txsAlias = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    private Collection<String> getValuesForSearch() {
@@ -138,7 +138,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
          writer.addParameter(valueJoinQuery.getQueryId());
       }
 
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> aliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {
          writer.writeAndLn();
          int aSize = aliases.size();

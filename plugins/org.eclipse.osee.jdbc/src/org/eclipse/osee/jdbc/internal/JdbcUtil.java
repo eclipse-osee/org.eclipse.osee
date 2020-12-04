@@ -100,6 +100,9 @@ public final class JdbcUtil {
          } else if (dataValue instanceof Identity<?>) {// remove once Id is fully utilized
             Identity<?> id = (Identity<?>) dataValue;
             statement.setInt(preparedIndex, (int) id.getGuid());
+         } else if (dataValue instanceof String) {
+            statement.setString(preparedIndex, (String) dataValue);
+
          } else {
             statement.setObject(preparedIndex, dataValue);
          }

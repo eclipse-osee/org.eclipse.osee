@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMainTableField;
@@ -29,12 +29,12 @@ public abstract class MainTableFieldSqlHandler extends SqlHandler<CriteriaMainTa
    private CriteriaMainTableField criteria;
    private String mainAlias;
    private String jIdAlias;
-   private final TableEnum table;
+   private final SqlTable table;
    private final String column;
    private final SqlHandlerPriority priority;
    private Collection<? extends Id> values;
 
-   public MainTableFieldSqlHandler(TableEnum table, String column, SqlHandlerPriority priority) {
+   public MainTableFieldSqlHandler(SqlTable table, String column, SqlHandlerPriority priority) {
       this.table = table;
       this.column = column;
       this.priority = priority;
@@ -50,7 +50,7 @@ public abstract class MainTableFieldSqlHandler extends SqlHandler<CriteriaMainTa
       mainAlias = writer.getMainTableAlias(table);
       values = criteria.getValues();
       if (values.size() > 1) {
-         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
+         jIdAlias = writer.addTable(SqlTable.OSEE_JOIN_ID_TABLE);
       }
    }
 

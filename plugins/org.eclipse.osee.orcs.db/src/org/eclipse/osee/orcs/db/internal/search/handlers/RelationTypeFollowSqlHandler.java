@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
@@ -47,26 +47,26 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      List<String> artAliases = writer.getAliases(SqlTable.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
-         artAlias0 = writer.addTable(TableEnum.ARTIFACT_TABLE);
-         txsAlias0 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+         artAlias0 = writer.addTable(SqlTable.ARTIFACT_TABLE);
+         txsAlias0 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ARTIFACT);
       } else {
          artAlias0 = artAliases.iterator().next();
       }
-      relAlias1 = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
+      relAlias1 = writer.addTable(SqlTable.RELATION_TABLE);
+      txsAlias1 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.RELATION);
 
-      String branchAlias = writer.getFirstAlias(TableEnum.BRANCH_TABLE);
+      String branchAlias = writer.getFirstAlias(SqlTable.BRANCH_TABLE);
 
       SqlAliasManager aliasManager = writer.getAliasManager();
       aliasManager.nextLevel();
 
-      artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+      artAlias2 = writer.addTable(SqlTable.ARTIFACT_TABLE);
+      txsAlias2 = writer.addTable(SqlTable.TXS_TABLE, ObjectType.ARTIFACT);
 
       if (Strings.isValid(branchAlias)) {
-         aliasManager.putAlias(TableEnum.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
+         aliasManager.putAlias(SqlTable.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
       }
    }
 

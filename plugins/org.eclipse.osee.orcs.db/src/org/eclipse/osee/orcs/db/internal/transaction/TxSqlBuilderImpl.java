@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -181,13 +181,13 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void deleteTuple(BranchId branch, TableEnum tupleTable, GammaId gammaId) {
+   public void deleteTuple(BranchId branch, SqlTable tupleTable, GammaId gammaId) {
       SqlOrderEnum sqlEnum;
-      if (tupleTable.equals(TableEnum.TUPLE2)) {
+      if (tupleTable.equals(SqlTable.TUPLE2)) {
          sqlEnum = SqlOrderEnum.TUPLES2;
-      } else if (tupleTable.equals(TableEnum.TUPLE3)) {
+      } else if (tupleTable.equals(SqlTable.TUPLE3)) {
          sqlEnum = SqlOrderEnum.TUPLES3;
-      } else if (tupleTable.equals(TableEnum.TUPLE4)) {
+      } else if (tupleTable.equals(SqlTable.TUPLE4)) {
          sqlEnum = SqlOrderEnum.TUPLES4;
       } else {
          throw new OseeStateException("Unexpected table enum [%s]", tupleTable);

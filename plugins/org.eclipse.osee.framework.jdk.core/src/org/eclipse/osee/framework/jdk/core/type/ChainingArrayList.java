@@ -26,4 +26,5 @@ public final class ChainingArrayList<@NonNull T> extends ArrayList<T> {
       add(element);
       return element;
    }
+
 }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -204,7 +204,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          @Override
          public void addTables(AbstractSqlWriter writer) {
             writer.addTable(relsAlias);
-            artAlias = writer.getMainTableAlias(TableEnum.ARTIFACT_TABLE);
+            artAlias = writer.getMainTableAlias(SqlTable.ARTIFACT_TABLE);
          }
 
          @Override
@@ -262,8 +262,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
    @Override
    protected void writeSelectFields() {
-      String artAlias = getMainTableAlias(TableEnum.ARTIFACT_TABLE);
-      String txAlias = getMainTableAlias(TableEnum.TXS_TABLE);
+      String artAlias = getMainTableAlias(SqlTable.ARTIFACT_TABLE);
+      String txAlias = getMainTableAlias(SqlTable.TXS_TABLE);
       if (relsAlias == null) {
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
             txAlias, "mod_type");
@@ -280,7 +280,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    protected void writeSelect(Iterable<SqlHandler<?>> handlers) {
       writeSelectAndHint();
       if (rootQueryData.isCountQueryType()) {
-         writeSelectFields(getMainTableAlias(TableEnum.ARTIFACT_TABLE), "art_id");
+         writeSelectFields(getMainTableAlias(SqlTable.ARTIFACT_TABLE), "art_id");
       } else {
          writeSelectFields();
          for (SqlHandler<?> handler : handlers) {

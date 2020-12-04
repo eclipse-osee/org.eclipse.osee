@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -28,10 +28,10 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class QuerySqlWriter extends AbstractSqlWriter {
    private final String idColumn;
-   private final TableEnum table;
+   private final SqlTable table;
    private String tableAlias;
 
-   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData, TableEnum table, String idColumn) {
+   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryData queryData, SqlTable table, String idColumn) {
       super(joinFactory, jdbcClient, context, queryData);
       this.idColumn = idColumn;
       this.table = table;

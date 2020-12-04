@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" >
-	<implementation class="org.eclipse.osee.activity.internal.ActivityMigrationResource" />
- <service>
-    <provide interface="org.eclipse.osee.jdbc.JdbcMigrationResource"/>
- </service>
-</scr:component>

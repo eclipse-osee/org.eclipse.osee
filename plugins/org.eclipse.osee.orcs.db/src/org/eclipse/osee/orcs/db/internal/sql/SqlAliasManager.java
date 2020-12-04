@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.ObjectType;
-import org.eclipse.osee.framework.core.enums.TableEnum;
+import org.eclipse.osee.framework.core.enums.SqlTable;
 
 /**
  * @author Roberto E. Escobar
@@ -45,11 +45,11 @@ public class SqlAliasManager {
       return dataSet;
    }
 
-   public boolean hasAlias(int level, TableEnum table, ObjectType objectType) {
+   public boolean hasAlias(int level, SqlTable table, ObjectType objectType) {
       return !getAliases(level, table, objectType).isEmpty();
    }
 
-   public List<String> getAliases(int level, TableEnum table, ObjectType objectType) {
+   public List<String> getAliases(int level, SqlTable table, ObjectType objectType) {
       List<String> toReturn;
       AliasSet dataSet = getAliasByLevel(level);
       if (dataSet != null) {
@@ -64,12 +64,12 @@ public class SqlAliasManager {
       return toReturn;
    }
 
-   public String getFirstAlias(int level, TableEnum table, ObjectType objectType) {
+   public String getFirstAlias(int level, SqlTable table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getFirst(aliases, null);
    }
 
-   public String getLastAlias(TableEnum table, ObjectType objectType) {
+   public String getLastAlias(SqlTable table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getLast(aliases, null);
    }
@@ -85,7 +85,7 @@ public class SqlAliasManager {
       return aliasValue;
    }
 
-   public void putAlias(TableEnum table, ObjectType type, String alias) {
+   public void putAlias(SqlTable table, ObjectType type, String alias) {
       String prefix = table.getPrefix();
       putAlias(prefix, type, alias);
    }

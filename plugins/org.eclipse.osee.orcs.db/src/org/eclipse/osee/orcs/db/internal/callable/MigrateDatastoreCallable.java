@@ -41,7 +41,7 @@ public class MigrateDatastoreCallable extends AbstractDatastoreCallable<DataStor
 
    @Override
    public DataStoreInfo call() throws Exception {
-      getJdbcClient().migrate(options, schemaProvider.get());
+      getJdbcClient().createDataStore(options, schemaProvider.get());
 
       Callable<DataStoreInfo> fetchCallable =
          new FetchDatastoreInfoCallable(getLogger(), getJdbcClient(), schemaProvider, preferences);
