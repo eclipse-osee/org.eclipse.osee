@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -56,6 +57,11 @@ public class AtsHealthCheckNavigateItem extends XNavigateItem {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
+            String name = getName();
+            String dbName = AtsApiService.get().getConfigValue("DatabaseName");
+            if (Strings.isValid(dbName)) {
+               name += name + " - " + dbName;
+            }
             XResultData rd = AtsApiService.get().getServerEndpoints().getConfigEndpoint().validate();
             XResultDataUI.report(rd, getName());
          } catch (Exception ex) {
