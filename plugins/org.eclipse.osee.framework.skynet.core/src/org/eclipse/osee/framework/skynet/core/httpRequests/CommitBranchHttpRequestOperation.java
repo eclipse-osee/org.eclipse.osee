@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -79,19 +78,9 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) {
-      // Store current state so we can return to that state if commit fails
-      BranchState currentState = BranchManager.getState(sourceBranch);
       // Set to new result in case exception happens before commitBranch completes
       transactionResult = new TransactionResult();
       try {
-
-         /**
-          * Set the local branch to commit in progress; Call to commit will cause server to check for
-          * commit_in_progress. It will error if true or set if false so other clients/servers do not try to commit.
-          */
-         BranchManager.getBranch(sourceBranch).setBranchState(BranchState.COMMIT_IN_PROGRESS);
-         // TBD Uncomment for branch error BranchManager.setState(sourceBranch, BranchState.COMMIT_IN_PROGRESS);
-
          BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);
          OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
@@ -104,16 +93,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          transactionResult = branchEp.commitBranch(sourceBranch, destinationBranch, options);
 
          if (transactionResult.getResults().isErrors() || transactionResult.getTx().isInvalid()) {
-            // Set back to what it was in local Branch object
-            BranchManager.setState(sourceBranch, currentState);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
          } else {
-            BranchManager.setState(sourceBranch, BranchState.COMMITTED);
             handleResponse(transactionResult.getTx(), monitor, sourceBranch, destinationBranch);
          }
       } catch (Exception ex) {
          // Set back to what it was in local Branch object
-         BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
          transactionResult.getResults().errorf("Exception CommitBranchHttpRequestOperation [%s]",
             Lib.exceptionToString(ex));

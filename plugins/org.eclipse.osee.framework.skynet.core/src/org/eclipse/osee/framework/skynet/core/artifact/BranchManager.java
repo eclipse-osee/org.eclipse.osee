@@ -393,7 +393,7 @@ public final class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    * 
+    *
     * @return
     */
    public static TransactionResult commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {

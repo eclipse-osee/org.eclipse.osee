@@ -44,7 +44,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToDefaultState(StateToken.Analyze) //
-         .andToStates(StateToken.Completed, StateToken.Cancelled, StateToken.Analyze) //
+         .andToStates(StateToken.Completed, StateToken.Cancelled, StateToken.Analyze, StateToken.Implement) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
          .andLayout( //
@@ -60,7 +60,7 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
 
       bld.andState(2, "Analyze", StateType.Working) //
          .andToDefaultState(StateToken.Authorize) //
-         .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse) //
+         .andToStates(StateToken.Cancelled, StateToken.Authorize, StateToken.Endorse, StateToken.Implement) //
          .andOverrideValidationStates(StateToken.Endorse) //
          .andRules(RuleDefinitionOption.AllowAssigneeToAll) //
          .andColor(StateColor.BLACK) //
