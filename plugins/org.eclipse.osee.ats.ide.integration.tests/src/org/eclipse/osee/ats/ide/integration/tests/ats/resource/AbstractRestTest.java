@@ -31,7 +31,7 @@ import org.junit.Assert;
  */
 public abstract class AbstractRestTest {
 
-   protected void getAndCountWorkItems(String url, int expected) {
+   protected void getAndCountWorkItems(URI url, int expected) {
       String json = getJson(url);
       try {
          List<Long> ids = WorkItemsJsonReader.getWorkItemIdsFromJson(json);
@@ -39,6 +39,14 @@ public abstract class AbstractRestTest {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   protected Object getFirstAndCount(URI url, int count) {
+      String json = getJson(url);
+
+      Object[] objs = JsonUtil.readValue(json, Object[].class);
+      Assert.assertEquals(count, objs.length);
+      return objs[0];
    }
 
    protected Object getFirstAndCount(String url, int count) {
@@ -87,30 +95,7 @@ public abstract class AbstractRestTest {
    }
 
    private String getAndCheckResponseCode(URI uri, MediaType mediaType) {
-      boolean uriChanged = false;
-      String newURI = "";
-      boolean statusError = false;
-      String uriString = uri.toString().replaceAll("%3F", "?");
       Response response = JaxRsClient.newClient().target(uri).request(mediaType).get();
-      if (response.getStatus() != 200) {
-         response = JaxRsClient.newClient().target(uriString).request(mediaType).get();
-         statusError = true;
-      }
-      Assert.assertEquals("Unexpected error code: " + response.readEntity(String.class),
-         javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
-
-      if (response.readEntity(String.class).length() < 3) {
-         newURI = uri.toString().replaceAll("%3F", "?");
-         uriChanged = true;
-      }
-      if (uriChanged == true) {
-         response = JaxRsClient.newClient().target(newURI).request(mediaType).get();
-      } else {
-         response = JaxRsClient.newClient().target(uri).request(mediaType).get();
-      }
-      if (statusError == true) {
-         response = JaxRsClient.newClient().target(uriString).request(mediaType).get();
-      }
       return response.readEntity(String.class);
    }
 

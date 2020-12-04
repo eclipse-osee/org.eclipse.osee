@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
@@ -90,43 +91,78 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryTitle() {
-      getFirstAndCount(String.format("ats/action/query?Team=%s&Title=SAW", DemoArtifactToken.SAW_Code.getIdString()),
-         3);
+
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         "Title", "SAW"//
+      );
+
+      getFirstAndCount(uri, 3);
    }
 
    @Test
    public void testQueryPriority() {
 
-      getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&Priority=1&Priority=3", DemoArtifactToken.SAW_Code.getIdString()), 4);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         AtsAttributeTypes.Priority.getIdString(), "1", //
+         AtsAttributeTypes.Priority.getIdString(), "3"//
+      );
+
+      getAndCountWorkItems(uri, 4);
    }
 
    @Test
    public void testQueryWorking() {
-      getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&StateType=Working", DemoArtifactToken.SAW_Code.getIdString()), 4);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         "StateType", StateType.Working.name()//
+      );
+      getAndCountWorkItems(uri, 4);
    }
 
    @Test
    public void testQueryAssignee() {
-      getAndCountWorkItems(String.format("ats/action/query?Team=%s&Assignee=4444&Assignee=3333",
-         DemoArtifactToken.SAW_Code.getIdString()), 4);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         "Assignee", "4444", //
+         "Assignee", "3333");
+      getAndCountWorkItems(uri, 4);
    }
 
    @Test
    public void testQueryOriginator() {
-      getAndCountWorkItems(
-         String.format("ats/action/query?Team=%s&Originator=3333", DemoArtifactToken.SAW_Code.getIdString()), 4);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         "Originator", "3333" //
+      );
+      getAndCountWorkItems(uri, 4);
    }
 
    @Test
    public void testQueryTeam() {
-      getFirstAndCount("ats/action/query?Team=30013695", 4);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString //
+      );
+      getFirstAndCount(uri, 4);
    }
 
    @Test
    public void testQueryTeamPriorityAndWorking() {
-      getFirstAndCount("ats/action/query?Team=30013695&Priority=3&Priority=2&StateType=Working", 2);
+      String idString = DemoArtifactToken.SAW_Code.getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         "Priority", "2", //
+         "Priority", "3", //
+         "StateType", StateType.Working.name() //
+      );
+      getFirstAndCount(uri, 2);
    }
 
    public TeamWorkFlowArtifact getCodeWorkflow() {
@@ -157,19 +193,34 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
+   private URI createQueryUri(String... queryParmPairs) {
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      UriBuilder builder = UriBuilder.fromUri(appServer).path("ats").path("action").path("query");
+      for (int x = 0; x < queryParmPairs.length; x += 2) {
+         builder.queryParam(queryParmPairs[x], queryParmPairs[x + 1]);
+      }
+      return builder.build();
+   }
+
    @Test
    public void testQuerySingle() {
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
 
-      String url = String.format("/ats/action/query?Team=%s&ats%%2EId=%s",
-         sawCodeCommittedWf.getTeamDefinition().getIdString(), sawCodeCommittedWf.getAtsId());
-      JsonNode action = testActionRestCall(url, 1);
+      String idString = sawCodeCommittedWf.getTeamDefinition().getIdString();
+      URI uri = createQueryUri( //
+         "Team", idString, //
+         AtsAttributeTypes.AtsId.getIdString(), sawCodeCommittedWf.getAtsId() //
+      );
+
+      JsonNode action = testActionRestCall(uri, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
 
-      url = String.format("/ats/action/query?Team=%s&1152921504606847877=%s",
-         sawCodeCommittedWf.getTeamDefinition().getIdString(), sawCodeCommittedWf.getAtsId());
+      uri = createQueryUri( //
+         "Team", idString, //
+         AtsAttributeTypes.AtsId.getName(), sawCodeCommittedWf.getAtsId() //
+      );
 
-      action = testActionRestCall(url, 1);
+      action = testActionRestCall(uri, 1);
       Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
    }
 
@@ -196,9 +247,14 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       String name =
          DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20").replaceAll("\\(",
             "%28").replaceAll("\\)", "%29");
-      URI uri = UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path(
-         String.format("/ats/action/query?Team=%s&Team=%s&Name=%s", DemoArtifactToken.SAW_Code.getIdString(),
-            DemoArtifactToken.SAW_Test.getIdString(), name)).build();
+
+      String codeTeamIdStr = DemoArtifactToken.SAW_Code.getIdString();
+      String testTeamIdStr = DemoArtifactToken.SAW_Test.getIdString();
+      URI uri = createQueryUri( //
+         "Team", codeTeamIdStr, //
+         "Team", testTeamIdStr, //
+         "Name", name //
+      );
       JsonNode action = testActionRestCall(uri, 2);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
@@ -316,18 +372,16 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      Assert.assertEquals(0,
-         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            AtsAttributeTypes.EstimatedHours).size());
+      Assert.assertEquals(0, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsAttributeTypes.EstimatedHours).size());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.EstimatedHours, 3.5);
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.EstimatedHours);
-      Assert.assertEquals(1,
-         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            AtsAttributeTypes.EstimatedHours).size());
+      Assert.assertEquals(1, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsAttributeTypes.EstimatedHours).size());
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.EstimatedHours.getIdString(),
          Arrays.asList("4.5"));
@@ -344,9 +398,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      Assert.assertEquals(0,
-         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            AtsAttributeTypes.PercentRework).size());
+      Assert.assertEquals(0, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsAttributeTypes.PercentRework).size());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.PercentRework, 3);
@@ -381,9 +434,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       changes.execute();
 
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.NeedBy);
-      Assert.assertEquals(1,
-         AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
-            AtsAttributeTypes.NeedBy).size());
+      Assert.assertEquals(1, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+         AtsAttributeTypes.NeedBy).size());
 
       actionEp.setActionAttributeByType(teamWf.getIdString(), AtsAttributeTypes.NeedBy.getIdString(),
          Arrays.asList("446579845"));
@@ -402,8 +454,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
 
-      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         (IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, false));
+      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
+         AtsAttributeTypes.ValidationRequired, false));
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue((IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, true);
@@ -418,8 +470,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
       teamWf.reloadAttributesAndRelations();
       teamWf = testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.ValidationRequired);
-      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         (IAtsObject) teamWf, AtsAttributeTypes.ValidationRequired, true));
+      Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
+         AtsAttributeTypes.ValidationRequired, true));
    }
 
    @Test

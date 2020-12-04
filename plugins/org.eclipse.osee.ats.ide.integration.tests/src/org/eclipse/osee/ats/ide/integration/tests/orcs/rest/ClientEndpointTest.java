@@ -58,16 +58,16 @@ public class ClientEndpointTest {
       Sessions sessions = response.readEntity(Sessions.class);
       System.out.println("2 - " + sessions);
 
-      //      Assert.assertTrue(sessions.toString(),
-      //         sessions.sessions.iterator().next().getUserId().equals(DemoUsers.Joe_Smith.getUserId()));
+      Assert.assertTrue(sessions.toString(),
+         sessions.sessions.iterator().next().getUserId().equals(DemoUsers.Joe_Smith.getUserId()));
 
       response = clientEp.getClientsForUser("Joe_Smith");
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       sessions = response.readEntity(Sessions.class);
       System.out.println("3 - " + sessions);
 
-      //      Assert.assertTrue(sessions.toString(),
-      //         sessions.sessions.iterator().next().getUserId().equals(DemoUsers.Joe_Smith.getUserId()));
+      Assert.assertTrue(sessions.toString(),
+         sessions.sessions.iterator().next().getUserId().equals(DemoUsers.Joe_Smith.getUserId()));
    }
 
    @Test
