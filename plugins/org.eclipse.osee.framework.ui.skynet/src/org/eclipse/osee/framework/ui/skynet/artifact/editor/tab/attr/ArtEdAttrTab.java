@@ -67,7 +67,12 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
+      createFormContentShared(managedForm);
+   }
+
+   public void createFormContentShared(IManagedForm managedForm) {
       try {
+         scrolledForm = managedForm.getForm();
          bodyComp = scrolledForm.getBody();
          GridLayout gridLayout = new GridLayout(1, true);
          bodyComp.setLayout(gridLayout);
@@ -101,7 +106,9 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
          gd2.heightHint = 300;
          gd2.widthHint = 300;
          xViewer.getTree().setLayoutData(gd2);
-         getSite().setSelectionProvider(xViewer);
+         if (getSite() != null) {
+            getSite().setSelectionProvider(xViewer);
+         }
 
          xViewer.loadTable(artifact);
 
@@ -134,6 +141,14 @@ public class ArtEdAttrTab extends FormPage implements IRefreshActionHandler, IAr
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return Arrays.asList(new BranchIdEventFilter(artifact.getBranch()));
+   }
+
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   public ArtEdAttrXViewer getxViewer() {
+      return xViewer;
    }
 
 }

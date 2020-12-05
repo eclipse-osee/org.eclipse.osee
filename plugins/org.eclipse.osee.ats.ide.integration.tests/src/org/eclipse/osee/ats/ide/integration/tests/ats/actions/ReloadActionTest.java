@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.actions;
 
-import org.eclipse.osee.ats.ide.actions.ReloadAction;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 
 /**
@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 public class ReloadActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public ReloadAction createAction() {
-      return new ReloadAction(AtsTestUtil.getTeamWf(), null);
+   public WfeReloadAction createAction() {
+      return new WfeReloadAction(AtsTestUtil.getTeamWf(), null);
    }
 
 }

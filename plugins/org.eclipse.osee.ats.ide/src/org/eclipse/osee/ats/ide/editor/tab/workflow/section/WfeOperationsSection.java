@@ -30,12 +30,12 @@ import org.eclipse.osee.ats.ide.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.ide.actions.OpenInSkyWalkerAction;
 import org.eclipse.osee.ats.ide.actions.OpenParentAction;
 import org.eclipse.osee.ats.ide.actions.RefreshDirtyAction;
-import org.eclipse.osee.ats.ide.actions.ReloadAction;
 import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.ide.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.ide.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.operation.MoveTeamWorkflowsAction;
@@ -172,7 +172,7 @@ public class WfeOperationsSection extends SectionPart {
 
       if (editor.getWorkItem().isTeamWorkflow()) {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new WfeReloadAction(editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
       }
 

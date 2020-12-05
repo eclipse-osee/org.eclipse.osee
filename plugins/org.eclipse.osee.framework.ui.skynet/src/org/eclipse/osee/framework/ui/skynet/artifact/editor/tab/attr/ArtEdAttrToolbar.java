@@ -41,16 +41,20 @@ public class ArtEdAttrToolbar {
    public void build() {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
+      addAttrToolbarActions(toolBarMgr);
+      toolBarMgr.add(new OpenHistoryAction(attrXViewer.getArtifact()));
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new RefreshAction(refreshActionHandler));
+      scrolledForm.updateToolBar();
+   }
+
+   public void addAttrToolbarActions(IToolBarManager toolBarMgr) {
       toolBarMgr.add(new AddAttributeAction(attrXViewer));
       toolBarMgr.add(new EditAttributeAction(attrXViewer));
       toolBarMgr.add(new DeleteAttributeAction(attrXViewer));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(attrXViewer.getCustomizeAction());
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new OpenHistoryAction(attrXViewer.getArtifact()));
-      toolBarMgr.add(new Separator());
-      toolBarMgr.add(new RefreshAction(refreshActionHandler));
-      scrolledForm.updateToolBar();
    }
 
 }

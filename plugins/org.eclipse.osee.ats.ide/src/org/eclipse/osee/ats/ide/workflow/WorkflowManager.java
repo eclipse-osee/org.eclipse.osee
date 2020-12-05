@@ -50,7 +50,7 @@ public class WorkflowManager {
             awa.getStateDefinition(), AtsApiService.get().getUserService()) || //
          // page is define to allow anyone to edit
             awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
-            // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
+            // workItem is child of TeamWorkflow that has AllowAssigneeToAll rule
             isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
             // team definition has allowed anyone to edit
             awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));

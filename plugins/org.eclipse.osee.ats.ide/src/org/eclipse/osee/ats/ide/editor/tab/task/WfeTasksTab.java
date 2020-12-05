@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.ats.ide.editor.tab.task;
 
 import java.util.ArrayList;
@@ -41,19 +40,18 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.ide.actions.ImportTasksViaSpreadsheet;
-import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -93,10 +91,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -112,19 +108,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Donald G. Dunne
  */
-public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider {
+public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListener, IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider, IAtsTaskArtifactProvider {
    private IManagedForm managedForm;
-   private Composite bodyComp;
    private ScrolledForm scrolledForm;
    private TaskComposite taskComposite;
-   private LoadingComposite loadingComposite;
    public final static String ID = "ats.tasks.tab";
    private final WorkflowEditor editor;
    private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
@@ -137,7 +130,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
    private Action filterCompletedAction, filterMyAssigneeAction;
 
    public WfeTasksTab(WorkflowEditor editor, IAtsTeamWorkflow teamWf, AtsApiIde client) {
-      super(editor, ID, "Tasks");
+      super(editor, ID, teamWf, "Tasks");
       this.editor = editor;
       this.teamWf = teamWf;
       this.client = client;
@@ -160,20 +153,20 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                OseeEventManager.removeListener(listener);
             }
          });
+
          bodyComp = scrolledForm.getBody();
          GridLayout gridLayout = new GridLayout(1, true);
          bodyComp.setLayout(gridLayout);
          GridData gd = new GridData(SWT.LEFT, SWT.LEFT, false, false);
          bodyComp.setLayoutData(gd);
 
+         updateTitleBar(managedForm);
+         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+
          setLoading(true);
          refreshData();
          WorldXViewerEventManager.add(this);
 
-         scrolledForm.setText(String.format("%s - Tasks", teamWf.getTeamDefinition().getName()));
-         scrolledForm.setImage(ImageManager.getImage(AtsImage.TASK));
-
-         managedForm.reflow(true);
       } catch (Exception ex) {
          handleException(ex);
       }
@@ -222,9 +215,9 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
                            reload();
                         }
                         refreshTabName();
+                        createToolbar(managedForm);
                         jumptoScrollLocation();
-                        FormsUtil.addHeadingGradient(editor.getToolkit(), scrolledForm, true);
-                        refreshToolbar();
+                        scrolledForm.reflow(true);
                         editor.onDirtied();
                      }
                      firstTime = false;
@@ -244,28 +237,6 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
          };
          Operations.scheduleJob(job, false, Job.SHORT, null);
       }
-   }
-
-   private void handleException(Exception ex) {
-      setLoading(false);
-      if (Widgets.isAccessible(taskComposite)) {
-         taskComposite.dispose();
-      }
-      OseeLog.log(Activator.class, Level.SEVERE, ex);
-      new ExceptionComposite(bodyComp, ex);
-      bodyComp.layout();
-   }
-
-   private void setLoading(boolean set) {
-      if (set) {
-         loadingComposite = new LoadingComposite(bodyComp);
-         bodyComp.layout();
-      } else {
-         if (Widgets.isAccessible(loadingComposite)) {
-            loadingComposite.dispose();
-         }
-      }
-      showBusy(set);
    }
 
    /**
@@ -411,35 +382,31 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
 
    }
 
-   private void refreshToolbar() {
+   @Override
+   public IToolBarManager createToolbar(IManagedForm managedForm) {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
-      try {
-         if (taskComposite.getIXTaskViewer().isTasksEditable()) {
-            toolBarMgr.add(new AddTaskAction(taskComposite));
-            IAtsTaskArtifactProvider taskProvider = new IAtsTaskArtifactProvider() {
-
-               @Override
-               public List<TaskArtifact> getSelectedArtifacts() {
-                  return taskComposite.getSelectedTaskArtifacts();
-               }
-            };
-            toolBarMgr.add(new DeleteTasksAction(taskProvider));
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      toolBarMgr.add(new Separator());
-
-      toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      // TBD Check that can add/delete when action selected
+      toolBarMgr.add(new AddTaskAction(taskComposite));
+      toolBarMgr.add(new DeleteTasksAction(this));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsTaskEditorAction(taskComposite));
       toolBarMgr.add(new OpenNewAtsTaskEditorSelected(taskComposite));
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(taskComposite));
       toolBarMgr.add(new Separator());
+      createDropDownMenuActions();
+      toolBarMgr.add(new DropDownAction());
+      toolBarMgr.add(new Separator());
+      super.createToolbar(managedForm);
+      scrolledForm.updateToolBar();
+      return toolBarMgr;
+   }
+
+   @Override
+   public void addRefreshAction(IToolBarManager toolBarMgr) {
       /**
        * Use separate refresh action cause this one reloads which causes the WfeTAsksTab.refresh to be called. Using the
-       * WfeTasksTab.refresh to reload will cause an infinite loop.
+       * WfeAttributesTab.refresh to reload will cause an infinite loop.
        */
       toolBarMgr.add(new RefreshAction(new IRefreshActionHandler() {
 
@@ -457,11 +424,6 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
             reload.start();
          }
       }));
-      toolBarMgr.add(new NewAction());
-      toolBarMgr.add(new Separator());
-      createDropDownMenuActions();
-      toolBarMgr.add(new DropDownAction());
-      scrolledForm.updateToolBar();
    }
 
    protected void createDropDownMenuActions() {
@@ -778,6 +740,11 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       refreshTabName();
+   }
+
+   @Override
+   public List<TaskArtifact> getSelectedArtifacts() {
+      return taskComposite.getSelectedTaskArtifacts();
    }
 
 }

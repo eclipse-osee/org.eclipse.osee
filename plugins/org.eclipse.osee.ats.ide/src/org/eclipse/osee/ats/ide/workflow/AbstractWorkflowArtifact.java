@@ -269,7 +269,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    /**
-    * Return true if awa is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule set
+    * Return true if workItem is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule set
     */
    public boolean teamDefHasRule(RuleDefinitionOption option) {
       TeamWorkFlowArtifact teamArt = null;

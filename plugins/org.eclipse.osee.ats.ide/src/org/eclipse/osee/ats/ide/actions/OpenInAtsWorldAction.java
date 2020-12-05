@@ -45,7 +45,10 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
       } else {
          WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
             Arrays.asList(sma), null, sma));
-         throw new OseeStateException("No Parent Action; Opening Team Workflow");
+         // Only error if workItem is supposed to have an Action; eg: Goals do not
+         if (sma.hasAction()) {
+            throw new OseeStateException("No Parent Action; Opening Workflow");
+         }
       }
       return;
    }

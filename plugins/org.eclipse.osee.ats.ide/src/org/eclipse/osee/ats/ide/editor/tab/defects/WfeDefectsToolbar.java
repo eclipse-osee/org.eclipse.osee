@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectUtil;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectXViewer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
@@ -63,11 +62,10 @@ public class WfeDefectsToolbar {
       toolBarMgr.add(new NewDefectAction());
       toolBarMgr.add(new DeleteDefectAction());
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new RefreshAction(refreshActionHandler));
-      toolBarMgr.add(new Separator());
       toolBarMgr.add(defectXViewer.getCustomizeAction());
       createDropDownMenuActions();
       toolBarMgr.add(new DropDownAction());
+      toolBarMgr.add(new Separator());
       scrolledForm.updateToolBar();
    }
 

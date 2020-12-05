@@ -25,46 +25,25 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.event.IAtsWorkItemTopicEventListener;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
-import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
-import org.eclipse.osee.ats.ide.actions.AddNoteAction;
-import org.eclipse.osee.ats.ide.actions.CopyActionDetailsAction;
-import org.eclipse.osee.ats.ide.actions.EmailActionAction;
-import org.eclipse.osee.ats.ide.actions.FavoriteAction;
-import org.eclipse.osee.ats.ide.actions.OpenInArtifactEditorAction;
-import org.eclipse.osee.ats.ide.actions.OpenInAtsWorldAction;
-import org.eclipse.osee.ats.ide.actions.OpenInBrowserAction;
-import org.eclipse.osee.ats.ide.actions.OpenParentAction;
-import org.eclipse.osee.ats.ide.actions.OpenTeamDefinitionAction;
-import org.eclipse.osee.ats.ide.actions.OpenVersionArtifactAction;
-import org.eclipse.osee.ats.ide.actions.ReloadAction;
-import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
-import org.eclipse.osee.ats.ide.actions.ShowContextChangeReportAction;
-import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
-import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.relations.WfeRelationsSection;
+import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeDetailsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeHistorySection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeRelationsSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.walker.action.OpenActionViewAction;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
-import org.eclipse.osee.ats.ide.workflow.duplicate.CloneWorkflowAction;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -72,12 +51,10 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
@@ -85,7 +62,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -97,7 +73,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -106,7 +81,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler, IAtsWorkItemTopicEventListener {
+public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventHandler, IAtsWorkItemTopicEventListener {
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
@@ -122,7 +97,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private WfeHistorySection smaHistorySection;
 
    public WfeWorkFlowTab(WorkflowEditor editor, AbstractWorkflowArtifact awa) {
-      super(editor, ID, "Workflow");
+      super(editor, ID, awa, "Workflow");
       this.editor = editor;
       this.awa = awa;
    }
@@ -133,7 +108,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
       this.managedForm = managedForm;
       try {
-         updateTitleBar();
+         updateTitleBar(managedForm);
 
          bodyComp = managedForm.getForm().getBody();
          GridLayout gridLayout = new GridLayout(1, false);
@@ -176,28 +151,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   private void updateTitleBar() {
-      if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
-         String titleString = editor.getTitleStr();
-         String displayableTitle = Strings.escapeAmpersands(titleString);
-         managedForm.getForm().setToolTipText(displayableTitle);
-         String artifactTypeName = awa.isTeamWorkflow() ? "Team Workflow" : awa.getArtifactTypeName();
-         String formTitle = null;
-         if (awa.getParentTeamWorkflow() != null) {
-            formTitle = String.format("%s - %s", awa.getParentTeamWorkflow().getTeamDefinition(), artifactTypeName);
-         } else {
-            formTitle = String.format("%s", artifactTypeName);
-         }
-         managedForm.getForm().setText(formTitle);
-         if (AtsApiService.get().getAgileService().isBacklog(awa)) {
-            managedForm.getForm().setImage(
-               ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG)));
-         } else {
-            managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
-         }
-      }
-   }
-
    @Override
    public void showBusy(boolean busy) {
       super.showBusy(busy);
@@ -225,8 +178,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
                   if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
-                     updateTitleBar();
-                     refreshToolbar();
+                     updateTitleBar(managedForm);
+                     createToolbar(managedForm);
                      setLoading(false);
                      createAtsBody();
                      addMessageDecoration(managedForm.getForm());
@@ -246,7 +199,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   private void handleException(Exception ex) {
+   @Override
+   public void handleException(Exception ex) {
       setLoading(false);
       if (Widgets.isAccessible(atsBody)) {
          atsBody.dispose();
@@ -256,7 +210,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       bodyComp.layout();
    }
 
-   private void setLoading(boolean set) {
+   @Override
+   public void setLoading(boolean set) {
       if (set) {
          loadingComposite = new LoadingComposite(bodyComp);
          bodyComp.layout();
@@ -415,44 +370,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          }
 
       });
-   }
-
-   private void refreshToolbar() {
-      IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
-      toolBarMgr.removeAll();
-
-      if (awa.isTeamWorkflow() && (AtsApiService.get().getBranchService().isCommittedBranchExists(
-         (TeamWorkFlowArtifact) awa) || AtsApiService.get().getBranchService().isWorkingBranchInWork(
-            (TeamWorkFlowArtifact) awa))) {
-         toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
-         toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
-         toolBarMgr.add(new ShowWordChangeReportAction((TeamWorkFlowArtifact) awa));
-         toolBarMgr.add(new ShowContextChangeReportAction((TeamWorkFlowArtifact) awa));
-      }
-      toolBarMgr.add(new FavoriteAction(editor));
-      if (awa.getParentAWA() != null) {
-         toolBarMgr.add(new OpenParentAction(awa));
-      }
-      toolBarMgr.add(new EmailActionAction(editor));
-      toolBarMgr.add(new AddNoteAction(awa, editor));
-      toolBarMgr.add(new OpenInAtsWorldAction(awa));
-      toolBarMgr.add(new OpenActionViewAction());
-      if (AtsApiService.get().getUserService().isAtsAdmin()) {
-         toolBarMgr.add(new OpenInArtifactEditorAction(editor));
-      }
-      toolBarMgr.add(new OpenVersionArtifactAction(awa));
-      if (awa instanceof TeamWorkFlowArtifact) {
-         toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
-      }
-      toolBarMgr.add(new CopyActionDetailsAction(awa, AtsApiService.get()));
-      toolBarMgr.add(new OpenInBrowserAction(awa));
-      toolBarMgr.add(new ResourceHistoryAction(awa));
-      if (awa.isTeamWorkflow()) {
-         toolBarMgr.add(new CloneWorkflowAction((TeamWorkFlowArtifact) awa, null));
-      }
-      toolBarMgr.add(new ReloadAction(awa, editor));
-
-      managedForm.getForm().updateToolBar();
    }
 
    public Result isXWidgetDirty() {

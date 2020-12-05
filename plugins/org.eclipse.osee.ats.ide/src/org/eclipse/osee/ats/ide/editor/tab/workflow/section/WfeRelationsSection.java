@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.editor.tab.relations;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 
 import java.util.Arrays;
 import java.util.List;

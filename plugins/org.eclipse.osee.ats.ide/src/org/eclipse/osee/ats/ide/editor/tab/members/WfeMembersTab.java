@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
@@ -63,7 +64,6 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,16 +71,12 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
-import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -96,19 +92,16 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Donald G. Dunne
  */
-public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
+public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
    private IManagedForm managedForm;
-   private Composite bodyComp;
    private ScrolledForm scrolledForm;
    private WorldComposite worldComposite;
-   private LoadingComposite loadingComposite;
    public final static String ID = "ats.members.tab";
    private final WorkflowEditor editor;
    private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
@@ -119,7 +112,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private final WfeMembersTab membersTab;
 
    public WfeMembersTab(WorkflowEditor editor, IMemberProvider provider) {
-      super(editor, ID, provider.getMembersName());
+      super(editor, ID, editor.getWorkItem(), provider.getMembersName());
       this.editor = editor;
       this.provider = provider;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
@@ -139,7 +132,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                storeScrollLocation();
             }
          });
-         updateTitleBar();
+         updateTitleBar(managedForm);
+         FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
 
          bodyComp = scrolledForm.getBody();
          GridLayout gridLayout = new GridLayout(1, true);
@@ -152,23 +146,6 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          WorldXViewerEventManager.add(this);
       } catch (Exception ex) {
          handleException(ex);
-      }
-   }
-
-   private void updateTitleBar() {
-      if (Widgets.isAccessible(scrolledForm)) {
-         String titleString = editor.getTitleStr();
-         String displayableTitle = Strings.escapeAmpersands(titleString);
-         if (!scrolledForm.getText().equals(displayableTitle)) {
-            scrolledForm.setText(displayableTitle);
-         }
-
-         KeyedImage image = provider.getImageKey();
-         if (image != null) {
-            if (!ImageManager.getImage(image).equals(scrolledForm.getImage())) {
-               scrolledForm.setImage(ImageManager.getImage(image));
-            }
-         }
       }
    }
 
@@ -209,15 +186,14 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                if (firstTime) {
                   try {
                      if (Widgets.isAccessible(scrolledForm)) {
-                        updateTitleBar();
                         setLoading(false);
                         boolean createdAndLoaded = createMembersBody();
                         if (!createdAndLoaded) {
                            reload();
                         }
+                        createToolbar(managedForm);
                         jumptoScrollLocation();
-                        FormsUtil.addHeadingGradient(editor.getToolkit(), scrolledForm, true);
-                        refreshToolbar();
+                        scrolledForm.reflow(true);
                         editor.onDirtied();
                      }
                      firstTime = false;
@@ -227,13 +203,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                      showBusy(false);
                   }
                } else {
-                  try {
-                     updateTitleBar();
-                  } catch (OseeCoreException ex) {
-                     handleException(ex);
-                  } finally {
-                     showBusy(false);
-                  }
+                  showBusy(false);
                   if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
                      refresh();
                   }
@@ -245,26 +215,11 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       }
    }
 
-   private void handleException(Exception ex) {
-      setLoading(false);
-      if (Widgets.isAccessible(worldComposite)) {
-         worldComposite.dispose();
-      }
-      OseeLog.log(Activator.class, Level.SEVERE, ex);
-      new ExceptionComposite(bodyComp, ex);
-      bodyComp.layout();
-   }
-
-   private void setLoading(boolean set) {
-      if (set) {
-         loadingComposite = new LoadingComposite(bodyComp);
-         bodyComp.layout();
-      } else {
-         if (Widgets.isAccessible(loadingComposite)) {
-            loadingComposite.dispose();
-         }
-      }
-      showBusy(set);
+   @Override
+   protected String getFormTitle(IManagedForm managedForm, String artifactTypeName) {
+      String formTitle = super.getFormTitle(managedForm, artifactTypeName);
+      formTitle += " - " + editor.getWorkItem().getName();
+      return formTitle;
    }
 
    /**
@@ -425,7 +380,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       });
    }
 
-   private void refreshToolbar() {
+   @Override
+   public IToolBarManager createToolbar(IManagedForm managedForm) {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
@@ -433,14 +389,12 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarMgr.add(new CollapseAllAction(worldComposite.getXViewer()));
-      toolBarMgr.add(new RefreshAction(worldComposite));
-
       toolBarMgr.add(new Separator());
-
       createDropDownMenuActions();
       toolBarMgr.add(new DropDownAction());
-
+      super.createToolbar(managedForm);
       scrolledForm.updateToolBar();
+      return toolBarMgr;
    }
 
    public WorldComposite getMembersSection() {

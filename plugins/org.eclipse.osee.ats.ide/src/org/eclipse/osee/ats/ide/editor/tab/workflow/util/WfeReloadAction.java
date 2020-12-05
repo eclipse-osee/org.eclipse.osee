@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.actions;
+package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,6 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor.WfeSaveListener;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
@@ -38,20 +39,22 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
+ * Reload workitem and reset currently selected tab
+ *
  * @author Donald G. Dunne
  */
-public class ReloadAction extends AbstractAtsAction {
+public class WfeReloadAction extends AbstractAtsAction {
 
-   private final AbstractWorkflowArtifact sma;
+   private final AbstractWorkflowArtifact workItem;
    private final WorkflowEditor editor;
 
-   public ReloadAction(AbstractWorkflowArtifact sma, WorkflowEditor editor) {
+   public WfeReloadAction(AbstractWorkflowArtifact workItem, WorkflowEditor editor) {
       super();
       this.editor = editor;
-      String title = "Reload \"" + sma.getArtifactTypeName() + "\"";
+      String title = "Reload \"" + workItem.getArtifactTypeName() + "\"";
       setText(title);
       setToolTipText(getText());
-      this.sma = sma;
+      this.workItem = workItem;
    }
 
    @Override
@@ -98,13 +101,13 @@ public class ReloadAction extends AbstractAtsAction {
                @Override
                public void run() {
                   Set<Artifact> relatedArts = new HashSet<>();
-                  relatedArts.add(sma);
-                  if (sma.isTeamWorkflow()) {
-                     relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
+                  relatedArts.add(workItem);
+                  if (workItem.isTeamWorkflow()) {
+                     relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) workItem));
                   }
-                  if (sma instanceof TeamWorkFlowArtifact) {
+                  if (workItem instanceof TeamWorkFlowArtifact) {
                      Collection<IAtsTask> tasks =
-                        AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma);
+                        AtsApiService.get().getTaskService().getTasks((TeamWorkFlowArtifact) workItem);
                      relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(tasks));
                   }
 

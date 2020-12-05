@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -36,18 +35,17 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.actions.AccessControlAction;
-import org.eclipse.osee.ats.ide.actions.DirtyReportAction;
 import org.eclipse.osee.ats.ide.actions.IDirtyReportable;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.ide.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandle;
 import org.eclipse.osee.ats.ide.editor.event.IWfeEventHandler;
 import org.eclipse.osee.ats.ide.editor.event.WfeArtifactEventManager;
 import org.eclipse.osee.ats.ide.editor.event.WfeBranchEventManager;
+import org.eclipse.osee.ats.ide.editor.tab.attributes.WfeAttributesTab;
 import org.eclipse.osee.ats.ide.editor.tab.defects.WfeDefectsTab;
 import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
+import org.eclipse.osee.ats.ide.editor.tab.metrics.WfeMetricsTab;
 import org.eclipse.osee.ats.ide.editor.tab.reload.WfeReloadTab;
 import org.eclipse.osee.ats.ide.editor.tab.task.WfeTasksTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
@@ -62,7 +60,6 @@ import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.ide.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.ide.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -93,19 +90,12 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr.ArtEdAttrTab;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
@@ -113,9 +103,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -135,8 +122,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private WfeMembersTab membersTab;
    private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
-   private ArtEdAttrTab attrTab;
-   int attrPageIndex = 0;
+   private WfeAttributesTab attrTab;
    private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    WfeOutlinePage outlinePage;
    private final HashCollectionSet<AttributeTypeToken, IWfeEventHandle> attrHandlers = new HashCollectionSet<>();
@@ -150,7 +136,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private final DoubleKeyHashMap<RelationTypeToken, String, List<IWfeEventHandle>> artRelHandlers =
       new DoubleKeyHashMap<>();
    private WfeReloadTab reloadTab;
-   private int metricsPageIndex = 0;
+   private WfeMetricsTab metricsTab;
 
    public void loadPages() {
       addPages();
@@ -298,7 +284,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          } else {
             try {
                IAtsChangeSet changes = AtsApiService.get().createChangeSet("Workflow Editor - Save");
-               // If change was made on Attribute tab, persist awa separately.  This is cause attribute
+               // If change was made on Attribute tab, persist workItem separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                // Save widget data to artifact
                workFlowTab.saveXWidgetToArtifact();
@@ -355,11 +341,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    public void disposeTabs() {
-      if (metricsPageIndex > 0) {
-         removePage(metricsPageIndex);
+      if (metricsTab != null) {
+         removePage(metricsTab.getIndex());
       }
-      if (attrPageIndex > 0) {
-         removePage(attrPageIndex);
+      if (attrTab != null) {
+         removePage(attrTab.getIndex());
       }
       if (taskTab != null) {
          removePage(taskTab.getIndex());
@@ -431,11 +417,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createMetricsTab() {
       try {
-         Composite composite = createCommonPageComposite(getContainer());
-         createToolBar(composite);
-         new AtsMetricsComposite(this, composite, SWT.NONE);
-         metricsPageIndex = addPage(composite);
-         setPageText(metricsPageIndex, "Metrics");
+         metricsTab = new WfeMetricsTab(this, this, workItem);
+         addPage(metricsTab);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -445,27 +428,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private void createAttributesTab() {
       try {
          if (AtsApiService.get().getUserService().isAtsAdmin()) {
-            attrTab = new ArtEdAttrTab(this, workItem);
-            attrPageIndex = addPage(attrTab);
+            attrTab = new WfeAttributesTab(this, workItem);
+            addPage(attrTab);
          }
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   private ToolBar createToolBar(Composite parent) {
-      ToolBar toolBar = createCommonToolBar(parent);
-
-      actionToToolItem(toolBar, new ResourceHistoryAction(workItem), FrameworkImage.EDIT_BLUE);
-      actionToToolItem(toolBar, new AccessControlAction(workItem), FrameworkImage.AUTHENTICATED);
-      actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);
-      new ToolItem(toolBar, SWT.SEPARATOR);
-      Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
-      artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + workItem.getArtifactTypeName() + "\"   ATS: " + workItem.getAtsId());
-      artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
-
-      return toolBar;
    }
 
    public void refreshPages() {
@@ -766,35 +734,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       composite.setLayout(layout);
 
       return composite;
-   }
-
-   private ToolItem actionToToolItem(ToolBar toolBar, Action action, KeyedImage imageEnum) {
-      final Action fAction = action;
-      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(imageEnum));
-      item.setToolTipText(action.getToolTipText());
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            fAction.run();
-         }
-      });
-      return item;
-   }
-
-   private ToolBar createCommonToolBar(Composite parent) {
-      return createCommonToolBar(parent, null);
-   }
-
-   private ToolBar createCommonToolBar(Composite parent, XFormToolkit toolkit) {
-      ToolBar toolBar = ALayout.createCommonToolBar(parent);
-      if (toolkit != null) {
-         toolkit.adapt(toolBar.getParent());
-      }
-      if (toolkit != null) {
-         toolkit.adapt(toolBar);
-      }
-      return toolBar;
    }
 
    public void setTabName(int index, String tabName) {

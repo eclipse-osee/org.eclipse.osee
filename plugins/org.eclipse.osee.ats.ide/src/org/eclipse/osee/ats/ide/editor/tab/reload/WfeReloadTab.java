@@ -55,7 +55,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 public class WfeReloadTab extends FormPage {
    private IManagedForm managedForm;
    private Composite bodyComp;
-   public final static String ID = "ats.attributes.tab";
+   public final static String ID = "ats.reload.tab";
    private final WorkflowEditor editor;
    private final String title;
    private final BranchId branch;
@@ -158,6 +158,8 @@ public class WfeReloadTab extends FormPage {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
 
+         final int currentPage = editor.getActivePage();
+
          Displays.ensureInDisplayThread(new Runnable() {
 
             @Override
@@ -203,6 +205,7 @@ public class WfeReloadTab extends FormPage {
                      editor.getWfeInput().setArtifact(artifact);
                      editor.disposeTabs();
                      editor.loadPages();
+                     editor.setPage(currentPage);
                   }
                });
             }
