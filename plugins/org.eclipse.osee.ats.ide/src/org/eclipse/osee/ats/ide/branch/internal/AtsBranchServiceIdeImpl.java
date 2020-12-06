@@ -327,7 +327,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          new AtsBranchCommitOperation(teamArt, commitPopup, overrideStateValidation, destinationBranch,
             archiveWorkingBranch, rd).run();
       } catch (Exception ex) {
-         rd.errorf("Exception Committing Branch", Lib.exceptionToString(ex));
+         rd.errorf("Exception Committing Branch %s", Lib.exceptionToString(ex));
       }
       return rd;
    }
