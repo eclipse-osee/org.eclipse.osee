@@ -79,7 +79,7 @@ public class RelationIntegrityCheckTest {
 
       workingBranch = BranchManager.createWorkingBranch(parentBranch, IOseeBranch.create("2"));
 
-      art_A.deleteAndPersist();
+      art_A.deleteAndPersist(getClass().getSimpleName());
 
       Artifact art_A_prime = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "A", workingBranch);
       //Sample artifact to create a relation to...

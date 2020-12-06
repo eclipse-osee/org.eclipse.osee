@@ -170,8 +170,7 @@ public class InterArtifactDropTest {
       // artifact deleted and introduced to existing destination sourceBranch
       Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2, updateTestBranch1);
       Attribute<Object> destAttribute = deleteTestArtifact.getSoleAttribute(CoreAttributeTypes.Name);
-      deleteTestArtifact.delete();
-      deleteTestArtifact.persist(getClass().getSimpleName());
+      deleteTestArtifact.deleteAndPersist(getClass().getSimpleName());
 
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact2, new Artifact[] {deleteTestArtifact}, false);
@@ -247,15 +246,15 @@ public class InterArtifactDropTest {
 
       sourceArtifact3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceArtifact3.persist(method.getQualifiedTestName());
-      sourceDeleteArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
+      sourceDeleteArtifact1 =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, sourceBranch);
       sourceDeleteArtifact1.persist(method.getQualifiedTestName());
 
       // updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1,
       // sourceDeleteArtifact1
       BranchManager.createWorkingBranch(sourceBranch, updateTestBranch3);
 
-      sourceDeleteArtifact1.delete();
-      sourceDeleteArtifact1.persist(method.getQualifiedTestName());
+      sourceDeleteArtifact1.deleteAndPersist(method.getQualifiedTestName());
 
       // updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1,
       // sourceDeleteArtifact1 (deleted)

@@ -451,7 +451,7 @@ public abstract class BranchRegressionTest {
    private void deletePreBranchArt() {
       preBranchArt = softReqArt.getChild(PRE_BRANCH_ARTIFACT_NAME);
       Assert.assertNotNull("Couldn't retrieve pre-workingBranch artifact", preBranchArt);
-      preBranchArt.deleteAndPersist();
+      preBranchArt.deleteAndPersist(getClass().getSimpleName());
    }
 
    private void createSubsystemArt() {
@@ -464,7 +464,7 @@ public abstract class BranchRegressionTest {
 
    private void deleteReqArtToDelete() {
       // Delete this one; Since created and deleted in same workingBranch,
-      createAndDeleteArt.deleteAndPersist();
+      createAndDeleteArt.deleteAndPersist(getClass().getSimpleName());
    }
 
    private void makeNameChangeToReqArtToDelete() {

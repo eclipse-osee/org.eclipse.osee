@@ -95,7 +95,7 @@ public class ArtifactQueryTest {
       searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
-      newArtifact.deleteAndPersist();
+      newArtifact.deleteAndPersist(getClass().getSimpleName());
 
       try {
          Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact, COMMON);
@@ -240,7 +240,7 @@ public class ArtifactQueryTest {
 
       //create a new tx deleting the first created
       Artifact firstCreated = ArtifactQuery.getArtifactFromId(newIdsInOrder.get(0), branch);
-      firstCreated.deleteAndPersist();
+      firstCreated.deleteAndPersist(getClass().getSimpleName());
       ArtifactCache.deCache(firstCreated);
 
       Artifact toCheck = ArtifactQuery.checkArtifactFromId(newIdsInOrder.get(0), branch, DeletionFlag.EXCLUDE_DELETED);

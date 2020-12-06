@@ -490,7 +490,7 @@ public class ArtifactEventTest {
    private void testArtifactRelationEvents__deleteArtifact(Artifact newArt) throws Exception {
       listener.reset();
 
-      newArt.deleteAndPersist();
+      newArt.deleteAndPersist(getClass().getSimpleName());
 
       Assert.assertEquals(2, listener.getArtifacts().size());
       Assert.assertEquals(1, listener.getRelations().size());

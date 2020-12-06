@@ -70,7 +70,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                         ReplaceArtifactWithBaselineOperation.class.getSimpleName());
                      monitor.done();
                   } else {
-                     artifact.deleteAndPersist();
+                     artifact.deleteAndPersist(getClass().getSimpleName());
                   }
                } catch (Exception ex) {
                   throw JaxRsExceptions.asOseeException(ex);

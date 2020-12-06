@@ -96,23 +96,23 @@ public class AccessControlTest {
    public void tearDown() throws Exception {
 
       if (artifact1 != null) {
-         artifact1.deleteAndPersist();
+         artifact1.deleteAndPersist(getClass().getSimpleName());
       }
 
       if (artifact2 != null) {
-         artifact2.deleteAndPersist();
+         artifact2.deleteAndPersist(getClass().getSimpleName());
       }
 
       if (artifact3 != null) {
-         artifact3.deleteAndPersist();
+         artifact3.deleteAndPersist(getClass().getSimpleName());
       }
 
       if (artifact4 != null) {
-         artifact4.deleteAndPersist();
+         artifact4.deleteAndPersist(getClass().getSimpleName());
       }
 
       if (artifact5 != null) {
-         artifact5.deleteAndPersist();
+         artifact5.deleteAndPersist(getClass().getSimpleName());
       }
       if (branch != null) {
          BranchManager.purgeBranch(branch);

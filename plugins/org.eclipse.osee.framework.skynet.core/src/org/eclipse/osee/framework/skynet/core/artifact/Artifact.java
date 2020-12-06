@@ -1290,33 +1290,26 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return descendant;
    }
 
-   /**
-    * Removes artifact from a specific branch
-    */
-   public final void deleteAndPersist() {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(branch, "Delete artifact from a specific branch");
+   public final void deleteAndPersist(String comment) {
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       deleteAndPersist(transaction);
       transaction.execute();
-   }
-
-   public final void deleteAndPersist(SkynetTransaction transaction, boolean overrideChecks) {
-      ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, this);
-   }
-
-   /**
-    * Removes artifact from a specific branch
-    */
-   public final void deleteAndPersist(SkynetTransaction transaction) {
-      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
    }
 
    public final void delete() {
       ArtifactPersistenceManager.deleteArtifact(null, false, this);
    }
 
+   public final void deleteAndPersist(SkynetTransaction transaction, boolean overrideChecks) {
+      ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, this);
+   }
+
+   public final void deleteAndPersist(SkynetTransaction transaction) {
+      ArtifactPersistenceManager.deleteArtifact(transaction, false, this);
+   }
+
    /**
-    * Remove artifact from a specific branch in the database
+    * Purge artifact from database; this can not be undone
     */
    public final void purgeFromBranch(boolean purgeChildren) {
       Collection<Artifact> artifacts = new LinkedHashSet<>();

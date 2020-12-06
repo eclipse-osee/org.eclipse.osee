@@ -245,8 +245,7 @@ public class ConflictTest {
 
       BranchManager.purgeBranch(BranchManager.getMergeBranch(child2, parent));
       BranchManager.purgeBranch(child2);
-      testArt.delete();
-      testArt.persist("delete artifact");
+      testArt.deleteAndPersist(getClass().getSimpleName());
    }
 
    @Ignore

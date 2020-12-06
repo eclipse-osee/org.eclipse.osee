@@ -147,7 +147,7 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       // Delete two artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.daVinci,
          reqTeamArt.getWorkingBranch())) {
-         art.deleteAndPersist();
+         art.deleteAndPersist(getClass().getSimpleName());
       }
 
       // Add three new artifacts

@@ -66,7 +66,7 @@ public class OseeEnumerationValidationTest {
 
    @After
    public void tearDown() throws Exception {
-      mockArtifact.deleteAndPersist();
+      mockArtifact.deleteAndPersist(getClass().getSimpleName());
       mockArtifact = null;
    }
 

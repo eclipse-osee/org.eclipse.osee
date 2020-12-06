@@ -95,7 +95,7 @@ public class ArtifactGetLastModifiedTest {
 
       // Test post deleted
       sleep(1100); // just enough time to guarantee the date will be at least a second later
-      artifact.deleteAndPersist();
+      artifact.deleteAndPersist(getClass().getSimpleName());
 
       assertBefore(previousModifyDate, artifact);
       assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());

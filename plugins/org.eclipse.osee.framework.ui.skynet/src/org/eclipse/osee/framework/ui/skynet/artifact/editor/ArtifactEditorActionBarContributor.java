@@ -114,7 +114,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
                   artifact.toStringWithId()),
                MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == Window.OK) {
-               artifact.deleteAndPersist();
+               artifact.deleteAndPersist(getClass().getSimpleName());
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

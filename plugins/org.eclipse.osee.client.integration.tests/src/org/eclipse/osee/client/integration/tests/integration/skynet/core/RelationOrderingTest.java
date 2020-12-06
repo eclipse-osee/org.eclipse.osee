@@ -94,7 +94,7 @@ public class RelationOrderingTest {
          for (Artifact artifact : itemsToDelete) {
             if (artifact != null) {
                ArtifactCache.deCache(artifact);
-               artifact.deleteAndPersist();
+               artifact.deleteAndPersist(getClass().getSimpleName());
             }
          }
       } finally {

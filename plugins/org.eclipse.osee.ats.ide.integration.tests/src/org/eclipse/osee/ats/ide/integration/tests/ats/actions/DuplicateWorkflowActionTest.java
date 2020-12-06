@@ -99,11 +99,11 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    @After
    public void tearDown() throws Exception {
       if (newTeamWf != null) {
-         ((TeamWorkFlowArtifact) newTeamWf.getStoreObject()).deleteAndPersist();
+         ((TeamWorkFlowArtifact) newTeamWf.getStoreObject()).deleteAndPersist(getClass().getSimpleName());
       }
 
       if (dupTeamWf != null) {
-         ((TeamWorkFlowArtifact) dupTeamWf.getStoreObject()).deleteAndPersist();
+         ((TeamWorkFlowArtifact) dupTeamWf.getStoreObject()).deleteAndPersist(getClass().getSimpleName());
       }
    }
 

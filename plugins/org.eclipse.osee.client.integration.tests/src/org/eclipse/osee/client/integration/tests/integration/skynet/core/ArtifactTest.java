@@ -65,7 +65,7 @@ public final class ArtifactTest {
    @AfterClass
    public static void cleanUp() throws Exception {
       if (breakerArt != null) {
-         breakerArt.deleteAndPersist();
+         breakerArt.deleteAndPersist(ArtifactTest.class.getSimpleName());
       }
       if (artifactWithSpecialAttr != null) {
          ArtifactCache.deCache(artifactWithSpecialAttr);
@@ -75,11 +75,11 @@ public final class ArtifactTest {
    @After
    public void tearDown() throws Exception {
       if (artifactWithSpecialAttr != null) {
-         artifactWithSpecialAttr.deleteAndPersist();
+         artifactWithSpecialAttr.deleteAndPersist(getClass().getSimpleName());
       }
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(GeneralData, ArtifactTest.class.getSimpleName(),
          COMMON)) {
-         art.deleteAndPersist();
+         art.deleteAndPersist(getClass().getSimpleName());
       }
    }
 
@@ -93,7 +93,7 @@ public final class ArtifactTest {
          Assert.assertFalse(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
       } finally {
          if (copiedArtifact != null) {
-            copiedArtifact.deleteAndPersist();
+            copiedArtifact.deleteAndPersist(getClass().getSimpleName());
          }
       }
    }

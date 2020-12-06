@@ -91,7 +91,7 @@ public class OseeDslRoleContextProviderTest {
       Assert.assertTrue(contextList.remove(iterator.next().getId()));
       Assert.assertTrue(contextList.remove(iterator.next().getId()));
 
-      role2User.deleteAndPersist();
+      role2User.deleteAndPersist(getClass().getSimpleName());
    }
 
    @Test

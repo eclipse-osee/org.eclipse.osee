@@ -119,7 +119,7 @@ public class EnumAttributeMultiplicityTest {
    @After
    public void tearDown() {
       if (artifact != null) {
-         artifact.deleteAndPersist();
+         artifact.deleteAndPersist(getClass().getSimpleName());
       }
    }
 

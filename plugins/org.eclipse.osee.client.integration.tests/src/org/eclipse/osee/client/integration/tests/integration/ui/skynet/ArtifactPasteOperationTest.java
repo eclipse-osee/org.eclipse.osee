@@ -100,7 +100,7 @@ public class ArtifactPasteOperationTest {
    private static void delete(Artifact artifact) {
       if (artifact != null) {
          ArtifactCache.deCache(artifact);
-         artifact.deleteAndPersist();
+         artifact.deleteAndPersist(ArtifactPasteOperationTest.class.getSimpleName());
       }
    }
 

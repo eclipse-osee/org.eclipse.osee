@@ -71,7 +71,7 @@ public class CreateBranchOperationTest {
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
 
-      folder.deleteAndPersist();
+      folder.deleteAndPersist(getClass().getSimpleName());
    }
 
    @Test
@@ -88,7 +88,7 @@ public class CreateBranchOperationTest {
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
 
-      folder.deleteAndPersist();
+      folder.deleteAndPersist(getClass().getSimpleName());
    }
 
    /**
@@ -128,7 +128,7 @@ public class CreateBranchOperationTest {
             if (rd == null || rd.isErrors()) {
                errorsCaught++;
                Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
-               folder.deleteAndPersist();
+               folder.deleteAndPersist(getClass().getSimpleName());
             }
          }
          continue;

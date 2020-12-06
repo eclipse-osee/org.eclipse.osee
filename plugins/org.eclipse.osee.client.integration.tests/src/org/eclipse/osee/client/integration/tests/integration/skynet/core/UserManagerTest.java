@@ -126,7 +126,7 @@ public final class UserManagerTest {
       for (Artifact artifact : list) {
          for (String artifactName : artifactNames) {
             if (artifact.getName().equals(artifactName)) {
-               artifact.deleteAndPersist();
+               artifact.deleteAndPersist(getClass().getSimpleName());
             }
          }
       }

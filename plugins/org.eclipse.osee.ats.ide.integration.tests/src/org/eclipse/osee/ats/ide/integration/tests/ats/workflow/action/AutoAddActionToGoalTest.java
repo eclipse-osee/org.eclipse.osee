@@ -98,7 +98,7 @@ public class AutoAddActionToGoalTest {
          goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamWf2));
 
       AtsTestUtil.cleanup();
-      testAI2.deleteAndPersist();
+      testAI2.deleteAndPersist(getClass().getSimpleName());
       ArtifactCache.deCache(goalArt);
    }
 

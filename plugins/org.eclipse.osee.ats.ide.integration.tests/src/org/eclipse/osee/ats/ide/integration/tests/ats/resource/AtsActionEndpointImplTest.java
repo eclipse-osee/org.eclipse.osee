@@ -746,8 +746,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertNotNull(teamArt);
 
       // Cleanup test
-      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist();
-      teamArt.deleteAndPersist();
+      AtsApiService.get().getQueryServiceIde().getArtifact(teamArt.getParentAction()).deleteAndPersist(getClass().getSimpleName());
+      teamArt.deleteAndPersist(getClass().getSimpleName());
    }
 
    private void postAndValidateResponse(String errorMessage, Form form) throws IOException {

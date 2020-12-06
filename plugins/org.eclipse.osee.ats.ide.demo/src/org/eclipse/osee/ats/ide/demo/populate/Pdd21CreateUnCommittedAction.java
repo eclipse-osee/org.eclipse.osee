@@ -167,7 +167,7 @@ public class Pdd21CreateUnCommittedAction implements IPopulateDemoDatabase {
       // Delete one artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(false, SoftwareRequirementStrs.CISST,
          reqTeamArt.getWorkingBranch())) {
-         art.deleteAndPersist();
+         art.deleteAndPersist(getClass().getSimpleName());
       }
 
       // Add two new artifacts

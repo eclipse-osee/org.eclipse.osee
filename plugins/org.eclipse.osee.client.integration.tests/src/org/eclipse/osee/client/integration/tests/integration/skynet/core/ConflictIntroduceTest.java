@@ -81,7 +81,7 @@ public class ConflictIntroduceTest {
       // Delete artifact and commit to destination branch
       BranchManager.createWorkingBranch(destinationBranch, updateBranch);
       Artifact art = ArtifactQuery.getArtifactFromId(artifactToDelete, updateBranch);
-      art.deleteAndPersist();
+      art.deleteAndPersist(ConflictIntroduceTest.class.getSimpleName());
 
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, updateBranch);
       TransactionResult transactionResult = BranchManager.commitBranch(null, conflictManager, false, false);
@@ -127,7 +127,7 @@ public class ConflictIntroduceTest {
       Artifact dArtifact = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
          "Cognitive_Decision_Aiding", sourceBranch);
       assertNotNull(dArtifact);
-      dArtifact.deleteAndPersist();
+      dArtifact.deleteAndPersist(getClass().getSimpleName());
 
       // check for conflict....this should be a conflict
       Collection<Conflict> conflicts = null;
@@ -146,7 +146,7 @@ public class ConflictIntroduceTest {
       Artifact sourceArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Chassis", sourceBranch);
       assertNotNull(sourceArt);
-      sourceArt.deleteAndPersist();
+      sourceArt.deleteAndPersist(getClass().getSimpleName());
 
       Artifact artifactToModify =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Chassis", destinationBranch);

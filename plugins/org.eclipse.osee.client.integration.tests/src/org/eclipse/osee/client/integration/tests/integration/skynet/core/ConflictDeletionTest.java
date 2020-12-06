@@ -106,7 +106,7 @@ public class ConflictDeletionTest {
          }
       }
       for (Artifact artifact : artifacts) {
-         artifact.deleteAndPersist();
+         artifact.deleteAndPersist(getClass().getSimpleName());
       }
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();

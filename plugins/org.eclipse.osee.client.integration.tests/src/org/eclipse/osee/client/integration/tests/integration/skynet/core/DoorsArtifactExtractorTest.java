@@ -135,7 +135,7 @@ public class DoorsArtifactExtractorTest {
    @After
    public void tearDown() throws Exception {
       if (theArtifact != null) {
-         theArtifact.deleteAndPersist();
+         theArtifact.deleteAndPersist(getClass().getSimpleName());
       }
    }
 
