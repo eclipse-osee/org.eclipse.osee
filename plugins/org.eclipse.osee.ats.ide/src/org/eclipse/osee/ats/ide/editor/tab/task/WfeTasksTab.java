@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
-import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
+import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.ide.actions.ImportTasksViaSpreadsheet;
@@ -417,7 +417,7 @@ public class WfeTasksTab extends FormPage implements IArtifactEventListener, IWo
       try {
          if (taskComposite.getIXTaskViewer().isTasksEditable()) {
             toolBarMgr.add(new AddTaskAction(taskComposite));
-            TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+            IAtsTaskArtifactProvider taskProvider = new IAtsTaskArtifactProvider() {
 
                @Override
                public List<TaskArtifact> getSelectedArtifacts() {

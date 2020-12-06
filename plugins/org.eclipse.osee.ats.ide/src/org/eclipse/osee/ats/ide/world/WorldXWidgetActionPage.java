@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
-import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
+import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.NewAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
@@ -503,7 +503,7 @@ public class WorldXWidgetActionPage extends FormPage {
             TaskComposite taskComposite = getTaskComposite();
             if (taskComposite != null && taskComposite.getIXTaskViewer().isTasksEditable()) {
                toolBarManager.add(new AddTaskAction(worldComposite));
-               TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+               IAtsTaskArtifactProvider taskProvider = new IAtsTaskArtifactProvider() {
 
                   @Override
                   public List<TaskArtifact> getSelectedArtifacts() {

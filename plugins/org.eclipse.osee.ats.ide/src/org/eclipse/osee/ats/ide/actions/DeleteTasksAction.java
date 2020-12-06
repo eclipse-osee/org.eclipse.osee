@@ -40,15 +40,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DeleteTasksAction extends AbstractAtsAction {
 
-   public static interface TaskArtifactProvider {
+   private final IAtsTaskArtifactProvider taskProvider;
 
-      List<TaskArtifact> getSelectedArtifacts();
-
-   }
-
-   private final TaskArtifactProvider taskProvider;
-
-   public DeleteTasksAction(TaskArtifactProvider taskProvider) {
+   public DeleteTasksAction(IAtsTaskArtifactProvider taskProvider) {
       super("Delete Tasks", IAction.AS_PUSH_BUTTON);
       this.taskProvider = taskProvider;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.X_RED));

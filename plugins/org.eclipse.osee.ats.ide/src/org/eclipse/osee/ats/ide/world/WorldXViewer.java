@@ -40,13 +40,13 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.ide.actions.DeleteTasksAction;
-import org.eclipse.osee.ats.ide.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
 import org.eclipse.osee.ats.ide.actions.EmailActionAction;
 import org.eclipse.osee.ats.ide.actions.FavoriteAction;
+import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
@@ -173,7 +173,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       editAssigneeAction = new EditAssigneeAction(this, this);
       editBlockedStatusAction = new EditBlockedStatusAction(this);
       addTaskAction = new AddTaskAction(this);
-      TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+      IAtsTaskArtifactProvider taskProvider = new IAtsTaskArtifactProvider() {
 
          @Override
          public List<TaskArtifact> getSelectedArtifacts() {
@@ -215,8 +215,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(),
-                  "Reset Action off Children");
+               transaction =
+                  TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Reset Action off Children");
                for (IAtsAction actionArt : getSelectedActions()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
@@ -520,8 +520,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             if (obj instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) obj);
             } else if (Artifacts.isOfType(obj, AtsArtifactTypes.Action)) {
-               smaArts.addAll(Collections.castAll(
-                  AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(obj))));
+               smaArts.addAll(
+                  Collections.castAll(AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(obj))));
             }
          }
       } catch (OseeCoreException ex) {
