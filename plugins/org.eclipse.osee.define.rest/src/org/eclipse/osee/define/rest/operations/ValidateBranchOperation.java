@@ -32,7 +32,7 @@ public class ValidateBranchOperation {
    private final String FIND_CHILDREN_WITH_DUPLICATE_DEF_HIER_PARENTS =
       "select the_count, b_art_id from ( SELECT count(*) the_count , B_ART_ID FROM OSEE_RELATION_LINK lin, " //
          + "OSEE_TXS txs WHERE txs.BRANCH_ID = ? AND lin.REL_LINK_TYPE_ID = 2305843009213694292 " //
-         + "AND txs.GAMMA_ID = lin.GAMMA_ID AND txs.TX_CURRENT = 1 GROUP BY B_ART_ID ) where the_count > 1";
+         + "AND txs.GAMMA_ID = lin.GAMMA_ID AND txs.TX_CURRENT = 1 GROUP BY B_ART_ID ) count_alias where the_count > 1";
    private final BranchId branch;
    private final JdbcClient jdbcClient;
    private final XResultData results;

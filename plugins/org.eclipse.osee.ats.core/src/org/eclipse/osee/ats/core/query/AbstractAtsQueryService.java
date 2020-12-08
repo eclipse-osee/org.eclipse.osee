@@ -162,7 +162,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       ArtifactToken artifact = null;
       try {
          Collection<ArtifactToken> workItems =
-            getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.AtsId.getIdString(), id);
+            getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.AtsId, id);
          if (!workItems.isEmpty()) {
             artifact = workItems.iterator().next();
          }
@@ -176,7 +176,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public ArtifactToken getArtifactByLegacyPcrId(String id) {
       try {
          Collection<ArtifactToken> workItems =
-            getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.LegacyPcrId.getIdString(), id);
+            getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.LegacyPcrId, id);
          if (workItems.size() == 1) {
             return workItems.iterator().next();
          } else if (workItems.size() > 1) {
@@ -190,7 +190,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
-      return getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.LegacyPcrId.getIdString(), id);
+      return getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.LegacyPcrId, id);
    }
 
    @Override

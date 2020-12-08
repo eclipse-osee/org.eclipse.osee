@@ -936,7 +936,7 @@ public class ArtifactQuery {
             "select txs.transaction_id from osee_artifact art, osee_attribute attr, " + //
             "osee_txs txs, osee_tx_details txd where art.art_id = ? and  " + //
             "art.art_id = attr.art_id and attr.GAMMA_ID = txs.gamma_id and txs.TRANSACTION_ID = txd.TRANSACTION_ID " + //
-            "and txs.BRANCH_ID = ?) " //
+            "and txs.BRANCH_ID = ?) att_alias " //
             // order by latest transaction
             + "order by transaction_id desc ";
       long transactionId = jdbcClient.fetch(-1L, query, artifact, artifact.getBranch(), artifact, artifact.getBranch());
