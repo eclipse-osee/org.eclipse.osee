@@ -218,4 +218,9 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    public void ensurePopulated() {
       accessService.ensurePopulated();
    }
+
+   @Override
+   public void clearCache() {
+      accessService.clearCache();
+   }
 }

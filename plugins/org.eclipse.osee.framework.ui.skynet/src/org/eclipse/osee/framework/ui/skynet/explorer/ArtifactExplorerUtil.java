@@ -89,8 +89,14 @@ public class ArtifactExplorerUtil {
                Control control = treeViewer.getTree();
                if (branch.isValid()) {
                   String warningStr = null;
-                  if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
-                     warningStr = "Branch Read Access Denied.\nContact your administrator.";
+                  if (artifactExplorer.isRefreshing()) {
+                     warningStr = "Refreshing Artifact Explorer";
+                  } else if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
+                     //                     !new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
+                     warningStr = "Branch Read Access Denied.\nContact your administrator.\n\n" + //
+                     "If you believe this is in error,\n" + //
+                     "select refresh to reload access " + //
+                     "and the Artifact Explorer.";
                   } else {
                      BranchState state = BranchManager.getState(branch);
                      if (state == BranchState.CREATION_IN_PROGRESS) {

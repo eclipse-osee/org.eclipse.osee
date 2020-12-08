@@ -95,6 +95,7 @@ import org.osgi.framework.ServiceReference;
  * @author Jeff C. Phillips
  */
 public class AccessControlServiceImpl implements IAccessControlService {
+
    private static final String ACCESS_POINT_ID = "osee.access.point";
 
    private final String INSERT_INTO_ARTIFACT_ACL =
@@ -191,6 +192,7 @@ public class AccessControlServiceImpl implements IAccessControlService {
       }
    }
 
+   @Override
    public synchronized void clearCache() {
       initializeCaches();
       ensurePopulated.set(false);
@@ -232,7 +234,6 @@ public class AccessControlServiceImpl implements IAccessControlService {
 
    private void populateArtifactAccessControlList() {
       ensurePopulated();
-
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
          ArtifactId objectId = ArtifactId.valueOf(stmt.getLong("art_id"));
@@ -308,6 +309,13 @@ public class AccessControlServiceImpl implements IAccessControlService {
       }
       ArtifactToken subject = UserManager.getUser();
       AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
+
+      // Add ability to debug branch access control to resolve "no branch access" bug
+      if ("true".equals(System.getProperty(AccessControlManager.DEBUG_BRANCH_ACCESS))) {
+         OseeLog.log(AccessControlServiceImpl.class, Level.INFO,
+            getClass().getSimpleName() + "hasPerm subject [" + subject + "] obj [" + object + "] type [" + //
+               object.getClass().getSimpleName() + "] permission [" + permission + "] accessQuery [" + accessQuery + "]");
+      }
       result = accessQuery.matchesAll(permission);
       return result;
    }

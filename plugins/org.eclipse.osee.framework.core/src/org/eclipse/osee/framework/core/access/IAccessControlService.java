@@ -34,4 +34,6 @@ public interface IAccessControlService extends IArtifactCheck {
 
    void ensurePopulated();
 
+   void clearCache();
+
 }

@@ -83,4 +83,9 @@ public class AccessControlServiceImpl implements IAccessControlService {
       throw new UnsupportedOperationException("Not available on server yet");
    }
 
+   @Override
+   public void clearCache() {
+      // No server caches to clear
+   }
+
 }

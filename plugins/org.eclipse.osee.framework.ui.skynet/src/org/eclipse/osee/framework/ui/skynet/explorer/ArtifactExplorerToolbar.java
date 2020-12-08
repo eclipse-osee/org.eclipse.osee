@@ -20,6 +20,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -30,10 +33,13 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -49,7 +55,7 @@ public class ArtifactExplorerToolbar {
    private final IToolBarManager toolbarManager;
    private Action newArtifactExplorer;
    private Action collapseAllAction;
-   private Action showChangeReport;
+   private Action refreshAction;
    private Action upAction;
 
    public ArtifactExplorerToolbar(ArtifactExplorer artifactExplorer) {
@@ -62,7 +68,8 @@ public class ArtifactExplorerToolbar {
       createUpAction(toolbarManager);
       createNewArtifactExplorerAction(toolbarManager);
       createShowChangeReportAction(toolbarManager);
-      addOpenQuickSearchAction(toolbarManager);
+      createOpenQuickSearchAction(toolbarManager);
+      createRefreshAction(toolbarManager);
       toolbarManager.add(new OpenAssociatedArtifactFromBranchProvider(artifactExplorer));
 
    }
@@ -80,7 +87,63 @@ public class ArtifactExplorerToolbar {
       }
    }
 
-   private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
+   private void createRefreshAction(IToolBarManager toolbarManager) {
+      // Refresh access control, then refresh the view
+      refreshAction = new Action("Refresh") {
+         @Override
+         public void run() {
+            try {
+               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Refresh Access and Reload",
+                  "Normal operation of Artifact Explorer requires no Refresh.  This refresh is " //
+                     + "to help recover from an Access Control bug that we are tracking down.  If " //
+                     + "you are locked out from Access Control and think it's incorrect, this will reload " //
+                     + "Access Control and the reload Artifact Explorer.\n\nContinue?")) {
+                  return;
+               }
+
+               artifactExplorer.setRefreshing(true);
+               artifactExplorer.refreshBranchWarning();
+
+               Job refreshJob = new Job("Refreshing Access and Artifact Explorer") {
+
+                  @Override
+                  protected IStatus run(IProgressMonitor monitor) {
+                     AccessControlService.getAccessService().clearCache();
+                     AccessControlService.getAccessService().ensurePopulated();
+
+                     Displays.ensureInDisplayThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                           artifactExplorer.setRefreshing(false);
+                           artifactExplorer.refreshBranchWarning();
+                           ArtifactExplorer.exploreBranch(artifactExplorer.getBranch());
+                           if (AccessControlManager.isOseeAdmin()) {
+                              CheckBoxDialog dialog =
+                                 new CheckBoxDialog("Admin - Enable Debug", "Enable Branch Access Debug",
+                                    "Check to enable Branch Access Debug if instructed to do so");
+                              if (dialog.open() == Window.OK) {
+                                 System.setProperty(AccessControlManager.DEBUG_BRANCH_ACCESS, "true");
+                              } else {
+                                 System.setProperty(AccessControlManager.DEBUG_BRANCH_ACCESS, "false");
+                              }
+                           }
+                        }
+                     });
+                     return Status.OK_STATUS;
+                  }
+               };
+               Jobs.startJob(refreshJob);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      toolbarManager.add(refreshAction);
+   }
+
+   private void createOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
          new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
             @Override
@@ -173,7 +236,7 @@ public class ArtifactExplorerToolbar {
    }
 
    private void createShowChangeReportAction(IToolBarManager toolbarManager) {
-      showChangeReport = new Action("Show Change Report") {
+      refreshAction = new Action("Show Change Report") {
          @Override
          public void run() {
             try {
@@ -184,8 +247,8 @@ public class ArtifactExplorerToolbar {
          }
       };
 
-      showChangeReport.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
-      toolbarManager.add(showChangeReport);
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
+      toolbarManager.add(refreshAction);
    }
 
    private void createCollapseAllAction(IToolBarManager toolbarManager) {

@@ -36,6 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class AccessControlManager {
 
+   public static final String DEBUG_BRANCH_ACCESS = "DebugBranchAccess";
+
    private AccessControlManager() {
       // Hide constructor
    }

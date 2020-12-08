@@ -105,6 +105,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private ArtifactDecorator artifactDecorator;
    public ArtifactExplorerMenu artifactExplorerMenu;
    private ArtifactExplorerToolbar artifactExplorerToolbar;
+   private boolean refreshing = false;
 
    private ArtifactExplorerViewApplicability view;
    private ArtifactId viewId = ArtifactId.SENTINEL;
@@ -508,6 +509,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    public void setViewId(ArtifactId viewId) {
       this.viewId = viewId;
+   }
+
+   public boolean isRefreshing() {
+      return refreshing;
+   }
+
+   public void setRefreshing(boolean refreshing) {
+      this.refreshing = refreshing;
    }
 
 }
