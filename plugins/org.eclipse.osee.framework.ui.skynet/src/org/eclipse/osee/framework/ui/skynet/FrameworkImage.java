@@ -120,6 +120,7 @@ public enum FrameworkImage implements KeyedImage {
    GROUP("group.gif"),
    HEADING("heading.gif"),
    HELP("help.gif"),
+   HOLD("hold.gif"),
    ID("id.gif"),
    IMPLEMENTATION_DETAILS("implementationDetails.gif"),
    IMPLEMENTATION_DETAILS_PROCEDURE("implementation_details_procedure.gif"),

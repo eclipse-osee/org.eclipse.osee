@@ -66,8 +66,12 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
                   AtsAttributeTypes.BlockedReason, "");
+               String isHold = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
+                  AtsAttributeTypes.HoldReason, "");
                if (Strings.isValid(isBlocked)) {
                   return ImageManager.getImage(FrameworkImage.X_RED);
+               } else if (Strings.isValid(isHold)) {
+                  return ImageManager.getImage(FrameworkImage.HOLD);
                }
             }
          }

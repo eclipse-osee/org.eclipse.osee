@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2019 Boeing
+ * Copyright (c) 2020 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -19,9 +19,10 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 /**
  * @author Bhawana Mishra
  */
-public class EditBlockedStatusAction extends AbstractEditSubStatusAction {
+public class EditHoldStatusAction extends AbstractEditSubStatusAction {
 
-   public EditBlockedStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super(selectedAtsArtifacts, "Block", "UnBlock", FrameworkImage.X_RED, AtsAttributeTypes.BlockedReason);
+   public EditHoldStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super(selectedAtsArtifacts, "Hold", "UnHold", FrameworkImage.HOLD, AtsAttributeTypes.HoldReason);
    }
+
 }

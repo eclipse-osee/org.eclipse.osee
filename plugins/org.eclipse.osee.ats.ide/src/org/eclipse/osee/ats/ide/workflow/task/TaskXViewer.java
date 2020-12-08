@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.actions.AddTaskAction;
 import org.eclipse.osee.ats.ide.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.ide.actions.EditBlockedStatusAction;
+import org.eclipse.osee.ats.ide.actions.EditHoldStatusAction;
 import org.eclipse.osee.ats.ide.actions.EditStatusAction;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToMenu;
@@ -42,6 +43,7 @@ public class TaskXViewer extends WorldXViewer {
    Action editAssigneeAction;
    Action addNewTaskAction;
    EditBlockedStatusAction editBlockedStatusAction;
+   EditHoldStatusAction editHoldStatusAction;
    private boolean tasksEditable = true;
    private IAtsTeamWorkflow teamWf;
 
@@ -57,6 +59,7 @@ public class TaskXViewer extends WorldXViewer {
       editStatusAction = new EditStatusAction(this, this, this);
       editAssigneeAction = new EditAssigneeAction(this, this);
       editBlockedStatusAction = new EditBlockedStatusAction(this);
+      editHoldStatusAction = new EditHoldStatusAction(this);
       addNewTaskAction = new AddTaskAction(this);
    }
 
@@ -86,6 +89,9 @@ public class TaskXViewer extends WorldXViewer {
 
       mm.insertBefore(MENU_GROUP_PRE, editBlockedStatusAction);
       editBlockedStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() >= 1);
+
+      mm.insertBefore(MENU_GROUP_PRE, editHoldStatusAction);
+      editHoldStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() >= 1);
 
    }
 

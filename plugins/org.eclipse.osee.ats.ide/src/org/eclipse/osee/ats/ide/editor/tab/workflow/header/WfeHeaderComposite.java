@@ -117,6 +117,7 @@ public class WfeHeaderComposite extends Composite {
          int numColumns = 4;
          createWorkDefHeader(this, editor.getToolkit(), workItem, numColumns);
          new WfeBlockedWorkflowHeader(this, SWT.NONE, workItem, editor);
+         new WfeHoldWorkflowHeader(this, SWT.NONE, workItem, editor);
 
          customHeader = createCustomHeader(this, editor.getToolkit(), workItem, editor, managedForm);
 

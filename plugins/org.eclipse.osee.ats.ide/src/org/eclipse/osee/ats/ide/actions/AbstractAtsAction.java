@@ -28,6 +28,10 @@ public class AbstractAtsAction extends Action {
       super(string, imageDescriptor);
    }
 
+   public AbstractAtsAction(String string, ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super(string);
+   }
+
    public AbstractAtsAction(String string) {
       super(string);
    }

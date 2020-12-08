@@ -37,8 +37,17 @@ public class StateColumn extends AbstractServicesColumn {
       if (atsObject instanceof IAtsWorkItem) {
          String isBlocked =
             atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.BlockedReason, "");
+         String isHold =
+            atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.HoldReason, "");
+         if (Strings.isValid(isBlocked) && (Strings.isValid(isHold))) {
+            String hold = ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Hold)";
+            String block = " " + ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Blocked)";
+            return hold + block;
+         }
          if (Strings.isValid(isBlocked)) {
             return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Blocked)";
+         } else if (Strings.isValid(isHold)) {
+            return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName() + " (Hold)";
          } else {
             return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName();
          }
