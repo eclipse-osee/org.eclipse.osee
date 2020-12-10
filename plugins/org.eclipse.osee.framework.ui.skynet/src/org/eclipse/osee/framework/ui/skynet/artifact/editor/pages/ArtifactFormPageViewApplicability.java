@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -53,6 +54,7 @@ public class ArtifactFormPageViewApplicability {
    private final ArtifactEditor editor;
    private SelectionAdapter changeableAdapter;
    private SelectionAdapter nonChangeableAdapter;
+   private Composite applicabilityComp;
 
    public ArtifactFormPageViewApplicability(ArtifactEditor editor, FormToolkit toolkit, ScrolledForm form) {
       this.editor = editor;
@@ -77,7 +79,10 @@ public class ArtifactFormPageViewApplicability {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               if (ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact))) {
+               Pair<Boolean, String> result =
+                  ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact));
+               boolean success = result.getFirst();
+               if (success) {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
@@ -109,20 +114,25 @@ public class ArtifactFormPageViewApplicability {
    }
 
    public void create() {
-      Composite applicabilityComp = toolkit.createComposite(form.getForm().getBody(), SWT.WRAP);
+      applicabilityComp = toolkit.createComposite(form.getForm().getBody(), SWT.WRAP);
       applicabilityComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-      applicabilityComp.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
+      applicabilityComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      toolkit.adapt(applicabilityComp);
 
       text = toolkit.createFormText(applicabilityComp, false);
       text.setText(getArtifactViewApplicabiltyText(), true, false);
       text.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
+      toolkit.adapt(text);
 
       button = toolkit.createButton(applicabilityComp, "", SWT.PUSH);
+      toolkit.adapt(button, true, true);
       setButtonChangeable();
    }
 
    public void refresh() {
       text.setText(getArtifactViewApplicabiltyText(), true, false);
+      text.layout(true);
+      applicabilityComp.layout(true);
    }
 
    private String getArtifactViewApplicabiltyText() {

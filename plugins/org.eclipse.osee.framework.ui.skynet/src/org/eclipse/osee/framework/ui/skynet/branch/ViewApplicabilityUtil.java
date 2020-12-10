@@ -22,8 +22,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.access.PermissionStatus;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +44,7 @@ public class ViewApplicabilityUtil {
    public static String SAVE_OTHER_CHANGES = "Save all other changes before making View Applicability update";
    private static AccessPolicy policy;
 
-   public static boolean changeApplicability(List<? extends ArtifactToken> artifacts) {
+   public static Pair<Boolean, String> changeApplicability(List<? extends ArtifactToken> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       Iterable<String> possibleApplicabilities = applEndpoint.getPossibleApplicabilities();
@@ -52,10 +54,12 @@ public class ViewApplicabilityUtil {
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         applEndpoint.setApplicabilityByString(dialog.getSelection(), artifacts);
-         return true;
+         String value = dialog.getSelection();
+         TransactionToken transaction = applEndpoint.setApplicabilityByString(value, artifacts);
+         Boolean success = transaction.isValid();
+         return new Pair<Boolean, String>(success, value);
       }
-      return false;
+      return new Pair<>(false, "");
    }
 
    private static AccessPolicy getAccessPolicy() {

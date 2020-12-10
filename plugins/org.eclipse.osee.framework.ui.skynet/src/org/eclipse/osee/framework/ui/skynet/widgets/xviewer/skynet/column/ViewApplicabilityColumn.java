@@ -125,8 +125,19 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
          AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
          return;
       }
-      ViewApplicabilityUtil.changeApplicability(artifacts);
+      updateViewApplicability(artifacts);
+   }
 
+   private boolean updateViewApplicability(List<Artifact> artifacts) {
+      Pair<Boolean, String> result = ViewApplicabilityUtil.changeApplicability(artifacts);
+      boolean success = result.getFirst();
+      String value = result.getSecond();
+      if (success) {
+         for (Artifact art : artifacts) {
+            getPreComputedValueMap().put(art.getId(), value);
+         }
+      }
+      return success;
    }
 
    @Override
@@ -138,11 +149,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
             AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
             return false;
          }
-         if (ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact))) {
-            return true;
-         } else {
-            return false;
-         }
+         return updateViewApplicability(Collections.singletonList(artifact));
       } else {
          AWorkbench.popup("No Artifact Selected");
          return false;
