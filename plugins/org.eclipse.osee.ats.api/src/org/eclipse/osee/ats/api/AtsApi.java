@@ -225,4 +225,18 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
       return Lib.generateId();
    }
 
+   /**
+    * @return value in static id field that starts with key=; key= will be stripped off string and remaining returned
+    */
+   default public String getStaticIdValue(IAtsWorkItem workItem, String key, String defaultValue) {
+      return getAttributeResolver().getStaticIdValue(workItem, key, defaultValue);
+   }
+
+   /**
+    * @return set/update static id in format of key=value
+    */
+   default public void setStaticIdValue(IAtsWorkItem workItem, String key, String value, IAtsChangeSet changes) {
+      getAttributeResolver().setStaticIdValue(workItem, key, value, changes);
+   }
+
 }

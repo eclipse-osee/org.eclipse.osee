@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.core.util.AbstractAtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
+public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverServiceImpl {
 
    @Override
    public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, T defaultReturnValue) {
@@ -50,8 +50,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public List<String> getAttributesToStringList(ArtifactId artifact, AttributeTypeToken attributeType) {
-      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getAttributesToStringList(
-         attributeType);
+      return AtsApiService.get().getQueryServiceIde().getArtifact(artifact).getAttributesToStringList(attributeType);
    }
 
    @Override

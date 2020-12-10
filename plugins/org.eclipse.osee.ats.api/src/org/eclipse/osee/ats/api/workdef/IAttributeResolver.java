@@ -108,4 +108,14 @@ public interface IAttributeResolver {
 
    List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag);
 
+   /**
+    * @return value in static id field that starts with key=; key= will be stripped off string and remaining returned
+    */
+   String getStaticIdValue(IAtsWorkItem workItem, String key, String defaultValue);
+
+   /**
+    * @return set/update static id in format of key=value
+    */
+   void setStaticIdValue(IAtsWorkItem workItem, String key, String value, IAtsChangeSet changes);
+
 }
