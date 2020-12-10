@@ -67,7 +67,8 @@ public class ChangeManagerTest {
    public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, CoreBranches.SYSTEM_ROOT);
+      modArtifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, CoreBranches.SYSTEM_ROOT);
       modArtifact.persist(getClass().getSimpleName());
 
       String branchName = "Change Manager Test Branch" + GUID.create();
@@ -111,8 +112,12 @@ public class ChangeManagerTest {
 
       for (Change change : changes) {
          if (change.getArtId().equals(artifact)) {
-            pass = change.getModificationType() == modificationType;
-            break;
+            ModificationType type = change.getModificationType();
+            if (type != ModificationType.APPLICABILITY) { // skip if applicability change
+               if (type == modificationType) {
+                  pass = true;
+               }
+            }
          }
       }
       return pass;
