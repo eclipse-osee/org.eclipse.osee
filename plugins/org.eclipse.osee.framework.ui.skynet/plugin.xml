@@ -1516,6 +1516,14 @@
       </key>
    </extension>
    <extension
+         id="CreateArtifactWithIdBlam"
+         name="CreateArtifactWithIdBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateArtifactWithIdBlam">
+      </Operation>
+   </extension>
+   <extension
          id="SetWorkbenchOverrideIconBlam"
          name="SetWorkbenchOverrideIconBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
