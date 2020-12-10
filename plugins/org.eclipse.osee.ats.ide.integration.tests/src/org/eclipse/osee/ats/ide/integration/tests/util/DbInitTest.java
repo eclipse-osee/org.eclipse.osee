@@ -18,12 +18,14 @@ import java.util.List;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
@@ -75,6 +77,12 @@ public class DbInitTest {
          if (AtsApiService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
+
+         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, "false");
+         UserManager.getUser().saveSettings();
+
+         UserGroupService.get(CoreUserGroups.DefaultArtifactEditor).addMember(UserManager.getUser());
+
       }
 
       OseeProperties.setIsInTest(false);

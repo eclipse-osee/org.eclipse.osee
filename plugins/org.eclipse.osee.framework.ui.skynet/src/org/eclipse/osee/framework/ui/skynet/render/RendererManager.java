@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollec
 public final class RendererManager {
    private static final List<IRenderer> renderers = new ArrayList<>(20);
    private static boolean firstTimeThrough = true;
-   private static Boolean defaultArtifactEditor = false;
+   private static Boolean defaultArtifactEditor = null;
 
    private RendererManager() {
       // Utility Class
@@ -305,4 +305,7 @@ public final class RendererManager {
       RendererManager.defaultArtifactEditor = defaultArtifactEditor;
    }
 
+   public static void clearCaches() {
+      defaultArtifactEditor = null;
+   }
 }
