@@ -63,6 +63,15 @@ public class DeleteLocalDatabaseDirs {
          XConsoleLogger.out("No demo dir [%s]\n", demoDir.getAbsolutePath());
       }
 
+      File demoDir2 = new File(homeDir + "/Documents/demo");
+      boolean demo2Exists = false;
+      if (demoDir2.exists()) {
+         demo2Exists = true;
+         XConsoleLogger.out("Using found demo dir [%s]\n", demoDir2.getAbsolutePath());
+      } else {
+         XConsoleLogger.out("No demo dir [%s]\n", demoDir2.getAbsolutePath());
+      }
+
       if (!hsqlExists && !attrExists && !demoExists) {
          XConsoleLogger.out("No dirs to delete\nComplete");
          return;
@@ -82,6 +91,9 @@ public class DeleteLocalDatabaseDirs {
             }
             if (demoExists) {
                deleteDirectory(demoDir);
+            }
+            if (demo2Exists) {
+               deleteDirectory(demoDir2);
             }
             XConsoleLogger.out("Complete");
 
