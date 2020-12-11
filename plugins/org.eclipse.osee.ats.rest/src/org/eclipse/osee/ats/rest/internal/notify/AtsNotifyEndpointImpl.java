@@ -30,7 +30,7 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
 
    @Override
    public Response sendNotifications(AtsNotificationCollector notifications) {
-      atsApi.sendNotifications(notifications);
+      atsApi.getNotificationService().sendNotifications(notifications);
       return Response.ok().build();
    }
 }

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +46,7 @@ public class SendNotificationEvents {
    private final String testingUserEmail;
    private final IAtsUserService userService;
 
-   protected SendNotificationEvents(Log logger, MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
+   public SendNotificationEvents(Log logger, MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
       this.logger = logger;
       this.mailService = mailService;
       this.fromUserEmail = fromUserEmail;

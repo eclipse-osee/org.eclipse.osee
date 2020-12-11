@@ -129,7 +129,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
-      AtsApiService.get().sendNotifications(getNotifications());
+      AtsApiService.get().getNotificationService().sendNotifications(getNotifications());
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
             AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);

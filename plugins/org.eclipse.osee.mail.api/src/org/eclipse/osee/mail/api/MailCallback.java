@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.mail.api;
 
+import org.eclipse.osee.framework.core.util.MailStatus;
+
 /**
  * @author Roberto E. Escobar
  */

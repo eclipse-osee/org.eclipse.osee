@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -54,17 +53,15 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    private final OrcsApi orcsApi;
    private final IAtsStateFactory stateFactory;
    private final IAtsLogFactory logFactory;
-   private final IAtsNotifier notifier;
    private final AtsApi atsApi;
 
    private final JdbcService jdbcService;
 
-   public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+   public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.logFactory = logFactory;
       this.stateFactory = stateFactory;
-      this.notifier = notifier;
       this.jdbcService = atsApi.getJdbcService();
    }
 
@@ -82,7 +79,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, BranchId branch, AtsUser asUser) {
       return new AtsChangeSet(atsApi, atsApi.getAttributeResolver(), orcsApi, stateFactory, logFactory, comment, asUser,
-         notifier, branch);
+         branch);
    }
 
    public QueryBuilder getQuery() {

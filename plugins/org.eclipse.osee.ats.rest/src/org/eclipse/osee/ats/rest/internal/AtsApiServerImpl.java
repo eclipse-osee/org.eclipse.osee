@@ -18,12 +18,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
@@ -39,9 +38,7 @@ import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
-import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
-import org.eclipse.osee.ats.rest.internal.notify.AtsNotifierServiceImpl;
-import org.eclipse.osee.ats.rest.internal.notify.WorkItemNotificationProcessor;
+import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.rest.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.ArtifactResolverImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsAttributeResolverServiceImpl;
@@ -51,14 +48,13 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
-import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.server.OseeInfo;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -68,12 +64,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;
-   private AtsNotifierServiceImpl notifyService;
-   private AtsNotificationEventProcessor notificationEventProcessor;
    private IAgileService agileService;
-   private volatile boolean emailEnabled = true;
-   private boolean loggedNotificationDisabled = false;
-   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions = new ConcurrentHashMap<>();
    private AtsActionEndpointApi actionEndpoint;
    private IAtsHealthService healthService;
@@ -89,14 +80,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
    public void removeAtsDatabaseConversion(IAtsDatabaseConversion conversion) {
       externalConversions.remove(conversion.getName());
-   }
-
-   public void addNotifier(IAtsNotifierServer notifier) {
-      notifiers.add(notifier);
-   }
-
-   public void removeNotifier(IAtsNotifierServer notifier) {
-      notifiers.remove(notifier);
    }
 
    // for ReviewOsgiXml public void setAtsEventService(IAtsEventService eventService)
@@ -115,14 +98,14 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
       super.start();
 
-      notifyService = new AtsNotifierServiceImpl();
+      notificationService = new AtsNotificationServiceImpl(this);
 
       artifactResolver = new ArtifactResolverImpl(this);
       branchService = new AtsBranchServiceImpl(this, orcsApi, teamWorkflowProvidersLazy);
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
 
-      storeService = new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory, this);
+      storeService = new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);
@@ -170,55 +153,20 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    }
 
    @Override
-   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body) {
-      if (isEmailEnabled()) {
-         Thread thread = new Thread("ATS Emailer") {
-
-            @Override
-            public void run() {
-               for (IAtsNotifierServer notifier : notifiers) {
-                  notifier.sendNotifications(fromUserEmail, toUserEmails, subject, body);
-               }
+   public String getConfigValue(String key) {
+      String result = null;
+      ArtifactToken atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
+      if (atsConfig != null) {
+         Collection<String> attributeValues =
+            getAttributeResolver().getAttributesToStringList(atsConfig, CoreAttributeTypes.GeneralStringData);
+         for (String str : attributeValues) {
+            if (str.startsWith(key)) {
+               result = str.replaceFirst(key + "=", "");
+               break;
             }
-
-         };
-         thread.start();
-      }
-   }
-
-   @Override
-   public void sendNotifications(AtsNotificationCollector notifications) {
-      if (isEmailEnabled()) {
-         if (notifiers.isEmpty() || !getStoreService().isProductionDb()) {
-            if (!loggedNotificationDisabled) {
-               logger.info("Osee Notification Disabled");
-               loggedNotificationDisabled = true;
-            }
-         } else {
-            if (notifications.isIncludeCancelHyperlink() && !getWorkItemService().isCancelHyperlinkConfigured()) {
-               throw new OseeArgumentException("Cancel Hyperlink URl not configured");
-            }
-            WorkItemNotificationProcessor workItemNotificationProcessor =
-               new WorkItemNotificationProcessor(logger, this, userService, attributeResolverService);
-            Thread thread = new Thread("ATS Notification Sender") {
-
-               @Override
-               public void run() {
-                  super.run();
-                  notificationEventProcessor = new AtsNotificationEventProcessor(workItemNotificationProcessor,
-                     userService, getConfigValue("NoReplyEmail"));
-                  notificationEventProcessor.sendNotifications(notifications, notifiers);
-               }
-
-            };
-            thread.start();
          }
       }
-
-   }
-
-   public AtsNotifierServiceImpl getNotifyService() {
-      return notifyService;
+      return result;
    }
 
    @Override
@@ -226,15 +174,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       List<ArtifactTypeToken> types = new ArrayList<>();
       types.addAll(orcsApi.tokenService().getArtifactTypes());
       return types;
-   }
-
-   public boolean isEmailEnabled() {
-      return emailEnabled;
-   }
-
-   @Override
-   public void setEmailEnabled(boolean emailEnabled) {
-      this.emailEnabled = emailEnabled;
    }
 
    @Override
@@ -289,16 +228,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
          addCustomizationsFromArts(namespace, customizations, customizationArt);
       }
       return customizations;
-   }
-
-   @Override
-   public boolean isNotificationsEnabled() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public void setNotifactionsEnabled(boolean enabled) {
-      throw new UnsupportedOperationException();
    }
 
    @Override

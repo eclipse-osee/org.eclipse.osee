@@ -13,15 +13,19 @@
 
 package org.eclipse.osee.ats.api.notify;
 
+import java.util.Collection;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsNotifier {
+public interface IAtsNotificationService {
 
    void sendNotifications(AtsNotificationCollector notifications);
 
+   void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body);
+
    boolean isNotificationsEnabled();
 
-   void setNotifactionsEnabled(boolean enabled);
+   void setNotificationsEnabled(boolean enabled);
 
 }

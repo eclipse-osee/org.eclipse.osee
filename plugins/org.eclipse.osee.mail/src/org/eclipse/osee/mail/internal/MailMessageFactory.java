@@ -31,10 +31,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.api.MailMessage;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Roberto E. Escobar

@@ -21,8 +21,8 @@ import javax.mail.Transport;
 import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import javax.mail.internet.MimeMessage;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.mail.api.MailMessage;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Roberto E. Escobar

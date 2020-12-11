@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.event.IAtsEventService;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
@@ -127,6 +128,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected EventAdmin eventAdmin;
    protected IAtsLogFactory logFactory;
    protected IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService;
+   protected IAtsNotificationService notificationService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -567,6 +569,11 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public String getConfigValue(String key) {
       return getConfigService().getConfigurations().getConfigValue(key);
+   }
+
+   @Override
+   public IAtsNotificationService getNotificationService() {
+      return notificationService;
    }
 
 }

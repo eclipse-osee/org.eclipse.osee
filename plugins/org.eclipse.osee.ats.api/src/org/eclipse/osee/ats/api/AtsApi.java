@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.event.IAtsEventService;
-import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
@@ -149,10 +149,6 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    IAtsTeamDefinitionService getTeamDefinitionService();
 
-   void sendNotifications(AtsNotificationCollector notifications);
-
-   void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body);
-
    IAgileService getAgileService();
 
    JdbcService getJdbcService();
@@ -176,6 +172,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    IAtsTaskRelatedService getTaskRelatedService();
 
    IAtsHealthService getHealthService();
+
+   IAtsNotificationService getNotificationService();
 
    IAtsWorkDefinitionProviderService getWorkDefinitionProviderService();
 

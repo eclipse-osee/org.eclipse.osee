@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -58,15 +57,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private TransactionBuilder transaction;
 
    private final OrcsApi orcsApi;
-   private final IAtsNotifier notifier;
-
    private final AtsApi atsApi;
 
-   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, AtsUser user, IAtsNotifier notifier, BranchId branch) {
+   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, AtsUser user, BranchId branch) {
       super(comment, branch, user);
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      this.notifier = notifier;
    }
 
    public TransactionBuilder getTransaction() {
@@ -101,7 +97,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
-      notifier.sendNotifications(getNotifications());
+      atsApi.getNotificationService().sendNotifications(getNotifications());
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
             atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);

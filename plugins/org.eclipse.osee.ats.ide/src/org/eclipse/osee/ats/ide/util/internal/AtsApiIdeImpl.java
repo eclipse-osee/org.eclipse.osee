@@ -24,9 +24,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
-import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -45,12 +44,11 @@ import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.ide.ev.internal.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.ide.health.AtsHealthServiceImpl;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.search.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.util.AtsServerEndpointProviderImpl;
-import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.AtsWorkItemServiceClientImpl;
@@ -65,9 +63,12 @@ import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupService;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.UserGroupService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -133,6 +134,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       taskService = new AtsTaskService(this);
 
       agileService = new AgileService(logger, this);
+      notificationService = new AtsNotificationServiceImpl();
 
    }
 
@@ -166,36 +168,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IAtsWorkItemService getWorkItemService() {
       return workItemService;
-   }
-
-   @Override
-   public synchronized void sendNotifications(final AtsNotificationCollector notifications) {
-      if (AtsUtilClient.isEmailEnabled()) {
-         AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
-         Jobs.startJob(new Job("Send Notifications") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-               notifyEndpoint.sendNotifications(notifications);
-               return Status.OK_STATUS;
-            }
-         }, false);
-      }
-   }
-
-   @Override
-   public synchronized void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body) {
-      throw new UnsupportedOperationException("Not supported on client");
-   }
-
-   @Override
-   public boolean isNotificationsEnabled() {
-      return AtsUtilClient.isEmailEnabled();
-   }
-
-   @Override
-   public void setNotifactionsEnabled(boolean enabled) {
-      AtsUtilClient.setEmailEnabled(enabled);
    }
 
    @Override

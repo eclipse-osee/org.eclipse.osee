@@ -17,7 +17,6 @@ import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
@@ -27,13 +26,11 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Donald G Dunne
  */
-public interface AtsApiServer extends AtsApi, IAtsNotifier {
+public interface AtsApiServer extends AtsApi {
 
    OrcsApi getOrcsApi();
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
-
-   void setEmailEnabled(boolean emailEnabled);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 

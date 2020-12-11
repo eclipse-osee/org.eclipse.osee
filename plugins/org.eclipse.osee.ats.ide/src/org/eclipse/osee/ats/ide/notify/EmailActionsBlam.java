@@ -112,7 +112,7 @@ public class EmailActionsBlam extends AbstractBlam {
       notifications.setSubject(data.getSubject());
       notifications.setBody(data.getBody());
       notifications.setIncludeCancelHyperlink(data.isIncludeCancelHyperlink());
-      AtsApiService.get().sendNotifications(notifications);
+      AtsApiService.get().getNotificationService().sendNotifications(notifications);
       logf("Sent %s notifications.", sent);
    }
 
@@ -149,8 +149,7 @@ public class EmailActionsBlam extends AbstractBlam {
                data.getEmailRecipient().name(), workItem.getArtifactTypeName(),
                workItem.getStateMgr().getCurrentStateName(), workItem.getName(),
                DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
-      notificationEvent.setUrl(
-         AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
+      notificationEvent.setUrl(AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {
          if (AtsApiService.get().getWorkItemService().isCancelHyperlinkConfigured()) {
             notificationEvent.setCancelUrl(

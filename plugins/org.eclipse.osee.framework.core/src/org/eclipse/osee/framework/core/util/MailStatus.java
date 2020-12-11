@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.mail.api;
+package org.eclipse.osee.framework.core.util;
 
 import java.util.Date;
 import java.util.HashSet;

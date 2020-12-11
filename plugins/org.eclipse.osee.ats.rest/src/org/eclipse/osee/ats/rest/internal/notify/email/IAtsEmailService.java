@@ -11,17 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.rest.util;
+package org.eclipse.osee.ats.rest.internal.notify.email;
 
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
-import org.eclipse.osee.mail.api.MailStatus;
+import org.eclipse.osee.framework.core.util.MailStatus;
 
 /**
+ * Service to provide bare bones sending of emails.
+ *
  * @author Donald G. Dunne
  */
-public interface IAtsNotifierServer {
+public interface IAtsEmailService {
 
    /**
     * Send notifications

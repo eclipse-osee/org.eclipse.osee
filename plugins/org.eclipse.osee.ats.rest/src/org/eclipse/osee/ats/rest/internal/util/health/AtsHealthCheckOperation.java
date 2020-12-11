@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -55,7 +56,6 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Donald G. Dunne

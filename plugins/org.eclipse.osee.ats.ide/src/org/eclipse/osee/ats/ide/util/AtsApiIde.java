@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
 import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
@@ -26,7 +25,7 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
 /**
  * @author Donald G. Dunne
  */
-public interface AtsApiIde extends AtsApi, IAtsNotifier {
+public interface AtsApiIde extends AtsApi {
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 

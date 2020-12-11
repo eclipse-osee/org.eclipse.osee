@@ -11,19 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.rest.internal.notify;
+package org.eclipse.osee.ats.rest.internal.notify.email;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
-import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
-import org.eclipse.osee.mail.api.MailStatus;
+import org.eclipse.osee.framework.core.util.MailStatus;
 
 /**
+ * Provides a No Operation service that does nothing but keeps from giving an error that there are no implementing
+ * services. This will be provided whether there is a mail service or not.
+ *
  * @author Donald G. Dunne
  */
-public class NoOpAtsNotifierServiceImpl implements IAtsNotifierServer {
+public class AtsEmailServiceImplNoOp implements IAtsEmailService {
 
    @Override
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {

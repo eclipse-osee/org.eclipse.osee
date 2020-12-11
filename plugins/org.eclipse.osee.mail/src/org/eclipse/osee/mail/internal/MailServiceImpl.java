@@ -23,11 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Roberto E. Escobar

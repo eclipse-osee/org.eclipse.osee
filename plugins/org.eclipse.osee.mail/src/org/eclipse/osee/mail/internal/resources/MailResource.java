@@ -14,10 +14,10 @@
 package org.eclipse.osee.mail.internal.resources;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.util.MailStatus;
 import org.eclipse.osee.mail.api.MailEndpoint;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
-import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Roberto E. Escobar

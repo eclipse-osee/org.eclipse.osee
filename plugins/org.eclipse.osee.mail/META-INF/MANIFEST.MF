@@ -13,6 +13,7 @@ Import-Package: javax.activation,
  javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.framework.core.executor,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.eclipse.osee.mail.api
