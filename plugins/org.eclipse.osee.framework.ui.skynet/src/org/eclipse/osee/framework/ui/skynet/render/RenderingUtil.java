@@ -156,6 +156,8 @@ public final class RenderingUtil {
          if (artifacts.size() == 1) {
             name.append(artifact.getSafeName());
             name.append("_");
+            name.append(artifact.getIdString());
+            name.append("_");
             if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
                name.append(artifact.getTransaction().getId());
                name.append("_");

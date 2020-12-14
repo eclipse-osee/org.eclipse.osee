@@ -58,10 +58,10 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    private ArtifactTypeToken getArtifactType(RoughArtifact art) {
-      ArtifactTypeToken type = art.getArtifactType();
-      if (!type.equals(ArtifactTypeId.SENTINEL)) {
-         return type;
+      if (!primaryArtifactType.equals(ArtifactTypeId.SENTINEL)) {
+         return primaryArtifactType;
+      } else {
+         return art.getArtifactType();
       }
-      return primaryArtifactType;
    }
 }

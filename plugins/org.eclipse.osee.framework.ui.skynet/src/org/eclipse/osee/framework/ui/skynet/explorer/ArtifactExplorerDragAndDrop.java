@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -47,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.DropTargetAttributeBasedResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -233,7 +231,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          File importFile = new File(items[0]);
 
          ArtifactImportWizard wizard = new ArtifactImportWizard();
-         Matcher fileMatcher = DropTargetAttributeBasedResolver.oseeFileMatcher;
          wizard.setImportFile(importFile);
          wizard.setDestinationArtifact(parentArtifact);
 
@@ -244,11 +241,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          }
 
          if (importWizardUserSelection == true) {
-            fileMatcher.reset(fileName);
-            if (fileMatcher.find()) {
-               fileName = fileMatcher.group(1);
-            }
-
             if (isSameName(parentArtifact, fileName)) {
                importSimilarArtifact(parentArtifact, importFile, wizard, fileName);
             } else {
@@ -357,13 +349,15 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    }
 
    private boolean isSameName(Artifact art, String fileName) {
-      boolean isSame = false;
-      if (!art.isTypeEqual(CoreArtifactTypes.Folder)) {
-         if (art.getName().equals(FilenameUtils.getBaseName(fileName))) {
-            isSame = true;
-         }
+      if (art.isTypeEqual(CoreArtifactTypes.Folder)) {
+         return false;
+      } else if (fileName.contains("_" + art.getIdString() + "_")) {
+         return true;
+      } else if (FilenameUtils.getBaseName(fileName).startsWith(art.getSafeName())) {
+         return true;
+      } else {
+         return false;
       }
-      return isSame;
    }
 
    public static IArtifactExtractor getArtifactExtractor(ArtifactTypeToken artifactType) {
