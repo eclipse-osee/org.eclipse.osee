@@ -22,7 +22,7 @@ import javax.crypto.SecretKey;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthJSONProvider;
-import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
+import org.apache.cxf.rt.security.crypto.CryptoUtils;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

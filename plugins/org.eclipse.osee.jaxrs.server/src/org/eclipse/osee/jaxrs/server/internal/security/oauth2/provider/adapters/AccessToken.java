@@ -57,4 +57,9 @@ public class AccessToken extends ServerAccessToken implements OAuthToken {
       return type;
    }
 
+   @Override
+   public String getAudience() {
+      return getAudiences().get(0);
+   }
+
 }

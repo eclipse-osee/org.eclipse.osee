@@ -42,9 +42,30 @@
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
       <import plugin="org.slf4j.api" version="1.6.1" match="greaterOrEqual"/>
       <import plugin="javax.wsdl"/>
-      <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
    </requires>
+     
+     <plugin
+         id="org.apache.cxf.cxf-rt-rs-security-jose"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+     <plugin
+         id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+     
+
+  
+    <plugin
+         id="org.apache.cxf.cxf-rt-rs-json-basic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>     
    
     <plugin
          id="org.eclipse.equinox.common"
@@ -455,7 +476,7 @@
          unpack="false"/>      
          
    <plugin
-         id="org.apache.ws.commons.schema"
+         id="org.apache.ws.xmlschema.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -469,67 +490,45 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.cxf.core"
+         id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/> 
 
    <plugin
-         id="org.apache.cxf.jaxrs.client"
+         id="org.apache.cxf.cxf-rt-transports-http"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.jaxrs.frontend"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.jaxrs.model.wadl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.jaxrs.provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.rs.security.oauth2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.transport.http"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+         unpack="false"/> 
+         
    <plugin
          id="com.sun.xml.fastinfoset"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.core.config"
+         
+    <plugin
+         id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
+         unpack="false"/>
+ 
+     <plugin
+         id="org.apache.cxf.cxf-rt-frontend-jaxrs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
+  
+    <plugin
+         id="org.apache.cxf.cxf-rt-security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -539,7 +538,7 @@
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+   <plugin
          id="org.apache.felix.scr"
          download-size="0"
          install-size="0"

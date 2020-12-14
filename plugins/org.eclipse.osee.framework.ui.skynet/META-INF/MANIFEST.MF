@@ -10,6 +10,8 @@ Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.databind,
+ org.apache.cxf.jaxrs.client,
+ org.apache.cxf.jaxrs.client.spec,
  com.google.common.base,
  com.google.common.cache,
  com.google.common.collect,

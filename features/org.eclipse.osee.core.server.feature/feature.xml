@@ -486,12 +486,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.cxf.transport.http"
+  <plugin
+         id="org.apache.cxf.cxf-rt-transports-http"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/> 
 
    <plugin
          id="org.apache.cxf.jaxrs.client"
@@ -499,14 +499,28 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   
    <plugin
-         id="org.apache.cxf.rs.security.oauth2"
+         id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+ 
+     <plugin
+         id="org.apache.cxf.cxf-rt-frontend-jaxrs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/> 
 
+  <plugin
+         id="org.apache.cxf.cxf-rt-rs-security-oauth2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
    <plugin
          id="org.apache.cxf.jaxrs.model.wadl"
          download-size="0"
@@ -756,42 +770,42 @@
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
-         version="9.4.11"
+         version="9.4.35"
          unpack="false"/>
 
    <plugin

@@ -28,6 +28,13 @@
    <includes
          id="org.eclipse.jgit"
          version="5.0.0"/>
+
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-service-description"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
            
    <plugin
          id="org.postgresql.driver"
@@ -48,7 +55,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
    <plugin
          id="org.eclipse.oss.ajax"
          download-size="0"
@@ -61,7 +67,30 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>   
-             
+   
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-security-jose"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+         
+   <plugin
+         id="org.apache.cxf.cxf-rt-rs-json-basic"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
+                  
+  
    <plugin
          id="org.eclipse.jdt.annotation"
          download-size="0"
@@ -82,12 +111,7 @@
          version="0.0.0"
          unpack="false"/>   
 
-   <plugin
-         id="org.xerial.sqlite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>  
+	  
 
    <plugin
          id="com.jcraft.jsch"
@@ -523,12 +547,14 @@
          install-size="0"
          version="9.4.35"
          unpack="false"/>   
+   
    <plugin
          id="org.eclipse.jetty.util.ajax"
          download-size="0"
          install-size="0"
          version="9.4.35"
-         unpack="false"/>  
+         unpack="false"/>
+	   
    <plugin
          id="org.apache.felix.gogo.command"
          download-size="0"
@@ -617,7 +643,7 @@
          id="javax.annotation"
          download-size="0"
          install-size="0"
-         version="1.2.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -719,53 +745,46 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.cxf.core"
+         id="org.apache.cxf.cxf-rt-rs-security-oauth2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
+   <plugin
+         id="org.apache.cxf.cxf-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.cxf.jaxrs.client"
+  <plugin
+         id="org.apache.cxf.cxf-rt-transports-http"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/> 
 
    <plugin
-         id="org.apache.cxf.jaxrs.frontend"
+         id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.jaxrs.model.wadl"
+ 
+     <plugin
+         id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.jaxrs.provider"
+         unpack="false"/> 
+         
+    <plugin
+         id="org.apache.cxf.cxf-rt-security"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.rs.security.oauth2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.cxf.transport.http"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         unpack="false"/>         
 
    <plugin
          id="com.ctc.wstx"
@@ -773,14 +792,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+  
    <plugin
-         id="org.apache.ws.commons.schema"
+         id="org.apache.ws.xmlschema.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+         
    <plugin
          id="org.codehaus.stax2"
          download-size="0"
@@ -823,13 +842,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.cxf.core.config"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.text"

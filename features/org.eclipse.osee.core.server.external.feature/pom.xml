@@ -26,14 +26,25 @@
 						<configuration>
 							<excludes>
 							   <plugin id="ch.qos.logback.slf4j" />
+							   <plugin id="org.apache.cxf.cxf-core" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
+							   <plugin id="org.apache.cxf.cxf-rt-security" />
+							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
+								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
 							   <plugin id="javaewah" />
+							   <plugin id="org.apache.ws.xmlschema.core" />
 							   <plugin id="org.postgresql.driver" />
 							   <plugin id="org.eclipse.egit" />
 							   <plugin id="javax.servlet" />
 							   <plugin id="javax.ws.rs" />
 							   <plugin id="javax.wsdl" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
+							   <plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 							   <plugin id="javax.xml.bind" />
 							   <plugin id="org.eclipse.jdt.launching" />
+							   <plugin id="javax.annotation" />
 							   <plugin id="javax.xml" />
 							   <plugin id="com.jcraft.jsch" />
 							   <plugin id="org.eclipse.egit" />
@@ -49,6 +60,7 @@
 							   <plugin id="org.apache.xml.serializer" />
 							   <plugin id="org.eclipse.core.net" />
 							   <plugin id="org.eclipse.equinox.security" />
+							   <plugin id= "org.apache.cxf.cxf-rt-rs-service-description" />
 							   <plugin id="javax.xml.stream" />
 							   <plugin id="org.eclipse.osee.logback.config" />							
 							   <plugin id="org.eclipse.osee.web.ui" />					

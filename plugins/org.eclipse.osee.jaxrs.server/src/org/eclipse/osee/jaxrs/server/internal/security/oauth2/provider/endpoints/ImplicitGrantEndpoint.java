@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.OAuthAuthorizationData;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
+import org.apache.cxf.rs.security.oauth2.common.OAuthRedirectionState;
 import org.apache.cxf.rs.security.oauth2.common.ServerAccessToken;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.services.ImplicitGrantService;
@@ -42,10 +43,9 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
       this.clientLogoUriResolver = clientLogoUriResolver;
    }
 
-   @Override
    protected Response createGrant(MultivaluedMap<String, String> params, Client client, String redirectUri, List<String> requestedScope, List<String> approvedScope, UserSubject userSubject, ServerAccessToken preAuthorizedToken) {
-      Response response =
-         super.createGrant(params, client, redirectUri, requestedScope, approvedScope, userSubject, preAuthorizedToken);
+      Response response = super.createGrant((OAuthRedirectionState) params, client, requestedScope, approvedScope,
+         userSubject, preAuthorizedToken);
 
       String forwardedServer = OAuthUtil.getForwarderServer();
 
@@ -106,9 +106,10 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
    /**
     * Override fixes OAuthAuthorizationData creation
     */
-   @Override
+
    protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params, UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
-      OAuthAuthorizationData secData = super.createAuthorizationData(client, params, subject, redirectUri, perms);
+      OAuthAuthorizationData secData = super.createAuthorizationData(client, params, redirectUri, subject, perms, perms,
+         useRegisteredRedirectUriIfPossible);
 
       String oldReplyTo = secData.getReplyTo();
       URI replyToUri = UriBuilder.fromPath(oldReplyTo).buildFromEncoded();
