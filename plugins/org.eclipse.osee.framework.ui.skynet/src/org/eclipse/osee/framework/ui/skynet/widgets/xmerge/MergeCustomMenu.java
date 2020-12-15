@@ -58,6 +58,11 @@ import org.eclipse.ui.menus.CommandContributionItem;
 public class MergeCustomMenu extends XViewerCustomMenu {
 
    private boolean isInitialized = false;
+   private final MergeView mergeView;
+
+   public MergeCustomMenu(MergeView mergeView) {
+      this.mergeView = mergeView;
+   }
 
    private IWorkbenchPartSite getSite() {
       return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite();
@@ -107,8 +112,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       createDestinationAsMergeMenuItem(menuManager, handlerService);
       menuManager.add(new Separator());
 
-      createEditArtifactMenuItem(menuManager, handlerService);
-      createResetConflictMenuItem(menuManager, handlerService);
+      createEditMergedValueHandler(menuManager, handlerService);
+      createClearMergedValueHandler(menuManager, handlerService);
       menuManager.add(new Separator());
 
       createThreeWayMergeMenuItem(menuManager, handlerService);
@@ -261,7 +266,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private MergeXWidget getMergeXWiget() {
-      return ((MergeXViewer) xViewer).getXUserRoleViewer();
+      return ((MergeXViewer) xViewer).getMergeXWidget();
    }
 
    private void createDiffMenuItem(MenuManager menuManager, IHandlerService handlerService) {
@@ -299,7 +304,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       handlerService.activateHandler(addPreviewItems(subMenuManager, command, handler), handler);
    }
 
-   private void createEditArtifactMenuItem(MenuManager menuManager, IHandlerService handlerService) {
+   private void createEditMergedValueHandler(MenuManager menuManager, IHandlerService handlerService) {
       IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) {
@@ -308,7 +313,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
                RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
                attributeConflict.markStatusToReflectEdit();
-
+               mergeView.getMergeXWidget().loadTable();
             }
          }
       };
@@ -389,7 +394,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       handlerService.activateHandler(commandId, handler);
    }
 
-   private void createResetConflictMenuItem(MenuManager menuManager, IHandlerService handlerService) {
+   private void createClearMergedValueHandler(MenuManager menuManager, IHandlerService handlerService) {
       IHandler handler = new MergeManagerConflictHandler(menuManager, "Are you sure you want to reset %s conflict(s)?",
          ConflictOperationEnum.RESET);
       String commandId = addClearMergedValueMenuItem(menuManager, handler);

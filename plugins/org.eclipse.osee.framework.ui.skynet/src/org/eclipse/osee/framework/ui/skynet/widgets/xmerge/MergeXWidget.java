@@ -109,8 +109,9 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
-   public MergeXWidget() {
+   public MergeXWidget(MergeView mergeView) {
       super("Merge Manager");
+      this.mergeView = mergeView;
    }
 
    @Override
@@ -129,8 +130,14 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
       createCompletionComposite(mainComp);
 
-      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, this);
-      createMergeXViewer();
+      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, mergeView, this);
+      mergeXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      XMergeLabelProvider labelProvider = new XMergeLabelProvider(mergeXViewer);
+      mergeXViewer.addLabelProvider(labelProvider);
+      mergeXViewer.setSorter(new MergeXViewerSorter(mergeXViewer, labelProvider));
+      mergeXViewer.setContentProvider(new XMergeContentProvider());
+      mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
+
       createTaskActionBar(taskComp);
       if (toolkit != null) {
          toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
@@ -177,15 +184,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             labelWidget.setToolTipText(getToolTip());
          }
       }
-   }
-
-   private void createMergeXViewer() {
-      mergeXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      XMergeLabelProvider labelProvider = new XMergeLabelProvider(mergeXViewer);
-      mergeXViewer.addLabelProvider(labelProvider);
-      mergeXViewer.setSorter(new MergeXViewerSorter(mergeXViewer, labelProvider));
-      mergeXViewer.setContentProvider(new XMergeContentProvider());
-      mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
    }
 
    private void createTree(Tree tree) {
@@ -367,9 +365,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       return mergeXViewer.getTree().getItemCount() == 0;
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public MergeXViewer getXViewer() {
       return mergeXViewer;
    }

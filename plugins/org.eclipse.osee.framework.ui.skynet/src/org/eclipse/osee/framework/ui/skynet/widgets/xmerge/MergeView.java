@@ -142,7 +142,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       layout.marginHeight = 0;
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-      mergeXWidget = new MergeXWidget();
+      mergeXWidget = new MergeXWidget(this);
       mergeXWidget.setDisplayLabel(false);
       mergeXWidget.createWidgets(parent, 1);
 
@@ -424,6 +424,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
       });
 
+   }
+
+   public MergeXWidget getMergeXWidget() {
+      return mergeXWidget;
    }
 
 }

@@ -68,14 +68,14 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class MergeXViewer extends XViewer {
    public static final Conflict[] EMPTY_CONFLICTS = new Conflict[0];
-   private final MergeXWidget mergeXWidget;
    private Conflict[] conflicts = EMPTY_CONFLICTS;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
+   private final MergeView mergeView;
 
-   public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer, IOseeTreeReportProvider reportProvider) {
-      super(parent, style, new MergeXViewerFactory(reportProvider));
-      this.mergeXWidget = xMergeViewer;
+   public MergeXViewer(Composite parent, int style, MergeView mergeView, IOseeTreeReportProvider reportProvider) {
+      super(parent, style, new MergeXViewerFactory(reportProvider, mergeView));
+      this.mergeView = mergeView;
    }
 
    @Override
@@ -100,29 +100,19 @@ public class MergeXViewer extends XViewer {
       });
    }
 
-   /**
-    * Release resources
-    */
    @Override
    public void dispose() {
       getLabelProvider().dispose();
    }
 
-   /**
-    * @return the xUserRoleViewer
-    */
-   public MergeXWidget getXUserRoleViewer() {
-      return mergeXWidget;
+   public MergeXWidget getMergeXWidget() {
+      return mergeView.getMergeXWidget();
    }
 
    @Override
    public void resetDefaultSorter() {
       setSorter(new MergeXViewerSorter(this, labelProvider));
    }
-
-   //   public Conflict[] getTransactionArtifactChanges() {
-   //      return conflicts;
-   //   }
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
       return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //
@@ -183,7 +173,7 @@ public class MergeXViewer extends XViewer {
             }
          }
       }
-      mergeXWidget.loadTable();
+      mergeView.getMergeXWidget().loadTable();
    }
 
    private CompareHandler getCompareHandler(AttributeConflict attributeConflict) {

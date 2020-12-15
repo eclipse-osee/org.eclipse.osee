@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
    public final static String NAMESPACE = "MergeXViewer";
+   private final MergeView mergeView;
 
    public final static XViewerColumn Conflict_Resolved = new XViewerColumn("framework.merge.conflictResolved",
       "Conflict Resolution", 43, XViewerAlign.Left, true, SortDataType.String, false, null);
@@ -44,15 +45,16 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn Art_Id = new XViewerColumn("framework.merge.artId", "Artifact Id", 75,
       XViewerAlign.Left, true, SortDataType.String, false, null);
 
-   public MergeXViewerFactory(IOseeTreeReportProvider reportProvider) {
+   public MergeXViewerFactory(IOseeTreeReportProvider reportProvider, MergeView mergeView) {
       super(NAMESPACE, reportProvider);
+      this.mergeView = mergeView;
       registerColumns(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }
 
    @Override
    public XViewerCustomMenu getXViewerCustomMenu() {
-      return new MergeCustomMenu();
+      return new MergeCustomMenu(mergeView);
    }
 
 }
