@@ -149,7 +149,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    private <T> T getArtifactXByAttribute(QueryBuilder query, AttributeTypeToken attributeType, String value, boolean exists, ArtifactTypeToken artifactType, Supplier<T> queryMethod) {
       if (artifactType.isValid()) {
-         query.andTypeEquals(artifactType);
+         query.andIsOfType(artifactType);
       }
       if (attributeType.isValid()) {
          if (exists) {
