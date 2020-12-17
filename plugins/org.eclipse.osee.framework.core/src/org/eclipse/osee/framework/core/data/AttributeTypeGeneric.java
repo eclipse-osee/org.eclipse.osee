@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Collections;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdDescription;
@@ -29,14 +31,26 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final NamespaceToken namespace;
    private final String fileExtension;
    private final T defaultValue;
+   protected final Set<DisplayHint> displayHints;
 
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, Set<DisplayHint> displayHints) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;
       this.taggerType = taggerType;
       this.fileExtension = fileExtension;
       this.defaultValue = defaultValue;
+      this.displayHints = displayHints;
+   }
+
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue) {
+      this(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue,
+         Collections.emptySet());
+   }
+
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, DisplayHint... displayHints) {
+      this(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue,
+         org.eclipse.osee.framework.jdk.core.util.Collections.asHashSet(displayHints));
    }
 
    public T getBaseAttributeTypeDefaultValue() {
@@ -84,5 +98,10 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    @Override
    public boolean isTaggable() {
       return taggerType.isValid();
+   }
+
+   @Override
+   public Set<DisplayHint> getDisplayHints() {
+      return displayHints;
    }
 }

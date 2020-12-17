@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.enums.EnumToken;
@@ -39,6 +40,8 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    String getMediaType();
 
    String getFileExtension();
+
+   Set<DisplayHint> getDisplayHints();
 
    default NamespaceToken getNamespace() {
       return NamespaceToken.SENTINEL;
@@ -160,5 +163,13 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
          }
       }
       throw new OseeTypeDoesNotExist("Attribute type [%s] is not an enum type.", getName());
+   }
+
+   default boolean isSingleLine() {
+      return getDisplayHints().contains(DisplayHint.SingleLine);
+   }
+
+   default boolean isMultiLine() {
+      return getDisplayHints().contains(DisplayHint.MultiLine);
    }
 }

@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -27,13 +26,10 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 public class AttributeTypeToXWidgetName {
 
    public static <T extends EnumToken> String getXWidgetName(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
-      artType = ServiceUtil.getOrcsTokenService().getArtifactType(artType.getId()); //Remove this when ArtifactType class is removed
       int minOccurrence = artType.getMin(attributeType);
       int maxOccurrence = artType.getMax(attributeType);
       String xWidgetName = "";
-      if (attributeType.equals(CoreAttributeTypes.AccessContextId)) {
-         xWidgetName = "XTextFlatDam";
-      } else if (attributeType.isEnumerated()) {
+      if (attributeType.isEnumerated()) {
          AttributeTypeEnum<T> enumeratedType =
             (AttributeTypeEnum<T>) ServiceUtil.getOrcsTokenService().getAttributeType(attributeType.getId());
 
@@ -51,9 +47,6 @@ public class AttributeTypeToXWidgetName {
          } else {
             xWidgetName = "XComboBooleanDam";
          }
-      } else if (attributeType.matches(CoreAttributeTypes.WordTemplateContent) || attributeType.matches(
-         CoreAttributeTypes.WholeWordContent) || attributeType.matches(CoreAttributeTypes.RelationOrder)) {
-         xWidgetName = "XStackedDam";
       } else if (attributeType.isDate()) {
          xWidgetName = "XDateDam";
       } else if (attributeType.isInteger()) {
@@ -68,18 +61,23 @@ public class AttributeTypeToXWidgetName {
          xWidgetName = "XBranchSelectWidget";
       } else if (attributeType.isArtifactId()) {
          xWidgetName = "XListDropViewWithSave";
-      } else if (attributeType.equals(CoreAttributeTypes.IdValue)) {
-         xWidgetName = "XTextFlatDam";
       } else if (attributeType.isString()) {
          if (maxOccurrence == 1) {
-            xWidgetName = "XTextDam";
+            if (attributeType.isMultiLine()) {
+               xWidgetName = "XStackedDam";
+            } else {
+               xWidgetName = "XTextDam";
+            }
          } else {
-            xWidgetName = "XStackedDam";
+            if (attributeType.isSingleLine()) {
+               xWidgetName = "XTextFlatDam";
+            } else {
+               xWidgetName = "XStackedDam";
+            }
          }
       } else {
          xWidgetName = "XStackedDam";
       }
       return xWidgetName;
    }
-
 }

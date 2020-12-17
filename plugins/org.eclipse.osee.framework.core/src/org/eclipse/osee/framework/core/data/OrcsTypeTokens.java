@@ -267,21 +267,22 @@ public class OrcsTypeTokens {
    /**
     * Methods for creating String AttributeType
     */
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
       return attributeTypes.addAndReturn(
-         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension));
+         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension, displayHints));
    }
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description) {
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, determineTaggerType(mediaType),
-         defaultFileExtension(mediaType));
+         defaultFileExtension(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, String fileExtension) {
-      return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, String fileExtension, DisplayHint... displayHints) {
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension,
+         displayHints);
    }
 
-   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description) {
+   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, defaultFileExtension(mediaType));
    }
 

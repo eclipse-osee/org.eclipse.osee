@@ -33,9 +33,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken AbstractAccessControlled = osee.add(osee.artifactType(17L, "Abstract Access Controlled", true, Artifact)
       .any(AccessContextId));
    ArtifactTypeToken AbstractHeading = osee.add(osee.artifactType(805L, "Abstract Heading", true, Artifact)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified)
-      .any(DoorsModId, DoorsModId.Unspecified));
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
+      .any(DoorsModId));
    ArtifactTypeToken AbstractImplementationDetails = osee.add(osee.artifactType(921211884L, "Abstract Implementation Details", true, Artifact)
       .zeroOrOne(DataRightsBasis)
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
@@ -116,9 +116,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate)
       .zeroOrOne(DataRightsBasis)
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified)
-      .any(DoorsModId, DoorsModId.Unspecified)
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
+      .any(DoorsModId)
       .zeroOrOne(IaPlan)
       .zeroOrOne(LegacyDal, LegacyDal.Unspecified)
       .zeroOrOne(PotentialSecurityImpact)
@@ -157,16 +157,16 @@ public interface CoreArtifactTypes {
       .zeroOrOne(PlainTextContent));
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText)
       .zeroOrOne(Acronym)
-      .any(DoorsId, DoorsId.Unspecified));
+      .any(DoorsId));
    ArtifactTypeToken ImplementationDetailsPlainText = osee.add(osee.artifactType(638269899L, "Implementation Details Plain Text", false, PlainText, AbstractImplementationDetails));
    ArtifactTypeToken PlainTextDataRights = osee.add(osee.artifactType(4527862492986312222L, "Plain Text With Data Rights", false, PlainText)
       .zeroOrOne(DataRightsBasis)
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified)
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
       .zeroOrOne(PageOrientation, PageOrientation.Portrait));
    ArtifactTypeToken ReferenceDocument = osee.add(osee.artifactType(2084059074565751746L, "Reference Document", false, GeneralDocument)
-      .any(DoorsId, DoorsId.Unspecified));
+      .any(DoorsId));
    ArtifactTypeToken RendererTemplateWholeWord = osee.add(osee.artifactType(9L, "Renderer Template - Whole Word", false, MsWordWholeDocument)
       .exactlyOne(RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}")
       .any(TemplateMatchCriteria));
@@ -177,9 +177,9 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
       .zeroOrOne(SubjectMatterExpert));
    ArtifactTypeToken AbstractSpecRequirement = osee.add(osee.artifactType(58551193202327573L, "Abstract Spec Requirement", false, Requirement)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified)
-      .any(DoorsModId, DoorsModId.Unspecified)
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId)
+      .any(DoorsModId)
       .zeroOrOne(LegacyDal, LegacyDal.Unspecified)
       .zeroOrOne(LegacyId)
       .zeroOrOne(PotentialSecurityImpact)
@@ -248,14 +248,14 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Artifact));
    ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified));
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId));
    ArtifactTypeToken SoftwareTestProcedurePlainText = osee.add(osee.artifactType(564397212436322878L, "Software Test Procedure Plain Text", false, PlainText, TestUnit)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified));
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId));
    ArtifactTypeToken IntegrationTestProcedureWholeWord = osee.add(osee.artifactType(443398723457743216L, "Integration Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified)
-      .any(DoorsId, DoorsId.Unspecified));
+      .zeroOrOne(DoorsHierarchy)
+      .any(DoorsId));
    ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, TestUnit));
    ArtifactTypeToken TestInformationSheetMsWord = osee.add(osee.artifactType(41L, "Test Information Sheet - MS Word", false, MsWordTemplate, TestUnit)
       .exactlyOne(TisTestCategory, TisTestCategory.DEV)
@@ -299,11 +299,11 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup));
    ArtifactTypeToken SoftwareTestProcedureWholeWord = osee.add(osee.artifactType(554486323432951757L, "Software Test Procedure - Whole Word", false, MsWordWholeDocument, TestUnit)
-      .any(DoorsId, DoorsId.Unspecified)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified));
+      .any(DoorsId)
+      .zeroOrOne(DoorsHierarchy));
    ArtifactTypeToken SoftwareTestProcedureMsWord = osee.add(osee.artifactType(554486323432951758L, "Software Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
-      .any(DoorsId, DoorsId.Unspecified)
-      .zeroOrOne(DoorsHierarchy, DoorsHierarchy.Unspecified));
+      .any(DoorsId)
+      .zeroOrOne(DoorsHierarchy));
    ArtifactTypeToken SubscriptionGroup = osee.add(osee.artifactType(6753071794573299176L, "Subscription Group", false, UserGroup));
    ArtifactTypeToken WorkItemDefinition = osee.add(osee.artifactType(50L, "Work Item Definition", true, Artifact)
       .any(WorkData)
