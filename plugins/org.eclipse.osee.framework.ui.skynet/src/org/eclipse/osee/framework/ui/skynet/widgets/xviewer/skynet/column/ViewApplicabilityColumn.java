@@ -78,7 +78,9 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
       List<ArtifactToken> artifacts = new ArrayList<>(objects.size());
       for (Object obj : objects) {
          Artifact artifact = getArtifact(obj);
-         artifacts.add(artifact);
+         if (!artifacts.contains(artifact)) {
+            artifacts.add(artifact);
+         }
       }
 
       if (!artifacts.isEmpty()) {
