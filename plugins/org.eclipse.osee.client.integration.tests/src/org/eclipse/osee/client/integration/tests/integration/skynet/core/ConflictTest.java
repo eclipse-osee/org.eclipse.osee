@@ -105,6 +105,7 @@ public class ConflictTest {
     * .
     */
    @org.junit.Test
+   @Ignore
    public void test02GetConflictsPerBranch() {
       Collection<Conflict> conflicts = null;
       try {
@@ -127,6 +128,7 @@ public class ConflictTest {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(BranchId, BranchId)} .
     */
    @org.junit.Test
+   @Ignore
    public void test03GetMergeBranchCreated() throws Exception {
       try {
          IOseeBranch mergeBranch =
