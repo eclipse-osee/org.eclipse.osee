@@ -158,10 +158,15 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          int matchEnd = matchLocation.getEndPosition();
          int matchLength = matchEnd - matchOffset;
 
-         AttributeLineElement lineElement = getLineElement(matchOffset, matchEnd, artifact, attribute);
-         if (lineElement != null) {
-            AttributeMatch match = new AttributeMatch(artifact, matchOffset, matchLength, lineElement);
-            fCachedMatches.add(match);
+         try {
+            AttributeLineElement lineElement = getLineElement(matchOffset, matchEnd, artifact, attribute);
+
+            if (lineElement != null) {
+               AttributeMatch match = new AttributeMatch(artifact, matchOffset, matchLength, lineElement);
+               fCachedMatches.add(match);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
          return true;
       }
@@ -173,7 +178,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          if (attrContent.containsKey(attrId)) {
             content = attrContent.get(attrId);
          } else {
-            content = getContentFromAttribute(artifact.getAttributeById(attrId.getId(), false));
+            content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
             attrContent.put(attrId, content);
          }
          if (!fCachedMatches.isEmpty()) {
