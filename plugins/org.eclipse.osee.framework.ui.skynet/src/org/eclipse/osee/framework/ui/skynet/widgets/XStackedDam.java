@@ -95,8 +95,11 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       int minOccurrence = artifact.getArtifactType().getMin(attributeType);
       int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
-      if (minOccurrence == 0) {
-         minOccurrence = 1;
+      if (minOccurrence < 0) {
+         minOccurrence = 0;
+      }
+      if (maxOccurrence < 0) {
+         maxOccurrence = 0;
       }
       setPageRange(minOccurrence, maxOccurrence);
       OseeEventManager.addListener(this);
