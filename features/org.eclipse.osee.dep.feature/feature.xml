@@ -32,6 +32,10 @@
          
         
     <includes
+         id="org.eclipse.xsd"
+         version="0.0.0"/>      
+        
+    <includes
          id="org.eclipse.xsd.edit"
          version="0.0.0"/>      
     
@@ -54,6 +58,10 @@
     <includes
          id="org.eclipse.wst.xml.xpath2.processor.feature"
          version="0.0.0"/>         
+
+   <includes
+         id="org.eclipse.wst.common.fproj"
+         version="0.0.0"/>
           
    <includes
          id="org.eclipse.wst.common_core.feature"
@@ -201,6 +209,18 @@
 
    <includes
          id="org.eclipse.emf.mwe2.runtime.sdk"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.transaction"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.validation"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.workspace"
          version="0.0.0"/>
 
    <includes
@@ -374,6 +394,50 @@
    <includes
          id="org.eclipse.jgit"
          version="5.0.0"/>
+
+   <includes
+         id="org.eclipse.cdt"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.cdt.sdk"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.sdk"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.identity"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.mylyn.commons.notifications"
+         version="0.0.0"/>
+	
+   <includes
+         id="org.eclipse.mylyn.commons.repositories"
+         version="0.0.0"/>
+	
+   <includes
+         id="org.eclipse.launchbar"
+         version="0.0.0"/>
+	
+   <includes
+         id="org.polarion.eclipse.team.svn.connector"
+         version="0.0.0"/>
+
+   <includes
+         id="org.polarion.eclipse.team.svn.connector.svnkit18"
+         version="0.0.0"/>
+   
+   <includes
+         id="org.eclipse.eclemma.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.tm.terminal.control.feature"
+         version="0.0.0" />
    
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
@@ -1159,20 +1223,6 @@
 
    <plugin
          id="org.apache.commons.cli"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.wst.common.project.facet.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.xsd"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -2103,6 +2153,20 @@
    
    <plugin
          id="org.apache.commons.lang3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jna.platform"
          download-size="0"
          install-size="0"
          version="0.0.0"

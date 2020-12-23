@@ -33,6 +33,18 @@
 								<plugin id="org.eclipse.m2e.archetype.common" />
 								<plugin id="org.eclipse.m2e.maven.indexer" />
 								<plugin id="org.eclipse.m2e.workspace.cli" />
+								<feature id="org.eclipse.cdt.sdk" />
+								<feature id="org.eclipse.mylyn.commons" />
+								<feature id="org.eclipse.mylyn.commons.identity" />
+								<feature id="org.eclipse.mylyn.commons.notifications" />
+								<feature id="org.eclipse.mylyn.commons.repositories" />
+								<feature id="org.eclipse.mylyn.commons.sdk" />
+								<feature id="org.eclipse.mylyn.discovery" />
+								<feature id="org.eclipse.mylyn.monitor" />
+								<feature id="org.polarion.eclipse.team.svn.connector.svnkit18" />
+								<feature id="org.eclipse.eclemma.feature" />
+								<feature id="org.eclipse.launchbar" />
+								<feature id="org.eclipse.tm.terminal.control.feature" />
 								<plugin id="javax.xml" />
 								<plugin id="javax.mail" />
 								<plugin id="javax.xml.rpc" />
@@ -126,6 +138,7 @@
 								<feature id="org.eclipse.wst.jsdt.feature" />							
 								<feature id="org.eclipse.xsd.edit" />
 							   	<feature id="org.eclipse.wst.common_ui.feature" />
+							   	<feature id="org.eclipse.wst.common.fproj" />
 							  	<feature id="org.eclipse.jgit.http.apache" />
 								<plugin id="org.eclipse.uml2.codegen.ecore" />
 								<feature id="org.eclipse.core.runtime.feature" />

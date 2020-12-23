@@ -50,6 +50,8 @@
 		<papyrus-site>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/${platform-version-name}</papyrus-site>
 	  	<nebula-site>http://download.eclipse.org/nebula/releases/2.4.2</nebula-site> 
 	<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
+	<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
+	<emma-site>http://update.eclemma.org</emma-site>
 	</properties>
 
 	<licenses>
@@ -126,6 +128,18 @@
 			<id>subversive</id>
 			<layout>p2</layout>
 			<url>${subversive-site}</url>
+	    </repository>
+		
+           <repository>
+			<id>polarion</id>
+			<layout>p2</layout>
+			<url>${polarion-site}</url>
+	    </repository>
+		
+           <repository>
+			<id>emma</id>
+			<layout>p2</layout>
+			<url>${emma-site}</url>
 	    </repository>
 	
 </repositories>
