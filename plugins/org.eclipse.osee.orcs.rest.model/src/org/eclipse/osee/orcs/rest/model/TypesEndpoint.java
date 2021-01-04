@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -47,5 +48,10 @@ public interface TypesEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    Response setConfigSheets(OrcsTypesVersion version);
+
+   @GET
+   @Path("health")
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData getHealthReport();
 
 }

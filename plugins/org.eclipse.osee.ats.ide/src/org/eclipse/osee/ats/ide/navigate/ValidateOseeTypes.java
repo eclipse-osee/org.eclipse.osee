@@ -13,14 +13,10 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.ats.ide.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -37,23 +33,14 @@ public class ValidateOseeTypes extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
+
       XResultData rd = new XResultData();
-
-      List<AttributeTypeGeneric<?>> attrTypes = new ArrayList<>();
-      attrTypes.addAll(AtsApiService.get().tokenService().getAttributeTypes());
-
-      for (ArtifactTypeToken artType : AtsApiService.get().tokenService().getArtifactTypes()) {
-         for (AttributeTypeToken attrType : artType.getValidAttributeTypes()) {
-            attrTypes.remove(attrType);
-         }
+      try {
+         rd = ServiceUtil.getOseeClient().getTypesEndpoint().getHealthReport();
+      } catch (Exception ex) {
+         rd.errorf(getName() + " Exception %s", Lib.exceptionToString(ex));
       }
-
-      rd.log(getName() + "\n");
-      rd.log("Attribute Types without Artifact reference: " + "\n");
-      for (AttributeTypeToken attrType : attrTypes) {
-         rd.log(attrType.toStringWithId());
-      }
-
       XResultDataUI.report(rd, getName());
+
    }
 }

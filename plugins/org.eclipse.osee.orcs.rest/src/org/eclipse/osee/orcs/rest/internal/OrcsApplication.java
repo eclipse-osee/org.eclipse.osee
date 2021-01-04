@@ -23,6 +23,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityUiEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.types.TypesEndpointImpl;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 import org.osgi.service.event.EventAdmin;
 

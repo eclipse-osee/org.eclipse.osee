@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.orcs.rest.internal;
+package org.eclipse.osee.orcs.rest.internal.types;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -75,6 +76,12 @@ public class TypesEndpointImpl implements TypesEndpoint {
       "select attr.value, attr.art_id, attr.attr_id, attr.attr_type_id from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = ? " + //
          "and attr.gamma_id = txs.gamma_id and txs.TX_CURRENT = 1 and attr.art_id " + //
          "in (select distinct art_id from osee_attribute where attr_id in (ATTR_IDS)) order by attr_type_id desc";
+
+   @Override
+   public XResultData getHealthReport() {
+      HealthReportOperation reportOp = new HealthReportOperation(orcsApi.tokenService(), jdbcService);
+      return reportOp.run();
+   }
 
    @Override
    public Response getConfig() {
