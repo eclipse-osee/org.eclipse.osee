@@ -169,7 +169,6 @@ public final class FrameworkXWidgetProvider {
                   Collections.sort(branches);
 
                   multiBranchSelect.setSelectableItems(branches);
-                  multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

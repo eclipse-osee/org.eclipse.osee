@@ -78,15 +78,14 @@ public abstract class XFlatWidget<T> extends XLabel {
 
    protected void setPageRange(int minPage, int maxPage) {
       if (minPage < 0) {
-         throw new OseeArgumentException("Min Number of Pages must be greater than 0");
+         throw new OseeArgumentException("Min number of pages must be at least 0");
       }
-      if (maxPage < 1) {
-         throw new OseeArgumentException("Max Number of Pages must be at least 1");
+      if (maxPage < 0) {
+         throw new OseeArgumentException("Max number of pages must be at least 0");
       }
 
       if (maxPage < minPage) {
-         throw new OseeArgumentException(
-            String.format("Invalid required number of pages [%s] < [%s]", maxPage, minPage));
+         throw new OseeArgumentException("Invalid required number of pages [%s] < [%s]", maxPage, minPage);
       }
       this.minPage = minPage;
       this.maxPage = maxPage;

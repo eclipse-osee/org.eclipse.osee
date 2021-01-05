@@ -59,10 +59,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      int minOccurrence = artifact.getArtifactType().getMin(attributeType);
-      int maxOccurrence = artifact.getArtifactType().getMax(attributeType);
 
-      setRequiredSelection(minOccurrence, maxOccurrence);
       setSelected(getStored());
       setRequiredEntry(true);
    }

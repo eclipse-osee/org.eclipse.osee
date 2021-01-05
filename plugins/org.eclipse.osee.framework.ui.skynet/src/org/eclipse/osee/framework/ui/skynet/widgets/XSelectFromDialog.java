@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,28 +44,11 @@ public abstract class XSelectFromDialog<T> extends XText {
 
    private final List<T> selected = new ArrayList<>();
    private final List<T> input = new ArrayList<>();
-   private int minSelectionRequired, maxSelectionRequired = 1;
    private Button selectionButton;
 
    public XSelectFromDialog(String displayLabel) {
       super(displayLabel);
       setToolTip("Click the button on the left to change the current selection.");
-   }
-
-   public void setRequiredSelection(int minSelectionRequired, int maxSelectionRequired) {
-      if (minSelectionRequired < 0) {
-         throw new OseeArgumentException("Min Number of Selection must be greater than or equal to 0");
-      }
-      if (maxSelectionRequired < 1) {
-         throw new OseeArgumentException("Max Number of Selection must be at least 1");
-      }
-
-      if (maxSelectionRequired < minSelectionRequired) {
-         throw new OseeArgumentException("Invalid required number of selections [%s] < [%s]", maxSelectionRequired,
-            minSelectionRequired);
-      }
-      this.minSelectionRequired = minSelectionRequired;
-      this.maxSelectionRequired = maxSelectionRequired;
    }
 
    @Override
@@ -193,19 +175,4 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
       return selectedChanged;
    }
-
-   /**
-    * @return the minSelectionRequired
-    */
-   public int getMinSelectionRequired() {
-      return minSelectionRequired;
-   }
-
-   /**
-    * @return the maxSelectionRequired
-    */
-   public int getMaxSelectionRequired() {
-      return maxSelectionRequired;
-   }
-
 }
