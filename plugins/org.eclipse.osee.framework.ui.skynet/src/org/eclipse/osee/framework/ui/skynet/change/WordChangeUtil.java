@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactHierarchyComparat
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.UnmodifiedArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -158,7 +159,7 @@ public final class WordChangeUtil {
       for (Artifact art : artList) {
          ArtifactDelta delta = originalDeltaMap.get(art);
          if (delta == null) {
-            delta = new ArtifactDelta(art, art);
+            delta = new UnmodifiedArtifactDelta(art);
          }
          returnDeltas.add(delta);
       }

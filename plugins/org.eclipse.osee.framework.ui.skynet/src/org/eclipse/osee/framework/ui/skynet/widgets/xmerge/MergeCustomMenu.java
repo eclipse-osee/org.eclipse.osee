@@ -479,15 +479,19 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          for (Conflict conflict : conflicts) {
 
             try {
-               if (partToPreview == 3) {
+               if (partToPreview == 1) { // source artifact
+                  Artifact artifact = conflict.getSourceArtifact();
+                  artifacts.clear();
+                  artifacts.add(artifact);
+               } else if (partToPreview == 2) {
+                  Artifact artifact = conflict.getDestArtifact();
+                  artifacts.clear();
+                  artifacts.add(artifact);
+               } else if (partToPreview == 3) {
                   ConflictStatus status = conflict.getStatus();
                   if (status.isInformational()) {
                      return false;
                   }
-               }
-               Artifact artifact = conflict.getArtifact();
-               if (!artifacts.contains(artifact)) {
-                  artifacts.add(artifact);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

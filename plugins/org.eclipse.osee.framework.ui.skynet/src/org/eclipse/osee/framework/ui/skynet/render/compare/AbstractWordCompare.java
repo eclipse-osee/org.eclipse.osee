@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
+import org.eclipse.osee.framework.skynet.core.change.UnmodifiedArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
@@ -173,50 +174,66 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected void addToCompare(IProgressMonitor monitor, CompareData data, PresentationType presentationType, ArtifactDelta artifactDelta) {
-      Pair<String, Boolean> originalValue = null;
-
-      Artifact baseArtifact = artifactDelta.getStartArtifact();
-      Artifact newerArtifact = artifactDelta.getEndArtifact();
-
-      Attribute<String> baseContent = getWordContent(baseArtifact);
-      Attribute<String> newerContent = getWordContent(newerArtifact);
-
-      if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
-         originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
-      }
-      monitor.setTaskName(
-         "Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
-
       Pair<IFile, IFile> compareFiles;
-      if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
-         compareFiles = converter.convertToFile(presentationType, artifactDelta);
+      if (artifactDelta instanceof UnmodifiedArtifactDelta) {
+         compareFiles = converter.convertToFileAndCopy(presentationType, artifactDelta);
       } else {
-         // The artifactDelta is a 3 Way Merge
-         List<IFile> outputFiles = new ArrayList<>();
-         converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
-            artifactDelta.getStartArtifact());
-         converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
-            artifactDelta.getEndArtifact());
-         // this is where we are getting the exception that the length of outputFiles is 1
-         // This happens because the artifact did not exist on the previous
-         // branch or was removed on the current branch
-         if (outputFiles.size() == 1) {
-            String outputFileName = outputFiles.get(0).getRawLocation().toOSString();
-            try {
-               String tempFileName = Lib.removeExtension(outputFileName);
-               File tempFile = new File(tempFileName + ".temp.xml");
-               Lib.writeStringToFile("", tempFile);
-               IFile constructIFile = AIFile.constructIFile(tempFile.getPath());
-               outputFiles.add(constructIFile);
-            } catch (IOException ex) {
-               throw new OseeCoreException(ex, "Empty file for comparison could not be created, [%s]", outputFileName);
-            }
+         Pair<String, Boolean> originalValue = null;
+
+         Artifact baseArtifact = artifactDelta.getStartArtifact();
+         Artifact newerArtifact = artifactDelta.getEndArtifact();
+
+         Attribute<String> baseContent = getWordContent(baseArtifact);
+         Attribute<String> newerContent = getWordContent(newerArtifact);
+
+         if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+            originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
-         compareFiles = new Pair<>(outputFiles.get(0), outputFiles.get(1));
-         data.addMerge(outputFiles.get(0).getLocation().toOSString());
+         monitor.setTaskName(
+            "Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
+
+         if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
+            compareFiles = converter.convertToFile(presentationType, artifactDelta);
+         } else {
+            // The artifactDelta is a 3 Way Merge
+            compareFiles = handle3WayMerge(data, artifactDelta);
+         }
+         WordImageChecker.restoreOriginalValue(baseContent, originalValue);
       }
-      WordImageChecker.restoreOriginalValue(baseContent, originalValue);
       data.add(compareFiles.getFirst().getLocation().toOSString(), compareFiles.getSecond().getLocation().toOSString());
+   }
+
+   private Pair<IFile, IFile> handle3WayMerge(CompareData data, ArtifactDelta artifactDelta) {
+      Pair<IFile, IFile> toReturnFiles;
+      List<IFile> outputFiles = new ArrayList<>();
+      converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
+         artifactDelta.getStartArtifact());
+      converter.convertToFileForMerge(outputFiles, artifactDelta.getTxDelta(), artifactDelta.getBaseArtifact(),
+         artifactDelta.getEndArtifact());
+      // this is where we are getting the exception that the length of outputFiles is 1
+      // This happens because the artifact did not exist on the previous
+      // branch or was removed on the current branch
+      if (outputFiles.size() == 1) {
+         String outputFileName = outputFiles.get(0).getRawLocation().toOSString();
+         String tempFileName = Lib.removeExtension(outputFileName);
+         IFile tempFile = getEmptyFileFromName(tempFileName);
+         outputFiles.add(tempFile);
+      }
+      toReturnFiles = new Pair<>(outputFiles.get(0), outputFiles.get(1));
+      data.addMerge(outputFiles.get(0).getLocation().toOSString());
+
+      return toReturnFiles;
+   }
+
+   private IFile getEmptyFileFromName(String fileName) {
+      try {
+         File tempFile = new File(fileName + ".temp.xml");
+         Lib.writeStringToFile("", tempFile);
+         return AIFile.constructIFile(tempFile.getPath());
+      } catch (IOException ex) {
+         OseeCoreException.wrap(ex);
+      }
+      return null;
    }
 
    private Attribute<String> getWordContent(Artifact artifact) {

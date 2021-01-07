@@ -49,14 +49,22 @@ public class ArtifactDeltaToFileConverter {
       IOseeBranch branch = artifactDelta.getBranch();
 
       IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
-      IFile newerFile = null;
-      if (artifactDelta.getTxDelta() == null) {
-         newerFile = renderer.copyToNewFile(newerArtifact, branch, presentationType, baseFile);
-      } else {
-         newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
-      }
-
+      IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
       return new Pair<>(baseFile, newerFile);
+   }
+
+   public Pair<IFile, IFile> convertToFileAndCopy(PresentationType presentationType, ArtifactDelta artifactDelta) {
+      Artifact baseArtifact = artifactDelta.getStartArtifact();
+      Artifact newerArtifact = artifactDelta.getEndArtifact();
+      if (newerArtifact.getModType().isDeleted()) {
+         newerArtifact = null;
+      }
+      IOseeBranch branch = artifactDelta.getBranch();
+
+      IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
+      IFile copiedFile = renderer.copyToNewFile(newerArtifact, branch, presentationType, baseFile);
+
+      return new Pair<>(baseFile, copiedFile);
    }
 
    public void convertToFileForMerge(final Collection<IFile> outputFiles, TransactionDelta txDelta, Artifact baseVersion, Artifact newerVersion) {
