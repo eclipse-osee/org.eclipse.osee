@@ -86,7 +86,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
 
    private static String getSafeValue(String value, NumberFormat format, AttributeTypeToken attributeType) {
       String toReturn = value;
-      if (format != null) {
+      if (format != null && !toReturn.isEmpty()) {
          try {
             if (attributeType.isInteger()) {
                toReturn = String.valueOf(format.parse(value).intValue());

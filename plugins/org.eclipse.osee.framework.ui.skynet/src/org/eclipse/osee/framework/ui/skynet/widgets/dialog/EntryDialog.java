@@ -272,7 +272,7 @@ public class EntryDialog extends MessageDialog {
     * @return true if entry is valid
     */
    public boolean isEntryValid() {
-      if (numberFormat == null) {
+      if (numberFormat == null || text.isEmpty()) {
          return true;
       }
 
