@@ -20,11 +20,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -37,20 +38,27 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.DeleteBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Roberto E. Escobar
@@ -63,9 +71,27 @@ public class BranchStateTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
+
+   private BranchEventListenerAsync branchEventListenerAsync;
+
    @Before
    public void setUp() throws Exception {
       BranchManager.refreshBranches();
+      branchEventListenerAsync = new BranchEventListenerAsync();
+   }
+
+   @Test
+   public void testRegistration() throws Exception {
+      OseeEventManager.removeAllListeners();
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
+
+      OseeEventManager.addListener(branchEventListenerAsync);
+      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
+
+      OseeEventManager.removeListener(branchEventListenerAsync);
+      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
    }
 
    @Test
@@ -107,25 +133,36 @@ public class BranchStateTest {
 
    @Test
    public void testDeleteState() throws InterruptedException {
+      OseeEventManager.addListener(branchEventListenerAsync);
+
       String originalBranchName = "Deleted State Branch";
       IOseeBranch workingBranch = null;
+      boolean pending = OseeEventManager.getPreferences().isPendRunning();
       try {
+         OseeEventManager.getPreferences().setPendRunning(true);
+
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
-         Job job = BranchManager.deleteBranch(workingBranch);
-         job.join();
-         assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
+         branchEventListenerAsync.reset();
+         Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
+
+         verifyReceivedBranchStatesEvent(branchEventListenerAsync.getResults(BranchEventType.ArchiveStateUpdated),
+            workingBranch, BranchEventType.ArchiveStateUpdated);
+
          assertTrue(BranchManager.isArchived(workingBranch));
          assertTrue(!BranchManager.isEditable(workingBranch));
          assertTrue(BranchManager.getState(workingBranch).isDeleted());
+         assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
       } finally {
          if (workingBranch != null) {
             // needed to allow for archiving to occur
             Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
+         OseeEventManager.getPreferences().setPendRunning(pending);
+         OseeEventManager.removeListener(branchEventListenerAsync);
       }
    }
 
@@ -410,4 +447,39 @@ public class BranchStateTest {
          String.format("%s - moved by update on -", originalBranchName)));
    }
 
+   private boolean containsBranchEventType(List<Pair<Sender, BranchEvent>> eventPairs, BranchEventType eventType) {
+      for (Pair<Sender, BranchEvent> eventPair : eventPairs) {
+         if (eventPair.getSecond().getEventType().equals(eventType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch, BranchEventType expectedEventType) {
+      Sender receivedSender = null;
+      BranchEvent receivedBranchEvent = null;
+
+      Assert.assertTrue(containsBranchEventType(eventPairs, expectedEventType));
+
+      for (Pair<Sender, BranchEvent> eventPair : eventPairs) {
+         receivedSender = eventPair.getFirst();
+         receivedBranchEvent = eventPair.getSecond();
+
+         if (receivedBranchEvent.getEventType().equals(expectedEventType)) {
+            if (isRemoteTest()) {
+               Assert.assertTrue(receivedSender.isRemote());
+            } else {
+               Assert.assertTrue(receivedSender.isLocal());
+            }
+            if (expectedBranch != null) {
+               Assert.assertEquals(expectedBranch, receivedBranchEvent.getSourceBranch());
+            }
+         }
+      }
+   }
+
+   protected boolean isRemoteTest() {
+      return false;
+   }
 }

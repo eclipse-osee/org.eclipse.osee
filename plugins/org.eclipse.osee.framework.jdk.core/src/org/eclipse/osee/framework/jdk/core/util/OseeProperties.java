@@ -232,4 +232,7 @@ public class OseeProperties {
       return Strings.isValid(System.getProperty(OSEE_DB));
    }
 
+   public static String getOseeDbName() {
+      return System.getProperty(OSEE_DB);
+   }
 }

@@ -71,6 +71,7 @@ public class BranchEventTest {
    private BranchId topLevel;
 
    private BranchEventListener branchEventListener;
+   private BranchEventListenerAsync branchEventListenerAsync;
 
    @Before
    public void setup() {
@@ -78,6 +79,7 @@ public class BranchEventTest {
       mainBranch = IOseeBranch.create(topLevelBranchName);
 
       branchEventListener = new BranchEventListener();
+      branchEventListenerAsync = new BranchEventListenerAsync();
    }
 
    @After
@@ -140,7 +142,7 @@ public class BranchEventTest {
 
       Assert.assertNotNull(committedBranch);
       Assert.assertTrue(BranchManager.isArchived(committedBranch));
-      BranchManager.setArchiveState(committedBranch, BranchArchivedState.UNARCHIVED);
+      BranchManager.archiveUnArchiveBranch(committedBranch, BranchArchivedState.UNARCHIVED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getResults(0), BranchEventType.ArchiveStateUpdated,
          committedBranch);
@@ -197,15 +199,19 @@ public class BranchEventTest {
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, BranchManager.getState(workingBranch));
 
-      branchEventListener.reset();
+      OseeEventManager.addListener(branchEventListenerAsync);
+      branchEventListenerAsync.reset();
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getResults(0), BranchEventType.StateUpdated, workingBranch);
-      verifyReceivedBranchStatesEvent(branchEventListener.getResults(1), BranchEventType.ArchiveStateUpdated,
-         workingBranch);
-      verifyReceivedBranchStatesEvent(branchEventListener.getResults(2), BranchEventType.Deleting, workingBranch);
-      verifyReceivedBranchStatesEvent(branchEventListener.getResults(3), BranchEventType.StateUpdated, workingBranch);
-      verifyReceivedBranchStatesEvent(branchEventListener.getResults(4), BranchEventType.Deleted, workingBranch);
+      verifyReceivedBranchStatesEvent(branchEventListenerAsync.getResults(BranchEventType.StateUpdated), workingBranch,
+         BranchEventType.StateUpdated);
+      verifyReceivedBranchStatesEvent(branchEventListenerAsync.getResults(BranchEventType.ArchiveStateUpdated),
+         workingBranch, BranchEventType.ArchiveStateUpdated);
+      verifyReceivedBranchStatesEvent(branchEventListenerAsync.getResults(BranchEventType.Deleting), workingBranch,
+         BranchEventType.Deleting);
+      verifyReceivedBranchStatesEvent(branchEventListenerAsync.getResults(BranchEventType.Deleted), workingBranch,
+         BranchEventType.Deleted);
+      OseeEventManager.removeListener(branchEventListenerAsync);
 
       Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
    }
@@ -281,6 +287,39 @@ public class BranchEventTest {
       if (expectedBranch != null) {
          Assert.assertEquals(expectedBranch, receivedBranchEvent.getSourceBranch());
       }
+   }
+
+   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch, BranchEventType expectedEventType) {
+      Sender receivedSender = null;
+      BranchEvent receivedBranchEvent = null;
+
+      Assert.assertTrue(containsBranchEventType(eventPairs, expectedEventType));
+
+      for (Pair<Sender, BranchEvent> eventPair : eventPairs) {
+         receivedSender = eventPair.getFirst();
+         receivedBranchEvent = eventPair.getSecond();
+
+         if (receivedBranchEvent.getEventType().equals(expectedEventType)) {
+            if (isRemoteTest()) {
+               Assert.assertTrue(receivedSender.isRemote());
+            } else {
+               Assert.assertTrue(receivedSender.isLocal());
+            }
+            if (expectedBranch != null) {
+               Assert.assertEquals(expectedBranch, receivedBranchEvent.getSourceBranch());
+            }
+            break;
+         }
+      }
+   }
+
+   private boolean containsBranchEventType(List<Pair<Sender, BranchEvent>> eventPairs, BranchEventType eventType) {
+      for (Pair<Sender, BranchEvent> eventPair : eventPairs) {
+         if (eventPair.getSecond().getEventType().equals(eventType)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    protected boolean isRemoteTest() {

@@ -24,6 +24,10 @@ public interface MailService {
 
    MailStatus sendTestMessage();
 
+   String getAdminEmail();
+
+   String getReplyToEmail();
+
    Future<MailStatus> sendAsyncTestMessage();
 
    List<MailStatus> sendMessages(MailMessage... email);

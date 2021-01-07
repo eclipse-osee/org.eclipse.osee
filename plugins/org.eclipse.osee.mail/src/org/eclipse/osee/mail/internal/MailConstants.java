@@ -34,6 +34,7 @@ public final class MailConstants {
    public static final String MAIL_SERVER_PORT = qualify("port");
    public static final String MAIL_SERVER_TRANSPORT = qualify("transport");
    public static final String MAIL_SERVER_ADMIN_EMAIL = qualify("admin.email");
+   public static final String MAIL_SERVER_REPLY_TO_EMAIL = qualify("reply.to.email");
    public static final String MAIL_SERVER_TEST_EMAIL_SUBJECT = qualify("test.email.subject");
    public static final String MAIL_SERVER_TEST_EMAIL_BODY = qualify("test.email.body");
    public static final String MAIL_SERVER_STATUS_WAIT_TIME_MILLIS = qualify("status.wait.time");
@@ -44,6 +45,7 @@ public final class MailConstants {
    public static final int DEFAULT_MAIL_SERVER_PORT = 25;
    public static final String DEFAULT_MAIL_SERVER_TRANSPORT = "smtp";
    public static final String DEFAULT_MAIL_SERVER_ADMIN_EMAIL = null;
+   public static final String DEFAULT_MAIL_SERVER_REPLY_TO_EMAIL = null;
    public static final String DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT = "Test Email";
    public static final String DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY = "This is a test email sent from OSEE Mail Service";
    public static final long DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS = 60L * 1000L;

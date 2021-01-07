@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start">
+   <implementation class="org.eclipse.osee.orcs.rest.internal.email.SupportEmailService"/>
+<reference bind="setMailService" cardinality="1..1" interface="org.eclipse.osee.mail.api.MailService" name="MailService" policy="static"/>
+<reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+</scr:component>

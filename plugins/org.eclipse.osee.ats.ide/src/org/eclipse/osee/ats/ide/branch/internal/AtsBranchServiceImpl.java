@@ -103,7 +103,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public void archiveBranch(BranchId branch) {
-      BranchManager.setArchiveState(branch, BranchArchivedState.ARCHIVED);
+      BranchManager.archiveUnArchiveBranch(branch, BranchArchivedState.ARCHIVED);
    }
 
    @Override

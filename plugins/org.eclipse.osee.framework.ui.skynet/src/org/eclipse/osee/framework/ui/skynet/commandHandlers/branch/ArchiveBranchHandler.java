@@ -67,7 +67,7 @@ public class ArchiveBranchHandler extends CommandHandler {
 
                for (BranchId branch : branches) {
                   BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
-                  BranchManager.setArchiveState(branch, state);
+                  BranchManager.archiveUnArchiveBranch(branch, state);
                   OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
                }
             }

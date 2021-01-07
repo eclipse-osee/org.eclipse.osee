@@ -13,17 +13,21 @@
 
 package org.eclipse.osee.orcs.core.internal.access;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.AbstractUserGroupImpl;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -91,7 +95,23 @@ public class UserGroupImpl extends AbstractUserGroupImpl {
    @Override
    public Collection<UserToken> getMembers() {
       checkGroupExists();
-      return Collections.castAll(getArtifact().getRelated(CoreRelationTypes.Users_User).getList());
+      List<UserToken> users = new ArrayList<UserToken>();
+      for (ArtifactReadable userArt : getArtifact().getRelated(CoreRelationTypes.Users_User).getList()) {
+         String name = userArt.getName();
+         String email = userArt.getSoleAttributeValue(CoreAttributeTypes.Email);
+         String userId = userArt.getSoleAttributeValue(CoreAttributeTypes.UserId);
+         boolean active = userArt.getSoleAttributeValue(CoreAttributeTypes.Active);
+         List<IUserGroupArtifactToken> roles = new ArrayList<IUserGroupArtifactToken>();
+         for (ArtifactReadable userGroupArt : userArt.getRelated(CoreRelationTypes.Users_Artifact).getList()) {
+            IUserGroupArtifactToken userGroup =
+               UserGroupArtifactToken.valueOf(userGroupArt.getId(), userGroupArt.getName());
+            roles.add(userGroup);
+         }
+         UserToken userToken = UserToken.create(userArt.getId(), name, email, userId, active,
+            roles.toArray(new IUserGroupArtifactToken[roles.size()]));
+         users.add(userToken);
+      }
+      return users;
    }
 
    @Override

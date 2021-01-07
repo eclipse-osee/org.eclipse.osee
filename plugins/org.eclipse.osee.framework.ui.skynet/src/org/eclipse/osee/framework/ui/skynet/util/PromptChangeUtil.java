@@ -63,7 +63,7 @@ public class PromptChangeUtil {
       if (result == 0) {
          BranchArchivedState state = ld.getSelection();
          for (TreeItem item : branches) {
-            BranchManager.setArchiveState((BranchId) item.getData(), state);
+            BranchManager.archiveUnArchiveBranch((BranchId) item.getData(), state);
          }
          return true;
       }

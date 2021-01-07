@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -87,6 +88,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.internal.branch.UpdateBranchOperation;
+import org.eclipse.osee.orcs.rest.internal.email.SupportEmailService;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchExportOptions;
@@ -110,6 +112,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private final IResourceManager resourceManager;
    private final ActivityLog activityLog;
    private final OrcsBranch branchOps;
+   private final SupportEmailService supportEmailService;
 
    @Context
    private UriInfo uriInfo;
@@ -122,6 +125,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       this.resourceManager = resourceManager;
       this.activityLog = activityLog;
       this.branchOps = orcsApi.getBranchOps();
+      this.supportEmailService = new SupportEmailService();
    }
 
    public HttpHeaders getHeaders() {
@@ -413,15 +417,47 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response archiveBranch(BranchId branchId) {
       Branch branch = getBranchById(branchId);
-
       boolean modified = false;
       if (!branch.isArchived()) {
-         Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
-         executeCallable(op);
+         try {
+            Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
+            executeCallable(op);
+         } catch (Exception ex) {
+            supportEmailService.sendSupportEmail("Exception caught during archival of branch " + branchId.getIdString(),
+               ex.getLocalizedMessage());
+            OseeLog.log(ActivityLog.class, Level.SEVERE, ex);
+            return asResponse(modified);
+         }
          modified = true;
          try {
             activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format("Branch Operation Archive Branch {branchId: %s}", branchId));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      return asResponse(modified);
+   }
+
+   @Override
+   public Response unarchiveBranch(BranchId branchId) {
+      Branch branch = getBranchById(branchId);
+
+      boolean modified = false;
+      if (branch.isArchived()) {
+         try {
+            Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
+            executeCallable(op);
+         } catch (Exception ex) {
+            supportEmailService.sendSupportEmail(
+               "Exception caught during unarchival of branch " + branchId.getIdString(), ex.getLocalizedMessage());
+            OseeLog.log(ActivityLog.class, Level.SEVERE, ex);
+            return asResponse(modified);
+         }
+         modified = true;
+         try {
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+               String.format("Branch Operation Unarchive Branch {branchId: %s}", branchId));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -720,25 +756,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
             String.format("Branch Operation Purge Branch {branchId: %s}", branchId));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return asResponse(modified);
-   }
-
-   @Override
-   public Response unarchiveBranch(BranchId branchId) {
-      Branch branch = getBranchById(branchId);
-
-      boolean modified = false;
-      if (branch.isArchived()) {
-         Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
-         executeCallable(op);
-         modified = true;
-         try {
-            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-               String.format("Branch Operation Unarchive Branch {branchId: %s}", branchId));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
-         }
       }
       return asResponse(modified);
    }

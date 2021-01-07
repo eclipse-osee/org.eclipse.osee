@@ -27,7 +27,10 @@ import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -333,23 +336,36 @@ public final class BranchManager {
       }
    }
 
-   public static void setArchiveState(BranchId branch, BranchArchivedState state) {
-      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+   public static void archiveUnArchiveBranch(BranchId branch, BranchArchivedState state) {
+      ArchiveUnArchiveBranchJob archiveBranchJob;
+      boolean setArchived;
       if (state.isArchived()) {
-         Response response = proxy.archiveBranch(branch);
-         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-            BranchManager.getBranch(branch).setArchived(true);
-            OseeEventManager.kickBranchEvent(BranchManager.class,
-               new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
-         }
+         archiveBranchJob = new ArchiveUnArchiveBranchJob("Archive Branch", BranchId.valueOf(branch.getId()),
+            ArchiveUnArchiveBranchJob.ArchiveType.ARCHIVE);
+         setArchived = true;
       } else {
-         Response response = proxy.unarchiveBranch(branch);
-         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
-            BranchManager.getBranch(branch).setArchived(false);
-            OseeEventManager.kickBranchEvent(BranchManager.class,
-               new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
-         }
+         archiveBranchJob = new ArchiveUnArchiveBranchJob("Unarchive Branch", BranchId.valueOf(branch.getId()),
+            ArchiveUnArchiveBranchJob.ArchiveType.UNARCHIVE);
+         setArchived = false;
       }
+      archiveBranchJob.addJobChangeListener(new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            IStatus status = event.getResult();
+            if (status.equals(Status.OK_STATUS)) {
+               ArchiveUnArchiveBranchJob job = (ArchiveUnArchiveBranchJob) event.getJob();
+               Response response = job.getResponse();
+               if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+                  BranchManager.getBranch(branch).setArchived(setArchived);
+                  OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
+               }
+            }
+         }
+      });
+      archiveBranchJob.setUser(true);
+      archiveBranchJob.setPriority(Job.LONG);
+      archiveBranchJob.schedule();
    }
 
    public static void setName(BranchId branch, String newBranchName) {
@@ -600,7 +616,6 @@ public final class BranchManager {
    public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
-
       Response response = proxy.associateBranchToArtifact(branch, artifactId);
       if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
          getBranch(branch).setAssociatedArtifact(artifactId);

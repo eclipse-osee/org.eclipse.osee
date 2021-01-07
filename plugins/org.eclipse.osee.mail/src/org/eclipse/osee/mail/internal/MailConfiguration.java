@@ -17,6 +17,7 @@ import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_A
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_HOST;
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_PASSWORD;
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_PORT;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_REPLY_TO_EMAIL;
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY;
 import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT;
@@ -25,6 +26,7 @@ import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_ADMIN_EMA
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_HOST;
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_PASSWORD;
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_PORT;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_REPLY_TO_EMAIL;
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_TEST_EMAIL_BODY;
 import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_TEST_EMAIL_SUBJECT;
@@ -39,13 +41,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *  host = "smtp.gmail.com;
  *  transport = "smpts";
  *  requireAuthentication = true;
- * 
+ *
  *  Yahoo Example:
  *  host = "smtp.mail.yahoo.com";
  *  transport = "smpts";
  *  requireAuthentication = true;
  * </pre>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class MailConfiguration {
@@ -56,6 +58,7 @@ public class MailConfiguration {
    private int port;
    private String transport;
    private String adminEmail;
+   private String replyToEmail;
    private String testEmailSubject;
    private String testEmailBody;
    private long waitTimeInMillis;
@@ -92,6 +95,10 @@ public class MailConfiguration {
       return adminEmail;
    }
 
+   public String getReplyToEmail() {
+      return replyToEmail;
+   }
+
    public String getTestEmailSubject() {
       return testEmailSubject;
    }
@@ -112,6 +119,7 @@ public class MailConfiguration {
       data.port = this.port;
       data.transport = this.transport;
       data.adminEmail = this.adminEmail;
+      data.replyToEmail = this.replyToEmail;
       data.testEmailSubject = this.testEmailSubject;
       data.testEmailBody = this.testEmailBody;
       data.waitTimeInMillis = this.waitTimeInMillis;
@@ -142,6 +150,10 @@ public class MailConfiguration {
       this.adminEmail = adminEmail;
    }
 
+   void setReplyToEmail(String replyToEmail) {
+      this.replyToEmail = replyToEmail;
+   }
+
    void setTestEmailSubject(String testEmailSubject) {
       this.testEmailSubject = testEmailSubject;
    }
@@ -156,7 +168,7 @@ public class MailConfiguration {
 
    @Override
    public String toString() {
-      return "MailConfiguration [username=" + username + ", password=" + password + ", host=" + host + ", port=" + port + ", transport=" + transport + ", adminEmail=" + adminEmail + ", testEmailSubject=" + testEmailSubject + ", testEmailBody=" + testEmailBody + ", waitTimeInMillis=" + waitTimeInMillis + "]";
+      return "MailConfiguration [username=" + username + ", password=" + password + ", host=" + host + ", port=" + port + ", transport=" + transport + ", adminEmail=" + adminEmail + ", replyToEmail=" + replyToEmail + ", testEmailSubject=" + testEmailSubject + ", testEmailBody=" + testEmailBody + ", waitTimeInMillis=" + waitTimeInMillis + "]";
    }
 
    public static MailConfigurationBuilder newBuilder() {
@@ -186,6 +198,7 @@ public class MailConfiguration {
          port(getInt(props, MAIL_SERVER_PORT, DEFAULT_MAIL_SERVER_PORT));
          transport(get(props, MAIL_SERVER_TRANSPORT, DEFAULT_MAIL_SERVER_TRANSPORT));
          adminEmail(get(props, MAIL_SERVER_ADMIN_EMAIL, DEFAULT_MAIL_SERVER_ADMIN_EMAIL));
+         replyToEmail(get(props, MAIL_SERVER_REPLY_TO_EMAIL, DEFAULT_MAIL_SERVER_REPLY_TO_EMAIL));
          testEmailSubject(get(props, MAIL_SERVER_TEST_EMAIL_SUBJECT, DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT));
          testEmailBody(get(props, MAIL_SERVER_TEST_EMAIL_BODY, DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY));
          statusWaitTime(getLong(props, MAIL_SERVER_STATUS_WAIT_TIME_MILLIS, DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS));
@@ -223,6 +236,11 @@ public class MailConfiguration {
          return this;
       }
 
+      public MailConfigurationBuilder replyToEmail(String replyToEmail) {
+         config.setReplyToEmail(replyToEmail);
+         return this;
+      }
+
       public MailConfigurationBuilder testEmailSubject(String testMailSubject) {
          config.setTestEmailSubject(testMailSubject);
          return this;
@@ -257,5 +275,4 @@ public class MailConfiguration {
          return toReturn;
       }
    }
-
 }

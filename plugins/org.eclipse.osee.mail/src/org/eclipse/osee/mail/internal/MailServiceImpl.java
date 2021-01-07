@@ -152,4 +152,14 @@ public class MailServiceImpl implements MailService {
    private Callable<MailStatus> newSendCallable(MailMessage mail) {
       return new SendMailCallable(config, factory, mail);
    }
+
+   @Override
+   public String getAdminEmail() {
+      return config.getAdminEmail();
+   }
+
+   @Override
+   public String getReplyToEmail() {
+      return config.getReplyToEmail();
+   }
 }

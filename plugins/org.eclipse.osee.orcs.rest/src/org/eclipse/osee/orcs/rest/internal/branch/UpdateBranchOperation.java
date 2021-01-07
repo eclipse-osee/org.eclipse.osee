@@ -27,8 +27,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class UpdateBranchOperation {
    private final BranchId toBranchId;
    private final BranchId fromBranchId;
-   private final String toName;
-   private final String fromName;
    private final ArtifactId author;
    private final UpdateBranchData branchData;
    private final OrcsApi orcsApi;
@@ -38,8 +36,6 @@ public class UpdateBranchOperation {
       this.toBranchId = branchData.getToBranch();
       this.fromBranchId = branchData.getFromBranch();
       this.author = branchData.getAuthor();
-      this.toName = branchData.getToName();
-      this.fromName = branchData.getFromName();
       this.branchData = branchData;
    }
 
