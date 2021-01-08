@@ -466,42 +466,42 @@
          id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />
 
    <plugin
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />
 
    <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />
    
     <plugin
          id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />
          
     <plugin
          id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />  
          
     <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false" />
                       
     <plugin
@@ -1999,12 +1999,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   <plugin
-         id="org.eclipse.jetty.util.ajax"
-         download-size="0"
-         install-size="0"
-         version="9.4.35"
-         unpack="false"/>  
+
    <plugin
          id="org.apache.batik.xml"
          download-size="0"
@@ -2127,7 +2122,7 @@
          id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false"/>    
          
    <plugin
@@ -2141,7 +2136,7 @@
          id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
-         version="9.4.35"
+         version="0.0.0"
          unpack="false"/>    
           
    <plugin
