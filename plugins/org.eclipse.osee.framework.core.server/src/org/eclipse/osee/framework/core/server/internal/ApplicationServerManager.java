@@ -21,7 +21,6 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -61,7 +60,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       dataStore = new ApplicationServerDataStore(jdbcService.getClient());
       serverInfo = createOseeServerInfo(getLogger(), dataStore, OseeCodeVersion.getVersion());
       System.setProperty("OseeApplicationServer", serverInfo.getUri().toString());
-      System.setProperty(OseeClient.OSEE_APPLICATION_SERVER, serverInfo.getUri().toString());
 
       timer = new Timer();
       timer.schedule(new TimerTask() {

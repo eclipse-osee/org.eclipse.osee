@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -49,7 +48,7 @@ public class HealthReportOperation {
       }
 
       rd.log("ORCS Types Health Check\n");
-      rd.log("Server: " + OseeClient.getOseeApplicationServer() + "\n");
+      rd.log("Server: " + System.getProperty("OseeApplicationServer") + "\n");
       rd.log("Attribute Types defined in code without Artifact reference in code: \n");
       for (AttributeTypeToken attrType : attrTypes) {
          if (attrType.isValid()) {
