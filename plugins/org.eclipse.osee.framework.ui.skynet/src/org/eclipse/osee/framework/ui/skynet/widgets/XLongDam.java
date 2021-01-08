@@ -53,12 +53,10 @@ public class XLongDam extends XLong implements IAttributeWidget {
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      try {
-         Long value = artifact.getSoleAttributeValue(getAttributeType());
-         super.set(value.toString());
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
+
+      // getSoleAttributeValue may return a value of type other than Long such as ArtifactId
+      Object value = artifact.getSoleAttributeValue(attributeType, null);
+      set(value == null ? "" : value.toString());
    }
 
    @Override

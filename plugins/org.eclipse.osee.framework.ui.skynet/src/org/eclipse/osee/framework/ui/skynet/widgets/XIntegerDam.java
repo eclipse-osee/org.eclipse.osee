@@ -54,16 +54,10 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      try {
-         Integer value = artifact.getSoleAttributeValue(getAttributeType());
-         if (value != null) {
-            super.set(value.toString());
-         } else {
-            super.set("");
-         }
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
+
+      // getSoleAttributeValue may return a value of type other than Integer such as ArtifactId
+      Object value = artifact.getSoleAttributeValue(attributeType, null);
+      set(value == null ? "" : value.toString());
    }
 
    @Override
