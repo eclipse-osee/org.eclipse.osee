@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.result.IResultDataListener;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -33,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * Used for large results cause uses file instead of StringBuffer<br/>
  * <br/>
  * Call dispose() after to close and remove file.
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class XResultDataFile extends XResultData {
@@ -71,7 +70,7 @@ public final class XResultDataFile extends XResultData {
       try {
          out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
 
@@ -81,7 +80,7 @@ public final class XResultDataFile extends XResultData {
          try {
             out.write(str);
          } catch (IOException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
       }
    }
@@ -101,7 +100,7 @@ public final class XResultDataFile extends XResultData {
       try {
          toReturn = Lib.fileToString(file);
       } catch (IOException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
       return toReturn;
    }

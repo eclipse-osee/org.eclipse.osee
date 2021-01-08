@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,7 +43,7 @@ public final class OsgiUtil {
          try {
             tracker.close();
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
+            OseeLog.log(OsgiUtil.class, Level.WARNING, ex);
          }
       }
    }

@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.internal.Activator;
-import org.eclipse.osee.framework.core.internal.OperationBuilderImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
@@ -37,7 +35,7 @@ public final class Operations {
    }
 
    public static IOperation createNoOpOperation(String name) {
-      return new AbstractOperation(name, Activator.PLUGIN_ID) {
+      return new AbstractOperation(name, null) {
          @Override
          protected void doWork(IProgressMonitor monitor) throws Exception {
             // Do Nothing
@@ -143,7 +141,7 @@ public final class Operations {
    }
 
    public static OperationBuilder createBuilder(String operationName) {
-      return new OperationBuilderImpl(operationName, Activator.PLUGIN_ID);
+      return new OperationBuilderImpl(operationName);
    }
 
    public static OperationBuilder createBuilder(String name, IOperation operation, IOperation... operations) {

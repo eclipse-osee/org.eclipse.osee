@@ -11,15 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.internal;
+package org.eclipse.osee.framework.core.operation;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.OperationBehavior;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.NullOperationLogger;
-import org.eclipse.osee.framework.core.operation.OperationBuilder;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -28,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public class OperationBuilderImpl implements OperationBuilder {
 
    private final String name;
-   private final String pluginId;
    private OperationBehavior behavior;
    private OperationLogger logger;
 
@@ -36,9 +31,8 @@ public class OperationBuilderImpl implements OperationBuilder {
    private double runningTotal;
    private int itemsWithHints;
 
-   public OperationBuilderImpl(String name, String pluginId) {
+   public OperationBuilderImpl(String name) {
       this.name = name;
-      this.pluginId = pluginId;
       reset();
    }
 
@@ -106,7 +100,7 @@ public class OperationBuilderImpl implements OperationBuilder {
 
    @Override
    public synchronized IOperation build() {
-      IOperation operation = new WeightedCompositeOperation(getName(), pluginId, getExecutionBehavior(), getLogger(),
+      IOperation operation = new WeightedCompositeOperation(getName(), null, getExecutionBehavior(), getLogger(),
          runningTotal, itemsWithHints, operations);
       reset();
       return operation;

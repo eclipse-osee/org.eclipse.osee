@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
@@ -53,7 +52,7 @@ public class RenameFilesOperation extends AbstractOperation {
    }
 
    public RenameFilesOperation(OperationLogger logger, CharSequence parentFolderPath, CharSequence pathPattern, CharSequence replacement, boolean recurseFiles) {
-      super("Rename Files", Activator.PLUGIN_ID, logger);
+      super("Rename Files", null, logger);
       this.parentFolderPath = parentFolderPath;
       this.pathPattern = pathPattern;
       this.replacement = replacement;

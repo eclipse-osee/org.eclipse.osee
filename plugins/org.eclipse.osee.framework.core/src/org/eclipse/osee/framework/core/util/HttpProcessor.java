@@ -42,15 +42,12 @@ import org.eclipse.core.net.proxy.IProxyChangeEvent;
 import org.eclipse.core.net.proxy.IProxyChangeListener;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
-import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -83,21 +80,18 @@ public class HttpProcessor {
    private static void configureProxyData(URI uri, HostConfiguration config) {
       boolean proxyBypass = OseeProperties.getOseeProxyBypassEnabled();
       if (!proxyBypass) {
-         if (proxyService == null) {
-            BundleContext context = Activator.getBundleContext();
-            if (context != null) {
-               ServiceReference<IProxyService> reference = context.getServiceReference(IProxyService.class);
-               proxyService = context.getService(reference);
-            }
-            if (proxyService != null) {
-               proxyService.addProxyChangeListener(new IProxyChangeListener() {
 
-                  @Override
-                  public void proxyInfoChanged(IProxyChangeEvent event) {
-                     proxiedData.clear();
-                  }
-               });
-            }
+         if (proxyService == null) {
+            proxyService =
+               org.eclipse.osee.framework.core.util.OsgiUtil.getService(HttpClient.class, IProxyService.class);
+
+            proxyService.addProxyChangeListener(new IProxyChangeListener() {
+
+               @Override
+               public void proxyInfoChanged(IProxyChangeEvent event) {
+                  proxiedData.clear();
+               }
+            });
          }
 
          String key = String.format("%s_%s", uri.getScheme(), uri.getHost());
@@ -112,7 +106,7 @@ public class HttpProcessor {
             }
          }
       }
-      OseeLog.logf(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
+      OseeLog.logf(HttpProcessor.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
    }
 
    public static String acquireString(URL url) throws Exception {

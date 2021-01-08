@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.core.operation;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,14 +35,14 @@ public class LogProgressMonitor implements IProgressMonitor {
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
       if (!OseeProperties.isInTest()) {
-         OseeLog.logf(Activator.class, Level.INFO, "Start: %s", taskName);
+         OseeLog.logf(getClass(), Level.INFO, "Start: %s", taskName);
       }
    }
 
    @Override
    public void done() {
       if (!OseeProperties.isInTest()) {
-         OseeLog.logf(Activator.class, Level.INFO, "Finish: %s", taskName);
+         OseeLog.logf(getClass(), Level.INFO, "Finish: %s", taskName);
       }
    }
 
@@ -67,7 +66,7 @@ public class LogProgressMonitor implements IProgressMonitor {
       if (Strings.isValid(name)) {
          this.taskName = name;
          if (!OseeProperties.isInTest()) {
-            OseeLog.log(Activator.class, Level.INFO, name);
+            OseeLog.log(getClass(), Level.INFO, name);
          }
       }
    }
@@ -75,7 +74,7 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void subTask(String name) {
       if (Strings.isValid(name)) {
-         OseeLog.log(Activator.class, Level.FINER, name);
+         OseeLog.log(getClass(), Level.FINER, name);
       }
    }
 
