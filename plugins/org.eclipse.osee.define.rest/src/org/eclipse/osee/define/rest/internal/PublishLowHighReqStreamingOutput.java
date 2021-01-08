@@ -150,13 +150,17 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
          String newline = "";
          for (ArtifactReadable subSysReq : req.getRelated(CoreRelationTypes.RequirementTrace_HigherLevelRequirement)) {
             builtRows[4].append(newline);
-            builtRows[4].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
+            try {
+               builtRows[4].append(subSysReq.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
+            } catch (Exception ex) {
+               builtRows[4].append("Paragraph # unavailable");
+            }
             builtRows[5].append(newline);
             builtRows[5].append(subSysReq.getName());
             builtRows[6].append(newline);
             builtRows[6].append(subSysReq.getArtifactType().getName());
             String subsystem = "Not specified";
-            if (req.getAttributeCount(CoreAttributeTypes.Subsystem) > 0) {
+            if (subSysReq.getAttributeCount(CoreAttributeTypes.Subsystem) > 0) {
                subsystem = subSysReq.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
             }
             builtRows[7].append(newline);
