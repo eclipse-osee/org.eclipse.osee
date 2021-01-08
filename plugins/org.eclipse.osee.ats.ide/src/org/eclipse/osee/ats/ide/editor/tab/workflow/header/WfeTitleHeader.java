@@ -70,7 +70,7 @@ public class WfeTitleHeader extends Composite implements IWfeEventHandle {
 
    @Override
    public void refresh() {
-      // do nothing
+      titleText.setAttributeType((Artifact) workItem.getStoreObject(), CoreAttributeTypes.Name);
    }
 
    @Override
