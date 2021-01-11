@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.core.services;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 
@@ -23,8 +22,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 public interface IOseeCachingService {
 
    BranchCache getBranchCache();
-
-   Collection<?> getCaches();
 
    void clearAll();
 

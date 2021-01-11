@@ -13,9 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import com.google.common.io.ByteSource;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -24,19 +22,13 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ClientCachingServiceProxy implements IOseeCachingService {
 
-   public static interface TypesLoader {
-      void loadTypes(IOseeCachingService service, ByteSource supplier);
-   }
-
    private JdbcService jdbcService;
-   private OseeClient oseeClient;
    private OrcsTokenService tokenService;
    private BranchCache branchCache;
 
@@ -44,10 +36,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
-   }
-
-   public void setOseeClient(OseeClient oseeClient) {
-      this.oseeClient = oseeClient;
    }
 
    public void setOrcsTokenService(OrcsTokenService tokenService) {
@@ -69,11 +57,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public BranchCache getBranchCache() {
       return branchCache;
-   }
-
-   @Override
-   public Collection<?> getCaches() {
-      return caches;
    }
 
    @Override
