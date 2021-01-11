@@ -1083,6 +1083,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          //relate to group
          tx.relate(cfgGroup, CoreRelationTypes.PlConfigurationGroup_Group, view);
          tx.createApplicabilityForView(view, "ConfigurationGroup = " + groupName);
+         tx.createApplicabilityForView(cfgGroup, "Config = " + view.getName());
          tx.commit();
 
       } catch (Exception ex) {

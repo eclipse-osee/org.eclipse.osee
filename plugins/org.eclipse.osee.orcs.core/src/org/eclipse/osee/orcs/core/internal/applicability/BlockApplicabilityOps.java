@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks
@@ -208,7 +209,7 @@ public class BlockApplicabilityOps {
       return viewInCfgGroup;
    }
 
-   private String getValidConfigurationContent(BranchId branch, ArtifactToken view, ApplicabilityType type, String fullText, HashMap<String, List<String>> id_value_map) {
+   private String getValidConfigurationContent(BranchId branch, ArtifactToken view, ApplicabilityType type, String fullText, HashMap<String, List<String>> configIdValuesMap) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -223,19 +224,33 @@ public class BlockApplicabilityOps {
 
       String toReturn = "";
       // Note: this assumes only OR's are put in between configurations
-      List<String> values = id_value_map.get(view.getName().toUpperCase());
 
+      List<String> matchingTags = new ArrayList<String>();
+      if (view.isTypeEqual(CoreArtifactTypes.GroupArtifact)) {
+         for (ArtifactReadable memberConfig : orcsApi.getQueryFactory().fromBranch(branch).andId(
+            view).getArtifact().getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList()) {
+            if (configIdValuesMap.containsKey(memberConfig.getName().toUpperCase())) {
+               matchingTags.add("Config = " + memberConfig.getName());
+            }
+         }
+         if (matchingTags.isEmpty()) {
+            matchingTags = null;
+         }
+
+      } else {
+         matchingTags = configIdValuesMap.get(view.getName().toUpperCase());
+      }
       if (type.equals(ApplicabilityType.NotConfiguration)) {
          //Note when publishing with view=configurationgroup, do not publish Configuration Not[configA] text
          if (orcsApi.getQueryFactory().fromBranch(branch).andId(view).andIsOfType(
             CoreArtifactTypes.BranchView).exists()) {
-            if (values != null) {
+            if (matchingTags != null) {
                toReturn = elseText;
             } else {
                toReturn = beginningText;
             }
          }
-      } else if (values == null) {
+      } else if (matchingTags == null) {
          toReturn = elseText;
       } else {
          toReturn = beginningText;

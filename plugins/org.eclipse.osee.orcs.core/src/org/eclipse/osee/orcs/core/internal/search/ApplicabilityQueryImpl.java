@@ -87,7 +87,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       for (ApplicabilityToken app : appTokens.values()) {
          apps.add(app.getName());
       }
-      for (ArtifactToken view : getViewsForBranch(branch)) {
+      for (ArtifactToken view : getConfigurationsForBranch(branch)) {
          apps.add("Config = " + view.getName());
       }
       for (FeatureDefinition feature : getFeatureDefinitionData(branch)) {
