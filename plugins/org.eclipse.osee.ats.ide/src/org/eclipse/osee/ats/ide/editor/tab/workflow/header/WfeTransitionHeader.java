@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateOption;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
@@ -143,10 +142,6 @@ public class WfeTransitionHeader extends Composite implements IAtsWorkItemTopicE
             }
          }
       });
-
-      if (editor.getWorkFlowTab().getHeader().isShowTargetedVersion()) {
-         new WfeTargetedVersionHeader(this, SWT.NONE, (IAtsTeamWorkflow) awa, editor);
-      }
 
       Hyperlink assigneesLabelLink = editor.getToolkit().createHyperlink(this, "Next State Assignee(s)", SWT.NONE);
       assigneesLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
