@@ -22,7 +22,6 @@
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.core.model"/>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
-      <import plugin="org.eclipse.osee.framework.resource.management"/>
       <import plugin="org.eclipse.osee.logger"/>
       <import plugin="org.eclipse.osee.orcs"/>
       <import plugin="org.eclipse.osee.template.engine"/>
