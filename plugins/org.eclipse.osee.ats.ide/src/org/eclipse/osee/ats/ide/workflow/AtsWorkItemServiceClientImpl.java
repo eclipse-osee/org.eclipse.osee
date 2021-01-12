@@ -15,8 +15,6 @@ package org.eclipse.osee.ats.ide.workflow;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -134,9 +132,9 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
     */
    private TransitionResults postEventAndReturn(TransitionData transData, TransitionResults results) {
       Conditions.assertNotNullOrEmpty(results.getWorkItemIds(), "workItemIds");
-      ArtifactQuery.reloadArtifacts(transData.getWorkItemIds());
+
       if (results.isSuccess()) {
-         reload(results);
+         ArtifactQuery.reloadArtifacts(transData.getWorkItemIds());
          atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
             transData.getWorkItems(), results.getTransaction());
       } else {
@@ -144,19 +142,6 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
             transData.getWorkItems(), results.getTransaction());
       }
       return results;
-   }
-
-   private void reload(TransitionResults transResults) {
-      List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
-      for (IAtsWorkItem workItem : transResults.getWorkItems()) {
-         boolean changed = AtsApiService.get().getStoreService().isChangedInDb(workItem);
-         if (changed) {
-            workItemsToReload.add(workItem);
-         }
-      }
-      if (!workItemsToReload.isEmpty()) {
-         AtsApiService.get().getStoreService().reload(workItemsToReload);
-      }
    }
 
 }
