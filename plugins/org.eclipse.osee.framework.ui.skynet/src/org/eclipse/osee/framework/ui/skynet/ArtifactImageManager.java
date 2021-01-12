@@ -204,7 +204,10 @@ public final class ArtifactImageManager {
          }
 
          // Check if image provider provides override for this image
-         ArtifactImageProvider imageProvider = getProvider(artifactType);
+         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifactType);
+         if (imageProvider == null) {
+            imageProvider = getProvider(artifactType);
+         }
          if (imageProvider != null) {
             String imageKey = imageProvider.setupImage(artifactType);
             if (imageKey != null) {
@@ -221,13 +224,16 @@ public final class ArtifactImageManager {
    }
 
    public static ArtifactImageProvider getProvider(ArtifactTypeToken artifactType) {
-      for (Entry<ArtifactTypeToken, ArtifactImageProvider> entry : providersOverrideImageMap.entrySet()) {
-         if (artifactType.inheritsFrom(entry.getKey())) {
-            ArtifactImageProvider imageProvider = entry.getValue();
-            return imageProvider;
+      ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifactType);
+      if (imageProvider == null) {
+         for (Entry<ArtifactTypeToken, ArtifactImageProvider> entry : providersOverrideImageMap.entrySet()) {
+            if (artifactType.inheritsFrom(entry.getKey())) {
+               imageProvider = entry.getValue();
+               break;
+            }
          }
       }
-      return null;
+      return imageProvider;
    }
 
    public static Image getImage(Artifact artifact, KeyedImage overlay, Location location) {
@@ -336,12 +342,15 @@ public final class ArtifactImageManager {
    }
 
    public static KeyedImage getArtifactTypeImage(ArtifactTypeToken artifactType) {
-      for (Entry<ArtifactTypeToken, KeyedImage> entry : artifactTypeImageMap.entrySet()) {
-         if (artifactType.inheritsFrom(entry.getKey())) {
-            return entry.getValue();
+      KeyedImage image = artifactTypeImageMap.get(artifactType);
+      if (image == null) {
+         for (Entry<ArtifactTypeToken, KeyedImage> entry : artifactTypeImageMap.entrySet()) {
+            if (artifactType.inheritsFrom(entry.getKey())) {
+               image = entry.getValue();
+            }
          }
       }
-      return null;
+      return image;
    }
 
    /**
